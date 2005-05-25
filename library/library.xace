@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<library name="traffic">
+
+  <description>
+    description: "Xace file for Traffic Library"
+    copyright: "Copyright (c) 2004, Benno Baumgartner, Till G. Bay and others"
+    license: "Eiffel Forum License v2 (see forum.txt)"
+    date: "$Date$"
+    revision: "$Revision$"
+  </description>
+
+  <cluster name="traffic" location="${TRAFFIC}/library">
+    <cluster name="util">
+    	<cluster name="base_extension">
+				<cluster name="dispenser"/>       
+				<cluster name="graph" prefix="graph_">
+					<cluster name="implementation">
+	    			<cluster name="adjacency_matrix_graph"/>
+ 		   			<cluster name="linked_graph"/>
+ 		   		</cluster>
+ 		   		<cluster name="structure"/>
+    			<cluster name="walker"/>
+    		</cluster>
+        <cluster name="topological_sort"/>
+        <cluster name="tree"/>            
+        <cluster name="union_find"/>
+    	</cluster>
+	  </cluster>
+    <cluster name="visualization"/>
+    <cluster name="type"/>
+    <cluster name="input"/>
+    <cluster name="factory"/>
+    <cluster name="test">
+      <cluster name="example"/>
+    </cluster>
+  </cluster>
+</library>

@@ -1,0 +1,22 @@
+current:
+
+
+all:
+
+- add "traffic_" to all file and classnames using search and replace in eclipse
+- are the classes in $TRAFFIC/library/*.e in the right place?
+
+library:
+
+example:
+
+general:
+- TODO's
+- have gobo mounted into a subcluster
+	-> This is being looked into by Eric from gobosoft, it is not possible at the moment
+
+installers:
+
+html:
+
+last change $Date$

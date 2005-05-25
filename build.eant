@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+
+<project name="esdl_root" default="help">
+
+	<description>
+		description: "Eiffel Ant file for ESDL"
+		copyright: "Copyright (c) 2004, Benno Baumgartner, Till G. Bay and others"
+		license: "Eiffel Forum License v2 (see forum.txt)"
+		date: "$Date$"
+		revision: "$Revision$"
+	</description>
+
+	<target name="help">
+		<echo message="usage:"/>
+		<echo message="   geant install"/>
+		<echo message="   geant clobber"/>
+		<echo message="   geant clean"/>
+		<echo message="   geant compile"/>
+		<echo message="   geant release_msc"/>
+		<echo message="   geant release_bcb"/>
+		<echo message="   geant release_gcc"/>
+		<echo message="   geant release_source"/>
+	</target>
+
+	<target name="install" depend="init">
+		<geant file="build.eant" target="install" dir="example"/>
+	</target>
+	
+	<target name="clobber" depend="init">
+		<description>
+			Remove all generated files.
+		</description>
+		<geant file="build.eant" target="clobber" dir="release"/>
+		<geant file="build.eant" target="clobber" dir="library"/>
+		<geant file="build.eant" target="clobber" dir="example"/>
+	</target>
+
+	<target name="clean" depend="init">
+		<description>
+			Remove intermediary generated files.
+		</description>
+		<geant file="build.eant" target="clean" dir="release"/>
+		<geant file="build.eant" target="clean" dir="library"/>
+		<geant file="build.eant" target="clean" dir="example"/>
+	</target>
+
+	<target name="compile" depend="init">
+		<geant file="build.eant" target="c_build_library" dir="library"/>
+		<geant file="build.eant" target="compile" dir="example"/>
+	</target>
+	
+	<target name="release_msc" depend="init">
+ 		<geant target="deliver_both"/>
+		<geant file="build.eant" target="release_msc" dir="release"/>
+		<geant file="build.eant" target="clean" dir="release"/>
+		<geant file="build.eant" target="clean_cvs_msc" dir="release"/>
+	</target>
+	
+	<target name="release_bcb" depend="init">
+ 		<geant target="deliver_both"/>
+		<geant file="build.eant" target="release_bcb" dir="release"/>
+		<geant file="build.eant" target="clean" dir="release"/>
+		<geant file="build.eant" target="clean_cvs_bcb" dir="release"/>
+	</target>
+	
+	<target name="release_gcc" depend="init">
+ 		<geant target="deliver_both"/>
+		<geant file="build.eant" target="release_gcc" dir="release"/>
+		<geant file="build.eant" target="clean" dir="release"/>
+		<geant file="build.eant" target="clean_cvs_gcc" dir="release"/>
+	</target>
+	
+	<target name="release_source" depend="init">
+		<echo message="Note:	You will need to have set the correct"/>
+		<echo message="			environment variables - see developer.txt"/>
+ 		<geant target="clobber"/>
+		<geant file="build.eant" target="release_source" dir="release"/>
+		<geant file="build.eant" target="clean" dir="release"/>
+		<geant file="build.eant" target="clean_cvs_source" dir="release"/>
+	</target>
+	
+<!-- Implementation -->
+
+	<target name="deliver" depend="init">
+ 		<geant target="clobber"/>
+		<geant target="install"/>
+		<geant file="build.eant" target="c_build_library" dir="library"/>
+		<geant file="build.eant" target="compile" dir="example"/>
+		<geant file="build.eant" target="clean" dir="example"/>
+	</target>
+	
+	<target name="deliver_debugable" depend="init">
+		<!-- This is only used for the releases so that people can start 
+			   compiling immediately without having to finalize -->
+		<setenv name="DEBUG" value="true"/>
+		<geant target="install"/>
+		<geant file="build.eant" target="c_build_library" dir="library" reuse_variables="true"/>		
+	</target>
+	
+	<target name="deliver_both" depend="init">
+		<echo message="Note:	You will need to have set the correct"/>
+		<echo message="			environment variables - see developer.txt"/>
+		<echo message=""/>
+ 		<geant target="deliver"/>
+ 		<geant target="deliver_debugable"/>
+	</target>
+
+	<target name="init">
+		<geant target="init_os"/>
+	</target>
+
+	<target name="init_os">
+		<geant target="init_windows"/>
+		<geant target="init_unix"/>
+		<geant target="init_gobo_eiffel"/>
+	</target>
+
+	<target name="init_windows" if="${GOBO_OS}=windows">
+		<set name="exe" value=".exe"/>
+	</target>
+
+	<target name="init_unix" unless="${GOBO_OS}=windows">
+		<set name="exe" value=""/>
+	</target>
+
+	<target name="init_gobo_eiffel" unless="${GOBO_EIFFEL}">
+		<set name="GOBO_EIFFEL" value="ise"/>
+	</target>
+
+</project>

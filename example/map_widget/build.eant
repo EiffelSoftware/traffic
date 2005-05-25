@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<project name="map_widget" default="help">
+
+  <description>
+    description: "Eiffel Ant file for 'map_widget'"
+    system: "Map Widget example"
+    copyright: "Copyright (c) 2004, Michela Pedroni and others"
+    license: "Eiffel Forum License v2 (see forum.txt)"
+    date: "$Date$"
+    revision: "$Revision$"
+  </description>
+
+  <inherit>
+    <parent location="${ESDL}/misc/esdl_application.eant">
+      <redefine target="init_system"/>
+    </parent>
+  </inherit>
+  
+  <!-- Implementation -->
+
+  <target name="init_system">
+    <set name="system" value="map_widget"/>
+    <set name="system_dir" value="${TRAFFIC}/example/map_widget"/>
+  </target>
+</project>
