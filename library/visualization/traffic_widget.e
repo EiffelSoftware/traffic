@@ -44,7 +44,8 @@ feature {NONE} -- Initialization
 			make
 			map := a_map
 			subscribe_for_map
-			create renderers.make (100)
+			create default_renderers.make (20)
+			create item_renderers.make (100)
 			create item_views.make (a_map.count * 2)
 			create views_array.make (a_map.count)
 		end
@@ -73,17 +74,45 @@ feature -- Access
 		
 feature -- Status setting
 
-	set_renderer (a_renderer: FUNCTION [ANY, TUPLE [ELEMENT], DRAWABLE]; a_category: STRING) is
-			-- Set `a_renderer' to visualize all items inside `map' with category `a_category'.
-			-- Renderer is a function that takes an item of the map that has category `a_category'
-			-- and returns a DRAWABLE to visualize the item in the map.
-		do
-			renderers.put (a_renderer, a_category)		
+	set_default_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [DRAWABLE]) is
 
+			-- Set `a_renderer' to visualize all items inside `map' with category `a_renderer.render_type'
+			-- Renderer is an functional object that takes an item of the map that has category 
+			-- `a_renderer.render_type'  and returns a DRAWABLE to visualize the item in the map.
+		do
+			if default_renderers.has (a_renderer.render_type) then
+				default_renderers.replace(a_renderer, a_renderer.render_type)
+			else
+			
+				-- Resize if necessary
+				if default_renderers.count >= default_renderers.capacity * 0.7 then
+					default_renderers.resize( default_renderers.capacity * 2)
+				end
+				default_renderers.put (a_renderer, a_renderer.render_type)
+			end
 			-- TODO: only re-render those with `a_category'
 			render
 		end
-
+	
+	set_renderer_for_item(a_renderer: TRAFFIC_ITEM_RENDERER [DRAWABLE]; i: INTEGER) is
+			-- Set `a_renderer' as renderer for item at position `a_index'			
+		require
+			a_renderer_not_null: a_renderer /= Void
+			i_is_valid_index: 1 <= i and then i <= map.count			
+		do
+			-- Remove exisitng view for this item (if any).
+			if item_renderers.has (i) then
+				item_renderers.replace(a_renderer,i)
+			else
+				--Resize if necessary 
+				if item_renderers.count >= item_renderers.capacity*0.7 then
+					item_renderers.resize( item_renderers.capacity * 2)
+				end	
+				item_renderers.put (a_renderer, i)
+			end			
+			
+		end
+		
 feature -- Commands
 
 	render is
@@ -204,6 +233,8 @@ feature {NONE} -- Update Mechanism
 	process_changed_map is
 			-- Render map again to update all changes.
 		do
+			-- All Items Changed(?)
+			create item_renderers.make (100)
 			-- Just render everything.
 			render
 		end		
@@ -214,6 +245,10 @@ feature {NONE} -- Update Mechanism
 		require
 			i_is_valid_index: 1 <= i and then i <= map.count
 		do
+			-- Item changed(?)
+			--if item_renderers.has (i) then
+			--	item_renderers.remove (i)
+			--end
 			-- TODO: Rerender i-th item and replace it in `Current'.
 			render			
 		end
@@ -223,6 +258,9 @@ feature {NONE} -- Update Mechanism
 		require
 			i_is_valid_index: 1 <= i and then i <= map.count
 		do
+			if item_renderers.has (i) then
+				item_renderers.remove (i)
+			end			
 			-- TODO: Only insert item at position i in container.
 			render			
 		end
@@ -232,6 +270,9 @@ feature {NONE} -- Update Mechanism
 		require
 			i_is_valid_index: 1 <= i and then i <= count
 		do
+			if item_renderers.has (i) then
+				item_renderers.remove (i)
+			end			
 			-- TODO: Only remove item at position i in container.
 			render			
 		end	
@@ -240,8 +281,11 @@ feature {NONE} -- Update Mechanism
 feature {NONE} -- Implementation
 
 
-	renderers: DS_HASH_TABLE [FUNCTION [ANY, TUPLE [ELEMENT], DRAWABLE], STRING]
+	default_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [DRAWABLE], STRING]
 			-- Renderers used to render the different item categories
+			
+	item_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [DRAWABLE], INTEGER]
+			-- Renderers used to render items that use a proprietary renderer
 			
 	item_views: DS_HASH_TABLE [DRAWABLE, ELEMENT]
 			-- Drawable objects that represent a map item
@@ -256,11 +300,18 @@ feature {NONE} -- Implementation
 		require
 			i_is_valid_index: 1 <= i and then i <= map.count
 		local
-			item_renderer: FUNCTION [ANY, TUPLE [ELEMENT], DRAWABLE]
+			item_renderer: TRAFFIC_ITEM_RENDERER [DRAWABLE]
+
 			view: DRAWABLE
 			map_item: ELEMENT			
 		do
-			item_renderer := renderers.item (map.category (i))
+			--Check for specialized renderer for this item
+			item_renderer := item_renderers.item (i)
+			
+			--If none available check for default_renderer
+			if item_renderer = Void then
+				item_renderer := default_renderers.item (map.category (i))			
+			end
 			map_item := map.item (i)
 
 			-- Remove exisitng view for this item (if any).
@@ -278,7 +329,7 @@ feature {NONE} -- Implementation
 			
 			-- Add new view if there is a renderer.			
 			if item_renderer /= Void then				
-				view := item_renderer.item ([map_item])
+				view := item_renderer.render (map_item)
 				if item_views.capacity < map.count then
 					item_views.resize (map.count * 2)
 				end		
@@ -315,7 +366,7 @@ feature {NONE} -- Implementation
 		
 invariant
 	map_not_void: map /= Void
-	renderers_not_void: renderers /= Void	
+	renderers_not_void: default_renderers /= Void and item_renderers /= Void
 	item_views_not_void: item_views /= Void
 
 end

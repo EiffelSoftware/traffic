@@ -161,8 +161,8 @@ feature {NONE} -- Implementation
 			create big_map_widget.make_with_map (traffic_map)			
 			
 			-- Customize map widget and render.
-			big_map_widget.traffic_type_line_widths.put (8, "rail")
-			big_map_widget.traffic_type_colors.put (rail_color, "rail")
+			big_map_widget.line_renderer.traffic_type_line_widths.put (8, "rail")
+			big_map_widget.line_renderer.traffic_type_colors.put (rail_color, "rail")
 			big_map_widget.render
 			
 			-- Create zoomable widget to make map zoomable.
@@ -200,9 +200,9 @@ feature {NONE} -- Implementation
 			create little_map_widget.make_with_map (traffic_map)
 
 			-- Customize map widget and render (to affect changes)
-			little_map_widget.traffic_type_line_widths.put (8, "rail")
-			little_map_widget.traffic_type_colors.put (rail_color, "rail")
-			little_map_widget.traffic_type_colors.put (yellow, "tram")
+			little_map_widget.line_renderer.traffic_type_line_widths.put (8, "rail")
+			little_map_widget.line_renderer.traffic_type_colors.put (rail_color, "rail")
+			little_map_widget.line_renderer.traffic_type_colors.put (yellow, "tram")
 			little_map_widget.render
 
 			-- Build zoomable container to show little map widget in.
