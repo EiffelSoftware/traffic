@@ -2,8 +2,8 @@ indexing
 	description: "[		
 						Widget to visualize a TRAFFIC_MAP_MODEL
 						
-						Needs some renderer functions FUNCTION [ANY, TUPLE [ELEMENT], DRAWABLE] to map 
-						the map model element items (ELEMENT) to appropriate drawable objects (DRAWABLE) 
+						Needs some TRAFFIC_ITEM_RENDERER's to render map 
+						the map model element items (ELEMENT) to appropriate drawable objects (ESDL_DRAWABLE) 
 						for drawing them. Use `set_renderer' to customize the renderer used 
 						to render a category of map elements.						
 					]"
@@ -13,10 +13,10 @@ indexing
 	revision: "1.3"	
 
 class
-	TRAFFIC_WIDGET [DRAWABLE -> ESDL_DRAWABLE, ELEMENT -> HASHABLE]
+	TRAFFIC_WIDGET [ELEMENT -> HASHABLE]
 	
 inherit
-	ESDL_DRAWABLE_CONTAINER [DRAWABLE]
+	ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
 		redefine
 			initialize_events, 
 			publish_mouse_event
@@ -52,10 +52,10 @@ feature {NONE} -- Initialization
 		
 feature -- Access
 
-	map: TRAFFIC_MAP_MODEL [ELEMENT]
+	map: TRAFFIC_MAP_MODEL [ELEMENT]	
 			-- Model of the map visualized by `Current'
 			
-	item_view (an_item: ELEMENT): DRAWABLE is
+	item_view (an_item: ELEMENT): ESDL_DRAWABLE is
 			-- Drawable representation of `an_item' inside `Current'
 		require
 			an_item_not_void: an_item /= Void
@@ -74,11 +74,11 @@ feature -- Access
 		
 feature -- Status setting
 
-	set_default_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [DRAWABLE]) is
+	set_default_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]) is
 
 			-- Set `a_renderer' to visualize all items inside `map' with category `a_renderer.render_type'
 			-- Renderer is an functional object that takes an item of the map that has category 
-			-- `a_renderer.render_type'  and returns a DRAWABLE to visualize the item in the map.
+			-- `a_renderer.render_type'  and returns a ESDL_DRAWABLE to visualize the item in the map.
 		do
 			if default_renderers.has (a_renderer.render_type) then
 				default_renderers.replace(a_renderer, a_renderer.render_type)
@@ -94,21 +94,21 @@ feature -- Status setting
 			render
 		end
 	
-	set_renderer_for_item(a_renderer: TRAFFIC_ITEM_RENDERER [DRAWABLE]; i: INTEGER) is
-			-- Set `a_renderer' as renderer for item at position `a_index'			
+	set_renderer_for_item(a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]; an_item: ELEMENT) is
+			-- Set `a_renderer' as renderer for item at position `a_index'
 		require
 			a_renderer_not_null: a_renderer /= Void
-			i_is_valid_index: 1 <= i and then i <= map.count			
+--			i_is_valid_index: 1 <= i and then i <= map.count
 		do
 			-- Remove exisitng view for this item (if any).
-			if item_renderers.has (i) then
-				item_renderers.replace(a_renderer,i)
+			if item_renderers.has (an_item) then
+				item_renderers.replace(a_renderer,an_item)
 			else
 				--Resize if necessary 
 				if item_renderers.count >= item_renderers.capacity*0.7 then
 					item_renderers.resize( item_renderers.capacity * 2)
 				end	
-				item_renderers.put (a_renderer, i)
+				item_renderers.put (a_renderer, an_item)
 			end			
 			
 		end
@@ -233,8 +233,6 @@ feature {NONE} -- Update Mechanism
 	process_changed_map is
 			-- Render map again to update all changes.
 		do
-			-- All Items Changed(?)
-			create item_renderers.make (100)
 			-- Just render everything.
 			render
 		end		
@@ -245,10 +243,6 @@ feature {NONE} -- Update Mechanism
 		require
 			i_is_valid_index: 1 <= i and then i <= map.count
 		do
-			-- Item changed(?)
-			--if item_renderers.has (i) then
-			--	item_renderers.remove (i)
-			--end
 			-- TODO: Rerender i-th item and replace it in `Current'.
 			render			
 		end
@@ -258,20 +252,17 @@ feature {NONE} -- Update Mechanism
 		require
 			i_is_valid_index: 1 <= i and then i <= map.count
 		do
-			if item_renderers.has (i) then
-				item_renderers.remove (i)
-			end			
-			-- TODO: Only insert item at position i in container.
+			-- TODO: Rerender i-th item and replace it in `Current'.
 			render			
 		end
 			
-	process_removed_item (i: INTEGER) is
+	process_removed_item (i: INTEGER; an_item: ELEMENT) is
 			-- Remove view for item at index `i'.
 		require
 			i_is_valid_index: 1 <= i and then i <= count
 		do
-			if item_renderers.has (i) then
-				item_renderers.remove (i)
+			if item_renderers.has (an_item) then
+				item_renderers.remove (an_item)
 			end			
 			-- TODO: Only remove item at position i in container.
 			render			
@@ -281,16 +272,16 @@ feature {NONE} -- Update Mechanism
 feature {NONE} -- Implementation
 
 
-	default_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [DRAWABLE], STRING]
+	default_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [ELEMENT], STRING]
 			-- Renderers used to render the different item categories
 			
-	item_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [DRAWABLE], INTEGER]
+	item_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [ELEMENT], ELEMENT]
 			-- Renderers used to render items that use a proprietary renderer
 			
-	item_views: DS_HASH_TABLE [DRAWABLE, ELEMENT]
+	item_views: DS_HASH_TABLE [ESDL_DRAWABLE, ELEMENT]
 			-- Drawable objects that represent a map item
 			
-	views_array: ARRAYED_LIST [DRAWABLE]
+	views_array: ARRAYED_LIST [ESDL_DRAWABLE]
 			-- Views per item index.
 
 	render_item (i: INTEGER) is
@@ -300,19 +291,20 @@ feature {NONE} -- Implementation
 		require
 			i_is_valid_index: 1 <= i and then i <= map.count
 		local
-			item_renderer: TRAFFIC_ITEM_RENDERER [DRAWABLE]
+			item_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]
 
-			view: DRAWABLE
+			view: ESDL_DRAWABLE
 			map_item: ELEMENT			
 		do
+			map_item := map.item (i)
+			
 			--Check for specialized renderer for this item
-			item_renderer := item_renderers.item (i)
+			item_renderer := item_renderers.item (map_item)
 			
 			--If none available check for default_renderer
 			if item_renderer = Void then
 				item_renderer := default_renderers.item (map.category (i))			
 			end
-			map_item := map.item (i)
 
 			-- Remove exisitng view for this item (if any).
 			if item_views.has (map_item) then

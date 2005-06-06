@@ -84,11 +84,11 @@ feature -- Event publishing
 			item_inserted_event.publish ([i])			
 		end
 			
-	publish_item_removed_event (i: INTEGER) is
+	publish_item_removed_event (i: INTEGER; an_item: ELEM_TYPE) is
 			-- Publish `item_removed_event' to inform all views
 			-- about removed item at index `i'.
 		do
-			item_removed_event.publish ([i])
+			item_removed_event.publish ([i, an_item])
 		end		
 
 feature -- Events
@@ -108,7 +108,7 @@ feature -- Events
 			-- when item has been inserted
 			-- at index passed as argument
 			
-	item_removed_event: EVENT_TYPE [TUPLE [INTEGER]]
+	item_removed_event: EVENT_TYPE [TUPLE [INTEGER, ELEM_TYPE]]
 			-- Event to inform views of `Current' 
 			-- when item has been removed 
 			-- at index passed as argument

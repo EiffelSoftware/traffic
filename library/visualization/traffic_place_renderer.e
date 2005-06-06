@@ -7,7 +7,7 @@ indexing
 class
 	TRAFFIC_PLACE_RENDERER
 		inherit
-			TRAFFIC_ITEM_RENDERER [ESDL_DRAWABLE]
+			TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]
 			redefine
 				render,
 				render_type

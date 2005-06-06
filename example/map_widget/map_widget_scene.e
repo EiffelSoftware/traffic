@@ -124,7 +124,7 @@ feature -- Scene Initialization
 			create player_anim.make_from_file ("./pic/peanut.anim")
 			create player_sprite.make (player_anim)
 			player_view.set_picture (player_sprite)
-			big_zoomable_widget.extend (player_view)		
+			big_zoomable_widget.extend (player_view)
 			start_animating (player_sprite)
 			start_animating (player_view)
 		end
@@ -284,19 +284,28 @@ feature {NONE} -- Implementation (Place clicks)
 		local
 			place: TRAFFIC_PLACE
 			link: TRAFFIC_LINE_SECTION
+			
+			place_renderer: TRAFFIC_PLACE_RENDERER
 		do
 			place ?= item
 			if place /= Void and then m_event.is_left_button then
+				--Color Place Yellow
+				create place_renderer.make_with_map (traffic_map)
+				place_renderer.set_place_color (Yellow)
+				big_map_widget.set_place_special_renderer (place_renderer, place.name)
+				--Set info Text
 				place_info_text.set_value (place.name)
 				if traffic_map.has_line_section_between (player.place.name, place.name) then
+					--Move To Place				
 					player.move_to (place)
 				elseif place /= player.place then					
 					-- Super-Player: Can build new line sections ...
 					create link.make (player.place, place, walking_type, Void)
 					traffic_map.add_line_section (link)
-					player.move_to (place)
-					
+					player.move_to (place)					
 				end
+				--Re-Render the Scene for the effects to be visible
+				big_map_widget.render
 			end			
 		end
 
