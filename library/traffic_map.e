@@ -1,8 +1,8 @@
 indexing
 	description: "Map representing a traffic system of a region."
 	author: "Sibylle Aregger, ETH Zurich"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "$Date: 2005/05/25 13:06:13 $"
+	revision: "$Revision: 1.1 $"
 
 class
 	TRAFFIC_MAP 
@@ -15,11 +15,6 @@ inherit
 			{NONE} all
 			{ANY} find_shortest_path, shortest_path, path_found
 		redefine
-			out
-		end
-		
-	TRAFFIC_MAP_MODEL [HASHABLE]
-		undefine
 			out
 		end
 
@@ -36,7 +31,9 @@ feature {NONE} -- Initialization
 		local
 			default_size: INTEGER
 		do
-			initialize_events
+--			initialize_events
+			create place_events.make;
+			create line_section_events.make;
 			default_size := 100
 			name := a_name
 			make_multi_graph
@@ -50,6 +47,8 @@ feature {NONE} -- Initialization
 			places_not_void: places /= Void
 			lines_not_void: internal_lines /= Void
 			line_sections_not_void: internal_line_sections /= Void
+			line_section_events_not_void: line_section_events /= Void
+			place_events_not_void: place_events /= Void
 		end
 		
 feature -- Status report
@@ -139,7 +138,7 @@ feature -- Element change
 			internal_places.force (a_place, a_place.name)
 			internal_place_array.extend (a_place)
 			put_node (a_place)
-			publish_item_inserted_event (place_position (a_place.name))
+			place_events.publish_item_inserted_event (place_position (a_place.name))
 		ensure
 			a_place_in_map: has_place (a_place.name)
 		end
@@ -152,7 +151,7 @@ feature -- Element change
 		do
 			internal_line_sections.extend (a_line_section)
 			put_edge (a_line_section.origin, a_line_section.destination, a_line_section, a_line_section.length)
-			publish_item_inserted_event (internal_line_sections.count)
+			line_section_events.publish_item_inserted_event (internal_line_sections.count)
 		ensure
 			a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
 		end
@@ -223,29 +222,24 @@ feature -- Access
 			search (place (a_name))
 			Result := incident_edge_labels
 		end
-		
 
-feature -- Implementation TRAFFIC_MAP_MODEL
+	place_events: TRAFFIC_ITEM_EVENTS  [TRAFFIC_PLACE]
+	
+	line_section_events: TRAFFIC_ITEM_EVENTS [TRAFFIC_LINE_SECTION]
 
-	count: INTEGER is
-			-- Number  of items in `Current'.
+feature {TRAFFIC_MAP_MODEL} -- Access
+	map_places: ARRAYED_LIST [TRAFFIC_PLACE] is
+			-- 
 		do
-			Result :=  internal_line_sections.count + internal_places.count
+			Result := internal_place_array
 		end
 		
-	item (i: INTEGER): HASHABLE is
-			-- The `i'-th item to be visualized inside the map,
-			-- ordered by z-coordinates from bottom to top.
-		local
-			c: INTEGER
+	map_line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION] is
+			-- 
 		do
-			if i <= internal_line_sections.count then
-				Result := internal_line_sections.i_th (i)
-			else
-				Result := internal_place_array.i_th (i - internal_line_sections.count)
-			end
-		end		
-		
+			Result := internal_line_sections
+		end
+	
 feature -- Basic operation
 
 	out: STRING is

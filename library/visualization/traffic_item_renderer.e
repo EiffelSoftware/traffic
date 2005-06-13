@@ -7,11 +7,6 @@ indexing
 deferred class
 	TRAFFIC_ITEM_RENDERER [ITEM -> HASHABLE]
 
---	inherit
---		HASHABLE
-feature -- Access
-
-
 feature -- Basic operations
 	render(an_object: ITEM ): ESDL_DRAWABLE is
 			--function for drawing the object
@@ -19,11 +14,6 @@ feature -- Basic operations
 			an_object_not_void: an_object /= Void
 			--an_object_is_right_type: an_object.generating_type = render_type
 		deferred		
-		end
-		
-	render_type: STRING is
-			--which object_type will be rendered
-		deferred
 		end
 		
 feature {NONE} -- Implementation

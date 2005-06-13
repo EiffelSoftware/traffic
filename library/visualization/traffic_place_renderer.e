@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that ..."
+	description: "A TRAFFIC_PLACE renderer"
 	author: "Roger Kueng"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -9,8 +9,7 @@ class
 		inherit
 			TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]
 			redefine
-				render,
-				render_type
+				render
 			end
 				
 create 
@@ -47,7 +46,6 @@ feature -- Basic operations
 	render( a_place: TRAFFIC_PLACE) : ESDL_RECTANGLE is
 				-- Rectangle to visualize `a_place'.
 		local
---			rectangle : ESDL_RECTANGLE
 			links: LIST [TRAFFIC_LINE_SECTION]
 			p: ESDL_VECTOR_2D
 		do
@@ -78,13 +76,8 @@ feature -- Basic operations
 			Result.set_size_centered (Result.width + 10, Result.height + 10)
 			Result.set_fill_color (place_color)			
 
---			Result := rectangle
 		end			
-	
-	render_type : STRING is
-		do
-			Result := "TRAFFIC_PLACE"
-		end
+
 			
 feature {NONE} -- Implementation
 

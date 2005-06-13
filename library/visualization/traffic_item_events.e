@@ -1,79 +1,63 @@
 indexing
 	description: "[ 
-						Abstract data model that TRAFFIC_WIDGET can visualize.
-						Inherit from this class to construct a model that can be
-						visualized using a TRAFFIC_WIDGET.
+					All the events that have to do with elements changing
 					]"
-	author: "Rolf Bruderer, Roger Kueng"
+	author: "Roger Kueng"
 	date: "2005/06/09"
-	revision: "1.4"
+	revision: "1.0"
 
-deferred class
-	TRAFFIC_MAP_MODEL [ELEM_TYPE -> HASHABLE]
-	
+class
+	TRAFFIC_ITEM_EVENTS [ELEM_TYPE -> HASHABLE]
+
+create
+	make
+
 feature -- Initialization
 
-feature -- Access
-	events: TRAFFIC_ITEM_EVENTS [ELEM_TYPE]
-	
-feature -- Creation
-	make_with_events (item_events: TRAFFIC_ITEM_EVENTS [ELEM_TYPE]) is
-			-- 
-		require
-			events_not_void: item_events /= Void
+		make is
+			-- Create all events.
+			-- Needs to be called in the creation feature
+			-- of effective descendants.
 		do
-			events := item_events
+			create changed_event
+			create item_changed_event
+			create item_inserted_event
+			create item_removed_event
 		ensure
-			events_not_void: events /= Void
-		end
-		
-feature -- Queries
+			changed_event_initialized: changed_event /= Void
+			item_changed_event_initialized: item_changed_event /= Void
+			item_inserted_event_initialized: item_inserted_event /= Void
+			item_removed_event_intialized: item_removed_event /= Void
+		end		
 
-	item (i: INTEGER): ELEM_TYPE is
-			-- The `i'-th item to be visualized inside the map,
-			-- ordered by z-coordinates from bottom to top.
-		require
-			i_is_valid_index: 1 <= i and then i <= count
-		deferred
-		ensure
-			result_not_void: Result /= Void
-		end
-		
-	count: INTEGER is
-			-- Number of items in `Current'.
-		deferred
-		ensure
-			result_not_negative: Result >= 0
-		end
-		
 feature -- Event publishing		
 		
 	publish_changed_event is
 			-- Publish `changed_event' to re-render all views
 			-- visualizing `Current'.
 		do
-			events.changed_event.publish ([])
+			changed_event.publish ([])
 		end
 		
 	publish_item_changed_event (i: INTEGER) is
 			-- Publish `item_changed_event' to inform all views
 			-- about changed item at index `i'.
 		do
-			events.item_changed_event.publish ([i])	
+			item_changed_event.publish ([i])	
 		end
 			
 	publish_item_inserted_event (i: INTEGER) is
 			-- Publish `item_inserted_event' to inform all views
 			-- about inserted item at index `i'.
 		do
-			events.item_inserted_event.publish ([i])			
+			item_inserted_event.publish ([i])			
 		end
 			
 	publish_item_removed_event (i: INTEGER; an_item: ELEM_TYPE) is
 			-- Publish `item_removed_event' to inform all views
-			-- about removed item `an_item'at index `i'.
+			-- about removed item at index `i'.
 		do
-			events.item_removed_event.publish ([i, an_item])
+			item_removed_event.publish ([i, an_item])
 		end		
 
 feature -- Events

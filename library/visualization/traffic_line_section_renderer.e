@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that ..."
+	description: "A TRAFFIC_LINE_SECTION renderer"
 	author: "Roger Küng"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -9,8 +9,7 @@ class
 		inherit
 			TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]
 			redefine
-				render,
-				render_type
+				render
 			end
 create 
 	make_with_map
@@ -110,15 +109,7 @@ feature -- Basic operations
 			end	
 
 		end		
-		
-		render_type :STRING is
-			do
-				Result := "TRAFFIC_LINE_SECTION"
-			end
 
 feature {NONE} -- Implementation
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class TRAFFIC_LINE_SECTION_RENDERER

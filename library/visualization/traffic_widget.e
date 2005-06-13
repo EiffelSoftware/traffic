@@ -4,8 +4,8 @@ indexing
 						
 						Needs some TRAFFIC_ITEM_RENDERER's to render map 
 						the map model element items (ELEMENT) to appropriate drawable objects (ESDL_DRAWABLE) 
-						for drawing them. Use `set_renderer' to customize the renderer used 
-						to render a category of map elements.						
+						for drawing them. Use `set_renderer_for_item' to customize the renderer used 
+						to render an item.
 					]"
 	note: "This class is only a prototype, needs some review and improvement (bad performance of some implementations)"
 	author: "Rolf Bruderer"
@@ -23,7 +23,7 @@ inherit
 		end
 	
 create
-	make_with_map	
+	make_with_map_and_default_renderer
 	
 feature {NONE} -- Initialization
 
@@ -36,7 +36,7 @@ feature {NONE} -- Initialization
 			create mouse_button_up_on_map_item_event
 		end	
 		
-	make_with_map (a_map: TRAFFIC_MAP_MODEL [ELEMENT]) is
+	make_with_map_and_default_renderer (a_map: TRAFFIC_MAP_MODEL [ELEMENT]; a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]) is
 			-- Initialize with `a_map' to visualize.
 		require
 			a_map_not_void: a_map /= Void
@@ -44,7 +44,8 @@ feature {NONE} -- Initialization
 			make
 			map := a_map
 			subscribe_for_map
-			create default_renderers.make (20)
+--			create default_renderers.make (20)
+			default_renderer := a_renderer
 			create item_renderers.make (100)
 			create item_views.make (a_map.count * 2)
 			create views_array.make (a_map.count)
@@ -74,33 +75,13 @@ feature -- Access
 		
 feature -- Status setting
 
-	set_default_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]) is
-
-			-- Set `a_renderer' to visualize all items inside `map' with category `a_renderer.render_type'
-			-- Renderer is an functional object that takes an item of the map that has category 
-			-- `a_renderer.render_type'  and returns a ESDL_DRAWABLE to visualize the item in the map.
-		do
-			if default_renderers.has (a_renderer.render_type) then
-				default_renderers.replace(a_renderer, a_renderer.render_type)
-			else
-			
-				-- Resize if necessary
-				if default_renderers.count >= default_renderers.capacity * 0.7 then
-					default_renderers.resize( default_renderers.capacity * 2)
-				end
-				default_renderers.put (a_renderer, a_renderer.render_type)
-			end
-			-- TODO: only re-render those with `a_category'
-			render
-		end
-	
 	set_renderer_for_item(a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]; an_item: ELEMENT) is
 			-- Set `a_renderer' as renderer for item at position `a_index'
 		require
 			a_renderer_not_null: a_renderer /= Void
---			i_is_valid_index: 1 <= i and then i <= map.count
+			an_item_not_null: an_item /= Void
 		do
-			-- Remove exisitng view for this item (if any).
+			-- Replace existing renderer if any
 			if item_renderers.has (an_item) then
 				item_renderers.replace(a_renderer,an_item)
 			else
@@ -109,8 +90,9 @@ feature -- Status setting
 					item_renderers.resize( item_renderers.capacity * 2)
 				end	
 				item_renderers.put (a_renderer, an_item)
-			end			
-			
+			end
+		ensure
+			item_has_the_new_renderer: item_renderers.item (an_item) = a_renderer
 		end
 		
 feature -- Commands
@@ -272,9 +254,11 @@ feature {NONE} -- Update Mechanism
 feature {NONE} -- Implementation
 
 
-	default_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [ELEMENT], STRING]
-			-- Renderers used to render the different item categories
-			
+
+
+	default_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]
+	-- Renderer used to render an item
+				
 	item_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [ELEMENT], ELEMENT]
 			-- Renderers used to render items that use a proprietary renderer
 			
@@ -303,7 +287,7 @@ feature {NONE} -- Implementation
 			
 			--If none available check for default_renderer
 			if item_renderer = Void then
-				item_renderer := default_renderers.item (map.category (i))			
+				item_renderer := default_renderer
 			end
 
 			-- Remove exisitng view for this item (if any).
@@ -350,15 +334,15 @@ feature {NONE} -- Implementation
 	subscribe_for_map is 
 			--  Subscribe `Current' to observe `map'.
 		do
-			map.changed_event.subscribe (agent process_changed_map)
-			map.item_changed_event.subscribe (agent process_changed_item)
-			map.item_removed_event.subscribe (agent process_removed_item)
-			map.item_inserted_event.subscribe (agent process_inserted_item)
+			map.events.changed_event.subscribe (agent process_changed_map)
+			map.events.item_changed_event.subscribe (agent process_changed_item)
+			map.events.item_removed_event.subscribe (agent process_removed_item)
+			map.events.item_inserted_event.subscribe (agent process_inserted_item)
 		end	
 		
 invariant
 	map_not_void: map /= Void
-	renderers_not_void: default_renderers /= Void and item_renderers /= Void
+	renderers_not_void: default_renderer /= Void and item_renderers /= Void
 	item_views_not_void: item_views /= Void
 
 end

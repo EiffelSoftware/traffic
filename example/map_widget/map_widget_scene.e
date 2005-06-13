@@ -116,7 +116,7 @@ feature -- Scene Initialization
 			build_info_box
 			
 			-- Subscribe for on item click event in big map view to show place info text.
-			big_map_widget.mouse_button_down_on_map_item_event.subscribe (agent process_clicked_map_item)	
+			big_map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)	
 			
 			-- Build player and its view.
 			create player.make_on_map_place (traffic_map, traffic_map.places.item ("Hauptbahnhof"))
@@ -279,20 +279,19 @@ feature {NONE} -- Implementation
 		
 feature {NONE} -- Implementation (Place clicks)
 
-	process_clicked_map_item (item: HASHABLE; m_event: ESDL_MOUSEBUTTON_EVENT) is
+	process_clicked_place (place: TRAFFIC_PLACE; m_event: ESDL_MOUSEBUTTON_EVENT) is
 			-- 
 		local
-			place: TRAFFIC_PLACE
 			link: TRAFFIC_LINE_SECTION
-			
 			place_renderer: TRAFFIC_PLACE_RENDERER
 		do
-			place ?= item
-			if place /= Void and then m_event.is_left_button then
+			if m_event.is_left_button then
 				--Color Place Yellow
 				create place_renderer.make_with_map (traffic_map)
 				place_renderer.set_place_color (Yellow)
-				big_map_widget.set_place_special_renderer (place_renderer, place.name)
+				big_map_widget.set_place_special_renderer (place_renderer, place)
+				--Re-Render the Scene for the effects to be visible
+				big_map_widget.render
 				--Set info Text
 				place_info_text.set_value (place.name)
 				if traffic_map.has_line_section_between (player.place.name, place.name) then
@@ -304,8 +303,6 @@ feature {NONE} -- Implementation (Place clicks)
 					traffic_map.add_line_section (link)
 					player.move_to (place)					
 				end
-				--Re-Render the Scene for the effects to be visible
-				big_map_widget.render
 			end			
 		end
 
