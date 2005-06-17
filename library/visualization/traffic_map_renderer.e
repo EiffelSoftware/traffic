@@ -94,10 +94,10 @@ feature -- Status setting
 feature -- Renderers
 
 	place_renderer: FUNCTION [ANY, TUPLE [TRAFFIC_PLACE], ESDL_RECTANGLE]
-			-- Renderer for use with TRAFFIC_WIDGET to visualize places of TRAFFIC_MAP
+			-- Renderer for use with TRAFFIC_DRAWABLE_CONTAINER to visualize places of TRAFFIC_MAP
 	
 	line_section_renderer: FUNCTION [ANY, TUPLE [TRAFFIC_LINE_SECTION], ESDL_POLYLINE]
-			-- Renderer for use with TRAFFIC_WIDGET to visualize line sections of TRAFFIC_MAP
+			-- Renderer for use with TRAFFIC_DRAWABLE_CONTAINER to visualize line sections of TRAFFIC_MAP
 			
 feature {NONE} -- Rendering	Implementation
 	

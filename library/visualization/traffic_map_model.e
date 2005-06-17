@@ -1,8 +1,8 @@
 indexing
 	description: "[ 
-						Abstract data model that TRAFFIC_WIDGET can visualize.
+						Abstract data model that TRAFFIC_DRAWABLE_CONTAINER can visualize.
 						Inherit from this class to construct a model that can be
-						visualized using a TRAFFIC_WIDGET.
+						visualized using a TRAFFIC_DRAWABLE_CONTAINER.
 					]"
 	author: "Rolf Bruderer, Roger Kueng"
 	date: "2005/06/09"
