@@ -66,6 +66,7 @@
 
 	<target name="do_all">
 		<geant file="build.eant" target="${target}" dir="map_widget"/>
+		<geant file="build.eant" target="${target}" dir="touch"/>
 	</target>
 
 </project>
