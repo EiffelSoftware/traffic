@@ -1,8 +1,8 @@
 indexing
 	description: "Basic Interface for examples"
 	author: "Roger Kueng"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "2005/06/20"
+	revision: "alpha"
 
 deferred class
 	TOUCH_EXAMPLE

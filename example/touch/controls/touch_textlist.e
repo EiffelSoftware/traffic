@@ -1,28 +1,27 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "A Textlist Control (Console-Out)"
+	author: "Roger Kueng"
+	date: "2005/06/20"
+	revision: "1.0"
 
 class
 	TOUCH_TEXTLIST
 	inherit
+		ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
+			redefine
+				make
+			end
 		ESDL_SHARED_STANDARD_FONTS
 			export
 				{NONE} all
---			undefine
---				default_create
+			undefine
+				copy,
+				is_equal
 			end
 	creation
 		make
 		
 feature -- Access
-
-	main_container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-
-	background: ESDL_RECTANGLE
-	
-	line_drawables: DS_LINKED_LIST [ESDL_STRING]
 	
 	line_height: INTEGER is 
 		do 
@@ -35,25 +34,23 @@ feature -- Access
 
 	
 	character_width: INTEGER is
-			-- This is an estimate
+			-- This is an estimate, and works only with fixed length characters
 		do 
 			Result :=  standard_fonts.small_font.width ('A')
 		end
 
-	border: INTEGER is do Result := 5; end
 	
 feature -- Creation
 	make is
 			-- 
 		do
-			create main_container.make
+			Precursor {ESDL_DRAWABLE_CONTAINER}
 			create line_drawables.make
 			create background.make_from_position_and_size (0, 0, 0, 0)
 
-			main_container.extend (background)
-		ensure
+			Current.extend (background)
+		ensure then
 			background_not_void: background /= Void
-			main_container_not_void: main_container /= Void
 			line_drawables_not_void: line_drawables /= Void
 		end
 		
@@ -65,17 +62,14 @@ feature -- Status setting
 	set_width_height ( a_width: INTEGER; a_height: INTEGER) is
 			--
 		do
-			--width := a_width
-			--height := a_height
-			
-			main_container.delete (background)
+			Current.delete (background)
 			
 			max_lines := (a_height - 2 * border) // line_height
 			max_length := (a_width - 2 * border) // character_width
 			
 			background.set_size (a_width, a_height)
 			
-			main_container.extend (background)
+			Current.extend (background)
 		end
 		
 feature -- Cursor movement
@@ -117,7 +111,7 @@ feature -- Basic operations
 
 			--remove oldest string if full
 			if line_drawables.count >= max_lines then
-				main_container.delete (line_drawables.first)
+				Current.delete (line_drawables.first)
 				line_drawables.remove_first
 			end		
 		
@@ -132,7 +126,7 @@ feature -- Basic operations
 			new_string.set_x_y (border, border)
 			line_drawables.force_last (new_string)
 			
-			main_container.extend (new_string)
+			Current.extend (new_string)
 		end
 		
 feature -- Obsolete
@@ -140,6 +134,12 @@ feature -- Obsolete
 feature -- Inapplicable
 
 feature {NONE} -- Implementation
+
+	background: ESDL_RECTANGLE
+	
+	line_drawables: DS_LINKED_LIST [ESDL_STRING]
+	
+	border: INTEGER is once Result := 5; end
 
 invariant
 	invariant_clause: True -- Your invariant here

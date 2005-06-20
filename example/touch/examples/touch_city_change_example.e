@@ -1,8 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Simple Traffic-Map Example"
+	author: "Roger Kueng"
+	date: "2005/06/20"
+	revision: "alpha"
 
 class
 	TOUCH_CITY_CHANGE_EXAMPLE
@@ -22,7 +22,7 @@ feature -- Access
 		
 	description: STRING is
 		once
-			Result := "This example will emit a short text on the console"
+			Result := "Run it and watch the result"
 		end
 	
 feature -- Measurement

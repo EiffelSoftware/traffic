@@ -1,8 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "A simple ID Generator"
+	author: "Roger Kueng"
+	date: "2005/06/20"
+	revision: "1.0"
 
 class
 	ID_GENERATOR

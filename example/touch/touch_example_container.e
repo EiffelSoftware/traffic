@@ -1,8 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "A Container for examples. Examples can subscribe here."
+	author: "Roger Kueng"
+	date: "2005/06/20"
+	revision: "alpha"
 
 class
 	TOUCH_EXAMPLE_CONTAINER

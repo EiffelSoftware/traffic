@@ -1,8 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "A Button Control"
+	author: "Roger Kueng"
+	date: "2005/06/20"
+	revision: "1.0"
 
 class
 	TOUCH_BUTTON

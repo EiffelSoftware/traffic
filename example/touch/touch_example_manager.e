@@ -1,8 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Class managing the display and execution of examples"
+	author: "Roger Kueng"
+	date: "2005/06/20"
+	revision: "alpha"
 
 class
 	TOUCH_EXAMPLE_MANAGER

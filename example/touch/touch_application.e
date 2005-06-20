@@ -4,7 +4,7 @@ indexing
 					]"
 	author: "Roger Kueng"
 	date: "2005/05/31"
-	revision: "1.0"
+	revision: "alpha"
 
 class
 	TOUCH_APPLICATION

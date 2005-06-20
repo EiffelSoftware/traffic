@@ -1,9 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
-
+	description: "Simple Console Example"
+	author: "Roger Kueng"
+	date: "2005/06/20"
+	revision: "alpha"
 class
 	TOUCH_CONSOLE_TEST
 
