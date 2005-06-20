@@ -11,7 +11,7 @@ indexing
 
 
 
-class
+obsolete class
 	TRAFFIC_MAP_RENDERER
 	
 create 
