@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<system name="flat_hunt">
+  <description>
+    system: "Simple traffic application with esdl"
+    copyright: "Copyright (c) 2004, Michela Pedroni, Ursina Caluori and others"
+    license: "Eiffel Forum License v2 (see forum.txt)"
+    date: "$Date$"
+    revision: "$Revision$"
+  </description>
+  <root class="START" creation="make_and_launch"/>
+  <option unless="${DEBUG}">
+    <option name="assertion" value="none"/>
+    <option name="garbage_collector" value="none"/>
+    <option name="finalize" value="true"/>
+    <option name="console_application" value="false"/>
+  </option>
+  <option if="${DEBUG}">
+    <option name="assertion" value="all"/>
+    <option name="garbage_collector" value="none"/>
+    <option name="finalize" value="false"/>
+    <option name="console_application" value="false"/>
+  </option>
+
+  <cluster name="flat_hunt" location=".">
+    <cluster name="controller">
+      <option name="recursive" value="true"/>
+    </cluster>
+    <cluster name="model">
+      <option name="recursive" value="true"/>
+    </cluster>
+    <cluster name="view">
+      <option name="recursive" value="true"/>
+    </cluster>
+  </cluster>  
+
+  <mount location="${GOBO}/library/kernel.xace"/>
+  <mount location="${GOBO}/library/library.xace"/>
+  <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
+  <mount location="${ESDL}/library/library.xace"/>
+  <mount location="${TRAFFIC}/library/library.xace"/>
+
+</system>
