@@ -4,7 +4,7 @@
 
 	<description>
 		description: "Eiffel Ant file for traffic applications"
-		copyright: "Copyright (c) 2001, Michela Pedroni and others"
+		copyright: "Copyright (c) 2001, Michela Pedroni, Ursina Caluori and others"
 		license: "Eiffel Forum License v2 (see forum.txt)"
 		date: "$Date$"
 		revision: "$Revision$"
@@ -65,6 +65,7 @@
 	</target>
 
 	<target name="do_all">
+		<geant file="build.eant" target="${target}" dir="flat_hunt"/>
 		<geant file="build.eant" target="${target}" dir="map_widget"/>
 		<geant file="build.eant" target="${target}" dir="touch"/>
 	</target>
