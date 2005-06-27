@@ -18,20 +18,35 @@ class
 				copy,
 				is_equal
 			end
+		ESDL_SHARED_COLORS
+			export
+				{NONE} all
+			undefine
+				copy,
+				is_equal,
+				default_create
+			end				
 	creation
-		make
+		make,
+		make_with_width_and_height
 		
 feature -- Access
 	
 	line_height: INTEGER is 
+			-- This is an estimate, and works only with fixed size characters
 		do 
 			Result := standard_fonts.small_font.height ('A') + 3;
 		end
 
-	max_length: INTEGER
-	
-	max_lines: INTEGER
-
+	max_length: INTEGER is
+		do
+			Result := (background.width - 2 * space) // character_width
+			
+		end
+	max_lines: INTEGER is
+		do
+			Result := (background.height - 2 * space) // line_height			
+		end
 	
 	character_width: INTEGER is
 			-- This is an estimate, and works only with fixed length characters
@@ -40,18 +55,39 @@ feature -- Access
 		end
 
 	
-feature -- Creation
+feature -- Initialisation
 	make is
 			-- 
+		local
+			color_gray: ESDL_COLOR
 		do
 			Precursor {ESDL_DRAWABLE_CONTAINER}
 			create line_drawables.make
+			--Build Background
 			create background.make_from_position_and_size (0, 0, 0, 0)
-
+			create color_gray.make_with_rgb (180, 180, 180)
+			background.set_fill_color (color_gray) 			
+			
+			--Build border
+			create border.make_from_position_and_size (0, 0, 0, 0)
+			border.set_line_color (white)
+			border.set_line_width (3)
+			border.set_filled (false)
+			
 			Current.extend (background)
+			Current.extend (border)
+			
 		ensure then
 			background_not_void: background /= Void
+			border_not_void: border /= Void
 			line_drawables_not_void: line_drawables /= Void
+		end
+		
+	make_with_width_and_height (a_width: INTEGER; a_height: INTEGER) is
+			-- 
+		do
+			make
+			set_width_height (a_width, a_height)
 		end
 		
 feature -- Measurement
@@ -59,17 +95,24 @@ feature -- Measurement
 feature -- Status report
 
 feature -- Status setting
-	set_width_height ( a_width: INTEGER; a_height: INTEGER) is
+	set_width_height (a_width: INTEGER; a_height: INTEGER) is
 			--
 		do
-			Current.delete (background)
+--			if background /= Void and then Current.has (background) then
+--				Current.delete (background)
+--			end
+--			if border /= Void and then Current.has (border) then
+--				Current.delete (border)
+--			end
 			
-			max_lines := (a_height - 2 * border) // line_height
-			max_length := (a_width - 2 * border) // character_width
-			
+--			max_lines := (a_height - 2 * border) // line_height
+--			max_length := (a_width - 2 * border) // character_width
 			background.set_size (a_width, a_height)
-			
-			Current.extend (background)
+
+			border.set_size (a_width, a_height)
+
+--			Current.extend (border)			
+--			Current.extend (background)
 		end
 		
 feature -- Cursor movement
@@ -105,7 +148,7 @@ feature -- Basic operations
 				cursor.off
 			loop
 				string := cursor.item
-				string.set_x_y (border, string.y + line_height)
+				string.set_x_y (space, string.y + line_height)
 				cursor.forth
 			end
 
@@ -123,12 +166,36 @@ feature -- Basic operations
 				create new_string.make (a_text, standard_fonts.small_font)			
 			end
 
-			new_string.set_x_y (border, border)
+			new_string.set_x_y (space, space)
 			line_drawables.force_last (new_string)
 			
 			Current.extend (new_string)
 		end
 		
+		
+	put_text ( a_text: STRING) is
+			-- Put more than one line
+		local
+			i, begin: INTEGER
+		do
+			from
+				i := a_text.capacity
+				begin := i - a_text.capacity \\ max_length				
+				if begin = i then
+					begin := i - max_length
+				end
+			until
+				i = 0
+			loop
+				if begin <= 0 then
+					begin := 0
+				end
+				put_line (a_text.substring (begin+1, i))
+				i := begin
+				begin := i - max_length		
+			end
+		end
+			
 feature -- Obsolete
 
 feature -- Inapplicable
@@ -137,9 +204,11 @@ feature {NONE} -- Implementation
 
 	background: ESDL_RECTANGLE
 	
+	border: ESDL_RECTANGLE
+	
 	line_drawables: DS_LINKED_LIST [ESDL_STRING]
 	
-	border: INTEGER is once Result := 5; end
+	space: INTEGER is once Result := 5; end
 
 invariant
 	invariant_clause: True -- Your invariant here
