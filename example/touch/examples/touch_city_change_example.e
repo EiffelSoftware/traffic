@@ -50,10 +50,16 @@ feature -- Miscellaneous
 feature -- Basic operations
 	run (a_runtime: TOUCH_EXAMPLE_RUNTIME) is
 			-- 
+		local 
+			new_place: TRAFFIC_PLACE
 		do
 			a_runtime.console_out ("Example Start");
 			
-			a_runtime.console_out ("Example Done");
+			create new_place.make_with_position ("Treasure", 900, 800)
+
+			a_runtime.map.add_place (new_place)
+			
+			a_runtime.console_out ("Example Done")
 		end
 		
 

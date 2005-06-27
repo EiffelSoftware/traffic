@@ -27,7 +27,7 @@ feature -- Creation
 			
 			button_container.set_x_y (700, 50)
 
-			description_container.set_x_y (50, 500)
+			description_container.set_x_y (10, 550)
 		end
 		
 
@@ -37,6 +37,9 @@ feature -- Access
 	description_container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
 
 	current_description_drawable: ESDL_DRAWABLE
+	
+	current_example: TOUCH_EXAMPLE
+	
 feature -- Measurement
 
 feature -- Status report
@@ -66,11 +69,10 @@ feature -- Basic operations
 		do
 			Precursor {TOUCH_EXAMPLE_CONTAINER} (an_example)
 			
-			create button.make
-			button.set_title_width_height (an_example.name, 300, 30)
+			create button.make_with_title_and_width_and_height (an_example.name, 300, 30)
 			button.set_x_y (0, hash_button_example.count * 35)
 
-			button.subscribe_for_click (agent button_clicked)
+			button.subscribe_for_click (agent process_button_clicked)
 
 			hash_button_example.force (an_example, button)
 			
@@ -78,25 +80,33 @@ feature -- Basic operations
 			
 		end
 		
-	button_clicked( a_button: TOUCH_BUTTON) is
+	process_button_clicked( a_button: TOUCH_BUTTON) is
 			--show the clicked_button's associated example
 		require
 			a_button_not_void: a_button /= Void
 		local
 			example: TOUCH_EXAMPLE
-			debug_button: TOUCH_BUTTON
+			--debug_button: TOUCH_BUTTON
+			description_drawable: TOUCH_TEXTLIST
 		do
 			example := hash_button_example.item (a_button)
 			
-			create debug_button.make
-			debug_button.set_title_width_height (example.description, 600, 30)
-			debug_button.set_x_y (10, 10)
+--			create debug_button.make
+--			debug_button.set_title_width_height (example.description, 600, 30)
+--			debug_button.set_x_y (10, 10)
+			create description_drawable.make_with_width_and_height (600, 300)
+			
+			description_drawable.put_text (example.description)
 			
 			--remove old drawable
 			if current_description_drawable /= Void then
 				description_container.delete (current_description_drawable)
 			end
-			current_description_drawable := debug_button
+--			current_description_drawable := debug_button
+			
+			current_example := example
+			current_description_drawable := description_drawable
+			
 			description_container.extend (current_description_drawable)
 			
 		ensure

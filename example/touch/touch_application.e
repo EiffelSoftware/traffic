@@ -25,7 +25,7 @@ feature -- Initialization
 	make_and_launch is
 			-- Create and execute the application.
 		local
-			first_scene: MAP_WIDGET_SCENE
+			first_scene: TOUCH_WIDGET
 		do
 			-- Initialize the screen.
 			initialize_screen
