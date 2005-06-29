@@ -35,9 +35,48 @@ inherit
 		end
 	
 
-feature -- Access
+feature {NONE} --Implementation
 	example_manager: TOUCH_EXAMPLE_MANAGER
+
+	--example_manager containers
+	button_container: ESDL_ZOOMABLE_CONTAINER	
+	description_container: ESDL_ZOOMABLE_CONTAINER
 	
+	--contains the run_button
+	settings_container: ESDL_ZOOMABLE_CONTAINER
+	
+	
+	--hide example_buttons, description and run_button
+	switch_view_to_example_running is
+			-- Show/Hide Visible Objects
+		do
+			if not main_container.has (console) then
+				main_container.extend (console)
+			end
+			-- Remove description_container from main_container
+			main_container.start
+			main_container.search_forth (description_container)
+			if  not main_container.off then
+				main_container.remove_at
+			end	
+		end
+
+	switch_view_to_example_selection is
+			-- Show/Hide Visible Objects
+		do
+			-- Remove console from main_container 
+			-- (using delete would invalidate any cursor)
+			main_container.start
+			main_container.search_forth (console)
+			if  not main_container.off then
+				main_container.remove_at
+			end
+			
+			if not main_container.has (description_container) then
+				main_container.extend (description_container)
+			end
+		end
+		
 feature -- Model
 	
 	traffic_map: TRAFFIC_MAP
@@ -56,6 +95,7 @@ feature -- Views
 			-- Simple Console Output for description and examples.
 			
 	run_button: TOUCH_BUTTON
+	
 
 feature -- Scene Initialization
 	
@@ -73,7 +113,17 @@ feature -- Scene Initialization
 			
 			place_renderer: TRAFFIC_PLACE_RENDERER
 			line_renderer: TRAFFIC_LINE_SECTION_RENDERER
+			
+			width, height: INTEGER
+			border: INTEGER
+			title_offset: INTEGER
+--			w,h:DOUBLE
 		do			
+			width := 1024
+			height := 768
+			border := 10
+			title_offset := 60
+			
 			-- Load `traffic_map'
 			create map_file.make_from_file ("./map/zurich_little.xml")
 			traffic_map := map_file.traffic_map
@@ -81,15 +131,56 @@ feature -- Scene Initialization
 			-- Build grey background color.
 			create background_color.make_with_rgb (100, 100, 100)	
 			
-			-- Build title
-			title := text_box ("ESDL TOUCH", 940, 30)
-			title.set_x_y (10, 10)
-			main_container.extend (title)
-			
-			
 			-- Build map widget.
-			build_map_widget
+			build_map_widget (border, title_offset+2*border, (0.7*width-2*border).rounded, (0.7*height-2*border-title_offset).rounded)
+			map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
+
+			-- Build title
+			title := text_box ("ESDL TOUCH", width-2*border, title_offset-2*border)
+			title.set_x_y (border, border)
 			
+			-- Build Example_Manager containers
+			create button_container.make ((0.3*width-2*border).rounded, (0.8*height-title_offset-2*border).rounded)
+			create description_container.make ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
+			button_container.set_x_y ((0.7*width+border).rounded, title_offset+border)
+			description_container.set_x_y (border, (0.7*height+border).rounded)
+			
+			--Build Settings container
+			create settings_container.make ((0.3*width-2*border).rounded, (0.2*height-2*border).rounded)
+			settings_container.set_x_y ((0.7*width+border).rounded, (0.8*height+border).rounded)
+
+			-- Build Console
+			create console.make
+			console.set_width_height ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
+			console.set_x_y (border, (0.7*height+border).rounded)
+			
+	
+			--Build Run Button
+			create run_button.make_with_title_and_width_and_height ("RUN EXAMPLE", settings_container.width-2*border, 30)
+			run_button.set_x_y (border, border)
+			settings_container.extend (run_button)
+			run_button.subscribe_for_click (agent process_clicked_run_button)
+
+			--Put Drawables to main_container
+			main_container.extend (title)
+			main_container.extend (button_container)
+			main_container.extend (description_container)
+			main_container.extend (console)
+			main_container.extend (settings_container)
+--			main_container.extend (run_button)
+
+			
+			--initialize example_manager
+			create example_manager.make_with_containers (button_container, description_container)
+
+			--Create Examples			
+			create example1
+			create example2
+			example_manager.subscribe (example1)
+			example_manager.subscribe (example2)
+
+
+			--Create Example Renderers
 			place := traffic_map.place ("Central")
 			create place_renderer.make_with_map (traffic_map)
 			place_renderer.set_place_color (green)
@@ -102,41 +193,10 @@ feature -- Scene Initialization
 			
 			map_widget.place_renderer.set_place_color (white)
 			
-			map_widget.render
-
-			--initialize example_manager
-			create example_manager.make
-			main_container.extend (example_manager.button_container)
-			main_container.extend (example_manager.description_container)
-
-			--Create Examples			
-			create example1
-			create example2
-			example_manager.subscribe (example1)
-			example_manager.subscribe (example2)
+			--Finally Render map_widget
+			map_widget.render		
 			
-			--Create Console
-			create console.make
-			
-			console.set_width_height ( 500, 200)
-			console.set_x_y( 10, 550)
-			
-			console.put_line ("LINE_BEFORE")
-			console.put_text ("LINE2-VERYLONGVERY--20--5----30--5----40--5----50--5----60--5----70--5----80")
-			console.put_text ("LINE2-VERYLONGVERY--20--5----31")
-			
-			console.put_line ("LINE_AFTER")
-			
-			main_container.extend (console)
-			
-			map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
-			
-			--Create Run Button
-			create run_button.make_with_title_and_width_and_height ("RUN EXAMPLE", 200, 30)
-			run_button.set_x_y (700, 600)
-			
-			run_button.subscribe_for_click (agent process_clicked_run_button)
-			main_container.extend (run_button)
+			switch_view_to_example_selection
 		end
 		
 		
@@ -148,7 +208,7 @@ feature {NONE} -- Implementation
 			create Result.make_with_rgb (255, 160, 0)
 		end		
 
-	build_map_widget is
+	build_map_widget (x, y, width, height: INTEGER) is
 			-- Build `map_widget' inside `zoomable_widget'
 			-- to visualize `traffic_map' with black background
 			-- and add it to `main_container'
@@ -160,10 +220,10 @@ feature {NONE} -- Implementation
 		do	
 			-- Create container to put background and widgets into.
 			create container.make
-			container.set_x_y (10, 60)
+			container.set_x_y (x, y)
 			
 			-- Build black background
-			create background.make_from_coordinates (0, 0, 620, 450)
+			create background.make_from_coordinates (0, 0, width, height)
 			background.set_fill_color (black)
 			container.extend (background)
 			
@@ -176,7 +236,7 @@ feature {NONE} -- Implementation
 			map_widget.render
 			
 			-- Create zoomable widget to make map zoomable.
-			create zoomable_widget.make (600, 450)
+			create zoomable_widget.make (width, height)
 			zoomable_widget.extend (map_widget)
 			zoomable_widget.calculate_object_area
 			zoomable_widget.scroll_and_zoom_to_rectangle (map_widget.bounding_box)
@@ -242,9 +302,13 @@ feature {NONE} -- Agents, GUI events
 		do
 			--If example not Void then run it
 			if example_manager.current_example /= Void then
+
+				--Switch View
+				switch_view_to_example_running
 				
 				--Create runtime
 				create runtime.make_with_map_and_map_widget_and_textlist (traffic_map, map_widget, console)
+
 				--Run example
 				example_manager.current_example.run (runtime)
 				
