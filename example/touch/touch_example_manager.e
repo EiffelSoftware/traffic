@@ -80,7 +80,7 @@ feature -- Basic operations
 			end
 			width := width - 2 * border
 
-			create button.make_with_title_and_width_and_height (an_example.name, width, 30)
+			button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height (an_example.name, width, 30)
 			button.set_x_y (5, hash_button_example.count * 35)
 
 			button.subscribe_for_click (agent process_button_clicked)

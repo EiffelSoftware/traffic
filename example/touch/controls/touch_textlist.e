@@ -179,8 +179,8 @@ feature -- Basic operations
 			i, begin: INTEGER
 		do
 			from
-				i := a_text.capacity
-				begin := i - a_text.capacity \\ max_length				
+				i := a_text.count
+				begin := i - a_text.count \\ max_length				
 				if begin = i then
 					begin := i - max_length
 				end

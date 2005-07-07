@@ -118,83 +118,96 @@ feature -- Scene Initialization
 			border: INTEGER
 			title_offset: INTEGER
 --			w,h:DOUBLE
+			
+			test_button: TOUCH_BITMAP_BUTTON
 		do			
 			width := 1024
 			height := 768
 			border := 10
 			title_offset := 60
 			
-			-- Load `traffic_map'
-			create map_file.make_from_file ("./map/zurich_little.xml")
-			traffic_map := map_file.traffic_map
-		
-			-- Build grey background color.
-			create background_color.make_with_rgb (100, 100, 100)	
+			if not initialized then
+				initialized := true
+				-- Load `traffic_map'
+				create map_file.make_from_file ("./map/zurich_little.xml")
+				traffic_map := map_file.traffic_map
 			
-			-- Build map widget.
-			build_map_widget (border, title_offset+2*border, (0.7*width-2*border).rounded, (0.7*height-2*border-title_offset).rounded)
-			map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
-
-			-- Build title
-			title := text_box ("ESDL TOUCH", width-2*border, title_offset-2*border)
-			title.set_x_y (border, border)
-			
-			-- Build Example_Manager containers
-			create button_container.make ((0.3*width-2*border).rounded, (0.8*height-title_offset-2*border).rounded)
-			create description_container.make ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
-			button_container.set_x_y ((0.7*width+border).rounded, title_offset+border)
-			description_container.set_x_y (border, (0.7*height+border).rounded)
-			
-			--Build Settings container
-			create settings_container.make ((0.3*width-2*border).rounded, (0.2*height-2*border).rounded)
-			settings_container.set_x_y ((0.7*width+border).rounded, (0.8*height+border).rounded)
-
-			-- Build Console
-			create console.make
-			console.set_width_height ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
-			console.set_x_y (border, (0.7*height+border).rounded)
-			
+				-- Build grey background color.
+				create background_color.make_with_rgb (100, 100, 100)	
+				
+				
+				
+				-- Build map widget.
+				build_map_widget (border, title_offset+2*border, (0.7*width-2*border).rounded, (0.7*height-2*border-title_offset).rounded)
+				map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
 	
-			--Build Run Button
-			create run_button.make_with_title_and_width_and_height ("RUN EXAMPLE", settings_container.width-2*border, 30)
-			run_button.set_x_y (border, border)
-			settings_container.extend (run_button)
-			run_button.subscribe_for_click (agent process_clicked_run_button)
-
-			--Put Drawables to main_container
-			main_container.extend (title)
-			main_container.extend (button_container)
-			main_container.extend (description_container)
-			main_container.extend (console)
-			main_container.extend (settings_container)
---			main_container.extend (run_button)
-
-			
-			--initialize example_manager
-			create example_manager.make_with_containers (button_container, description_container)
-
-			--Create Examples			
-			create example1
-			create example2
-			example_manager.subscribe (example1)
-			example_manager.subscribe (example2)
-
-
-			--Create Example Renderers
-			place := traffic_map.place ("Central")
-			create place_renderer.make_with_map (traffic_map)
-			place_renderer.set_place_color (green)
-			map_widget.set_place_special_renderer (place_renderer, place)
-			
-			line := traffic_map.line ("11")
-			create line_renderer.make_with_map (traffic_map)
-			line_renderer.set_line_color (red)
-			map_widget.set_line_special_renderer (line_renderer, line)
-			
-			map_widget.place_renderer.set_place_color (white)
-			
-			--Finally Render map_widget
-			map_widget.render		
+				-- Build title
+				title := text_box ("ESDL TOUCH", width-2*border, title_offset-2*border)
+				title.set_x_y (border, border)
+				
+				-- Build Example_Manager containers
+				create button_container.make ((0.3*width-2*border).rounded, (0.8*height-title_offset-2*border).rounded)
+				create description_container.make ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
+				button_container.set_x_y ((0.7*width+border).rounded, title_offset+border)
+				description_container.set_x_y (border, (0.7*height+border).rounded)
+				
+				--Build Settings container
+				create settings_container.make ((0.3*width-2*border).rounded, (0.2*height-2*border).rounded)
+				settings_container.set_x_y ((0.7*width+border).rounded, (0.8*height+border).rounded)
+	
+				-- Build Console
+				create console.make
+				console.set_width_height ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
+				console.set_x_y (border, (0.7*height+border).rounded)
+				
+		
+				--Build Run Button
+				run_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height ("RUN EXAMPLE", settings_container.width-2*border, 30)
+				run_button.set_x_y (border, border)
+				settings_container.extend (run_button)
+				run_button.subscribe_for_click (agent process_clicked_run_button)
+	
+	
+				--Build Test Bitmap Button
+				create test_button.make_with_image_file_and_width_and_height ("images\\next_chapter.png", settings_container.width-2*border, 50)
+				test_button.set_x_y (border, run_button.y + run_button.height + border)
+				settings_container.extend (test_button)
+				
+				--Put Drawables to main_container
+				main_container.extend (title)
+				main_container.extend (button_container)
+				main_container.extend (description_container)
+				main_container.extend (console)
+				main_container.extend (settings_container)
+	--			main_container.extend (run_button)
+	
+				
+				--initialize example_manager
+				create example_manager.make_with_containers (button_container, description_container)
+	
+				--Create Examples		
+				create example1
+				create example2
+				example_manager.subscribe (example1)
+				example_manager.subscribe (example2)
+	
+	
+				--Create Example Renderers
+				place := traffic_map.place ("Central")
+				create place_renderer.make_with_map (traffic_map)
+				place_renderer.set_place_color (green)
+				map_widget.set_place_special_renderer (place_renderer, place)
+				
+				line := traffic_map.line ("11")
+				create line_renderer.make_with_map (traffic_map)
+				line_renderer.set_line_color (red)
+				map_widget.set_line_special_renderer (line_renderer, line)
+				
+				map_widget.place_renderer.set_place_color (white)
+				
+				--Finally Render map_widget
+				map_widget.render		
+			end
 			
 			switch_view_to_example_selection
 		end
@@ -202,6 +215,8 @@ feature -- Scene Initialization
 		
 feature {NONE} -- Implementation
 
+	initialized: BOOLEAN
+	
 	rail_color: ESDL_COLOR is
 			-- Color used for rail lines.
 		once
@@ -295,23 +310,38 @@ feature {NONE} -- Agents, GUI events
 				console.put_line (place.name)
 			end			
 		end
+		
+		
 	process_clicked_run_button (a_button: TOUCH_BUTTON) is
 			-- User clicked the run example button
 		local
 			runtime: TOUCH_EXAMPLE_RUNTIME_IMPLEMENTATION
+			example_scene: ESDL_SCENE
+			example: TOUCH_EXAMPLE
 		do
+			example := example_manager.current_example
 			--If example not Void then run it
-			if example_manager.current_example /= Void then
-
-				--Switch View
-				switch_view_to_example_running
+			if example /= Void then
 				
-				--Create runtime
-				create runtime.make_with_map_and_map_widget_and_textlist (traffic_map, map_widget, console)
-
-				--Run example
-				example_manager.current_example.run (runtime)
+				example_scene := example.run_with_scene
 				
+				if example_scene /= Void then
+		
+					next_scene := example_scene
+					--example_scene.next_scene := Void
+					--example_scene.next_scene := Current
+					--example_scene.next_scene := example_scene
+					event_loop.stop
+				else
+					--Switch View
+					switch_view_to_example_running
+					
+					--Create runtime
+					create runtime.make_with_map_and_map_widget_and_textlist (traffic_map, map_widget, console)
+
+					--Run example
+					example.run (runtime)	
+				end
 			end			
 		end
 		

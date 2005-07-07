@@ -25,7 +25,7 @@ feature -- Initialization
 	make_and_launch is
 			-- Create and execute the application.
 		local
-			first_scene: TOUCH_WIDGET
+			first_scene: ESDL_SCENE
 		do
 			-- Initialize the screen.
 			initialize_screen
@@ -35,7 +35,7 @@ feature -- Initialization
 			standard_fonts.set_font_dirname ("./font")
 			
 			-- Create first scene.
-			create first_scene
+			first_scene := create {TOUCH_EXAMPLE_SELECTION_SCENE}
 						
 			-- Set and launch the first scene.
 			set_scene (first_scene)

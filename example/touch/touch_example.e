@@ -32,7 +32,7 @@ feature -- Access
 
 
 	description: STRING is
-			-- simple and short describtion about the example
+			-- simple and short describtion of the example
 		deferred
 		end
 		
@@ -78,8 +78,15 @@ feature -- Duplication
 feature -- Miscellaneous
 
 feature -- Basic operations
+	
+	run_with_scene : ESDL_SCENE is 
+			-- The example can specify it's own scene
+		do
+			Result := Void	
+		end
+		
 	run ( an_example_runtime: TOUCH_EXAMPLE_RUNTIME) is
-			-- The Entry-Point for the Example
+			-- The Entry-Point for a traffic_map Example
 	require
 		runtime_not_void: an_example_runtime /= Void
 	deferred
