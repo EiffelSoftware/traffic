@@ -6,17 +6,18 @@ indexing
 					]"
 	author: "Rolf Bruderer, Roger Kueng"
 	date: "2005/06/09"
-	revision: "1.4"
+	revision: "1.5"
 
 deferred class
 	TRAFFIC_MAP_MODEL [ELEM_TYPE -> HASHABLE]
 	
-feature -- Initialization
-
+--create
+--	make_with_events
+	
 feature -- Access
 	events: TRAFFIC_ITEM_EVENTS [ELEM_TYPE]
 	
-feature -- Creation
+feature -- Initialization
 	make_with_events (item_events: TRAFFIC_ITEM_EVENTS [ELEM_TYPE]) is
 			-- 
 		require
@@ -78,30 +79,30 @@ feature -- Event publishing
 
 feature -- Events
 
-	changed_event: EVENT_TYPE [TUPLE []]
+--	changed_event: EVENT_TYPE [TUPLE []]
 			-- Event to inform views of `Current'
 			-- when `Current' changed such that
 			-- views need to re-render
 	
-	item_changed_event: EVENT_TYPE [TUPLE [INTEGER]]
+--	item_changed_event: EVENT_TYPE [TUPLE [INTEGER]]
 			-- Event to inform views of `Current' 
 			-- when item has been changed
 			-- at index passed as argument
 			
-	item_inserted_event: EVENT_TYPE [TUPLE [INTEGER]]
+--	item_inserted_event: EVENT_TYPE [TUPLE [INTEGER]]
 			-- Event to inform views of `Current' 
 			-- when item has been inserted
 			-- at index passed as argument
 			
-	item_removed_event: EVENT_TYPE [TUPLE [INTEGER, ELEM_TYPE]]
+--	item_removed_event: EVENT_TYPE [TUPLE [INTEGER, ELEM_TYPE]]
 			-- Event to inform views of `Current' 
 			-- when item has been removed 
 			-- at index passed as argument
 
 invariant
-	changed_event_initialized: changed_event /= Void
-	item_changed_event_initialized: item_changed_event /= Void
-	item_inserted_event_initialized: item_inserted_event /= Void
-	item_removed_event_intialized: item_removed_event /= Void
-
+--	changed_event_initialized: changed_event /= Void
+--	item_changed_event_initialized: item_changed_event /= Void
+--	item_inserted_event_initialized: item_inserted_event /= Void
+--	item_removed_event_intialized: item_removed_event /= Void
+	events_not_void: events /= Void
 end
