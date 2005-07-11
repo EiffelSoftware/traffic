@@ -83,11 +83,11 @@ feature -- Status setting
 		do
 			-- Replace existing renderer if any
 			if item_renderers.has (an_item) then
-				item_renderers.replace(a_renderer,an_item)
+				item_renderers.replace (a_renderer, an_item)
 			else
 				--Resize if necessary 
 				if item_renderers.count >= item_renderers.capacity*0.7 then
-					item_renderers.resize( item_renderers.capacity * 2)
+					item_renderers.resize (item_renderers.capacity * 2)
 				end	
 				item_renderers.put (a_renderer, an_item)
 			end
@@ -283,14 +283,14 @@ feature {NONE} -- Implementation
 			map_item := map.item (i)
 			
 			--Check for specialized renderer for this item
-			item_renderer := item_renderers.item (map_item)
-			
-			--If none available check for default_renderer
-			if item_renderer = Void then
-				item_renderer := default_renderer
+			if item_renderers.has (map_item) then
+				item_renderer := item_renderers.item (map_item)
+			else
+				--If none available take the default_renderer	
+				item_renderer := default_renderer				
 			end
 
-			-- Remove exisitng view for this item (if any).
+			-- Remove exisiting view for this item (if any).
 			if item_views.has (map_item) then
 				view := item_views.item (map_item)
 				if view /= Void then
