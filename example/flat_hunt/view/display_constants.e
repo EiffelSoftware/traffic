@@ -4,58 +4,118 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
+deferred class
 	DISPLAY_CONSTANTS	
 
 inherit
 	ESDL_SHARED_BITMAP_FACTORY	
 	
+	ESDL_SHARED_STANDARD_FONTS
+		undefine
+			default_create
+		end
+
+	ESDL_SHARED_COLORS
+		undefine
+			default_create
+		end
+		
+	ESDL_KEY_CONSTANTS
+		undefine
+			default_create
+		end
+		
 feature -- Colors
 
-	status_background_color : ESDL_COLOR is
-			-- The background color of the status bar
+	dark_blue: ESDL_COLOR is
+		once
+			Result := create {ESDL_COLOR}.make_with_rgb (0, 0, 200)
+		ensure
+			color_not_void: Result /= Void
+		end
+
+	light_violet: ESDL_COLOR is
 		once
 			Result := create {ESDL_COLOR}.make_with_rgb (100, 0, 150)
+		ensure
+			color_not_void: Result /= Void
 		end
-			
-	light_gray : ESDL_COLOR is
+
+	light_gray: ESDL_COLOR is
 		once
 			Result := create {ESDL_COLOR}.make_with_rgb (200, 200, 200)
+		ensure
+			color_not_void: Result /= Void
 		end	
 		
-	gray : ESDL_COLOR is
+	gray: ESDL_COLOR is
 		once
 			Result := create {ESDL_COLOR}.make_with_rgb (150, 150, 150)
+		ensure
+			color_not_void: Result /= Void
 		end
 			
-	dark_gray : ESDL_COLOR is
+	dark_gray: ESDL_COLOR is
 		once
 			Result := create {ESDL_COLOR}.make_with_rgb (25, 25, 25)
+		ensure
+			color_not_void: Result /= Void
 		end	
+	
+	dark_red: ESDL_COLOR is
+		once
+			Result := create {ESDL_COLOR}.make_with_rgb (200, 0, 0)
+		ensure
+			color_not_void: Result /= Void
+		end
+		
+	orange: ESDL_COLOR is
+		once
+			Result := create {ESDL_COLOR}.make_with_rgb (200, 100, 0)
+		ensure
+			color_not_void: Result /= Void
+		end		
 
 feature -- Fonts
 
-	small_font: ESDL_BITMAPFONT is
-			-- Create a standard font
+	Font_directory: STRING is "./resources/font/"
+			-- Path to the font directory
+
+   	create_font (a_name: STRING; a_size: INTEGER; a_color: ESDL_COLOR): ESDL_TTF_FONT is
+			-- Create new font from `a_name'.ttf with size `a_size' and color `a_color'
 		local
-			font: ESDL_DRAWABLE
+		   font: ESDL_FONT
+		   color: ESDL_COLOR
+		   id: STRING
 		do
-			bitmap_factory.create_bitmap_from_image (Font_directory + "verdana256.tga")
-			font := bitmap_factory.last_bitmap		
-			create Result.make (font)
+			-- Set default for color to black if a_color void
+			if a_color = Void then
+				create color.make_with_rgb (0, 0, 0)
+			else
+				color := a_color
+			end
+			
+			-- Create new font with size `a_size' and color `a_color'
+			id := (standard_ttf_fonts.custom_fonts.count + 1).to_hex_string
+ 			if not standard_ttf_fonts.has_custom_font (a_name + id) then
+ 				standard_ttf_fonts.set_font_dirname (Font_directory)
+				standard_ttf_fonts.load_custom_font(a_name + ".ttf", a_size, a_name + id)
+			end
+			font := standard_ttf_fonts.custom_font (a_name + id)
+			Result ?= font
+			if Result /= Void then
+				Result.set_color (color)
+			end				
+		ensure
+			font_not_void: Result /= Void
+			color_set: Result.color = a_color
 		end
 		
-	big_font: ESDL_BITMAPFONT is
-			-- Create a standard font
-		local
-			font: ESDL_DRAWABLE
-		do
-			bitmap_factory.create_bitmap_from_image (Font_directory + "verdana512.tga")
-			font := bitmap_factory.last_bitmap		
-			create Result.make (font)
-		end
 
 feature -- Constants (Numbers)
+
+	Left, Right, Centered: INTEGER is unique
+			-- Alignment constants
 
 	Window_width: INTEGER is 1024
 			-- Initial width for this window
@@ -63,28 +123,12 @@ feature -- Constants (Numbers)
 	Window_height: INTEGER is 768
 			-- Initial height for this window
 
-feature -- Constants (Strings)
-
-	Image_directory: STRING is "./resources/pic/"
-		-- Path to the image directory
-
-	Font_directory: STRING is "./resources/font/"
-		-- Path to the image directory
+	Map_area_width: INTEGER is  650
+			-- Width of the area where the map gets displayed
 		
-	My_application_name: STRING is "Flat Hunt v2"
-		-- Name of the application
-	
-	Application_icon: STRING is "flat_hunt_icon.png"
-		-- Name of the application icon
-
-feature -- Constants (Images)
-
-	Flathunt_logo: ESDL_DRAWABLE is
-			-- Creates the logo which is to be displayed on every scene
-		do
-			bitmap_factory.create_bitmap_from_image (Image_directory + "flat_hunt_logo.png")
-			Result := bitmap_factory.last_bitmap
-			Result.set_x_y ((Window_width - Result.width) //2, 0)
-		end			
+	Map_area_height: INTEGER is 580
+			-- Height of the area where the map gets displayed
+			
+	Margin: INTEGER is 30
 		
 end

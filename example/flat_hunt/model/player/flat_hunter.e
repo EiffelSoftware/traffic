@@ -68,7 +68,7 @@ feature {NONE} -- Element change
 		end
 
 		
-feature {FLAT_HUNTERS} -- Basic operations
+feature {FLAT_HUNTER} -- Basic operations
 
 	choose_move is
 			-- Choose the next move.

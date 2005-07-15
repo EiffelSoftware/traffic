@@ -8,17 +8,28 @@ indexing
 	revision: "$Revision$"
 	
 class
-	MAIN_CONTROLLER
+	FLAT_HUNT_APPLICATION
 
 inherit
+	
 	ESDL_APPLICATION
+	
+	SHARED_SCENES
 		undefine
 			default_create
 		end
+
+--	SHARED_MUSIC_PLAYER
+--		undefine
+--			default_create
+--		end
 		
 	ESDL_SHARED_STANDARD_FONTS
 	
-	DISPLAY_CONSTANTS
+	THEME
+		undefine
+			default_create
+		end
 		
 create
 	make_and_launch
@@ -26,28 +37,20 @@ create
 feature -- Initialization
 	make_and_launch is
 			-- Create and execute the application.
-		local
-			startup_scene: GAME_SCENE
 		do
 			-- Video subsystem settings
 --			video_subsystem.set_fullscreen (true)
 --			video_subsystem.show_cursor
 			video_subsystem.set_video_surface_width (Window_width)			
 			video_subsystem.set_video_surface_height (Window_height)
-			
+
 			-- Initialize the screen.
 			initialize_screen
 			set_application_name (My_application_name)
 --			set_application_icon (Application_icon)
-						
-			-- Setup font directory.
-			standard_fonts.set_font_dirname ("./resources/font")
-			
-			-- Create first scene.
-			create startup_scene
 			
 			-- Set and launch the first scene.
-			set_scene (startup_scene)
+			set_scene (start_menu_scene)
 			launch
 			video_subsystem.disable
 		end

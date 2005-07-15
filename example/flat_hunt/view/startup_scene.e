@@ -19,7 +19,7 @@ inherit
 			default_create
 		end	
 		
-	DISPLAY_CONSTANTS
+	THEME
 		undefine
 			default_create
 		end

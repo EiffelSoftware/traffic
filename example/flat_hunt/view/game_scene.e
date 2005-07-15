@@ -10,6 +10,9 @@ class
 	
 inherit 
 	ESDL_SCENE
+		redefine
+			handle_key_down_event
+		end
 	
 	TRAFFIC_TYPE_FACTORY   -- Singleton traffic types
 		export
@@ -18,22 +21,88 @@ inherit
 			default_create
 		end
 		
-	ESDL_SHARED_COLORS
-		export
-			{NONE} all
+	THEME
 		undefine
 			default_create
 		end
 
---	ESDL_SHARED_BITMAP_FACTORY
---		undefine
---			default_create
---		end
-		
-	DISPLAY_CONSTANTS
+	GAME_CONSTANTS
 		undefine
 			default_create
 		end
+
+feature -- Initialization
+		
+	initialize_scene is
+			-- Build 'main_container' containing zoomable map.
+		require else
+			map_size_valid: map_size = Little or map_size = Big
+		local
+			map_file: TRAFFIC_MAP_FILE
+		do			
+			active := true
+			background_color.make_black
+--			set_frame_counter_visibility (true)
+
+			-- Load `traffic_map'
+			if map_size = Big then
+				create map_file.make_from_file ("./map/zurich_big.xml")
+			else
+				create map_file.make_from_file ("./map/zurich_little.xml")
+			end
+			traffic_map := map_file.traffic_map
+			
+			-- Build map widgets
+			build_big_map_widget
+			build_little_map_widget
+			
+			-- Build navigation widget to connect
+			-- little map to big map for navigation
+			create navigation_widget.make (little_zoomable_container, big_zoomable_widget)	
+			
+			-- Build static status box
+			create static_status_box.make_from_coordinates (map_area_width + 2 * margin, window_width - map_area_width - margin, window_width - margin, margin + map_area_height, "Status")
+			static_status_box.set_font (small_game_widget_font)
+			static_status_box.set_title_font (medium_game_widget_font)
+			static_status_box.set_color (game_widget_color)
+			static_status_box.set_opacity (70)
+			main_container.extend (static_status_box)
+			
+			-- Build dynamic status boxes
+			initialize_dynamic_status_boxes
+			
+			-- Subscribe for on item click event in big map view to show place info text.
+			big_map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
+			
+			
+			flat_hunter_button_pics.item (1).set_x_y (margin, window_height - margin - flat_hunter_button_pics.item (1).height)
+			main_container.extend (flat_hunter_button_pics.item (1))
+			
+--			main_container.extend (estate_agent_pic)
+		end
+	
+	set_game_constants (a_game_mode, a_nr_of_hunters, a_map_size: INTEGER) is
+			-- Set game constants used throughout the game
+			-- Should be called before game scene loaded
+		require
+			a_game_mode_valid: a_game_mode >= Hunt and a_game_mode <= Demo
+			a_nr_of_hunters_valid: a_nr_of_hunters >= 1 and a_nr_of_hunters <= 8
+			a_map_size_valid: a_map_size = Little or a_map_size = Big
+		do
+			game_mode := a_game_mode
+			nr_of_hunters := a_nr_of_hunters
+			map_size := a_map_size
+		ensure
+			game_mode_set: game_mode = a_game_mode
+			nr_of_hunters_set: nr_of_hunters = a_nr_of_hunters
+			map_size_set: map_size = a_map_size
+		end
+
+
+feature -- Attributes
+
+	static_status_box: STATUS_BOX
+			-- Status box to display items & state of current player
 
 feature -- Model
 	
@@ -67,49 +136,8 @@ feature -- Views
 	place_info_text: ESDL_STRING
 			-- Information text about last clicked place.
 		
-	status_box: STATUS_BOX
-			-- Currently displayed status box
-
-feature -- Scene Initialization
-		
-	initialize_scene is
-			-- Build 'main_container' containing zoomable map.
-		local
-			map_file: TRAFFIC_MAP_FILE
-		do			
-			-- general settings
-			background_color.make_black
-			set_frame_counter_visibility (true)
-
-			-- Load `traffic_map'
-			create map_file.make_from_file ("./map/zurich_little.xml")
-			traffic_map := map_file.traffic_map
-		
-			-- Set background color
-			background_color.make_black	
-			
-			-- Build map widgets
-			build_big_map_widget
-			build_little_map_widget
-			
-			-- Build navigation widget to connect
-			-- little map to big map for navigation
-			create navigation_widget.make (little_zoomable_container, big_zoomable_widget)	
-			
-			-- Build static status box
-			build_static_status_box
-			
-			-- Build dynamic status box
-			initialize_dynamic_status_box
-			
-			-- Subscribe for on item click event in big map view to show place info text.
-			big_map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)	
-
-			-- Add the Flat Hunt logo to the scene
-			main_container.extend (flathunt_logo)
-
-		end
-		
+	status_boxes: HASH_TABLE [STATUS_BOX, INTEGER]
+			-- Holds a dynamic status box for each player (including estate agent).
 		
 feature {NONE} -- Implementation
 
@@ -118,18 +146,6 @@ feature {NONE} -- Implementation
 		once
 			create Result.make_with_rgb (255, 160, 0)
 		end	
-	
-	map_area_width: INTEGER is 
-			-- Width of the area where you can interact with the game
-		do
-			Result := (window_width - window_width // 10 - 300)	
-		end
-		
-	map_area_height: INTEGER is 
-			-- Height of the area where you can interact with the game
-		do
-			Result := (window_height - window_height // 10 - flathunt_logo.height)
-		end
 
 	build_big_map_widget is
 			-- Build `big_map_widget' inside `big_zoomable_widget'
@@ -139,18 +155,20 @@ feature {NONE} -- Implementation
 			traffic_map_not_void: traffic_map /= Void
 		local
 			container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			box: ESDL_RECTANGLE
+			background_box: ESDL_RECTANGLE
 		do			
 			-- Create container to put background and widgets into.
 			create container.make
-			container.set_x_y (30, flathunt_logo.height + (window_height - map_area_height) // 4)
+			container.set_x_y (margin, margin)
 			
 			-- Create and customize the box in which the map will be displayed
-			create box.make_from_coordinates (0, 0, map_area_width, map_area_height)
---			box.set_line_width (1)
---			box.set_line_color (light_gray)
-			box.set_fill_color (dark_gray)
-			container.extend (box)
+			create background_box.make_from_coordinates (0, 0, map_area_width, map_area_height)
+			background_box.set_rounded_corner_radius (10)
+			background_box.set_line_width (1)
+			background_box.set_line_color (dark_blue)
+			background_box.set_fill_color (dark_blue)
+			background_box.fill_color.set_alpha (70)
+			container.extend (background_box)
 			
 			-- Create and customize big map widget to visualize `traffic_map'
 			create big_map_widget.make_with_map (traffic_map)			
@@ -176,18 +194,23 @@ feature {NONE} -- Implementation
 			traffic_map_not_void: traffic_map /= Void
 		local
 			container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background: ESDL_RECTANGLE
+			background_box: ESDL_RECTANGLE
 			map_box: ESDL_ORTHOGONAL_RECTANGLE
 		do	
 		
 			-- Create container to put background and widgets into.
 			create container.make
-			container.set_x_y (670, flathunt_logo.height + (window_height - map_area_height) // 4)
+			container.set_x_y (map_area_width + 2 * margin, margin)
 		
 			-- Create black background
-			create background.make_from_coordinates (0, 0, 300, 300)
-			background.set_fill_color (dark_gray)
-			container.extend (background)
+			
+			create background_box.make_from_coordinates (0, 0, window_width - map_area_width - 3 * margin , window_width - map_area_width - 3 * margin)
+			background_box.set_rounded_corner_radius (10)
+			background_box.set_line_width (1)
+			background_box.set_line_color (dark_blue)
+			background_box.set_fill_color (dark_blue)
+			background_box.fill_color.set_alpha (70)
+			container.extend (background_box)
 			
 			-- Build little map widget to visualize `traffic_map'.
 			create little_map_widget.make_with_map (traffic_map)
@@ -209,67 +232,47 @@ feature {NONE} -- Implementation
 			-- Extend scene with little map widget.
 			main_container.extend (container)
 		end	
-		
-	build_static_status_box is
-			-- Build little status box 
-			-- where the status of the current player
-			-- and location on the map is displayed
+
+	initialize_dynamic_status_boxes is
+			-- Initialize `status_boxes'
 		local
-			background: ESDL_RECTANGLE
-			title: ESDL_STRING
-			current_player_label: ESDL_STRING
-			place_info_label: ESDL_STRING
+			i: INTEGER
 		do
-			create information_box.make (300, 270)
-			information_box.set_x_y (670, 500)
-
-			-- TODO: 
-			-- display:
-			-- current player: name, tickets, location
-			-- estate agent: last seen, rounds since then
-			-- "clicked place" no longer necessary
-			-- improve:
-			-- positioning of boxes (with constants, to make it
-			-- resolution independent)
-			
-			-- Create and customize background.
-			create background.make_from_coordinates (0, 0, 300, 270)
-			background.set_fill_color (dark_gray)
-			information_box.extend (background)
-			
-			-- Create title of status box
-			create title.make ("Status", big_font)
-			title.set_x_y (0, 0)
-			information_box.extend (title)
-			
-			-- Information about current player
-			create current_player_label.make ("Current Player: ", small_font)
-			current_player_label.set_x_y (10, 30)
-			information_box.extend(current_player_label)
-			
-			-- Create place info label.
-			create place_info_label.make ("Clicked Place: ", small_font)
-			place_info_label.set_x_y (10, 90)
-			information_box.extend (place_info_label)
-
-			-- Create place info text
-			create place_info_text.make ("", small_font)
-			place_info_text.set_x_y (10, 120)
-			information_box.extend (place_info_text)
-			
-			-- Extend scene with information box.
-			main_container.extend (information_box)		
-		end
-
-
-	initialize_dynamic_status_box is
-			-- initialize `status_box'
-		do
-			create status_box.make_from_coordinates (30, flathunt_logo.height + map_area_height, 30 + map_area_width, flathunt_logo.height + map_area_height + (window_height - map_area_height) // 4)
-			main_container.extend (status_box)
+-- TODO: each hunter should have its customized status box title. --> need integer to string conversion! 
+			create status_boxes.make (nr_of_hunters + 1)  -- the + 1 is for the estate agent
+			from
+				i := 1
+			until
+				i > nr_of_hunters + 1
+			loop
+				if i = nr_of_hunters + 1 then -- estate agent
+					status_boxes.put (create {STATUS_BOX}.make_from_coordinates (margin, margin + map_area_height - 70, margin + map_area_width, margin + map_area_height + 30, "Status of estate agent"), i)										
+				end
+				status_boxes.put (create {STATUS_BOX}.make_from_coordinates (margin, margin + map_area_height - 70, margin + map_area_width, margin + map_area_height + 30, "Status of hunter nr . . ."), i)
+				status_boxes.item (i).set_font (small_credits_font)
+				status_boxes.item (i).set_title_font (big_credits_font)
+				status_boxes.item (i).set_color (credits_color)
+				status_boxes.item (i).set_opacity (70)
+				i := i + 1
+			end
+			main_container.extend (status_boxes.item (1))
 		end
 		
-feature {NONE} -- Implementation (Place clicks)
+		
+feature {NONE} -- Event Handling
+
+	handle_key_down_event (a_keyboard_event: ESDL_KEYBOARD_EVENT) is
+			-- Handle keyboard events.
+		do
+			if a_keyboard_event.key = sdlk_p then
+				-- Set game to pause mode and show pause menu
+				active := false
+			elseif a_keyboard_event.key = sdlk_q then
+				next_scene := Void
+				event_loop.stop
+			end
+		end
+		
 
 	process_clicked_place (place: TRAFFIC_PLACE; m_event: ESDL_MOUSEBUTTON_EVENT) is
 			-- 
@@ -285,8 +288,13 @@ feature {NONE} -- Implementation (Place clicks)
 				--Re-Render the Scene for the effects to be visible
 				big_map_widget.render
 				--Set info Text
-				place_info_text.set_value (place.name)
+--				place_info_text.set_value (place.name)
 			end			
 		end
-
+		
+feature -- Attributes
+	
+	active: BOOLEAN
+			-- Is game active or in pause?
+	
 end

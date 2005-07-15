@@ -8,7 +8,7 @@ indexing
 class
 	START
 inherit
-	MAIN_CONTROLLER
+	FLAT_HUNT_APPLICATION
 --		redefine
 --			start
 --		end

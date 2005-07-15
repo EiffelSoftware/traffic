@@ -110,7 +110,7 @@ feature -- Status report
 feature {NONE} -- Element change
 
 	decrease_ticket_count (a_move: TRAFFIC_LINE_SECTION) is
-			-- Decrease number of tickets for the transportation type of `a_link'.
+			-- Decrease number of tickets for the transportation type of `a_line_section'.
 		require 
 			a_move_not_void: a_move /= Void
 			a_move_is_of_valid_type: is_valid_type (a_move.type)

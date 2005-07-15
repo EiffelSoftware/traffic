@@ -37,8 +37,8 @@ feature -- Initialization
 			correct_number_of_hunters: 1 <= hunter_count and hunter_count <= 8
 		local
 			estate_agent: ESTATE_AGENT
-			i: INTEGER
 			flat_hunter: FLAT_HUNTER
+			i: INTEGER
 		do
 			create players.make (hunter_count + 1)
 			create estate_agent.make (estate_agent_bot, map.places.item ("Hauptbahnhof"))

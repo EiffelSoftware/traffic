@@ -18,13 +18,17 @@ inherit
 			default_create
 		end
 
-	SHARED_DISPLAYER
-
 create 
 	make
 
 feature -- Initialization
 
+	make (a_player: PLAYER) is
+			-- 
+		do
+			
+		end
+		
 	make (a_player: PLAYER) is
 			-- Initialize displayer for `a_player'.
 		require
@@ -106,7 +110,7 @@ feature -- Basic operations
 		local
 			cir: DRAWABLE_CIRCLE
 			position: REAL_COORDINATE
-			color: EV_COLOR
+			color: ESDL_COLOR
 			count: INTEGER
 		do
 			create position.make (player.location.position.x, player.location.position.y)

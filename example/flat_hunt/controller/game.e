@@ -10,8 +10,7 @@ class
 	GAME
 	
 inherit
-	GAME_STATE_CONSTANTS
-	GAME_MODE_CONSTANTS
+	GAME_CONSTANTS
 
 create 
 	make
