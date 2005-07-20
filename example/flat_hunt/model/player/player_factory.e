@@ -41,7 +41,7 @@ feature -- Initialization
 			i: INTEGER
 		do
 			create players.make (hunter_count + 1)
-			create estate_agent.make (estate_agent_bot, map.places.item ("Hauptbahnhof"))
+			create estate_agent.make (map, map.places.item ("Hauptbahnhof"), estate_agent_bot)
 			players.extend (estate_agent)
 			from
 				i := 2
@@ -50,7 +50,7 @@ feature -- Initialization
 			loop
 				calculate_random_place
 				if random_place /= Void then
-					create flat_hunter.make(random_place, estate_agent, flat_hunters_bot, "Hunter " + (i-1).out) --random_location(nodes))
+					create flat_hunter.make(map, random_place, estate_agent, flat_hunters_bot, "Hunter " + (i-1).out))
 					players.extend (flat_hunter)				
 				end
 				i := i + 1
@@ -94,7 +94,7 @@ feature {NONE} -- Implementation
 			-- Random numbers
 			
 	occupied_numbers: LINKED_LIST [INTEGER]
-			-- Indices of places  that have already been occupied.
+			-- Indices of places that have already been occupied.
 			
 invariant
 	map_exists: map /= Void

@@ -253,59 +253,43 @@ feature -- Player Images
 	Flat_hunter_button_pics: HASH_TABLE [ESDL_DRAWABLE, INTEGER] is
 			-- Creates pictures for flat hunter buttons.
 		local
+			i: INTEGER
 			size: STRING
 		once
-			-- TODO: This is ugly, but in order to change it, I need to know
-			-- how integer to string conversion works ??
 			create Result.make (8)
 			size := "medium"
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter1_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 1)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter2_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 2)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter3_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 3)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter4_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 4)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter5_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 5)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter6_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 6)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter7_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 7)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter8_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 8)
+			from
+				i := 1
+			until
+				i > 8
+			loop
+				bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter" + i.out + "_" + size + ".png")
+				Result.put (bitmap_factory.last_bitmap, i)	
+				i := i + 1
+			end
 		ensure
-			pic_not_void: Result /= Void
+			pics_not_void: Result /= Void
 		end	
 
 	Flat_hunter_pics: HASH_TABLE [ESDL_DRAWABLE, INTEGER] is
 			-- Creates pictures for the flat hunters.
 		local
+			i: INTEGER
 			size: STRING
 		once
-			-- TODO: This is ugly, but in order to change it, I need to know
-			-- how integer to string conversion works ??
 			create Result.make (8)
 			size := "small"
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter1_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 1)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter2_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 2)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter3_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 3)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter4_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 4)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter5_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 5)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter6_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 6)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter7_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 7)
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter8_" + size + ".png")
-			Result.put (bitmap_factory.last_bitmap, 8)
+			from
+				i := 1
+			until
+				i > 8
+			loop
+				bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter" + i.out + "_" + size + ".png")
+				Result.put (bitmap_factory.last_bitmap, i)
+				i := i + 1
+			end
 		ensure
-			pic_not_void: Result /= Void
+			pics_not_void: Result /= Void
 		end	
      	
 		

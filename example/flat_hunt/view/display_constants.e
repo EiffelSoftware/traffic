@@ -8,12 +8,8 @@ deferred class
 	DISPLAY_CONSTANTS	
 
 inherit
-	ESDL_SHARED_BITMAP_FACTORY	
-	
 	ESDL_SHARED_STANDARD_FONTS
-		undefine
-			default_create
-		end
+
 
 	ESDL_SHARED_COLORS
 		undefine

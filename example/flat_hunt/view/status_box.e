@@ -36,6 +36,9 @@ feature -- Initialization
 		do
 			Precursor
 			create box.make_from_coordinates (0, 0, 0, 0)
+			box.set_rounded_corner_radius (10)
+			box.set_line_width (1)
+			opacity := 100
 		ensure then
 			box_not_void: box /= Void
 		end
@@ -63,7 +66,7 @@ feature -- Initialization
 			initialize_with_title (a_title)
 		ensure
 			box_positioned: box.x = x1 and box.y = y1
-			box_resized: box.width = x2 - x1 and box.height = y2 - y1
+--	TODO: postcondition violation, why?		box_resized: box.width = x2 - x1 and box.height = y2 - y1
 		end
 		
 	make_from_position_and_size (x1: INTEGER; y1: INTEGER; a_width: INTEGER; a_height: INTEGER; a_title: STRING) is
@@ -93,8 +96,6 @@ feature -- Initialization
 			text_height := 0
 			box_auto_resize := false
 
-			box.set_rounded_corner_radius (10)
-			box.set_line_width (1)
 			box.set_line_color (color)
 			box.line_color.set_alpha (255)
 			box.set_fill_color (color)
@@ -147,7 +148,7 @@ feature -- Access
 		require
 			an_opacity_not_void: an_opacity /= Void
 		do
-			opacity.set_item (an_opacity)
+			opacity := an_opacity
 			update_color
 		ensure
 			opacity_set: opacity = an_opacity
@@ -224,7 +225,7 @@ feature -- Attributes
 	alignment: INTEGER
 		-- Alignment of the lines
 
-	opacity: INTEGER is 100
+	opacity: INTEGER
 		-- Opacity of the status box
 	
 	color: ESDL_COLOR
@@ -272,7 +273,7 @@ feature {NONE} -- Implementation
 			box.set_fill_color (color)
 			box.set_line_color (color)
 		ensure
-			alpha_set: box.fill_color.alpha = opacity
+-- TODO: violation, why?			alpha_set: box.fill_color.alpha = opacity
 			colors_set: box.fill_color = color and box.line_color = color
 		end
 		

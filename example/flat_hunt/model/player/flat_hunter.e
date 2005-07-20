@@ -17,19 +17,20 @@ inherit
 create
 	make
 
-feature {NONE} -- Initialization
+feature -- Initialization
 	
-	make(a_location: TRAFFIC_PLACE; an_estate_agent: ESTATE_AGENT; flat_hunter_bot: BOOLEAN; a_name: STRING) is
+	make (a_map: TRAFFIC_MAP; a_location: TRAFFIC_PLACE; an_estate_agent: ESTATE_AGENT; is_bot: BOOLEAN; a_name: STRING) is
 			-- Put player on board.
 		require
 			has_location: a_location /= Void
 			knows_an_agent: an_estate_agent /= Void
 			name_not_empty: not a_name.is_empty			
 		do
+			make_from_map_and_place (a_map, a_location)
 			name := a_name
 			flat_hunter_stuck := False
-			location := a_location
-			if flat_hunter_bot then
+			
+			if is_bot then
 				create {FLAT_HUNTER_BOT} brain	
 				bus_tickets := default_bot_tickets
 				rail_tickets := default_bot_tickets
@@ -41,9 +42,7 @@ feature {NONE} -- Initialization
 				tram_tickets := default_tram_tickets
 			end
 			estate_agent := an_estate_agent
---			create displayer.make (Current)
 		ensure
---			has_correct_displayer: displayer.player = Current
 			has_brain: brain /= Void
 			has_location: location /= Void
 			name_not_empty: not name.is_empty			
@@ -68,7 +67,7 @@ feature {NONE} -- Element change
 		end
 
 		
-feature {FLAT_HUNTER} -- Basic operations
+feature -- Basic operations
 
 	choose_move is
 			-- Choose the next move.

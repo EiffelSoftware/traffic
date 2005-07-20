@@ -13,8 +13,7 @@ inherit
 
 feature {PLAYER} -- Basic operations
 
-	choose_next_move (possible_moves: LINKED_LIST
-	[TRAFFIC_LINE_SECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: PLACE) is
+	choose_next_move (possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: TRAFFIC_PLACE) is
 			-- Choose next move.
 		do
 			chosen_move := Void
@@ -24,7 +23,7 @@ feature {PLAYER} -- Basic operations
 				until
 					possible_moves.after
 				loop
-					if possible_moves.item.other_end (my_location).name.is_equal (selected_place.name) then
+					if possible_moves.item.destination.name.is_equal (selected_place.name) then
 						chosen_move := possible_moves.item
 					end
 					possible_moves.forth
@@ -32,7 +31,7 @@ feature {PLAYER} -- Basic operations
 				selected_place := Void
 			end
 		ensure then
-			result_has_place_if_not_void: chosen_move /= Void implies (chosen_move.from_place = my_location or chosen_move.to_place = my_location)
+			result_has_place_if_not_void: chosen_move /= Void implies (chosen_move.origin = my_location or chosen_move.destination = my_location)
 		end		
 
 --|--------------------------------------------------------

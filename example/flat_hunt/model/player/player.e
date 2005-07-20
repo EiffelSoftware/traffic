@@ -8,6 +8,19 @@ indexing
 deferred class
 	PLAYER
 
+
+feature -- Initialization
+	
+	make_from_map_and_place (a_map: TRAFFIC_MAP; a_location: TRAFFIC_PLACE) is
+			-- Initialize player standing on `a_place' in `a_map'.
+		require
+			a_location_in_map: a_map.has_place (a_location.name)
+		do
+			location := a_location
+			map := a_map
+			create position.make (location.position.x, location.position.y)
+		end
+
 feature -- Access
 
 	Rail_type: STRING is "rail"
@@ -28,14 +41,23 @@ feature -- Access
 	tram_tickets: INTEGER
 			-- Number of tram tickets the player has
 			
+	map: TRAFFIC_MAP
+			-- Map on which player will navigate.
+
 	possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]
 			-- Locations the player could move to
 			
 	location: TRAFFIC_PLACE
-			-- Current position
+			-- Current location
+			
+	old_location: TRAFFIC_PLACE
+			-- Player's last location
 
+	position: ESDL_VECTOR_2D
+			-- Position on the map.
+			
 	brain: BRAIN
-			-- Brain to chhose the moves 
+			-- Brain to chose the moves 
 			-- (i.e. user controlled or artifical intelligence)
 
 	name: STRING
@@ -43,9 +65,7 @@ feature -- Access
 			
 	next_move: TRAFFIC_LINE_SECTION
 			-- Next move (chosen by `brain')
-			
-	old_location: TRAFFIC_PLACE
-			-- Player's last position
+
 
 feature {NONE} -- Constants
 
@@ -145,9 +165,117 @@ feature {GAME} -- Basic operations
 		do
 			decrease_ticket_count (next_move)
 			old_location := location
-			location := next_move.other_end (location)
+			location := next_move.destination (location)
 		ensure
 		end		
+
+	move_to (a_location: TRAFFIC_PLACE) is
+			-- 
+		require
+			a_location_is_different: location /= a_location
+			a_location_is_reachable: map.has_line_section_between (location.name, a_location.name)
+		local
+			last_time, now_time, delta_time: INTEGER
+			links: LIST [TRAFFIC_LINE_SECTION]
+			shared_scene: ESDL_SHARED_SCENE			
+			polypoints: ARRAYED_LIST [ESDL_VECTOR_2D]
+			point_index: INTEGER
+			length, speed, pos, point_pos: DOUBLE
+			p1, p2, dist: ESDL_VECTOR_2D
+		do
+			old_location := location
+			
+			-- Get time when move started (used for animation)
+			now_time := time.ticks
+			
+			-- Get running scene.
+			create shared_scene
+			
+			-- Animate if there is a running scene.
+			if shared_scene.running_scene /= Void then	
+				
+				-- Get link to move over.
+				links := map.line_sections_of_place (location.name)
+			
+				from
+					links.start
+				until
+					links.after or else links.item.destination = a_location					
+				loop
+					links.forth										
+				end
+				
+				if not links.after then
+					
+					polypoints := links.item.polypoints
+					
+					if polypoints = Void or else polypoints.count < 2 then  -- TODO: Only necessary because of bug in TRAFFIC_LINE_SECTION ??
+						create polypoints.make (2)
+						polypoints.extend (links.item.origin.position)						
+						polypoints.extend (links.item.destination.position)						
+					end
+				
+					-- Set parmeter for animation			
+					length := links.item.length
+					speed := 100 -- meter per second
+				
+					-- Perform move animation.
+					from
+						pos := 0
+						point_index := 1
+						point_pos := 0
+					until
+						pos > length or else point_index > polypoints.count
+					loop
+									
+						-- Calculate `delta_time' to perform move step.
+						last_time := now_time
+						now_time := time.ticks
+						delta_time := now_time - last_time
+						if delta_time < 0 then
+							delta_time := 0	
+						end
+						
+						-- Calculate new `pos' inbetween the two locations
+						pos := pos + delta_time * speed / 1000
+						
+						-- Calculate `position' from polypoints.
+						from					
+							p1 := polypoints.i_th (point_index)
+							p2 := polypoints.i_th (point_index + 1)
+							dist := p2 - p1					
+						until
+							pos > length or else pos < point_pos + dist.length
+						loop					
+							point_pos := point_pos + dist.length
+							point_index := point_index + 1			
+							p1 := polypoints.i_th (point_index)
+							p2 := polypoints.i_th (point_index + 1)
+							dist := p2 - p1				
+						end		
+						dist.scale_to (pos - point_pos)
+						position := p1 + dist
+						
+						
+						-- Give system some time too redraw views.
+						shared_scene.running_scene.event_loop.process_events
+					end					
+				end			
+			end
+			
+			-- Update new `location' and `position'.
+			location := a_location
+			position := location.position.twin
+		
+			-- Update position on screen.
+			if shared_scene.running_scene /= Void then
+				shared_scene.running_scene.event_loop.process_events
+			end
+			
+		ensure
+			location_set: location = a_location
+		end
+
 
 	choose_move is
 			-- Choose the next move.

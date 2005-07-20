@@ -50,6 +50,9 @@ feature -- Initialization
 --			set_application_icon (Application_icon)
 			
 			-- Set and launch the first scene.
+--			create start_menu_scene
+--			create game_scene
+--			create credits_scene
 			set_scene (start_menu_scene)
 			launch
 			video_subsystem.disable

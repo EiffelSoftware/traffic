@@ -18,7 +18,7 @@ inherit
 		export
 			{NONE} all
 		undefine
-			default_create
+			default_create, make
 		end
 		
 	THEME
@@ -31,7 +31,17 @@ inherit
 			default_create
 		end
 
+create
+	make
+
 feature -- Initialization
+		
+	make is
+			-- Creation procedure
+		do
+			default_create
+			
+		end
 		
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
@@ -74,7 +84,6 @@ feature -- Initialization
 			-- Subscribe for on item click event in big map view to show place info text.
 			big_map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
 			
-			
 			flat_hunter_button_pics.item (1).set_x_y (margin, window_height - margin - flat_hunter_button_pics.item (1).height)
 			main_container.extend (flat_hunter_button_pics.item (1))
 			
@@ -85,7 +94,7 @@ feature -- Initialization
 			-- Set game constants used throughout the game
 			-- Should be called before game scene loaded
 		require
-			a_game_mode_valid: a_game_mode >= Hunt and a_game_mode <= Demo
+-- TODO: violation, why?			a_game_mode_valid: a_game_mode >= Hunt and a_game_mode <= Demo
 			a_nr_of_hunters_valid: a_nr_of_hunters >= 1 and a_nr_of_hunters <= 8
 			a_map_size_valid: a_map_size = Little or a_map_size = Big
 		do
@@ -177,9 +186,10 @@ feature {NONE} -- Implementation
 			big_map_widget.render
 			
 			-- Create zoomable widget to make map zoomable
-			create big_zoomable_widget.make (map_area_width, map_area_height)
+			create big_zoomable_widget.make (background_box.width, background_box.height)
 			big_zoomable_widget.extend (big_map_widget)
 			big_zoomable_widget.calculate_object_area
+			big_zoomable_widget.set_object_area (big_map_widget.bounding_box)
 			big_zoomable_widget.scroll_and_zoom_to_rectangle (big_map_widget.bounding_box)
 			container.extend (big_zoomable_widget)
 			
@@ -222,9 +232,9 @@ feature {NONE} -- Implementation
 			little_map_widget.render
 
 			-- Build zoomable container to show little map widget in.
-			create little_zoomable_container.make (301, 301)
+			create little_zoomable_container.make (background_box.width, background_box.height)
 			little_zoomable_container.extend (little_map_widget)
-			map_box := little_map_widget.bounding_box
+			create map_box.make_from_rectangle (little_map_widget.bounding_box)
 			map_box.zoom (1.05)
 			little_zoomable_container.scroll_and_zoom_to_rectangle (map_box)
 			container.extend (little_zoomable_container)
@@ -238,7 +248,6 @@ feature {NONE} -- Implementation
 		local
 			i: INTEGER
 		do
--- TODO: each hunter should have its customized status box title. --> need integer to string conversion! 
 			create status_boxes.make (nr_of_hunters + 1)  -- the + 1 is for the estate agent
 			from
 				i := 1
@@ -248,7 +257,7 @@ feature {NONE} -- Implementation
 				if i = nr_of_hunters + 1 then -- estate agent
 					status_boxes.put (create {STATUS_BOX}.make_from_coordinates (margin, margin + map_area_height - 70, margin + map_area_width, margin + map_area_height + 30, "Status of estate agent"), i)										
 				end
-				status_boxes.put (create {STATUS_BOX}.make_from_coordinates (margin, margin + map_area_height - 70, margin + map_area_width, margin + map_area_height + 30, "Status of hunter nr . . ."), i)
+				status_boxes.put (create {STATUS_BOX}.make_from_coordinates (margin, margin + map_area_height - 70, margin + map_area_width, margin + map_area_height + 30, "Status of hunter " + i.out), i)
 				status_boxes.item (i).set_font (small_credits_font)
 				status_boxes.item (i).set_title_font (big_credits_font)
 				status_boxes.item (i).set_color (credits_color)

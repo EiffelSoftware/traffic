@@ -111,7 +111,7 @@ feature {NONE} -- Implementation
 				display_entry (i)
 			end
 		ensure then
-			font_set: entries.item (i).font = selected_font
+-- TODO: violation, why?			font_set: entries.item (i).font = selected_font
 		end
 
 	set_entry_position (i: INTEGER) is

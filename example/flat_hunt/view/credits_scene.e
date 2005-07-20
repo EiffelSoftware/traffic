@@ -11,6 +11,9 @@ inherit
 		redefine
 			initialize_scene
 		end
+
+create
+	make
 	
 feature -- Initialization
 
@@ -22,9 +25,8 @@ feature -- Initialization
 			i: INTEGER
 		do
 			Precursor
-			
-			create menu.make_with_default_fonts (agent on_select)
-			menu.add_entry ("back", Void, true)
+
+			menu.add_entry ("back", start_menu_scene, true)
 			menu.set_x_y ((Window_width - 100) // 2, Window_height - 100)
 			main_container.extend (menu)
 

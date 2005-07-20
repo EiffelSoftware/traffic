@@ -19,11 +19,16 @@ create
 
 feature {NONE} -- Initialization
 	
-	make (estate_agent_bot: BOOLEAN; a_location: TRAFFIC_PLACE) is
+	make (a_map: TRAFFIC_MAP; a_location: TRAFFIC_PLACE; is_bot: BOOLEAN) is
 			-- Put player on board.
 		do
+			make_from_map_and_place (a_map, a_location)
 			name := "Agent"
-			if estate_agent_bot then
+			last_visible_location := location
+			visible := False
+			create 
+
+			if is_bot then
 				bus_tickets := default_bot_tickets
 				rail_tickets := default_bot_tickets
 				tram_tickets := default_bot_tickets
@@ -32,39 +37,48 @@ feature {NONE} -- Initialization
 				rail_tickets := default_rail_tickets
 				tram_tickets := default_tram_tickets
 			end
-			location := a_location
-			last_estate_agent_location := location
-			if estate_agent_bot then
+			
+			if is_bot then
 				create {ESTATE_AGENT_BOT} brain
 			else
 				create {HUMAN} brain
 			end
---			create displayer.make (Current)
---			displayer.set_visible (False)
 		ensure
---			has_correct_displayer: displayer.player = Current
 			has_brain: brain /= Void
 			location_is_hauptbahnhof: location.name.is_equal ("Hauptbahnhof")
 			name_is_agent: name.is_equal ("Agent")
 		end
 
 feature -- Access
-	
---	displayer: ESTATE_AGENT_DISPLAYER
-		-- Displayer to display the estate agent.
 
-	last_estate_agent_location: TRAFFIC_PLACE
+	last_visible_location: TRAFFIC_PLACE
 		-- Last location where the estate agent showed up.
-	
-feature {GAME} -- Element change (GAME)
+		
+	visible: BOOLEAN
+			-- Is it a checkpoint?
+			
+feature -- Queries
 
-	set_last_estate_agent_location is
-			-- Set `last_estate_agent_location' to `location'.
+	is_visible: BOOLEAN
 		do
-			last_estate_agent_location := location
+			Result := visible
+		end
+	
+feature -- Status setting
+		
+	set_visible (a_visibility: BOOLEAN) is
+			-- Set estate agent's visibility.
+		do
+			visible := a_visibility
+		end
+
+	set_last_visible_location is
+			-- Set `last_visible_location' to `location'.
+		do
+			last_visible_location := location
 		end
 		
-feature {FLAT_HUNTER} -- Element change (FLAT_HUNTER)
+feature -- Element Change
 
 	increase_ticket_count (a_move: TRAFFIC_LINE_SECTION) is
 			-- Increase number of bus, rail or tram tickets.
@@ -83,20 +97,28 @@ feature {FLAT_HUNTER} -- Element change (FLAT_HUNTER)
 		ensure
 			tickets_increased: (bus_tickets + rail_tickets + tram_tickets) = (old bus_tickets + old rail_tickets + old tram_tickets + 1)
 		end
+		
+feature -- Measurement
 
+	taken_transports: LINKED_LIST[STRING]
+			-- List of all taken transports so far
+			
+	visited_places: LINKED_LIST[STRING]
+			-- List of all the visited places
+			
 feature {GAME} -- Basic operations
 
 	choose_move is
 			-- Choose the next move.
 		local
-			visited_places: STRING
+			tmp_visited_places: STRING
 		do
-			brain.choose_estate_agent_move (possible_moves, location, last_estate_agent_location)
+			brain.choose_estate_agent_move (possible_moves, location, last_visible_location)
 			next_move := brain.chosen_move
 			if next_move /= Void then
---				displayer.transports_taken.extend (next_move.type)
-				visited_places := location.name + " -> " + next_move.other_end (location).name
---				displayer.places_visited.extend (visited_places)
+				taken_transports.extend (next_move.type)
+				tmp_visited_places := location.name + " -> " + next_move.destination (location).name
+				visited_places.extend (tmp_visited_places)
 			end
 		end		
 

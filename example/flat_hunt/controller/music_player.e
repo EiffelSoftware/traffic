@@ -15,10 +15,7 @@ inherit
 
 	ESDL_SOUND_PLAYER
 	
---	DISPLAY_CONSTANTS
---		undefine
---			default_create
---		end
+--	THEME
 
 create
 	make
@@ -28,7 +25,7 @@ feature -- Basic operations
 	load_game_music is
 			-- Load the default background music.
 		do
---			open_file (background_music)			
+--			open_file ("./resources/sound/far_away.ogg")			
 		end
 		
 end

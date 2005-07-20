@@ -49,7 +49,7 @@ feature -- Initialization
 			create scenes.make (0)
 		ensure
 			font_set: font = a_font
-			selected_font_set: font = a_selected_font
+			selected_font_set: selected_font = a_selected_font
 			callback_set: callback = a_callback
 		-- TODO: ensure of entries /= Void and scenes /= Void not necessary because of
 		-- class invariant, right?
@@ -62,7 +62,6 @@ feature -- Access
 			-- Add an entry to the menu
 		require
 			a_text_not_void: a_text /= Void
-			a_scene_not_void: a_scene /= Void
 		do			
 			if selected then
 				entries.extend (create {MENU_ENTRY}.make_from_string (a_text, selected_font), next_index)
@@ -70,10 +69,8 @@ feature -- Access
 			else
 				entries.extend (create {MENU_ENTRY}.make_from_string (a_text, font), next_index)			
 			end
-			
-			if a_scene /= Void then
-				scenes.extend (a_scene, next_index)	
-			end
+
+			scenes.extend (a_scene, next_index)	
 			
 			if entries.item (next_index).width > max_entry_width then
 				max_entry_width := entries.item (next_index).width
