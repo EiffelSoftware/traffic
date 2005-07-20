@@ -43,12 +43,14 @@ feature -- Status setting
 		end	
 			
 feature -- Basic operations
-	render( a_place: TRAFFIC_PLACE) : ESDL_RECTANGLE is
+	render (a_place: TRAFFIC_PLACE) : ESDL_DRAWABLE is
 				-- Rectangle to visualize `a_place'.
 		local
 			links: LIST [TRAFFIC_LINE_SECTION]
 			p: ESDL_VECTOR_2D
+			rectangle: ESDL_RECTANGLE
 		do
+
 			-- Calculate rectangle to include all outgoing links of `a_place'.
 			links := map.line_sections_of_place (a_place.name)			
 			from			
@@ -59,23 +61,24 @@ feature -- Basic operations
 				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then   
 				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
 					p := links.item.polypoints.first
-					if Result = Void then
-						create Result.make (p.twin, p.twin)
+					if rectangle = Void then
+						create rectangle.make (p.twin, p.twin)
 					else
-						Result.extend (p)	
+						rectangle.extend (p)	
 					end
 				end
 				links.forth
 			end
 			
-			if Result = Void then
-				create Result.make (a_place.position.twin, a_place.position.twin)				
+			if rectangle = Void then
+				create rectangle.make (a_place.position.twin, a_place.position.twin)				
 			end
 			
 			-- Make a little bit larger and keep center-position
-			Result.set_size_centered (Result.width + 10, Result.height + 10)
-			Result.set_fill_color (place_color)			
+			rectangle.set_size_centered (rectangle.width + 10, rectangle.height + 10)
+			rectangle.set_fill_color (place_color)			
 
+			Result := rectangle
 		end			
 
 			

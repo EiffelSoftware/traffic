@@ -26,11 +26,11 @@ feature -- Initialization
 			create line_sections_model.make_with_map (a_map)
 			create places_model.make_with_map (a_map)
 			
-			create line_renderer.make_with_map (a_map)
+			create line_section_renderer.make_with_map (a_map)
 			create place_renderer.make_with_map (a_map)
 			
 			create place_drawables.make_with_map_and_default_renderer (places_model, place_renderer)
-			create line_section_drawables.make_with_map_and_default_renderer (line_sections_model, line_renderer)
+			create line_section_drawables.make_with_map_and_default_renderer (line_sections_model, line_section_renderer)
 	
 			render
 			
@@ -43,7 +43,7 @@ feature -- Access
 	map: TRAFFIC_MAP
 			-- Model of the map visualized by `Current'	
 
-	line_renderer: TRAFFIC_LINE_SECTION_RENDERER
+	line_section_renderer: TRAFFIC_LINE_SECTION_RENDERER
 			--standard renderer for the TRAFFIC_LINE_SECTIONs
 			
 	place_renderer: TRAFFIC_PLACE_RENDERER

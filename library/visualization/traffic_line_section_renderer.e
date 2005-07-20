@@ -74,40 +74,42 @@ feature -- Status setting
 		end
 		
 feature -- Basic operations
-	render (a_line_section: TRAFFIC_LINE_SECTION): ESDL_POLYLINE is
+	render (a_line_section: TRAFFIC_LINE_SECTION): ESDL_DRAWABLE is
 			-- Polyline to visualize `a_line_section'.	
 			
 		local
 			col: ESDL_COLOR
 			tcol: TRAFFIC_COLOR
+			polyline: ESDL_POLYLINE
 		do
-			create Result.make_from_list (a_line_section.polypoints)
+			create polyline.make_from_list (a_line_section.polypoints)
 
 			-- TODO: the following should not be necessary seem to be a LINE_SECTION bug: --> see invariant of LINE_SECTION
-			if Result.count < 2 then
-				create Result.make_empty
-				Result.extend (a_line_section.origin.position)
-				Result.extend (a_line_section.destination.position)
+			if polyline.count < 2 then
+				create polyline.make_empty
+				polyline.extend (a_line_section.origin.position)
+				polyline.extend (a_line_section.destination.position)
 			end
 			
 			
 			if traffic_type_colors.has (a_line_section.type.name) then
-				Result.set_line_color (traffic_type_colors.item (a_line_section.type.name))
+				polyline.set_line_color (traffic_type_colors.item (a_line_section.type.name))
 			elseif line_color /= Void then
-				Result.set_line_color (line_color)
+				polyline.set_line_color (line_color)
 			elseif a_line_section.line /= Void then
 				if a_line_section.line.color /= Void then
 					tcol := a_line_section.line.color
 					create col.make_with_rgb (tcol.red, tcol.green, tcol.blue)					
-					Result.set_line_color (col)
+					polyline.set_line_color (col)
 				end				
 			end
 			if traffic_type_line_widths.has (a_line_section.type.name) then
-				Result.set_line_width (traffic_type_line_widths.item (a_line_section.type.name))
+				polyline.set_line_width (traffic_type_line_widths.item (a_line_section.type.name))
 			else
-				Result.set_line_width (line_width)
+				polyline.set_line_width (line_width)
 			end	
-
+			
+			Result := polyline
 		end		
 
 feature {NONE} -- Implementation
