@@ -16,30 +16,6 @@ feature -- Initialization
 			create examples.make (10)
 		end
 
-feature -- Access
-
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
 feature -- Basic operations
 	subscribe (example: TOUCH_EXAMPLE) is
 			-- 
@@ -67,10 +43,6 @@ feature -- Basic operations
 		do
 			Result := examples.count
 		end
-		
-feature -- Obsolete
-
-feature -- Inapplicable
 
 feature {NONE} -- Implementation
 

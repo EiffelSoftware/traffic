@@ -8,9 +8,7 @@ class
 	TOUCH_TEXTLIST
 	inherit
 		ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			redefine
-				make
-			end
+		
 		ESDL_SHARED_STANDARD_FONTS
 			export
 				{NONE} all
@@ -27,7 +25,6 @@ class
 				default_create
 			end				
 	creation
-		make,
 		make_with_width_and_height
 		
 feature -- Access
@@ -35,7 +32,7 @@ feature -- Access
 	line_height: INTEGER is 
 			-- This is an estimate, and works only with fixed size characters
 		do 
-			Result := standard_fonts.small_font.height ('A') + 3;
+			Result := standard_bmp_fonts.small_font.height ('A') + 3;
 		end
 
 	max_length: INTEGER is
@@ -51,17 +48,18 @@ feature -- Access
 	character_width: INTEGER is
 			-- This is an estimate, and works only with fixed length characters
 		do 
-			Result :=  standard_fonts.small_font.width ('A')
+			Result :=  standard_bmp_fonts.small_font.width ('A')
 		end
 
 	
 feature -- Initialisation
-	make is
+	make_with_width_and_height (a_width: INTEGER; a_height: INTEGER) is
 			-- 
 		local
 			color_gray: ESDL_COLOR
 		do
-			Precursor {ESDL_DRAWABLE_CONTAINER}
+			make	
+			
 			create line_drawables.make
 			--Build Background
 			create background.make_from_position_and_size (0, 0, 0, 0)
@@ -77,17 +75,11 @@ feature -- Initialisation
 			Current.extend (background)
 			Current.extend (border)
 			
-		ensure then
+			set_width_height (a_width, a_height)
+		ensure
 			background_not_void: background /= Void
 			border_not_void: border /= Void
-			line_drawables_not_void: line_drawables /= Void
-		end
-		
-	make_with_width_and_height (a_width: INTEGER; a_height: INTEGER) is
-			-- 
-		do
-			make
-			set_width_height (a_width, a_height)
+			line_drawables_not_void: line_drawables /= Void			
 		end
 		
 feature -- Measurement
@@ -134,6 +126,8 @@ feature -- Miscellaneous
 feature -- Basic operations
 	put_line (a_text: STRING) is
 			-- write text to a line
+		require 
+			a_text_not_void: a_text /= Void
 		local
 			string: ESDL_STRING
 			text_substring: STRING
@@ -145,7 +139,7 @@ feature -- Basic operations
 			from
 				cursor.start
 			until
-				cursor.off
+				cursor.after
 			loop
 				string := cursor.item
 				string.set_x_y (space, string.y + line_height)
@@ -158,12 +152,12 @@ feature -- Basic operations
 				line_drawables.remove_first
 			end		
 		
-			--create new esdl-string an insert it in front
+			--create new esdl-string and insert it in front
 			if a_text.count > max_length then	
 				text_substring := a_text.substring (1, max_length)
-				create new_string.make (text_substring, standard_fonts.small_font)
+				create new_string.make (text_substring, standard_bmp_fonts.small_font)
 			else
-				create new_string.make (a_text, standard_fonts.small_font)			
+				create new_string.make (a_text, standard_bmp_fonts.small_font)			
 			end
 
 			new_string.set_x_y (space, space)
@@ -180,8 +174,8 @@ feature -- Basic operations
 		do
 			from
 				i := a_text.count
-				begin := i - a_text.count \\ max_length				
-				if begin = i then
+				begin := i - (a_text.count \\ max_length)
+				if begin = i then --a_text.count \\ max_length = 0
 					begin := i - max_length
 				end
 			until

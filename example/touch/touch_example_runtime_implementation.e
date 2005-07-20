@@ -1,9 +1,10 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
-
+	description: "[
+				A straightforward implementation of the TOUCH_EXAMPLE_RUNTIME
+				]"
+	author: "Roger Kueng"
+	date: "2005/07/12"
+	revision: "1.0"
 class
 	TOUCH_EXAMPLE_RUNTIME_IMPLEMENTATION
 
@@ -45,28 +46,6 @@ feature -- Access
 		do
 			Result := intern_map_widget
 		end
-		
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
 
 feature -- Basic operations
 	console_out (a_text: STRING) is
@@ -76,15 +55,14 @@ feature -- Basic operations
 		end
 		
 
-feature -- Obsolete
 
-feature -- Inapplicable
 
 feature {NONE} -- Implementation
 	intern_map: TRAFFIC_MAP
 	intern_map_widget: TRAFFIC_MAP_WIDGET
 	intern_console: TOUCH_TEXTLIST
 invariant
-	invariant_clause: True -- Your invariant here
-
+	map_set: intern_map /= Void
+	map_widget_set: intern_map_widget /= Void
+	textlist_set: intern_console /= Void
 end -- class TOUCH_EXAMPLE_RUNTIME_IMPLEMENTATION

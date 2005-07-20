@@ -8,6 +8,10 @@ class
 	TOUCH_BITMAP_BUTTON
 inherit
 		TOUCH_BUTTON
+			redefine
+				on_button_up,
+				on_button_down
+			end
 			
 		ESDL_SHARED_BITMAP_FACTORY
 			undefine
@@ -111,35 +115,20 @@ feature -- Inapplicable
 
 feature {NONE} -- Implementation
 
-	is_down: BOOLEAN
-
 	border: ESDL_RECTANGLE
 	bitmap: ESDL_BITMAP
 
 
-	process_mouse_down (me: ESDL_MOUSEBUTTON_EVENT) is
+	on_button_down (me: ESDL_MOUSE_EVENT) is
 		do
-			if not is_down then
-				bitmap.set_x_y (bitmap.x + 3, bitmap.y + 3)
-				is_down := true			
-				border.set_line_color (create {ESDL_COLOR}.make_with_rgb (255, 125, 0))
-				
-			end
+			bitmap.set_x_y (bitmap.x + 3, bitmap.y + 3)				
+			border.set_line_color (create {ESDL_COLOR}.make_with_rgb (255, 125, 0))	
 		end
-	process_mouse_up (me: ESDL_MOUSEBUTTON_EVENT) is
+		
+	on_button_up (me: ESDL_MOUSE_EVENT) is
 		do
-			if is_down then
-				bitmap.set_x_y (bitmap.x - 3, bitmap.y - 3)
-				is_down := false			
-				border.set_line_color (create {ESDL_COLOR}.make_white)				
-			end
-		end
-	process_mouse_motion (me: ESDL_MOUSEBUTTON_EVENT) is
-		do
---			if is_down and then not bounding_box.has (me.proportional_position)  then
-			if is_down then
-				process_mouse_up (me)
-			end
+			bitmap.set_x_y (bitmap.x - 3, bitmap.y - 3)
+			border.set_line_color (create {ESDL_COLOR}.make_white)		
 		end
 
 invariant

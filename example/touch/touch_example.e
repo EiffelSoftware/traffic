@@ -48,53 +48,26 @@ feature -- Access
 		do
 			Result := Current.generating_type
 		end
-		
-feature -- Measurement
 
 feature -- Status report
 	hash_code : INTEGER 
---	is
---			-- 
---		do
---			Result := hash_number
---		end
-		
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
 
 feature -- Basic operations
 	
-	run_with_scene : ESDL_SCENE is 
+	run_with_scene (on_exit_scene: ESDL_SCENE): ESDL_SCENE is 
 			-- The example can specify it's own scene
+			-- The 'on_exit_scene' can be set to get
+			-- back to the menu
 		do
 			Result := Void	
 		end
 		
-	run ( an_example_runtime: TOUCH_EXAMPLE_RUNTIME) is
-			-- The Entry-Point for a traffic_map Example
+	run (an_example_runtime: TOUCH_EXAMPLE_RUNTIME) is
+			-- The Entry-Point for the Example
 	require
 		runtime_not_void: an_example_runtime /= Void
 	deferred
 	end
-		
-feature -- Obsolete
-
-feature -- Inapplicable
 
 feature {NONE} -- Implementation
 	hash_number: INTEGER

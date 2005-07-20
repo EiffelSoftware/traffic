@@ -4,7 +4,7 @@ indexing
 	date: "2005/06/20"
 	revision: "alpha"
 
-class
+obsolete class
 	TOUCH_WIDGET
 	
 inherit 

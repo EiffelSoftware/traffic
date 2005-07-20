@@ -1,8 +1,10 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "[
+				The main scene of TOUCH
+				]"
+	author: "Roger Kueng"
+	date: "2005/07/12"
+	revision: "1.0"
 
 class
 	TOUCH_EXAMPLE_SELECTION_SCENE
@@ -44,9 +46,36 @@ feature -- Views
 
 	background: TOUCH_BITMAP_STATIC
 	
-	chapters_container: ESDL_ZOOMABLE_WIDGET 
+	chapters_container_widget: TOUCH_SCROLLABLE_WIDGET 
+	
+	console: TOUCH_TEXTLIST
 	
 feature -- Scene Initialization
+		
+	fill_chapter_examples is
+			-- 
+		local
+			example_1, example_2, example_3: TOUCH_EXAMPLE
+		do
+		
+			--Build Chapter-Example-Tree
+			example_1 := create {EXAMPLE_1}
+			example_2 := create {TOUCH_CITY_CHANGE_EXAMPLE}
+			example_3 := create {TOUCH_CITY_CHANGE_EXAMPLE}
+			
+			create chapter_examples.make
+			
+			chapter_examples.set_count (5)
+			chapter_examples.i_th (1).subscribe (example_1)
+			chapter_examples.i_th (2).subscribe (example_1)
+			chapter_examples.i_th (3).subscribe (example_1)
+			chapter_examples.i_th (4).subscribe (example_2)
+			chapter_examples.i_th (4).subscribe (example_1)
+			chapter_examples.i_th (5).subscribe (example_1)
+			chapter_examples.i_th (5).subscribe (example_2)
+			chapter_examples.i_th (5).subscribe (example_3)
+		end		
+
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
 		local
@@ -56,14 +85,13 @@ feature -- Scene Initialization
 			border: INTEGER
 			title_offset: INTEGER
 			
-			left_background: TOUCH_BITMAP_STATIC
+			left_foreground: TOUCH_BITMAP_STATIC
+			left_background: ESDL_RECTANGLE
 			upper_background: TOUCH_BITMAP_STATIC
 			settings_background: TOUCH_BITMAP_STATIC
 			
 			up_button: TOUCH_BUTTON
 			down_button: TOUCH_BUTTON
-			
-			example_1, example_2, example_3: TOUCH_EXAMPLE
 
 		do			
 			width := 1024
@@ -74,23 +102,8 @@ feature -- Scene Initialization
 			if not initialized then
 				initialized := true
 
-				--Build Chapter-Example-Tree
-				example_1 := create {TOUCH_CITY_CHANGE_EXAMPLE}
-				example_2 := create {TOUCH_CITY_CHANGE_EXAMPLE}
-				example_3 := create {TOUCH_CITY_CHANGE_EXAMPLE}
-				
-				create chapter_examples.make
-				
-				chapter_examples.set_count (5)
-				chapter_examples.i_th(1).subscribe (example_1)
-				chapter_examples.i_th(2).subscribe (example_1)
-				chapter_examples.i_th(3).subscribe (example_1)
-				chapter_examples.i_th(4).subscribe (example_2)
-				chapter_examples.i_th(4).subscribe (example_1)
-				chapter_examples.i_th(5).subscribe (example_1)
-				chapter_examples.i_th(5).subscribe (example_2)
-				chapter_examples.i_th(5).subscribe (example_3)
-				
+
+				fill_chapter_examples
 	
 				
 
@@ -101,23 +114,35 @@ feature -- Scene Initialization
 --				create background.make_with_image_file_and_width_and_height ("./images/background.png", width, height)
 				
 				--Build up/down buttons
-				up_button := create  {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height ("./images/arrow_up.png", 64, 64)
+				up_button := create  {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height 
+					("./images/arrow_up.png", 64, 64)
 				up_button.set_x_y (border + 400, title_offset + border)
 
-				down_button := create  {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height ("./images/arrow_down.png", 64, 64)
+				down_button := create  {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height 
+					("./images/arrow_down.png", 64, 64)
 				down_button.set_x_y (border + 400, title_offset + border + 600 - down_button.height)
 
 				up_button.subscribe_for_click (agent process_scroll_up)
-				down_button.subscribe_for_click (agent process_scroll_down)				
-				--Build Backgrounds
-				create left_background.make_with_image_file_and_width_and_height ("./images/background_with_white.png", 400, 600)
-				left_background.set_x_y (border // 2, title_offset + border)
+				down_button.subscribe_for_click (agent process_scroll_down)	
 				
-				create upper_background.make_with_image_file_and_width_and_height ("./images/background_filled.png", width-border, title_offset-border)
+				
+				--Build Backgrounds
+				create left_foreground.make_with_image_file_and_width_and_height 
+					("./images/background_with_alpha.png", 400, 600)
+				left_foreground.set_x_y (border // 2, title_offset + border)
+				
+				create left_background.make_from_position_and_size
+					(left_foreground.x, left_foreground.y, left_foreground.width-1, left_foreground.height-1)
+				left_background.set_fill_color (create {ESDL_COLOR}.make_with_rgb (240, 240, 240))
+				
+				create upper_background.make_with_image_file_and_width_and_height 
+					("./images/background_filled.png", width-border, title_offset-border)
 				upper_background.set_x_y (border // 2, border // 2)
 				
-				create settings_background.make_with_image_file_and_width_and_height ("./images/background_filled.png", (0.3*width-2*border).rounded, (0.2*height-2*border).rounded)
+				create settings_background.make_with_image_file_and_width_and_height 
+					("./images/background_filled.png", (0.3*width-2*border).rounded, (0.2*height-2*border).rounded)
 				settings_background.set_x_y ((0.7*width+border).rounded, (0.8*height+border).rounded)
+				
 				
 				-- Build title
 				title := text_box ("ESDL TOUCH", width-2*border, title_offset-2*border)
@@ -130,11 +155,16 @@ feature -- Scene Initialization
 	
 		
 				--Build Run Button
-				run_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height ("RUN EXAMPLE", settings_container.width-2*border, 30)
+				run_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height 
+					("RUN EXAMPLE", settings_container.width-2*border, 30)
 				run_button.set_x_y (border, border)
 				settings_container.extend (run_button)
 				run_button.subscribe_for_click (agent process_clicked_run_button)
 	
+				
+				--Build Console
+				create console.make_with_width_and_height (500, 200)
+				console.set_x_y (width - border*2 - console.width, 400);
 	
 				--Build Chapter Buttons
 --				last_chapter := create {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height ("images\\last_chapter.png", 250, 50)
@@ -146,6 +176,15 @@ feature -- Scene Initialization
 --				next_chapter.subscribe_for_click (agent process_clicked_next_chapter_button)
 				
 				
+				--Create Chapters_Container_widget
+				create chapters_container_widget.make (400 - 2*border, 600 - 3*border)
+				chapters_container_widget.set_x_y (border, title_offset + border + border)
+				--Build The Visual Chapter Tree
+				chapters_container_widget.set_horizontal_scroll (false)
+				build_chapter_examples_drawables (chapters_container_widget)
+
+				chapters_container_widget.calculate_object_area
+				
 				
 				--Put Drawables to main_container
 				main_container.extend (up_button)
@@ -155,24 +194,20 @@ feature -- Scene Initialization
 				main_container.extend (settings_background)
 				main_container.extend (title)
 				main_container.extend (settings_container)
+				main_container.extend (console)
+
 --				main_container.extend (last_chapter)
 --				main_container.extend (next_chapter)
 				
-				--Create Chapters_Container
-				create chapters_container.make (400 - 2*border, 600 - 3*border)
-				chapters_container.set_x_y (border, title_offset + border + border)
-				main_container.extend (chapters_container)
-				
-				--Build The Visual Chapter Tree
-				build_chapter_tree (chapters_container)
+				main_container.extend (chapters_container_widget)
 
-				chapters_container.calculate_object_area
+				main_container.extend (left_foreground)
 
 			end
 
 		end
 		
-		
+	
 feature {NONE} -- Implementation
 
 	initialized: BOOLEAN
@@ -198,7 +233,7 @@ feature {NONE} -- Implementation
 			box.extend (background_rectangle)
 			
 			-- Build Title text.
-			create text.make (a_text, standard_fonts.medium_font)
+			create text.make (a_text, standard_bmp_fonts.medium_font)
 			box.extend (text)			
 			
 			-- Set text centered in box.
@@ -207,7 +242,7 @@ feature {NONE} -- Implementation
 			text.set_x_y (tx, ty)	
 		end
 		
-	build_chapter_tree (container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]) is
+	build_chapter_examples_drawables (container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]) is
 			-- 
 		require
 			container_not_void: container /= Void
@@ -276,8 +311,8 @@ feature {NONE} -- Agents, GUI events
 				an_example := hash_from_button_to_example.item (a_button)
 				if an_example /= Void then
 					current_example := an_example
-					 --Show Information about example
-					 --DEBUG: RUN EXAMPLE
+					
+					console.put_text (an_example.description)
 				end			
 		end
 		
@@ -293,14 +328,12 @@ feature {NONE} -- Agents, GUI events
 			--If example not Void then run it
 			if example /= Void then
 				
-				example_scene := example.run_with_scene
+				example_scene := example.run_with_scene (Void)
+				--Does not work with Current
+--				example_scene := example.run_with_scene (Current)
 				
-				if example_scene /= Void then
-		
+				if example_scene /= Void then		
 					next_scene := example_scene
-					--example_scene.next_scene := Void
-					--example_scene.next_scene := Current
-					--example_scene.next_scene := example_scene
 					event_loop.stop
 				else
 					--Switch View
@@ -328,13 +361,13 @@ feature {NONE} -- Agents, GUI events
 	process_scroll_up (a_button: TOUCH_BUTTON) is
 			-- 
 		do
-			chapters_container.scroll (create {ESDL_VECTOR_2D}.make (0, -24))
+			chapters_container_widget.scroll (create {ESDL_VECTOR_2D}.make (0, -24))
 		end
 		
 	process_scroll_down (a_button: TOUCH_BUTTON) is
 			-- 
 		do
-			chapters_container.scroll (create {ESDL_VECTOR_2D}.make (0, +24))			
+			chapters_container_widget.scroll (create {ESDL_VECTOR_2D}.make (0, +24))			
 		end
 		
 invariant

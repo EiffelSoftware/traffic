@@ -4,7 +4,7 @@ indexing
 					]"
 	author: "Roger Kueng"
 	date: "2005/05/31"
-	revision: "alpha"
+	revision: "1.0"
 
 class
 	TOUCH_APPLICATION
@@ -32,7 +32,7 @@ feature -- Initialization
 			set_application_name ("ESDL TOUCH")
 						
 			-- Setup font directory.
-			standard_fonts.set_font_dirname ("./font")
+			standard_bmp_fonts.set_font_dirname ("font")
 			
 			-- Create first scene.
 			first_scene := create {TOUCH_EXAMPLE_SELECTION_SCENE}

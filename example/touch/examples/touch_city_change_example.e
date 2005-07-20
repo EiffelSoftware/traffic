@@ -10,7 +10,8 @@ class
 inherit
 	TOUCH_EXAMPLE
 		redefine
-			name
+			name,
+			run_with_scene
 		end
 
 feature -- Access
@@ -24,6 +25,8 @@ feature -- Access
 		once
 			Result := "Run it and watch the result"
 		end
+		
+	example_scene: TOUCH_SIMPLE_TRAFFIC_SCENE
 	
 feature -- Measurement
 
@@ -48,6 +51,14 @@ feature -- Duplication
 feature -- Miscellaneous
 
 feature -- Basic operations
+	run_with_scene (exit_scene: ESDL_SCENE): ESDL_SCENE is
+			-- 
+		do
+			example_scene := create {TOUCH_SIMPLE_TRAFFIC_SCENE}.make_with_zurich_little (Current)
+			example_scene.set_next_scene (exit_scene)
+			Result := example_scene
+		end
+		
 	run (a_runtime: TOUCH_EXAMPLE_RUNTIME) is
 			-- 
 		local 
@@ -60,6 +71,7 @@ feature -- Basic operations
 			a_runtime.map.add_place (new_place)
 			
 			a_runtime.console_out ("Example Done")
+			example_scene.map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
 		end
 		
 
@@ -68,6 +80,17 @@ feature -- Obsolete
 feature -- Inapplicable
 
 feature {NONE} -- Implementation
+
+	process_clicked_place (place: TRAFFIC_PLACE; m_event: ESDL_MOUSEBUTTON_EVENT) is
+			-- User clicked on a place in the map
+		do
+			if m_event.is_left_button then
+				if place.information /= Void then				
+					example_scene.console.put_text (place.information.description)
+				end
+				example_scene.console.put_line (place.name)
+			end			
+		end
 
 invariant
 	invariant_clause: True -- Your invariant here

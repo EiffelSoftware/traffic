@@ -1,8 +1,8 @@
 indexing
 	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	author: "Roger Kueng"
+	date: "2005/07/12"
+	revision: "alpha"
 
 class
 	TOUCH_CHAPTER_CONTAINER
@@ -59,10 +59,6 @@ feature -- Queries
 				Result := chapters.i_th (n)
 			end
 		end
-
-feature -- Obsolete
-
-feature -- Inapplicable
 
 feature {NONE} -- Implementation
 
