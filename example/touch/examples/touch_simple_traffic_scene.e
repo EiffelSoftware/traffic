@@ -201,8 +201,8 @@ feature {NONE} -- Implementation
 			create map_widget.make_with_map (traffic_map)
 			
 			-- Customize map widget and render.
-			map_widget.line_renderer.traffic_type_line_widths.put (8, "rail")
-			map_widget.line_renderer.traffic_type_colors.put (rail_color, "rail")
+			map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
+			map_widget.line_section_renderer.traffic_type_colors.put (rail_color, "rail")
 			map_widget.render
 			
 			-- Create zoomable widget to make map zoomable.
