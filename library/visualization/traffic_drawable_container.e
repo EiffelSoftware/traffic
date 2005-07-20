@@ -7,10 +7,10 @@ indexing
 						for drawing them. Use `set_renderer_for_item' to customize the renderer used 
 						to render an item.
 					]"
-	note: "This class is only a prototype, needs some review and improvement (bad performance of some implementations)"
-	author: "Rolf Bruderer"
-	date: "2005/03/03"
-	revision: "1.3"	
+	note: "This class needs some improvement (bad performance of some implementations)"
+	author: "Rolf Bruderer, Roger Kueng"
+	date: "2005/07/20"
+	revision: "1.4"	
 
 class
 	TRAFFIC_DRAWABLE_CONTAINER [ELEMENT -> HASHABLE]
@@ -74,8 +74,15 @@ feature -- Access
 		end		
 		
 feature -- Status setting
-
-	set_renderer_for_item(a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]; an_item: ELEMENT) is
+	set_default_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]) is
+			-- Set 'default_renderer'
+		require
+			a_renderer_not_null: a_renderer /= Void
+		do
+			default_renderer := a_renderer	
+		end
+		
+	set_renderer_for_item (a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]; an_item: ELEMENT) is
 			-- Set `a_renderer' as renderer for item at position `a_index'
 		require
 			a_renderer_not_null: a_renderer /= Void
@@ -93,6 +100,14 @@ feature -- Status setting
 			end
 		ensure
 			item_has_the_new_renderer: item_renderers.item (an_item) = a_renderer
+		end
+	
+	reset_renderer_for_item (an_item: ELEMENT) is
+			-- 
+		do
+			if item_renderers.has (an_item) then
+				item_renderers.remove (an_item)			
+			end
 		end
 		
 feature -- Commands

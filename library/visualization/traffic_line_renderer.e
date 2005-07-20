@@ -4,7 +4,7 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
+obsolete class
 	TRAFFIC_LINE_RENDERER
 		inherit
 			TRAFFIC_ITEM_RENDERER [ESDL_DRAWABLE]
