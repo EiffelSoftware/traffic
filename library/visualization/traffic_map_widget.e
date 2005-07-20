@@ -1,19 +1,14 @@
 indexing
 	description: "Map widget to visualize a TRAFFIC_MAP with TRAFFIC_MAP_RENDERER."
-	author: "Rolf Bruderer"
-	date: "2005/03/10"
-	revision: "1.0"
+	author: "Rolf Bruderer, Roger Kueng"
+	date: "2005/07/20"
+	revision: "1.1"
 
 class
 	TRAFFIC_MAP_WIDGET
 
 inherit	
 	ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-	
---	TRAFFIC_DRAWABLE_CONTAINER [HASHABLE]
---		redefine
---			make_with_map, map	
---		end
 
 create
 	make_with_map
@@ -22,12 +17,11 @@ feature -- Initialization
 
 	make_with_map (a_map: TRAFFIC_MAP) is
 			-- Initialize with `a_map' to visualize.
---		local
 		require
 			map_not_void: a_map /= Void
 		do
 			make
---			Precursor {TRAFFIC_DRAWABLE_CONTAINER} (a_map)
+
 			map := a_map;
 			create line_sections_model.make_with_map (a_map)
 			create places_model.make_with_map (a_map)
@@ -37,10 +31,7 @@ feature -- Initialization
 			
 			create place_drawables.make_with_map_and_default_renderer (places_model, place_renderer)
 			create line_section_drawables.make_with_map_and_default_renderer (line_sections_model, line_renderer)
-			
---			set_default_renderer( place_renderer)
---			set_default_renderer( line_renderer)
-			
+	
 			render
 			
 			extend (line_section_drawables)
@@ -74,40 +65,109 @@ feature -- Input
 			line_section_drawables.mouse_button_down_on_map_item_event.subscribe (an_action)
 		end
 		
-feature --Status
+feature -- Status - Places
 
-	set_place_special_renderer ( a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]; a_place: TRAFFIC_PLACE) is
+	set_default_place_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]) is
+			-- 
+		require
+			a_renderer_not_void: a_renderer /= Void		
+		do
+			place_drawables.set_default_renderer (a_renderer)
+			place_drawables.render
+		end
+		
+	set_place_special_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]; a_place: TRAFFIC_PLACE) is
 		--set a proprietary renderer for a place
 		--does not re-render the scene. call render to see the changes
-	require
-		a_place_not_void: a_place /= Void
-	do
-		place_drawables.set_renderer_for_item (a_renderer, a_place)
+		require
+			a_renderer_not_void: a_renderer /= Void
+			a_place_not_void: a_place /= Void
+		do
+			place_drawables.set_renderer_for_item (a_renderer, a_place)
+		end
+	
+	reset_place_special_renderer (a_place: TRAFFIC_PLACE) is
+			-- 
+		require
+			a_place_not_void: a_place /= Void
+		do
+			place_drawables.reset_renderer_for_item (a_place)
+		end
 
-	end
+feature -- Status - Line_Sections
 
-	set_line_special_renderer ( a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]; a_line: TRAFFIC_LINE) is
+	set_default_line_section_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]) is
+			-- 
+		require
+			a_renderer_not_void: a_renderer /= Void		
+		do
+			line_section_drawables.set_default_renderer (a_renderer)
+			line_section_drawables.render
+		end
+
+	set_line_section_special_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]; a_line_section: TRAFFIC_LINE_SECTION) is
+		--set a proprietary renderer for a line_section, if it exists
+		--does not re-render the scene. call render to see the changes
+		require
+			a_renderer_not_void: a_renderer /= Void
+			a_line_section_not_void: a_line_section /= Void		
+		do
+			line_section_drawables.set_renderer_for_item (a_renderer, a_line_section)
+		end	
+		
+	reset_line_section_special_renderer (a_line_section: TRAFFIC_LINE_SECTION) is
+		--reset the proprietary renderer for a line, if it exists
+		require
+			a_line_section_not_void: a_line_section /= Void		
+		do
+			line_section_drawables.reset_renderer_for_item (a_line_section)
+		end	
+		
+	set_line_special_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]; a_line: TRAFFIC_LINE) is
 		--set a proprietary renderer for a line, if it exists
 		--does not re-render the scene. call render to see the changes
-	local
-		line: LINKED_LIST [TRAFFIC_LINE_SECTION]
-		line_section: TRAFFIC_LINE_SECTION
-	do
-		line := a_line
-		from
-			line.start
-		until
-		 	line.off
-		loop
-			line_section := line.item
-			line_section_drawables.set_renderer_for_item (a_renderer, line_section)
-		 	line.forth
-		end
-	end	
+		require
+			a_renderer_not_void: a_renderer /= Void
+			a_line_not_void: a_line /= Void		
+		local
+			line: LINKED_LIST [TRAFFIC_LINE_SECTION]
+			line_section: TRAFFIC_LINE_SECTION
+		do
+			line := a_line
+			from
+				line.start
+			until
+			 	line.after
+			loop
+				line_section := line.item
+				line_section_drawables.set_renderer_for_item (a_renderer, line_section)
+			 	line.forth
+			end
+		end	
+		
+	reset_line_special_renderer (a_line: TRAFFIC_LINE) is
+		--reset the proprietary renderer for a line, if it exists
+		require
+			a_line_not_void: a_line /= Void		
+		local
+			line: LINKED_LIST [TRAFFIC_LINE_SECTION]
+			line_section: TRAFFIC_LINE_SECTION
+		do
+			line := a_line
+			from
+				line.start
+			until
+			 	line.after
+			loop
+				line_section := line.item
+				line_section_drawables.reset_renderer_for_item (line_section)
+			 	line.forth
+			end
+		end	
 	
 feature -- Basic Operation
 	render is
-			-- 
+			--Render the map: It just updates the drawables 
 		do
 			line_section_drawables.render
 			place_drawables.render
