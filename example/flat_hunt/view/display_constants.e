@@ -10,7 +10,6 @@ deferred class
 inherit
 	ESDL_SHARED_STANDARD_FONTS
 
-
 	ESDL_SHARED_COLORS
 		undefine
 			default_create

@@ -295,13 +295,13 @@ feature -- Player Images
 		
 feature -- Sound
 
-	Sound_directory: STRING is "./resources/sound/"
+	Sound_directory: STRING is "./resources/sound"
 			-- Path to the sound directory
 
 	background_music: STRING is 
 			-- Default background music
 		once
-			Result := Sound_directory + "far_away.ogg"
+			Result := "far_away.ogg"
 		end
 		
 feature -- Misc (Strings)

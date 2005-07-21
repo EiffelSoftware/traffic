@@ -9,6 +9,8 @@ indexing
 -- Bug: if status box is placed at certain area & a line is not long enough, the line gets displayed at
 -- a weird position outside the status box
 
+-- TODO: move drawable_container instead of "ingredients"!! -> perhaps bug will fix itself? :)
+
 class
 	STATUS_BOX
 

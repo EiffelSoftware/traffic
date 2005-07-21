@@ -9,7 +9,7 @@ class
 	GAME_SCENE
 	
 inherit 
-	ESDL_SCENE
+	FLAT_HUNT_SCENE
 		redefine
 			handle_key_down_event
 		end
@@ -181,8 +181,8 @@ feature {NONE} -- Implementation
 			
 			-- Create and customize big map widget to visualize `traffic_map'
 			create big_map_widget.make_with_map (traffic_map)			
-			big_map_widget.line_renderer.traffic_type_line_widths.put (8, "rail")
-			big_map_widget.line_renderer.traffic_type_colors.put (rail_color, "rail")
+			big_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
+			big_map_widget.line_section_renderer.traffic_type_colors.put (rail_color, "rail")
 			big_map_widget.render
 			
 			-- Create zoomable widget to make map zoomable
@@ -226,9 +226,9 @@ feature {NONE} -- Implementation
 			create little_map_widget.make_with_map (traffic_map)
 
 			-- Customize map widget and render (to affect changes)
-			little_map_widget.line_renderer.traffic_type_line_widths.put (8, "rail")
-			little_map_widget.line_renderer.traffic_type_colors.put (rail_color, "rail")
-			little_map_widget.line_renderer.traffic_type_colors.put (yellow, "tram")
+			little_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
+			little_map_widget.line_section_renderer.traffic_type_colors.put (rail_color, "rail")
+			little_map_widget.line_section_renderer.traffic_type_colors.put (yellow, "tram")
 			little_map_widget.render
 
 			-- Build zoomable container to show little map widget in.
@@ -273,6 +273,8 @@ feature {NONE} -- Event Handling
 	handle_key_down_event (a_keyboard_event: ESDL_KEYBOARD_EVENT) is
 			-- Handle keyboard events.
 		do
+			Precursor {FLAT_HUNT_SCENE} (a_keyboard_event)
+			
 			if a_keyboard_event.key = sdlk_p then
 				-- Set game to pause mode and show pause menu
 				active := false

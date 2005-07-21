@@ -10,25 +10,15 @@ deferred class
 
 inherit
 	
---	SHARED_MUSIC_PLAYER
---		undefine
---			default_create
---		end
+	FLAT_HUNT_SCENE
+		redefine
+			handle_key_down_event
+		end
 	
 	SHARED_SCENES
 		undefine
 			default_create
 		end
-	
-	ESDL_SCENE
-		redefine
-			handle_key_down_event
-		end
-		
---	ESDL_BITMAP_FACTORY
---		undefine
---			default_create
---		end
 		
 	THEME
 		undefine
@@ -58,7 +48,7 @@ feature -- Event handling
 	handle_key_down_event (a_keyboard_event: ESDL_KEYBOARD_EVENT) is
 			-- Handle keyboard events
 		do
-			menu.handle_key_down_event (a_keyboard_event)
+			Precursor {FLAT_HUNT_SCENE} (a_keyboard_event)
 		end
 
 	on_select is

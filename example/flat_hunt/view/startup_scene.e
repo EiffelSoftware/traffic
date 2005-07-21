@@ -7,7 +7,7 @@ indexing
 class
 	STARTUP_SCENE
 inherit
-	ESDL_SCENE
+	FLAT_HUNT_SCENE
 	
 	ESDL_TIME_SINGLETON
 		undefine
