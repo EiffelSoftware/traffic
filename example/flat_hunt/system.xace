@@ -34,6 +34,18 @@
     </cluster>
   </cluster>  
 
+  <option unless="${GOBO_OS}=windows">
+    <option name="link" value="-lSDL_mixer"/>
+  </option>
+
+  <option if="${GOBO_OS}=windows">
+ 	  <option name="link" value="${SDL}\lib\SDL_mixer.lib"/>
+	  <option if="${GOBO_CC}=msc">
+	  	<!--option name="link" value="-DEFAULTLIB:MSVCRT.LIB"/>
+	  	<option name="link" value="-NODEFAULTLIB:LIBC.LIB"/-->
+	  </option>
+  </option>
+
   <mount location="${GOBO}/library/kernel.xace"/>
   <mount location="${GOBO}/library/library.xace"/>
   <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
