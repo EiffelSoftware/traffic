@@ -15,6 +15,8 @@ inherit
 
 	EM_SHARED_AUDIO_FACTORY
 	
+	EM_AUDIO_CONSTANTS
+	
 	EM_TIME_SINGLETON
 	
 	THEME
@@ -44,6 +46,7 @@ feature -- Initialization
 			shuffle := false
 			create played_songs.make (0)
 			current_song := 1
+			volume := Em_max_volume
 			
 			-- Load music from `directory' into `available_songs'.
 			create sound_dir.make (directory)
@@ -60,6 +63,7 @@ feature -- Initialization
 					if available_songs_names.item.has_substring (".ogg") or available_songs_names.item.has_substring (".mp3") then
 						audio_factory.create_music_from_file (directory + "/" + available_songs_names.item, "")
 						available_songs.extend (audio_factory.last_music)
+						available_songs.last.set_volume (volume)
 						i := i + 1
 					end
 					available_songs_names.forth
@@ -87,53 +91,99 @@ feature -- Access
 				end
 				available_songs.forth
 			end
+			available_songs.i_th (current_song).set_volume (volume)
 			available_songs.i_th (current_song).play (1)
 		end
 		
 	play_next_song is
 			-- Get next song from `available_songs' and play
+		local
+			next_song: INTEGER
 		do
+			next_song := current_song
 			if shuffle then
 				if played_songs.count > played_songs.index then -- `play_previous_song' was called in shuffle mode
 					played_songs.forth
-					current_song := played_songs.item
+					next_song := played_songs.item
 				else
-					played_songs.extend (current_song)
+					played_songs.extend (next_song)
 					if played_songs.count = 1 then
 						played_songs.start
 					end
 					played_songs.forth
-					current_song := random_song					
+					next_song := random_song					
 				end
 			else
-				current_song := current_song + 1
-				if current_song > available_songs.count then
-					current_song := 1
+				next_song := next_song + 1
+				if next_song > available_songs.count then
+					next_song := 1
 				end
 			end
-			available_songs.i_th (current_song).play (1)
+			set_volume (volume)
+--			cross_fade (available_songs.i_th (current_song), available_songs.i_th (next_song))
+			available_songs.i_th (next_song).play (1)
+			current_song := next_song
 		end
 		
 	play_previous_song is
 			-- Get previous song from `available_songs' and play
+		local
+			previous_song: INTEGER
 		do
+			previous_song := current_song
 			if shuffle then
 				if played_songs.index > 1 then
 					played_songs.back
-					current_song := played_songs.item
+					previous_song := played_songs.item
 				end
 			else
-				current_song := current_song - 1
-				if current_song < 1 then
-					current_song := available_songs.count
+				previous_song := previous_song - 1
+				if previous_song < 1 then
+					previous_song := available_songs.count
 				end
 			end	
-			available_songs.i_th (current_song).play (1)
+			set_volume (volume)
+			available_songs.i_th (previous_song).play (1)
+			current_song := previous_song
+		end		
+
+	increase_volume is
+			-- Increase volume by `increase_step'
+		local
+			tmp_volume: like volume
+		do
+			tmp_volume := volume + increase_step
+			if tmp_volume > Em_max_volume then
+				tmp_volume := Em_max_volume
+			end
+			set_volume (tmp_volume)
+		end
+
+	decrease_volume is
+			-- Decrease volume by `decrease_step'
+		local
+			tmp_volume: like volume
+		do
+			tmp_volume := volume - decrease_step
+			if tmp_volume < 0 then
+				tmp_volume := 0
+			end
+			set_volume (tmp_volume)
 		end		
 
 feature -- Settings
 
-	set_shuffle (b: BOOLEAN) is
+	set_volume (a_volume: like volume) is
+			-- Set `volume' to `a_volume'
+		do
+			volume := a_volume
+			if available_songs.i_th (current_song).volume /= volume then
+				available_songs.i_th (current_song).set_volume (volume)
+			end	
+		end
+		
+
+	set_shuffle (b: like shuffle) is
 			-- Enable or disable shuffle mode
 		do
 			if shuffle /= b then
@@ -152,6 +202,21 @@ feature -- Settings
 			end
 			shuffle := not shuffle
 		end
+
+--	toggle_mute is
+--		do
+--			mute := not mute
+--		end
+--		
+--	toggle_pause is
+--		do
+--			paused := not paused
+--		end
+--
+--	toggle_fading is
+--		do
+--			fading := not fading
+--		end
 
 feature -- Queries
 
@@ -186,18 +251,55 @@ feature {NONE} -- Implementation
 	
 	shuffle: BOOLEAN
 		-- Is music player in shuffle mode?
+	
+--	mute: BOOLEAN
+--		-- Is music player currently mute?
+--	
+--	paused: BOOLEAN
+--		-- Is music player currently paused?
+
+	fade: BOOLEAN
+		-- Is crossfading enabled?
 
 	random_song: INTEGER is
-			-- Generate a random number to choose next song to play
+			-- Generate a random number to choose next song to play.
 		do
 			Result := rng.item \\ available_songs.count + 1
 			rng.forth
 		end
 	
 	directory: STRING
-		-- The directory where the music player loads its music from
+		-- Directory where the music player loads its music from.
+		
+	volume: INTEGER
+		-- Current volume.
+		
+	increase_step: INTEGER is 8
+		-- Size of step taken when volume gets increased.
+
+	decrease_step: INTEGER is 8
+		-- Size of step taken when volume gets decreased.
+
+	cross_fade (a_song, another_song: EM_MUSIC) is
+			-- cross fade `a_song' into `another_song'
+		do
+			if not a_song.is_fading then
+				from
+					a_song.stop_with_fade_out (5000)
+				until
+					not a_song.is_fading_out
+				loop
+				end
+			else
+				a_song.stop
+			end
+			another_song.play_with_fade_in (1, 5000)
+		end
+		
 		
 invariant
 	available_songs_not_void: available_songs /= Void
 	available_songs_not_empty: not available_songs.is_empty
+	volume_valid: volume >= 0 and volume <= Em_max_volume
+	current_song_valid: current_song > 0 and current_song <= available_songs.count
 end
