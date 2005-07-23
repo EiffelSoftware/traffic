@@ -26,7 +26,6 @@ inherit
 feature -- Event Handling
 
 	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
-			-- Handle key down event.
 		do
 			-- Music player control			
 			if a_keyboard_event.key = sdlk_pageup then
@@ -38,10 +37,19 @@ feature -- Event Handling
 			if a_keyboard_event.key = sdlk_s then
 				music_player.toggle_shuffle
 			end			
+			if a_keyboard_event.key = sdlk_v then
+				if a_keyboard_event.is_shift_pressed then
+					music_player.increase_volume
+				else
+					music_player.decrease_volume
+				end
+			end
+--			if a_keyboard_event.key = sdlk_m then
+--				music_player.toggle_mute
+--			end
 		end
 
 	handle_outside_event is
-			-- Handle the outside event.
 		do
 			if not music_player.is_music_playing then
 				music_player.play_next_song
