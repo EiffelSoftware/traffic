@@ -84,17 +84,6 @@ feature -- Access
 			scenes_updated: scenes.has_item (a_scene)
 			next_index_updated: next_index = old next_index + 1
 		end
-		
-	set_alignment (an_alignment: INTEGER) is
-			-- Set alignment of entries
-		require
-			an_alignment_valid: an_alignment >= 0 and an_alignment < 4
-		do
-			alignment := an_alignment
-			update_positions
-		ensure
-			alignment_set: alignment = an_alignment
-		end
 
 	deactivate is
 			-- Deactivate menu
@@ -120,7 +109,19 @@ feature -- Access
 		ensure
 			selected_entry_font_set: entries.item (selected_entry).font = selected_font
 		end		
-		
+
+feature -- Settings
+
+	set_alignment (an_alignment: like alignment) is
+			-- Set alignment of entries
+		require
+			an_alignment_valid: an_alignment >= 0 and an_alignment < 4
+		do
+			alignment := an_alignment
+			update_positions
+		ensure
+			alignment_set: alignment = an_alignment
+		end
 
 feature -- Event handling
 		

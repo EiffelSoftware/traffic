@@ -145,7 +145,7 @@ feature -- Access
 			max_line_width_set: max_line_width >= lines.last.width
 		end	
 		
-	set_opacity (an_opacity: INTEGER) is
+	set_opacity (an_opacity: like opacity) is
 			-- Set opacity of status box
 		require
 			an_opacity_not_void: an_opacity /= Void
@@ -156,7 +156,7 @@ feature -- Access
 			opacity_set: opacity = an_opacity
 		end
 		
-	set_color (a_color: EM_COLOR) is
+	set_color (a_color: like color) is
 			-- Set color of status box¨
 		require
 			a_color_not_void: a_color /= Void
@@ -167,7 +167,7 @@ feature -- Access
 			color_set: color = a_color
 		end
 		
-	set_alignment (an_alignment: INTEGER) is
+	set_alignment (an_alignment: like alignment) is
 			-- Set alignment of the lines
 		require
 			an_alignment_valid: an_alignment >= 0 and an_alignment < 4
@@ -178,7 +178,7 @@ feature -- Access
 			alignment_set: alignment = an_alignment
 		end
 		
-	set_font (a_font: EM_TTF_FONT) is
+	set_font (a_font: like font) is
 			-- Set font to be used for the text in this status box
 		require
 			a_font_not_void: a_font /= Void
@@ -189,7 +189,7 @@ feature -- Access
 			font_set: font = a_font
 		end
 
-	set_title_font (a_font: EM_TTF_FONT) is
+	set_title_font (a_font: like title_font) is
 			-- Set font to be used for the text in this status box
 		require
 			a_font_not_void: a_font /= Void
@@ -214,7 +214,7 @@ feature -- Access
 --			max_line_width_set: max_line_width >= title.width			
 		end
 	
-	set_auto_resize (b: BOOLEAN) is
+	set_auto_resize (b: like box_auto_resize) is
 			-- Should the box automatically resize?
 		do
 			box_auto_resize := b
