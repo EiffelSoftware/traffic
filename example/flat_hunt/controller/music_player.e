@@ -13,10 +13,10 @@ class
 
 inherit
 
-	ESDL_SOUND_PLAYER
-		redefine
-			make
-		end
+--	EM_SOUND_PLAYER
+--		redefine
+--			make
+--		end
 	
 	THEME
 
@@ -61,7 +61,7 @@ feature -- Initialization
 					available_songs_names.after
 				loop
 					if available_songs_names.item.has_substring (".ogg") then
-						available_songs.extend (create {ESDL_MUSIC}.make_from_file (directory + "/" + available_songs_names.item))
+						available_songs.extend (create {EM_MUSIC}.make_from_file (directory + "/" + available_songs_names.item))
 						available_songs.last.set_loops (0)
 						i := i + 1
 					end
@@ -74,7 +74,7 @@ feature -- Initialization
 
 feature -- Access
 
-	tmp_string: ESDL_STRING
+	tmp_string: EM_STRING
 	
 	play_game_music is
 			-- Play the default background music.
@@ -178,7 +178,7 @@ feature -- Queries
 
 feature -- Attributes
 
-	available_songs: ARRAYED_LIST [ESDL_MUSIC]
+	available_songs: ARRAYED_LIST [EM_MUSIC]
 		-- All available songs in Sound_directory.
 
 feature {NONE} -- Implementation

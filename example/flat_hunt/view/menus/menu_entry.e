@@ -8,29 +8,29 @@ indexing
 -- pro: 
 --		more customizable (e.g. possible to add pics to a menu entry)
 -- con: 
---		could just use a ESDL_STRING instead, if no pictures and the like are used in a menu entry
+--		could just use a EM_STRING instead, if no pictures and the like are used in a menu entry
 -- 
--- Conclusion: neat but essentially unnecessary -> Remove! and use ESDL_STRING instead
+-- Conclusion: neat but essentially unnecessary -> Remove! and use EM_STRING instead
 
 class
 	MENU_ENTRY
 
 inherit
-	ESDL_DRAWABLE_CONTAINER[ESDL_DRAWABLE]
+	EM_DRAWABLE_CONTAINER[EM_DRAWABLE]
 
 create
 	make_from_string
 	
 feature -- Initialization
 	
-	make_from_string (a_text: STRING; a_font: ESDL_FONT) is
+	make_from_string (a_text: STRING; a_font: EM_FONT) is
 			-- Create menu entry from string `a_text'
 		require
 			a_text_not_void: a_text /= Void
 			a_font_not_void: a_font /= Void
 		do
 			font := a_font
-			text := create {ESDL_STRING}.make (a_text, font)
+			text := create {EM_STRING}.make (a_text, font)
 			make
 			extend (text)
 		ensure
@@ -41,7 +41,7 @@ feature -- Initialization
 
 feature -- Access
 
-	set_font (a_font: ESDL_FONT) is
+	set_font (a_font: EM_FONT) is
 			-- Set font for this entry
 		require
 			a_font_not_void: a_font /= Void
@@ -63,10 +63,10 @@ feature -- Access
 
 feature -- Attributes
 		
-	font: ESDL_FONT
+	font: EM_FONT
 		-- Font to be used for this entry
 		
-	text: ESDL_STRING
+	text: EM_STRING
 		-- Text to be displayed for this entry
 
 end

@@ -15,24 +15,24 @@ inherit
 	
 	DISPLAY_CONSTANTS
 	
-	ESDL_SHARED_BITMAP_FACTORY	
+	EM_SHARED_BITMAP_FACTORY	
 		undefine
 			default_create
 		end
 	
-	ESDL_SHARED_STANDARD_FONTS
+	EM_SHARED_STANDARD_FONTS
 		undefine
 			default_create
 		end
 
-	ESDL_KEY_CONSTANTS
+	EM_KEY_CONSTANTS
 		undefine
 			default_create
 		end
 		
 feature -- Colors
 
-	status_background_color : ESDL_COLOR is
+	status_background_color : EM_COLOR is
 			-- The background color of the status bar
 		once
 			Result := light_violet
@@ -40,28 +40,28 @@ feature -- Colors
 			color_not_void: Result /= Void
 		end
 
-	credits_color : ESDL_COLOR is
+	credits_color : EM_COLOR is
 		once
 			Result := light_violet
 		ensure
 			color_not_void: Result /= Void
 		end		
 
-	menu_color: ESDL_COLOR is
+	menu_color: EM_COLOR is
 		once
 			Result := dark_red
 		ensure
 			color_not_void: Result /= Void
 		end
 		
-	menu_selected_color: ESDL_COLOR is
+	menu_selected_color: EM_COLOR is
 		once
 			Result := orange
 		ensure
 			color_not_void: Result /= Void
 		end		
 	
-	game_widget_color: ESDL_COLOR is
+	game_widget_color: EM_COLOR is
 		once
 			Result := dark_blue
 		ensure
@@ -80,7 +80,7 @@ feature -- Fonts
 	default_font_name: STRING is "herbert"
 			-- Name of default font
 
-   	small_default_font: ESDL_TTF_FONT is
+   	small_default_font: EM_TTF_FONT is
 			-- Standard default font
 		once
 			Result := create_font (default_font_name, 30, white)
@@ -88,7 +88,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 		
-   	medium_default_font: ESDL_TTF_FONT is
+   	medium_default_font: EM_TTF_FONT is
 			-- Standard default font
 		once
 			Result := create_font (default_font_name, 50, white)
@@ -96,7 +96,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 
-   	big_default_font: ESDL_TTF_FONT is
+   	big_default_font: EM_TTF_FONT is
 			-- Standard default font
 		once
 			Result := create_font (default_font_name, 72, white)
@@ -104,7 +104,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 		
-   	menu_font: ESDL_TTF_FONT is
+   	menu_font: EM_TTF_FONT is
 			-- Standard font for menu
 		once
 			Result := create_font (menu_font_name, 72, menu_color)
@@ -112,7 +112,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 
-   	small_menu_font: ESDL_TTF_FONT is
+   	small_menu_font: EM_TTF_FONT is
 			-- Standard font for menu
 		once
 			Result := create_font (menu_font_name, 50, menu_color)
@@ -120,7 +120,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 
-	menu_selected_font: ESDL_TTF_FONT is
+	menu_selected_font: EM_TTF_FONT is
 			-- Standard font for menu
 		once
 			Result := create_font (menu_font_name, 72, menu_selected_color)
@@ -128,7 +128,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end		
 
-	small_menu_selected_font: ESDL_TTF_FONT is
+	small_menu_selected_font: EM_TTF_FONT is
 			-- Standard font for menu
 		once
 			Result := create_font (menu_font_name, 50, menu_selected_color)
@@ -136,7 +136,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end	
 
-   	big_credits_font: ESDL_TTF_FONT is
+   	big_credits_font: EM_TTF_FONT is
 			-- Standard font for credits
 		once
 			Result := create_font (credits_font_name, 40, credits_color)
@@ -144,7 +144,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 
-   	small_credits_font: ESDL_TTF_FONT is
+   	small_credits_font: EM_TTF_FONT is
 			-- Standard font for credits
 		once
 			Result := create_font (credits_font_name, 30, credits_color)
@@ -152,7 +152,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 		
-	big_game_widget_font: ESDL_TTF_FONT is
+	big_game_widget_font: EM_TTF_FONT is
 			-- Standard font for use in game widgets
 		once
 			Result := create_font (default_font_name, 50, game_widget_color)
@@ -160,7 +160,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end	
 		
-	medium_game_widget_font: ESDL_TTF_FONT is
+	medium_game_widget_font: EM_TTF_FONT is
 			-- Standard font for use in game widgets
 		once
 			Result := create_font (default_font_name, 40, game_widget_color)
@@ -168,7 +168,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end 
 
-	small_game_widget_font: ESDL_TTF_FONT is
+	small_game_widget_font: EM_TTF_FONT is
 			-- Standard font for use in game widgets
 		once
 			Result := create_font (default_font_name, 30, game_widget_color)
@@ -181,7 +181,7 @@ feature -- Images
 	Image_directory: STRING is "./resources/pic/"
 			-- Path to the image directory
 		
-	Flathunt_logo: ESDL_DRAWABLE is
+	Flathunt_logo: EM_DRAWABLE is
 			-- Creates the logo which is to be displayed on every scene
 		once
 			bitmap_factory.create_bitmap_from_image (Image_directory + "flat_hunt_logo.png")
@@ -192,7 +192,7 @@ feature -- Images
 			pic_positioned: Result.x = (Window_width - Result.width) // 2 and Result.y = 0
 		end	
 	
-	Background_picture: ESDL_DRAWABLE is
+	Background_picture: EM_DRAWABLE is
 			-- Creates the background which is to be displayed on every menu scene
 		once
 			bitmap_factory.create_bitmap_from_image (Image_directory + "background.png")
@@ -232,7 +232,7 @@ feature -- Player Images
 			string_not_void: Result /= Void
 		end
  
- 	Estate_agent_button_pic: ESDL_DRAWABLE is
+ 	Estate_agent_button_pic: EM_DRAWABLE is
 			-- Creates picture for estate agent button.
 		once
 			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "agent_medium.png")
@@ -241,7 +241,7 @@ feature -- Player Images
 			pic_not_void: Result /= Void
 		end
     
-	Estate_agent_pic: ESDL_DRAWABLE is
+	Estate_agent_pic: EM_DRAWABLE is
 			-- Creates picture for the estate agent.
 		once
 			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "agent_small.png")
@@ -250,7 +250,7 @@ feature -- Player Images
 			pic_not_void: Result /= Void
 		end
 
-	Flat_hunter_button_pics: HASH_TABLE [ESDL_DRAWABLE, INTEGER] is
+	Flat_hunter_button_pics: HASH_TABLE [EM_DRAWABLE, INTEGER] is
 			-- Creates pictures for flat hunter buttons.
 		local
 			i: INTEGER
@@ -271,7 +271,7 @@ feature -- Player Images
 			pics_not_void: Result /= Void
 		end	
 
-	Flat_hunter_pics: HASH_TABLE [ESDL_DRAWABLE, INTEGER] is
+	Flat_hunter_pics: HASH_TABLE [EM_DRAWABLE, INTEGER] is
 			-- Creates pictures for the flat hunters.
 		local
 			i: INTEGER

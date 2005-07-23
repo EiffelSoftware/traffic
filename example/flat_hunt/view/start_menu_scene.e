@@ -27,7 +27,7 @@ feature -- Initialization
 		do
 			Precursor
 			
-			music_player.play_game_music
+--			music_player.play_game_music
 
 			create background_box.make_from_coordinates (50, 160, Window_width - 50, 515, "options")
 			background_box.set_color (menu_color)
@@ -95,7 +95,7 @@ feature -- Initialization
 			display_option_menus
 			main_container.extend (menu)
 			
-			main_container.extend (create {ESDL_STRING}.make ("use tab to toggle between main menu and option settings", small_credits_font))
+			main_container.extend (create {EM_STRING}.make ("use tab to toggle between main menu and option settings", small_credits_font))
 			main_container.last.set_x_y (50, 510)
 			
 			-- Set active menu to normal menu
@@ -111,7 +111,7 @@ feature -- Initialization
 
 feature -- Event handling
 
-	handle_key_down_event (a_keyboard_event: ESDL_KEYBOARD_EVENT) is
+	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
 			-- Handle keyboard events
 		do			
 			Precursor {MENU_SCENE} (a_keyboard_event)

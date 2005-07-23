@@ -8,65 +8,65 @@ deferred class
 	DISPLAY_CONSTANTS	
 
 inherit
-	ESDL_SHARED_STANDARD_FONTS
+	EM_SHARED_STANDARD_FONTS
 
-	ESDL_SHARED_COLORS
+	EM_SHARED_COLORS
 		undefine
 			default_create
 		end
 		
-	ESDL_KEY_CONSTANTS
+	EM_KEY_CONSTANTS
 		undefine
 			default_create
 		end
 		
 feature -- Colors
 
-	dark_blue: ESDL_COLOR is
+	dark_blue: EM_COLOR is
 		once
-			Result := create {ESDL_COLOR}.make_with_rgb (0, 0, 200)
+			Result := create {EM_COLOR}.make_with_rgb (0, 0, 200)
 		ensure
 			color_not_void: Result /= Void
 		end
 
-	light_violet: ESDL_COLOR is
+	light_violet: EM_COLOR is
 		once
-			Result := create {ESDL_COLOR}.make_with_rgb (100, 0, 150)
+			Result := create {EM_COLOR}.make_with_rgb (100, 0, 150)
 		ensure
 			color_not_void: Result /= Void
 		end
 
-	light_gray: ESDL_COLOR is
+	light_gray: EM_COLOR is
 		once
-			Result := create {ESDL_COLOR}.make_with_rgb (200, 200, 200)
+			Result := create {EM_COLOR}.make_with_rgb (200, 200, 200)
 		ensure
 			color_not_void: Result /= Void
 		end	
 		
-	gray: ESDL_COLOR is
+	gray: EM_COLOR is
 		once
-			Result := create {ESDL_COLOR}.make_with_rgb (150, 150, 150)
+			Result := create {EM_COLOR}.make_with_rgb (150, 150, 150)
 		ensure
 			color_not_void: Result /= Void
 		end
 			
-	dark_gray: ESDL_COLOR is
+	dark_gray: EM_COLOR is
 		once
-			Result := create {ESDL_COLOR}.make_with_rgb (25, 25, 25)
+			Result := create {EM_COLOR}.make_with_rgb (25, 25, 25)
 		ensure
 			color_not_void: Result /= Void
 		end	
 	
-	dark_red: ESDL_COLOR is
+	dark_red: EM_COLOR is
 		once
-			Result := create {ESDL_COLOR}.make_with_rgb (200, 0, 0)
+			Result := create {EM_COLOR}.make_with_rgb (200, 0, 0)
 		ensure
 			color_not_void: Result /= Void
 		end
 		
-	orange: ESDL_COLOR is
+	orange: EM_COLOR is
 		once
-			Result := create {ESDL_COLOR}.make_with_rgb (200, 100, 0)
+			Result := create {EM_COLOR}.make_with_rgb (200, 100, 0)
 		ensure
 			color_not_void: Result /= Void
 		end		
@@ -76,11 +76,11 @@ feature -- Fonts
 	Font_directory: STRING is "./resources/font/"
 			-- Path to the font directory
 
-   	create_font (a_name: STRING; a_size: INTEGER; a_color: ESDL_COLOR): ESDL_TTF_FONT is
+   	create_font (a_name: STRING; a_size: INTEGER; a_color: EM_COLOR): EM_TTF_FONT is
 			-- Create new font from `a_name'.ttf with size `a_size' and color `a_color'
 		local
-		   font: ESDL_FONT
-		   color: ESDL_COLOR
+		   font: EM_FONT
+		   color: EM_COLOR
 		   id: STRING
 		do
 			-- Set default for color to black if a_color void

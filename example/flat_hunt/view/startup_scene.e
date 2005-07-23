@@ -9,12 +9,12 @@ class
 inherit
 	FLAT_HUNT_SCENE
 	
-	ESDL_TIME_SINGLETON
+	EM_TIME_SINGLETON
 		undefine
 			default_create
 		end
 	
-	ESDL_SHARED_BITMAP_FACTORY
+	EM_SHARED_BITMAP_FACTORY
 		undefine
 			default_create
 		end	
@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 	initialize_scene is
 			-- Build 'main_container' containing the startup scene
 		local 
-			flat_hunt_intro: ESDL_DRAWABLE
+			flat_hunt_intro: EM_DRAWABLE
 		do
 			-- general settings
 			background_color.make_black
@@ -61,8 +61,8 @@ feature -- Testing (will be removed in final version)
 	draw_alpha_blended_circle(a_x, a_y, an_alpha: INTEGER) is
 			-- for testing purposes
 		local
-			some_figure: ESDL_CIRCLE
-			center: ESDL_VECTOR_2D			
+			some_figure: EM_CIRCLE
+			center: EM_VECTOR_2D			
 		do
 			create center.make(a_x, a_y)
 			create some_figure.make (center, 20.0)

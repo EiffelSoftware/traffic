@@ -12,7 +12,7 @@ class
 
 inherit
 	
-	ESDL_APPLICATION
+	EM_APPLICATION
 	
 	SHARED_SCENES
 		undefine
@@ -24,7 +24,7 @@ inherit
 --			default_create
 --		end
 		
-	ESDL_SHARED_STANDARD_FONTS
+	EM_SHARED_STANDARD_FONTS
 	
 	THEME
 		undefine

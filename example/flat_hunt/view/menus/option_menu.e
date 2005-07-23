@@ -25,7 +25,7 @@ feature -- Initialization
 		end
 		
 
-	make_with_custom_fonts (a_font, a_selected_font: ESDL_FONT; a_callback: PROCEDURE [ANY, TUPLE]) is
+	make_with_custom_fonts (a_font, a_selected_font: EM_FONT; a_callback: PROCEDURE [ANY, TUPLE]) is
 			-- Create menu with user specified fonts
 		do
 			Precursor {MENU} (a_font, a_selected_font, a_callback)
@@ -37,7 +37,7 @@ feature -- Initialization
 		
 feature -- Access
 
-	add_entry (a_text: STRING; a_scene: ESDL_SCENE; selected: BOOLEAN) is
+	add_entry (a_text: STRING; a_scene: EM_SCENE; selected: BOOLEAN) is
 			-- Add an entry to the menu
 		local
 			new_left_x, new_right_x, new_y: INTEGER
@@ -71,7 +71,7 @@ feature -- Access
 		
 feature -- Event handling
 
-	handle_key_down_event (a_keyboard_event: ESDL_KEYBOARD_EVENT) is
+	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
 			-- Handle keyboard events.
 		do
 			if active then
@@ -94,10 +94,10 @@ feature -- Event handling
 
 feature {NONE} -- Implementation
 
-	left_arrow_pic: ESDL_DRAWABLE
+	left_arrow_pic: EM_DRAWABLE
 		-- Picture of left arrow
 		
-	right_arrow_pic: ESDL_DRAWABLE
+	right_arrow_pic: EM_DRAWABLE
 		-- Picture of right arrow
 	
 	update_entry (i: INTEGER) is

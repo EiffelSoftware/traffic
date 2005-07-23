@@ -7,7 +7,7 @@ indexing
 class
 	CREDITS
 inherit
-	ESDL_SCENE
+	EM_SCENE
 	
 feature -- Initialization
 	initialize_scene is

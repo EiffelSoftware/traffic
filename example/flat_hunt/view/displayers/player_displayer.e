@@ -9,9 +9,9 @@ deferred class
 
 inherit
 
-	ESDL_DRAWABLE
+	EM_DRAWABLE
 	
-	ESDL_ANIMATABLE
+	EM_ANIMATABLE
 	
 	DISPLAY_CONSTANTS
 		export
@@ -22,7 +22,7 @@ inherit
 
 feature -- Initialization
 		
-	make_from_player (a_player: PLAYER; a_pic: ESDL_BITMAP) is
+	make_from_player (a_player: PLAYER; a_pic: EM_BITMAP) is
 			-- Initialize displayer for `a_player'.
 		require
 			player_exists: a_player /= Void
@@ -81,9 +81,9 @@ feature -- Basic operations
 	animate_defeat is
 			-- Animate the defeat of the player.
 		local
---			cir: ESDL_CIRCLE
---			position: ESDL_VECTOR_2D
---			color: ESDL_COLOR
+--			cir: EM_CIRCLE
+--			position: EM_VECTOR_2D
+--			color: EM_COLOR
 --			count: INTEGER
 --		do
 --			create position.make (player.location.position.x, player.location.position.y)
@@ -129,10 +129,10 @@ feature -- Access
 	player: PLAYER
 			-- Reference to player to be displayed
 
-	picture: ESDL_BITMAP
+	picture: EM_BITMAP
 			-- Picture for the player
 			
-	set_picture (a_pic: ESDL_DRAWABLE) is
+	set_picture (a_pic: EM_DRAWABLE) is
 			-- Set `picture' to `a_pic'.
 		do
 			picture := a_pic
@@ -142,7 +142,7 @@ feature -- Access
 	update_position is
 			-- Update position to passenger's position.
 		local
-			pos: ESDL_VECTOR_2D
+			pos: EM_VECTOR_2D
 		do
 			pos := player.position
 			x := (pos.x - (picture.width // 2))
@@ -151,7 +151,7 @@ feature -- Access
 			circle.set_x_y (x, y)
 		end	
 		
-	draw (surface: ESDL_SURFACE) is
+	draw (surface: EM_SURFACE) is
 			-- Draw 'Current' onto `surf'.
 		do
 			if picture /= Void then
@@ -176,7 +176,7 @@ feature -- Access
 
 feature -- Mouse handling
 
-	publish_mouse_event (a_mouse_event: ESDL_MOUSE_EVENT) is
+	publish_mouse_event (a_mouse_event: EM_MOUSE_EVENT) is
 		do
 			if bounding_box.has (a_mouse_event.proportional_position) then
 				dispatch_mouse_event (a_mouse_event)								
@@ -280,7 +280,7 @@ feature {NONE} -- Implementation
 		
 feature {NONE} -- Implementation
 		
-	marking_circle: ESDL_CIRCLE
+	marking_circle: EM_CIRCLE
 			-- Circle for marking current player
 		
 	marked: BOOLEAN

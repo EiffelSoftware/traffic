@@ -19,7 +19,7 @@ create
 
 feature -- Initialization
 	
-	make_from_player (a_player: ESTATE_AGENT; a_pic: ESDL_BITMAP) is
+	make_from_player (a_player: ESTATE_AGENT; a_pic: EM_BITMAP) is
 			-- Put player on board.
 		do
 			Precursor (a_player)
@@ -71,7 +71,7 @@ feature -- Output
 		
 feature {NONE} -- Implementation
 		
-	draw (surface: ESDL_SURFACE) is
+	draw (surface: EM_SURFACE) is
 			-- Draw 'Current' onto `surf'.
 		do
 			if player.is_visible then

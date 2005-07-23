@@ -14,7 +14,7 @@ class
 ----			default_create, copy
 ----		end	
 --	
---	ESDL_SCENE
+--	EM_SCENE
 --	
 ----	GAME_CONSTANTS
 ----		undefine

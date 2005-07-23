@@ -15,7 +15,7 @@ class
 	STATUS_BOX
 
 inherit
-	ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
+	EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 		redefine
 			make
 		end
@@ -133,7 +133,7 @@ feature -- Access
 		require
 			lines_not_void: lines /= Void
 		do
-			lines.extend (create {ESDL_STRING}.make (a_line, font))
+			lines.extend (create {EM_STRING}.make (a_line, font))
 			if lines.last.width > max_line_width then
 				max_line_width := lines.last.width
 			end
@@ -156,7 +156,7 @@ feature -- Access
 			opacity_set: opacity = an_opacity
 		end
 		
-	set_color (a_color: ESDL_COLOR) is
+	set_color (a_color: EM_COLOR) is
 			-- Set color of status box¨
 		require
 			a_color_not_void: a_color /= Void
@@ -178,7 +178,7 @@ feature -- Access
 			alignment_set: alignment = an_alignment
 		end
 		
-	set_font (a_font: ESDL_TTF_FONT) is
+	set_font (a_font: EM_TTF_FONT) is
 			-- Set font to be used for the text in this status box
 		require
 			a_font_not_void: a_font /= Void
@@ -189,7 +189,7 @@ feature -- Access
 			font_set: font = a_font
 		end
 
-	set_title_font (a_font: ESDL_TTF_FONT) is
+	set_title_font (a_font: EM_TTF_FONT) is
 			-- Set font to be used for the text in this status box
 		require
 			a_font_not_void: a_font /= Void
@@ -230,13 +230,13 @@ feature -- Attributes
 	opacity: INTEGER
 		-- Opacity of the status box
 	
-	color: ESDL_COLOR
+	color: EM_COLOR
 		-- Color of the status box
 
-	lines: ESDL_DRAWABLE_CONTAINER [ESDL_STRING]
+	lines: EM_DRAWABLE_CONTAINER [EM_STRING]
 		-- Text to be displayed in status box
 		
-	box: ESDL_RECTANGLE
+	box: EM_RECTANGLE
 		-- Box in the background
 	
 	vertical_margin: INTEGER is 15
@@ -248,13 +248,13 @@ feature -- Attributes
 	padding: INTEGER is 5
 		-- Padding between two lines
 	
-	font: ESDL_TTF_FONT
+	font: EM_TTF_FONT
 		-- Font of the text within this status box
 	
-	title: ESDL_STRING
+	title: EM_STRING
 		-- Title of the status box, displayed on top
 	
-	title_font: ESDL_TTF_FONT
+	title_font: EM_TTF_FONT
 		-- Font used for `title'
 
 	max_line_width: INTEGER

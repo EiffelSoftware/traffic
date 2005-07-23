@@ -10,7 +10,7 @@ deferred class
 
 inherit
 	
-	ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
+	EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 	
 	THEME
 		undefine
@@ -28,7 +28,7 @@ feature -- Initialization
 		end
 		
 		
-	make_with_custom_fonts (a_font, a_selected_font: ESDL_FONT; a_callback: PROCEDURE [ANY, TUPLE]) is
+	make_with_custom_fonts (a_font, a_selected_font: EM_FONT; a_callback: PROCEDURE [ANY, TUPLE]) is
 			-- Create menu with user specified fonts
 		require
 			a_font_not_void: a_font /= Void
@@ -58,7 +58,7 @@ feature -- Initialization
 
 feature -- Access
 
-	add_entry (a_text: STRING; a_scene: ESDL_SCENE; selected: BOOLEAN) is
+	add_entry (a_text: STRING; a_scene: EM_SCENE; selected: BOOLEAN) is
 			-- Add an entry to the menu
 		require
 			a_text_not_void: a_text /= Void
@@ -124,7 +124,7 @@ feature -- Access
 
 feature -- Event handling
 		
-	handle_key_down_event (a_keyboard_event: ESDL_KEYBOARD_EVENT) is
+	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
 			-- Handle keyboard events.
 		do
 			if active then
@@ -168,13 +168,13 @@ feature -- Attributes
 	entries: HASH_TABLE [MENU_ENTRY, INTEGER]
 		-- All the entries in this menu
 	
-	scenes: HASH_TABLE [ESDL_SCENE, INTEGER]
+	scenes: HASH_TABLE [EM_SCENE, INTEGER]
 		-- Scenes corresponding to entries in menu
 
-	font: ESDL_FONT
+	font: EM_FONT
 		-- Font for unselected items
 	
-	selected_font: ESDL_FONT
+	selected_font: EM_FONT
 		-- Font for selected item
 	
 	max_entry_width: INTEGER

@@ -45,7 +45,7 @@ feature -- Initialization
 
 feature -- Event handling		
 
-	handle_key_down_event (a_keyboard_event: ESDL_KEYBOARD_EVENT) is
+	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
 			-- Handle keyboard events
 		do
 			Precursor {FLAT_HUNT_SCENE} (a_keyboard_event)

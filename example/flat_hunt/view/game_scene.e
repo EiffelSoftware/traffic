@@ -120,7 +120,7 @@ feature -- Model
 			
 feature -- Views
 		
-	big_zoomable_widget: ESDL_ZOOMABLE_WIDGET
+	big_zoomable_widget: EM_ZOOMABLE_WIDGET
 			-- Interactive container inside which 
 			-- `traffic_map' is displayed and can be zoomed
 
@@ -128,7 +128,7 @@ feature -- Views
 			-- Map widget to visualize `traffic_map'
 			-- for big zoomable map
 			
-	little_zoomable_container: ESDL_ZOOMABLE_CONTAINER
+	little_zoomable_container: EM_ZOOMABLE_CONTAINER
 			-- Container inside which `little_map_widget' is displayed
 
 	little_map_widget: TRAFFIC_MAP_WIDGET
@@ -139,10 +139,10 @@ feature -- Views
 			-- Widget to navigate in `big_zoomable_widget'
 			-- using `little_map_widget'
 
-	information_box: ESDL_ZOOMABLE_CONTAINER
+	information_box: EM_ZOOMABLE_CONTAINER
 			-- Information box to display some text information.	
 	
-	place_info_text: ESDL_STRING
+	place_info_text: EM_STRING
 			-- Information text about last clicked place.
 		
 	status_boxes: HASH_TABLE [STATUS_BOX, INTEGER]
@@ -150,7 +150,7 @@ feature -- Views
 		
 feature {NONE} -- Implementation
 
-	rail_color: ESDL_COLOR is
+	rail_color: EM_COLOR is
 			-- Color used for rail lines.
 		once
 			create Result.make_with_rgb (255, 160, 0)
@@ -163,8 +163,8 @@ feature {NONE} -- Implementation
 		require
 			traffic_map_not_void: traffic_map /= Void
 		local
-			container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background_box: ESDL_RECTANGLE
+			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+			background_box: EM_RECTANGLE
 		do			
 			-- Create container to put background and widgets into.
 			create container.make
@@ -203,9 +203,9 @@ feature {NONE} -- Implementation
 		require
 			traffic_map_not_void: traffic_map /= Void
 		local
-			container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background_box: ESDL_RECTANGLE
-			map_box: ESDL_ORTHOGONAL_RECTANGLE
+			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+			background_box: EM_RECTANGLE
+			map_box: EM_ORTHOGONAL_RECTANGLE
 		do	
 		
 			-- Create container to put background and widgets into.
@@ -270,7 +270,7 @@ feature {NONE} -- Implementation
 		
 feature {NONE} -- Event Handling
 
-	handle_key_down_event (a_keyboard_event: ESDL_KEYBOARD_EVENT) is
+	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
 			-- Handle keyboard events.
 		do
 			Precursor {FLAT_HUNT_SCENE} (a_keyboard_event)
@@ -285,7 +285,7 @@ feature {NONE} -- Event Handling
 		end
 		
 
-	process_clicked_place (place: TRAFFIC_PLACE; m_event: ESDL_MOUSEBUTTON_EVENT) is
+	process_clicked_place (place: TRAFFIC_PLACE; m_event: EM_MOUSEBUTTON_EVENT) is
 			-- 
 		local
 			link: TRAFFIC_LINE_SECTION

@@ -53,7 +53,7 @@ feature -- Access
 	old_location: TRAFFIC_PLACE
 			-- Player's last location
 
-	position: ESDL_VECTOR_2D
+	position: EM_VECTOR_2D
 			-- Position on the map.
 			
 	brain: BRAIN
@@ -177,11 +177,11 @@ feature {GAME} -- Basic operations
 		local
 			last_time, now_time, delta_time: INTEGER
 			links: LIST [TRAFFIC_LINE_SECTION]
-			shared_scene: ESDL_SHARED_SCENE			
-			polypoints: ARRAYED_LIST [ESDL_VECTOR_2D]
+			shared_scene: EM_SHARED_SCENE			
+			polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			point_index: INTEGER
 			length, speed, pos, point_pos: DOUBLE
-			p1, p2, dist: ESDL_VECTOR_2D
+			p1, p2, dist: EM_VECTOR_2D
 		do
 			old_location := location
 			

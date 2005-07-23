@@ -2,7 +2,7 @@
 
 <system name="flat_hunt">
   <description>
-    system: "Simple traffic application with esdl"
+    system: "Game application with EM"
     copyright: "Copyright (c) 2004, Michela Pedroni, Ursina Caluori and others"
     license: "Eiffel Forum License v2 (see forum.txt)"
     date: "$Date$"
@@ -49,7 +49,7 @@
   <mount location="${GOBO}/library/kernel.xace"/>
   <mount location="${GOBO}/library/library.xace"/>
   <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
-  <mount location="${ESDL}/library/library.xace"/>
+  <mount location="${EM}/library/library.xace"/>
   <mount location="${TRAFFIC}/library/library.xace"/>
 
 </system>
