@@ -2,7 +2,7 @@ indexing
 
 	description: "[
 					Music player with some basic features. Just put your music 
-					into `directory'. The music player will load all the .ogg files from there.
+					into `directory'. The music player will load all the .ogg and .mp3 files from there.
 					]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -13,10 +13,9 @@ class
 
 inherit
 
---	EM_SOUND_PLAYER
---		redefine
---			make
---		end
+	EM_SHARED_AUDIO_FACTORY
+	
+	EM_TIME_SINGLETON
 	
 	THEME
 
@@ -31,17 +30,15 @@ feature -- Initialization
 			available_songs_names: ARRAYED_LIST [STRING]
 			sound_dir: DIRECTORY
 			i: INTEGER
-			time: TIME
 		do
 			directory := Sound_directory
 			
-			Precursor
-			track.set_music_volume (default_volume)
-			
+--			Precursor
+--			track.set_music_volume (default_volume)
+--			
 			-- Initialize random number generator for shuffle mode
-			create time.make_now
 			create rng.make
-			rng.set_seed (time.milli_second)
+			rng.set_seed (time.ticks)
 			rng.start
 
 			shuffle := false
@@ -60,9 +57,9 @@ feature -- Initialization
 				until
 					available_songs_names.after
 				loop
-					if available_songs_names.item.has_substring (".ogg") then
-						available_songs.extend (create {EM_MUSIC}.make_from_file (directory + "/" + available_songs_names.item))
-						available_songs.last.set_loops (0)
+					if available_songs_names.item.has_substring (".ogg") or available_songs_names.item.has_substring (".mp3") then
+						audio_factory.create_music_from_file (directory + "/" + available_songs_names.item, "")
+						available_songs.extend (audio_factory.last_music)
 						i := i + 1
 					end
 					available_songs_names.forth
@@ -74,8 +71,6 @@ feature -- Initialization
 
 feature -- Access
 
-	tmp_string: EM_STRING
-	
 	play_game_music is
 			-- Play the default background music.
 		local
@@ -88,12 +83,11 @@ feature -- Access
 			loop
 				if available_songs.item.filename.has_substring (background_music) then
 					current_song := available_songs.index
-					track.set_music (available_songs.i_th (current_song))
-					play
 					found := true
 				end
 				available_songs.forth
 			end
+			available_songs.i_th (current_song).play (1)
 		end
 		
 	play_next_song is
@@ -117,8 +111,7 @@ feature -- Access
 					current_song := 1
 				end
 			end
-			track.set_music (available_songs.i_th (current_song))
-			play
+			available_songs.i_th (current_song).play (1)
 		end
 		
 	play_previous_song is
@@ -135,8 +128,7 @@ feature -- Access
 					current_song := available_songs.count
 				end
 			end	
-			track.set_music (available_songs.i_th (current_song))
-			play			
+			available_songs.i_th (current_song).play (1)
 		end		
 
 feature -- Settings
@@ -172,7 +164,7 @@ feature -- Queries
 	is_music_playing: BOOLEAN is
 			-- Is music player currently playing something
 		do
-			Result := track.is_music_playing
+			Result := available_songs.i_th (current_song).is_playing
 		end
 		
 
@@ -185,7 +177,7 @@ feature {NONE} -- Implementation
 	
 	current_song: INTEGER
 		-- Index of song currently playing.
-		
+
 	played_songs: ARRAYED_LIST [INTEGER]
 		-- To keep track of played songs when in shuffle mode.
 	

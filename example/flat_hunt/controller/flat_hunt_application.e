@@ -14,15 +14,12 @@ inherit
 	
 	EM_APPLICATION
 	
+	EM_AUDIO_CONSTANTS
+	
 	SHARED_SCENES
 		undefine
 			default_create
 		end
-
---	SHARED_MUSIC_PLAYER
---		undefine
---			default_create
---		end
 		
 	EM_SHARED_STANDARD_FONTS
 	
@@ -39,10 +36,15 @@ feature -- Initialization
 			-- Create and execute the application.
 		do
 			-- Video subsystem settings
+			video_subsystem.enable
 --			video_subsystem.set_fullscreen (true)
 --			video_subsystem.show_cursor
 			video_subsystem.set_video_surface_width (Window_width)			
 			video_subsystem.set_video_surface_height (Window_height)
+		
+			-- Audio subsystem settings
+			audio_subsystem.enable
+			audio_subsystem.mixer.open (Em_default_frequency, Em_audio_format_s16sys, Em_stereo, Em_default_chunk_size)
 
 			-- Initialize the screen.
 			initialize_screen
@@ -50,9 +52,6 @@ feature -- Initialization
 --			set_application_icon (Application_icon)
 			
 			-- Set and launch the first scene.
---			create start_menu_scene
---			create game_scene
---			create credits_scene
 			set_scene (start_menu_scene)
 			launch
 			video_subsystem.disable

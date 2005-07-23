@@ -27,7 +27,7 @@ feature -- Initialization
 		do
 			Precursor
 			
---			music_player.play_game_music
+			music_player.play_game_music
 
 			create background_box.make_from_coordinates (50, 160, Window_width - 50, 515, "options")
 			background_box.set_color (menu_color)

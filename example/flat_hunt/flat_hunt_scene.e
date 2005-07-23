@@ -18,10 +18,10 @@ inherit
 			default_create
 		end
 		
---	SHARED_MUSIC_PLAYER
---		undefine
---			default_create
---		end
+	SHARED_MUSIC_PLAYER
+		undefine
+			default_create
+		end
 		
 feature -- Event Handling
 
@@ -29,23 +29,23 @@ feature -- Event Handling
 			-- Handle key down event.
 		do
 			-- Music player control			
---			if a_keyboard_event.key = sdlk_pageup then
---				music_player.play_next_song
---			end
---			if a_keyboard_event.key = sdlk_pagedown then
---				music_player.play_previous_song
---			end
---			if a_keyboard_event.key = sdlk_s then
---				music_player.toggle_shuffle
---			end			
+			if a_keyboard_event.key = sdlk_pageup then
+				music_player.play_next_song
+			end
+			if a_keyboard_event.key = sdlk_pagedown then
+				music_player.play_previous_song
+			end
+			if a_keyboard_event.key = sdlk_s then
+				music_player.toggle_shuffle
+			end			
 		end
 
 	handle_outside_event is
 			-- Handle the outside event.
 		do
---			if not music_player.is_music_playing then
---				music_player.play_next_song
---			end
+			if not music_player.is_music_playing then
+				music_player.play_next_song
+			end
 		end
 
 end
