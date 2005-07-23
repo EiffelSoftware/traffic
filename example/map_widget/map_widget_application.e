@@ -1,6 +1,6 @@
 indexing
 		description: "[
-						Simple ESDL TRAFFIC Example with a simple interactive TRAFFIC scene. (with two maps)
+						Simple EM TRAFFIC Example with a simple interactive TRAFFIC scene. (with two maps)
 					]"
 	author: "Rolf Bruderer, bruderol@computerscience.ch"
 	date: "2005/03/11"
@@ -10,12 +10,12 @@ class
 	MAP_WIDGET_APPLICATION
 
 inherit 	
-	ESDL_APPLICATION
+	EM_APPLICATION
 		undefine
 			default_create
 		end
 		
-	ESDL_SHARED_STANDARD_FONTS
+	EM_SHARED_STANDARD_FONTS
 		
 create	
 	make_and_launch
@@ -29,10 +29,10 @@ feature -- Initialization
 		do
 			-- Initialize the screen.
 			initialize_screen
-			set_application_name ("ESDL TRAFFIC example")
+			set_application_name ("EM TRAFFIC example")
 						
 			-- Setup font directory.
-			standard_fonts.set_font_dirname ("./font")
+			standard_bmp_fonts.set_font_dirname ("./font")
 			
 			-- Create first scene.
 			create first_scene

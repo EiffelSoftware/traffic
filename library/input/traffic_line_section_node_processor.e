@@ -36,7 +36,7 @@ feature -- Basic operations
 			-- Process node.
 		local
 			line: TRAFFIC_LINE
-			pp: ARRAYED_LIST [ESDL_VECTOR_2D]
+			pp: ARRAYED_LIST [EM_VECTOR_2D]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_SECTION
 		do
 			line ?= parent.target
@@ -100,27 +100,27 @@ feature -- Basic operations
 			end
 		end
 		
-	adjust_position (a_line_section: TRAFFIC_LINE_SECTION; a_polypoints: LIST [ESDL_VECTOR_2D]) is
+	adjust_position (a_line_section: TRAFFIC_LINE_SECTION; a_polypoints: LIST [EM_VECTOR_2D]) is
 			-- Adjust positions
 		do
 			if a_line_section.origin.position = Void then
 				a_line_section.origin.set_position 
-					(create {ESDL_VECTOR_2D}.make (a_polypoints.first.x, a_polypoints.first.y))
+					(create {EM_VECTOR_2D}.make (a_polypoints.first.x, a_polypoints.first.y))
 			else
 				a_line_section.origin.set_position
---						(create {ESDL_VECTOR_2D}.make (	(map_factory.line_section.origin.position.x + polypoints.first.x)// 2,
+--						(create {EM_VECTOR_2D}.make (	(map_factory.line_section.origin.position.x + polypoints.first.x)// 2,
 --													(map_factory.line_section.origin.position.y + polypoints.first.y)// 2))
-					(create {ESDL_VECTOR_2D}.make (	(a_line_section.origin.position.x + a_polypoints.first.x)/ 2.0,
+					(create {EM_VECTOR_2D}.make (	(a_line_section.origin.position.x + a_polypoints.first.x)/ 2.0,
 												(a_line_section.origin.position.y + a_polypoints.first.y)/ 2.0))
 			end
 			if a_line_section.destination.position = Void then
 				a_line_section.destination.set_position 
-					(create {ESDL_VECTOR_2D}.make (a_polypoints.last.x, a_polypoints.last.y))
+					(create {EM_VECTOR_2D}.make (a_polypoints.last.x, a_polypoints.last.y))
 			else
 				a_line_section.destination.set_position
---					(create {ESDL_VECTOR_2D}.make (	(map_factory.line_section.destination.position.x + polypoints.last.x)// 2,
+--					(create {EM_VECTOR_2D}.make (	(map_factory.line_section.destination.position.x + polypoints.last.x)// 2,
 --												(map_factory.line_section.destination.position.y + polypoints.last.y)// 2))
-					(create {ESDL_VECTOR_2D}.make (	(a_line_section.destination.position.x + a_polypoints.last.x)/ 2.0,
+					(create {EM_VECTOR_2D}.make (	(a_line_section.destination.position.x + a_polypoints.last.x)/ 2.0,
 												(a_line_section.destination.position.y + a_polypoints.last.y)/ 2.0))
 			end
 		end
@@ -131,7 +131,7 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			position: ESDL_VECTOR_2D
+			position: EM_VECTOR_2D
 		do
 			create polypoints.make (0)
 			from
@@ -167,7 +167,7 @@ feature -- Basic operations
 			end
 		end
 
-	polypoints: ARRAYED_LIST [ESDL_VECTOR_2D]
+	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			-- Polypoints of this link
 		
 end -- class TRAFFIC_LINE_SECTION_NODE_PROCESSOR

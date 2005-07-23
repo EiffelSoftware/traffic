@@ -35,7 +35,7 @@ feature -- Basic operations
 			x: INTEGER
 			y: INTEGER
 			s: STRING
-			p: ESDL_VECTOR_2D
+			p: EM_VECTOR_2D
 		do
 			if not has_attribute ("x") and has_attribute ("y") then
 				set_error (Mandatory_attribute_missing, << "x", "y" >>)

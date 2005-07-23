@@ -119,10 +119,10 @@ feature {NONE} -- Implementation
 		local
 			places: HASH_TABLE [TRAFFIC_PLACE, STRING]
 			links: LIST [TRAFFIC_LINE_SECTION]
-			points: ARRAYED_LIST [ESDL_VECTOR_2D]
+			points: ARRAYED_LIST [EM_VECTOR_2D]
 			minx, maxy: DOUBLE
 			firstx: BOOLEAN
-			bbox: ESDL_ORTHOGONAL_RECTANGLE
+			bbox: EM_ORTHOGONAL_RECTANGLE
 		do
 			-- Determine maximum x and y value of all link polypoints.
 			links := traffic_map.line_sections

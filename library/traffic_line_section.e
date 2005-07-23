@@ -19,7 +19,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE; a_list: ARRAYED_LIST [ESDL_VECTOR_2D] ) is
+	make (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE; a_list: ARRAYED_LIST [EM_VECTOR_2D] ) is
 			-- Initialize `Current'. 
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -65,7 +65,7 @@ feature -- Access
 	state: TRAFFIC_LINE_SECTION_STATE
 			-- State of line section.
 			
-	polypoints: ARRAYED_LIST [ESDL_VECTOR_2D]
+	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			-- position representation of line section.
 
 	length: DOUBLE is
@@ -101,7 +101,7 @@ feature -- Status setting
 			state_set: state = a_state
 		end
 		
-	set_polypoints (a_polypoints: ARRAYED_LIST [ESDL_VECTOR_2D]) is
+	set_polypoints (a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]) is
 			-- Set polypoints to `a_polypoints'.
 		require
 			a_polypoints_exist: a_polypoints /= Void

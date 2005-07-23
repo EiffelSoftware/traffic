@@ -3,7 +3,7 @@ indexing
 						Widget to visualize a TRAFFIC_MAP_MODEL
 						
 						Needs some TRAFFIC_ITEM_RENDERER's to render map 
-						the map model element items (ELEMENT) to appropriate drawable objects (ESDL_DRAWABLE) 
+						the map model element items (ELEMENT) to appropriate drawable objects (EM_DRAWABLE) 
 						for drawing them. Use `set_renderer_for_item' to customize the renderer used 
 						to render an item.
 					]"
@@ -16,7 +16,7 @@ class
 	TRAFFIC_DRAWABLE_CONTAINER [ELEMENT -> HASHABLE]
 	
 inherit
-	ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
+	EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 		redefine
 			initialize_events, 
 			publish_mouse_event
@@ -56,7 +56,7 @@ feature -- Access
 	map: TRAFFIC_MAP_MODEL [ELEMENT]	
 			-- Model of the map visualized by `Current'
 			
-	item_view (an_item: ELEMENT): ESDL_DRAWABLE is
+	item_view (an_item: ELEMENT): EM_DRAWABLE is
 			-- Drawable representation of `an_item' inside `Current'
 		require
 			an_item_not_void: an_item /= Void
@@ -134,7 +134,7 @@ feature -- Commands
 		
 feature -- Mouse Events
 
-	publish_mouse_event (a_mouse_event: ESDL_MOUSE_EVENT) is
+	publish_mouse_event (a_mouse_event: EM_MOUSE_EVENT) is
 			-- Publish mouse event when `a_mouse_event' occured on `Current'.
 			-- Descendants should redefine this feature 
 			-- for only publishing their mouse events when mouse pointer
@@ -142,8 +142,8 @@ feature -- Mouse Events
 			-- distributing mouse events to child objects of composite objects.
 		local
 			cursor: CURSOR
-			transformed_mouse_event: ESDL_MOUSE_EVENT
-			translation: ESDL_VECTOR_2D
+			transformed_mouse_event: EM_MOUSE_EVENT
+			translation: EM_VECTOR_2D
 		do
 			if bounding_box.has (a_mouse_event.proportional_position) then
 				
@@ -192,34 +192,34 @@ feature -- Mouse Events
 			-- Mouse motion over map item event,
 			-- gets published when mouse is moved over drawable item,
 			-- map element is passed as first argument to subscribers,
-			-- as optional second argument the appropriate ESDL_MOUSE_EVENT is passed
+			-- as optional second argument the appropriate EM_MOUSE_EVENT is passed
 	
 	mouse_button_up_on_map_item_event: EVENT_TYPE [TUPLE [ELEMENT]]
 			-- Mouse button pressed over map item event,
 			-- gets published when mouse is pressed over item,
 			-- map element is passed as first argument to subscribers,
-			-- as optional second argument the appropriate ESDL_MOUSE_EVENT is passed
+			-- as optional second argument the appropriate EM_MOUSE_EVENT is passed
 	
 	mouse_button_down_on_map_item_event: EVENT_TYPE [TUPLE [ELEMENT]]
 			-- Mouse button released over map item event,
 			-- gets published when mouse is released over item,
 			-- map element is passed as first argument to subscribers,
-			-- as optional second argument the appropriate ESDL_MOUSE_EVENT is passed
+			-- as optional second argument the appropriate EM_MOUSE_EVENT is passed
 			
 feature {NONE} -- Dispatching
 			
-	dispatch_mouse_on_map_item_event (a_map_item: ELEMENT; a_mouse_event: ESDL_MOUSE_EVENT) is
+	dispatch_mouse_on_map_item_event (a_map_item: ELEMENT; a_mouse_event: EM_MOUSE_EVENT) is
 			-- Dispatch mouse on map item event.
 		do
 			-- Only dispatch when events are initialized.
 			if events_initialized then
 				inspect
 					a_mouse_event.type			
-				when Esdl_mousemotion_event then
+				when Em_mousemotion_event then
 					mouse_motion_on_map_item_event.publish ([a_map_item, a_mouse_event])
-				when Esdl_mouse_button_down_event then
+				when Em_mouse_button_down_event then
 					mouse_button_down_on_map_item_event.publish ([a_map_item, a_mouse_event])
-				when Esdl_mouse_button_up_event	then
+				when Em_mouse_button_up_event	then
 					mouse_button_up_on_map_item_event.publish ([a_map_item, a_mouse_event])
 				end				
 			end											
@@ -277,10 +277,10 @@ feature {NONE} -- Implementation
 	item_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [ELEMENT], ELEMENT]
 			-- Renderers used to render items that use a proprietary renderer
 			
-	item_views: DS_HASH_TABLE [ESDL_DRAWABLE, ELEMENT]
+	item_views: DS_HASH_TABLE [EM_DRAWABLE, ELEMENT]
 			-- Drawable objects that represent a map item
 			
-	views_array: ARRAYED_LIST [ESDL_DRAWABLE]
+	views_array: ARRAYED_LIST [EM_DRAWABLE]
 			-- Views per item index.
 
 	render_item (i: INTEGER) is
@@ -292,7 +292,7 @@ feature {NONE} -- Implementation
 		local
 			item_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]
 
-			view: ESDL_DRAWABLE
+			view: EM_DRAWABLE
 			map_item: ELEMENT			
 		do
 			map_item := map.item (i)

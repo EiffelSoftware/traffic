@@ -28,13 +28,13 @@ feature {NONE} -- Initialization
 feature -- Status report
 	map : TRAFFIC_MAP
 		
-	place_color: ESDL_COLOR
+	place_color: EM_COLOR
 			-- Color used to fill places.
 			
 			
 feature -- Status setting
 
-	set_place_color (a_color: ESDL_COLOR) is
+	set_place_color (a_color: EM_COLOR) is
 			-- Set `place_color' to `a_color'.
 		require
 			a_color_not_void: a_color /= Void
@@ -43,12 +43,12 @@ feature -- Status setting
 		end	
 			
 feature -- Basic operations
-	render (a_place: TRAFFIC_PLACE) : ESDL_DRAWABLE is
+	render (a_place: TRAFFIC_PLACE) : EM_DRAWABLE is
 				-- Rectangle to visualize `a_place'.
 		local
 			links: LIST [TRAFFIC_LINE_SECTION]
-			p: ESDL_VECTOR_2D
-			rectangle: ESDL_RECTANGLE
+			p: EM_VECTOR_2D
+			rectangle: EM_RECTANGLE
 		do
 
 			-- Calculate rectangle to include all outgoing links of `a_place'.

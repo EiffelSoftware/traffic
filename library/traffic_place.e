@@ -52,7 +52,7 @@ feature -- Access
 	name: STRING
 			-- Name of place.	
 			
-	position: ESDL_VECTOR_2D
+	position: EM_VECTOR_2D
 			-- Position on map.
 			
 	information: TRAFFIC_PLACE_INFORMATION
@@ -70,7 +70,7 @@ feature -- Element change
 			information_set: information = a_information
 		end
 		
-	set_position (a_position: ESDL_VECTOR_2D) is
+	set_position (a_position: EM_VECTOR_2D) is
 			-- Set position to `a_position'.
 		require
 			a_position_exists: a_position /= Void

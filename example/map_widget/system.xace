@@ -2,7 +2,7 @@
 
 <system name="map_widget">
   <description>
-    system: "Simple traffic application with esdl"
+    system: "Simple traffic application with EiffelMedia"
     copyright: "Copyright (c) 2004, Michela Pedroni and others"
     license: "Eiffel Forum License v2 (see forum.txt)"
     date: "$Date$"
@@ -27,7 +27,7 @@
   <mount location="${GOBO}/library/kernel.xace"/>
   <mount location="${GOBO}/library/library.xace"/>
   <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
-  <mount location="${ESDL}/library/library.xace"/>
+  <mount location="${EM}/library/library.xace"/>
   <mount location="${TRAFFIC}/library/library.xace"/>
 
 </system>

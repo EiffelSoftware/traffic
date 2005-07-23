@@ -8,7 +8,7 @@ class
 	MAP_WIDGET_SCENE
 	
 inherit 
-	ESDL_SCENE
+	EM_SCENE
 --		redefine
 --			default_create	
 --		end
@@ -20,14 +20,14 @@ inherit
 			default_create
 		end
 		
- 	ESDL_SHARED_STANDARD_FONTS
+ 	EM_SHARED_STANDARD_FONTS
 		export
 			{NONE} all
 		undefine
 			default_create
 		end
 		
-	ESDL_SHARED_COLORS
+	EM_SHARED_COLORS
 		export
 			{NONE} all
 		undefine
@@ -39,8 +39,8 @@ feature {NONE} -- Initialization
 --	default_create is
 			-- Default initialization
 --		do
---			Precursor {ESDL_SCENE}
-			--Precursor {ESDL_SHARED_STANDARD_FONTS}			
+--			Precursor {EM_SCENE}
+			--Precursor {EM_SHARED_STANDARD_FONTS}			
 --		end
 		
 feature -- Model
@@ -53,7 +53,7 @@ feature -- Model
 			
 feature -- Views
 		
-	big_zoomable_widget: ESDL_ZOOMABLE_WIDGET
+	big_zoomable_widget: EM_ZOOMABLE_WIDGET
 			-- Interactive container inside which 
 			-- `traffic_map' is displayed and can be zoomed
 
@@ -61,7 +61,7 @@ feature -- Views
 			-- Map widget to visualize `traffic_map'
 			-- for big zoomable map
 			
-	little_zoomable_container: ESDL_ZOOMABLE_CONTAINER
+	little_zoomable_container: EM_ZOOMABLE_CONTAINER
 			-- Container inside which `little_map_widget' is displayed
 
 	little_map_widget: TRAFFIC_MAP_WIDGET
@@ -72,10 +72,10 @@ feature -- Views
 			-- Widget to navigate in `big_zoomable_widget'
 			-- using `little_map_widget'
 
-	information_box: ESDL_ZOOMABLE_CONTAINER
+	information_box: EM_ZOOMABLE_CONTAINER
 			-- Information box to display some text information.	
 	
-	place_info_text: ESDL_STRING
+	place_info_text: EM_STRING
 			-- Information text about last clicked place.
 			
 	player_view: MAP_WIDGET_PASSENGER_DRAWABLE
@@ -86,9 +86,9 @@ feature -- Scene Initialization
 			-- Build 'main_container' containing zoomable map.
 		local
 			map_file: TRAFFIC_MAP_FILE
-			title: ESDL_DRAWABLE
-			player_sprite: ESDL_SPRITE
-			player_anim: ESDL_ANIMATION
+			title: EM_DRAWABLE
+			player_sprite: EM_SPRITE
+			player_anim: EM_ANIMATION
 		do			
 			-- Load `traffic_map'
 			create map_file.make_from_file ("./map/zurich_little.xml")
@@ -132,7 +132,7 @@ feature -- Scene Initialization
 		
 feature {NONE} -- Implementation
 
-	rail_color: ESDL_COLOR is
+	rail_color: EM_COLOR is
 			-- Color used for rail lines.
 		once
 			create Result.make_with_rgb (255, 160, 0)
@@ -145,8 +145,8 @@ feature {NONE} -- Implementation
 		require
 			traffic_map_not_void: traffic_map /= Void
 		local
-			container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background: ESDL_RECTANGLE
+			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+			background: EM_RECTANGLE
 		do			
 			-- Create container to put background and widgets into.
 			create container.make
@@ -161,8 +161,8 @@ feature {NONE} -- Implementation
 			create big_map_widget.make_with_map (traffic_map)			
 			
 			-- Customize map widget and render.
-			big_map_widget.line_renderer.traffic_type_line_widths.put (8, "rail")
-			big_map_widget.line_renderer.traffic_type_colors.put (rail_color, "rail")
+			big_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
+			big_map_widget.line_section_renderer.traffic_type_colors.put (rail_color, "rail")
 			big_map_widget.render
 			
 			-- Create zoomable widget to make map zoomable.
@@ -182,9 +182,9 @@ feature {NONE} -- Implementation
 		require
 			traffic_map_not_void: traffic_map /= Void
 		local
-			container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background: ESDL_RECTANGLE
-			map_box: ESDL_ORTHOGONAL_RECTANGLE
+			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+			background: EM_RECTANGLE
+			map_box: EM_ORTHOGONAL_RECTANGLE
 		do	
 		
 			-- Create container to put background and widgets into.
@@ -200,9 +200,9 @@ feature {NONE} -- Implementation
 			create little_map_widget.make_with_map (traffic_map)
 
 			-- Customize map widget and render (to affect changes)
-			little_map_widget.line_renderer.traffic_type_line_widths.put (8, "rail")
-			little_map_widget.line_renderer.traffic_type_colors.put (rail_color, "rail")
-			little_map_widget.line_renderer.traffic_type_colors.put (yellow, "tram")
+			little_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
+			little_map_widget.line_section_renderer.traffic_type_colors.put (rail_color, "rail")
+			little_map_widget.line_section_renderer.traffic_type_colors.put (yellow, "tram")
 			little_map_widget.render
 
 			-- Build zoomable container to show little map widget in.
@@ -222,8 +222,8 @@ feature {NONE} -- Implementation
 			-- with texts for informations
 			-- about map.			
 		local
-			background: ESDL_RECTANGLE
-			place_info_label: ESDL_STRING
+			background: EM_RECTANGLE
+			place_info_label: EM_STRING
 		do
 			create information_box.make (300, 270)
 			information_box.set_x_y (670, 100)
@@ -234,12 +234,12 @@ feature {NONE} -- Implementation
 			information_box.extend (background)
 			
 			-- Build place info label.
-			create place_info_label.make ("Clicked Place: ", standard_fonts.small_font)
+			create place_info_label.make ("Clicked Place: ", standard_bmp_fonts.small_font)
 			place_info_label.set_x_y (10, 30)
 			information_box.extend (place_info_label)
 
 			-- Build place info text
-			create place_info_text.make ("", standard_fonts.small_font)
+			create place_info_text.make ("", standard_bmp_fonts.small_font)
 			place_info_text.set_x_y (10, 60)
 			information_box.extend (place_info_text)
 			
@@ -247,15 +247,15 @@ feature {NONE} -- Implementation
 			main_container.extend (information_box)		
 		end
 
-	text_box (a_text: STRING; a_width, a_height: INTEGER): ESDL_DRAWABLE is
+	text_box (a_text: STRING; a_width, a_height: INTEGER): EM_DRAWABLE is
 			-- A new black box of size `a_widht' and `a_height'
 			-- with `a_text' in it (centered).
 		require
 			a_title_not_void: a_text /= Void
 		local
-			box: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background: ESDL_RECTANGLE
-			text: ESDL_STRING
+			box: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+			background: EM_RECTANGLE
+			text: EM_STRING
 			tx, ty: INTEGER			
 		do
 			-- Build text box container.
@@ -268,7 +268,7 @@ feature {NONE} -- Implementation
 			box.extend (background)
 			
 			-- Build Title text.
-			create text.make (a_text, standard_fonts.medium_font)
+			create text.make (a_text, standard_bmp_fonts.medium_font)
 			box.extend (text)			
 			
 			-- Set text centered in box.
@@ -279,7 +279,7 @@ feature {NONE} -- Implementation
 		
 feature {NONE} -- Implementation (Place clicks)
 
-	process_clicked_place (place: TRAFFIC_PLACE; m_event: ESDL_MOUSEBUTTON_EVENT) is
+	process_clicked_place (place: TRAFFIC_PLACE; m_event: EM_MOUSEBUTTON_EVENT) is
 			-- 
 		local
 			link: TRAFFIC_LINE_SECTION

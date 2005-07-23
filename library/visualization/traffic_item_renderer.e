@@ -8,7 +8,7 @@ deferred class
 	TRAFFIC_ITEM_RENDERER [ITEM -> HASHABLE]
 
 feature -- Basic operations
-	render(an_object: ITEM ): ESDL_DRAWABLE is
+	render(an_object: ITEM ): EM_DRAWABLE is
 			--function for drawing the object
 		require
 			an_object_not_void: an_object /= Void

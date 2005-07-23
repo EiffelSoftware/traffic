@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 feature -- Access		
 	map : TRAFFIC_MAP
 		
-	traffic_type_colors: DS_HASH_TABLE [ESDL_COLOR, STRING]
+	traffic_type_colors: DS_HASH_TABLE [EM_COLOR, STRING]
 			-- Colors for traffic types 
 			--|(identified through their names, 
 			--|because traffic type not yet HASHABLE, should be?)			
@@ -43,7 +43,7 @@ feature -- Access
 			
 feature -- Status report
 		
-	line_color: ESDL_COLOR
+	line_color: EM_COLOR
 			-- Color used to draw traffic line sections
 			-- that have no appropriate `traffic_type_color' set
 			-- (if `Void' either the color of the line is used
@@ -55,7 +55,7 @@ feature -- Status report
 			
 feature -- Status setting
 		
-	set_line_color (a_color: ESDL_COLOR) is
+	set_line_color (a_color: EM_COLOR) is
 			-- Set `line_color' to `a_color'.
 		do
 			line_color := a_color
@@ -74,13 +74,13 @@ feature -- Status setting
 		end
 		
 feature -- Basic operations
-	render (a_line_section: TRAFFIC_LINE_SECTION): ESDL_DRAWABLE is
+	render (a_line_section: TRAFFIC_LINE_SECTION): EM_DRAWABLE is
 			-- Polyline to visualize `a_line_section'.	
 			
 		local
-			col: ESDL_COLOR
+			col: EM_COLOR
 			tcol: TRAFFIC_COLOR
-			polyline: ESDL_POLYLINE
+			polyline: EM_POLYLINE
 		do
 			create polyline.make_from_list (a_line_section.polypoints)
 

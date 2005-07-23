@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
-<project name="esdl_root" default="help">
+<project name="em_root" default="help">
 
 	<description>
-		description: "Eiffel Ant file for ESDL"
+		description: "Eiffel Ant file for EiffelMedia"
 		copyright: "Copyright (c) 2004, Benno Baumgartner, Till G. Bay and others"
 		license: "Eiffel Forum License v2 (see forum.txt)"
 		date: "$Date$"

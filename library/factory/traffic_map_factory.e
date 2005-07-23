@@ -135,7 +135,7 @@ feature -- Traffic place building
 
 feature -- Line section building
 
-	build_line_section (a_origin, a_destination:STRING; a_polypoints: ARRAYED_LIST [ESDL_VECTOR_2D]; a_map: TRAFFIC_MAP; a_line: TRAFFIC_LINE) is
+	build_line_section (a_origin, a_destination:STRING; a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]; a_map: TRAFFIC_MAP; a_line: TRAFFIC_LINE) is
 			-- Generate new traffic line section object going from origin `a_origin' to place named `a_destination'
 			-- belonging to line `a_line' in map `a_map'.
 			-- (Access the generated object through feature `line_section')
@@ -275,7 +275,7 @@ feature {NONE} -- Implementation
 	internal_map: TRAFFIC_MAP
 			-- Internal representation of last created traffic map.
 			
-	create_line_section (a_origin, a_destination: STRING; a_polypoints: ARRAYED_LIST [ESDL_VECTOR_2D]; a_line: TRAFFIC_LINE; a_map: TRAFFIC_MAP): TRAFFIC_LINE_SECTION is
+	create_line_section (a_origin, a_destination: STRING; a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]; a_line: TRAFFIC_LINE; a_map: TRAFFIC_MAP): TRAFFIC_LINE_SECTION is
 			-- Create line section with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_line'.
 		require
 			a_origin_exists: a_origin /= Void

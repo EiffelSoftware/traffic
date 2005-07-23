@@ -2,7 +2,7 @@ indexing
 	description: "Renderers to render TRAFFIC_MAP"
 	note: "[
 				Just a very simple implementation, not very reusable yet not very nice yet 
-				(maybe create something like TRAFFIC_PLACE_VIEW instead of ESDL_RECTANGLE / ESDL_POLYLINE ??? etc. ....)	
+				(maybe create something like TRAFFIC_PLACE_VIEW instead of EM_RECTANGLE / EM_POLYLINE ??? etc. ....)	
 	
 				]"
 	author: "Rolf Bruderer"
@@ -38,7 +38,7 @@ feature -- Access
 	map: TRAFFIC_MAP
 			-- Map of which `Current' can visualize places.
 
-	traffic_type_colors: DS_HASH_TABLE [ESDL_COLOR, STRING]
+	traffic_type_colors: DS_HASH_TABLE [EM_COLOR, STRING]
 			-- Colors for traffic types 
 			--|(identified through their names, 
 			--|because traffic type not yet HASHABLE, should be?)			
@@ -50,10 +50,10 @@ feature -- Access
 
 feature -- Status report
 
-	place_color: ESDL_COLOR
+	place_color: EM_COLOR
 			-- Color used to fill places.
 			
-	line_color: ESDL_COLOR
+	line_color: EM_COLOR
 			-- Color used to draw traffic line sections
 			-- that have no appropriate `traffic_type_color' set
 			-- (if `Void' either the color of the line is used
@@ -65,7 +65,7 @@ feature -- Status report
 			
 feature -- Status setting
 
-	set_place_color (a_color: ESDL_COLOR) is
+	set_place_color (a_color: EM_COLOR) is
 			-- Set `place_color' to `a_color'.
 		require
 			a_color_not_void: a_color /= Void
@@ -73,7 +73,7 @@ feature -- Status setting
 			place_color := a_color
 		end	
 		
-	set_line_color (a_color: ESDL_COLOR) is
+	set_line_color (a_color: EM_COLOR) is
 			-- Set `line_color' to `a_color'.
 		do
 			line_color := a_color
@@ -93,21 +93,21 @@ feature -- Status setting
 		
 feature -- Renderers
 
-	place_renderer: FUNCTION [ANY, TUPLE [TRAFFIC_PLACE], ESDL_RECTANGLE]
+	place_renderer: FUNCTION [ANY, TUPLE [TRAFFIC_PLACE], EM_RECTANGLE]
 			-- Renderer for use with TRAFFIC_DRAWABLE_CONTAINER to visualize places of TRAFFIC_MAP
 	
-	line_section_renderer: FUNCTION [ANY, TUPLE [TRAFFIC_LINE_SECTION], ESDL_POLYLINE]
+	line_section_renderer: FUNCTION [ANY, TUPLE [TRAFFIC_LINE_SECTION], EM_POLYLINE]
 			-- Renderer for use with TRAFFIC_DRAWABLE_CONTAINER to visualize line sections of TRAFFIC_MAP
 			
 feature {NONE} -- Rendering	Implementation
 	
-	place_view (a_place: TRAFFIC_PLACE): ESDL_RECTANGLE is
+	place_view (a_place: TRAFFIC_PLACE): EM_RECTANGLE is
 			-- Rectangle to visualize `a_place'.
 		require
 			a_place_not_void: a_place /= Void
 		local
 			links: LIST [TRAFFIC_LINE_SECTION]
-			p: ESDL_VECTOR_2D
+			p: EM_VECTOR_2D
 		do
 				
 			-- Calculate rectangle to include all outgoing links of `a_place'.
@@ -138,12 +138,12 @@ feature {NONE} -- Rendering	Implementation
 			Result.set_fill_color (place_color)			
 		end	
 		
-	line_section_view (a_line_section: TRAFFIC_LINE_SECTION): ESDL_POLYLINE is
+	line_section_view (a_line_section: TRAFFIC_LINE_SECTION): EM_POLYLINE is
 			-- Polyline to visualize `a_line_section'.
 		require
 			a_line_section_not_void: a_line_section /= Void
 		local
-			col: ESDL_COLOR
+			col: EM_COLOR
 			tcol: TRAFFIC_COLOR
 		do
 			create Result.make_from_list (a_line_section.polypoints)

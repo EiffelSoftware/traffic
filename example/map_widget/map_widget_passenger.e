@@ -9,7 +9,7 @@ class
 	MAP_WIDGET_PASSENGER
 	
 inherit
-	ESDL_TIME_SINGLETON
+	EM_TIME_SINGLETON
 		export
 			{NONE} all
 		end
@@ -38,7 +38,7 @@ feature -- Status report
 	map: TRAFFIC_MAP
 			-- Map where player is inside.
 
-	position: ESDL_VECTOR_2D
+	position: EM_VECTOR_2D
 			-- Position on the map.
 	
 	place: TRAFFIC_PLACE
@@ -52,11 +52,11 @@ feature -- Status report
 		local
 			last_time, now_time, delta_time: INTEGER
 			links: LIST [TRAFFIC_LINE_SECTION]
-			shared_scene: ESDL_SHARED_SCENE			
-			polypoints: ARRAYED_LIST [ESDL_VECTOR_2D]
+			shared_scene: EM_SHARED_SCENE			
+			polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			point_index: INTEGER
 			length, speed, pos, point_pos: DOUBLE
-			p1, p2, dist: ESDL_VECTOR_2D
+			p1, p2, dist: EM_VECTOR_2D
 		do
 			-- Get time when move started (used for animation)
 			now_time := time.ticks

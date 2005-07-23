@@ -12,10 +12,10 @@ create
 	
 feature	-- Initialization
 
-	make (a_navigation_container: ESDL_ZOOMABLE_CONTAINER; a_view_container: ESDL_ZOOMABLE_CONTAINER) is
+	make (a_navigation_container: EM_ZOOMABLE_CONTAINER; a_view_container: EM_ZOOMABLE_CONTAINER) is
 			-- Initialize widget to use `a_navigation_container' for controlling `visible_area' of `a_view_container'.
 		local
-			nav_color: ESDL_COLOR		
+			nav_color: EM_COLOR		
 		do
 			navigation_container := a_navigation_container
 			view_container := a_view_container
@@ -44,20 +44,20 @@ feature	-- Initialization
 		
 feature -- Access
 		
-	navigation_container: ESDL_ZOOMABLE_CONTAINER
+	navigation_container: EM_ZOOMABLE_CONTAINER
 			-- Container that controls `view_container'
 	
-	view_container: ESDL_ZOOMABLE_CONTAINER
+	view_container: EM_ZOOMABLE_CONTAINER
 			-- Container that is controlled by `navigation_container'
 			
 feature {NONE} -- Implementation
 		
-	navigation_rectangle: ESDL_RECTANGLE
+	navigation_rectangle: EM_RECTANGLE
 			-- Rectangle in `navigation_container'
 			-- showing current `visible_area'
 			-- that is visible in `view_container'
 	
-	new_navigation_rectangle: ESDL_RECTANGLE
+	new_navigation_rectangle: EM_RECTANGLE
 			-- Rectangle in `navigation_container'
 			-- for choosing the new `navigation_rectangle'	
 	
@@ -70,7 +70,7 @@ feature {NONE} -- Implementation
 			navigation_rectangle.update_bounding_box
 		end		
 		
-	process_navigation_start (me: ESDL_MOUSEBUTTON_EVENT) is
+	process_navigation_start (me: EM_MOUSEBUTTON_EVENT) is
 			-- Start choosing a `new_navigation_rectangle'.
 		do
 			if me.is_left_button then
@@ -80,7 +80,7 @@ feature {NONE} -- Implementation
 			end
 		end	
 			
-	process_navigation_motion (me: ESDL_MOUSEMOTION_EVENT) is
+	process_navigation_motion (me: EM_MOUSEMOTION_EVENT) is
 			-- Adopt `new_navigation_rectangle'.
 		do
 			if me.button_state_left then
@@ -92,7 +92,7 @@ feature {NONE} -- Implementation
 			new_navigation_rectangle.update_bounding_box
 		end		
 		
-	process_navigation_stop (me: ESDL_MOUSEBUTTON_EVENT) is
+	process_navigation_stop (me: EM_MOUSEBUTTON_EVENT) is
 			-- Finish choosing a `new_navigation_rectangle'.
 		do
 			if me.is_left_button then
