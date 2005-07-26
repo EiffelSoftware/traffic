@@ -1,9 +1,9 @@
 indexing
 
 	description: "[
-					Music player with some basic features. Just put your music 
-					into `directory'. The music player will load all the .ogg and .mp3 files from there.
-					]"
+					Music player with some basic features. Just put your music into `directory'. 
+					The music player will load all the .ogg and .mp3 files from there.
+				]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -34,10 +34,7 @@ feature -- Initialization
 			i: INTEGER
 		do
 			directory := Sound_directory
-			
---			Precursor
---			track.set_music_volume (default_volume)
---			
+
 			-- Initialize random number generator for shuffle mode
 			create rng.make
 			rng.set_seed (time.ticks)

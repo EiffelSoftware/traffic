@@ -10,9 +10,6 @@ class
 
 inherit
 	PLAYER
---		redefine 
---			displayer
---		end
 
 create 
 	make

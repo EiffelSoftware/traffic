@@ -1,5 +1,5 @@
 indexing
-	description	: "Logic for the FLAT_HUNT game"
+	description	: "Logic for the Flat Hunt game"
 	status:	"See notice at end of class"
 	author: "Marcel Kessler & Rolf Bruderer, ETH Zurich"
 	date: "$Date$"
@@ -51,9 +51,6 @@ feature -- Initialization
 			check 
 				estate_agent /= Void 
 			end
---			if game_mode = Hunt then
---				estate_agent.displayer.set_hunt_mode (True)
---			end
 			next_turn
 		ensure
 			estate_agent_exists: estate_agent /= Void
@@ -223,9 +220,9 @@ feature {MAIN_CONTROLLER} -- Display
 		do
 			info_text.wipe_out
 			display_states
-			if estate_agent.displayer.visible then
-				info_text.append ("%NEstate agent: %N" + estate_agent.displayer.print_location)
-			end
+--			if estate_agent.displayer.visible then
+--				info_text.append ("%NEstate agent: %N" + estate_agent.displayer.print_location)
+--			end
 		end
 
 	display_states is

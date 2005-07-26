@@ -1,5 +1,8 @@
 indexing
-	description: "Essentially the same as an EM_SCENE but with some customization used throughout the application"
+	description: "[
+					Essentially the same as an EM_SCENE but with some customization 
+					used throughout the application.
+				]"
 	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -47,6 +50,12 @@ feature -- Event Handling
 --			if a_keyboard_event.key = sdlk_m then
 --				music_player.toggle_mute
 --			end
+
+			-- other
+			if a_keyboard_event.key = sdlk_q then
+				next_scene := Void
+				event_loop.stop
+			end
 		end
 
 	handle_outside_event is
@@ -55,5 +64,19 @@ feature -- Event Handling
 				music_player.play_next_song
 			end
 		end
+		
+feature -- Settings
+
+	set_last_scene (a_scene: like last_scene) is
+			-- Set `last_scene' to `a_scene'
+		do
+			last_scene := a_scene
+		end
+		
+
+feature {NONE} -- Implementation
+
+	last_scene: FLAT_HUNT_SCENE
+		-- Scene that was running before Current
 
 end

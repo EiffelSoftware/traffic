@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that ..."
+	description: "Scene that displays the credits."
 	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -52,7 +52,7 @@ feature -- Initialization
 			inner_boxes.item (3).add_line ("teh s0unDm4st0r")
 			
 			inner_boxes.item (4).add_line ("TRAFFIC by Michela Pedroni and others")
-			inner_boxes.item (4).add_line ("EM by Till G. Bay and others")
+			inner_boxes.item (4).add_line ("EiffelMedia by Till G. Bay and others")
 			inner_boxes.item (4).add_line ("Eiffel by Bertrand Meyer")
 			inner_boxes.item (4).add_line ("Photoshop")
 			

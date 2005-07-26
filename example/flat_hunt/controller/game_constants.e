@@ -1,7 +1,7 @@
 indexing
 	description: "Constants describing the game mode"
 	status:	"See notice at end of class"
-	author: "Marcel Kessler, ETH Zurich"
+	author: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 

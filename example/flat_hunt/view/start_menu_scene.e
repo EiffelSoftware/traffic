@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that ..."
+	description: "Start menu scene that is displayed when you launch the application."
 	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -115,11 +115,6 @@ feature -- Event handling
 			-- Handle keyboard events
 		do			
 			Precursor {MENU_SCENE} (a_keyboard_event)
-		
-			if a_keyboard_event.key = sdlk_q then
-				next_scene := Void
-				event_loop.stop
-			end
 
 			-- Toggle between main menu and option menus
 			if a_keyboard_event.key = sdlk_tab then

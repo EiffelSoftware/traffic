@@ -1,6 +1,5 @@
 indexing
-	description: "Robot brain (AI) calculating the next move for the
-	estate agent"
+	description: "Robot brain (AI) calculating the next move for the estate agent"
 	status:	"See notice at end of class"
 	author: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"

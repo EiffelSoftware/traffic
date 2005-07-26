@@ -1,16 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Customizable menu entry"
+	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
-
--- TODO: Is this class really necessary?
--- pro: 
---		more customizable (e.g. possible to add pics to a menu entry)
--- con: 
---		could just use a EM_STRING instead, if no pictures and the like are used in a menu entry
--- 
--- Conclusion: neat but essentially unnecessary -> Remove! and use EM_STRING instead
 
 class
 	MENU_ENTRY
@@ -47,7 +39,6 @@ feature -- Access
 			a_font_not_void: a_font /= Void
 		do
 			font := a_font
-			text.set_font (font)
 			update
 		ensure
 			font_set: font = a_font
@@ -57,6 +48,7 @@ feature -- Access
 	update is
 			-- Update this entry
 		do			
+			text.set_font (font)
 			replace (text, 1)
 		end
 

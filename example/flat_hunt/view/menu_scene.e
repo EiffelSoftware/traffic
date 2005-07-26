@@ -1,5 +1,8 @@
 indexing
-	description: "Objects that ..."
+	description: "[
+					Scene with basic menu features. 
+					Every scene that contains a menu/menus should inherit from this class.
+				]"
 	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"

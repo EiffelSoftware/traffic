@@ -8,6 +8,8 @@ indexing
 class
 	PLAYER_FACTORY
 	
+	EM_TIME_SINGLETON
+	
 create
 	make
 
@@ -17,13 +19,10 @@ feature -- Initialization
 			-- Initialize factory to produce players in `a_map'.
 		require
 			a_map_exists: a_map /= Void
-		local
-			time: TIME
 		do
 			map := a_map
-			create time.make_now
 			create random_number_generator.make
-			random_number_generator.set_seed (time.milli_second)
+			random_number_generator.set_seed (time.ticks)
 			random_number_generator.start
 			create occupied_numbers.make
 		end

@@ -1,5 +1,8 @@
 indexing
-	description: "Controller that steers the application's behavior and mediates between visual input/output and changes of the city model"
+	description: "[
+					Controller that steers the application's behavior 
+					and mediates between visual input/output and changes of the city model
+				]"
 	status:	"See notice at end of class"
 	author: "Marcel Kessler, Michela Pedroni, Ursina Caluori"
 	date: "$Date$"

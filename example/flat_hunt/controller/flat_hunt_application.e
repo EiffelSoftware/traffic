@@ -1,8 +1,5 @@
 indexing
-	description: "[
-						Controller that steers the application's behavior and mediates 
-						between visual input/output and changes of the city model
-					]"
+	description: "Application settings and launch"
 	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"

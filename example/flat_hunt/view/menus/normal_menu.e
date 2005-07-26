@@ -1,5 +1,5 @@
 indexing
-	description: ""
+	description: "Menu with menu entries all visible. Use up and down arrow keys to navigate."
 	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"

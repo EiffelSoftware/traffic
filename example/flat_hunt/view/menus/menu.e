@@ -1,5 +1,5 @@
 indexing
-	description: ""
+	description: "Menu with basic features. Every custom menu should inherit from this class."
 	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"

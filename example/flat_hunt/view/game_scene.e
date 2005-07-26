@@ -1,5 +1,5 @@
 indexing
-	description: "Displays the game"
+	description: "Displays the game."
 	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	author: "Rolf Bruderer, bruderol@student.ethz.ch"
 	date: "$Date$"
@@ -278,9 +278,6 @@ feature {NONE} -- Event Handling
 			if a_keyboard_event.key = sdlk_p then
 				-- Set game to pause mode and show pause menu
 				active := false
-			elseif a_keyboard_event.key = sdlk_q then
-				next_scene := Void
-				event_loop.stop
 			end
 		end
 		
