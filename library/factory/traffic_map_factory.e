@@ -214,7 +214,7 @@ feature -- Traffic line building
 			Result := internal_line /= Void
 		end
 
-feature -- Traffic simples line building
+feature -- Traffic simple line building
 
 	build_simple_line (a_name: STRING; a_type_name: STRING; a_map: TRAFFIC_MAP) is
 			-- Generate new traffic simple line object with name `name' and type `type'
@@ -236,13 +236,13 @@ feature -- Traffic simples line building
 			simple_line_created: simple_line /= Void
 			simple_line_has_name: equal (simple_line.name, a_name)
 			simple_line_has_type: equal (simple_line.type.name, a_type_name)
-			simple_line_in_map: map.has_line (a_name)
+			simple_line_in_map: a_map.has_line (a_name)
 		end
 
 	simple_line: TRAFFIC_LINE is
 			-- Generated traffic simple line object.
 		require
-			simple_line_available: has_line
+			simple_line_available: has_simple_line
 		do
 			Result := internal_simple_line
 		ensure
