@@ -19,7 +19,7 @@ create
 	make_with_scene_and_map_widget
 	
 feature -- Initialization		
-	make_with_scene_and_map_widget (a_scene: ESDL_SCENE; a_map_widget: TRAFFIC_MAP_WIDGET) is
+	make_with_scene_and_map_widget (a_scene: EM_SCENE; a_map_widget: TRAFFIC_MAP_WIDGET) is
 			-- 
 		do
 			make_empty (a_map_widget.map)
@@ -34,13 +34,13 @@ feature -- Initialization
 		end
 		
 feature -- Access
-	scene: ESDL_SCENE
+	scene: EM_SCENE
 
 	map_widget: TRAFFIC_MAP_WIDGET
 
 feature -- Status setting
 
-	set_scene (a_scene: ESDL_SCENE) is
+	set_scene (a_scene: EM_SCENE) is
 			-- 
 		do
 			scene := a_scene
@@ -67,7 +67,7 @@ feature -- Basic operations
 		local
 			animation: TOUCH_PASSENGER
 			drawable: MAP_WIDGET_PASSENGER_DRAWABLE
-			shared_bitmap_factory: ESDL_SHARED_BITMAP_FACTORY
+			shared_bitmap_factory: EM_SHARED_BITMAP_FACTORY
 		do				
 			create animation.make_on_map_place (map_widget.map, places_to_visit.first)
 			create drawable.make_from_passenger (animation)

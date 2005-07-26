@@ -8,7 +8,7 @@ class
 	TOUCH_TIMING
 
 inherit
-	ESDL_TIME_SINGLETON
+	EM_TIME_SINGLETON
 		export {NONE} all
 		end
 
@@ -40,7 +40,7 @@ feature -- Basic operations
 	wait (wait_time: INTEGER) is
 			--Wait for 'wait_time' milliseconds
 		local
-			shared_scene: ESDL_SHARED_SCENE
+			shared_scene: EM_SHARED_SCENE
 			now_time: INTEGER
 		do	
 			--Create Shared Scene

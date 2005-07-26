@@ -36,13 +36,13 @@ feature -- Access
 		deferred
 		end
 		
-	scene: ESDL_SCENE is
+	pictures: DS_LINKED_LIST [EM_BITMAP] is
 			-- If a simple description is not enough the example can 
-			-- emit here it's own describing scene
+			-- emit here a list of pictures
 		do
-			Result := Void
+			Result := create {DS_LINKED_LIST [EM_BITMAP]}.make_default
 		end
-
+		
 	name: STRING is
 			-- the name of the example
 		do
@@ -54,7 +54,7 @@ feature -- Status report
 
 feature -- Basic operations
 	
-	run_with_scene (on_exit_scene: ESDL_SCENE): ESDL_SCENE is 
+	run_with_scene (on_exit_scene: EM_SCENE): EM_SCENE is 
 			-- The example can specify it's own scene
 			-- The 'on_exit_scene' can be set to get
 			-- back to the menu

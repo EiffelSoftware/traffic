@@ -25,13 +25,13 @@
   <cluster name="touch" location="${TRAFFIC}/example/touch">
 		<cluster name="little_helpers"/>
 		<cluster name="examples"/>
-		<cluster name="controls"/>
+		<cluster name="widgets"/>
 	</cluster>
 	
   <mount location="${GOBO}/library/kernel.xace"/>
   <mount location="${GOBO}/library/library.xace"/>
   <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
-  <mount location="${ESDL}/library/library.xace"/>
-  <mount location="${TRAFFIC}/library/library.xace"/>
+  <mount location="${EM}/library/library.xace"/>
+  <mount location="${TRAFFIC}/library/library.xace"/>  
 
 </system>

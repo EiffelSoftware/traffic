@@ -8,7 +8,7 @@ obsolete class
 	TOUCH_WIDGET
 	
 inherit 
-	ESDL_SCENE
+	EM_SCENE
 --		redefine
 --			make
 --		end
@@ -20,14 +20,14 @@ inherit
 			default_create
 		end
 		
- 	ESDL_SHARED_STANDARD_FONTS
+ 	EM_SHARED_STANDARD_FONTS
 		export
 			{NONE} all
 		undefine
 			default_create
 		end
 		
-	ESDL_SHARED_COLORS
+	EM_SHARED_COLORS
 		export
 			{NONE} all
 		undefine
@@ -39,11 +39,11 @@ feature {NONE} --Implementation
 	example_manager: TOUCH_EXAMPLE_MANAGER
 
 	--example_manager containers
-	button_container: ESDL_ZOOMABLE_CONTAINER	
-	description_container: ESDL_ZOOMABLE_CONTAINER
+	button_container: EM_ZOOMABLE_CONTAINER	
+	description_container: EM_ZOOMABLE_CONTAINER
 	
 	--contains the run_button
-	settings_container: ESDL_ZOOMABLE_CONTAINER
+	settings_container: EM_ZOOMABLE_CONTAINER
 	
 	
 	--hide example_buttons, description and run_button
@@ -84,7 +84,7 @@ feature -- Model
 
 feature -- Views
 		
-	zoomable_widget: ESDL_ZOOMABLE_WIDGET
+	zoomable_widget: EM_ZOOMABLE_WIDGET
 			-- Interactive container inside which 
 			-- `traffic_map' is displayed and can be zoomed
 
@@ -103,7 +103,7 @@ feature -- Scene Initialization
 			-- Build 'main_container' containing zoomable map.
 		local
 			map_file: TRAFFIC_MAP_FILE
-			title: ESDL_DRAWABLE
+			title: EM_DRAWABLE
 
 			example1: TOUCH_CONSOLE_TEST
 			example2: TOUCH_CITY_CHANGE_EXAMPLE
@@ -217,7 +217,7 @@ feature {NONE} -- Implementation
 
 	initialized: BOOLEAN
 	
-	rail_color: ESDL_COLOR is
+	rail_color: EM_COLOR is
 			-- Color used for rail lines.
 		once
 			create Result.make_with_rgb (255, 160, 0)
@@ -230,8 +230,8 @@ feature {NONE} -- Implementation
 		require
 			traffic_map_not_void: traffic_map /= Void
 		local
-			container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background: ESDL_RECTANGLE
+			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+			background: EM_RECTANGLE
 		do	
 			-- Create container to put background and widgets into.
 			create container.make
@@ -261,15 +261,15 @@ feature {NONE} -- Implementation
 			main_container.extend (container)
 		end		
 
-	text_box (a_text: STRING; a_width, a_height: INTEGER): ESDL_DRAWABLE is
+	text_box (a_text: STRING; a_width, a_height: INTEGER): EM_DRAWABLE is
 			-- A new black box of size `a_width' and `a_height'
 			-- with `a_text' in it (centered).
 		require
 			a_title_not_void: a_text /= Void
 		local
-			box: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background: ESDL_RECTANGLE
-			text: ESDL_STRING
+			box: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+			background: EM_RECTANGLE
+			text: EM_STRING
 			tx, ty: INTEGER			
 		do
 			-- Build text box container.
@@ -293,7 +293,7 @@ feature {NONE} -- Implementation
 		
 feature {NONE} -- Agents, GUI events
 
-	process_clicked_place (place: TRAFFIC_PLACE; m_event: ESDL_MOUSEBUTTON_EVENT) is
+	process_clicked_place (place: TRAFFIC_PLACE; m_event: EM_MOUSEBUTTON_EVENT) is
 			-- User clicked on a place in the map
 --		local
 --			renderer: TRAFFIC_PLACE_RENDERER
@@ -316,7 +316,7 @@ feature {NONE} -- Agents, GUI events
 			-- User clicked the run example button
 		local
 			runtime: TOUCH_EXAMPLE_RUNTIME_IMPLEMENTATION
-			example_scene: ESDL_SCENE
+			example_scene: EM_SCENE
 			example: TOUCH_EXAMPLE
 		do
 			example := example_manager.current_example

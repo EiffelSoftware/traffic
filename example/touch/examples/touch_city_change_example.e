@@ -23,7 +23,7 @@ feature -- Access
 		
 	description: STRING is
 		once
-			Result := "Run it and watch the result"
+			Result := "An Example Text Output whichisverylong. This Example just plantsanewplace called 'Treasure'. Hunt The Treasure to get it. WordSpanningMoreThanOneLinehahahaah"
 		end
 		
 	example_scene: TOUCH_SIMPLE_TRAFFIC_SCENE
@@ -51,7 +51,7 @@ feature -- Duplication
 feature -- Miscellaneous
 
 feature -- Basic operations
-	run_with_scene (exit_scene: ESDL_SCENE): ESDL_SCENE is
+	run_with_scene (exit_scene: EM_SCENE): EM_SCENE is
 			-- 
 		do
 			example_scene := create {TOUCH_SIMPLE_TRAFFIC_SCENE}.make_with_zurich_little (Current)
@@ -81,7 +81,7 @@ feature -- Inapplicable
 
 feature {NONE} -- Implementation
 
-	process_clicked_place (place: TRAFFIC_PLACE; m_event: ESDL_MOUSEBUTTON_EVENT) is
+	process_clicked_place (place: TRAFFIC_PLACE; m_event: EM_MOUSEBUTTON_EVENT) is
 			-- User clicked on a place in the map
 		do
 			if m_event.is_left_button then

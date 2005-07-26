@@ -13,11 +13,11 @@ class
 
 inherit
 	TRAFFIC_PLACE_RENDERER
-	rename
-		render as simple_render
+	redefine
+		render
 	end
 	
-	ESDL_SHARED_BITMAP_FACTORY
+	EM_SHARED_BITMAP_FACTORY
 	undefine
 		is_equal,
 		default_create,
@@ -29,16 +29,17 @@ create
 
 feature -- Basic operations
 
-	render (a_place: TRAFFIC_PLACE): ESDL_DRAWABLE is
+	render (a_place: TRAFFIC_PLACE): EM_DRAWABLE is
 			-- Render place as rectangle and add a picture if it has any
 		local
-			bitmap: ESDL_BITMAP
-			container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
+			bitmap: EM_BITMAP
+			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+--			line: EM_POLYLINE
 		do
 			create container.make
 			
 --			container.extend (Precursor {TRAFFIC_PLACE_RENDERER} (a_place))
-			container.extend (simple_render (a_place))
+			container.extend (Precursor {TRAFFIC_PLACE_RENDERER} (a_place))
 			
 			if a_place.information /= Void then
 				if a_place.information.pictures.first /= Void then
@@ -48,6 +49,10 @@ feature -- Basic operations
 					if bitmap /= Void then
 						bitmap.set_x_y (a_place.position.x.rounded - bitmap.width//2, a_place.position.y.rounded - bitmap.height//2)
 						container.extend (bitmap)				
+						
+--						create line.make_empty
+--						line.extend (create {EM_VECTOR_2D}.make (a_place.position.x, a_place.position.y))
+--						line.extend (create {EM_VECTOR_2D}.make (a_place.position.x, a_place.position.y))
 					end
 				end
 			end

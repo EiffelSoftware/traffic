@@ -8,7 +8,7 @@ class
 	TOUCH_SIMPLE_TRAFFIC_SCENE
 
 inherit 
-	ESDL_SCENE
+	EM_SCENE
 		redefine
 			handle_outside_event
 		end
@@ -20,14 +20,14 @@ inherit
 			default_create
 		end
 		
- 	ESDL_SHARED_STANDARD_FONTS
+ 	EM_SHARED_STANDARD_FONTS
 		export
 			{NONE} all
 		undefine
 			default_create
 		end
 		
-	ESDL_SHARED_COLORS
+	EM_SHARED_COLORS
 		export
 			{NONE} all
 		undefine
@@ -91,7 +91,7 @@ feature -- Model
 
 feature -- Views
 		
-	zoomable_widget: ESDL_ZOOMABLE_WIDGET
+	zoomable_widget: EM_ZOOMABLE_WIDGET
 			-- Interactive container inside which 
 			-- `traffic_map' is displayed and can be zoomed
 
@@ -126,7 +126,7 @@ feature -- Scene Initialization
 
 			
 			--Build end button
-			end_button := create {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height ("./images/end_example.png", 250, 50)
+			end_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height ("End Example", 250, 50)
 			end_button.set_x_y (width-2*border-end_button.width, (0.7*height+border).rounded)
 			end_button.subscribe_for_click (agent process_clicked_end_button)
 
@@ -147,7 +147,7 @@ feature -- Scene Initialization
 		
 feature -- Basic Operation
 
-	hide (a_drawable: ESDL_DRAWABLE) is
+	hide (a_drawable: EM_DRAWABLE) is
 			-- 
 		do
 			if main_container.has (a_drawable) then
@@ -155,7 +155,7 @@ feature -- Basic Operation
 			end			
 		end
 		
-	show (a_drawable: ESDL_DRAWABLE) is
+	show (a_drawable: EM_DRAWABLE) is
 			-- 
 		do
 			if not main_container.has (a_drawable) then
@@ -163,7 +163,7 @@ feature -- Basic Operation
 			end			
 		end
 		
-	set_next_scene (a_scene: ESDL_SCENE) is
+	set_next_scene (a_scene: EM_SCENE) is
 			-- 
 		do
 			next_scene := a_scene
@@ -171,7 +171,7 @@ feature -- Basic Operation
 		
 feature {NONE} -- Implementation
 
-	rail_color: ESDL_COLOR is
+	rail_color: EM_COLOR is
 			-- Color used for rail lines.
 		once
 			create Result.make_with_rgb (255, 160, 0)
@@ -184,8 +184,8 @@ feature {NONE} -- Implementation
 		require
 			traffic_map_not_void: traffic_map /= Void
 		local
-			container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background: ESDL_RECTANGLE
+			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+			background: EM_RECTANGLE
 			
 		do	
 			-- Create container to put background and widgets into.

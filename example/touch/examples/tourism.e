@@ -1,33 +1,56 @@
 indexing
-	description: "Implementation of the PREVIEW example from The TOUCH Textbook"
+	description: "Implementation of the TOURISM class from The Textbook TOUCH"
 	author: "Roger Kueng"
-	date: "2005/07/12"
-	revision: "1.1"
+	date: "2005/07/22"
+	revision: "1.0"
 
-class
-	EXAMPLE_1
+deferred class
+	TOURISM
 
 inherit
 	TOUCH_EXAMPLE
 		redefine
-			run_with_scene
+			run_with_scene,
+			pictures,
+			default_create
 		end
-	ESDL_SHARED_BITMAP_FACTORY
+	EM_SHARED_BITMAP_FACTORY
 		undefine
 			copy,
 			is_equal,
 			default_create
 		end
 		
+--create 
+--	make
+	
+feature -- Initialization
+	default_create is
+			-- 
+		do
+			--default_create
+			Precursor {TOUCH_EXAMPLE}
+			Precursor {EM_SHARED_BITMAP_FACTORY}
+			
+			create pictures.make_default
+			
+			bitmap_factory.create_bitmap_from_image ("images/examples/example_1.png")
+			if bitmap_factory.last_bitmap /= Void then
+				pictures.force_last (bitmap_factory.last_bitmap) 
+			end
+		end
+		
 feature -- Access
 	description: STRING is
 			-- 
 		once
-			Result := "Implementation of the PREVIEW example class from the TOUCH  Textbook"
+			Result := "Implementation of the PREVIEW example class from the TOUCH Textbook"
 		end
 
+	pictures: DS_LINKED_LIST [EM_BITMAP]
+
 feature -- Basic operations
-	run_with_scene (exit_scene: ESDL_SCENE): ESDL_SCENE is
+	run_with_scene (exit_scene: EM_SCENE): EM_SCENE is
 			-- 
 		do
 			example_scene := create {TOUCH_SIMPLE_TRAFFIC_SCENE}.make_with_paris (Current)
@@ -62,24 +85,18 @@ feature -- Basic operations
 			
 			create Route1.make_with_scene_and_map_widget (example_scene, a_runtime.map_widget)
 			
-			Route1.extend ( a_runtime.map.place ("Tour Eiffel"))
-			Route1.extend ( a_runtime.map.place ("Musee du Louvre"))
-			Route1.extend ( a_runtime.map.place ("Notre Dame"))
+			Route1.extend (a_runtime.map.place ("Tour Eiffel"))
+			Route1.extend (a_runtime.map.place ("Musee du Louvre"))
+			Route1.extend (a_runtime.map.place ("Notre Dame"))
 			Route1.calculate_shortest_path
 			
 			explore
 			
 		end
 
-feature {NONE} -- Implementation
+feature  -- Deferred
 	explore is
-		-- Show some city info.
-		do
---			Paris.display
-			Louvre.spotlight
-			Line8.highlight
-			Route1.animate
-			Passenger.move_route (Route1)
+		deferred
 		end
 		
 feature {NONE} -- implementation

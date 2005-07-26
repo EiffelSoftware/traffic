@@ -8,12 +8,12 @@ class
 	MAP_WIDGET_PASSENGER_DRAWABLE
 	
 inherit 
-	ESDL_DRAWABLE
+	EM_DRAWABLE
 		redefine
 			publish_mouse_event
 		end
 	
-	ESDL_ANIMATABLE
+	EM_ANIMATABLE
 	
 create
 	make_from_passenger
@@ -29,9 +29,9 @@ feature -- Initialization
 
 feature -- Access
 
-	picture: ESDL_DRAWABLE
+	picture: EM_DRAWABLE
 	
-	set_picture (a_pic: ESDL_DRAWABLE) is
+	set_picture (a_pic: EM_DRAWABLE) is
 			-- Set `picture' to `a_pic'.
 		do
 			picture := a_pic
@@ -43,7 +43,7 @@ feature -- Access
 	update_position is
 			-- Update position to passenger's position.
 		local
-			pos: ESDL_VECTOR_2D
+			pos: EM_VECTOR_2D
 		do
 			pos := passenger.position
 			x := (pos.x - (picture.width / 2)).floor
@@ -57,7 +57,7 @@ feature -- Access
 			update_position			
 		end
 		
-	draw (surface: ESDL_SURFACE) is
+	draw (surface: EM_SURFACE) is
 			-- Draw 'Current' onto `surf'.
 		do
 			if picture /= Void then
@@ -79,7 +79,7 @@ feature -- Access
 		
 feature -- Mouse handling
 
-	publish_mouse_event (a_mouse_event: ESDL_MOUSE_EVENT) is
+	publish_mouse_event (a_mouse_event: EM_MOUSE_EVENT) is
 			-- Publish mouse event when `a_mouse_event' occurred on `Current'.
 			-- Descendants should redefine this feature 
 			-- for only catching and publishing their mouse events when mouse pointer

@@ -20,7 +20,7 @@ feature -- Access
 			Result := "This example will emit a short text on the console"
 		end
 	
---	scene: ESDL_SCENE is
+--	scene: EM_SCENE is
 --			-- 
 --		do
 --			Result := Void

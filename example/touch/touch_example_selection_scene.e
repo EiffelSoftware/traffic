@@ -10,16 +10,16 @@ class
 	TOUCH_EXAMPLE_SELECTION_SCENE
 
 inherit
-	ESDL_SCENE
+	EM_SCENE
 	
-	ESDL_SHARED_STANDARD_FONTS
+	EM_SHARED_STANDARD_FONTS
 		export
 			{NONE} all
 		undefine
 			default_create
 		end
 		
-	ESDL_SHARED_COLORS
+	EM_SHARED_COLORS
 		export
 			{NONE} all
 		undefine
@@ -30,7 +30,7 @@ inherit
 feature {NONE} --Implementation
 	
 	--contains the run_button
-	settings_container: ESDL_ZOOMABLE_CONTAINER
+	settings_container: EM_ZOOMABLE_CONTAINER
 	
 	chapter_examples: TOUCH_CHAPTER_CONTAINER
 
@@ -40,6 +40,7 @@ feature {NONE} --Implementation
 	current_example: TOUCH_EXAMPLE
 	
 feature -- Views			
+	exit_button: TOUCH_BUTTON
 	run_button: TOUCH_BUTTON
 	last_chapter: TOUCH_BUTTON
 	next_chapter: TOUCH_BUTTON
@@ -49,6 +50,8 @@ feature -- Views
 	chapters_container_widget: TOUCH_SCROLLABLE_WIDGET 
 	
 	console: TOUCH_TEXTLIST
+
+	pictures_container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 	
 feature -- Scene Initialization
 		
@@ -59,14 +62,14 @@ feature -- Scene Initialization
 		do
 		
 			--Build Chapter-Example-Tree
-			example_1 := create {EXAMPLE_1}
-			example_2 := create {TOUCH_CITY_CHANGE_EXAMPLE}
+			example_1 := create {PREVIEW}
+			example_2 := create {EXAMPLE_2}
 			example_3 := create {TOUCH_CITY_CHANGE_EXAMPLE}
 			
 			create chapter_examples.make
 			
 			chapter_examples.set_count (5)
-			chapter_examples.i_th (1).subscribe (example_1)
+--			chapter_examples.i_th (1).subscribe (example_1)
 			chapter_examples.i_th (2).subscribe (example_1)
 			chapter_examples.i_th (3).subscribe (example_1)
 			chapter_examples.i_th (4).subscribe (example_2)
@@ -79,40 +82,44 @@ feature -- Scene Initialization
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
 		local
-			title: ESDL_DRAWABLE
+			title: TOUCH_TEXT_STATIC
+			title_2: TOUCH_TEXT_STATIC
 
 			width, height: INTEGER
 			border: INTEGER
 			title_offset: INTEGER
 			
 			left_foreground: TOUCH_BITMAP_STATIC
-			left_background: ESDL_RECTANGLE
+			left_background: EM_RECTANGLE
 			upper_background: TOUCH_BITMAP_STATIC
 			settings_background: TOUCH_BITMAP_STATIC
 			
 			up_button: TOUCH_BUTTON
 			down_button: TOUCH_BUTTON
 
+			ttf: EM_TTF_FONT
+			directory: STRING
 		do			
 			width := 1024
 			height := 768
 			border := 10
-			title_offset := 60
+			title_offset := 100
 			
 			if not initialized then
+				
 				initialized := true
 
-
 				fill_chapter_examples
-	
-				
 
-				-- Build grey background color.
---				create background_color.make_with_rgb (100, 100, 100)	
+				--Initialize example pictures container
+				create pictures_container.make
+				pictures_container.set_x_y (width - border*2 - 500, title_offset + border)
+				
+				
+				-- Build black background color.
 				create background_color.make_with_rgb (0, 0, 0)
 				
---				create background.make_with_image_file_and_width_and_height ("./images/background.png", width, height)
-				
+
 				--Build up/down buttons
 				up_button := create  {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height 
 					("./images/arrow_up.png", 64, 64)
@@ -133,52 +140,77 @@ feature -- Scene Initialization
 				
 				create left_background.make_from_position_and_size
 					(left_foreground.x, left_foreground.y, left_foreground.width-1, left_foreground.height-1)
-				left_background.set_fill_color (create {ESDL_COLOR}.make_with_rgb (240, 240, 240))
+				left_background.set_fill_color (create {EM_COLOR}.make_with_rgb (240, 240, 240))
 				
 				create upper_background.make_with_image_file_and_width_and_height 
-					("./images/background_filled.png", width-border, title_offset-border)
+					("./images/title_background.png", width-border, title_offset-border)
 				upper_background.set_x_y (border // 2, border // 2)
 				
 				create settings_background.make_with_image_file_and_width_and_height 
-					("./images/background_filled.png", (0.3*width-2*border).rounded, (0.2*height-2*border).rounded)
-				settings_background.set_x_y ((0.7*width+border).rounded, (0.8*height+border).rounded)
-				
-				
-				-- Build title
-				title := text_box ("ESDL TOUCH", width-2*border, title_offset-2*border)
-				title.set_x_y (border, border)
+					("./images/background_filled.png", (0.3*width-2*border).rounded, (0.17*height-2*border).rounded)
+				settings_background.set_x_y ((0.7*width+border).rounded, (0.83*height+border).rounded)
 				
 				
 				--Build Settings container
-				create settings_container.make ((0.3*width-2*border).rounded, (0.2*height-2*border).rounded)
-				settings_container.set_x_y ((0.7*width+border).rounded, (0.8*height+border).rounded)
+				create settings_container.make ((0.3*width-2*border).rounded, (0.17*height-2*border).rounded)
+				settings_container.set_x_y ((0.7*width+border).rounded, (0.83*height+border).rounded)
 	
 		
 				--Build Run Button
 				run_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height 
-					("RUN EXAMPLE", settings_container.width-2*border, 30)
+					("Run Example", settings_container.width-2*border, 30)
 				run_button.set_x_y (border, border)
 				settings_container.extend (run_button)
 				run_button.subscribe_for_click (agent process_clicked_run_button)
 	
+				--Build Exit Button
+				exit_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height 
+					("Exit Application", settings_container.width-2*border, 30)
+				exit_button.set_x_y (border, run_button.y + run_button.height + border*2)
+				settings_container.extend (exit_button)
+				exit_button.subscribe_for_click (agent process_clicked_exit_button)				
+				
+				--Load Custom Font
+	 			if not standard_ttf_fonts.has_custom_font ("fancy_white") then
+					directory := standard_ttf_fonts.font_dirname
+	 				standard_ttf_fonts.set_font_dirname ("font")
+					standard_ttf_fonts.load_custom_font("fancy.ttf", 78, "fancy_white")
+		 			if not standard_ttf_fonts.has_custom_font ("fancy_red") then				
+						standard_ttf_fonts.load_custom_font("fancy.ttf", 78, "fancy_red")
+					end
+					standard_ttf_fonts.set_font_dirname(directory)
+				end
+
+				-- Build title
+				title := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", width-2*border, title_offset-2*border)
+				title_2 := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", width-2*border, title_offset-2*border)
+
+
+				ttf ?= standard_ttf_fonts.custom_font ("fancy_white")
+				
+				if ttf /= Void then
+					ttf.set_color (white)
+					title.set_title ("TOUCH", standard_ttf_fonts.custom_font ("fancy_white"))
+				end
+				
+				ttf ?= standard_ttf_fonts.custom_font ("fancy_red")
+				
+				if ttf /= Void then
+					ttf.set_color (red)
+					title_2.set_title ("TOUCH", ttf)
+				else
+				end
+				title.set_x_y (border, border)
+				title_2.set_x_y (border+3, border+3)
 				
 				--Build Console
 				create console.make_with_width_and_height (500, 200)
 				console.set_x_y (width - border*2 - console.width, 400);
-	
-				--Build Chapter Buttons
---				last_chapter := create {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height ("images\\last_chapter.png", 250, 50)
---				last_chapter.set_x_y (border, title_offset + border)
---				last_chapter.subscribe_for_click (agent process_clicked_last_chapter_button)
-				
---				next_chapter := create {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height ("images\\next_chapter.png", 250, 50)
---				next_chapter.set_x_y (width - border - next_chapter.width, title_offset + border)
---				next_chapter.subscribe_for_click (agent process_clicked_next_chapter_button)
-				
 				
 				--Create Chapters_Container_widget
 				create chapters_container_widget.make (400 - 2*border, 600 - 3*border)
 				chapters_container_widget.set_x_y (border, title_offset + border + border)
+				
 				--Build The Visual Chapter Tree
 				chapters_container_widget.set_horizontal_scroll (false)
 				build_chapter_examples_drawables (chapters_container_widget)
@@ -192,13 +224,12 @@ feature -- Scene Initialization
 				main_container.extend (upper_background)
 				main_container.extend (left_background)
 				main_container.extend (settings_background)
+				main_container.extend (title_2)
 				main_container.extend (title)
 				main_container.extend (settings_container)
+				main_container.extend (pictures_container)
 				main_container.extend (console)
-
---				main_container.extend (last_chapter)
---				main_container.extend (next_chapter)
-				
+			
 				main_container.extend (chapters_container_widget)
 
 				main_container.extend (left_foreground)
@@ -212,37 +243,17 @@ feature {NONE} -- Implementation
 
 	initialized: BOOLEAN
 
-	text_box (a_text: STRING; a_width, a_height: INTEGER): ESDL_DRAWABLE is
+	text_box (a_text: STRING; a_width, a_height: INTEGER): EM_DRAWABLE is
 			-- A new black box of size `a_width' and `a_height'
 			-- with `a_text' in it (centered).
 		require
 			a_title_not_void: a_text /= Void
-		local
-			box: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
-			background_rectangle: ESDL_RECTANGLE
-			text: ESDL_STRING
-			tx, ty: INTEGER			
+			correct_size: a_width > 0 and a_height > 0
 		do
-			-- Build text box container.
-			create box.make
-			Result := box
-					
-			-- Build Background.
-			create background_rectangle.make_from_coordinates (0, 0, a_width, a_height)
-			background_rectangle.set_fill_color (black)
-			box.extend (background_rectangle)
-			
-			-- Build Title text.
-			create text.make (a_text, standard_bmp_fonts.medium_font)
-			box.extend (text)			
-			
-			-- Set text centered in box.
-			tx := (a_width - text.width) // 2
-			ty := (a_height - text.height) // 2
-			text.set_x_y (tx, ty)	
+			Result := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height (a_text, a_width, a_height)
 		end
 		
-	build_chapter_examples_drawables (container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]) is
+	build_chapter_examples_drawables (container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]) is
 			-- 
 		require
 			container_not_void: container /= Void
@@ -307,12 +318,32 @@ feature {NONE} -- Agents, GUI events
 			-- 
 		local
 			an_example: TOUCH_EXAMPLE
+			a_bitmap: EM_BITMAP
+			x, y: INTEGER
 		do
 				an_example := hash_from_button_to_example.item (a_button)
 				if an_example /= Void then
+					
+					pictures_container.wipe_out
+					
 					current_example := an_example
 					
+					console.wipe_out_text
 					console.put_text (an_example.description)
+					
+					x := 10
+					y := 10
+					from
+						current_example.pictures.start
+					until
+						current_example.pictures.off
+					loop
+						a_bitmap := current_example.pictures.item_for_iteration
+						a_bitmap.set_x_y (x, y)
+						x := x + a_bitmap.width + 10
+						pictures_container.extend (a_bitmap)
+						current_example.pictures.forth
+					end
 				end			
 		end
 		
@@ -320,7 +351,7 @@ feature {NONE} -- Agents, GUI events
 			-- User clicked the run example button
 		local
 --			runtime: TOUCH_EXAMPLE_RUNTIME_IMPLEMENTATION
-			example_scene: ESDL_SCENE
+			example_scene: EM_SCENE
 			example: TOUCH_EXAMPLE
 		do
 			example := current_example
@@ -328,7 +359,7 @@ feature {NONE} -- Agents, GUI events
 			--If example not Void then run it
 			if example /= Void then
 				
-				example_scene := example.run_with_scene (Void)
+				example_scene := example.run_with_scene (create {TOUCH_EXAMPLE_SELECTION_SCENE})
 				--Does not work with Current
 --				example_scene := example.run_with_scene (Current)
 				
@@ -347,6 +378,11 @@ feature {NONE} -- Agents, GUI events
 				end
 			end			
 		end
+		
+	process_clicked_exit_button (a_button: TOUCH_BUTTON) is
+		do
+			event_loop.stop
+		end
 
 	process_clicked_last_chapter_button (a_button: TOUCH_BUTTON) is		
 		do
@@ -361,13 +397,13 @@ feature {NONE} -- Agents, GUI events
 	process_scroll_up (a_button: TOUCH_BUTTON) is
 			-- 
 		do
-			chapters_container_widget.scroll (create {ESDL_VECTOR_2D}.make (0, -24))
+			chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, -24))
 		end
 		
 	process_scroll_down (a_button: TOUCH_BUTTON) is
 			-- 
 		do
-			chapters_container_widget.scroll (create {ESDL_VECTOR_2D}.make (0, +24))			
+			chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, +24))			
 		end
 		
 invariant

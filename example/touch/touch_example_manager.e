@@ -19,7 +19,7 @@ creation
 	
 feature -- Initialisation
 
-	make_with_containers (a_button_container, a_description_container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]) is
+	make_with_containers (a_button_container, a_description_container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]) is
 			-- 
 		require
 			input_containers_not_void: a_button_container /= Void and then a_description_container /= Void
@@ -35,11 +35,11 @@ feature -- Initialisation
 		end
 		
 feature -- Access
-	button_container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
+	button_container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 
-	description_container: ESDL_DRAWABLE_CONTAINER [ESDL_DRAWABLE]
+	description_container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 
-	current_description_drawable: ESDL_DRAWABLE
+	current_description_drawable: EM_DRAWABLE
 	
 	current_example: TOUCH_EXAMPLE
 	

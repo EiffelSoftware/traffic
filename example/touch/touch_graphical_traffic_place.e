@@ -69,7 +69,7 @@ feature -- Basic operations
 		do				
 			
 			create place_renderer.make_with_map (map_widget.map)
-			place_renderer.set_place_color( create {ESDL_COLOR}.make_with_rgb (255, 255, 255))
+			place_renderer.set_place_color( create {EM_COLOR}.make_with_rgb (255, 255, 255))
 			map_widget.set_place_special_renderer (place_renderer, place)
 			
 			map_widget.render
