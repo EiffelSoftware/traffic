@@ -1,8 +1,8 @@
 indexing
 	description: "Map representing a traffic system of a region."
 	author: "Sibylle Aregger, ETH Zurich"
-	date: "$Date: 2005/05/25 13:06:13 $"
-	revision: "$Revision: 1.1 $"
+	date: "$Date: 2005/06/13 08:24:26 $"
+	revision: "$Revision: 1.2 $"
 
 class
 	TRAFFIC_MAP 
@@ -31,7 +31,6 @@ feature {NONE} -- Initialization
 		local
 			default_size: INTEGER
 		do
---			initialize_events
 			create place_events.make;
 			create line_section_events.make;
 			default_size := 100
@@ -68,9 +67,7 @@ feature -- Status report
 			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
 			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
 		local
-			l_line_section: TRAFFIC_LINE_SECTION
 			l_origin, l_destination: TRAFFIC_PLACE
-			found: BOOLEAN
 		do
 			l_origin := places.item (a_origin_name)
 			l_destination := places.item (a_destination_name)
@@ -167,6 +164,24 @@ feature -- Element change
 			a_line_in_map: has_line (a_line.name)
 		end
 
+
+	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
+			-- Remove line_section `a_line_section' from map (bad implementation)
+			require
+				has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
+			local 
+				index: INTEGER
+			do
+				internal_line_sections.start
+				internal_line_sections.search (a_line_section)
+				index := internal_line_sections.index
+				internal_line_sections.prune (a_line_section)
+				line_section_events.publish_item_removed_event (index, a_line_section)
+			ensure
+				-- we can assume, that the line_section was only once inserted
+				line_section_removed: not line_sections.has (a_line_section)
+			end
+		
 feature -- Access
 			
 	name: STRING
