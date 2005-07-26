@@ -97,7 +97,7 @@ feature -- Status - Places
 feature -- Status - Line_Sections
 
 	set_default_line_section_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]) is
-			-- 
+			-- set new default renderer for the line_sections
 		require
 			a_renderer_not_void: a_renderer /= Void		
 		do
@@ -130,18 +130,16 @@ feature -- Status - Line_Sections
 			a_renderer_not_void: a_renderer /= Void
 			a_line_not_void: a_line /= Void		
 		local
-			line: LINKED_LIST [TRAFFIC_LINE_SECTION]
 			line_section: TRAFFIC_LINE_SECTION
 		do
-			line := a_line
 			from
-				line.start
+				a_line.start
 			until
-			 	line.after
+			 	a_line.after
 			loop
-				line_section := line.item
+				line_section := a_line.item
 				line_section_drawables.set_renderer_for_item (a_renderer, line_section)
-			 	line.forth
+			 	a_line.forth
 			end
 		end	
 		
@@ -150,18 +148,16 @@ feature -- Status - Line_Sections
 		require
 			a_line_not_void: a_line /= Void		
 		local
-			line: LINKED_LIST [TRAFFIC_LINE_SECTION]
 			line_section: TRAFFIC_LINE_SECTION
 		do
-			line := a_line
 			from
-				line.start
+				a_line.start
 			until
-			 	line.after
+			 	a_line.after
 			loop
-				line_section := line.item
+				line_section := a_line.item
 				line_section_drawables.reset_renderer_for_item (line_section)
-			 	line.forth
+			 	a_line.forth
 			end
 		end	
 	
