@@ -7,7 +7,8 @@ indexing
 
 class
 	PLAYER_FACTORY
-	
+
+inherit 
 	EM_TIME_SINGLETON
 	
 create
@@ -21,9 +22,9 @@ feature -- Initialization
 			a_map_exists: a_map /= Void
 		do
 			map := a_map
-			create random_number_generator.make
-			random_number_generator.set_seed (time.ticks)
-			random_number_generator.start
+			create rng.make
+			rng.set_seed (time.ticks)
+			rng.start
 			create occupied_numbers.make
 		end
 
@@ -43,13 +44,13 @@ feature -- Initialization
 			create estate_agent.make (map, map.places.item ("Hauptbahnhof"), estate_agent_bot)
 			players.extend (estate_agent)
 			from
-				i := 2
+				i := 1
 			until
-				i > hunter_count + 1
+				i > hunter_count
 			loop
 				calculate_random_place
 				if random_place /= Void then
-					create flat_hunter.make(map, random_place, estate_agent, flat_hunters_bot, "Hunter " + (i-1).out))
+					create flat_hunter.make(map, random_place, estate_agent, flat_hunters_bot, "Hunter " + (i-1).out)
 					players.extend (flat_hunter)				
 				end
 				i := i + 1
@@ -70,11 +71,11 @@ feature {NONE} -- Implementation
 			until
 				random_place /= Void or occupied_numbers.count = map.places.count
 			loop
-				random_number := random_number_generator.item
+				random_number := rng.item
 				random_number := random_number \\ map.places.count + 1
-				random_number_generator.forth
+				rng.forth
 				if not occupied_numbers.has (random_number) then
-					random_place := map.places.to_array @ (random_number)
+					random_place := map.places.linear_representation @ (random_number)
 					if random_place = players.first.location then
 						random_place := Void
 					end
@@ -89,8 +90,8 @@ feature {NONE} -- Implementation
 	map: TRAFFIC_MAP
 			-- Map on which to produce players.
 		
-	random_number_generator: RANDOM
-			-- Random numbers
+	rng: RANDOM
+			-- Random number generator
 			
 	occupied_numbers: LINKED_LIST [INTEGER]
 			-- Indices of places that have already been occupied.

@@ -8,6 +8,16 @@ indexing
 deferred class
 	PLAYER
 
+inherit
+	
+	EM_TIME_SINGLETON
+	
+	TRAFFIC_TYPE_FACTORY
+		rename
+			make as make_type_factory
+		undefine
+			default_create
+		end
 
 feature -- Initialization
 	
@@ -22,15 +32,6 @@ feature -- Initialization
 		end
 
 feature -- Access
-
-	Rail_type: STRING is "rail"
-			-- Rail transportation type name
-		
-	Bus_type: STRING is "bus"
-			-- Bus transportation type name
-	
-	Tram_type: STRING is "tram"
-			-- Tram transportation type name
 	
 	bus_tickets: INTEGER
 			-- Number of bus tickets the player has
@@ -66,7 +67,9 @@ feature -- Access
 	next_move: TRAFFIC_LINE_SECTION
 			-- Next move (chosen by `brain')
 
-
+	marked: BOOLEAN
+			-- Is it this players turn ?
+			
 feature {NONE} -- Constants
 
 	Default_bus_tickets: INTEGER is 6
@@ -93,15 +96,27 @@ feature {GAME} -- Status setting
 			possible_moves_set: possible_moves = a_list
 		end
 		
+	set_marked is
+			-- Mark the player with a red circle (used for visualizing the current player).
+		do
+			marked := true
+		end
+		
+	set_unmarked is
+			-- Remove red marking circle.
+		do
+			marked := false
+		end		
+		
 feature -- Status report
 
-	enough_tickets (a_type: STRING): BOOLEAN is
+	enough_tickets (a_type: TRAFFIC_TYPE): BOOLEAN is
 			-- Check if player has tickets to drive with the transportation type `a_type'.
 		require 
 			a_type_is_valid: a_type /= Void and then is_valid_type (a_type)
 		do
 			Result := False
-			inspect a_type @ (1)
+			inspect a_type.name @ (1)
 			when 'r' then
 				if rail_tickets > 0 then
 					Result := True
@@ -119,12 +134,12 @@ feature -- Status report
 			end
 		end
 		
-	is_valid_type (a_type: STRING): BOOLEAN is
+	is_valid_type (a_type: TRAFFIC_TYPE): BOOLEAN is
 			-- Is `a_type' representing a valid transportation type?
 		require
 			a_type_not_void: a_type /= Void
 		do
-			Result := a_type.is_equal (Bus_type) or a_type.is_equal (Tram_type) or a_type.is_equal (Rail_type)		
+			Result := type_table.has_item (a_type)
 		end
 		
 feature {NONE} -- Element change
@@ -136,7 +151,7 @@ feature {NONE} -- Element change
 			a_move_is_of_valid_type: is_valid_type (a_move.type)
 		do
 			inspect
-				a_move.type @ (1)
+				a_move.type.name @ (1)
 			when 'b' then
 				bus_tickets := bus_tickets - 1				
 			when 'r' then
@@ -164,8 +179,7 @@ feature {GAME} -- Basic operations
 		require
 		do
 			decrease_ticket_count (next_move)
-			old_location := location
-			location := next_move.destination (location)
+			move_to (next_move.destination)
 		ensure
 		end		
 
@@ -173,10 +187,9 @@ feature {GAME} -- Basic operations
 			-- 
 		require
 			a_location_is_different: location /= a_location
-			a_location_is_reachable: map.has_line_section_between (location.name, a_location.name)
+			a_location_is_reachable: possible_moves.there_exists (agent has_location(?, a_location))
 		local
 			last_time, now_time, delta_time: INTEGER
-			links: LIST [TRAFFIC_LINE_SECTION]
 			shared_scene: EM_SHARED_SCENE			
 			polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			point_index: INTEGER
@@ -193,30 +206,27 @@ feature {GAME} -- Basic operations
 			
 			-- Animate if there is a running scene.
 			if shared_scene.running_scene /= Void then	
-				
-				-- Get link to move over.
-				links := map.line_sections_of_place (location.name)
 			
 				from
-					links.start
+					possible_moves.start
 				until
-					links.after or else links.item.destination = a_location					
+					possible_moves.after or else possible_moves.item.destination = a_location
 				loop
-					links.forth										
+					possible_moves.forth
 				end
 				
-				if not links.after then
+				if not possible_moves.after then
 					
-					polypoints := links.item.polypoints
+					polypoints := possible_moves.item.polypoints
 					
 					if polypoints = Void or else polypoints.count < 2 then  -- TODO: Only necessary because of bug in TRAFFIC_LINE_SECTION ??
 						create polypoints.make (2)
-						polypoints.extend (links.item.origin.position)						
-						polypoints.extend (links.item.destination.position)						
+						polypoints.extend (possible_moves.item.origin.position)
+						polypoints.extend (possible_moves.item.destination.position)						
 					end
 				
 					-- Set parmeter for animation			
-					length := links.item.length
+					length := possible_moves.item.length
 					speed := 100 -- meter per second
 				
 					-- Perform move animation.
@@ -276,6 +286,12 @@ feature {GAME} -- Basic operations
 			location_set: location = a_location
 		end
 
+	has_location (a_line_section: TRAFFIC_LINE_SECTION; a_location: TRAFFIC_PLACE): BOOLEAN is
+			-- Check `if a_line_section' has `a_location' as destination
+		do
+			Result := a_line_section.destination = a_location
+		end
+		
 
 	choose_move is
 			-- Choose the next move.

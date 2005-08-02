@@ -21,9 +21,8 @@ feature {NONE} -- Initialization
 		do
 			make_from_map_and_place (a_map, a_location)
 			name := "Agent"
-			last_visible_location := location
-			visible := False
-			create 
+			set_last_visible_location
+			set_visible (false)
 
 			if is_bot then
 				bus_tickets := default_bot_tickets
@@ -56,7 +55,7 @@ feature -- Access
 			
 feature -- Queries
 
-	is_visible: BOOLEAN
+	is_visible: BOOLEAN is
 		do
 			Result := visible
 		end
@@ -83,7 +82,7 @@ feature -- Element Change
 			valid_ticket_type: is_valid_type (a_move.type)
 		do
 			inspect
-				a_move.type @ (1)
+				a_move.type.name @ (1)
 			when 'b' then
 				bus_tickets := bus_tickets + 1				
 			when 'r' then
@@ -110,11 +109,11 @@ feature {GAME} -- Basic operations
 		local
 			tmp_visited_places: STRING
 		do
-			brain.choose_estate_agent_move (possible_moves, location, last_visible_location)
+			brain.choose_next_move (possible_moves, location, last_visible_location)
 			next_move := brain.chosen_move
 			if next_move /= Void then
-				taken_transports.extend (next_move.type)
-				tmp_visited_places := location.name + " -> " + next_move.destination (location).name
+				taken_transports.extend (next_move.type.name)
+				tmp_visited_places := location.name + " -> " + next_move.destination.name
 				visited_places.extend (tmp_visited_places)
 			end
 		end		

@@ -77,7 +77,7 @@ feature -- Basic operations
 				possible_moves := Void
 			else
 				flat_hunter_stuck := False
-				brain.choose_flat_hunter_move (possible_moves, location, estate_agent.location)
+				brain.choose_next_move (possible_moves, location, estate_agent.location)
 				next_move := brain.chosen_move
 			end
 		end		
