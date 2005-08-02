@@ -40,7 +40,6 @@ feature {ESTATE_AGENT} -- Basic operations
 					possible_moves.after
 				loop
 					tmp_move := possible_moves.item
-					tmp_distance := tmp_move.length
 					if
 						tmp_move.length > best_distance
 					then
