@@ -18,13 +18,13 @@ feature -- Singleton access
 			scene_not_void: Result /= Void
 		end
 		
-	game_scene: GAME_SCENE is
-			-- Game scene singleton
-		once
-			create Result.make
-		ensure
-			scene_not_void: Result /= Void
-		end
+--	game_scene: GAME_SCENE is
+--			-- Game scene singleton
+--		once
+--			create Result.make
+--		ensure
+--			scene_not_void: Result /= Void
+--		end
 		
 	credits_scene: CREDITS_SCENE is
 			-- Credits scene singleton

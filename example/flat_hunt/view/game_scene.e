@@ -15,18 +15,13 @@ inherit
 		end
 	
 	TRAFFIC_TYPE_FACTORY   -- Singleton traffic types
-		export
-			{NONE} all
-		undefine
-			default_create, make
+		rename 
+			make as make_type_factory
+		undefine 
+			default_create 
 		end
 		
 	THEME
-		undefine
-			default_create
-		end
-
-	GAME_CONSTANTS
 		undefine
 			default_create
 		end
@@ -36,32 +31,26 @@ create
 
 feature -- Initialization
 		
-	make is
+	make (a_traffic_map: TRAFFIC_MAP; a_hunter_count: INTEGER) is
 			-- Creation procedure
+		require
+			a_traffic_map_not_void: a_traffic_map /= Void
+			a_hunter_count_valid: a_hunter_count > 0 and a_hunter_count <= 8
 		do
 			default_create
-			
+			traffic_map := a_traffic_map
+			hunter_count := a_hunter_count
 		end
 		
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
 		require else
-			map_size_valid: map_size = Little or map_size = Big
-		local
-			map_file: TRAFFIC_MAP_FILE
+			traffic_map_not_void: traffic_map /= Void
 		do			
 			active := true
 			background_color.make_black
 --			set_frame_counter_visibility (true)
 
-			-- Load `traffic_map'
-			if map_size = Big then
-				create map_file.make_from_file ("./map/zurich_big.xml")
-			else
-				create map_file.make_from_file ("./map/zurich_little.xml")
-			end
-			traffic_map := map_file.traffic_map
-			
 			-- Build map widgets
 			build_big_map_widget
 			build_little_map_widget
@@ -77,6 +66,8 @@ feature -- Initialization
 			static_status_box.set_color (game_widget_color)
 			static_status_box.set_opacity (70)
 			main_container.extend (static_status_box)
+
+			display_players
 			
 			-- Build dynamic status boxes
 			initialize_dynamic_status_boxes
@@ -87,39 +78,53 @@ feature -- Initialization
 			flat_hunter_button_pics.item (1).set_x_y (margin, window_height - margin - flat_hunter_button_pics.item (1).height)
 			main_container.extend (flat_hunter_button_pics.item (1))
 			
---			main_container.extend (estate_agent_pic)
 		end
 	
-	set_game_constants (a_game_mode, a_nr_of_hunters, a_map_size: INTEGER) is
-			-- Set game constants used throughout the game
-			-- Should be called before game scene loaded
+	create_players_from_list (a_player_list: ARRAYED_LIST [PLAYER]) is
+			-- Create views for players on the scene
 		require
--- TODO: violation, why?			a_game_mode_valid: a_game_mode >= Hunt and a_game_mode <= Demo
-			a_nr_of_hunters_valid: a_nr_of_hunters >= 1 and a_nr_of_hunters <= 8
-			a_map_size_valid: a_map_size = Little or a_map_size = Big
+			a_player_list_not_void: a_player_list /= Void
+			a_player_list_valid: a_player_list.count >= 2
+		local
+			i: INTEGER
 		do
-			game_mode := a_game_mode
-			nr_of_hunters := a_nr_of_hunters
-			map_size := a_map_size
-		ensure
-			game_mode_set: game_mode = a_game_mode
-			nr_of_hunters_set: nr_of_hunters = a_nr_of_hunters
-			map_size_set: map_size = a_map_size
+			create player_views.make (0)
+			from
+				i := 1
+			until
+				i > a_player_list.count
+			loop
+				if i <= 1 then
+					player_views.extend (create {ESTATE_AGENT_DISPLAYER}.make_from_player (a_player_list.first, estate_agent_pic))
+				else
+					player_views.extend (create {FLAT_HUNTER_DISPLAYER}.make_from_player (a_player_list.i_th (i), flat_hunter_pics.item (i - 1)))
+				end		
+				i := i + 1
+			end
 		end
-
-
-feature -- Attributes
-
-	static_status_box: STATUS_BOX
-			-- Status box to display items & state of current player
-
-feature -- Model
-	
-	traffic_map: TRAFFIC_MAP
-			-- Traffic map that models a city
+		
+	display_players is
+			-- Visualize players on the scene
+		do
+			from
+				player_views.start
+			until
+				player_views.after
+			loop
+				big_zoomable_widget.extend (player_views.item)
+				player_views.forth
+			end
+		end
+		
 			
 feature -- Views
-		
+
+	player_views: ARRAYED_LIST [PLAYER_DISPLAYER]
+			-- Holds all player displayers
+
+	status_boxes: HASH_TABLE [STATUS_BOX, INTEGER]
+			-- Holds a dynamic status box for each player (including estate agent).
+			
 	big_zoomable_widget: EM_ZOOMABLE_WIDGET
 			-- Interactive container inside which 
 			-- `traffic_map' is displayed and can be zoomed
@@ -144,9 +149,22 @@ feature -- Views
 	
 	place_info_text: EM_STRING
 			-- Information text about last clicked place.
-		
-	status_boxes: HASH_TABLE [STATUS_BOX, INTEGER]
-			-- Holds a dynamic status box for each player (including estate agent).
+
+feature -- Attributes
+
+	traffic_map: TRAFFIC_MAP
+			-- Reference to the map where the game takes place
+			
+	hunter_count: INTEGER
+			-- Reference to number of hunters
+
+	static_status_box: STATUS_BOX
+			-- Status box to display items & state of current player
+
+	active: BOOLEAN
+			-- Is game active or in pause?
+			
+feature -- Status Settings
 		
 feature {NONE} -- Implementation
 
@@ -248,13 +266,13 @@ feature {NONE} -- Implementation
 		local
 			i: INTEGER
 		do
-			create status_boxes.make (nr_of_hunters + 1)  -- the + 1 is for the estate agent
+			create status_boxes.make (hunter_count + 1)  -- the + 1 is for the estate agent
 			from
 				i := 1
 			until
-				i > nr_of_hunters + 1
+				i > hunter_count + 1
 			loop
-				if i = nr_of_hunters + 1 then -- estate agent
+				if i = hunter_count + 1 then -- estate agent
 					status_boxes.put (create {STATUS_BOX}.make_from_coordinates (margin, margin + map_area_height - 70, margin + map_area_width, margin + map_area_height + 30, "Status of estate agent"), i)										
 				end
 				status_boxes.put (create {STATUS_BOX}.make_from_coordinates (margin, margin + map_area_height - 70, margin + map_area_width, margin + map_area_height + 30, "Status of hunter " + i.out), i)
@@ -298,11 +316,9 @@ feature {NONE} -- Event Handling
 				--Set info Text
 --				place_info_text.set_value (place.name)
 			end			
-		end
-		
-feature -- Attributes
-	
-	active: BOOLEAN
-			-- Is game active or in pause?
-	
+		end	
+
+invariant
+	traffic_map_not_void: traffic_map /= Void
+	hunter_count_valid: hunter_count > 0 and hunter_count <= 8
 end

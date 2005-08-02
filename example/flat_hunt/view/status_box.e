@@ -4,13 +4,6 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-
--- TODO: 
--- Bug: if status box is placed at certain area & a line is not long enough, the line gets displayed at
--- a weird position outside the status box
-
--- TODO: move drawable_container instead of "ingredients"!! -> perhaps bug will fix itself? :)
-
 class
 	STATUS_BOX
 
@@ -37,10 +30,14 @@ feature -- Initialization
 			-- Create status box with default values
 		do
 			Precursor
+			
+			-- Create box.
 			create box.make_from_coordinates (0, 0, 0, 0)
-			box.set_rounded_corner_radius (10)
-			box.set_line_width (1)
-			opacity := 100
+			
+			-- Initialization.
+			set_default_values
+			initialize_box
+			
 		ensure then
 			box_not_void: box /= Void
 		end
@@ -51,10 +48,10 @@ feature -- Initialization
 			a_title_not_void: a_title /= Void
 		do
 			make
-			box.set_x_y (an_x, a_y)
+			set_x_y (an_x, a_y)
 			initialize_with_title (a_title)
 		ensure
-			box_positioned: box.x = an_x and box.y = a_y
+			positioned: x = an_x and y = a_y
 		end
 
 	make_from_coordinates (x1: INTEGER; y1: INTEGER; x2: INTEGER; y2: INTEGER; a_title: STRING) is
@@ -63,12 +60,13 @@ feature -- Initialization
 			a_title_not_void: a_title /= Void
 		do
 			make
-			box.set_x_y (x1, y1)
+			set_x_y (x1, y1)
 			box.set_size (x2 - x1, y2 - y1)
 			initialize_with_title (a_title)
 		ensure
-			box_positioned: box.x = x1 and box.y = y1
---	TODO: postcondition violation, why?		box_resized: box.width = x2 - x1 and box.height = y2 - y1
+			positioned: x = x1 and y = y1
+--			box_width_set: box.width = x2 - x1 
+--			box_height_set: box.height = y2 - y1
 		end
 		
 	make_from_position_and_size (x1: INTEGER; y1: INTEGER; a_width: INTEGER; a_height: INTEGER; a_title: STRING) is
@@ -77,7 +75,7 @@ feature -- Initialization
 			a_title_not_void: a_title /= Void
 		do
 			make
-			box.set_x_y (x1, y1)
+			set_x_y (x1, y1)
 			box.set_size (a_width, a_height)
 			initialize_with_title (a_title)
 		ensure
@@ -85,45 +83,55 @@ feature -- Initialization
 			box_resized: box.width = a_width and box.height = a_height
 		end
 
-	initialize_with_title (a_title: STRING) is
-			-- Initialize color of the status box and its contour
-		require
-			a_title_not_void: a_title /= Void
+feature {NONE} -- Initialization Implementation
+
+	set_default_values is
+			-- Set default values for all attributes.
 		do
+			opacity := 100			
 			color := status_background_color
-			font := small_default_font
 			alignment := Left
+			font := small_default_font
 			title_font := big_default_font
 			max_line_width := 0
 			text_height := 0
 			box_auto_resize := false
-
+		ensure
+			color_not_void: color /= Void
+			font_not_void: font /= Void
+			title_font_not_void: title_font /= Void			
+		end
+		
+	initialize_box is
+			-- Initialize box with default values.
+		require
+			color_not_void: color /= Void
+		do
+			box.set_rounded_corner_radius (10)
+			box.set_line_width (1)			
 			box.set_line_color (color)
 			box.line_color.set_alpha (255)
 			box.set_fill_color (color)
 			box.fill_color.set_alpha (opacity)
-			
-			extend (box)
-			
-			create title.make (a_title, title_font)
-			set_title_position
---			if title.width > max_line_width then
---				max_line_width := title.width
---			end
-			extend (title)
-			
-			create lines.make
-		
 		ensure
-			color_not_void: color /= Void
-			font_not_void: font /= Void
-			title_font_not_void: title_font /= Void
+		-- TODO: postcondition for every box-attribute that is set ?? 			
+		end
+
+	initialize_with_title (a_title: STRING) is
+		require
+			a_title_not_void: a_title /= Void
+		do			
+			create title.make (a_title, title_font)
+			title.set_x_y (15, 0)
+			create lines.make
+			set_box_position
+			extend (title)			
+			extend (box)
+		ensure
 			title_not_void: title /= Void
 			lines_not_void: lines /= Void
-			
-		-- TODO: postcondition for every box-attribute that is set ?? 
-			box_displayed: has (box)
 			title_displayed: has (title)
+			box_displayed: has (box)
 		end
 		
 feature -- Access
@@ -144,6 +152,15 @@ feature -- Access
 			text_height_set: text_height = old text_height + lines.last.height // 2 + padding
 			max_line_width_set: max_line_width >= lines.last.width
 		end	
+	
+	remove_line (an_index: INTEGER) is
+			-- Remove line at position `an_index'.
+		require
+			an_index_valid: an_index > 0 and an_index <= lines.count
+		do
+--			lines.item (an_index).
+		end
+		
 		
 	set_opacity (an_opacity: like opacity) is
 			-- Set opacity of status box
@@ -206,12 +223,8 @@ feature -- Access
 			a_title_not_void: a_title /= Void
 		do
 			title.set_value (a_title)
---			if title.width > max_line_width then
---				max_line_width := title.width
---			end
 		ensure
 			title_set: title.value = a_title
---			max_line_width_set: max_line_width >= title.width			
 		end
 	
 	set_auto_resize (b: like box_auto_resize) is
@@ -339,14 +352,7 @@ feature {NONE} -- Implementation
 		ensure
 		-- TODO: postcondition for every item in lines ??
 		end
-		
-	set_title_position is
-			-- Set position of title
-		do
-			title.set_x_y (box.x + 15, box.y - title.height // 2 - title.height // 18)
-		ensure
-			title_positioned: title.x = box.x + 15 and title.y = box.y - title.height // 2 - title.height // 18
-		end
+
 		
 	update_title is
 			-- Update title according to current `title_font'
@@ -355,10 +361,17 @@ feature {NONE} -- Implementation
 			title_font_not_void: title_font /= Void
 		do
 			title.set_font (title_font)
-			set_title_position
+			set_box_position
 		ensure
 			font_set: title.font = title_font
 		end
+
+	set_box_position is
+			-- Set box to the correct position.
+		do
+			box.set_x_y (0, title.height // 2 + title.height // 18)
+		end
+		
 		
 	update_box is
 			-- Update the background box
@@ -366,6 +379,7 @@ feature {NONE} -- Implementation
 			if box_auto_resize then
 				box.set_size (max_line_width + horizontal_margin * 2, text_height + vertical_margin * 2)				
 			end
+			set_box_position
 		ensure
 		-- TODO: conditional invariant box_resized: ... ??
 		end

@@ -63,7 +63,7 @@ feature -- Event handling
 			next_scene := menu.scenes @ (menu.selected_entry)
 			event_loop.stop
 		ensure
-			next_scene_set: next_scene = menu.scenes @ (menu.selected_entry)
+--			next_scene_set: next_scene = menu.scenes @ (menu.selected_entry)
 		end
 		
 	on_option_select is

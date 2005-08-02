@@ -13,6 +13,11 @@ inherit
 			initialize_scene, handle_key_down_event, on_select
 		end
 
+	SHARED_MAIN_CONTROLLER
+		undefine
+			default_create
+		end
+
 create
 	make
 	
@@ -29,14 +34,14 @@ feature -- Initialization
 			
 			music_player.play_game_music
 
-			create background_box.make_from_coordinates (50, 160, Window_width - 50, 515, "options")
+			create background_box.make_from_coordinates (50, 95, Window_width - 50, 450, "options")
 			background_box.set_color (menu_color)
 			background_box.set_title_font (menu_font)
 			background_box.set_font (small_menu_font)
 			background_box.set_opacity (70)
 			background_box.set_auto_resize (false)
 			
-			menu.add_entry ("start game", game_scene, true)
+			menu.add_entry ("start game", Void, true)
 			menu.add_entry ("credits", credits_scene, false)
 			menu.add_entry ("quit", Void, false)
 			menu.set_alignment (Right)
@@ -47,7 +52,7 @@ feature -- Initialization
 			create list.make (0)
 
 			background_box.add_line ("game mode :")
-			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y)
+			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 			
 			list.extend ("hunt")
 			list.extend ("escape")
@@ -58,7 +63,7 @@ feature -- Initialization
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height
 			
 			background_box.add_line ("nr of hunters :")
-			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y)
+			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 			
 			list.wipe_out
 			list.extend ("one")
@@ -74,7 +79,7 @@ feature -- Initialization
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height
 
 			background_box.add_line ("map size :")
-			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y)
+			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 
 			list.wipe_out	
 			list.extend ("little")			
@@ -84,7 +89,7 @@ feature -- Initialization
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height			
 
 			background_box.add_line ("characters :")
-			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y)
+			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 
 			list.wipe_out			
 			list.extend ("glass")
@@ -156,15 +161,40 @@ feature -- Event handling
 		
 	on_select is
 			-- Agent that gets called when menu entry is selected
+		local
+			a_game_scene: GAME_SCENE
+			a_game: GAME
+			a_map_file: TRAFFIC_MAP_FILE
 		do
 			if menu.selected_entry = 1 then
-				game_scene.set_game_constants (option_menus.item (1).selected_entry, option_menus.item (2).selected_entry, option_menus.item (3).selected_entry)
+				-- Create game with settings from option menus.
+				create a_game.make
+				a_game.set_game_mode (option_menus.item (1).selected_entry)
+				a_game.set_number_of_hunters (option_menus.item (2).selected_entry)
+				a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./map/zurich_" + option_menus.item (3).entries.item (option_menus.item (3).selected_entry).text.value + ".xml")
+				a_game.set_traffic_map (a_map_file.traffic_map)
+
+				-- Create scene that displays the game.
+				a_game_scene := create {GAME_SCENE}.make (a_map_file.traffic_map, option_menus.item (2).selected_entry)
+				a_game_scene.set_last_scene (Current)
+
+				-- Load correct player pics
 				player_pic_directory.wipe_out
-				player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).entries.item (option_menus.item (4).selected_entry).text.value + "/")				
+				player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).entries.item (option_menus.item (4).selected_entry).text.value + "/")
+
+				main_controller.initialize_with_game_and_scene (a_game, a_game_scene)
+				main_controller.start_game
+				
+				next_scene := a_game_scene
+				event_loop.stop
+			elseif menu.selected_entry = 2 then
+				credits_scene.set_last_scene (Current)
+				next_scene := credits_scene
+				event_loop.stop
+			elseif menu.selected_entry = 3 then
+				quit
 			end
-			
-			next_scene := menu.scenes @ (menu.selected_entry)
-			event_loop.stop
+
 		end
 
 
