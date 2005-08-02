@@ -11,7 +11,7 @@ class
 feature -- Singleton access
 
 	music_player: MUSIC_PLAYER is
-			-- Start menu scene singelton
+			-- Music player singleton
 		once
 			create Result.make
 		ensure

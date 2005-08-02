@@ -1,7 +1,7 @@
 indexing
 	description	: "Logic for the Flat Hunt game"
 	status:	"See notice at end of class"
-	author: "Marcel Kessler & Rolf Bruderer, ETH Zurich"
+	author: "Marcel Kessler, Rolf Bruderer, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -12,7 +12,7 @@ inherit
 	GAME_CONSTANTS
 
 create 
-	make
+	make, make_with_constants
 	
 feature -- Initialization
 
@@ -21,11 +21,20 @@ feature -- Initialization
 		do
 			create info_text.make_empty
 			create checkpoints.make
-			checkpoints.fill (<< 3, 8, 13, 18, 23 >>)
+			checkpoints.fill (<< 1, 3, 8, 13, 18, 23 >>)
 		end			
 
-	start_game is
-			-- Prepare the board, start the game.
+	make_with_constants (a_game_mode: INTEGER; a_hunter_count: INTEGER; a_traffic_map: TRAFFIC_MAP) is
+			-- Create with given game mode, hunter count, traffic map
+		do
+			make
+			set_game_mode (a_game_mode)
+			set_number_of_hunters (hunter_count)
+			set_traffic_map (a_traffic_map)
+		end
+		
+	create_players is
+			-- Create and prepare players
 		require
 			correct_number_of_hunters: 1 <= hunter_count and hunter_count <= 8
 			correct_game_mode: (Hunt <= game_mode) and (game_mode <= Demo)
@@ -34,9 +43,6 @@ feature -- Initialization
 		do
 			create player_factory.make (traffic_map)
 			create players.make (hunter_count + 1)
-			current_round_number := 0
-			current_player_index := 0
-			state := Prepare_state
 			if game_mode = Hunt then
 				player_factory.build_players (True, False, hunter_count)
 			elseif game_mode = Escape then
@@ -51,14 +57,26 @@ feature -- Initialization
 			check 
 				estate_agent /= Void 
 			end
-			next_turn
 		ensure
 			estate_agent_exists: estate_agent /= Void
+			players_exist: players /= Void			
+		end
+		
+
+	start_game is
+			-- Prepare the board, start the game.
+		require
 			players_exist: players /= Void
+		do
+			current_round_number := 0
+			current_player_index := 0
+			state := Prepare_state
+			next_turn
+		ensure
 			correct_round_number: current_round_number = 1
 		end
 
-feature {MAIN_CONTROLLER} -- Status setting
+feature -- Status setting
 
 	set_traffic_map (a_traffic_map: TRAFFIC_MAP) is
 			-- Set the game's map.
@@ -117,37 +135,28 @@ feature {NONE} -- Status report
 			traffic_map_exists: traffic_map /= Void
 			player_exists: a_player /= Void
 		local
-			temp_line_section: TRAFFIC_LINE_SECTION
-			tram_line_section: TRAFFIC_LINE_SECTION
-			other: TRAFFIC_PLACE
-			outgoing_line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
-			ll: LINKED_LIST [TRAFFIC_LINE_SECTION]
+			tmp_line_section: TRAFFIC_LINE_SECTION
+			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
+			possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]
 		do
-			create ll.make
-			outgoing_line_sections := traffic_map.transport_network.outgoing_line_sections (a_player.location)
+			create possible_moves.make
+			outgoing_line_sections := traffic_map.line_sections_of_place (a_player.location.name)
 			from
 				outgoing_line_sections.start
 			until
 				outgoing_line_sections.after
 			loop
-				temp_line_section ?= outgoing_line_sections.item
-				if temp_line_section /= Void and then a_player.enough_tickets (temp_line_section.type) then
-					other := temp_line_section.other_end (a_player.location)
-					if not is_occupied (other) then
-						ll.extend (temp_line_section)
-						tram_line_section := two_station_tram_line_section (a_player.location, temp_line_section)
-						if tram_line_section /= Void then
-							if not is_occupied (tram_line_section.other_end (a_player.location)) then
-								ll.extend (tram_line_section)
-							end
-						end
+				tmp_line_section := outgoing_line_sections.item
+				if tmp_line_section /= Void and then a_player.enough_tickets (tmp_line_section.type) then
+					if not is_occupied (tmp_line_section.destination) then
+						possible_moves.extend (tmp_line_section)
 					end
 				end
 				outgoing_line_sections.forth
 			end
-			a_player.set_possible_moves (ll)
+			a_player.set_possible_moves (possible_moves)
 		ensure
-			linked_list_created: a_player.possible_moves /= Void
+			possible_moves_set: a_player.possible_moves /= Void
 		end
 	
 feature {MAIN_CONTROLLER} -- Basic operations
@@ -163,7 +172,6 @@ feature {MAIN_CONTROLLER} -- Basic operations
 				if current_player = estate_agent then
 					state := Agent_stuck
 				else
-					current_player.displayer.display_after_move
 					next_turn
 					if not is_game_over then
 						state := Prepare_state
@@ -177,7 +185,7 @@ feature {MAIN_CONTROLLER} -- Basic operations
 	play is
 			-- Give player possibility to make a move.
 		do
-			current_player.play (place)
+			current_player.play (selected_place)
 			set_selected_place (Void)
 			if current_player.next_move /= Void then
 				state := Move_state			
@@ -196,7 +204,7 @@ feature {MAIN_CONTROLLER} -- Basic operations
 			end
 		end
 
-feature {MAIN_CONTROLLER} -- Display
+feature -- Display
 
 	display_end_game is
 			-- Display states when game is finished
@@ -212,7 +220,7 @@ feature {MAIN_CONTROLLER} -- Display
 				info_text.append ("Quit game%N")
 			end			
 			display_states
-			info_text.append ("%NEstate agent: %N" + estate_agent.displayer.print_location)
+			info_text.append ("%NEstate agent: %N" + estate_agent.location.name)
 		end
 		
 	display_before_prepare is
@@ -220,9 +228,9 @@ feature {MAIN_CONTROLLER} -- Display
 		do
 			info_text.wipe_out
 			display_states
---			if estate_agent.displayer.visible then
---				info_text.append ("%NEstate agent: %N" + estate_agent.displayer.print_location)
---			end
+			if estate_agent.is_visible then
+				info_text.append ("%NEstate agent: %N" + estate_agent.location.name)
+			end
 		end
 
 	display_states is
@@ -233,16 +241,20 @@ feature {MAIN_CONTROLLER} -- Display
 			info_text.append ("Flat hunters: %N" + print_hunter_locations)
 		end
 
-feature {MAIN_CONTROLLER, GAME_DISPLAYER} -- Element change
+feature -- Element change
 
 	next_turn is
 			-- Change the player's state before the next game loop.
 		require 
 			prepare_state: state = Prepare_state
 		do
-			last_player := current_player			
+			last_player := current_player
+			if last_player /= Void then
+				last_player.set_unmarked				
+			end
 			current_player_index := (current_player_index \\ players.count) + 1
 			current_player := players.i_th (current_player_index)
+			current_player.set_marked			
 			if current_player_index = 1 then
 				current_round_number := current_round_number + 1
 				update_agent_visibility
@@ -258,26 +270,29 @@ feature {MAIN_CONTROLLER, GAME_DISPLAYER} -- Element change
 			prepare_state: state = Prepare_state
 		do
 			if checkpoints.has (current_round_number) then
-				estate_agent.set_last_estate_agent_location
+				estate_agent.set_last_visible_location
 			end
 			if game_mode /= Hunt or is_game_over or checkpoints.has (current_round_number) then
-				estate_agent.displayer.set_visible (True)
+				estate_agent.set_visible (true)
 			else
-				estate_agent.displayer.set_visible (False)
+				estate_agent.set_visible (false)
 			end
 		end
 		
 	set_selected_place (a_place: TRAFFIC_PLACE) is
 			-- Set place being passed to player.
 		do
-			place := a_place
+			selected_place := a_place
 		end
 	
-feature {MAIN_CONTROLLER} -- Access
+feature -- Access
 
 	traffic_map: TRAFFIC_MAP
-			-- Reference to the game's map
+			-- The game's map including all the places, line_sections etc.
 
+	hunter_count: INTEGER
+			-- Number of hunters
+			
 	players: ARRAYED_LIST [PLAYER]
 			-- List of all the players (estate agent is first)
 	
@@ -293,17 +308,11 @@ feature {MAIN_CONTROLLER} -- Access
 	estate_agent: ESTATE_AGENT
 			-- Estate agent, the guy who rents the flat
 
-	place: TRAFFIC_PLACE
+	selected_place: TRAFFIC_PLACE
 			-- Used to pass clicked place to player
 
 	current_round_number: INTEGER
 			-- Count from 1 to `default_number_of_rounds'
-		
-	default_number_of_rounds: INTEGER is 24
-			-- Maximum number of rounds
-	
-	hunter_count: INTEGER
-			-- Number of hunters
 			
 	info_text: STRING
 			-- To be displayed in main_window
@@ -324,73 +333,73 @@ feature -- Output
 			until
 				i > players.count
 			loop
-				Result.append (players.i_th (i).displayer.print_location)
+				Result.append (players.i_th (i).location.name)
 				i := i + 1
 			end
 		end	
 
-feature {NONE} -- Implementation
-
-	two_station_tram_line_section (origin: TRAFFIC_PLACE; a_line_section: TRAFFIC_LINE_SECTION): TRAFFIC_LINE_SECTION is
-			-- Create line_section to tram stop that is two segments away from 'origin' going  through 'a_line_section'.
-		require
-			origin_exists: origin /= Void
-			a_line_section_exists: a_line_section /= Void
-			a_line_section_from_origin: a_line_section.has (origin)
-		local
-			passing_place: TRAFFIC_PLACE
-			destination: TRAFFIC_PLACE
-			temp_line: ONE_WAY_LINE
-			temp_line_section: TRAFFIC_LINE_SECTION
-		do
-	 		
-	 		-- Only for tram line it is allowed to drive two places in one move.
-			if a_line_section.type.is_equal (a_line_section.Tram_type) then
-				
-		 		-- Get the other place of `a_line_section' which `Result' has to pass.
-		 		passing_place := a_line_section.other_end(origin)
-			
-				-- Try the next line_section in the south-west direction.
-				if a_line_section.line.ne_to_sw_line.last_line_section /= a_line_section then
-					temp_line := a_line_section.line.ne_to_sw_line
-					temp_line.start
-					temp_line.search_line_section_forth (a_line_section)
-					if not temp_line.after then
-						temp_line.forth
-						temp_line_section := temp_line.line_section_for_iteration
-					end
-					if temp_line_section /= Void and then temp_line_section.has (passing_place) then
-						destination := temp_line_section.other_end (passing_place)
-					end
-				end
-				
-				-- Try the next line_section in the north-east direction.
-				if a_line_section.line.sw_to_ne_line.last_line_section /= a_line_section then
-					temp_line := a_line_section.line.sw_to_ne_line
-					temp_line.start
-					temp_line.search_line_section_forth (a_line_section)
-					if not temp_line.after then
-						temp_line.forth
-						temp_line_section := temp_line.line_section_for_iteration
-					end
-					if temp_line_section /= Void and then temp_line_section.has (passing_place) then
-						destination := temp_line_section.other_end (passing_place)
-					end
-				end
-				
-				-- create `Result' from `origin' to `destination'.
-				if destination /= Void then
-					create Result.make (a_line_section.Tram_type, False, origin, destination)
-				end		
-				
-			end		
-			
-		ensure
-			result_is_tram_line_section: Result /= Void implies Result.type.is_equal (a_line_section.Tram_type)
-			result_starts_in_origin: Result /= void implies Result.from_place = origin
-			result_has_other_destination: Result /= void implies (Result.to_place /= Void and Result.to_place /= a_line_section.from_place and Result.to_place /= a_line_section.to_place)			
-		end
-	
+--feature {NONE} -- Implementation
+--
+--	two_station_tram_line_section (origin: TRAFFIC_PLACE; a_line_section: TRAFFIC_LINE_SECTION): TRAFFIC_LINE_SECTION is
+--			-- Create line_section to tram stop that is two segments away from 'origin' going  through 'a_line_section'.
+--		require
+--			origin_exists: origin /= Void
+--			a_line_section_exists: a_line_section /= Void
+--			a_line_section_from_origin: a_line_section.has (origin)
+--		local
+--			passing_place: TRAFFIC_PLACE
+--			destination: TRAFFIC_PLACE
+--			temp_line: ONE_WAY_LINE
+--			temp_line_section: TRAFFIC_LINE_SECTION
+--		do
+--	 		
+--	 		-- Only for tram line it is allowed to drive two places in one move.
+--			if a_line_section.type.is_equal (a_line_section.Tram_type) then
+--				
+--		 		-- Get the other place of `a_line_section' which `Result' has to pass.
+--		 		passing_place := a_line_section.other_end(origin)
+--			
+--				-- Try the next line_section in the south-west direction.
+--				if a_line_section.line.ne_to_sw_line.last_line_section /= a_line_section then
+--					temp_line := a_line_section.line.ne_to_sw_line
+--					temp_line.start
+--					temp_line.search_line_section_forth (a_line_section)
+--					if not temp_line.after then
+--						temp_line.forth
+--						temp_line_section := temp_line.line_section_for_iteration
+--					end
+--					if temp_line_section /= Void and then temp_line_section.has (passing_place) then
+--						destination := temp_line_section.other_end (passing_place)
+--					end
+--				end
+--				
+--				-- Try the next line_section in the north-east direction.
+--				if a_line_section.line.sw_to_ne_line.last_line_section /= a_line_section then
+--					temp_line := a_line_section.line.sw_to_ne_line
+--					temp_line.start
+--					temp_line.search_line_section_forth (a_line_section)
+--					if not temp_line.after then
+--						temp_line.forth
+--						temp_line_section := temp_line.line_section_for_iteration
+--					end
+--					if temp_line_section /= Void and then temp_line_section.has (passing_place) then
+--						destination := temp_line_section.other_end (passing_place)
+--					end
+--				end
+--				
+--				-- create `Result' from `origin' to `destination'.
+--				if destination /= Void then
+--					create Result.make (a_line_section.Tram_type, False, origin, destination)
+--				end		
+--				
+--			end		
+--			
+--		ensure
+--			result_is_tram_line_section: Result /= Void implies Result.type.is_equal (a_line_section.Tram_type)
+--			result_starts_in_origin: Result /= void implies Result.from_place = origin
+--			result_has_other_destination: Result /= void implies (Result.to_place /= Void and Result.to_place /= a_line_section.from_place and Result.to_place /= a_line_section.to_place)			
+--		end
+--	
 end
 
 --|--------------------------------------------------------

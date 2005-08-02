@@ -10,10 +10,13 @@ deferred class
 
 
 feature -- General constants
-
-	nr_of_hunters: INTEGER
-			-- Default number of flat hunters in game
-			-- Possible number of hunters: 1 <= nr_of_hunters <= 8
+			
+	default_number_of_rounds: INTEGER is 24
+			-- Maximum number of rounds
+	
+--	nr_of_hunters: INTEGER
+--			-- Default number of flat hunters in game
+--			-- Possible number of hunters: 1 <= nr_of_hunters <= 8
 	
 --	set_nr_of_hunters (n: INTEGER) is
 --			-- Set `nr_of_hunter' to n
@@ -25,11 +28,11 @@ feature -- General constants
 --			nr_of_hunters_set: nr_of_hunters = n
 --		end
 
-	map_size: INTEGER
-			-- Size of the map to load, possible values: `Little', `Big'
-	
-	Little, Big: INTEGER is unique
-			-- Constants for map size		
+--	map_size: INTEGER
+--			-- Size of the map to load, possible values: `Little', `Big'
+--	
+--	Little, Big: INTEGER is unique
+--			-- Constants for map size		
 
 feature -- Mode constants
 

@@ -1,7 +1,10 @@
 indexing
 	description: "[
 					Controller that steers the application's behavior 
-					and mediates between visual input/output and changes of the city model
+					and mediates between visual input/output and changes of the map model.
+					After creation you are supposed to call 
+					`initialize_with_game_and_scene (a_game: GAME; a_game_scene: GAME_SCENE)'.
+					After that, the game can be started with `start_game'.
 				]"
 	status:	"See notice at end of class"
 	author: "Marcel Kessler, Michela Pedroni, Ursina Caluori"
@@ -11,74 +14,74 @@ indexing
 class 
 	MAIN_CONTROLLER 
 
---inherit
-----	KL_SHARED_FILE_SYSTEM 
-----		undefine
-----			default_create, copy
-----		end	
---	
---	EM_SCENE
---	
-----	GAME_CONSTANTS
-----		undefine
-----			default_create
-----		end
---	
---create
---	make_and_launch 
---
---feature -- Initialization
---
---	make_and_launch is
---			-- Initialize and launch application.
---		do
---			default_create
---			controller_initialize
---			launch
---		end
---		
---feature {NONE} -- Initialization Implementation
---
---	controller_initialize is
---			-- Set defaults and register event handler.
---		do
---			create scene.make
---			create game.make
---			start
+inherit
+--	KL_SHARED_FILE_SYSTEM 
+--		undefine
+--			default_create, copy
 --		end	
---
---		
---feature {MAIN_CONTROLLER, PLAYER_DISPLAYER} -- Access
---	
---	break: BOOLEAN
---			-- Does the user make a break?
---	
---	traffic_map: TRAFFIC_MAP
---			-- The game's map including all the places, line_sections etc.
---	
---	scene: GAME_SCENE
---			-- Where the game is visualized
---
---	game: GAME
---			-- Game logic
---		
---	move_called_once: BOOLEAN
---			-- Has the player already moved once?
---	
---	play_called_once: BOOLEAN
---			-- Was the player's move already performed once?
---	
---	end_game_called_once: BOOLEAN
---			-- Has the game already ended once?
---			
---feature {START} -- Game operations
---
---	start is
---			-- Adjust the game settings and start the game.
---		do
---			-- Nothing, redefined in class START
---		end
---
+
+	GAME_CONSTANTS
+	
+create
+	make
+
+feature -- Initialization
+
+	make is
+			-- Creation procedure
+		do
+			default_create			
+		end
+
+	initialize_with_game_and_scene (a_game: GAME; a_game_scene: GAME_SCENE) is
+			-- Initialize main controller
+		require
+			a_game_not_void: a_game /= Void
+			a_game_scene_not_void: a_game_scene /= Void
+		do
+			game := a_game
+			game_scene := a_game_scene
+		ensure
+			game_set: game = a_game
+			game_scene_set: game_scene = a_game_scene
+		end
+
+feature -- Game operations
+
+	start_game is
+			-- Create and start game.
+		require
+			traffic_map_exists: game.traffic_map /= Void
+			correct_number_of_hunters: (1 <= game.hunter_count) and (game.hunter_count <= 8)
+			correct_game_mode: (Hunt <= game.game_mode) and (game.game_mode <= Demo)
+		do
+			game.create_players
+			game_scene.create_players_from_list (game.players)
+			game.start_game
+			
+--			clear_game
+--			end_game_called_once := False
+--			set_city_displayer (city)
+--			game.set_city (city)
+--			game.start_game
+--			if game.game_mode = Hunt then
+--				add_player_info_boxes (False)
+--			else 
+--				add_player_info_boxes (True)
+--			end
+--			move_to_center
+--			play_called_once := False
+--			move_called_once := False
+--			idle_actions.extend (idle_action_agent)
+--			take_a_break (False)
+		end
+
+	start is
+			-- Adjust the game settings and start the game.
+		do
+			-- Nothing, redefined in class START
+		end
+
 --	clear_game is
 --			-- Remove remnants from previous game.
 --		do
@@ -96,29 +99,6 @@ class
 --			end_game_called_once := False
 --		end
 --		
---	start_game is
---			-- Create and start game.
---		require
---			city_exists: city /= Void
---			correct_number_of_hunters: (1 <= game.hunter_count) and (game.hunter_count <= 8)
---			correct_game_mode: (Hunt <= game.game_mode) and (game.game_mode <= Demo)
---		do			
---			clear_game
---			end_game_called_once := False
---			set_city_displayer (city)
---			game.set_city (city)
---			game.start_game
---			if game.game_mode = Hunt then
---				add_player_info_boxes (False)
---			else 
---				add_player_info_boxes (True)
---			end
---			move_to_center
---			play_called_once := False
---			move_called_once := False
---			idle_actions.extend (idle_action_agent)
---			take_a_break (False)
---		end
 --		
 --	open_map (a_filename: STRING) is
 --			-- Open map in file `a_filename'.
@@ -180,6 +160,33 @@ class
 --			end
 --		end		
 --
+		
+feature -- Attributes
+
+	game_scene: GAME_SCENE
+			-- Where the game is visualized
+
+	game: GAME
+			-- Game logic
+			
+feature {NONE} -- Implementation
+	
+--	break: BOOLEAN
+--			-- Does the user make a break?
+--	
+
+		
+--	move_called_once: BOOLEAN
+--			-- Has the player already moved once?
+--	
+--	play_called_once: BOOLEAN
+--			-- Was the player's move already performed once?
+--	
+--	end_game_called_once: BOOLEAN
+--			-- Has the game already ended once?
+--			
+
+
 --feature {NONE} -- Game loop
 --
 --	idle_action_agent: PROCEDURE [ANY, TUPLE]
@@ -320,146 +327,6 @@ class
 --			-- Break/continue game.
 --		do
 --			take_a_break (not break)
---		end
---		
---feature {NONE} -- Request handlers
---
---	close is
---			-- Stop and close `main_window'.
---		do
---			take_a_break (True)
---			idle_actions.prune (idle_action_agent)
---			main_window.destroy
---			destroy
---		end
---
---	display_about_dialog is
---			-- Display the About dialog.
---		local
---			dlg: ABOUT_DIALOG
---		do
---			create dlg
---			dlg.show_modal_to_window (main_window)
---		end
---
---	city_parser: CITY_PARSER	
---			-- XML-Parser to get places, links etc.
---
---	open_city (a_filename: STRING) is
---			-- Open map of a city.
---		require
---			a_filename_exists: a_filename /= Void
---			a_filename_not_empty: not a_filename.is_empty
---			a_file_exists: File_system.file_exists (a_filename)
---		local
---			factory: CITY_FACTORY
---			cp: CITY_PARSER
---			idlg: EV_INFORMATION_DIALOG
---			sp: EV_STOCK_PIXMAPS
---		do
---			create sp
---			main_window.set_pointer_style (sp.Busy_cursor)
---			create factory.make
---			create cp.make_with_factory (factory)
---			factory.set_displayer_factory (create {CONCRETE_DISPLAYER_FACTORY})
---			(create {XML_ADAPTOR}).adapt_xml_registry (cp)
---			cp.set_file_name (a_filename)
---			cp.set_working_directory
---			cp.parse
---			if cp.can_process then
---
---				if not cp.has_error then
---					cp.process
---				end
---
---				if not cp.has_error then
---					city := cp.city
---					set_city_displayer (city)
---					city_displayer.build
---					main_window.canvas.draw_all_items (city_displayer.drawable_objects)
---					move_to_center
---					toggle_name_display
---					resize_canvas
---				end
---				
---			elseif cp.has_error then  
---				main_window.set_pointer_style (sp.Standard_cursor)
---				create idlg.make_with_text (cp.error_description)
---				idlg.show_modal_to_window (main_window)
---				main_window.canvas.clear
---			else
---				main_window.set_pointer_style (sp.Standard_cursor)
---				create idlg.make_with_text ("Could not process the xml-file. Check whether the root xml tag is correct.")
---				idlg.show_modal_to_window (main_window)
---				main_window.canvas.clear
---			end			
---			main_window.set_pointer_style (sp.Standard_cursor)
---		end
---		
---	open_game_dialog is
---			-- Open game start dialog.
---		do
---			take_a_break (True)
---			take_a_break (True)
---			create game_dialog
---			if game.game_mode = Hunt then
---				game_dialog.hunt_mode.enable_select
---			elseif game.game_mode = Escape then
---				game_dialog.escape_mode.enable_select
---			elseif game.game_mode = Versus then
---				game_dialog.versus_mode.enable_select
---			elseif game.game_mode = Demo  then
---				game_dialog.demo_mode.enable_select
---			end
---			if game.hunter_count /= 0 then
---				game_dialog.number_of_hunters.set_value (game.hunter_count)
---			end
---			if city /= Void then
---				if city.name.is_equal ("Zurich (big)") then
---					game_dialog.big_map.enable_select
---				end
---			end
---			game_dialog.start_button.select_actions.extend (agent start_game_after_dialog)
---			game_dialog.start_button.select_actions.extend (agent game_dialog.destroy)
---			game_dialog.cancel_button.select_actions.extend (agent game_dialog.destroy)
---			game_dialog.cancel_button.select_actions.extend (agent toggle_break)
---			game_dialog.show_modal_to_window (main_window)
---		end
---		
---	start_game_after_dialog is
---			-- Create and start game.
---		require
---			game_dialog_was_opened: game_dialog /= Void
---		do
---			if game_dialog.hunt_mode.is_selected then
---				game.set_game_mode (Hunt)
---			elseif game_dialog.escape_mode.is_selected then
---				game.set_game_mode (Escape)
---			elseif game_dialog.versus_mode.is_selected then
---				game.set_game_mode (Versus)
---			elseif game_dialog.demo_mode.is_selected then
---				game.set_game_mode (Demo) 
---			end
---			game.set_number_of_hunters (game_dialog.number_of_hunters.value)
---			if game_dialog.little_map.is_selected then
---				if city /= Void then
---					if not city.name.is_equal ("Zurich (little)") then
---						open_map ("zurich_little_city.xml")
---					end
---				else
---					open_map ("zurich_little_city.xml")
---				end
---			else
---				if city /= Void then
---					if not city.name.is_equal ("Zurich (big)") then
---						open_map ("zurich_big_city.xml")
---					end
---				else
---					open_map ("zurich_big_city.xml")
---				end
---			end
---			game.set_city (city)
---			start_game
 --		end
 --		
 --feature {NONE} -- Status setting
@@ -642,19 +509,6 @@ class
 --			end
 --		end
 --
---	resize_canvas is
---			-- Set up canvas. Call when new map is loaded.
---		local
---			w: INTEGER
---			h: INTEGER
---		do
---			w := (main_window.viewport.width).max (1)  
---			h := (main_window.viewport.height).max (1)
---			main_window.canvas.set_size (w, h)
---			main_window.canvas.set_minimum_size (w, h)
---			main_window.viewport.set_item_size (w, h)
---		end
---
 --	client_to_map_coordinates (x, y: INTEGER): REAL_COORDINATE is
 --			-- Map position corresponding to client coordinates (`x', `y')
 --		local
@@ -680,9 +534,7 @@ class
 --			Result_exists: Result /= Void
 --		end
 --
---invariant
---	application_has_main_window: main_window /= Void
---	
+
 end
 
 --|--------------------------------------------------------
