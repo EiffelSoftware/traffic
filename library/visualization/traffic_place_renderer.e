@@ -22,6 +22,7 @@ feature {NONE} -- Initialization
 		require
 			a_map_not_void: a_map /= Void
 		do
+			size_extension := 10
 			map := a_map
 			create place_color.make_with_rgb (0, 0, 255)
 		end	
@@ -31,7 +32,8 @@ feature -- Status report
 	place_color: EM_COLOR
 			-- Color used to fill places.
 			
-			
+	size_extension: INTEGER
+	
 feature -- Status setting
 
 	set_place_color (a_color: EM_COLOR) is
@@ -40,8 +42,20 @@ feature -- Status setting
 			a_color_not_void: a_color /= Void
 		do
 			place_color := a_color
+		ensure
+			color_set: place_color = a_color
 		end	
-			
+	
+	set_size_extension (a_size: INTEGER) is
+			-- 
+		require
+			a_size_positive: a_size > 0
+		do
+			size_extension := a_size
+		ensure
+			size_extension_set: size_extension = a_size
+		end
+		
 feature -- Basic operations
 	render (a_place: TRAFFIC_PLACE) : EM_DRAWABLE is
 				-- Rectangle to visualize `a_place'.
@@ -75,7 +89,7 @@ feature -- Basic operations
 			end
 			
 			-- Make a little bit larger and keep center-position
-			rectangle.set_size_centered (rectangle.width + 10, rectangle.height + 10)
+			rectangle.set_size_centered (rectangle.width + size_extension, rectangle.height + size_extension)
 			rectangle.set_fill_color (place_color)			
 
 			Result := rectangle
