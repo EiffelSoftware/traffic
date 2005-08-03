@@ -126,7 +126,7 @@ feature -- Scene Initialization
 
 			
 			--Build end button
-			end_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height ("End Example", 250, 50)
+			end_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height ("End Example", 250, 30)
 			end_button.set_x_y (width-2*border-end_button.width, (0.7*height+border).rounded)
 			end_button.subscribe_for_click (agent process_clicked_end_button)
 

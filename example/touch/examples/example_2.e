@@ -12,6 +12,12 @@ inherit
 		redefine
 			run_with_scene
 		end
+	PREDEFINED_OBJECTS_PARIS
+		undefine
+			copy,
+			is_equal,
+			default_create
+		end
 	EM_SHARED_BITMAP_FACTORY
 		undefine
 			copy,
@@ -23,7 +29,7 @@ feature -- Access
 	description: STRING is
 			-- 
 		once
-			Result := "Implementation of Example 2 from the TOUCH Textbook"
+			Result := "Implementation of Example 2 from the Textbook TOUCH"
 		end
 
 feature -- Miscellaneous
@@ -57,18 +63,10 @@ feature -- Basic operations
 			
 			simple_line_8 ?= map_factory.simple_line
 			
-			--Set new default place renderer			
+--			simple_line_8 ?= Line8.line --= Void
+			
+			--Set new default place renderer	
 			a_runtime.map_widget.set_default_place_renderer (create {TOUCH_PLACE_RENDERER}.make_with_map (a_runtime.map))
-
-			--Create Passenger
-			create Passenger.make_on_map_place (a_runtime.map, a_runtime.map.place ("Tour Eiffel"))
-			create passenger_drawable.make_from_passenger (Passenger)
-			
-			bitmap_factory.create_bitmap_from_image ("images/star.png")
-			passenger_drawable.set_picture (bitmap_factory.last_bitmap)
-			example_scene.start_animating (passenger_drawable)
-			
-			a_runtime.map_widget.extend (passenger_drawable)
 			
 			change_line
 			
@@ -84,16 +82,19 @@ feature {NONE} -- Implementation
 		local
 			line_section_renderer: TRAFFIC_LINE_SECTION_RENDERER
 		do
-			simple_line_8.remove_all_sections
 			
-			simple_line_8.extend_place (map.place ("Tour Eiffel"))
-			simple_line_8.extend_place (map.place ("Musee du Louvre"))
-			simple_line_8.extend_place (map.place ("Notre Dame"))
-
-			simple_line_8.remove_all_sections
+--			simple_line_8.extend_place (map.place ("place Pont de Levallois - Becon"))
+--			simple_line_8.extend_place (map.place ("place Gabriel Peri"))
+--			simple_line_8.extend_place (map.place ("place Pontoise"))
+--			simple_line_8.extend_place (map.place ("place Orry-la-Ville - Coye"))
+--			simple_line_8.extend_place (map.place ("place Saint-Denis - Universite"))
+--			simple_line_8.remove_all_sections
+			simple_line_8.extend_place (Place_Balard)
+			simple_line_8.extend_place (Place_Issy)
+			simple_line_8.extend_place (Place_Montrouge)
 			
-			simple_line_8.extend_place (map.place ("Sacre Coeur"))
-			simple_line_8.extend_place (map.place ("Musee du Louvre"))
+--			simple_line_8.extend_place (map.place ("Sacre Coeur"))
+--			simple_line_8.extend_place (map.place ("Musee du Louvre"))
 			
 			
 --			map.add_line (simple_line_8)
@@ -101,11 +102,12 @@ feature {NONE} -- Implementation
 			runtime.console_out ("simple_line_8.count: " + simple_line_8.count.out) 
 
 
-			create Route1.make_with_scene_and_map_widget (example_scene, runtime.map_widget)			
-			Route1.extend (runtime.map.place ("Tour Eiffel"))
-			Route1.extend (runtime.map.place ("Musee du Louvre"))
-			Route1.extend (runtime.map.place ("Notre Dame"))
-			Route1.calculate_shortest_path
+--			create Route1.make_with_scene_and_map_widget (example_scene, runtime.map_widget)			
+--			Route1.extend (Place_Balard)
+--			Route1.extend (Place_Issy)
+--			Route1.extend (Place_Montrouge)
+
+--			Route1.calculate_shortest_path
 
 			
 			create line_section_renderer.make_with_map (map)
@@ -113,6 +115,8 @@ feature {NONE} -- Implementation
 			line_section_renderer.set_line_color (create {EM_COLOR}.make_white)
 			runtime.map_widget.set_line_special_renderer (line_section_renderer, simple_line_8)
 			runtime.map_widget.render
+			
+--			Route1.animate
 		end
 		
 feature {NONE} -- implementation
@@ -124,14 +128,11 @@ feature {NONE} -- implementation
 	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
 
 	simple_line_8: TRAFFIC_SIMPLE_LINE
-	
-	Passenger: TOUCH_PASSENGER
 
-	passenger_drawable: MAP_WIDGET_PASSENGER_DRAWABLE
-	
 	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
 	
 	map: TRAFFIC_MAP
+	
 	runtime: TOUCH_EXAMPLE_RUNTIME
 	
 invariant

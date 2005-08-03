@@ -23,7 +23,14 @@ class
 				copy,
 				is_equal,
 				default_create
-			end				
+			end			
+		TOUCH_CONSOLE
+			undefine
+				copy,
+				is_equal,
+				default_create
+			end
+		
 	creation
 		make_with_width_and_height
 		
@@ -100,8 +107,6 @@ feature -- Status setting
 feature -- Basic operations
 	put_line (a_text: STRING) is
 			-- write text to a line
-		require 
-			a_text_not_void: a_text /= Void
 		local
 			string: EM_STRING
 			text_substring: STRING

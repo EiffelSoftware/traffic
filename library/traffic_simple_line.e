@@ -22,8 +22,6 @@ inherit
 			count as count_line,
 			i_th as i_th_line,
 			wipe_out as wipe_out_line
---		undefine
---			i_th_line
 		redefine 
 			start_to_terminal,
 			extend
@@ -252,13 +250,21 @@ feature -- Simple Line Queries
 	one_end: TRAFFIC_PLACE is
 			-- 
 		do
-			Result := places_one_direction.first
+			if places_one_direction.count > 0  then
+				Result := places_one_direction.first
+			else
+				Result := Void
+			end
 		end
 		
 	other_end: TRAFFIC_PLACE is
 			-- 
 		do
-			Result := places_other_direction.first
+			if places_one_direction.count > 0  then
+				Result := places_one_direction.last
+			else
+				Result := Void
+			end
 		end	
 		
 feature -- Simple Line Commands
@@ -354,5 +360,7 @@ invariant
 	terminal_1_exists_implies_start_is_terminal_2: terminal_1 /= Void implies equal (start_to_terminal (terminal_1), terminal_2)
 	terminal_2_exists_implies_start_is_terminal_1: terminal_2 /= Void implies equal (start_to_terminal (terminal_2), terminal_1)
 	places_one_direction_same_places_other_direction: places_one_direction.count = places_other_direction.count
+
+	stations_at_right_place: places_one_direction.count >= 2 implies one_end = i_th(1) and other_end = i_th(count)
 
 end -- class TRAFFIC_SIMPLE_LINE

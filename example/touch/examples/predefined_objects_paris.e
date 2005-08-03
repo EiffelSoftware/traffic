@@ -13,100 +13,100 @@ feature -- Access
 		deferred
 		end
 		
-feature  -- Predefined objects (Stations)
+feature  -- Predefined objects (Places)
 
-	Station_Balard: TRAFFIC_PLACE is
-			-- Station Balard
+	Place_Balard: TRAFFIC_PLACE is
+			-- Place Balard
 		once
-			Result := map.place ("Station Balard")
+			Result := map.place ("place Balard")
 		ensure
 			Result_exists: Result /= Void
 		end
 		
-	Station_Issy: TRAFFIC_PLACE is
-			-- Station Issy
+	Place_Issy: TRAFFIC_PLACE is
+			-- Place Issy
 		once
-			Result := map.place ("Station Mairie d'Issy")
+			Result := map.place ("place Mairie d'Issy")
 		ensure
 			Result_exists: Result /= Void
 		end
 		
-	Station_Montrouge: TRAFFIC_PLACE is
-			-- Station Montrouge
+	Place_Montrouge: TRAFFIC_PLACE is
+			-- Place Montrouge
 		once
-			Result := map.place ("Station Chatillon - Montrouge")
+			Result := map.place ("place Chatillon - Montrouge")
 		ensure
 			Result_exists: Result /= Void
 		end		
 		
-	Station_Gare_de_Lyon: TRAFFIC_PLACE is
+	Place_Gare_de_Lyon: TRAFFIC_PLACE is
 			-- PLACE Gare de Lyon
 		once
-			Result := map.place ("Station Gare de Lyon")
+			Result := map.place ("place Gare de Lyon")
 		ensure
 			Result_exists: Result /= Void
 		end
 		
-	Station_Invalides: TRAFFIC_PLACE is
-			-- Station Invalides
+	Place_Invalides: TRAFFIC_PLACE is
+			-- Place Invalides
 		once
-			Result := map.place ("Station Invalides")
+			Result := map.place ("place Invalides")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Station_Madeleine: TRAFFIC_PLACE is
-			-- Station Madeleine
+	Place_Madeleine: TRAFFIC_PLACE is
+			-- Place Madeleine
 		once
-			Result := map.place ("Station Madeleine")
+			Result := map.place ("place Madeleine")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Station_Bobigny_Pablo_Picasso: TRAFFIC_PLACE is
-			-- Station Bobigny - Pablo Picasso
+	Place_Bobigny_Pablo_Picasso: TRAFFIC_PLACE is
+			-- Place Bobigny - Pablo Picasso
 		once
-			Result := map.place ("Station Bobigny - Pablo Picasso")
+			Result := map.place ("place Bobigny - Pablo Picasso")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Station_La_Fourche: TRAFFIC_PLACE is
-			-- Station La Fourche
+	Place_La_Fourche: TRAFFIC_PLACE is
+			-- Place La Fourche
 		once
-			Result := map.place ("Station La Fourche")
+			Result := map.place ("place La Fourche")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Station_Bastille: TRAFFIC_PLACE is
-			-- Station Bastille
+	Place_Bastille: TRAFFIC_PLACE is
+			-- Place Bastille
 		once
-			Result := map.place ("Station Bastille")
+			Result := map.place ("place Bastille")
 		ensure
 			Result_exists: Result /= Void
 		end
 		
-	Station_Concorde: TRAFFIC_PLACE is
-			-- Station Concorde
+	Place_Concorde: TRAFFIC_PLACE is
+			-- Place Concorde
 		once
-			Result := map.place ("Station Concorde")
+			Result := map.place ("place Concorde")
 		ensure
 			Result_exists: Result /= Void
 		end
 		
-	Station_Republique: TRAFFIC_PLACE is
-			-- Station Republique
+	Place_Republique: TRAFFIC_PLACE is
+			-- Place Republique
 		once
-			Result := map.place ("Station Republique")
+			Result := map.place ("place Republique")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Station_La_Motte_Picquet_Grenelle: TRAFFIC_PLACE is
-			-- Station La Motte - Picquet - Grenelle
+	Place_La_Motte_Picquet_Grenelle: TRAFFIC_PLACE is
+			-- Place La Motte - Picquet - Grenelle
 		once
-			Result := map.place ("Station La Motte - Picquet - Grenelle")
+			Result := map.place ("place La Motte - Picquet - Grenelle")
 		ensure
 			Result_exists: Result /= Void
 		end

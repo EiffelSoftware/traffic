@@ -74,14 +74,14 @@ feature -- Basic operations
 			
 			
 			--Create Passenger
-			create Passenger.make_on_map_place (a_runtime.map, a_runtime.map.place ("Tour Eiffel"))
-			create passenger_drawable.make_from_passenger (Passenger)
+--			create Passenger.make_on_map_place (a_runtime.map, a_runtime.map.place ("Tour Eiffel"))
+--			create passenger_drawable.make_from_passenger (Passenger)
 			
-			bitmap_factory.create_bitmap_from_image ("images/star.png")
-			passenger_drawable.set_picture (bitmap_factory.last_bitmap)
-			example_scene.start_animating (passenger_drawable)
+--			bitmap_factory.create_bitmap_from_image ("images/star.png")
+--			passenger_drawable.set_picture (bitmap_factory.last_bitmap)
+--			example_scene.start_animating (passenger_drawable)
 			
-			a_runtime.map_widget.extend (passenger_drawable)
+--			a_runtime.map_widget.extend (passenger_drawable)
 			
 			create Route1.make_with_scene_and_map_widget (example_scene, a_runtime.map_widget)
 			
@@ -107,9 +107,8 @@ feature {NONE} -- implementation
 	
 	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
 	
-	Passenger: TOUCH_PASSENGER
-
-	passenger_drawable: MAP_WIDGET_PASSENGER_DRAWABLE
+--	Passenger: TOUCH_PASSENGER
+--	passenger_drawable: MAP_WIDGET_PASSENGER_DRAWABLE
 	
 	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
 invariant

@@ -11,6 +11,9 @@ class
 
 inherit
 	EM_SCENE
+		redefine
+			handle_outside_event
+		end
 	
 	EM_SHARED_STANDARD_FONTS
 		export
@@ -45,6 +48,9 @@ feature -- Views
 	last_chapter: TOUCH_BUTTON
 	next_chapter: TOUCH_BUTTON
 
+	scroll_up: TOUCH_BUTTON
+	scroll_down: TOUCH_BUTTON
+	
 	background: TOUCH_BITMAP_STATIC
 	
 	chapters_container_widget: TOUCH_SCROLLABLE_WIDGET 
@@ -94,8 +100,8 @@ feature -- Scene Initialization
 			upper_background: TOUCH_BITMAP_STATIC
 			settings_background: TOUCH_BITMAP_STATIC
 			
-			up_button: TOUCH_BUTTON
-			down_button: TOUCH_BUTTON
+--			up_button: TOUCH_BUTTON
+--			down_button: TOUCH_BUTTON
 
 			ttf: EM_TTF_FONT
 			directory: STRING
@@ -121,16 +127,16 @@ feature -- Scene Initialization
 				
 
 				--Build up/down buttons
-				up_button := create  {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height 
+				scroll_up := create  {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height 
 					("./images/arrow_up.png", 64, 64)
-				up_button.set_x_y (border + 400, title_offset + border)
+				scroll_up.set_x_y (border + 400, title_offset + border)
 
-				down_button := create  {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height 
+				scroll_down := create  {TOUCH_BITMAP_BUTTON}.make_with_image_file_and_width_and_height 
 					("./images/arrow_down.png", 64, 64)
-				down_button.set_x_y (border + 400, title_offset + border + 600 - down_button.height)
+				scroll_down.set_x_y (border + 400, title_offset + border + 600 - scroll_down.height)
 
-				up_button.subscribe_for_click (agent process_scroll_up)
-				down_button.subscribe_for_click (agent process_scroll_down)	
+				scroll_up.subscribe_for_click (agent process_scroll_up)
+				scroll_down.subscribe_for_click (agent process_scroll_down)	
 				
 				
 				--Build Backgrounds
@@ -178,6 +184,12 @@ feature -- Scene Initialization
 		 			if not standard_ttf_fonts.has_custom_font ("fancy_red") then				
 						standard_ttf_fonts.load_custom_font("fancy.ttf", 78, "fancy_red")
 					end
+		 			if not standard_ttf_fonts.has_custom_font ("fancy_grey_small") then
+						standard_ttf_fonts.load_custom_font("fancy.ttf", 32, "fancy_grey_small")
+					end
+		 			if not standard_ttf_fonts.has_custom_font ("fancy_blue_small") then				
+						standard_ttf_fonts.load_custom_font("fancy.ttf", 32, "fancy_blue_small")
+					end
 					standard_ttf_fonts.set_font_dirname(directory)
 				end
 
@@ -190,7 +202,7 @@ feature -- Scene Initialization
 				
 				if ttf /= Void then
 					ttf.set_color (white)
-					title.set_title ("TOUCH", standard_ttf_fonts.custom_font ("fancy_white"))
+					title.set_title ("TOUCH", ttf)
 				end
 				
 				ttf ?= standard_ttf_fonts.custom_font ("fancy_red")
@@ -219,8 +231,8 @@ feature -- Scene Initialization
 				
 				
 				--Put Drawables to main_container
-				main_container.extend (up_button)
-				main_container.extend (down_button)
+				main_container.extend (scroll_up)
+				main_container.extend (scroll_down)
 				main_container.extend (upper_background)
 				main_container.extend (left_background)
 				main_container.extend (settings_background)
@@ -267,7 +279,15 @@ feature {NONE} -- Implementation
 			border: INTEGER
 			chapter_height: INTEGER
 			example_height: INTEGER
-			number_filename: STRING
+--			number_filename: STRING
+			ttf: EM_TTF_FONT
+			title: TOUCH_TEXT_STATIC
+			title_2: TOUCH_TEXT_STATIC
+			
+			number: TOUCH_TEXT_STATIC
+			number_2: TOUCH_TEXT_STATIC
+			
+			number_string: STRING
 		do
 			
 			create hash_from_button_to_example.make (20)
@@ -282,15 +302,66 @@ feature {NONE} -- Implementation
 			until
 				i > chapter_examples.count
 			loop				
-				chapter_static := create {TOUCH_BITMAP_STATIC}.make_with_image_file_and_width_and_height ("./images/chapter.png", 250, chapter_height)
+				chapter_static := create {TOUCH_BITMAP_STATIC}.make_with_image_file_and_width_and_height ("./images/chapter_background.png", 250, chapter_height)
 				chapter_static.set_x_y (x, y)
-				create number_filename.make_from_string ("./images/number_")
-				number_filename.append_integer (i \\ 10)
-				number_filename.append_string (".png")
-				number_static := create {TOUCH_BITMAP_STATIC}.make_with_image_file_and_width_and_height (number_filename, chapter_height, chapter_height)
+--				create number_filename.make_from_string ("./images/number_")
+--				number_filename.append_integer (i \\ 10)
+--				number_filename.append_string (".png")
+				number_static := create {TOUCH_BITMAP_STATIC}.make_with_image_file_and_width_and_height ("./images/number_background.png", chapter_height, chapter_height)
 				number_static.set_x_y (x + 250 + border, y)
+				
+				
+				title := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", chapter_static.width, chapter_static.height)
+				title_2 := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", chapter_static.width, chapter_static.height)
+				
+				ttf ?= standard_ttf_fonts.custom_font ("fancy_grey_small")
+				
+				if ttf /= Void then
+					ttf.set_color ( create {EM_COLOR}.make_with_rgb (200,200,200))
+					title.set_title ("CHAPTER",ttf)
+				end
+				
+				ttf ?= standard_ttf_fonts.custom_font ("fancy_blue_small")
+				
+				if ttf /= Void then
+					ttf.set_color ( create {EM_COLOR}.make_with_rgb (125,125,255))
+					title_2.set_title ("CHAPTER", ttf)
+				else
+				end
+				title.set_x_y (x, y)
+				title_2.set_x_y (x+1,y+1)
+
+
+				create number_string.make_empty
+				number_string.append_integer (i)
+				number := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", number_static.width, number_static.height)
+				number_2 := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", number_static.width, number_static.height)
+				
+				ttf ?= standard_ttf_fonts.custom_font ("fancy_grey_small")
+
+				if ttf /= Void then
+					number.set_title (number_string, ttf)
+				end
+				
+				ttf ?= standard_ttf_fonts.custom_font ("fancy_blue_small")
+				
+				if ttf /= Void then
+					number_2.set_title (number_string, ttf)
+				else
+				end
+				number.set_x_y (number_static.x, number_static.y)
+				number_2.set_x_y (number_static.x+1, number_static.y+1)
+
+				
 				container.extend (chapter_static)
 				container.extend (number_static)
+				
+				container.extend (title_2)
+				container.extend (title)
+
+				container.extend (number_2)
+				container.extend (number)
+				
 				y := y + chapter_height + border
 
 				examples := chapter_examples.i_th (i)				
@@ -314,6 +385,19 @@ feature {NONE} -- Implementation
 		
 feature {NONE} -- Agents, GUI events		
 
+	handle_outside_event is
+			-- 
+		do
+			if scroll_down.is_down then
+				chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, +12))			
+			end
+			
+			if scroll_up.is_down then
+				chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, -12))			
+			end
+			
+		end
+		
 	process_clicked_example_button (a_button: TOUCH_BUTTON) is
 			-- 
 		local
@@ -397,13 +481,13 @@ feature {NONE} -- Agents, GUI events
 	process_scroll_up (a_button: TOUCH_BUTTON) is
 			-- 
 		do
-			chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, -24))
+			chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, -12))
 		end
 		
 	process_scroll_down (a_button: TOUCH_BUTTON) is
 			-- 
 		do
-			chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, +24))			
+			chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, +12))			
 		end
 		
 invariant

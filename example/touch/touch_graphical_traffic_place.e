@@ -38,28 +38,6 @@ feature -- Access
 	place: TRAFFIC_PLACE
 
 	map_widget: TRAFFIC_MAP_WIDGET
-	
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
 
 feature -- Basic operations
 	feature spotlight is
@@ -70,8 +48,9 @@ feature -- Basic operations
 			
 			create place_renderer.make_with_map (map_widget.map)
 			place_renderer.set_place_color( create {EM_COLOR}.make_with_rgb (255, 255, 255))
+			place_renderer.set_size_extension (20)
+
 			map_widget.set_place_special_renderer (place_renderer, place)
-			
 			map_widget.render
 			
 			wait (wait_time)
@@ -80,12 +59,7 @@ feature -- Basic operations
 			map_widget.render
 			
 		end
-		
 
-feature -- Obsolete
-
-feature -- Inapplicable
-	
 invariant
 	invariant_clause: True -- Your invariant here
 

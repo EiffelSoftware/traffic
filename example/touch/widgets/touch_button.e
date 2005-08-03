@@ -28,18 +28,25 @@ feature -- Initialization
 		Current.mouse_motion_event.subscribe (agent process_mouse_motion)		
 	end
 	
+feature -- Queries
+
+	is_down: BOOLEAN is
+		do
+			Result := down
+		end	
+	
 feature -- Basic operations
 	process_mouse_down (me: EM_MOUSEBUTTON_EVENT) is
 		do			
-			if not is_down and then me.button = 1 then
-				is_down := true
+			if not down and then me.button = 1 then
+				down := true
 				on_button_down(me)			
 			end
 		end
 	process_mouse_up (me: EM_MOUSEBUTTON_EVENT) is
 		do			
-			if is_down  and then me.button = 1 then
-				is_down := false
+			if down  and then me.button = 1 then
+				down := false
 				on_button_up (me)			
 				clicked_event.publish ([Current])
 			end
@@ -47,8 +54,8 @@ feature -- Basic operations
 		end
 	process_mouse_motion (me: EM_MOUSE_EVENT) is
 		do
-			if is_down then
-				is_down := false
+			if down then
+				down := false
 				on_button_up (me)
 			end
 		end
@@ -64,7 +71,7 @@ feature -- Basic operations
 		end
 		
 feature {NONE} --implementation
-	is_down: BOOLEAN
+	down: BOOLEAN
 
 	clicked_event: EVENT_TYPE [TUPLE [TOUCH_BUTTON]]
 	
@@ -78,6 +85,7 @@ feature {NONE} --implementation
 			-- 
 		do
 		end
+
 		
 invariant
 	invariant_clause: True -- Your invariant here
