@@ -100,26 +100,27 @@ feature -- Basic operations
 			end
 		end
 		
+	zero_vector: EM_VECTOR_2D is
+	once
+		Result := create {EM_VECTOR_2D}.make (0, 0)
+	end
+	
 	adjust_position (a_line_section: TRAFFIC_LINE_SECTION; a_polypoints: LIST [EM_VECTOR_2D]) is
 			-- Adjust positions
 		do
-			if a_line_section.origin.position = Void then
+			if a_line_section.origin.position = Void or equal(a_line_section.origin.position, zero_vector) then
 				a_line_section.origin.set_position 
 					(create {EM_VECTOR_2D}.make (a_polypoints.first.x, a_polypoints.first.y))
 			else
 				a_line_section.origin.set_position
---						(create {EM_VECTOR_2D}.make (	(map_factory.line_section.origin.position.x + polypoints.first.x)// 2,
---													(map_factory.line_section.origin.position.y + polypoints.first.y)// 2))
 					(create {EM_VECTOR_2D}.make (	(a_line_section.origin.position.x + a_polypoints.first.x)/ 2.0,
 												(a_line_section.origin.position.y + a_polypoints.first.y)/ 2.0))
 			end
-			if a_line_section.destination.position = Void then
+			if a_line_section.destination.position = Void or equal(a_line_section.destination.position, zero_vector) then
 				a_line_section.destination.set_position 
 					(create {EM_VECTOR_2D}.make (a_polypoints.last.x, a_polypoints.last.y))
 			else
 				a_line_section.destination.set_position
---					(create {EM_VECTOR_2D}.make (	(map_factory.line_section.destination.position.x + polypoints.last.x)// 2,
---												(map_factory.line_section.destination.position.y + polypoints.last.y)// 2))
 					(create {EM_VECTOR_2D}.make (	(a_line_section.destination.position.x + a_polypoints.last.x)/ 2.0,
 												(a_line_section.destination.position.y + a_polypoints.last.y)/ 2.0))
 			end
