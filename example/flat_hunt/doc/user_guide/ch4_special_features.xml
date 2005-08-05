@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"User guide for Flat Hunt"
+
+	copyright: "Copyright (c) 2005, Ursina Caluori"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="user_guide/special_features">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Ursina Caluori</holder>
+        </copyright>
+        <author>
+            <firstname>Ursina</firstname>
+            <surname>Caluori</surname>
+        </author>
+        <email>ucaluori@student.ethz.ch</email>
+        <date>4 August 2005</date>
+    </chapterinfo>
+    <title>Chapter 4: Special Features</title>
+    <para> This chapter is structured as follows: </para>
+    <itemizedlist>
+        <listitem>
+            <para>
+                <indexlink url="#music_player">Music Player</indexlink>
+            </para>
+        </listitem>
+        <listitem>
+            <para>
+                <indexlink url="#shortcuts">Keyboard Shortcuts</indexlink>
+            </para>
+        </listitem>
+    </itemizedlist>
+    <section id="music_player">
+        <title>Music Player</title>
+        <para>
+            <projectname>Flat Hunt</projectname> comes with an integrated music player and some
+            default background music. Since not everyone likes the same sound, there is also the
+            possibility to play your own. Just put your <filename>.ogg</filename> -files in the
+            directory <filename>${FLAT_HUNT}/resources/sound</filename> before you start the
+                <projectname>Flat Hunt</projectname> application. <projectname>Flat
+            Hunt</projectname> will then automatically load all the <filename>.ogg</filename> -files
+            from this directory and play them in alphabetical order (unless you enable shuffle, obviously). Music player control: see
+                <indexlink url="#shortcuts">Keyboard Shortcuts</indexlink>. </para>
+    </section>
+    <section id="shortcuts">
+        <title>Keyboard Shortcuts</title> During the game, the following shortcuts are available: <blockquote>
+            <variablelist>
+                <varlistentry>
+                    <term><emphasis>p</emphasis>: pause the game and show pause menu. </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <emphasis>s</emphasis>: music player toggle shuffle </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <emphasis>v</emphasis>: music player decrease volume </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <emphasis>shift + v</emphasis>: music player increase volume (at startup
+                        volume is already on maximum)</term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <emphasis>page up</emphasis>: music player next song </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <emphasis>page down</emphasis>: music player previous song </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <emphasis>q</emphasis>: quit the application </term>
+                </varlistentry>
+            </variablelist>
+        </blockquote>
+    </section>
+</chapter>

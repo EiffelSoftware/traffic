@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"User guide for Flat Hunt"
+
+	copyright: "Copyright (c) 2005, Ursina Caluori"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="user_guide/story">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Ursina Caluori</holder>
+        </copyright>
+        <author>
+            <firstname>Ursina</firstname><surname>Caluori</surname>
+        </author>
+        <email>ucaluori@student.ethz.ch</email>
+        <date>4 August 2005</date>
+    </chapterinfo>
+    
+    <title>Chapter 2: The Story</title>
+    <para>
+        <emphasis>As the title suggests (and the introduction mentions), it is all about finding a flat in Zurich…</emphasis>
+    </para>
+    <para>
+        However, this is not so easy… There is this guy, the estate agent (Figure 2 a), who is renting flats.
+        The problem is that he is always busy showing flats to other customers (e.g. other students), and
+        even in his office they don’t really always know where exactly he is. The only thing they know is
+        what kind of transport he is moving around with. This is because the estate agent is taking part in
+        a new VBZ-project called “Customer tracking”.
+    </para>      
+    <para>   
+        In collaboration with ETH, they equipped some volunteers with transponders. These transponders gather
+        information like current position and type of transport, and send it in real-time to the office. However, for
+        privacy reasons, only the type of transport can be accessed all the time.
+    </para>
+    <para>
+        Once in a while, the estate agent (Figure 2) calls his office to tell the secretary which flat he is currently visiting. So
+        sometimes, the people there in the office can tell “you” where to look for him… “You” meaning
+        yourself and your friends (Figure 3), the guys you want to share the flat with…
+    </para>
+    
+    <para>
+        <mediaobjectco>
+            <imageobjectco>
+                <areaspec>
+                    <area />
+                </areaspec>
+                <imageobject>
+                    <imagedata fileref="pic/agent.png"></imagedata>
+                </imageobject>                
+            </imageobjectco>
+        </mediaobjectco>
+        Figure 2: Estate agent 
+        <mediaobjectco>
+            <imageobjectco>
+                <areaspec>
+                    <area />
+                </areaspec>
+                <imageobject>
+                    <imagedata fileref="pic/flat_hunters.png"></imagedata>
+                </imageobject>                
+            </imageobjectco>
+        </mediaobjectco>
+        Figure 3: You and friends
+    </para>
+    
+</chapter>
