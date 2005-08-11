@@ -1,6 +1,5 @@
 indexing
 	description: "Constants used for visualization."
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 

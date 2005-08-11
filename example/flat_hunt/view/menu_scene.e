@@ -3,7 +3,6 @@ indexing
 					Scene with basic menu features. 
 					Every scene that contains a menu/menus should inherit from this class.
 				]"
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -34,7 +33,7 @@ feature -- Initialization
 			-- Creation procedure
 		do
 			default_create
-			create menu.make_with_default_fonts (agent on_select)
+			create menu.make_with_default_fonts
 			create option_menus.make (0)
 		end
 		
@@ -54,26 +53,17 @@ feature -- Event handling
 			Precursor {FLAT_HUNT_SCENE} (a_keyboard_event)
 		end
 
-	on_select is
-			-- Agent that gets called when menu entry is selected
-		require
-			scenes_not_void: menu.scenes /= Void
-			scenes_has_selected_entry_scene: menu.scenes.has (menu.selected_entry)
-		do
-			next_scene := menu.scenes @ (menu.selected_entry)
-			event_loop.stop
-		ensure
---			next_scene_set: next_scene = menu.scenes @ (menu.selected_entry)
-		end
-		
-	on_option_select is
-				-- What to do when an option is selected
-			do
-				-- Since we don't want to do anything when return is hit
-				-- on an option menu, we need this dummy procedure that
-				-- does nothing
-				-- TODO: better way ??
-			end
+--	on_select is
+--			-- Agent that gets called when menu entry is selected
+--		require
+--			scenes_not_void: menu.scenes /= Void
+--			scenes_has_selected_entry_scene: menu.scenes.has (menu.selected_entry)
+--		do
+--			next_scene := menu.scenes @ (menu.selected_entry)
+--			event_loop.stop
+--		ensure
+----			next_scene_set: next_scene = menu.scenes @ (menu.selected_entry)
+--		end
 
 feature -- Attributes
 
@@ -88,15 +78,14 @@ feature -- Attributes
 
 feature {NONE} -- Implementation
 
-	add_option_menu (a_list: ARRAYED_LIST [STRING]; a_callback: PROCEDURE [ANY, TUPLE]; an_x, a_y: INTEGER) is
+	add_option_menu (a_list: ARRAYED_LIST [STRING]; an_x, a_y: INTEGER) is
 			-- Add an option menu to the scene
 		require
 			a_list_not_void: a_list /= Void
 			a_list_not_empty: not a_list.is_empty
-			a_callback_not_void: a_callback /= Void
 			option_menus_not_void: option_menus /= Void
 		do
-			option_menus.extend (create {OPTION_MENU}.make_with_default_fonts (a_callback), option_menus.count + 1)
+			option_menus.extend (create {OPTION_MENU}.make_with_default_fonts, option_menus.count + 1)
 			from
 				a_list.start
 			until

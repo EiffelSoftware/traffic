@@ -1,6 +1,5 @@
 indexing
 	description: "Status box for displaying player information"
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,7 +9,7 @@ class
 inherit
 	EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 		redefine
-			make
+			draw
 		end
 		
 	THEME
@@ -19,28 +18,27 @@ inherit
 		end
 
 create
-	make,
 	make_at_position,
 	make_from_coordinates,
 	make_from_position_and_size
 
 feature -- Initialization
 
-	make is
-			-- Create status box with default values
-		do
-			Precursor
-			
-			-- Create box.
-			create box.make_from_coordinates (0, 0, 0, 0)
-			
-			-- Initialization.
-			set_default_values
-			initialize_box
-			
-		ensure then
-			box_not_void: box /= Void
-		end
+--	make is
+--			-- Create status box with default values
+--		do
+--			Precursor
+--			
+--			-- Create box.
+--			create box.make_from_coordinates (0, 0, 0, 0)
+--			
+--			-- Initialization.
+--			set_default_values
+--			initialize_box
+--			
+--		ensure then
+--			box_not_void: box /= Void
+--		end
 	
 	make_at_position (an_x: INTEGER; a_y: INTEGER; a_title: STRING) is
 			-- Create status box with default values at position (x,y)
@@ -48,9 +46,13 @@ feature -- Initialization
 			a_title_not_void: a_title /= Void
 		do
 			make
+			set_default_values
 			set_x_y (an_x, a_y)
+			create box.make_from_coordinates (0, 0, 50, 50)
+			initialize_box
 			initialize_with_title (a_title)
 		ensure
+			box_not_void: box /= Void
 			positioned: x = an_x and y = a_y
 		end
 
@@ -60,10 +62,13 @@ feature -- Initialization
 			a_title_not_void: a_title /= Void
 		do
 			make
+			set_default_values
 			set_x_y (x1, y1)
-			box.set_size (x2 - x1, y2 - y1)
+			create box.make_from_coordinates (0, 0, x2 - x1, y2 - y1)
+			initialize_box
 			initialize_with_title (a_title)
 		ensure
+			box_not_void: box /= Void
 			positioned: x = x1 and y = y1
 --			box_width_set: box.width = x2 - x1 
 --			box_height_set: box.height = y2 - y1
@@ -75,12 +80,15 @@ feature -- Initialization
 			a_title_not_void: a_title /= Void
 		do
 			make
+			set_default_values
 			set_x_y (x1, y1)
-			box.set_size (a_width, a_height)
+			create box.make_from_position_and_size (0, 0, a_width, a_height)
+			initialize_box
 			initialize_with_title (a_title)
 		ensure
-			box_positioned: box.x = x1 and box.y = y1
-			box_resized: box.width = a_width and box.height = a_height
+			box_not_void: box /= Void
+			positioned: x = x1 and y = y1
+--			box_resized: box.width = a_width and box.height = a_height
 		end
 
 feature {NONE} -- Initialization Implementation
@@ -89,13 +97,14 @@ feature {NONE} -- Initialization Implementation
 			-- Set default values for all attributes.
 		do
 			opacity := 100			
-			color := status_background_color
+			color := status_color
 			alignment := Left
 			font := small_default_font
 			title_font := big_default_font
 			max_line_width := 0
 			text_height := 0
 			box_auto_resize := false
+			visible := true
 		ensure
 			color_not_void: color /= Void
 			font_not_void: font /= Void
@@ -113,29 +122,47 @@ feature {NONE} -- Initialization Implementation
 			box.line_color.set_alpha (255)
 			box.set_fill_color (color)
 			box.fill_color.set_alpha (opacity)
+			extend (box)
 		ensure
+			box_displayed: has (box)
 		-- TODO: postcondition for every box-attribute that is set ?? 			
 		end
 
 	initialize_with_title (a_title: STRING) is
 		require
 			a_title_not_void: a_title /= Void
-		do			
+		do
 			create title.make (a_title, title_font)
 			title.set_x_y (15, 0)
 			create lines.make
 			set_box_position
-			extend (title)			
-			extend (box)
+			extend (title)	
+			extend (lines)
 		ensure
 			title_not_void: title /= Void
 			lines_not_void: lines /= Void
+			lines_displayed: has (lines)
 			title_displayed: has (title)
-			box_displayed: has (box)
 		end
 		
 feature -- Access
 
+	add_lines (some_lines: ARRAYED_LIST [STRING]) is
+			-- Add lines `some_lines' to status box
+		require
+			some_lines_not_void: some_lines /= Void
+			lines_not_void: lines /= Void
+		do
+			from
+				some_lines.start
+			until
+				some_lines.after				
+			loop
+				add_line (some_lines.item)
+				some_lines.forth
+			end
+		end
+		
 	add_line (a_line: STRING) is
 			-- Add a credit line
 		require
@@ -147,20 +174,54 @@ feature -- Access
 			end
 			text_height := text_height + lines.last.height // 2 + padding
 			set_line_position (lines.count)	
-			extend (lines.item (lines.count))
 		ensure
 			text_height_set: text_height = old text_height + lines.last.height // 2 + padding
 			max_line_width_set: max_line_width >= lines.last.width
 		end	
 	
-	remove_line (an_index: INTEGER) is
-			-- Remove line at position `an_index'.
-		require
-			an_index_valid: an_index > 0 and an_index <= lines.count
+	clear is
+			-- Remove all lines
 		do
---			lines.item (an_index).
+			lines.wipe_out
 		end
 		
+
+	draw (a_surface: EM_SURFACE) is
+			-- Draw 'Current' onto `surf'.
+		local
+			cursor: DS_LINKED_LIST_CURSOR [EM_DRAWABLE]
+			translation: EM_VECTOR_2D
+			old_clipping_area, clipping_area: EM_ORTHOGONAL_RECTANGLE
+		do
+			-- Translate coordinate system for drawing all contained objects.
+			create translation.make (x, y)
+			a_surface.translate_coordinates (translation)
+			
+			-- Change clipping area to clip all objects to container boundaries.
+			old_clipping_area := a_surface.coordinate_area
+			create clipping_area.make_from_coordinates (0, 0, width, height)
+			clipping_area := clipping_area.intersection (old_clipping_area)
+			a_surface.clip_coordinates (clipping_area)			
+			
+			-- Draw all contained objects.
+			if visible then
+				cursor := new_cursor
+				from
+					cursor.start
+				until
+					cursor.off
+				loop
+					a_surface.draw_object (cursor.item)
+					cursor.forth				
+				end	
+			end
+			
+			-- Reset coordinate system.
+			a_surface.clip_coordinates (old_clipping_area)
+			a_surface.translate_coordinates (- translation)
+		end
+
+feature -- Status settings
 		
 	set_opacity (an_opacity: like opacity) is
 			-- Set opacity of status box
@@ -224,7 +285,7 @@ feature -- Access
 		do
 			title.set_value (a_title)
 		ensure
-			title_set: title.value = a_title
+			title_set: title.value.is_equal (a_title)
 		end
 	
 	set_auto_resize (b: like box_auto_resize) is
@@ -233,10 +294,33 @@ feature -- Access
 			box_auto_resize := b
 		end
 		
+	set_visibility (b: BOOLEAN) is
+			-- Set visibility of status box
+		do
+			visible := b
+		end
 		
+	toggle_visibility is
+			-- Toggle visibility of status box
+		do
+			set_visibility (not visible)
+		end
+
+	set_position_and_size (x1: INTEGER; y1: INTEGER; a_width: INTEGER; a_height: INTEGER) is
+			-- Set status box to position (x1, y1) and size (a_width, a_height)
+		do
+			set_x_y (x1, y1)
+			box.set_size (a_width, a_height)
+		ensure
+			positioned: x = x1 and y = y1
+			box_resized: box.width = a_width and box.height = a_height
+		end		
 
 feature -- Attributes		
 
+	visible: BOOLEAN
+		-- Is this status box visible?
+	
 	alignment: INTEGER
 		-- Alignment of the lines
 
@@ -278,7 +362,7 @@ feature -- Attributes
 	
 	box_auto_resize: BOOLEAN
 		-- Should the box automatically determine its size according to the inserted lines?
-
+		
 feature {NONE} -- Implementation		
 
 	update_color is
@@ -386,8 +470,5 @@ feature {NONE} -- Implementation
 
 invariant
 	box_not_void: box /= Void
-	
-	-- TODO: can also postconditions from initialize_scene be 
-	-- taken as invariants? I don't think so, but I'm not sure ..
-	
+
 end

@@ -1,6 +1,5 @@
 indexing
 	description: "Start menu scene that is displayed when you launch the application."
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,7 +9,7 @@ class
 inherit
 	MENU_SCENE
 		redefine
-			initialize_scene, handle_key_down_event, on_select
+			initialize_scene, handle_key_down_event
 		end
 
 	SHARED_MAIN_CONTROLLER
@@ -34,16 +33,16 @@ feature -- Initialization
 			
 			music_player.play_game_music
 
-			create background_box.make_from_coordinates (50, 95, Window_width - 50, 450, "options")
+			create background_box.make_from_coordinates (50, 95, Window_width - 50, 445, "options")
 			background_box.set_color (menu_color)
 			background_box.set_title_font (menu_font)
 			background_box.set_font (small_menu_font)
 			background_box.set_opacity (70)
 			background_box.set_auto_resize (false)
 			
-			menu.add_entry ("start game", Void, true)
-			menu.add_entry ("credits", credits_scene, false)
-			menu.add_entry ("quit", Void, false)
+			menu.add_entry ("start game", agent start_callback, true)
+			menu.add_entry ("credits", agent credits_callback, false)
+			menu.add_entry ("quit", agent quit_callback, false)
 			menu.set_alignment (Right)
 			menu.set_x_y (window_width - menu.width - 50, window_height - menu.height)
 
@@ -58,7 +57,7 @@ feature -- Initialization
 			list.extend ("escape")
 			list.extend ("versus")
 			list.extend ("demo")
-			add_option_menu (list, agent on_option_select, options_position_x, options_position_y)
+			add_option_menu (list, options_position_x, options_position_y)
 
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height
 			
@@ -74,7 +73,7 @@ feature -- Initialization
 			list.extend ("six")
 			list.extend ("seven")
 			list.extend ("eight")
-			add_option_menu (list, agent on_option_select, options_position_x, options_position_y)
+			add_option_menu (list, options_position_x, options_position_y)
 
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height
 
@@ -84,7 +83,7 @@ feature -- Initialization
 			list.wipe_out	
 			list.extend ("little")			
 			list.extend ("big")
-			add_option_menu (list, agent on_option_select, options_position_x, options_position_y)
+			add_option_menu (list, options_position_x, options_position_y)
 
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height			
 
@@ -94,7 +93,7 @@ feature -- Initialization
 			list.wipe_out			
 			list.extend ("glass")
 			list.extend ("white")
-			add_option_menu (list, agent on_option_select, options_position_x, options_position_y)
+			add_option_menu (list, options_position_x, options_position_y)
 			
 			main_container.extend (background_box)
 			display_option_menus
@@ -105,6 +104,7 @@ feature -- Initialization
 			
 			-- Set active menu to normal menu
 			active_menu := option_menus.count + 1
+
 		ensure then
 			menu_not_void: menu /= Void
 			menu_displayed: main_container.has (menu)
@@ -124,10 +124,12 @@ feature -- Event handling
 			-- Toggle between main menu and option menus
 			if a_keyboard_event.key = sdlk_tab then
 				if active_menu = option_menus.count + 1 then
+					-- Main menu is currently active -> switch to option menus.
 					active_menu := 1
 					menu.deactivate
 					option_menus.item (active_menu).activate
 				else
+					-- An option menu is currently active -> switch to main menu.
 					option_menus.item (active_menu).deactivate
 					menu.activate
 					active_menu := option_menus.count + 1
@@ -141,6 +143,7 @@ feature -- Event handling
 			-- Option menu event handling
 			elseif active_menu > 0 and active_menu <= option_menus.count then
 				if a_keyboard_event.key = sdlk_down then
+					-- Switch to next option menu.
 					option_menus.item (active_menu).deactivate
 					active_menu := active_menu + 1
 					if active_menu > option_menus.count then
@@ -148,6 +151,7 @@ feature -- Event handling
 					end
 					option_menus.item (active_menu).activate
 				elseif a_keyboard_event.key = sdlk_up then
+					-- Switch to previous option menu.
 					option_menus.item (active_menu).deactivate
 					active_menu := active_menu - 1
 					if active_menu < 1 then
@@ -159,43 +163,48 @@ feature -- Event handling
 			end
 		end
 		
-	on_select is
-			-- Agent that gets called when menu entry is selected
+	start_callback is
+			-- Callback for `start game' entry
 		local
 			a_game_scene: GAME_SCENE
 			a_game: GAME
 			a_map_file: TRAFFIC_MAP_FILE
 		do
-			if menu.selected_entry = 1 then
-				-- Create game with settings from option menus.
-				create a_game.make
-				a_game.set_game_mode (option_menus.item (1).selected_entry)
-				a_game.set_number_of_hunters (option_menus.item (2).selected_entry)
-				a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./map/zurich_" + option_menus.item (3).entries.item (option_menus.item (3).selected_entry).text.value + ".xml")
-				a_game.set_traffic_map (a_map_file.traffic_map)
+			-- Create game with settings from option menus.
+			create a_game.make
+			a_game.set_game_mode (option_menus.item (1).selected_entry)
+			a_game.set_number_of_hunters (option_menus.item (2).selected_entry)
+			a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./map/zurich_" + option_menus.item (3).entries.item (option_menus.item (3).selected_entry).text.value + ".xml")
+			a_game.set_traffic_map (a_map_file.traffic_map)
 
-				-- Create scene that displays the game.
-				a_game_scene := create {GAME_SCENE}.make (a_map_file.traffic_map, option_menus.item (2).selected_entry)
-				a_game_scene.set_last_scene (Current)
+			-- Create scene that displays the game.
+			a_game_scene := create {GAME_SCENE}.make (a_map_file.traffic_map, option_menus.item (2).selected_entry)
+			a_game_scene.set_last_scene (Current)
 
-				-- Load correct player pics
-				player_pic_directory.wipe_out
-				player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).entries.item (option_menus.item (4).selected_entry).text.value + "/")
+			-- Load correct player pics according to settings.
+			player_pic_directory.wipe_out
+			player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).entries.item (option_menus.item (4).selected_entry).text.value + "/")
 
-				main_controller.initialize_with_game_and_scene (a_game, a_game_scene)
-				main_controller.start_game
-				
-				next_scene := a_game_scene
-				event_loop.stop
-			elseif menu.selected_entry = 2 then
+			main_controller.initialize_with_game_and_scene (a_game, a_game_scene)
+			main_controller.start_game
+
+			-- Go to the above created game scene.			
+			next_scene := a_game_scene
+			event_loop.stop
+		end
+		
+		credits_callback is
+				-- Callback for `credits' entry
+			do
 				credits_scene.set_last_scene (Current)
 				next_scene := credits_scene
-				event_loop.stop
-			elseif menu.selected_entry = 3 then
+				event_loop.stop				
+			end
+			
+		quit_callback is
+				-- Callback for `quit' entry
+			do
 				quit
 			end
-
-		end
-
 
 end

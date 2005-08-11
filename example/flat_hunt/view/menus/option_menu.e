@@ -1,6 +1,5 @@
 indexing
 	description: "Menu with only the currently selected entry visible. Use right and left arrow keys to navigate."
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -18,17 +17,17 @@ create
 
 feature -- Initialization
 
-	make_with_default_fonts (a_callback: PROCEDURE [ANY, TUPLE]) is
+	make_with_default_fonts is
 			-- Create menu with default fonts
 		do
-			make_with_custom_fonts (small_menu_font, small_menu_selected_font, a_callback)
+			make_with_custom_fonts (small_menu_font, small_menu_selected_font)
 		end
 		
 
-	make_with_custom_fonts (a_font, a_selected_font: EM_FONT; a_callback: PROCEDURE [ANY, TUPLE]) is
+	make_with_custom_fonts (a_font, a_selected_font: EM_FONT) is
 			-- Create menu with user specified fonts
 		do
-			Precursor {MENU} (a_font, a_selected_font, a_callback)
+			Precursor {MENU} (a_font, a_selected_font)
 			bitmap_factory.create_bitmap_from_image (Left_arrow)
 			left_arrow_pic := bitmap_factory.last_bitmap
 			bitmap_factory.create_bitmap_from_image (Right_arrow)
@@ -37,12 +36,12 @@ feature -- Initialization
 		
 feature -- Access
 
-	add_entry (a_text: STRING; a_scene: EM_SCENE; selected: BOOLEAN) is
+	add_entry (a_text: STRING; a_callback: PROCEDURE [ANY, TUPLE]; selected: BOOLEAN) is
 			-- Add an entry to the menu
 		local
 			new_left_x, new_right_x, new_y: INTEGER
 		do
-			Precursor {MENU} (a_text, a_scene, selected)
+			Precursor {MENU} (a_text, a_callback, selected)
 			
 			new_y := (entries.item (entries.count).width) // 4			
 			new_left_x := 0

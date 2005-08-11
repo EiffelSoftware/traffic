@@ -1,6 +1,5 @@
 indexing
 	description: "Display a flat hunter on the board"
-	author: "Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -23,10 +22,14 @@ feature -- Access
 	
 feature -- Output
 
-	statistics: STRING is
+	statistics: ARRAYED_LIST [STRING] is
 			-- Number of tickets left etc.
 		do
-			Result := player.location.out + "Rail tickets: " + player.rail_tickets.out + "%NTram tickets: " + player.tram_tickets.out + "%NBus tickets :" + player.bus_tickets.out
+			create Result.make (0)
+			Result.extend ("Location: " + player.location.name)
+			Result.extend ("Rail tickets: " + player.rail_tickets.out)
+			Result.extend ("Tram tickets: " + player.tram_tickets.out)
+			Result.extend ("Bus tickets :" + player.bus_tickets.out)
 		end
 
 end

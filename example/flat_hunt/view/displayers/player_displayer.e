@@ -1,6 +1,5 @@
 indexing
 	description: "Display a player on the board"
-	author: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -11,21 +10,34 @@ inherit
 
 	EM_DRAWABLE
 		redefine
-			publish_mouse_event
+			publish_mouse_event, out
 		end
 		
 	EM_ANIMATABLE
+		undefine
+			out
+		end
+	
+	HASHABLE
+		undefine
+			default_create, out
+		end
 	
 	DISPLAY_CONSTANTS
 		export
 			{NONE} all
 		undefine
-			default_create
+			default_create, out
 		end
-
+	
+	THEME
+		undefine
+			out
+		end
+	
 feature -- Initialization
 		
-	make_from_player (a_player: PLAYER; a_pic: EM_DRAWABLE) is
+	make_from_player (a_player: PLAYER; a_pic: EM_DRAWABLE; a_traffic_map: TRAFFIC_MAP; a_map_widget: TRAFFIC_MAP_WIDGET) is
 			-- Initialize displayer for `a_player'.
 		require
 			player_exists: a_player /= Void
@@ -43,32 +55,7 @@ feature -- Initialization
 		end
 
 --feature -- Basic operations
---
---	display_before_prepare is
---			-- Show current player.
---		do
---
---		end
---		
---
---	display_before_move is
---			-- Mark possible moves if player is human.
---		do
---			if player.brain.generating_type.substring (1, 3).is_equal ("HUM") then
---				mark_possible_moves		
---			end
---		end
---		
---	display_after_move is
---			-- Remove old marks, redraw player.
---		do
-----			unmark_player
---			if player.brain.generating_type.substring (1, 3).is_equal ("HUM") then
---				unmark_possible_moves		
---			end
---			update_position
---		end
---
+
 --	clear is
 --			-- Remove all players (clear_game).
 --		do
@@ -170,6 +157,9 @@ feature -- Access
 			end
 			if player.marked then
 				surface.draw_object (marking_circle)
+				mark_possible_moves
+--			elseif traffic_map /= Void then
+--				unmark_possible_moves
 			end
 		end
 		
@@ -185,6 +175,8 @@ feature -- Access
 			Result := picture.height
 		end
 
+	hash_code: INTEGER
+
 feature -- Mouse handling
 
 	publish_mouse_event (a_mouse_event: EM_MOUSE_EVENT) is
@@ -199,87 +191,69 @@ feature -- Mouse handling
 	
 feature -- Status report
 
-	statistics: STRING is
+	statistics: ARRAYED_LIST [STRING] is
 			-- Number of tickets left etc.
 		deferred
 		end
 		
-	print_location: STRING is
-			-- Display location of player.
+	out: STRING is
 		do
-			Result := player.location.out
+			Result := player.name
 		end
+		
 		
 feature {NONE} -- Implementation
 
 	mark_possible_moves is
 			-- Mark all possible places that the player can move to.
 		local
---			pd: PLACE_DISPLAYER
+			place_renderer: TRAFFIC_PLACE_RENDERER
 		do
---			from
---				player.possible_moves.start
---			until
---				player.possible_moves.after
---			loop
---				pd ?= player.possible_moves.item.other_end (player.location).displayer
---				if pd /= Void and not pd.player.marked then
---					pd.mark
---				end
---				player.possible_moves.forth
---			end
+			-- Set place color for possible moves to yellow
+			create place_renderer.make_with_map (traffic_map)
+			place_renderer.set_place_color (Yellow)
+			from
+				player.possible_moves.start
+			until
+				player.possible_moves.after
+			loop
+				map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
+				-- Re-Render the Scene for the effects to be visible
+				map_widget.render
+				player.possible_moves.forth
+			end
 		end
 
-	unmark_possible_moves_special is
-			-- Remove marking of possible moves in a uncertain state (maybe move has not been made).
-		local
---			pd: PLACE_DISPLAYER
-		do
---			if player.possible_moves /= Void then
---				from
---					player.possible_moves.start
---				until
---					player.possible_moves.after
---				loop
---					pd ?= player.possible_moves.item.from_place.displayer
---					if pd /= Void and pd.player.marked then
---						pd.unmark
---					end
---					pd ?= player.possible_moves.item.to_place.displayer
---					if pd /= Void and pd.player.marked then
---						pd.unmark
---					end
---					player.possible_moves.forth
---				end
---			end
-		end			
-		
 	unmark_possible_moves is
-			-- Remove marking of possible moves (after move has been made).
+			-- Remove marking of possible moves.
 		local
---			pd: PLACE_DISPLAYER
+			place_renderer: TRAFFIC_PLACE_RENDERER
 		do
---			if player.possible_moves /= Void then
---				from
---					player.possible_moves.start
---				until
---					player.possible_moves.after
---				loop
---					if player.possible_moves.item.has (player.old_location) then
---						pd ?= player.possible_moves.item.other_end (player.old_location).displayer
---						if pd /= Void and pd.player.marked then
---							pd.unmark
---						end						
---					end
---					player.possible_moves.forth
---				end
---			end
+			-- Set place color for possible moves to yellow
+			create place_renderer.make_with_map (traffic_map)
+			place_renderer.set_place_color (Blue)
+			from
+				player.possible_moves.start
+			until
+				player.possible_moves.after
+			loop
+				map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
+				-- Re-Render the Scene for the effects to be visible
+				map_widget.render
+				player.possible_moves.forth
+			end
 		end
 		
 feature {NONE} -- Implementation
 		
 	marking_circle: EM_CIRCLE
 			-- Circle for marking current player
+	
+	traffic_map: TRAFFIC_MAP
+			-- Reference to map where game takes place
+	
+	map_widget: TRAFFIC_MAP_WIDGET
+			-- Reference to map widget where player gets displayed
 
 --	main_controller: MAIN_CONTROLLER
 			-- Used to access sleep and process_events
@@ -288,15 +262,3 @@ invariant
 	displayer_has_player: player /= Void
 
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---| 	Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------

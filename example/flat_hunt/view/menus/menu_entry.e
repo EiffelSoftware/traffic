@@ -1,6 +1,5 @@
 indexing
 	description: "Customizable menu entry"
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -15,20 +14,22 @@ create
 	
 feature -- Initialization
 	
-	make_from_string (a_text: STRING; a_font: EM_FONT) is
-			-- Create menu entry from string `a_text'
+	make_from_string (a_text: STRING; a_font: EM_FONT; a_callback: PROCEDURE [ANY, TUPLE]) is
+			-- Create menu entry from string `a_text' with callback `a_callback'
 		require
 			a_text_not_void: a_text /= Void
 			a_font_not_void: a_font /= Void
 		do
 			font := a_font
 			text := create {EM_STRING}.make (a_text, font)
+			callback := a_callback
 			make
 			extend (text)
 		ensure
 			font_set: font = a_font
 			text_not_void: text /= Void
 			text_added: has (text)
+			callback_set: callback = a_callback
 		end
 
 feature -- Access
@@ -60,5 +61,8 @@ feature -- Attributes
 		
 	text: EM_STRING
 		-- Text to be displayed for this entry
+		
+	callback: PROCEDURE [ANY, TUPLE]
+		-- Callback that gets called when menu entry selected
 
 end

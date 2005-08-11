@@ -1,6 +1,5 @@
 indexing
 	description: "Everything that is themable in the game is specified here."
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -32,14 +31,6 @@ inherit
 		
 feature -- Colors
 
-	status_background_color : EM_COLOR is
-			-- The background color of the status bar
-		once
-			Result := light_violet
-		ensure
-			color_not_void: Result /= Void
-		end
-
 	credits_color : EM_COLOR is
 		once
 			Result := light_violet
@@ -68,7 +59,21 @@ feature -- Colors
 			color_not_void: Result /= Void
 		end
 		
-
+	status_font_color: EM_COLOR is
+		once
+			Result := white
+		ensure
+			color_not_void: Result /= Void
+		end
+		
+	status_color : EM_COLOR is
+			-- Color of the status boxes
+		once
+			Result := light_violet
+		ensure
+			color_not_void: Result /= Void
+		end
+		
 feature -- Fonts
 
 	menu_font_name: STRING is "herbert"
@@ -79,6 +84,9 @@ feature -- Fonts
 	
 	default_font_name: STRING is "herbert"
 			-- Name of default font
+			
+	status_font_name: STRING is "arial"
+			-- Name of status font
 
    	small_default_font: EM_TTF_FONT is
 			-- Standard default font
@@ -175,6 +183,15 @@ feature -- Fonts
 		ensure
 			font_not_void: Result /= Void
 		end 
+	
+	status_font: EM_TTF_FONT is
+			-- Standard font for use in status boxes for players
+		once
+			Result := create_font (status_font_name, 12, status_font_color)
+		ensure
+			font_not_void: Result /= Void
+		end
+		
 		
 feature -- Images
 

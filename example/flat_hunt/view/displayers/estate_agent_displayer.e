@@ -1,7 +1,5 @@
 indexing
 	description: "Display the agent on the board"
-	status:	"See notice at end of class"
-	author: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -24,31 +22,42 @@ feature -- Access
 
 feature -- Output
 
-	statistics: STRING is
+	statistics: ARRAYED_LIST [STRING] is
 			-- Number of tickets left etc.
 		do
+			create Result.make (0)
+
 			if player.is_visible then
-				Result := player.location.out + "Rail tickets: " + player.rail_tickets.out + "%NTram tickets: " + player.tram_tickets.out + "%NBus tickets :" + player.bus_tickets.out
+				Result.copy (agent_history)	
+				Result.put_front ("History: ")
+				Result.put_front (" ")
+				Result.put_front ("Rail tickets: " + player.rail_tickets.out + ", Tram tickets: " + player.tram_tickets.out + ", Bus tickets :" + player.bus_tickets.out)			
+				Result.put_front ("Location: " + player.location.name)
 			else
-				Result := "Rail tickets: " + player.rail_tickets.out + "%NTram tickets: " + player.tram_tickets.out + "%NBus tickets :" + player.bus_tickets.out
+				if player.last_visible_location /= Void then
+					Result.extend ("In hiding.. Last seen at: " + player.last_visible_location.name)
+				else
+					Result.extend ("In hiding.. Last visbible location unknown.")
+				end
+				Result.extend ("Rail tickets: " + player.rail_tickets.out + ", Tram tickets: " + player.tram_tickets.out + ", Bus tickets :" + player.bus_tickets.out)
 			end
+
 		end
 		
-	agent_moves: STRING is
+	agent_history: ARRAYED_LIST [STRING] is
 			-- Types ot transport taken etc.
 		do
-			Result := ""
+			create Result.make (0)
 			from 
 				player.taken_transports.start
 				player.visited_places.start
 			until 
 				player.taken_transports.after
 			loop
-				Result := "%N" + Result
 				if player.is_visible and then not player.taken_transports.islast then
-					Result := "; " + player.visited_places.item + Result
+					Result.extend (player.visited_places.item)
 				end
-				Result := "Round " + player.visited_places.index.out + ": " + player.taken_transports.item + Result
+				Result.extend ("Round " + player.visited_places.index.out + ": " + player.taken_transports.item)
 				player.taken_transports.forth
 				player.visited_places.forth
 			end

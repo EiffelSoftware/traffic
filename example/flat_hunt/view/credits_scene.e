@@ -1,6 +1,5 @@
 indexing
 	description: "Scene that displays the credits."
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -9,7 +8,7 @@ class
 inherit
 	MENU_SCENE
 		redefine
-			initialize_scene, on_select, handle_key_down_event
+			initialize_scene, handle_key_down_event
 		end
 
 create
@@ -26,7 +25,7 @@ feature -- Initialization
 		do
 			Precursor
 
-			menu.add_entry ("back", start_menu_scene, true)
+			menu.add_entry ("back", agent back_callback, true)
 			menu.set_x_y ((Window_width - 100) // 2, Window_height - 100)
 			main_container.extend (menu)
 
@@ -91,7 +90,8 @@ feature -- Event Handling
 			menu.handle_key_down_event (a_keyboard_event)
 		end
 
-	on_select is
+	back_callback is
+		-- Callback for back button
 		require else
 			last_scene_not_void: last_scene /= Void
 		do

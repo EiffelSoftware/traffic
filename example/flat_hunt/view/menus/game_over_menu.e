@@ -1,6 +1,5 @@
 indexing
 	description: "Menu that is displayed when game over."
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 
