@@ -3,7 +3,6 @@ indexing
 					Essentially the same as an EM_SCENE but with some customization 
 					used throughout the application.
 				]"
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 

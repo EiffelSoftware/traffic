@@ -1,6 +1,5 @@
 indexing
 	description: "Application settings and launch"
-	author: "Ursina Caluori, ucaluori@student.ethz.ch"
 	date: "$Date$"
 	revision: "$Revision$"
 	

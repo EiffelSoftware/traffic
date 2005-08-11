@@ -1,7 +1,5 @@
 indexing
 	description: "Brain for the players to choose their moves"
-	status:	"See notice at end of class"
-	authors: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -53,15 +51,3 @@ feature {NONE} -- Implementation
 --		end
 	
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---| 	Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------

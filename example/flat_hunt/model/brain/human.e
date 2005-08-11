@@ -1,7 +1,5 @@
 indexing
 	description: "Brain controlled by human user"
-	status:	"See notice at end of class"
-	authors: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -34,15 +32,3 @@ feature {PLAYER} -- Basic operations
 			result_has_place_if_not_void: chosen_move /= Void implies (chosen_move.origin = my_location or chosen_move.destination = my_location)
 		end		
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---| 	Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------

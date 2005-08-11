@@ -6,8 +6,6 @@ indexing
 					`initialize_with_game_and_scene (a_game: GAME; a_game_scene: GAME_SCENE)'.
 					After that, the game can be started with `start_game'.
 				]"
-	status:	"See notice at end of class"
-	author: "Marcel Kessler, Michela Pedroni, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,6 +19,10 @@ inherit
 --		end	
 
 	GAME_CONSTANTS
+	
+	THEME
+	
+	EM_TIME_SINGLETON
 	
 create
 	make
@@ -41,6 +43,8 @@ feature -- Initialization
 		do
 			game := a_game
 			game_scene := a_game_scene
+			subscribe_outside_event (agent idle_action)
+			create status.make (0)
 		ensure
 			game_set: game = a_game
 			game_scene_set: game_scene = a_game_scene
@@ -57,7 +61,9 @@ feature -- Game operations
 		do
 			game.create_players
 			game_scene.create_players_from_list (game.players)
+			game_scene.subscribe_to_clicked_place_event (agent process_clicked_place)			
 			game.start_game
+			status_before_prepare
 			
 --			clear_game
 --			end_game_called_once := False
@@ -70,10 +76,10 @@ feature -- Game operations
 --				add_player_info_boxes (True)
 --			end
 --			move_to_center
---			play_called_once := False
---			move_called_once := False
+			play_called_once := False
+			move_called_once := False
 --			idle_actions.extend (idle_action_agent)
---			take_a_break (False)
+			take_a_pause (false)
 		end
 
 	start is
@@ -97,29 +103,6 @@ feature -- Game operations
 --			end
 --			idle_actions.prune (idle_action_agent)
 --			end_game_called_once := False
---		end
---		
---		
---	open_map (a_filename: STRING) is
---			-- Open map in file `a_filename'.
---		local
---			fn: STRING
---			dialog: EV_INFORMATION_DIALOG
---		do
---			fn := File_system.absolute_pathname (a_filename)
---			if File_system.file_exists (fn) then
---				open_city (fn)
---			else
---				fn := File_system.pathname ("data", a_filename)
---				fn := File_system.absolute_pathname (fn)
---				if File_system.file_exists (fn) then
---					open_city (fn)
---				else
---					create dialog
---					dialog.set_text ("Map file not found! Could not load " + fn)	
---					dialog.show_modal_to_window (main_window)
---				end
---			end
 --		end
 --
 --	end_game is
@@ -151,7 +134,7 @@ feature -- Game operations
 --					from
 --						i := 2
 --					until
---						i > game.players.count or break or not game.is_game_over
+--						i > game.players.count or paused or not game.is_game_over
 --					loop
 --						game.players.i_th (i).displayer.animate_defeat
 --						i := i + 1
@@ -160,66 +143,142 @@ feature -- Game operations
 --			end
 --		end		
 --
+
+feature -- Status Report
+
+	status_game_over is
+			-- Status to be displayed when game is over
+		do
+			status.wipe_out
+			status.extend ("GAME OVER!")
+			if game.state = agent_caught then
+				status.extend ("Estate agent was found at " + game.estate_agent.location.name + " in round " + game.current_round_number.out)
+			elseif game.state = agent_stuck then
+				status.extend ("Estate agent was encircled at " + game.estate_agent.location.name + " in round " + game.current_round_number.out)
+			elseif game.state = agent_escapes then
+				status.extend ("Estate agent escaped!")
+			end			
+			status.extend ("Estate agent: " + game.estate_agent.location.name)
+			update_status
+		end
+		
+	status_before_prepare is
+			-- Status of player before the move
+		do
+			status.wipe_out
+			status.copy (game_scene.player_displayers.i_th (game.current_player_index).statistics)
+			status.put_front ("Status of current player: ")
+			status_overview			
+			update_status
+		end
+
+	status_overview is
+			-- General overview
+		do
+			status.put_front (" ")
+			status.put_front ("Current Player: " + game.current_player.name)
+			status.put_front ("Round: " + game.current_round_number.out)
+		end
+
+feature -- Basic Operations
+
+	update_status is
+			-- Update status of current game
+		do
+			game_scene.set_status (status)
+		end
+		
 		
 feature -- Attributes
+
+	status: ARRAYED_LIST [STRING]
+			-- Status of current `game' to be displayed in `game_scene'
 
 	game_scene: GAME_SCENE
 			-- Where the game is visualized
 
 	game: GAME
 			-- Game logic
-			
-feature {NONE} -- Implementation
 	
---	break: BOOLEAN
---			-- Does the user make a break?
---	
+	paused: BOOLEAN
+			-- Is game currently on paused?
 
+	move_called_once: BOOLEAN
+			-- Has the player already moved once?
+	
+	play_called_once: BOOLEAN
+			-- Was the player's move already performed once?		
+
+feature -- Event handling
+
+	subscribe_outside_event (a_procedure: PROCEDURE [ANY, TUPLE]) is
+			-- Subscribe `a_procedure' to `outside_event' of `game_scene'
+		do
+			game_scene.event_loop.outside_event.subscribe (a_procedure)
+		end
+
+	process_clicked_place (a_place: TRAFFIC_PLACE; a_mouse_event: EM_MOUSEBUTTON_EVENT) is
+			-- 
+		local
+			line_section: TRAFFIC_LINE_SECTION
+			place_renderer: TRAFFIC_PLACE_RENDERER
+		do
+			if a_mouse_event.is_left_button then
+				--Color place red
+				create place_renderer.make_with_map (game.traffic_map)
+				place_renderer.set_place_color (red)
+				game_scene.big_map_widget.set_place_special_renderer (place_renderer, a_place)
+				--Re-Render the scene for the effects to be visible
+				game_scene.big_map_widget.render
+				
+				idle_action
+--				game.prepare
+--				game.play
+--				game.move
+			end			
+		end	
+			
+	idle_action is
+			-- Things that are done when nothing else is processing
+		do
+			if game /= Void then
+				if paused then
+					sleep (50)
+				else
+					if game.state = game.Prepare_state then
+						prepare
+					end
+					if game.state = game.Play_state then
+						play
+						if game.current_player /= Void and then game.current_player.brain.generating_type.substring (1, 3).is_equal ("BOT") then
+							sleep (1800)
+						end
+					end
+					if not paused and game.state = game.Move_state then
+						move
+						if game.last_player /= Void then
+							sleep (1600)
+						end
+					end
+					if game.is_game_over then
+--						end_game
+					end			
+				end
+			end
+		end
+
+feature {NONE} -- Game loop
+
+	sleep (a_time: INTEGER) is
+		do
+			time.delay (a_time)
+		end
 		
---	move_called_once: BOOLEAN
---			-- Has the player already moved once?
---	
---	play_called_once: BOOLEAN
---			-- Was the player's move already performed once?
---	
---	end_game_called_once: BOOLEAN
---			-- Has the game already ended once?
---			
-
-
---feature {NONE} -- Game loop
 --
 --	idle_action_agent: PROCEDURE [ANY, TUPLE]
 --			-- Idle action agent that will be called whenever the system is idle
 --			
---	idle_action is
---			-- Called whenever nobody is doing something.
---		do
---			if game /= Void then
---				if break then
---					sleep_and_process (50)
---				else
---					if game.state = game.Prepare_state then
---						prepare
---					end
---					if game.state = game.Play_state then
---						play
---						if game.current_player /= Void and then game.current_player.brain.generating_type.substring (1, 3).is_equal ("BOT") then
---							sleep_and_process (1800)
---						end
---					end
---					if not break and game.state = game.Move_state then
---						move
---						if game.last_player /= Void then
---							sleep_and_process (1600)
---						end
---					end
---					if game.is_game_over then
---						end_game
---					end
---				end
---			end
---		end
+
 --
 --	sleep_and_process (msec: INTEGER) is
 --			-- Sleep for `msec' milliseconds, but still process events.
@@ -260,75 +319,75 @@ feature {NONE} -- Implementation
 --				last_sec := now_sec									
 --			end
 --		end
---	
---	prepare is
---			-- Prepare current player to make a move.
---		require
---			no_break_taken: not break
---			game_state_prepare: game.state = game.Prepare_state
---		do
+	
+	prepare is
+			-- Prepare current player to make a move.
+		require
+			no_pause_taken: not paused
+			game_state_prepare: game.state = game.Prepare_state
+		do
 --			game.display_before_prepare
 --			main_window.game_stat_text.set_text (game.info_text)
---			if game.current_player /= game.estate_agent or game.estate_agent.displayer.visible then
+			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
 --				center_on_player (game.current_player)
---				game.current_player.displayer.display_before_prepare
---			end	
+--				game_scene.player_views @ (game.current_player_index).
+			end	
 --			main_window.update_player_info_box (game.current_player)
 --			main_window.canvas.redraw
---			game.prepare
---		ensure
---			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck
---		end		
---
---	play is
---			-- Let current player choose next move.
---		require
---			no_break_taken: not break
---			game_state_play: game.state = game.Play_state
---		do
---			if not play_called_once then
---				play_called_once := True
+			game.prepare
+		ensure
+			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck
+		end		
+
+	play is
+			-- Let current player choose next move.
+		require
+			no_pause_taken: not paused
+			game_state_play: game.state = game.Play_state
+		do
+			if not play_called_once then
+				play_called_once := True
 --				game.current_player.displayer.display_before_move
 --				main_window.update_player_info_box (game.current_player)
 --				main_window.canvas.redraw
---			end
---			game.play
---			move_called_once := False
---		ensure
---			correct_game_state: game.state = game.Play_state or game.state = game.Move_state
---		end
---		
---	move is
---			-- Perform player's move and update display.
---		require
---			no_break_taken: not break
---			move_state_set: game.state = game.Move_state
---		do
---			if not move_called_once then
---				move_called_once := True
---				game.move
+			end
+			game.play
+			move_called_once := False
+		ensure
+			correct_game_state: game.state = game.Play_state or game.state = game.Move_state
+		end
+		
+	move is
+			-- Perform player's move and update display.
+		require
+			no_pause_taken: not paused
+			move_state_set: game.state = game.Move_state
+		do
+			if not move_called_once then
+				move_called_once := True
+				game.move
 --				game.last_player.displayer.display_after_move
 --				main_window.canvas.force_redraw
 --				main_window.update_player_info_box (game.last_player)
 --				main_window.game_stat_text.set_text (game.info_text)
---				play_called_once := False
---			end
---		ensure
---			correct_game_state: game.state = game.Prepare_state or game.state = game.Agent_caught or game.state = game.Agent_escapes
---		end
---		
---	take_a_break (enable: BOOLEAN) is
---			-- Take a break.
---		do
---			break := enable
---		end
---
---	toggle_break is
---			-- Break/continue game.
---		do
---			take_a_break (not break)
---		end
---		
+				play_called_once := False
+			end
+		ensure
+			correct_game_state: game.state = game.Prepare_state or game.state = game.Agent_caught or game.state = game.Agent_escapes
+		end
+		
+	take_a_pause (b: BOOLEAN) is
+			-- Pause game.
+		do
+			paused := b
+		end
+
+	toggle_paused is
+			-- pause/continue game.
+		do
+			take_a_pause (not paused)
+		end
+		
 --feature {NONE} -- Status setting
 --
 --	move_to_center is
@@ -536,15 +595,3 @@ feature {NONE} -- Implementation
 --
 
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---|     Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------

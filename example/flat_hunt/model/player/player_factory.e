@@ -1,7 +1,5 @@
 indexing
 	description: "Create the list of the players"
-	status:	"See notice at end of class"
-	authors: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -100,15 +98,3 @@ invariant
 	map_exists: map /= Void
 	
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---| 	Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------

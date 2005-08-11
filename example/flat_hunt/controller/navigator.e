@@ -1,8 +1,7 @@
 indexing
 	description: "Widget to connect two zoomable containers as one controlling the other."
-	author: "Rolf Bruderer"
-	date: "2005/03/10"
-	revision: "0.2"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	NAVIGATOR

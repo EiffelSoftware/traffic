@@ -1,7 +1,5 @@
 indexing
 	description: "Player that is an estate agent"
-	status:	"See notice at end of class"
-	authors: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,7 +19,7 @@ feature {NONE} -- Initialization
 		do
 			make_from_map_and_place (a_map, a_location)
 			name := "Agent"
-			set_last_visible_location
+			last_visible_location := Void
 			set_visible (false)
 
 			if is_bot then
@@ -39,8 +37,12 @@ feature {NONE} -- Initialization
 			else
 				create {HUMAN} brain
 			end
+			create taken_transports.make
+			create visited_places.make
 		ensure
 			has_brain: brain /= Void
+			taken_transports_not_void: taken_transports /= Void
+			visited_places_not_void: visited_places /= Void
 			location_is_hauptbahnhof: location.name.is_equal ("Hauptbahnhof")
 			name_is_agent: name.is_equal ("Agent")
 		end
@@ -122,15 +124,3 @@ invariant
 	name_is_agent: name.is_equal ("Agent")
 
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---| 	Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------

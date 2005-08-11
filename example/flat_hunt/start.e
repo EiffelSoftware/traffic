@@ -1,7 +1,5 @@
 indexing
 	description: "Start of the application, used for assignment 2"
-	status:	"See notice at end of class"
-	author: "Marcel Kessler, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,17 +23,3 @@ feature -- Initialization
 --		end
 		
 end
-
-
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---| 	Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------

@@ -1,7 +1,5 @@
 indexing
 	description: "A player in the flat hunt game"
-	status:	"See notice at end of class"
-	authors: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -133,6 +131,8 @@ feature -- Status report
 				Result := False
 			end
 		end
+
+feature --Queries
 		
 	is_valid_type (a_type: TRAFFIC_TYPE): BOOLEAN is
 			-- Is `a_type' representing a valid transportation type?
@@ -141,6 +141,13 @@ feature -- Status report
 		do
 			Result := type_table.has_item (a_type)
 		end
+	
+	is_marked: BOOLEAN is
+			-- Is this player marked (i.e. the current player)?
+		do
+			Result := marked
+		end
+		
 		
 feature {NONE} -- Element change
 
@@ -163,7 +170,7 @@ feature {NONE} -- Element change
 			number_of_tickets_has_decreased: bus_tickets + rail_tickets + tram_tickets = old bus_tickets + old rail_tickets + old tram_tickets - 1			
 		end
 		
-feature {GAME} -- Basic operations
+feature -- Basic operations
 
 	play (a_place: TRAFFIC_PLACE) is
 			-- Choose the next move 
@@ -299,15 +306,3 @@ feature {GAME} -- Basic operations
 		end		
 
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---| 	Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------

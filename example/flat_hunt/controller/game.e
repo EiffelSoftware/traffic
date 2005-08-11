@@ -1,7 +1,5 @@
 indexing
 	description	: "Logic for the Flat Hunt game"
-	status:	"See notice at end of class"
-	author: "Marcel Kessler, Rolf Bruderer, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -19,9 +17,9 @@ feature -- Initialization
 	make is
 			-- Creation procedure.
 		do
-			create info_text.make_empty
+			create info_text.make (0)
 			create checkpoints.make
-			checkpoints.fill (<< 1, 3, 8, 13, 18, 23 >>)
+			checkpoints.fill (<< 3, 8, 13, 18, 23 >>)
 		end			
 
 	make_with_constants (a_game_mode: INTEGER; a_hunter_count: INTEGER; a_traffic_map: TRAFFIC_MAP) is
@@ -204,43 +202,6 @@ feature {MAIN_CONTROLLER} -- Basic operations
 			end
 		end
 
-feature -- Display
-
-	display_end_game is
-			-- Display states when game is finished
-		do
-			info_text.wipe_out
-			if state = agent_caught then
-				info_text.append ("Estate agent was found in round " + current_round_number.out + "%N%N")
-			elseif state = agent_stuck then
-				info_text.append ("Estate agent was encircled in round " + current_round_number.out + "%N%N")
-			elseif state = agent_escapes then
-				info_text.append ("Estate agent escaped! %N%N")
-			else
-				info_text.append ("Quit game%N")
-			end			
-			display_states
-			info_text.append ("%NEstate agent: %N" + estate_agent.location.name)
-		end
-		
-	display_before_prepare is
-			-- Display the player's state before the move.
-		do
-			info_text.wipe_out
-			display_states
-			if estate_agent.is_visible then
-				info_text.append ("%NEstate agent: %N" + estate_agent.location.name)
-			end
-		end
-
-	display_states is
-			-- Display the game states.
-		do
-			info_text.append ("Round: " + current_round_number.out + "%N")
-			info_text.append ("Play: " + current_player.name + "%N%N")
-			info_text.append ("Flat hunters: %N" + print_hunter_locations)
-		end
-
 feature -- Element change
 
 	next_turn is
@@ -267,12 +228,13 @@ feature -- Element change
 	update_agent_visibility is
 			-- Make agent visible if current round is a checkpoint.
 		require 
-			prepare_state: state = Prepare_state
+--			prepare_state: state = Prepare_state
 		do
 			if checkpoints.has (current_round_number) then
 				estate_agent.set_last_visible_location
 			end
 			if game_mode /= Hunt or is_game_over or checkpoints.has (current_round_number) then
+--			if is_game_over or checkpoints.has (current_round_number) then
 				estate_agent.set_visible (true)
 			else
 				estate_agent.set_visible (false)
@@ -314,8 +276,8 @@ feature -- Access
 	current_round_number: INTEGER
 			-- Count from 1 to `default_number_of_rounds'
 			
-	info_text: STRING
-			-- To be displayed in main_window
+	info_text: ARRAYED_LIST [STRING]
+			-- To be displayed in a status box of the game scene
 
 	checkpoints: BINARY_SEARCH_TREE_SET [INTEGER]
 			-- Estate agent has to show himself in these rounds
@@ -401,15 +363,3 @@ feature -- Output
 --		end
 --	
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---|     Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------

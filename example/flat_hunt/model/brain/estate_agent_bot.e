@@ -1,7 +1,5 @@
 indexing
 	description: "Robot brain (AI) calculating the next move for the estate agent"
-	status:	"See notice at end of class"
-	author: "Marcel Kessler, Ursina Caluori"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -56,15 +54,3 @@ feature {ESTATE_AGENT} -- Basic operations
 		end		
 		
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Marcel Kessler <kesslema@student.ethz.ch>
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---| 	Rolf Bruderer <bruderer@computerscience.ch>
---|
---|--------------------------------------------------------
