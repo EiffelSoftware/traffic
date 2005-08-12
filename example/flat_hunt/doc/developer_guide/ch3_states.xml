@@ -83,7 +83,7 @@
                         game goes into state <emphasis>Agent_caught</emphasis>. If the agent did not get caught, and
                         the round number is greater than 23, then the estate agent is the winner and
                         the game goes into state <emphasis>Agent_escaped</emphasis>. If none of the above is the
-                        case, then it’s the next player’s turn and the game loop starts again in
+                        case, then it's the next player's turn and the game loop starts again in
                         state <emphasis>Prepare</emphasis>. </para>
                 </listitem>
             </itemizedlist>

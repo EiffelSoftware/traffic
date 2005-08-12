@@ -1,0 +1,33 @@
+\documentclass[a4paper,titlepage,12pt]{article}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphics}
+\title{\textbf{Flat Hunt Developer Guide}}
+\author{Ursina Caluori\\ \href{mailto: ucaluori@student.ethz.ch}{ucaluori@student.ethz.ch}}
+\pagestyle{headings}
+\usepackage{hyperref}
+\hypersetup{colorlinks}
+\begin{document}
+  \maketitle
+  \tableofcontents
+  \pagebreak
+
+  \paragraph{}
+  \emph{TRAFFIC} \cite{sa05}, \emph{Touch} \cite{rk05} and \emph{Flat Hunt} is software that hopefully makes learning to program more fun and more interesting for you. \emph{TRAFFIC} is a library that supports the reading and display of public transportation systems. A library is a piece of software whose functionality can be used by other software. \emph{Flat Hunt} is an application that uses the \emph{TRAFFIC} library to model a city map. For the visualization the \emph{EiffelMedia} Library (formerly known as \emph{ESDL} \cite{tgb03}\cite{bb04}) is used. It is a strategy game, similar to Scotland Yard, but with a different background story (for more information about the story and gameplay of \emph{Flat Hunt}, read the Flat Hunt User Guide). \emph{Touch} is also an application that uses the \emph{TRAFFIC} library. For more information on \emph{TRAFFIC} and \emph{Touch}: see \cite{sa05} and \cite{rk05} or visit \htmladdnormallink{this website}{http://se.inf.ethz.ch/traffic}.\\
+
+  This document describes how \emph{Flat Hunt} is built, what classes are important and highlights some of their features.
+  
+  \section{Getting Started}
+    \input{getting_started.tex}
+  \section{Design}
+    \input{design.tex}
+  \section{The States of the Game}
+    \input{states.tex} 
+  \section{Guided ``Walk-Through''}
+    \input{walkthrough.tex}
+  \section{Legal Stuff and Thanks}
+    \input{legal_and_thanks.tex}
+    \input{references.tex}
+    
+\end{document}

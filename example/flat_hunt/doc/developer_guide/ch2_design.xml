@@ -64,7 +64,7 @@
                 <emphasis>Controller</emphasis>. In each cluster, there are several classes, and
             sometimes there are subclusters. </para>
     </section>
-    <para> This chapter is structured as follows: </para>
+    
     <section id="controller">
         <title>Controller cluster</title>
         <para> Cluster Controller is the fundamental cluster in <projectname>Flat
