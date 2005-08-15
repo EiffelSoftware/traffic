@@ -211,12 +211,12 @@ feature -- Element change
 			prepare_state: state = Prepare_state
 		do
 			last_player := current_player
-			if last_player /= Void then
-				last_player.set_unmarked				
-			end
+--			if last_player /= Void then
+--				last_player.set_unmarked				
+--			end
 			current_player_index := (current_player_index \\ players.count) + 1
 			current_player := players.i_th (current_player_index)
-			current_player.set_marked			
+--			current_player.set_marked			
 			if current_player_index = 1 then
 				current_round_number := current_round_number + 1
 				update_agent_visibility

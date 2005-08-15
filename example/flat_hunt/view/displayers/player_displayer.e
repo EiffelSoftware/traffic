@@ -44,8 +44,10 @@ feature -- Initialization
 		do
 			player := a_player
 			picture := a_pic
+			map_widget := a_map_widget
+			traffic_map := a_traffic_map
 			create marking_circle.make_inside_box (picture.bounding_box)
-			marking_circle.set_line_width (3)
+			marking_circle.set_line_width (1)
 			marking_circle.set_line_color (red)
 			marking_circle.set_filled (false)
 			update_position
@@ -158,9 +160,9 @@ feature -- Access
 			end
 			if player.marked then
 				surface.draw_object (marking_circle)
---				mark_possible_moves
---			elseif traffic_map /= Void then
---				unmark_possible_moves
+				mark_possible_moves
+			else
+				unmark_possible_moves
 			end
 		end
 		
@@ -207,41 +209,54 @@ feature {NONE} -- Implementation
 
 	mark_possible_moves is
 			-- Mark all possible places that the player can move to.
+		require
+			traffic_map_not_void: traffic_map /= Void
+			map_widget_not_void: map_widget /= Void
 		local
-			place_renderer: TRAFFIC_PLACE_RENDERER
+			place_renderer: TRAFFIC_PLACE_RENDERER			
 		do
-			-- Set place color for possible moves to yellow
-			create place_renderer.make_with_map (traffic_map)
-			place_renderer.set_place_color (Yellow)
-			from
-				player.possible_moves.start
-			until
-				player.possible_moves.after
-			loop
-				map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
-				-- Re-Render the Scene for the effects to be visible
-				map_widget.render
-				player.possible_moves.forth
+			if player.possible_moves /= Void then
+				-- Set place color for possible moves to yellow
+				create place_renderer.make_with_map (traffic_map)
+					place_renderer.set_place_color (Yellow)
+				from
+					player.possible_moves.start
+				until
+					player.possible_moves.after
+				loop
+					map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
+					
+					-- Re-Render the Scene for the effects to be visible
+					map_widget.render
+					player.possible_moves.forth
+				end
 			end
 		end
 
 	unmark_possible_moves is
 			-- Remove marking of possible moves.
+		require
+			traffic_map_not_void: traffic_map /= Void
+			map_widget_not_void: map_widget /= Void			
 		local
 			place_renderer: TRAFFIC_PLACE_RENDERER
 		do
-			-- Reset place color
-			create place_renderer.make_with_map (traffic_map)
-			place_renderer.set_place_color (Blue)
-			from
-				player.possible_moves.start
-			until
-				player.possible_moves.after
-			loop
-				map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
-				-- Re-Render the Scene for the effects to be visible
-				map_widget.render
-				player.possible_moves.forth
+			if player.possible_moves /= Void then
+
+				-- Reset place color
+				create place_renderer.make_with_map (traffic_map)
+				place_renderer.set_place_color (Blue)
+				from
+					player.possible_moves.start
+				until
+					player.possible_moves.after
+				loop
+					map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
+					
+					-- Re-Render the Scene for the effects to be visible
+					map_widget.render
+					player.possible_moves.forth
+				end
 			end
 		end
 		

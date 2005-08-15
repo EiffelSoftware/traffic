@@ -71,8 +71,7 @@ feature -- Game operations
 			game.start_game
 			status_before_prepare
 			update_status
-
-			move_to_center
+			
 			play_called_once := false
 			move_called_once := false
 			take_a_pause (false)
@@ -180,7 +179,7 @@ feature -- Attributes
 	play_called_once: BOOLEAN
 			-- Was the player's move already performed once?		
 
-feature -- Event handling
+feature {NONE} -- Event handling
 
 	subscribe_to_clicked_place_event (an_agent: PROCEDURE [ANY, TUPLE [TRAFFIC_PLACE]]) is
 			-- Subscribe `an_agent' to clicked place event
@@ -237,8 +236,6 @@ feature -- Event handling
 					if game.is_game_over then
 						end_game
 					end
-			io.putstring ("gamestate: ")
-			io.putint (game.state)
 				end
 			end
 		end
@@ -259,7 +256,7 @@ feature {NONE} -- Game loop
 			status_before_prepare
 			update_status
 			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
---				center_on_player (game.current_player)
+				game_scene.center_on_player (game.current_player)
 				game.current_player.set_marked
 			end	
 --			main_window.update_player_info_box (game.current_player)
@@ -287,8 +284,8 @@ feature {NONE} -- Game loop
 			no_pause_taken: not paused
 			move_state_set: game.state = game.Move_state
 		do
---				game.current_player.set_unmarked
 				game.move
+				game.last_player.set_unmarked				
 				game_scene.redraw
 		ensure
 			correct_game_state: game.state = game.Prepare_state or game.state = game.Agent_caught or game.state = game.Agent_escapes
@@ -305,214 +302,4 @@ feature {NONE} -- Game loop
 		do
 			take_a_pause (not paused)
 		end
-		
-feature {NONE} -- Implementation
-
-	move_to_center is
-			-- Center map on screen.
-		local
-		do
-			io.put_new_line
-			io.putstring ("map size (width / height): ")
-			io.putint (game_scene.big_map_widget.width)
-			io.putstring (" / ")
-			io.putint(game_scene.big_map_widget.height)
-
---			set_city_displayer (city)
---			if city_displayer /= Void then
---				r := city_displayer.bounding_box
---				create map_center.make ((r.right - r.left)/2, (r.top - r.bottom)/2)
---				canvas_center := client_to_map_coordinates ((main_window.canvas.width/2).floor, (main_window.canvas.height/2).floor)
---				xdiff := map_center.x - canvas_center.x
---				ydiff := map_center.y - canvas_center.y
---				if xdiff /= 0 or ydiff /= 0 then
---					main_window.canvas.go_down (ydiff)
---					main_window.canvas.go_left (xdiff) 
---				end
---			else
---				main_window.canvas.go_right (-100)
---				main_window.canvas.go_down (200)
---			end
-		end
---		
---	center_on_player (p: PLAYER) is
---			-- Center map around `p's position.
---		local
---			xdiff, ydiff: DOUBLE
---			canvas_center: REAL_COORDINATE
---		do
---			if p /= Void then
---				canvas_center := client_to_map_coordinates ((main_window.canvas.width/2).floor, (main_window.canvas.height/2).floor)
---				xdiff := p.location.position.x - canvas_center.x
---				ydiff := p.location.position.y - canvas_center.y
---				if xdiff /= 0 or ydiff /= 0 then
---					main_window.canvas.go_down (ydiff)
---					main_window.canvas.go_left (xdiff) 
---				end
---			end
---		end
---		
---	center_on_current_player is
---			-- Center map around current players position.
---		do
---			if game /= Void then
---				center_on_player (game.current_player)
---			end
---		end
---		
---	toggle_name_display is
---			-- Toggle name display on/off.
---		do
---			if city /= Void then
---				set_city_displayer (city)
---				if city_displayer /= Void then --and main_window.map_loaded then
---					if main_window.name_display_button.is_selected then
---						city_displayer.show_names
---					else
---						city_displayer.hide_names
---					end
---					main_window.canvas.refresh
---				end				
---			end
---		end		
---		
---	add_player_info_boxes (show_always: BOOLEAN) is
---			-- For each player, create a info box and add it to `main_window'.
---		local
---			player: PLAYER
---		do
---			main_window.player_stat_notebook.wipe_out
---			from
---				game.players.start
---			until
---				game.players.after
---			loop
---				player := game.players.item
---				if player /= Void then
---					main_window.add_player_info_box (player)
---					game.players.forth
---				end
---			end
---		end
---
---feature {NONE} -- Process events
---
---	last_cursor_position: REAL_COORDINATE
---			-- Last remembered cursor position
---			
---	process_click (x, y, b: INTEGER; x_t, y_t, p: DOUBLE; 
---			scr_x, scr_y: INTEGER) is
---			-- Clicking on the canvas.
---			-- (For an explanation of arguments look at
---			-- EV_POINTER_BUTTON_ACTION_SEQUENCE).
---		local
---			pt: REAL_COORDINATE
---			place: PLACE
---		do
---			mouse_button := b
---			if city /= Void and then b = 1 then 
---				pt := client_to_map_coordinates (x, y)
---				inspect
---					main_window.mode	
---				when Selection_mode then
---					set_city_displayer (city)
---					place := city_displayer.place_at_coordinate (pt)
---					if place /= Void then
---						if game /= Void then
---							game.set_selected_place (place)
---						end
---					end	
---				when Move_mode then
---					last_cursor_position := pt	
---				else
---					-- Do nothing.					
---				end
---			end
---			if city /= Void and then b = 3 then
---				pt := client_to_map_coordinates (x, y)
---				last_cursor_position := pt
---			end
---		end
---
---	process_motion (x, y: INTEGER; x_t, y_t, p: DOUBLE; 
---			scr_x, scr_y: INTEGER) is
---			-- Move mouse on canvas.
---			-- (For an explanation of arguments look at
---			-- EV_POINTER_MOTION_ACTION_SEQUENCE).
---		local
---			pt: REAL_COORDINATE
---			xdiff: DOUBLE
---			ydiff: DOUBLE
---		do
---			if city /= Void then --and then main_window.map_loaded then -- and main_window.mode = Move_mode then
---				pt := client_to_map_coordinates (x, y)
---				if last_cursor_position = Void then
---					last_cursor_position := pt
---				elseif ((main_window.mode = Move_mode and mouse_button = 1) or mouse_button = 3)  then					
---					xdiff := last_cursor_position.x - pt.x
---					ydiff := last_cursor_position.y - pt.y
---					if xdiff /= 0 or ydiff /= 0 then
---						main_window.canvas.go_down (ydiff)
---						main_window.canvas.go_left (xdiff) 													
---					end
---				end				
---				last_cursor_position := client_to_map_coordinates (x, y)				
---			end
---		end
---		
---	process_release (x, y, b: INTEGER; x_t, y_t, p: DOUBLE; 
---			scr_x, scr_y: INTEGER) is
---			-- Release mouse pointer.
---			-- (For an explanation of arguments look at
---			-- EV_POINTER_BUTTON_ACTION_SEQUENCE.)
---		do
---			if city /= Void then --main_window.map_loaded then
---				mouse_button := 0				
---			end	
---		end
---
---	process_leave_window is
---			-- Leave application window.
---		do
---			process_release (0, 0, 0, 0.0, 0.0, 0.0, 0, 0)
---		end
---
---	process_mouse_wheel (y: INTEGER) is
---			-- Zoom in or out.
---		do
---			if city /= Void  then --main_window.map_loaded then
---				if y > 0 then
---					main_window.canvas.zoom_in (y * Zoom_factor_stepwise)
---				elseif y < 0 then
---					main_window.canvas.zoom_out (y * (-Zoom_factor_stepwise))
---				end
---			end
---		end
---
---	client_to_map_coordinates (x, y: INTEGER): REAL_COORDINATE is
---			-- Map position corresponding to client coordinates (`x', `y')
---		local
---			lx: DOUBLE
---			ly: DOUBLE
---			xperc: DOUBLE
---			yperc: DOUBLE
---			h: INTEGER
---			org: REAL_COORDINATE
---		do
---			lx := x / 1
---			ly := y / 1
---
---			xperc := lx / (main_window.canvas.parent.client_width)
---			h := (main_window.canvas.parent.client_height).max (1)
---			yperc := (h - ly) / h
---
---			org :=main_window.canvas.visible_area.lower_left
---			create Result.make (
---				(org.x + xperc * main_window.canvas.visible_area.width).rounded, 
---				(org.y + yperc * main_window.canvas.visible_area.height).rounded)
---		ensure
---			Result_exists: Result /= Void
---		end
---
-
 end

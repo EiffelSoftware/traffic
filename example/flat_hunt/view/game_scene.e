@@ -206,6 +206,12 @@ feature -- Access
 				redraw
 			end
 		end
+
+	center_on_player (a_player: PLAYER) is
+			-- Center map on `a_player'
+		do
+			big_zoomable_widget.center_on (a_player.position)
+		end
 		
 		
 feature {NONE} -- Implementation

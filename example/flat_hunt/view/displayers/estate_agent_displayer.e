@@ -77,6 +77,9 @@ feature {NONE} -- Implementation
 					surface.draw_object (picture)
 					if player.marked then
 						surface.draw_object (marking_circle)
+						mark_possible_moves
+					else
+						unmark_possible_moves
 					end
 				end
 			end
