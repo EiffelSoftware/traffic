@@ -71,13 +71,15 @@ feature -- Basic operations
 			-- Choose the next move.
 		do
 			if possible_moves.is_empty then
-				flat_hunter_stuck := True
+				flat_hunter_stuck := true
 				possible_moves := Void
 			else
-				flat_hunter_stuck := False
+				flat_hunter_stuck := false
 				brain.choose_next_move (possible_moves, location, estate_agent.location)
 				next_move := brain.chosen_move
 			end
+		ensure then
+--			next_move_selected: (not possible_moves.is_empty) implies (next_move /= Void)
 		end		
 
 invariant

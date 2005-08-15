@@ -43,7 +43,6 @@ feature -- Initialization
 		do
 			game := a_game
 			game_scene := a_game_scene
-			subscribe_outside_event (agent idle_action)
 			create status.make (0)
 		ensure
 			game_set: game = a_game
@@ -51,6 +50,12 @@ feature -- Initialization
 		end
 
 feature -- Game operations
+
+	start is
+			-- Adjust the game settings and start the game.
+		do
+			-- Nothing, redefined in class START
+		end
 
 	start_game is
 			-- Create and start game.
@@ -61,57 +66,25 @@ feature -- Game operations
 		do
 			game.create_players
 			game_scene.create_players_from_list (game.players)
-			game_scene.subscribe_to_clicked_place_event (agent process_clicked_place)			
+			subscribe_to_clicked_place_event (agent process_clicked_place)			
+			subscribe_to_outside_event (agent idle_action)
 			game.start_game
 			status_before_prepare
-			
---			clear_game
---			end_game_called_once := False
---			set_city_displayer (city)
---			game.set_city (city)
---			game.start_game
---			if game.game_mode = Hunt then
---				add_player_info_boxes (False)
---			else 
---				add_player_info_boxes (True)
---			end
---			move_to_center
-			play_called_once := False
-			move_called_once := False
---			idle_actions.extend (idle_action_agent)
+			update_status
+
+			move_to_center
+			play_called_once := false
+			move_called_once := false
 			take_a_pause (false)
 		end
 
-	start is
-			-- Adjust the game settings and start the game.
-		do
-			-- Nothing, redefined in class START
-		end
-
---	clear_game is
---			-- Remove remnants from previous game.
---		do
---			if game /= Void and then game.players /= Void then
---				from
---					game.players.start
---				until
---					game.players.off
---				loop
---					game.players.item.displayer.clear
---					game.players.forth
---				end
---			end
---			idle_actions.prune (idle_action_agent)
---			end_game_called_once := False
---		end
---
---	end_game is
---			-- Display end game text and animation.
---		require
---			game_exists: game /= Void
+	end_game is
+			-- Display end game text, animation and menu when game over.
+		require
+			game_exists: game /= Void
 --		local
 --			i: INTEGER
---		do
+		do
 --			if not end_game_called_once then
 --				end_game_called_once := True
 --				idle_actions.prune (idle_action_agent)
@@ -141,8 +114,8 @@ feature -- Game operations
 --					end
 --				end	
 --			end
---		end		
---
+		end		
+
 
 feature -- Status Report
 
@@ -159,7 +132,6 @@ feature -- Status Report
 				status.extend ("Estate agent escaped!")
 			end			
 			status.extend ("Estate agent: " + game.estate_agent.location.name)
-			update_status
 		end
 		
 	status_before_prepare is
@@ -168,8 +140,7 @@ feature -- Status Report
 			status.wipe_out
 			status.copy (game_scene.player_displayers.i_th (game.current_player_index).statistics)
 			status.put_front ("Status of current player: ")
-			status_overview			
-			update_status
+			status_overview	
 		end
 
 	status_overview is
@@ -180,14 +151,14 @@ feature -- Status Report
 			status.put_front ("Round: " + game.current_round_number.out)
 		end
 
-feature -- Basic Operations
-
 	update_status is
 			-- Update status of current game
 		do
 			game_scene.set_status (status)
-		end
-		
+			if game_scene.screen /= Void then
+				game_scene.redraw
+			end
+		end		
 		
 feature -- Attributes
 
@@ -211,7 +182,13 @@ feature -- Attributes
 
 feature -- Event handling
 
-	subscribe_outside_event (a_procedure: PROCEDURE [ANY, TUPLE]) is
+	subscribe_to_clicked_place_event (an_agent: PROCEDURE [ANY, TUPLE [TRAFFIC_PLACE]]) is
+			-- Subscribe `an_agent' to clicked place event
+		do
+			game_scene.big_map_widget.subscribe_to_clicked_place_event (an_agent)
+		end
+
+	subscribe_to_outside_event (a_procedure: PROCEDURE [ANY, TUPLE]) is
 			-- Subscribe `a_procedure' to `outside_event' of `game_scene'
 		do
 			game_scene.event_loop.outside_event.subscribe (a_procedure)
@@ -220,21 +197,18 @@ feature -- Event handling
 	process_clicked_place (a_place: TRAFFIC_PLACE; a_mouse_event: EM_MOUSEBUTTON_EVENT) is
 			-- 
 		local
-			line_section: TRAFFIC_LINE_SECTION
 			place_renderer: TRAFFIC_PLACE_RENDERER
 		do
 			if a_mouse_event.is_left_button then
+				
 				--Color place red
 				create place_renderer.make_with_map (game.traffic_map)
 				place_renderer.set_place_color (red)
 				game_scene.big_map_widget.set_place_special_renderer (place_renderer, a_place)
+				game.set_selected_place (a_place)
+				
 				--Re-Render the scene for the effects to be visible
 				game_scene.big_map_widget.render
-				
-				idle_action
---				game.prepare
---				game.play
---				game.move
 			end			
 		end	
 			
@@ -243,7 +217,7 @@ feature -- Event handling
 		do
 			if game /= Void then
 				if paused then
-					sleep (50)
+					sleep_and_process (50)
 				else
 					if game.state = game.Prepare_state then
 						prepare
@@ -251,90 +225,46 @@ feature -- Event handling
 					if game.state = game.Play_state then
 						play
 						if game.current_player /= Void and then game.current_player.brain.generating_type.substring (1, 3).is_equal ("BOT") then
-							sleep (1800)
+							sleep_and_process (1800)
 						end
 					end
 					if not paused and game.state = game.Move_state then
 						move
 						if game.last_player /= Void then
-							sleep (1600)
+							sleep_and_process (1600)
 						end
 					end
 					if game.is_game_over then
---						end_game
-					end			
+						end_game
+					end
+			io.putstring ("gamestate: ")
+			io.putint (game.state)
 				end
 			end
 		end
 
+	sleep_and_process (a_time: INTEGER) is
+		do
+			game_scene.event_loop.delay_and_process (a_time)
+		end
+
 feature {NONE} -- Game loop
 
-	sleep (a_time: INTEGER) is
-		do
-			time.delay (a_time)
-		end
-		
---
---	idle_action_agent: PROCEDURE [ANY, TUPLE]
---			-- Idle action agent that will be called whenever the system is idle
---			
-
---
---	sleep_and_process (msec: INTEGER) is
---			-- Sleep for `msec' milliseconds, but still process events.
---		local
---			date: C_DATE
---			passed_ms, last_ms, last_sec, now_ms, now_sec, temp_ms, temp_sec: INTEGER
---		do
---			from				
---				passed_ms := 0
---				create date
---				last_ms := date.millisecond_now
---				last_sec := date.second_now
---			until
---				passed_ms >= msec or is_destroyed
---			loop
---
---				if msec - passed_ms > 100 then
---					sleep (100)					
---				end
---
---				-- Process events.
---				process_events
---								
---				-- Calculate `passed_ms' in milliseconds				
---				create date
---				now_sec := date.second_now
---				now_ms := date.millisecond_now				
---				temp_ms := now_ms - last_ms
---				temp_sec := now_sec - last_sec
---				if temp_sec < 0 then
---					temp_sec := temp_sec + 60
---				end
---				if temp_sec > 0 then
---					temp_ms := temp_ms + temp_sec * 1000
---				end
---				passed_ms := passed_ms + temp_ms				
---				last_ms := now_ms
---				last_sec := now_sec									
---			end
---		end
-	
 	prepare is
 			-- Prepare current player to make a move.
 		require
 			no_pause_taken: not paused
 			game_state_prepare: game.state = game.Prepare_state
 		do
---			game.display_before_prepare
---			main_window.game_stat_text.set_text (game.info_text)
+			status_before_prepare
+			update_status
 			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
 --				center_on_player (game.current_player)
---				game_scene.player_views @ (game.current_player_index).
+				game.current_player.set_marked
 			end	
 --			main_window.update_player_info_box (game.current_player)
---			main_window.canvas.redraw
 			game.prepare
+			game_scene.redraw			
 		ensure
 			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck
 		end		
@@ -345,14 +275,8 @@ feature {NONE} -- Game loop
 			no_pause_taken: not paused
 			game_state_play: game.state = game.Play_state
 		do
-			if not play_called_once then
-				play_called_once := True
---				game.current_player.displayer.display_before_move
---				main_window.update_player_info_box (game.current_player)
---				main_window.canvas.redraw
-			end
 			game.play
-			move_called_once := False
+			game_scene.redraw
 		ensure
 			correct_game_state: game.state = game.Play_state or game.state = game.Move_state
 		end
@@ -363,15 +287,9 @@ feature {NONE} -- Game loop
 			no_pause_taken: not paused
 			move_state_set: game.state = game.Move_state
 		do
-			if not move_called_once then
-				move_called_once := True
+--				game.current_player.set_unmarked
 				game.move
---				game.last_player.displayer.display_after_move
---				main_window.canvas.force_redraw
---				main_window.update_player_info_box (game.last_player)
---				main_window.game_stat_text.set_text (game.info_text)
-				play_called_once := False
-			end
+				game_scene.redraw
 		ensure
 			correct_game_state: game.state = game.Prepare_state or game.state = game.Agent_caught or game.state = game.Agent_escapes
 		end
@@ -388,15 +306,18 @@ feature {NONE} -- Game loop
 			take_a_pause (not paused)
 		end
 		
---feature {NONE} -- Status setting
---
---	move_to_center is
---			-- Center map on screen.
---		local
---			r: EV_RECTANGLE
---			xdiff, ydiff: DOUBLE
---			map_center, canvas_center: REAL_COORDINATE
---		do
+feature {NONE} -- Implementation
+
+	move_to_center is
+			-- Center map on screen.
+		local
+		do
+			io.put_new_line
+			io.putstring ("map size (width / height): ")
+			io.putint (game_scene.big_map_widget.width)
+			io.putstring (" / ")
+			io.putint(game_scene.big_map_widget.height)
+
 --			set_city_displayer (city)
 --			if city_displayer /= Void then
 --				r := city_displayer.bounding_box
@@ -412,7 +333,7 @@ feature {NONE} -- Game loop
 --				main_window.canvas.go_right (-100)
 --				main_window.canvas.go_down (200)
 --			end
---		end
+		end
 --		
 --	center_on_player (p: PLAYER) is
 --			-- Center map around `p's position.

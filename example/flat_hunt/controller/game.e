@@ -17,7 +17,6 @@ feature -- Initialization
 	make is
 			-- Creation procedure.
 		do
-			create info_text.make (0)
 			create checkpoints.make
 			checkpoints.fill (<< 3, 8, 13, 18, 23 >>)
 		end			
@@ -100,24 +99,24 @@ feature -- Status setting
 	
 feature {NONE} -- Status report
 
-	is_occupied (location: TRAFFIC_PLACE): BOOLEAN is
-			-- Check if `location' is occupied by some flat hunter.
+	is_occupied (a_location: TRAFFIC_PLACE): BOOLEAN is
+			-- Check if `a_location' is occupied by some flat hunter.
 		require
-			location_not_void: location /= Void
+			a_location_not_void: a_location /= Void
 		local
 			old_cursor: CURSOR			
 		do
 			-- Remember old cursor position.
 			old_cursor := players.cursor		
 
-			-- Loop over all players to check if one occupies `location'.
+			-- Loop over all players to check if one occupies `a_location'.
 			from
 				players.start
 				players.forth -- do not consider estate agent
 			until
 				players.after or Result
 			loop
-				if players.item.location = location then
+				if players.item.location = a_location then
 					Result := True
 				end
 				players.forth
@@ -170,6 +169,8 @@ feature {MAIN_CONTROLLER} -- Basic operations
 				if current_player = estate_agent then
 					state := Agent_stuck
 				else
+					current_player.set_unmarked
+--					current_player.set_possible_moves (Void)
 					next_turn
 					if not is_game_over then
 						state := Prepare_state
@@ -234,7 +235,6 @@ feature -- Element change
 				estate_agent.set_last_visible_location
 			end
 			if game_mode /= Hunt or is_game_over or checkpoints.has (current_round_number) then
---			if is_game_over or checkpoints.has (current_round_number) then
 				estate_agent.set_visible (true)
 			else
 				estate_agent.set_visible (false)

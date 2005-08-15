@@ -71,6 +71,7 @@ feature {NONE} -- Implementation
 	draw (surface: EM_SURFACE) is
 			-- Draw 'Current' onto `surf'.
 		do
+			update_position
 			if player.is_visible then
 				if picture /= Void then
 					surface.draw_object (picture)

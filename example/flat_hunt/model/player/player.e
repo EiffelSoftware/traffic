@@ -82,7 +82,7 @@ feature {NONE} -- Constants
 	Default_bot_tickets: INTEGER is 23
 			-- Number of tickets at the beginning for bots.
 
-feature {GAME} -- Status setting
+feature {GAME, MAIN_CONTROLLER} -- Status setting
 
 	set_possible_moves (a_list: LINKED_LIST [TRAFFIC_LINE_SECTION]) is
 			-- Set `possible_moves' to `a_list'.
@@ -186,7 +186,10 @@ feature -- Basic operations
 		require
 		do
 			decrease_ticket_count (next_move)
-			move_to (next_move.destination)
+--			move_to (next_move.destination)
+			old_location := location
+			location := next_move.destination
+			position := location.position.twin
 		ensure
 		end		
 
@@ -213,72 +216,150 @@ feature -- Basic operations
 			
 			-- Animate if there is a running scene.
 			if shared_scene.running_scene /= Void then	
-			
-				from
-					possible_moves.start
-				until
-					possible_moves.after or else possible_moves.item.destination = a_location
-				loop
-					possible_moves.forth
+				
+				polypoints := next_move.polypoints
+					
+				if polypoints = Void or else polypoints.count < 2 then  -- TODO: Only necessary because of bug in TRAFFIC_LINE_SECTION ??
+					create polypoints.make (2)
+					polypoints.extend (next_move.origin.position)
+					polypoints.extend (next_move.destination.position)						
 				end
 				
-				if not possible_moves.after then
-					
-					polypoints := possible_moves.item.polypoints
-					
-					if polypoints = Void or else polypoints.count < 2 then  -- TODO: Only necessary because of bug in TRAFFIC_LINE_SECTION ??
-						create polypoints.make (2)
-						polypoints.extend (possible_moves.item.origin.position)
-						polypoints.extend (possible_moves.item.destination.position)						
+				-- Set parmeter for animation			
+				length := next_move.length
+				speed := 100 -- meter per second
+				
+				-- Perform move animation.
+				from
+					pos := 0
+					point_index := 1
+					point_pos := 0
+				until
+					pos > length or else point_index > polypoints.count
+				loop
+								
+					-- Calculate `delta_time' to perform move step.
+					last_time := now_time
+					now_time := time.ticks
+					delta_time := now_time - last_time
+					if delta_time < 0 then
+						delta_time := 0	
 					end
-				
-					-- Set parmeter for animation			
-					length := possible_moves.item.length
-					speed := 100 -- meter per second
-				
-					-- Perform move animation.
-					from
-						pos := 0
-						point_index := 1
-						point_pos := 0
+					
+					-- Calculate new `pos' inbetween the two locations
+					pos := pos + delta_time * speed / 1000
+					
+					-- Calculate `position' from polypoints.
+					from					
+						p1 := polypoints.i_th (point_index)
+						p2 := polypoints.i_th (point_index + 1)
+						dist := p2 - p1					
 					until
-						pos > length or else point_index > polypoints.count
-					loop
-									
-						-- Calculate `delta_time' to perform move step.
-						last_time := now_time
-						now_time := time.ticks
-						delta_time := now_time - last_time
-						if delta_time < 0 then
-							delta_time := 0	
-						end
-						
-						-- Calculate new `pos' inbetween the two locations
-						pos := pos + delta_time * speed / 1000
-						
-						-- Calculate `position' from polypoints.
-						from					
-							p1 := polypoints.i_th (point_index)
-							p2 := polypoints.i_th (point_index + 1)
-							dist := p2 - p1					
-						until
-							pos > length or else pos < point_pos + dist.length
-						loop					
-							point_pos := point_pos + dist.length
-							point_index := point_index + 1			
-							p1 := polypoints.i_th (point_index)
-							p2 := polypoints.i_th (point_index + 1)
-							dist := p2 - p1				
-						end		
-						dist.scale_to (pos - point_pos)
-						position := p1 + dist
-						
-						
-						-- Give system some time too redraw views.
-						shared_scene.running_scene.event_loop.process_events
-					end					
+						pos > length or else pos < point_pos + dist.length
+					loop					
+						point_pos := point_pos + dist.length
+						point_index := point_index + 1			
+						p1 := polypoints.i_th (point_index)
+						p2 := polypoints.i_th (point_index + 1)
+						dist := p2 - p1				
+					end		
+					dist.scale_to (pos - point_pos)
+					position := p1 + dist
+
+					-- Give system some time too redraw views.
+					shared_scene.running_scene.event_loop.process_events
 				end			
 			end
+
+--	move_to (a_location: TRAFFIC_PLACE) is
+--			-- 
+--		require
+--			a_location_is_different: location /= a_location
+--			a_location_is_reachable: possible_moves.there_exists (agent has_location(?, a_location))
+--		local
+--			last_time, now_time, delta_time: INTEGER
+--			shared_scene: EM_SHARED_SCENE			
+--			polypoints: ARRAYED_LIST [EM_VECTOR_2D]
+--			point_index: INTEGER
+--			length, speed, pos, point_pos: DOUBLE
+--			p1, p2, dist: EM_VECTOR_2D
+--		do
+--			old_location := location
+--			
+--			-- Get time when move started (used for animation)
+--			now_time := time.ticks
+--			
+--			-- Get running scene.
+--			create shared_scene
+--			
+--			-- Animate if there is a running scene.
+--			if shared_scene.running_scene /= Void then	
+--			
+--				from
+--					possible_moves.start
+--				until
+--					possible_moves.after or else possible_moves.item.destination = a_location
+--				loop
+--					possible_moves.forth
+--				end
+--				
+--				if not possible_moves.after then
+--					
+--					polypoints := possible_moves.item.polypoints
+--					
+--					if polypoints = Void or else polypoints.count < 2 then  -- TODO: Only necessary because of bug in TRAFFIC_LINE_SECTION ??
+--						create polypoints.make (2)
+--						polypoints.extend (possible_moves.item.origin.position)
+--						polypoints.extend (possible_moves.item.destination.position)						
+--					end
+--				
+--					-- Set parmeter for animation			
+--					length := possible_moves.item.length
+--					speed := 100 -- meter per second
+--				
+--					-- Perform move animation.
+--					from
+--						pos := 0
+--						point_index := 1
+--						point_pos := 0
+--					until
+--						pos > length or else point_index > polypoints.count
+--					loop
+--									
+--						-- Calculate `delta_time' to perform move step.
+--						last_time := now_time
+--						now_time := time.ticks
+--						delta_time := now_time - last_time
+--						if delta_time < 0 then
+--							delta_time := 0	
+--						end
+--						
+--						-- Calculate new `pos' inbetween the two locations
+--						pos := pos + delta_time * speed / 1000
+--						
+--						-- Calculate `position' from polypoints.
+--						from					
+--							p1 := polypoints.i_th (point_index)
+--							p2 := polypoints.i_th (point_index + 1)
+--							dist := p2 - p1					
+--						until
+--							pos > length or else pos < point_pos + dist.length
+--						loop					
+--							point_pos := point_pos + dist.length
+--							point_index := point_index + 1			
+--							p1 := polypoints.i_th (point_index)
+--							p2 := polypoints.i_th (point_index + 1)
+--							dist := p2 - p1				
+--						end		
+--						dist.scale_to (pos - point_pos)
+--						position := p1 + dist
+--						
+--						
+--						-- Give system some time too redraw views.
+--						shared_scene.running_scene.event_loop.process_events
+--					end					
+--				end			
+--			end
 			
 			-- Update new `location' and `position'.
 			location := a_location

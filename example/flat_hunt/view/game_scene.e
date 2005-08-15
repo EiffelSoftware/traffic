@@ -9,7 +9,7 @@ class
 inherit 
 	FLAT_HUNT_SCENE
 		redefine
-			handle_key_down_event, handle_outside_event
+			handle_key_down_event
 		end
 	
 	TRAFFIC_TYPE_FACTORY   -- Singleton traffic types
@@ -348,12 +348,6 @@ feature {MAIN_CONTROLLER} -- Event Handling
 			end
 		end
 		
-	handle_outside_event is
-		do
-			Precursor
-			
-		end
-		
 	process_clicked_player_button (a_button: BUTTON) is
 			-- User clicked on a player button
 		require
@@ -373,30 +367,6 @@ feature {MAIN_CONTROLLER} -- Event Handling
 				player_status_box.add_lines (tmp_player_displayer.statistics)
 			end
 			redraw
-		end
-
-	process_clicked_place (place: TRAFFIC_PLACE; m_event: EM_MOUSEBUTTON_EVENT) is
-			-- 
-		local
-			link: TRAFFIC_LINE_SECTION
-			place_renderer: TRAFFIC_PLACE_RENDERER
-		do
-			if m_event.is_left_button then
-				--Color Place Yellow
-				create place_renderer.make_with_map (traffic_map)
-				place_renderer.set_place_color (Yellow)
-				big_map_widget.set_place_special_renderer (place_renderer, place)
-				--Re-Render the Scene for the effects to be visible
-				big_map_widget.render
-				--Set info Text
---				place_info_text.set_value (place.name)
-			end			
-		end	
-
-	subscribe_to_clicked_place_event (an_agent: PROCEDURE [ANY, TUPLE [TRAFFIC_PLACE]]) is
-			-- Subscribe `an_agent' to clicked place event
-		do
-			big_map_widget.subscribe_to_clicked_place_event (an_agent)
 		end
 
 invariant

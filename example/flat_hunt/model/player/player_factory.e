@@ -48,7 +48,7 @@ feature -- Initialization
 			loop
 				calculate_random_place
 				if random_place /= Void then
-					create flat_hunter.make(map, random_place, estate_agent, flat_hunters_bot, "Hunter " + (i-1).out)
+					create flat_hunter.make (map, random_place, estate_agent, flat_hunters_bot, "Hunter " + (i-1).out)
 					players.extend (flat_hunter)				
 				end
 				i := i + 1

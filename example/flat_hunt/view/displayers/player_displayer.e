@@ -152,12 +152,13 @@ feature -- Access
 	draw (surface: EM_SURFACE) is
 			-- Draw 'Current' onto `surf'.
 		do
+			update_position
 			if picture /= Void then
 				surface.draw_object (picture)
 			end
 			if player.marked then
 				surface.draw_object (marking_circle)
-				mark_possible_moves
+--				mark_possible_moves
 --			elseif traffic_map /= Void then
 --				unmark_possible_moves
 			end
@@ -229,7 +230,7 @@ feature {NONE} -- Implementation
 		local
 			place_renderer: TRAFFIC_PLACE_RENDERER
 		do
-			-- Set place color for possible moves to yellow
+			-- Reset place color
 			create place_renderer.make_with_map (traffic_map)
 			place_renderer.set_place_color (Blue)
 			from
