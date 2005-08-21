@@ -40,9 +40,9 @@
         privacy reasons, only the type of transport can be accessed all the time.
     </para>
     <para>
-        Once in a while, the estate agent (Figure 2) calls his office to tell the secretary which flat he is currently visiting. So
+	    Once in a while, the estate agent (<emphasis>Figure 2</emphasis>) calls his office to tell the secretary which flat he is currently visiting. So
         sometimes, the people there in the office can tell "you" where to look for him… "You" meaning
-        yourself and your friends (Figure 3), the guys you want to share the flat with…
+	yourself and your friends (<emphasis>Figure 3</emphasis>), the guys you want to share the flat with…
     </para>
     
     <para>
@@ -56,7 +56,7 @@
                 </imageobject>                
             </imageobjectco>
         </mediaobjectco>
-        Figure 2: Estate agent 
+	<emphasis>Figure 2: Estate agent </emphasis>
         <mediaobjectco>
             <imageobjectco>
                 <areaspec>
@@ -67,7 +67,7 @@
                 </imageobject>                
             </imageobjectco>
         </mediaobjectco>
-        Figure 3: You and friends
+	<emphasis>Figure 3: You and friends</emphasis>
     </para>
     
 </chapter>

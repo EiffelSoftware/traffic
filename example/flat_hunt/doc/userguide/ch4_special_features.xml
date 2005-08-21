@@ -68,7 +68,7 @@
                 </varlistentry>
             </variablelist>
         </blockquote> When you <emphasis>left click + move mouse</emphasis> in the little map, a
-        light green rectangle is drawn between the point where your left mouse button is pressed
+        red rectangle is drawn between the point where your left mouse button is pressed
         down and the point when its released. As soon as you release the mouse button, the map
         segment that is inside this rectangle gets displayed on the big map. </section>
     <section id="music_player">

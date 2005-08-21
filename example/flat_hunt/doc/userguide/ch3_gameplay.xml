@@ -70,19 +70,47 @@
                 </listitem>
             </itemizedlist>
         </para>
-        <para> A move with a certain transport can only be made if one has still enough tickets (see
-            Figure 4), if there is a connection (obviously), and if there is no other player at that
+	<para> A move with a certain transport can only be made if one has still enough tickets (<emphasis>see
+			Figure 4</emphasis>), if there is a connection (obviously), and if there is no other player at that
             destination (and in the case of tram lines, if there is no hunter in between). </para>
         <para>
             <warning>Attention: If you are at a bus-only stop, and you run out of bus tickets, you
                 will get stuck there forever, so be careful...</warning>
-        </para>
-        <para> The possible places you can move to are colored yellow (see Figure 5). To make a
+</para>
+    <para>
+        <mediaobjectco>
+            <imageobjectco>
+                <areaspec>
+                    <area />
+                </areaspec>
+                <imageobject>
+                    <imagedata fileref="pic/ticket_status.png"></imagedata>
+                </imageobject>
+            </imageobjectco>
+        </mediaobjectco>
+	<emphasis>Figure 4: Ticket status</emphasis>
+    </para>
+    <para> The possible places you can move to are colored yellow (<emphasis>see Figure 5</emphasis>). To make a
             move, just click on one of those highlighted places. The red circle centers on the
             player whose turn it is, and in the status box at the right, the game status and
             information about the current player get displayed. If you want to know the status of
             another player just click on his picture at the bottom. Click again to close the just
-            opened status box.</para>
+	    opened status box.</para>
+    <para>
+        <mediaobjectco>
+            <imageobjectco>
+                <areaspec>
+                    <area />
+                </areaspec>
+                <imageobject>
+                    <imagedata fileref="pic/highlighted_places.png"></imagedata>
+                </imageobject>                
+            </imageobjectco>
+        </mediaobjectco>
+	<emphasis>Figure 5: Highlighted places</emphasis>
+</para>
+
+    
         <para> The game is over when <blockquote>
                 <variablelist>
                     <varlistentry>
@@ -113,9 +141,8 @@
         <para>
             <emphasis>Hunt</emphasis>: This is probably the most typical situation; the player tries
             to find the agent, which is played by the computer. Thus, the player only knows about
-            every fifth move where the agent just was... The exact route of the agent can be seen at
-            the bottom left (see Figure 6). The agent shows himself only in rounds number 1, 3, 8,
-            13, 18, and 23. </para>
+	    every fifth move where the agent just was... The agent shows himself only in rounds number 1, 3, 8,
+	    13, 18, and 23. In these rounds, the exact route of the agent is displayed under <emphasis>History</emphasis> in the status box at the bottom right corner and in the estate agent's own status box if opened. In all other rounds only the types of the transportation means he has taken so far are listed there.</para>
         <para>
             <emphasis>Escape</emphasis>: This is the exact opposite of <emphasis>Hunt
             mode</emphasis>: The agent is played by you, and the hunters are played by the computer.
@@ -135,13 +162,28 @@
     <section id="other">
         <title>Other</title>
         <para> When you run <projectname>Flat Hunt</projectname>, the first you'll see is a menu
-            (see Figure 7). You can either let the default options in place and just select
+		(<emphasis>see Figure 6</emphasis>). You can either let the default options in place and just select
                 <emphasis>start game</emphasis> or you can adjust the settings to your needs.
                 <emphasis>Game mode</emphasis> is explained in the <indexlink url="#game_modes"
                 >previous section</indexlink>, <emphasis>number of hunters</emphasis> and
                 <emphasis>map size</emphasis> should be self-explanatory and
             <emphasis>characters</emphasis> specifies which pictures to use for the players. To
-            toggle between the settings menu and the normal menu press <emphasis>tab</emphasis>.</para>
+	    toggle between the settings menu and the normal menu press <emphasis>tab</emphasis>.</para>
+
+        <para>
+        <mediaobjectco>
+            <imageobjectco>
+                <areaspec>
+                    <area />
+                </areaspec>
+                <imageobject>
+                    <imagedata fileref="pic/settings_screenshot.png"></imagedata>
+                </imageobject>                
+            </imageobjectco>
+        </mediaobjectco>
+	<emphasis>Figure 6: Screenshot of the start menu</emphasis>
+</para>
+
         <para>During the game when you press <emphasis>p</emphasis>, the pause menu is shown.
                 <emphasis>Continue</emphasis> makes the pause menu disappear and lets you resume the
             game, <emphasis>new game</emphasis> takes you to the start menu and
