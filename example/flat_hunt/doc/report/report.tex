@@ -25,8 +25,13 @@ colorlinks%
 %\pdfadjustspacing=1
 
 \begin{document}
+
+  \pdfbookmark[1]{Title Page}{prea}
   \maketitle
+
+  \pdfbookmark[1]{Table of Contents}{toc}
   \tableofcontents
+  
   \pagebreak
 
   \section{Introduction}
@@ -37,6 +42,9 @@ colorlinks%
     \input{esdl_extensions}
   \section{Thanks}
     \input{thanks}    
+
+  \pdfbookmark[1]{References}{ref}
+  \hyperref[ref]{}
   \input{references}
     
   \pagebreak
