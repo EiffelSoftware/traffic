@@ -24,8 +24,8 @@
     </chapterinfo>
     <title>Chapter 3: Gameplay</title>
     <para>
-        <emphasis>Playing FLAT_HUNT is not very difficult, especially for those that know the game
-            "Scotland Yard"…</emphasis>
+        <emphasis>Playing <projectname>Flat Hunt</projectname> is not very difficult, especially for
+            those that know the game "Scotland Yard"…</emphasis>
     </para>
     <para> This chapter is structured in three sections. The first section describes the general
         rules of the game. Then the different modes are explained more precisely. The last section
@@ -54,19 +54,19 @@
         <para> The game lasts for at most 23 rounds. In these 23 rounds, the flat hunters try to
             find the estate agent, while he tries to avoid them (this is because he would rather
             rent the flats to elderly couples, since presumably they make fewer parties in the
-            middle of the night…). </para>
+            middle of the night...). </para>
         <para> In each round, every player can make one move on the public transport system. The
-            estate agent is the first, then it’s the hunters turn. One move is either </para>
+            estate agent is the first, then it's the hunters turn. One move is either </para>
         <para>
             <itemizedlist>
                 <listitem>
                     <para> one or two stops by tram (colored lines), </para>
                 </listitem>
                 <listitem>
-                    <para> one stop by train (thick black lines), </para>
+                    <para> one stop by train (thick orange lines), </para>
                 </listitem>
                 <listitem>
-                    <para> or one stop by bus (thin dashed blue lines). </para>
+                    <para> or one stop by bus (thin light blue lines). </para>
                 </listitem>
             </itemizedlist>
         </para>
@@ -75,12 +75,14 @@
             destination (and in the case of tram lines, if there is no hunter in between). </para>
         <para>
             <warning>Attention: If you are at a bus-only stop, and you run out of bus tickets, you
-                will get stuck there forever, so be careful…</warning>
+                will get stuck there forever, so be careful...</warning>
         </para>
-        <para> The possible places one can move to have a blue highlighted outline (see Figure 5).
-            To make a move, just click on one of those highlighted places. The red circle centers on
-            the player whose turn it is, and in the information panel at the bottom, the current
-            player’s tab is highlighted and you can see the player’s image. </para>
+        <para> The possible places you can move to are colored yellow (see Figure 5). To make a
+            move, just click on one of those highlighted places. The red circle centers on the
+            player whose turn it is, and in the status box at the right, the game status and
+            information about the current player get displayed. If you want to know the status of
+            another player just click on his picture at the bottom. Click again to close the just
+            opened status box.</para>
         <para> The game is over when <blockquote>
                 <variablelist>
                     <varlistentry>
@@ -111,7 +113,7 @@
         <para>
             <emphasis>Hunt</emphasis>: This is probably the most typical situation; the player tries
             to find the agent, which is played by the computer. Thus, the player only knows about
-            every fifth move where the agent just was… The exact route of the agent can be seen at
+            every fifth move where the agent just was... The exact route of the agent can be seen at
             the bottom left (see Figure 6). The agent shows himself only in rounds number 1, 3, 8,
             13, 18, and 23. </para>
         <para>
@@ -119,18 +121,32 @@
             mode</emphasis>: The agent is played by you, and the hunters are played by the computer.
             The hunters always move as close in your direction as possible, as they somehow manage
             to decode your transponder signal, and thus always know your precise location (so much
-            for privacy…). You just have to try to avoid them as long as possible… </para>
+            for privacy...). You just have to try to avoid them as long as possible... </para>
         <para>
             <emphasis>Versus</emphasis>: This is the multiplayer mode. One of the players is the
             agent; the other plays all the hunters. While the player of the agent is making a move,
-            the player of the hunters is supposed to look away… </para>
+            the player of the hunters is supposed to look away... </para>
         <para>
             <emphasis>Demo</emphasis>: This mode is more or less the opposite of the buzzword
-            “interactive”, but is about as entertaining as watching fish in an aquarium. The
+            "interactive", but is about as entertaining as watching fish in an aquarium. The
             computer is playing against himself, trying to catch the agent as fast as possible.
         </para>
     </section>
     <section id="other">
         <title>Other</title>
+        <para> When you run <projectname>Flat Hunt</projectname>, the first you'll see is a menu
+            (see Figure 7). You can either let the default options in place and just select
+                <emphasis>start game</emphasis> or you can adjust the settings to your needs.
+                <emphasis>Game mode</emphasis> is explained in the <indexlink url="#game_modes"
+                >previous section</indexlink>, <emphasis>number of hunters</emphasis> and
+                <emphasis>map size</emphasis> should be self-explanatory and
+            <emphasis>characters</emphasis> specifies which pictures to use for the players. To
+            toggle between the settings menu and the normal menu press <emphasis>tab</emphasis>.</para>
+        <para>During the game when you press <emphasis>p</emphasis>, the pause menu is shown.
+                <emphasis>Continue</emphasis> makes the pause menu disappear and lets you resume the
+            game, <emphasis>new game</emphasis> takes you to the start menu and
+            <emphasis>quit</emphasis> quits the application.</para>
+        <para>The game over menu is similar to the pause menu, only there is no
+            <emphasis>continue</emphasis> in this one.</para>
     </section>
 </chapter>
