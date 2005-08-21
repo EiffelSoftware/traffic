@@ -25,12 +25,17 @@ colorlinks%
 %\pdfadjustspacing=1
 
 \begin{document}
+  \pdfbookmark[1]{Title Page}{prea}
   \maketitle
+  
+  \pdfbookmark[1]{Table of Contents}{toc}
   \tableofcontents
+  
   \pagebreak
 
   \input{user_guide_text}
-  
+ 
+
   \section{Introduction}
     \input{introduction.tex}
   \section{The Story}
@@ -41,6 +46,8 @@ colorlinks%
     \input{special_features.tex}
   \section{Legal Stuff and Thanks}
     \input{legal_and_thanks.tex}
+    \pdfbookmark[1]{References}{ugref}
+    \hyperref[ugref]{}    
     \input{references.tex}
     
 \end{document}
