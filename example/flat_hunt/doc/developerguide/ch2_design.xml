@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"Developer guide for Flat Hunt"
+
+	copyright: "Copyright (c) 2005, Ursina Caluori"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer_guide/design">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Ursina Caluori</holder>
+        </copyright>
+        <author>
+            <firstname>Ursina</firstname>
+            <surname>Caluori</surname>
+        </author>
+        <email>ucaluori@student.ethz.ch</email>
+        <date>6 August 2005</date>
+    </chapterinfo>
+    <title>Chapter 2: Design</title>
+    <para>
+        <emphasis>This and the following chapter should help you understand how the
+                <projectname>Flat Hunt</projectname> software is structured. This chapter will give
+            you an overview of the whole system organization and then provide an insight to some
+            important classes. It is structured as follows:</emphasis>
+    </para>
+    <para>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    <indexlink url="#overview">Overview</indexlink>
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <indexlink url="#controller">Controller cluster</indexlink>
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <indexlink url="#model">Model cluster</indexlink>
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <indexlink url="#view">View cluster</indexlink>
+                </para>
+	    </listitem>
+            <listitem>
+                <para>
+                    <indexlink url="#other">Other</indexlink>
+                </para>
+            </listitem>
+	
+        </itemizedlist>
+    </para>
+    <section id="overview">
+        <title>Overview</title>
+        <para> When opening <projectname>Flat Hunt</projectname> in EiffelStudio, the cluster view
+            in the bottom left corner of EiffelStudio shows many clusters. For you only the
+            top-level clusters <libraryname>Traffic</libraryname> and
+            <projectname>Flat_hunt</projectname> are important.</para>
+        <para> To remove complexity, <projectname>Flat Hunt</projectname> is structured in three
+            clusters (see Figure 1): <emphasis>Model</emphasis>, <emphasis>View</emphasis> and
+                <emphasis>Controller</emphasis>. In each cluster, there are several classes, and
+            sometimes there are subclusters. </para>
+    </section>
+    
+    <section id="controller">
+        <title>Controller cluster</title>
+        <para> Cluster Controller is the fundamental cluster in <projectname>Flat
+            Hunt</projectname>. Here are the classes that "control" the actions. They make sure that
+            the displayer classes in cluster <emphasis>View</emphasis> display the proper
+            information, which they get from the <emphasis>Model</emphasis> classes. For example,
+            feature <featurename>prepare</featurename> in class <classname>GAME</classname> controls
+            the display update by calling
+            <featurename>current_player.displayer.display_after_move</featurename>. </para>
+    </section>
+    <section id="model">
+        <title>Model cluster</title>
+        <para> In the cluster <emphasis>Model</emphasis>, there are two important parent classes:
+            Class <classname>PLAYER</classname> and class <classname>BRAIN</classname>.
+                <classname>PLAYER</classname> is the parent of <classname>FLAT_HUNTER</classname>
+            and <classname>ESTATE_AGENT</classname>, and <classname>BRAIN</classname> is the parent
+            of <classname>HUMAN</classname>, <classname>FLAT_HUNTER_BOT</classname> and
+                <classname>ESTATE_AGENT_BOT</classname>. These <emphasis>Model</emphasis> classes
+            describe the internal representation of “real world” objects. Here is a description of
+            some of these classes.</para>
+    </section>
+    <section id="view">
+        <title>View cluster</title>
+        <para> This clusters job is to make sure that the user sees what is going on. It includes
+            all scenes and menus, as well as displayers for the game players and status information.
+        </para>
+    </section>
+    <section id="other">
+	<title>Other</title>
+    </section>
+</chapter>

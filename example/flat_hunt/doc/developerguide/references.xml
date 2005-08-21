@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"Developer guide for Flat Hunt"
+
+	copyright: "Copyright (c) 2005, Ursina Caluori"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer_guide/references">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Ursina Caluori</holder>
+        </copyright>
+        <author>
+            <firstname>Ursina</firstname>
+            <surname>Caluori</surname>
+        </author>
+        <email>ucaluori@student.ethz.ch</email>
+        <date>6 August 2005</date>
+    </chapterinfo>
+    <title>References</title>
+    <para>
+        <blockquote>
+            <variablelist>
+                <varlistentry>
+                    <term>[rk05] Roger Küng. <emphasis>Touch User Guide</emphasis>. ETH Zurich, 2005. </term>
+                    <listitem>
+                        <ulink url="http://se.inf.ethz.ch/projects/roger_kueng"
+                            >http://se.inf.ethz.ch/projects/roger_kueng</ulink>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>[sa05] Sibylle Aregger. <emphasis>Redesign of the
+                            <libraryname>TRAFFIC</libraryname> library</emphasis>. ETH Zurich, 2005. </term>
+                    <listitem>
+                        <ulink url="http://se.inf.ethz.ch/projects/sibylle_aregger"
+                            >http://se.inf.ethz.ch/projects/sibylle_aregger</ulink>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>[rb05] Rolf Bruderer. <emphasis>Object-Oriented Framework for Teaching
+                            Introductory Programming</emphasis>. ETH Zurich, 2005. </term>
+                    <listitem>
+                        <ulink url="http://se.inf.ethz.ch/projects/rolf_bruderer"
+                            >http://se.inf.ethz.ch/projects/rolf_bruderer</ulink>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>[mk04] Marcel Kessler. <emphasis>Exercise Design for Introductory
+                            Programming. "Learn-by-doing" basic OO-concepts using Inverted
+                            Curriculum</emphasis>. ETH Zurich, 2004.</term>
+                    <listitem>
+                        <ulink url="http://se.inf.ethz.ch/projects/marcel_kessler"
+                            >http://se.inf.ethz.ch/projects/marcel_kessler</ulink>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>[bb04] Benno Baumgartner. <emphasis> ESDL - Eiffel Simple Direct Media
+                            Library</emphasis>. ETH Zurich, 2004.</term>
+                    <listitem>
+                        <ulink url="http://se.inf.ethz.ch/projects/benno_baumgartner"
+                            >http://se.inf.ethz.ch/projects/benno_baumgartner</ulink>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>[tgb03] Till G. Bay. <emphasis>Eiffel SDL Multimedia Library
+                        (ESDL)</emphasis>. ETH Zurich, 2003.</term>
+                    <listitem>
+                        <ulink url="http://se.inf.ethz.ch/projects/till_bay"
+                            >http://se.inf.ethz.ch/projects/till_bay</ulink>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </blockquote>
+    </para>
+</chapter>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"Developer guide for Flat Hunt"
+
+	copyright: "Copyright (c) 2005, Ursina Caluori"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer_guide/states">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Ursina Caluori</holder>
+        </copyright>
+        <author>
+            <firstname>Ursina</firstname>
+            <surname>Caluori</surname>
+        </author>
+        <email>ucaluori@student.ethz.ch</email>
+        <date>6 August 2005</date>
+    </chapterinfo>
+    <title>Chapter 4: Guided "Walk-Through"</title>
+    <para> What happens when you start <projectname>Flat Hunt</projectname>? In this last chapter we
+        will go step-by-step through a typical <projectname>Flat Hunt</projectname> game. However,
+        because there are lots of details involved, we concentrate on the more important steps… </para>
+    <para>
+        <orderedlist>
+            <listitem>
+                <para> A call to <featurename>start_game</featurename> in
+                    <classname>MAIN_CONTROLLER</classname> creates a game of the proper gaming mode
+                    by calling <featurename>game.make</featurename>. </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <featurename>make</featurename> in class <classname>GAME</classname> creates the
+                    players using class <classname>PLAYER_FACTORY</classname> and sets the game
+                    state to <emphasis>Prepare</emphasis>. </para>
+            </listitem>
+            <listitem>
+                <para> In class <classname>PLAYER_FACTORY</classname>, for example the estate agent
+                    is created using <featurename>estate_agent.make</featurename> in feature
+                        <featurename>build_players</featurename>. </para>
+            </listitem>
+            <listitem>
+                <para> This creates a <classname>HUMAN</classname>,
+                    <classname>FLAT_HUNTER_BOT</classname> or
+                    <classname>ESTATE_AGENT_BOT</classname> brain depending on the value of
+                    <featurename>bot_estate_agent</featurename>. </para>
+            </listitem>
+            <listitem>
+                <para> Back to class <classname>MAIN_CONTROLLER</classname>: Feature idle_action gets called whenever
+                    nothing is going on, i.e. now. idle_action checks whether the game is in one of
+                    the three game loop states, and calls the corresponding feature in class
+                    MAIN_CONTROLLER. In the first run, this is prepare… </para>
+            </listitem>
+            <listitem>
+                <para> …which centers the city map on game.current_player and then calls
+                    game.prepare. </para>
+            </listitem>
+            <listitem>
+                <para> prepare of class GAME first calculates the estate agents possible moves (see
+                    also Section “Cluster City”). If there are no possible moves
+                    (current_player.possible_moves.is_empty) then it’s either the next player’s turn
+                    or the state is set to Agent_stuck. Otherwise it’s state := Play_state. </para>
+            </listitem>
+            <listitem>
+                <para> With that, the call to prepare (Step 5) comes to an end and control goes back
+                    to feature idle_action of class MAIN_CONTROLLER. According to the present state,
+                    idle_action will now call play which then calls game.play. </para>
+            </listitem>
+            <listitem>
+                <para> This calls current_player.play (place), where place is the last place the
+                    user clicked on. place is then passed on to class BRAIN. </para>
+            </listitem>
+            <listitem>
+                <para> choose_move in class PLAYER is deferred, which means that choose_move of
+                    class ESTATE_AGENT or FLAT_HUNTER gets called, depending on whether the current
+                    player is a hunter or an agent. </para>
+            </listitem>
+            <listitem>
+                <para> FLAT_HUNTERs choose_move calls choose_estate_agent_move on class BRAIN.
+                </para>
+            </listitem>
+        </orderedlist>
+    </para>
+</chapter>
