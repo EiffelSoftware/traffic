@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"User guide for Flat Hunt"
+
+	copyright: "Copyright (c) 2005, Ursina Caluori"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="user_guide/legal_and_thanks">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Ursina Caluori</holder>
+        </copyright>
+        <author>
+            <firstname>Ursina</firstname>
+            <surname>Caluori</surname>
+        </author>
+        <email>ucaluori@student.ethz.ch</email>
+        <date>5 August 2005</date>
+    </chapterinfo>
+    <title>Legal Stuff and Thanks</title>
+    <para> This document is based upon its prior version, which was written by Michela Pedroni and
+        Marcel Kessler (thanks!). </para>
+    <para> All graphics for the game were designed by me and Photoshop. </para>
+    <para> Thanks to Michela Pedroni for her assistance, all my predecessors for their work, Till G.
+        Bay (and others) for the <libraryname>EiffelMedia</libraryname> (formerly
+        <libraryname>ESDL</libraryname>) Library and Bertrand Meyer for the
+        <libraryname>Eiffel</libraryname> language. </para>
+</chapter>
