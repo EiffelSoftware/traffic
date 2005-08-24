@@ -154,7 +154,7 @@ feature -- Line section building
 			line_section_has_type: equal (line_section.type, a_line.type)
 			line_section_has_origin: line_section.origin = a_map.place (a_origin)
 			line_section_has_destination: line_section.destination = a_map.place (a_destination)
-			line_section_in_map: map.has_line_section (a_origin, a_destination, a_line.type, a_line)
+			line_section_in_map: a_map.has_line_section (a_origin, a_destination, a_line.type, a_line)
 		end
 
 	line_section: TRAFFIC_LINE_SECTION is
@@ -195,7 +195,7 @@ feature -- Traffic line building
 			line_created: line /= Void
 			line_has_name: equal (line.name, a_name)
 			line_has_type: equal (line.type.name, a_type_name)
-			line_in_map: map.has_line (a_name)
+			line_in_map: a_map.has_line (a_name)
 		end
 
 	line: TRAFFIC_LINE is
@@ -239,7 +239,7 @@ feature -- Traffic simple line building
 			simple_line_in_map: a_map.has_line (a_name)
 		end
 
-	simple_line: TRAFFIC_LINE is
+	simple_line: TRAFFIC_SIMPLE_LINE is
 			-- Generated traffic simple line object.
 		require
 			simple_line_available: has_simple_line

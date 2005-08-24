@@ -9,6 +9,7 @@ class
 	
 inherit
 	TRAFFIC_LINE
+
 		rename
 			make as make_line,
 			start as start_line,
@@ -21,10 +22,12 @@ inherit
 			item as item_line,
 			count as count_line,
 			i_th as i_th_line,
-			wipe_out as wipe_out_line
+			wipe_out as wipe_out_line,
+			has as has_line
 		redefine 
 			start_to_terminal,
 			extend
+
 		end
 
 create
@@ -70,10 +73,30 @@ feature -- Basic operations
 		local
 			origin, destination: TRAFFIC_PLACE
 			other_line_section: TRAFFIC_LINE_SECTION
+			pp, polypoints:  ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			origin := a_line_section.origin
 			destination := a_line_section.destination
-			create other_line_section.make (a_line_section.destination, a_line_section.origin, a_line_section.type, Void)
+			
+			-- Copy polypoints reversed for other direction
+			polypoints := a_line_section.polypoints
+			if polypoints.count >= 2 then
+				create pp.make (0)
+				from
+					polypoints.finish
+				until
+					polypoints.before
+				loop
+					pp.extend (polypoints.item.twin)
+					polypoints.back
+				end
+				create other_line_section.make (destination, origin, a_line_section.type, Void)			
+				other_line_section.set_polypoints (pp)
+			else
+				create other_line_section.make (destination, origin, a_line_section.type, Void)				
+			end	
+			
+			
 			map.add_line_section (other_line_section)
 			
 			if terminal_1 = Void then -- no direction exists yet
@@ -113,8 +136,8 @@ feature -- Basic operations
 feature {NONE} -- Implementation
 
 	start_place: TRAFFIC_PLACE
-			--used to maintain a station, when remove_all_sections is called
-			--and is used, when a line is built using extend_place
+			-- Used to maintain a station, when remove_all_sections is called
+			-- and is used, when a line is built using extend_place
 	
 	map: TRAFFIC_MAP
 			-- Map this simple line belongs to.
@@ -123,12 +146,12 @@ feature {NONE} -- Implementation
 			-- Insert `a_line_section' front of one direction.
 		require
 			a_line_section_exists: a_line_section /= Void
-			not_yet_added: not has (a_line_section)
+			not_yet_added: not has_line (a_line_section)
 		do
 			put_front (a_line_section)
-			places_one_direction.extend (a_line_section.origin)
+			places_one_direction.put_front (a_line_section.origin)
 		ensure
-			a_line_section_in_simple_line: has (a_line_section)
+			a_line_section_in_simple_line: has_line (a_line_section)
 			places_one_direction_set: places_one_direction.has (a_line_section.origin)
 		end
 			
@@ -136,7 +159,7 @@ feature {NONE} -- Implementation
 			-- Insert `a_line_section' end of one direction.
 		require
 			a_line_section_exists: a_line_section /= Void
-			not_yet_added: not has (a_line_section)
+			not_yet_added: not has_line (a_line_section)
 		local
 			position: INTEGER
 		do
@@ -146,7 +169,7 @@ feature {NONE} -- Implementation
 			terminal_1 := a_line_section.destination
 			places_one_direction.extend (a_line_section.destination)
 		ensure
-			a_line_section_in_simple_line: has (a_line_section)
+			a_line_section_in_simple_line: has_line (a_line_section)
 			terminal_1_set: terminal_1 = a_line_section.destination
 			places_one_direction_set: places_one_direction.has (a_line_section.destination)
 		end
@@ -155,7 +178,7 @@ feature {NONE} -- Implementation
 			-- Insert `a_line_section' front of other direction.
 		require
 			a_line_section_exists: a_line_section /= Void
-			not_yet_added: not has (a_line_section)
+			not_yet_added: not has_line (a_line_section)
 		local
 			position: INTEGER
 		do
@@ -163,9 +186,10 @@ feature {NONE} -- Implementation
 			go_i_th (position)
 			put_left (a_line_section)
 			start_other_direction := a_line_section
-			places_other_direction.extend (a_line_section.origin)
+			places_other_direction.put_front (a_line_section.origin)
+			
 		ensure
-			a_line_section_in_simple_line: has (a_line_section)
+			a_line_section_in_simple_line: has_line (a_line_section)
 			start_other_direction_set: start_other_direction = a_line_section
 			places_other_direction_set: places_other_direction.has (a_line_section.origin)
 		end
@@ -174,19 +198,24 @@ feature {NONE} -- Implementation
 			-- Insert `a_line_section' end of other direction.
 		require
 			a_line_section_exists: a_line_section /= Void
-			not_yet_added: not has (a_line_section)
+			not_yet_added: not has_line (a_line_section)
 		do
 			put_end (a_line_section)
 			terminal_2 := a_line_section.destination
 			places_other_direction.extend (a_line_section.destination)
 		ensure
-			a_line_section_in_simple_line: has (a_line_section)
+			a_line_section_in_simple_line: has_line (a_line_section)
 			terminal_2_set: terminal_2 = a_line_section.destination
 			places_other_direction_set: places_other_direction.has (a_line_section.destination)
 		end	
 		
 feature -- Cursor Queries
-
+	has (a_place: TRAFFIC_PLACE): BOOLEAN is
+			--
+		do
+			Result := places_one_direction.has (a_place)	
+		end
+		
 	after: BOOLEAN is
 		do
 			Result := places_one_direction.after
@@ -304,6 +333,7 @@ feature -- Simple Line Commands
 			-- 
 		require
 			a_place_not_void: a_place /= Void
+			a_place_not_in_places_of_line: not has (a_place)
 		local
 			line_section: TRAFFIC_LINE_SECTION
 			origin: TRAFFIC_PLACE
@@ -312,7 +342,7 @@ feature -- Simple Line Commands
 				start_place := a_place
 			else
 				if places_one_direction.count = 0 then
-					--no line_section inserted
+					-- No line_section inserted yet
 					origin := start_place
 					start_place := Void
 				else
@@ -321,28 +351,8 @@ feature -- Simple Line Commands
 
 				create line_section.make (origin, a_place, type, Void)
 				map.add_line_section (line_section) 
-				
---				if places_one_direction.count = 1 then
---					
---					line_section.set_line (Current)				
---					put_end (line_section)
---
---					places_one_direction.extend (a_place)
---					
---					create line_section.make (a_place, origin, type, Void)
---					line_section.set_line (Current)
---					map.add_line_section (line_section) 					
---					put_end (line_section)
---
---					places_other_direction.extend (a_place)
---					
---					start_other_direction := line_section				
---					
---					terminal_2 := places_one_direction.first
---					terminal_1 := places_one_direction.last
---				else
-					extend (line_section)								
---				end
+
+				extend (line_section)								
 			end
 		end
 

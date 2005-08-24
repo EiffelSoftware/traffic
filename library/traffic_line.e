@@ -14,7 +14,7 @@ inherit
 			out as linked_list_out,
 			extend as put_end
 		export 
-		{ANY} start, finish, after, before, off, forth, back, item, count, i_th, wipe_out
+		{ANY} start, finish, after, before, off, forth, back, item, count, i_th, wipe_out, has
 		end
 
 create
