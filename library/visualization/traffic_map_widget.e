@@ -33,9 +33,8 @@ feature -- Initialization
 			create line_section_drawables.make_with_map_and_default_renderer (line_sections_model, line_section_renderer)
 	
 			render
-			
-			extend (line_section_drawables)
-			extend (place_drawables)
+
+			display			
 		end
 		
 feature -- Access
@@ -169,6 +168,30 @@ feature -- Basic Operation
 			place_drawables.render
 		end
 
+	hide is
+			-- remove all drawables from the container
+		do
+			if has (line_section_drawables) then
+				delete (line_section_drawables)			
+			end 
+			if has (place_drawables) then
+				delete (place_drawables)
+			end
+		end
+	
+	display, show is
+			-- show the drawables
+		do
+			if not has (place_drawables) then
+				force_first (place_drawables)
+			end
+
+			if not has (line_section_drawables) then
+				force_first (line_section_drawables)
+			end 			
+		end
+		
+		
 feature {NONE} -- Implementation
 	
 	line_sections_model: TRAFFIC_LINE_SECTION_MODEL

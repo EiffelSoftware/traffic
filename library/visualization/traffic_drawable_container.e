@@ -188,19 +188,19 @@ feature -- Mouse Events
 			end			
 		end	
 
-	mouse_motion_on_map_item_event: EVENT_TYPE [TUPLE [ELEMENT]]
+	mouse_motion_on_map_item_event: EM_EVENT_TYPE [TUPLE [ELEMENT]]
 			-- Mouse motion over map item event,
 			-- gets published when mouse is moved over drawable item,
 			-- map element is passed as first argument to subscribers,
 			-- as optional second argument the appropriate EM_MOUSE_EVENT is passed
 	
-	mouse_button_up_on_map_item_event: EVENT_TYPE [TUPLE [ELEMENT]]
+	mouse_button_up_on_map_item_event: EM_EVENT_TYPE [TUPLE [ELEMENT]]
 			-- Mouse button pressed over map item event,
 			-- gets published when mouse is pressed over item,
 			-- map element is passed as first argument to subscribers,
 			-- as optional second argument the appropriate EM_MOUSE_EVENT is passed
 	
-	mouse_button_down_on_map_item_event: EVENT_TYPE [TUPLE [ELEMENT]]
+	mouse_button_down_on_map_item_event: EM_EVENT_TYPE [TUPLE [ELEMENT]]
 			-- Mouse button released over map item event,
 			-- gets published when mouse is released over item,
 			-- map element is passed as first argument to subscribers,
