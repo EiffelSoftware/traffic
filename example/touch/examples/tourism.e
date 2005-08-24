@@ -33,7 +33,7 @@ feature -- Initialization
 			Precursor {EM_SHARED_BITMAP_FACTORY}
 			
 			create pictures.make_default
-			
+			-- Load example picture
 			bitmap_factory.create_bitmap_from_image ("images/examples/example_1.png")
 			if bitmap_factory.last_bitmap /= Void then
 				pictures.force_last (bitmap_factory.last_bitmap) 
@@ -50,6 +50,7 @@ feature -- Access
 	pictures: DS_LINKED_LIST [EM_BITMAP]
 
 feature -- Basic operations
+
 	run_with_scene (exit_scene: EM_SCENE): EM_SCENE is
 			-- 
 		do
@@ -61,34 +62,47 @@ feature -- Basic operations
 	run (a_runtime: TOUCH_EXAMPLE_RUNTIME) is
 			-- 
 		do
---			example_scene.hide (example_scene.map_widget)
-
-			--Set new default place renderer			
+			-- Set new default place renderer			
 			a_runtime.map_widget.set_default_place_renderer (create {TOUCH_PLACE_RENDERER}.make_with_map (a_runtime.map))
 
-
+			-- Create the 'Louvre' object
 			create Louvre.make_with_place_and_map_widget (a_runtime.map.place ("Musee du Louvre"), a_runtime.map_widget)
-			
+			--Create the 'Line8' object
 			create Line8.make_with_line_and_map_widget (a_runtime.map.line ("tram 8"), a_runtime.map_widget)
-			
-			
+
+			Paris := a_runtime.map_widget
+			Paris.hide
 			
 			--Create Passenger
---			create Passenger.make_on_map_place (a_runtime.map, a_runtime.map.place ("Tour Eiffel"))
---			create passenger_drawable.make_from_passenger (Passenger)
+			create Passenger.make_on_map_place (a_runtime.map, a_runtime.map.place ("Notre Dame"))
+			create passenger_drawable.make_from_passenger (Passenger)
 			
---			bitmap_factory.create_bitmap_from_image ("images/star.png")
+--			bitmap_factory.create_bitmap_from_image ("images/star.png")			
 --			passenger_drawable.set_picture (bitmap_factory.last_bitmap)
---			example_scene.start_animating (passenger_drawable)
+
+			-- Add some simple sprite containing an animation and animate it.
+			create animation.make_from_file ("./pics/alien.anim")
+			create sprite.make (animation)
+			example_scene.start_animating (sprite)
+			passenger_drawable.set_picture (sprite)
+
+
+			example_scene.start_animating (passenger_drawable)
 			
---			a_runtime.map_widget.extend (passenger_drawable)
+			a_runtime.map_widget.extend (passenger_drawable)
 			
-			create Route1.make_with_scene_and_map_widget (example_scene, a_runtime.map_widget)
-			
+			--Create Route1
+			create Route1.make_with_scene_and_map_widget (example_scene, a_runtime.map_widget)			
 			Route1.extend (a_runtime.map.place ("Tour Eiffel"))
 			Route1.extend (a_runtime.map.place ("Musee du Louvre"))
 			Route1.extend (a_runtime.map.place ("Notre Dame"))
 			Route1.calculate_shortest_path
+
+			--Create Route2
+			create Route2.make_with_scene_and_map_widget (example_scene, a_runtime.map_widget)			
+			Route2.extend (a_runtime.map.place ("Notre Dame"))
+			Route2.extend (a_runtime.map.place ("Tour Eiffel"))
+			Route2.calculate_shortest_path
 			
 			explore
 			
@@ -107,10 +121,19 @@ feature {NONE} -- implementation
 	
 	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
 	
---	Passenger: TOUCH_PASSENGER
---	passenger_drawable: MAP_WIDGET_PASSENGER_DRAWABLE
-	
+	Passenger: TOUCH_PASSENGER
+	passenger_drawable: MAP_WIDGET_PASSENGER_DRAWABLE
+
+	animation: EM_ANIMATION
+	image: EM_BITMAP
+	sprite: EM_SPRITE
+
+	Paris: TRAFFIC_MAP_WIDGET
+
 	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
+	
+	Route2: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
+	
 invariant
 	invariant_clause: True -- Your invariant here
 

@@ -47,7 +47,7 @@ feature -- Basic operations
 					bitmap_factory.create_bitmap_from_image (a_place.information.pictures.first)
 					bitmap := bitmap_factory.last_bitmap
 					if bitmap /= Void then
-						bitmap.set_x_y (a_place.position.x.rounded - bitmap.width//2, a_place.position.y.rounded - bitmap.height//2)
+						bitmap.set_x_y (a_place.position.x.rounded - bitmap.width//2 - 30, a_place.position.y.rounded - bitmap.height//2 - 30)
 						container.extend (bitmap)				
 						
 --						create line.make_empty

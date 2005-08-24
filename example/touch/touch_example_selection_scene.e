@@ -64,25 +64,29 @@ feature -- Scene Initialization
 	fill_chapter_examples is
 			-- 
 		local
-			example_1, example_2, example_3: TOUCH_EXAMPLE
+			example_1, example_2, example_3, example_4, example_5, example_6: TOUCH_EXAMPLE
 		do
 		
 			--Build Chapter-Example-Tree
 			example_1 := create {PREVIEW}
 			example_2 := create {EXAMPLE_2}
 			example_3 := create {TOUCH_CITY_CHANGE_EXAMPLE}
+			example_4 := create {LINE_BUILDING}
+			example_5 := create {TOUR}
+			example_6 := create {COMMANDS}
 			
 			create chapter_examples.make
 			
 			chapter_examples.set_count (5)
 --			chapter_examples.i_th (1).subscribe (example_1)
 			chapter_examples.i_th (2).subscribe (example_1)
-			chapter_examples.i_th (3).subscribe (example_1)
+			chapter_examples.i_th (3).subscribe (example_5)
+			chapter_examples.i_th (3).subscribe (example_6)
 			chapter_examples.i_th (4).subscribe (example_2)
 			chapter_examples.i_th (4).subscribe (example_1)
-			chapter_examples.i_th (5).subscribe (example_1)
 			chapter_examples.i_th (5).subscribe (example_2)
 			chapter_examples.i_th (5).subscribe (example_3)
+			chapter_examples.i_th (5).subscribe (example_4)
 		end		
 
 	initialize_scene is
@@ -103,7 +107,7 @@ feature -- Scene Initialization
 --			up_button: TOUCH_BUTTON
 --			down_button: TOUCH_BUTTON
 
-			ttf: EM_TTF_FONT
+			fancy_white, fancy_red: EM_COLOR_TTF_FONT
 			directory: STRING
 		do			
 			width := 1024
@@ -177,18 +181,12 @@ feature -- Scene Initialization
 				exit_button.subscribe_for_click (agent process_clicked_exit_button)				
 				
 				--Load Custom Font
-	 			if not standard_ttf_fonts.has_custom_font ("fancy_white") then
+	 			if not standard_ttf_fonts.has_custom_font ("fancy_big") then
 					directory := standard_ttf_fonts.font_dirname
 	 				standard_ttf_fonts.set_font_dirname ("font")
-					standard_ttf_fonts.load_custom_font("fancy.ttf", 78, "fancy_white")
-		 			if not standard_ttf_fonts.has_custom_font ("fancy_red") then				
-						standard_ttf_fonts.load_custom_font("fancy.ttf", 78, "fancy_red")
-					end
-		 			if not standard_ttf_fonts.has_custom_font ("fancy_grey_small") then
-						standard_ttf_fonts.load_custom_font("fancy.ttf", 32, "fancy_grey_small")
-					end
-		 			if not standard_ttf_fonts.has_custom_font ("fancy_blue_small") then				
-						standard_ttf_fonts.load_custom_font("fancy.ttf", 32, "fancy_blue_small")
+					standard_ttf_fonts.load_custom_font("fancy.ttf", 78, "fancy_big")
+		 			if not standard_ttf_fonts.has_custom_font ("fancy") then				
+						standard_ttf_fonts.load_custom_font("fancy.ttf", 32, "fancy")
 					end
 					standard_ttf_fonts.set_font_dirname(directory)
 				end
@@ -198,20 +196,14 @@ feature -- Scene Initialization
 				title_2 := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", width-2*border, title_offset-2*border)
 
 
-				ttf ?= standard_ttf_fonts.custom_font ("fancy_white")
+				create fancy_white.make_from_ttf_font (standard_ttf_fonts.custom_font ("fancy_big"))
+				fancy_white.set_color (white)
+				title.set_title ("TOUCH", fancy_white)
 				
-				if ttf /= Void then
-					ttf.set_color (white)
-					title.set_title ("TOUCH", ttf)
-				end
-				
-				ttf ?= standard_ttf_fonts.custom_font ("fancy_red")
-				
-				if ttf /= Void then
-					ttf.set_color (red)
-					title_2.set_title ("TOUCH", ttf)
-				else
-				end
+				create fancy_red.make_from_ttf_font (standard_ttf_fonts.custom_font ("fancy_big"))
+				fancy_red.set_color (red)
+				title_2.set_title ("TOUCH", fancy_red)
+
 				title.set_x_y (border, border)
 				title_2.set_x_y (border+3, border+3)
 				
@@ -280,7 +272,8 @@ feature {NONE} -- Implementation
 			chapter_height: INTEGER
 			example_height: INTEGER
 --			number_filename: STRING
-			ttf: EM_TTF_FONT
+			fancy_grey : EM_COLOR_TTF_FONT
+			fancy_blue: EM_COLOR_TTF_FONT
 			title: TOUCH_TEXT_STATIC
 			title_2: TOUCH_TEXT_STATIC
 			
@@ -314,20 +307,14 @@ feature {NONE} -- Implementation
 				title := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", chapter_static.width, chapter_static.height)
 				title_2 := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", chapter_static.width, chapter_static.height)
 				
-				ttf ?= standard_ttf_fonts.custom_font ("fancy_grey_small")
+				create fancy_grey.make_from_ttf_font (standard_ttf_fonts.custom_font ("fancy"))
+				fancy_grey.set_color ( create {EM_COLOR}.make_with_rgb (200,200,200))
+				title.set_title ("CHAPTER",fancy_grey)
 				
-				if ttf /= Void then
-					ttf.set_color ( create {EM_COLOR}.make_with_rgb (200,200,200))
-					title.set_title ("CHAPTER",ttf)
-				end
+				create fancy_blue.make_from_ttf_font (standard_ttf_fonts.custom_font ("fancy"))
+				fancy_blue.set_color ( create {EM_COLOR}.make_with_rgb (125,125,255))
+				title_2.set_title ("CHAPTER", fancy_blue)
 				
-				ttf ?= standard_ttf_fonts.custom_font ("fancy_blue_small")
-				
-				if ttf /= Void then
-					ttf.set_color ( create {EM_COLOR}.make_with_rgb (125,125,255))
-					title_2.set_title ("CHAPTER", ttf)
-				else
-				end
 				title.set_x_y (x, y)
 				title_2.set_x_y (x+1,y+1)
 
@@ -336,19 +323,12 @@ feature {NONE} -- Implementation
 				number_string.append_integer (i)
 				number := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", number_static.width, number_static.height)
 				number_2 := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("Hooray", number_static.width, number_static.height)
-				
-				ttf ?= standard_ttf_fonts.custom_font ("fancy_grey_small")
 
-				if ttf /= Void then
-					number.set_title (number_string, ttf)
-				end
-				
-				ttf ?= standard_ttf_fonts.custom_font ("fancy_blue_small")
-				
-				if ttf /= Void then
-					number_2.set_title (number_string, ttf)
-				else
-				end
+				number.set_title (number_string, fancy_grey)
+
+				number_2.set_title (number_string, fancy_blue)
+
+
 				number.set_x_y (number_static.x, number_static.y)
 				number_2.set_x_y (number_static.x+1, number_static.y+1)
 
@@ -389,11 +369,11 @@ feature {NONE} -- Agents, GUI events
 			-- 
 		do
 			if scroll_down.is_down then
-				chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, +12))			
+				chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, +16))			
 			end
 			
 			if scroll_up.is_down then
-				chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, -12))			
+				chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, -16))			
 			end
 			
 		end

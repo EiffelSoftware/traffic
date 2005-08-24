@@ -12,10 +12,11 @@ inherit
 	TOUCH_EXAMPLE_RUNTIME
 
 create
-	make_with_map_and_map_widget_and_textlist
+	make_with_map_and_map_widget_and_console
 
-feature --Creation
-	make_with_map_and_map_widget_and_textlist (	a_map: TRAFFIC_MAP;
+feature -- Initialization
+
+	make_with_map_and_map_widget_and_console (	a_map: TRAFFIC_MAP;
 												a_map_widget: TRAFFIC_MAP_WIDGET;
 												a_console: TOUCH_CONSOLE) is
 														-- 
@@ -30,11 +31,12 @@ feature --Creation
 		ensure
 			map_set: intern_map = a_map
 			map_widget_set: intern_map_widget = a_map_widget
-			textlist_set: intern_console = a_console
+			console_set: intern_console = a_console
 			
 		end
 													
 feature -- Access
+
 	map: TRAFFIC_MAP is
 			-- 
 		do
@@ -46,8 +48,15 @@ feature -- Access
 		do
 			Result := intern_map_widget
 		end
-
+	
+	console: TOUCH_CONSOLE is
+			-- 
+		do
+			Result := intern_console
+		end
+		
 feature -- Basic operations
+
 	console_out (a_text: STRING) is
 			-- 
 		do
@@ -56,8 +65,11 @@ feature -- Basic operations
 
 
 feature {NONE} -- Implementation
+
 	intern_map: TRAFFIC_MAP
+	
 	intern_map_widget: TRAFFIC_MAP_WIDGET
+	
 	intern_console: TOUCH_CONSOLE
 	
 invariant

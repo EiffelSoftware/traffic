@@ -192,9 +192,9 @@ feature {NONE} -- Implementation
 			create container.make
 			container.set_x_y (x, y)
 			
-			-- Build black background
+			-- Build white background
 			create background.make_from_coordinates (0, 0, width, height)
-			background.set_fill_color (black)
+			background.set_fill_color (create {EM_COLOR}.make_with_rgb (230, 230, 230))
 			container.extend (background)
 			
 			-- Build map widget to visualize `traffic_map'
@@ -225,9 +225,9 @@ feature {NONE} -- Agents, GUI events
 			if first_loop then
 				first_loop := false	
 				if  example /= Void then
-					example.run (create {TOUCH_EXAMPLE_RUNTIME_IMPLEMENTATION}.make_with_map_and_map_widget_and_textlist (traffic_map, map_widget, console))
+					example.run (create {TOUCH_EXAMPLE_RUNTIME_IMPLEMENTATION}.make_with_map_and_map_widget_and_console (traffic_map, map_widget, console))
 				end
-			end			
+			end
 		end
 		
 

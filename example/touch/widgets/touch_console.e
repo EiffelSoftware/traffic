@@ -22,6 +22,13 @@ feature -- Basic operations
 		deferred
 		end
 		
+	show (an_object: ANY) is
+			-- 
+		require
+			an_object_not_void: an_object /= Void
+		deferred
+		end
+		
 invariant
 	invariant_clause: True -- Your invariant here
 

@@ -31,7 +31,7 @@
 
 <!-- tram lines -->
 
-<line name="11" type="tram">
+<line name="11" type="tram" simple="true">
 	<color red="0" green="154" blue="0"/>
 	<line_section from="Bahnhof Stadelhofen" to="Bellevue" direction="undirected">
 		        <point x="910" y="495"/>
@@ -62,7 +62,7 @@
 </line>
 
 
-<line name="9" type="tram">
+<line name="9" type="tram" simple="true">
 	<color red="102" green="102" blue="153"/>
 	<line_section from="Paradeplatz" to="Boersenstrasse" direction="undirected">
 		        <point x="660" y="600"/> 
@@ -85,7 +85,7 @@
 </line>
 
 
-<line name="4" type="tram">
+<line name="4" type="tram" simple="true">
 	<color red="90" green="90" blue="143"/> 
 	<line_section from="Hauptbahnhof" to="Central" direction="undirected">
 		        <point x="715" y="830"/>
@@ -112,7 +112,7 @@
 </line>
 
 <!-- bus lines -->
-<line name="31" type="bus">
+<line name="31" type="bus" simple="true">
 	<color red="153" green="204" blue="255"/>
 	<line_section from="Kunsthaus" to="Neumarkt" direction="undirected">
 			<point x="934" y="617"/>
@@ -130,7 +130,7 @@
 
 
 <!-- s lines -->
-<line name="s7" type="rail">
+<line name="s7" type="rail" simple="true">
 	<color red="0" green="0" blue="0"/>
 	<line_section from="Hauptbahnhof" to="Bahnhof Stadelhofen" direction="undirected">
 			<point x="693" y="833"/>

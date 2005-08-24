@@ -29,7 +29,7 @@ feature -- Basic operations
 			until
 				a_route.places_on_route.after
 			loop
-				--Sometimes a Place is listed twice, but we cannot move from place_x to place_x
+				-- Sometimes a Place is listed twice, but we cannot move from place_x to place_x
 				if place /= a_route.places_on_route.item then
 					move_to (a_route.places_on_route.item)					
 				end

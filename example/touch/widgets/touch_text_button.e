@@ -18,7 +18,6 @@ create
 	make_with_title_and_width_and_height
 	
 feature -- Initialization
-
 	make_with_title_and_width_and_height (a_text: STRING; a_width, a_height: INTEGER) is
 			-- 
 		do
@@ -33,7 +32,7 @@ feature {NONE} -- implementation
 		local			
 			tx, ty: INTEGER	
 			color_gray: EM_COLOR
-			font: EM_TTF_FONT
+			font: EM_COLOR_TTF_FONT
 			zoomable_container: EM_ZOOMABLE_CONTAINER
 			text_length: INTEGER
 		do
@@ -48,7 +47,7 @@ feature {NONE} -- implementation
 			create zoomable_container.make (a_width, a_height)
 
 			-- Build Title text.
-			font := standard_ttf_fonts.bitstream_vera_sans (a_height // 2)
+			create font.make_from_ttf_font (standard_ttf_fonts.bitstream_vera_sans (a_height // 2))
 			font.set_color (black)
 			text_length := text_max_length (a_text, font, a_width)
 			

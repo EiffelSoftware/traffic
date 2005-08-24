@@ -68,7 +68,7 @@ feature -- Basic operations
 		do
 	
 			create line_renderer.make_with_map (map_widget.map)
-			line_renderer.set_line_color (create {EM_COLOR}.make_with_rgb (255, 255, 255))
+			line_renderer.set_line_color (create {EM_COLOR}.make_with_rgb (0, 0, 0))
 			line_renderer.set_line_width (map_widget.line_section_renderer.line_width * 2)
 			map_widget.set_line_special_renderer (line_renderer, line)
 			

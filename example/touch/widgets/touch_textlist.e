@@ -224,7 +224,12 @@ feature -- Basic operations
 			end
 		end
 			
-			
+	show (an_object: ANY) is
+			-- Print an Object using its 'out' feature
+		do
+			put_text (an_object.out)
+		end
+		
 	wipe_out_text is
 			-- wipe out all the text
 		do
@@ -244,6 +249,7 @@ feature {NONE} -- Implementation
 			--
 		local
 			directory: STRING
+			color_font: EM_COLOR_TTF_FONT
 		once
 			-- save default directory
 			directory := standard_ttf_fonts.font_dirname
@@ -254,8 +260,9 @@ feature {NONE} -- Implementation
 			-- set old default directory
 			standard_ttf_fonts.set_font_dirname(directory)
 			-- set Result
-			Result := standard_ttf_fonts.custom_font ("console")
-			Result.set_color (black)
+			create color_font.make_from_ttf_font (standard_ttf_fonts.custom_font ("console"))
+			color_font.set_color (black)
+			Result := color_font
 		end
 		
 	background: EM_RECTANGLE

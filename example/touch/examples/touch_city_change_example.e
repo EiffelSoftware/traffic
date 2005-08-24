@@ -54,7 +54,7 @@ feature -- Basic operations
 	run_with_scene (exit_scene: EM_SCENE): EM_SCENE is
 			-- 
 		do
-			example_scene := create {TOUCH_SIMPLE_TRAFFIC_SCENE}.make_with_zurich_little (Current)
+			example_scene := create {TOUCH_SIMPLE_TRAFFIC_SCENE}.make_with_zurich_big (Current)
 			example_scene.set_next_scene (exit_scene)
 			Result := example_scene
 		end

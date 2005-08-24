@@ -89,7 +89,7 @@ feature -- Mouse handling
 			if bounding_box.has (a_mouse_event.proportional_position) then
 				dispatch_mouse_event (a_mouse_event)								
 				
-				-- Passenger does not catch ...
+				-- Passenger does not catch (because if he does, the system crashes)
 				-- a_mouse_event.set_caught (True)
 			end			
 		end		

@@ -5,7 +5,7 @@ indexing
 	revision: "1.1"
 
 class
-	EXAMPLE_2
+	COMMANDS
 
 inherit
 	TOUCH_EXAMPLE
@@ -29,10 +29,9 @@ feature -- Access
 	description: STRING is
 			-- 
 		once
-			Result := "Implementation of the LINE_BUILDING example from the Textbook TOUCH"
+			Result := "Implementation of the COMMAND example from the Textbook TOUCH"
 		end
 
-feature -- Miscellaneous
 
 feature -- Basic operations
 	run_with_scene (exit_scene: EM_SCENE): EM_SCENE is
@@ -50,7 +49,8 @@ feature -- Basic operations
 		do
 			map := a_runtime.map
 			runtime := a_runtime
-
+			Console := a_runtime.console
+			
 			create Louvre.make_with_place_and_map_widget (a_runtime.map.place ("Musee du Louvre"), a_runtime.map_widget)
 			
 			create Line8.make_with_line_and_map_widget (a_runtime.map.line ("tram 8"), a_runtime.map_widget)
@@ -61,14 +61,14 @@ feature -- Basic operations
 			
 			map_factory.build_simple_line ("simple line with funky name", "tram", map)
 			
-			simple_line_8 ?= map_factory.simple_line
+			Simple_Line8 ?= map_factory.simple_line
 			
---			simple_line_8 ?= Line8.line --= Void
+			Simple_Line8.extend_place (Place_Balard)
 			
 			--Set new default place renderer	
 			a_runtime.map_widget.set_default_place_renderer (create {TOUCH_PLACE_RENDERER}.make_with_map (a_runtime.map))
 			
-			change_line
+			action
 			
 		end
 		
@@ -77,46 +77,17 @@ feature -- Obsolete
 feature -- Inapplicable
 
 feature {NONE} -- Implementation
-	change_line is
+	action is
 		-- Show some city info.
-		local
-			line_section_renderer: TRAFFIC_LINE_SECTION_RENDERER
 		do
-			
---			simple_line_8.extend_place (map.place ("place Pont de Levallois - Becon"))
---			simple_line_8.extend_place (map.place ("place Gabriel Peri"))
---			simple_line_8.extend_place (map.place ("place Pontoise"))
---			simple_line_8.extend_place (map.place ("place Orry-la-Ville - Coye"))
---			simple_line_8.extend_place (map.place ("place Saint-Denis - Universite"))
---			simple_line_8.remove_all_sections
-			simple_line_8.extend_place (Place_Balard)
-			simple_line_8.extend_place (Place_Issy)
-			simple_line_8.extend_place (Place_Montrouge)
-			
---			simple_line_8.extend_place (map.place ("Sacre Coeur"))
---			simple_line_8.extend_place (map.place ("Musee du Louvre"))
-			
-			
---			map.add_line (simple_line_8)
-			
-			runtime.console_out ("simple_line_8.count: " + simple_line_8.count.out) 
-
-
---			create Route1.make_with_scene_and_map_widget (example_scene, runtime.map_widget)			
---			Route1.extend (Place_Balard)
---			Route1.extend (Place_Issy)
---			Route1.extend (Place_Montrouge)
-
---			Route1.calculate_shortest_path
-
-			
-			create line_section_renderer.make_with_map (map)
-			line_section_renderer.set_line_width (10)
-			line_section_renderer.set_line_color (create {EM_COLOR}.make_white)
-			runtime.map_widget.set_line_special_renderer (line_section_renderer, simple_line_8)
-			runtime.map_widget.render
-			
---			Route1.animate
+			Simple_Line8.remove_all_sections
+			-- No need to add Station_Balard, since
+			-- remove_all_sections retains the 'one_end'.
+			Simple_Line8.extend_place (Place_La_Fourche)
+			Simple_Line8.extend_place (Place_Bastille)
+			-- We stop adding stations, to display some results:
+			Console.show (Simple_Line8.count)
+			Console.show (Simple_Line8.other_end.name)
 		end
 		
 feature {NONE} -- implementation
@@ -127,9 +98,11 @@ feature {NONE} -- implementation
 	
 	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
 
-	simple_line_8: TRAFFIC_SIMPLE_LINE
+	Simple_Line8: TRAFFIC_SIMPLE_LINE
 
 	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
+	
+	Console: TOUCH_CONSOLE
 	
 	map: TRAFFIC_MAP
 	
@@ -138,4 +111,4 @@ feature {NONE} -- implementation
 invariant
 	invariant_clause: True -- Your invariant here
 
-end -- class EXAMPLE_2
+end -- class COMMANDS
