@@ -38,19 +38,29 @@ feature -- Basic operations
 	process is
 			-- Process node.
 		do
+
 			if not has_attribute ("name") then
 				set_error (Mandatory_attribute_missing, << "name" >>)
 			elseif not has_attribute ("type") then
 				set_error (Mandatory_attribute_missing, << "type" >>)
 			else
-				map_factory.build_line (attribute ("name"), attribute ("type"), map)
-				set_target (map_factory.line)
+				if has_attribute ("simple") and then equal (attribute ("simple"), "true") then
+					map_factory.build_simple_line (attribute ("name"), attribute ("type"), map)
+					set_target (map_factory.simple_line)
+				else
+					map_factory.build_line (attribute ("name"), attribute ("type"), map)
+					set_target (map_factory.line)
+				end
 			end
 			if not has_error and has_subnodes then
 				process_subnodes
 			end
 			if not has_error and color /= Void then
-				map_factory.line.set_color (color)		
+				if has_attribute ("simple") and then equal (attribute ("simple"), "true") then
+					map_factory.simple_line.set_color (color)		
+				else
+					map_factory.line.set_color (color)		
+				end
 			end
 		end
 		
