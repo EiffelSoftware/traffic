@@ -18,7 +18,7 @@ inherit
 		end
 
 create
-	make
+	make_scene
 	
 feature -- Initialization
 
@@ -178,7 +178,10 @@ feature -- Event handling
 			a_game.set_traffic_map (a_map_file.traffic_map)
 
 			-- Create scene that displays the game.
-			a_game_scene := create {GAME_SCENE}.make (a_map_file.traffic_map, option_menus.item (2).selected_entry)
+--			a_game_scene := create {GAME_SCENE}.make_scene
+--			a_game_scene.set_traffic_map (a_map_file.traffic_map)
+--			a_game_scene.set_hunter_count (option_menus.item (2).selected_entry)
+			a_game_scene := create {GAME_SCENE}.make_scene (a_map_file.traffic_map, option_menus.item (2).selected_entry)
 			a_game_scene.set_last_scene (Current)
 
 			-- Load correct player pics according to settings.
@@ -204,7 +207,7 @@ feature -- Event handling
 		quit_callback is
 				-- Callback for `quit' entry
 			do
-				quit
+				event_loop.stop
 			end
 
 end

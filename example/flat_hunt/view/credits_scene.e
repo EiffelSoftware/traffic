@@ -12,7 +12,7 @@ inherit
 		end
 
 create
-	make
+	make_scene
 	
 feature -- Initialization
 

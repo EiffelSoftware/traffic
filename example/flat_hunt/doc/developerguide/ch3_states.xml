@@ -42,11 +42,27 @@
     <section id="overview">
         <title>Overview</title> Every game has at least two states: playing and game over. <para>
             <projectname>Flat Hunt</projectname> has six states in total; three playing states and
-            three game over states (see Figure x). These game states are defined in class
+            three game over states (see Figure 1). These game states are defined in class
                 <classname>GAME_CONSTANTS</classname>:
             <programlisting>Agent_stuck, Agent_stuck, Agent_caught, Agent_escapes, Prepare_state, Play_state, Move_state: INTEGER is unique</programlisting>
         </para>
-    </section>
+
+ 
+    <para>
+        <mediaobjectco>
+            <imageobjectco>
+                <areaspec>
+                    <area />
+                </areaspec>
+                <imageobject>
+                    <imagedata fileref="pic/gameloop_sm.png"></imagedata>
+                </imageobject>                
+            </imageobjectco>
+        </mediaobjectco>
+	<emphasis>Figure 1: Game states and loop</emphasis>
+    </para>
+    
+</section>
     <section id="gameloop">
         <title>Game Loop</title>
         <para> For each player in each round in <projectname>Flat Hunt</projectname>, the game goes

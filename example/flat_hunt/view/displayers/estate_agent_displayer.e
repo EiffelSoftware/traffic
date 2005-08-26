@@ -31,7 +31,7 @@ feature -- Output
 				Result.copy (agent_history)	
 				Result.put_front ("History: ")
 				Result.put_front (" ")
-				Result.put_front ("Rail tickets: " + player.rail_tickets.out + ", Tram tickets: " + player.tram_tickets.out + ", Bus tickets :" + player.bus_tickets.out)			
+				Result.put_front ("Rail tickets: " + player.rail_tickets.out + ", Tram tickets: " + player.tram_tickets.out + ", Bus tickets: " + player.bus_tickets.out)			
 				Result.put_front ("Location: " + player.location.name)
 			else
 				if player.last_visible_location /= Void then

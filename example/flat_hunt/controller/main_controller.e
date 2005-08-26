@@ -72,6 +72,7 @@ feature -- Game operations
 			status_before_prepare
 			update_status
 			
+			prepare_called_once := false
 			play_called_once := false
 			move_called_once := false
 			take_a_pause (false)
@@ -154,6 +155,7 @@ feature -- Status Report
 			-- Update status of current game
 		do
 			game_scene.set_status (status)
+			game_scene.update_status_box
 			if game_scene.screen /= Void then
 				game_scene.redraw
 			end
@@ -173,11 +175,14 @@ feature -- Attributes
 	paused: BOOLEAN
 			-- Is game currently on paused?
 
-	move_called_once: BOOLEAN
-			-- Has the player already moved once?
-	
+	prepare_called_once: BOOLEAN
+			-- Is the current player already prepared?
+
 	play_called_once: BOOLEAN
-			-- Was the player's move already performed once?		
+			-- Has the current player already played (i.e. chosen his move) ?
+
+	move_called_once: BOOLEAN
+			-- Has the current player already moved?	
 
 feature {NONE} -- Event handling
 
@@ -253,15 +258,27 @@ feature {NONE} -- Game loop
 			no_pause_taken: not paused
 			game_state_prepare: game.state = game.Prepare_state
 		do
-			status_before_prepare
-			update_status
-			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
-				game_scene.center_on_player (game.current_player)
-				game.current_player.set_marked
-			end	
---			main_window.update_player_info_box (game.current_player)
-			game.prepare
-			game_scene.redraw			
+			if not prepare_called_once then
+				prepare_called_once := true
+				
+				-- Prepare current player.
+				if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
+					game_scene.center_on_player (game.current_player)
+					game.current_player.set_marked
+				end
+				
+				-- Update status boxes.
+				status_before_prepare
+				update_status			
+	--			main_window.update_player_info_box (game.current_player)
+				
+				-- Prepare game and redraw scene.
+				game.prepare
+				game_scene.redraw
+				
+				play_called_once:= false
+			end
+	
 		ensure
 			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck
 		end		
@@ -272,8 +289,12 @@ feature {NONE} -- Game loop
 			no_pause_taken: not paused
 			game_state_play: game.state = game.Play_state
 		do
+			if not play_called_once then
+				play_called_once := true
+			end
 			game.play
 			game_scene.redraw
+			move_called_once := false
 		ensure
 			correct_game_state: game.state = game.Play_state or game.state = game.Move_state
 		end
@@ -284,9 +305,13 @@ feature {NONE} -- Game loop
 			no_pause_taken: not paused
 			move_state_set: game.state = game.Move_state
 		do
+			if not move_called_once then
+				move_called_once := true
 				game.move
 				game.last_player.set_unmarked				
 				game_scene.redraw
+				prepare_called_once := false
+			end
 		ensure
 			correct_game_state: game.state = game.Prepare_state or game.state = game.Agent_caught or game.state = game.Agent_escapes
 		end

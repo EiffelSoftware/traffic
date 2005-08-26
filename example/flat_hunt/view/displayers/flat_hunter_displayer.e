@@ -29,7 +29,7 @@ feature -- Output
 			Result.extend ("Location: " + player.location.name)
 			Result.extend ("Rail tickets: " + player.rail_tickets.out)
 			Result.extend ("Tram tickets: " + player.tram_tickets.out)
-			Result.extend ("Bus tickets :" + player.bus_tickets.out)
+			Result.extend ("Bus tickets: " + player.bus_tickets.out)
 		end
 
 end

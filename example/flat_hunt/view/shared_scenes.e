@@ -13,7 +13,7 @@ feature -- Singleton access
 	start_menu_scene: START_MENU_SCENE is
 			-- Start menu scene singleton
 		once
-			create Result.make
+			create Result.make_scene
 		ensure
 			scene_not_void: Result /= Void
 		end
@@ -29,7 +29,7 @@ feature -- Singleton access
 	credits_scene: CREDITS_SCENE is
 			-- Credits scene singleton
 		once
-			create Result.make
+			create Result.make_scene
 		ensure
 			scene_not_void: Result /= Void
 		end

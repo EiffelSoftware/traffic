@@ -9,6 +9,13 @@ class
 inherit
 	GAME_CONSTANTS
 
+	TRAFFIC_TYPE_FACTORY
+		rename
+			make as make_type_factory
+		undefine
+			default_create
+		end
+		
 create 
 	make, make_with_constants
 	
@@ -147,6 +154,14 @@ feature {NONE} -- Status report
 				if tmp_line_section /= Void and then a_player.enough_tickets (tmp_line_section.type) then
 					if not is_occupied (tmp_line_section.destination) then
 						possible_moves.extend (tmp_line_section)
+						-- Special handling for tram line sections, because with a tram you
+						-- can move two stations at once if desired
+						if tmp_line_section.type = Tram_type then
+							tmp_line_section := two_station_tram_line_section (tmp_line_section)
+							if tmp_line_section /= Void then
+								possible_moves.extend (tmp_line_section)								
+							end
+						end
 					end
 				end
 				outgoing_line_sections.forth
@@ -300,66 +315,37 @@ feature -- Output
 			end
 		end	
 
---feature {NONE} -- Implementation
---
---	two_station_tram_line_section (origin: TRAFFIC_PLACE; a_line_section: TRAFFIC_LINE_SECTION): TRAFFIC_LINE_SECTION is
---			-- Create line_section to tram stop that is two segments away from 'origin' going  through 'a_line_section'.
---		require
---			origin_exists: origin /= Void
---			a_line_section_exists: a_line_section /= Void
---			a_line_section_from_origin: a_line_section.has (origin)
---		local
---			passing_place: TRAFFIC_PLACE
---			destination: TRAFFIC_PLACE
---			temp_line: ONE_WAY_LINE
---			temp_line_section: TRAFFIC_LINE_SECTION
---		do
---	 		
---	 		-- Only for tram line it is allowed to drive two places in one move.
---			if a_line_section.type.is_equal (a_line_section.Tram_type) then
---				
---		 		-- Get the other place of `a_line_section' which `Result' has to pass.
---		 		passing_place := a_line_section.other_end(origin)
---			
---				-- Try the next line_section in the south-west direction.
---				if a_line_section.line.ne_to_sw_line.last_line_section /= a_line_section then
---					temp_line := a_line_section.line.ne_to_sw_line
---					temp_line.start
---					temp_line.search_line_section_forth (a_line_section)
---					if not temp_line.after then
---						temp_line.forth
---						temp_line_section := temp_line.line_section_for_iteration
---					end
---					if temp_line_section /= Void and then temp_line_section.has (passing_place) then
---						destination := temp_line_section.other_end (passing_place)
---					end
---				end
---				
---				-- Try the next line_section in the north-east direction.
---				if a_line_section.line.sw_to_ne_line.last_line_section /= a_line_section then
---					temp_line := a_line_section.line.sw_to_ne_line
---					temp_line.start
---					temp_line.search_line_section_forth (a_line_section)
---					if not temp_line.after then
---						temp_line.forth
---						temp_line_section := temp_line.line_section_for_iteration
---					end
---					if temp_line_section /= Void and then temp_line_section.has (passing_place) then
---						destination := temp_line_section.other_end (passing_place)
---					end
---				end
---				
---				-- create `Result' from `origin' to `destination'.
---				if destination /= Void then
---					create Result.make (a_line_section.Tram_type, False, origin, destination)
---				end		
---				
---			end		
---			
---		ensure
+feature {NONE} -- Implementation
+
+	two_station_tram_line_section (a_line_section: TRAFFIC_LINE_SECTION): TRAFFIC_LINE_SECTION is
+			-- Create line_section to tram stop that is two segments away from `a_line_section.origin' going  through `a_line_section'.
+		require
+			a_line_section_exists: a_line_section /= Void
+		local
+			destination: TRAFFIC_PLACE
+			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
+		do				
+			outgoing_line_sections := traffic_map.line_sections_of_place (a_line_section.destination.name)
+			from
+				outgoing_line_sections.start
+			until
+				outgoing_line_sections.after -- or else (outgoing_line_sections.item.type = Tram_type and outgoing_line_sections.item.destination /= a_line_section.origin)
+			loop
+				if (outgoing_line_sections.item.type = Tram_type and outgoing_line_sections.item.destination /= a_line_section.origin) then
+					destination := outgoing_line_sections.item.destination				
+				end
+				outgoing_line_sections.forth
+			end
+			
+			if destination /= Void then
+				create Result.make (a_line_section.origin, destination, Tram_type, Void)				
+			else
+				Result := Void
+			end
+		ensure
 --			result_is_tram_line_section: Result /= Void implies Result.type.is_equal (a_line_section.Tram_type)
 --			result_starts_in_origin: Result /= void implies Result.from_place = origin
 --			result_has_other_destination: Result /= void implies (Result.to_place /= Void and Result.to_place /= a_line_section.from_place and Result.to_place /= a_line_section.to_place)			
---		end
---	
+		end
+	
 end

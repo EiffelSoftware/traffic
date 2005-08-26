@@ -88,7 +88,7 @@ feature -- Fonts
 	status_font_name: STRING is "arial"
 			-- Name of status font
 
-   	small_default_font: EM_TTF_FONT is
+   	small_default_font: EM_COLOR_TTF_FONT is
 			-- Standard default font
 		once
 			Result := create_font (default_font_name, 30, white)
@@ -96,7 +96,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 		
-   	medium_default_font: EM_TTF_FONT is
+   	medium_default_font: EM_COLOR_TTF_FONT is
 			-- Standard default font
 		once
 			Result := create_font (default_font_name, 50, white)
@@ -104,7 +104,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 
-   	big_default_font: EM_TTF_FONT is
+   	big_default_font: EM_COLOR_TTF_FONT is
 			-- Standard default font
 		once
 			Result := create_font (default_font_name, 72, white)
@@ -112,7 +112,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 		
-   	menu_font: EM_TTF_FONT is
+   	menu_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu
 		once
 			Result := create_font (menu_font_name, 72, menu_color)
@@ -120,7 +120,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 
-   	small_menu_font: EM_TTF_FONT is
+   	small_menu_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu
 		once
 			Result := create_font (menu_font_name, 50, menu_color)
@@ -128,7 +128,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 
-	menu_selected_font: EM_TTF_FONT is
+	menu_selected_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu
 		once
 			Result := create_font (menu_font_name, 72, menu_selected_color)
@@ -136,7 +136,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end		
 
-	small_menu_selected_font: EM_TTF_FONT is
+	small_menu_selected_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu
 		once
 			Result := create_font (menu_font_name, 50, menu_selected_color)
@@ -144,7 +144,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end	
 
-   	big_credits_font: EM_TTF_FONT is
+   	big_credits_font: EM_COLOR_TTF_FONT is
 			-- Standard font for credits
 		once
 			Result := create_font (credits_font_name, 40, credits_color)
@@ -152,7 +152,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 
-   	small_credits_font: EM_TTF_FONT is
+   	small_credits_font: EM_COLOR_TTF_FONT is
 			-- Standard font for credits
 		once
 			Result := create_font (credits_font_name, 30, credits_color)
@@ -160,7 +160,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end
 		
-	big_game_widget_font: EM_TTF_FONT is
+	big_game_widget_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in game widgets
 		once
 			Result := create_font (default_font_name, 50, game_widget_color)
@@ -168,7 +168,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end	
 		
-	medium_game_widget_font: EM_TTF_FONT is
+	medium_game_widget_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in game widgets
 		once
 			Result := create_font (default_font_name, 40, game_widget_color)
@@ -176,7 +176,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end 
 
-	small_game_widget_font: EM_TTF_FONT is
+	small_game_widget_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in game widgets
 		once
 			Result := create_font (default_font_name, 30, game_widget_color)
@@ -184,7 +184,7 @@ feature -- Fonts
 			font_not_void: Result /= Void
 		end 
 	
-	status_font: EM_TTF_FONT is
+	status_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in status boxes for players
 		once
 			Result := create_font (status_font_name, 12, status_font_color)

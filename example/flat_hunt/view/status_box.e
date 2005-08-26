@@ -345,13 +345,13 @@ feature -- Attributes
 	padding: INTEGER is 5
 		-- Padding between two lines
 	
-	font: EM_TTF_FONT
+	font: EM_COLOR_TTF_FONT
 		-- Font of the text within this status box
 	
 	title: EM_STRING
 		-- Title of the status box, displayed on top
 	
-	title_font: EM_TTF_FONT
+	title_font: EM_COLOR_TTF_FONT
 		-- Font used for `title'
 
 	max_line_width: INTEGER

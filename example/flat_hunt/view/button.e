@@ -111,7 +111,7 @@ feature {NONE} -- Implementation
 	
 	down: BOOLEAN
 
-	clicked_event: EVENT_TYPE [TUPLE [BUTTON]]
+	clicked_event: EM_EVENT_TYPE [TUPLE [BUTTON]]
 	
 	
 	on_button_down (me: EM_MOUSE_EVENT)	is

@@ -8,6 +8,8 @@ class
 	
 inherit 
 	FLAT_HUNT_SCENE
+		rename 
+			make_scene as make_scene_default
 		redefine
 			handle_key_down_event
 		end
@@ -25,27 +27,38 @@ inherit
 		end
 
 create
-	make
+	make_scene
 
 feature -- Initialization
-		
-	make (a_traffic_map: TRAFFIC_MAP; a_hunter_count: INTEGER) is
+
+	make_scene (a_traffic_map: TRAFFIC_MAP; a_hunter_count: INTEGER) is
 			-- Creation procedure
 		require
-			a_traffic_map_not_void: a_traffic_map /= Void
+			a_traffic_map_exists: a_traffic_map /= Void
 			a_hunter_count_valid: a_hunter_count > 0 and a_hunter_count <= 8
 		do
-			default_create
+			make_scene_default
 			traffic_map := a_traffic_map
 			hunter_count := a_hunter_count
 			build_big_map_widget
-			create status.make (0)
+			create status.make (0)	
+		ensure
+			traffic_map_set: traffic_map = a_traffic_map
+			hunter_count_set: hunter_count = a_hunter_count
 		end
+		
+--	make_scene is
+--			-- Creation procedure
+--		do
+--			Precursor
+--			create status.make (0)
+--		end
+	
 		
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
 		require else
-			traffic_map_not_void: traffic_map /= Void
+		traffic_map_not_void: traffic_map /= Void
 		do			
 			active := true
 			background_color.make_black
@@ -191,6 +204,27 @@ feature -- Attributes
 			
 feature -- Access
 
+	set_traffic_map (a_traffic_map: TRAFFIC_MAP) is
+			-- Set `traffic_map' to `a_traffic_map'
+		require
+			a_traffic_map_exists: a_traffic_map /= Void
+		do
+			traffic_map := a_traffic_map
+		ensure
+			traffic_map_set: traffic_map = a_traffic_map
+		end
+	
+	set_hunter_count (a_count: INTEGER) is
+			-- Set `hunter_count' to `a_count'
+		require
+			a_count_valid: a_count > 0 and a_count <= 8
+		do
+			hunter_count := a_count
+		ensure
+			hunter_count_set: hunter_count = a_count
+		end
+		
+		
 	set_status (a_status: ARRAYED_LIST [STRING]) is
 			-- Set `status' to `a_status'
 		do
@@ -200,10 +234,12 @@ feature -- Access
 	update_status_box is
 			-- Update the overview status box
 		do
-			status_box.clear
-			status_box.add_lines (status)
-			if screen /= Void then
-				redraw
+			if status_box /= Void then
+				status_box.clear
+				status_box.add_lines (status)
+				if screen /= Void then
+					redraw
+				end				
 			end
 		end
 
@@ -249,8 +285,9 @@ feature {NONE} -- Implementation
 			
 			-- Create and customize big map widget to visualize `traffic_map'
 			create big_map_widget.make_with_map (traffic_map)			
-			big_map_widget.line_section_renderer.traffic_type_line_widths.put (6, "rail")
+			big_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
 			big_map_widget.line_section_renderer.traffic_type_colors.put (rail_color, "rail")
+			big_map_widget.line_section_renderer.traffic_type_line_widths.put (2, "bus")
 			big_map_widget.render
 			
 			-- Create zoomable widget to make map zoomable

@@ -75,10 +75,10 @@ feature -- Fonts
 	Font_directory: STRING is "./resources/font/"
 			-- Path to the font directory
 
-   	create_font (a_name: STRING; a_size: INTEGER; a_color: EM_COLOR): EM_TTF_FONT is
+   	create_font (a_name: STRING; a_size: INTEGER; a_color: EM_COLOR): EM_COLOR_TTF_FONT is
 			-- Create new font from `a_name'.ttf with size `a_size' and color `a_color'
 		local
-		   font: EM_FONT
+		   font: EM_COLOR_TTF_FONT
 		   color: EM_COLOR
 		   id: STRING
 		do
@@ -95,11 +95,9 @@ feature -- Fonts
  				standard_ttf_fonts.set_font_dirname (Font_directory)
 				standard_ttf_fonts.load_custom_font(a_name + ".ttf", a_size, a_name + id)
 			end
-			font := standard_ttf_fonts.custom_font (a_name + id)
-			Result ?= font
-			if Result /= Void then
-				Result.set_color (color)
-			end				
+			create font.make_from_ttf_font (standard_ttf_fonts.custom_font (a_name + id))
+			font.set_color (color)
+			Result := font
 		ensure
 			font_not_void: Result /= Void
 			color_set: Result.color = a_color

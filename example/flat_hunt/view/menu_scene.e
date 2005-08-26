@@ -14,7 +14,7 @@ inherit
 	
 	FLAT_HUNT_SCENE
 		redefine
-			handle_key_down_event
+			make_scene, handle_key_down_event
 		end
 	
 	SHARED_SCENES
@@ -29,10 +29,10 @@ inherit
 
 feature -- Initialization		
 
-	make is
+	make_scene is
 			-- Creation procedure
 		do
-			default_create
+			Precursor
 			create menu.make_with_default_fonts
 			create option_menus.make (0)
 		end
