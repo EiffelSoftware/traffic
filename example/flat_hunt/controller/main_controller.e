@@ -32,7 +32,7 @@ feature -- Initialization
 	make is
 			-- Creation procedure
 		do
-			default_create			
+			default_create
 		end
 
 	initialize_with_game_and_scene (a_game: GAME; a_game_scene: GAME_SCENE) is
@@ -44,6 +44,7 @@ feature -- Initialization
 			game := a_game
 			game_scene := a_game_scene
 			create status.make (0)
+			game_scene.set_pause_callback (agent take_a_pause)
 		ensure
 			game_set: game = a_game
 			game_scene_set: game_scene = a_game_scene
@@ -64,6 +65,7 @@ feature -- Game operations
 			correct_number_of_hunters: (1 <= game.hunter_count) and (game.hunter_count <= 8)
 			correct_game_mode: (Hunt <= game.game_mode) and (game.game_mode <= Demo)
 		do
+			end_game_called_once := false
 			game.create_players
 			game_scene.create_players_from_list (game.players)
 			subscribe_to_clicked_place_event (agent process_clicked_place)			
@@ -72,7 +74,6 @@ feature -- Game operations
 			status_before_prepare
 			update_status
 			
-			prepare_called_once := false
 			play_called_once := false
 			move_called_once := false
 			take_a_pause (false)
@@ -82,38 +83,39 @@ feature -- Game operations
 			-- Display end game text, animation and menu when game over.
 		require
 			game_exists: game /= Void
---		local
---			i: INTEGER
+		local
+			i: INTEGER
 		do
---			if not end_game_called_once then
---				end_game_called_once := True
---				idle_actions.prune (idle_action_agent)
---				game.display_end_game
---				main_window.game_stat_text.set_text (game.info_text)
---				from
---					game.players.start
---				until
---					game.players.off
---				loop
---					game.players.item.displayer.clear_markings
---					game.players.forth
---				end
---				if game.state = game.Agent_caught or game.state = game.Agent_stuck then
---					game.estate_agent.displayer.show
+			if not end_game_called_once then
+				end_game_called_once := True
+				status_game_over
+				update_status
+				
+				from
+					game.players.start
+				until
+					game.players.off
+				loop
+					game.players.item.set_unmarked
+					game.players.forth
+				end
+				if game.state = game.Agent_caught or game.state = game.Agent_stuck then
+					game.estate_agent.set_visible (true)
 --					main_window.update_player_info_box (game.estate_agent)
---					center_on_player (game.estate_agent)
---					game.estate_agent.displayer.animate_defeat
---				elseif game.state = game.Agent_escapes then
---					from
---						i := 2
---					until
---						i > game.players.count or paused or not game.is_game_over
---					loop
---						game.players.i_th (i).displayer.animate_defeat
---						i := i + 1
---					end
---				end	
---			end
+					game_scene.center_on_player (game.estate_agent)
+--					game_scene.player_displayers.first.animate_defeat
+				elseif game.state = game.Agent_escapes then
+					from
+						i := 2
+					until
+						i > game.players.count or paused or not game.is_game_over
+					loop
+--						game_scene.player_displayers.i_th (i).animate_defeat
+						i := i + 1
+					end
+				end	
+				game_scene.display_end_game
+			end
 		end		
 
 
@@ -123,11 +125,13 @@ feature -- Status Report
 			-- Status to be displayed when game is over
 		do
 			status.wipe_out
-			status.extend ("GAME OVER!")
+			status.extend ("G A M E   O V E R!")
 			if game.state = agent_caught then
-				status.extend ("Estate agent was found at " + game.estate_agent.location.name + " in round " + game.current_round_number.out)
+				status.extend ("Estate agent was found in round " + game.current_round_number.out)
+				status.extend( "at " + game.estate_agent.location.name)
 			elseif game.state = agent_stuck then
-				status.extend ("Estate agent was encircled at " + game.estate_agent.location.name + " in round " + game.current_round_number.out)
+				status.extend ("Estate agent was encircled in round " + game.current_round_number.out)
+				status.extend ("at " + game.estate_agent.location.name)
 			elseif game.state = agent_escapes then
 				status.extend ("Estate agent escaped!")
 			end			
@@ -175,14 +179,14 @@ feature -- Attributes
 	paused: BOOLEAN
 			-- Is game currently on paused?
 
-	prepare_called_once: BOOLEAN
-			-- Is the current player already prepared?
-
 	play_called_once: BOOLEAN
 			-- Has the current player already played (i.e. chosen his move) ?
 
 	move_called_once: BOOLEAN
 			-- Has the current player already moved?	
+
+	end_game_called_once: BOOLEAN
+			-- Is the game already game over?
 
 feature {NONE} -- Event handling
 
@@ -219,28 +223,24 @@ feature {NONE} -- Event handling
 	idle_action is
 			-- Things that are done when nothing else is processing
 		do
-			if game /= Void then
-				if paused then
-					sleep_and_process (50)
-				else
-					if game.state = game.Prepare_state then
-						prepare
+			if game /= Void and then not paused then
+				if game.state = game.Prepare_state then
+					prepare
+				end
+				if game.state = game.Play_state then
+					play
+					if game.current_player /= Void and then game.current_player.brain.generating_type.substring (1, 3).is_equal ("BOT") then
+						sleep_and_process (1800)
 					end
-					if game.state = game.Play_state then
-						play
-						if game.current_player /= Void and then game.current_player.brain.generating_type.substring (1, 3).is_equal ("BOT") then
-							sleep_and_process (1800)
-						end
+				end
+				if not paused and game.state = game.Move_state then
+					move
+				if game.last_player /= Void then
+						sleep_and_process (1600)
 					end
-					if not paused and game.state = game.Move_state then
-						move
-						if game.last_player /= Void then
-							sleep_and_process (1600)
-						end
-					end
-					if game.is_game_over then
-						end_game
-					end
+				end
+				if game.is_game_over then
+					end_game
 				end
 			end
 		end
@@ -258,27 +258,20 @@ feature {NONE} -- Game loop
 			no_pause_taken: not paused
 			game_state_prepare: game.state = game.Prepare_state
 		do
-			if not prepare_called_once then
-				prepare_called_once := true
-				
-				-- Prepare current player.
-				if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
-					game_scene.center_on_player (game.current_player)
-					game.current_player.set_marked
-				end
-				
-				-- Update status boxes.
-				status_before_prepare
-				update_status			
-	--			main_window.update_player_info_box (game.current_player)
-				
-				-- Prepare game and redraw scene.
-				game.prepare
-				game_scene.redraw
-				
-				play_called_once:= false
+			-- Prepare current player.
+			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
+				game_scene.center_on_player (game.current_player)
+				game.current_player.set_marked
 			end
-	
+			
+			-- Update status boxes.
+			status_before_prepare
+			update_status			
+--			main_window.update_player_info_box (game.current_player)
+				
+			-- Prepare game and redraw scene.
+			game.prepare
+			game_scene.redraw
 		ensure
 			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck
 		end		
@@ -310,7 +303,7 @@ feature {NONE} -- Game loop
 				game.move
 				game.last_player.set_unmarked				
 				game_scene.redraw
-				prepare_called_once := false
+				play_called_once := false
 			end
 		ensure
 			correct_game_state: game.state = game.Prepare_state or game.state = game.Agent_caught or game.state = game.Agent_escapes

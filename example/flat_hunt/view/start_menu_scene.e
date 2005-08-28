@@ -30,8 +30,6 @@ feature -- Initialization
 			options_position_x, options_position_y: INTEGER
 		do
 			Precursor
-			
-			music_player.play_game_music
 
 			create background_box.make_from_coordinates (50, 95, Window_width - 50, 445, "options")
 			background_box.set_color (menu_color)

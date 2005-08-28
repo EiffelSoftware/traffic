@@ -42,6 +42,8 @@ feature -- Initialization
 			hunter_count := a_hunter_count
 			build_big_map_widget
 			create status.make (0)	
+			paused := false
+			game_over := false
 		ensure
 			traffic_map_set: traffic_map = a_traffic_map
 			hunter_count_set: hunter_count = a_hunter_count
@@ -58,21 +60,20 @@ feature -- Initialization
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
 		require else
-		traffic_map_not_void: traffic_map /= Void
+			traffic_map_not_void: traffic_map /= Void
 		do			
-			active := true
 			background_color.make_black
 --			set_frame_counter_visibility (true)
 
-			-- Build map widgets
+			-- Build map widgets.
 			main_container.extend (big_container)
 			build_little_map_widget
 			
 			-- Build navigation widget to connect
-			-- little map to big map for navigation
+			-- little map to big map for navigation.
 			create navigation_widget.make (little_zoomable_container, big_zoomable_widget)	
 			
-			-- Build status box
+			-- Build status box.
 			create status_box.make_from_coordinates (map_area_width + 2 * margin, window_width - map_area_width - 2 * margin, window_width - margin, map_area_height, "Status")
 			status_box.set_font (status_font)
 			status_box.set_title_font (medium_game_widget_font)
@@ -81,7 +82,7 @@ feature -- Initialization
 			main_container.extend (status_box)
 			update_status_box
 
-			-- Build player status box
+			-- Build player status box.
 			create player_status_box.make_from_position_and_size (margin, margin + map_area_height - 100, map_area_width, 100, " ")
 			player_status_box.set_font (status_font)
 			player_status_box.set_title_font (small_credits_font)
@@ -90,13 +91,20 @@ feature -- Initialization
 			player_status_box.set_visibility (false)
 			main_container.extend (player_status_box)
 			
-			last_clicked_button := Void
+			-- Build the menus.
+			build_pause_menu
+			build_game_over_menu
 			
+			-- Build the overlay for when the game is `paused'
+			bitmap_factory.create_bitmap_from_image (image_directory + "scanlines.png")
+			overlay := bitmap_factory.last_bitmap
+
+			last_clicked_button := Void
 			display_players
 		end
 	
 	create_players_from_list (a_player_list: ARRAYED_LIST [PLAYER]) is
-			-- Create views for players on the scene
+			-- Create views for players on the scene.
 		require
 			a_player_list_not_void: a_player_list /= Void
 			a_player_list_valid: a_player_list.count >= 2
@@ -135,7 +143,7 @@ feature -- Initialization
 		end
 		
 	display_players is
-			-- Visualize players on the scene
+			-- Visualize players on the scene.
 		do
 			from
 				hash_from_button_to_player_displayer.start	
@@ -152,18 +160,19 @@ feature -- Initialization
 feature -- Views
 
 	big_container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
-			-- Container that holds `big_zoomable_widget' and `big_map_widget' and their background box
+			-- Container that holds `big_zoomable_widget' 
+			-- and `big_map_widget' and their background box.
 			
 	big_zoomable_widget: EM_ZOOMABLE_WIDGET
 			-- Interactive container inside which 
-			-- `traffic_map' is displayed and can be zoomed
+			-- `traffic_map' is displayed and can be zoomed.
 
 	big_map_widget: TRAFFIC_MAP_WIDGET
 			-- Map widget to visualize `traffic_map'
-			-- for big zoomable map
+			-- for big zoomable map.
 			
 	little_zoomable_container: EM_ZOOMABLE_CONTAINER
-			-- Container inside which `little_map_widget' is displayed
+			-- Container inside which `little_map_widget' is displayed.
 
 	little_map_widget: TRAFFIC_MAP_WIDGET
 			-- Map widget to visualize 'traffic_map'
@@ -171,7 +180,7 @@ feature -- Views
 			
 	navigation_widget: NAVIGATOR
 			-- Widget to navigate in `big_zoomable_widget'
-			-- using `little_map_widget'
+			-- using `little_map_widget'.
 
 	information_box: EM_ZOOMABLE_CONTAINER
 			-- Information box to display some text information.	
@@ -182,10 +191,10 @@ feature -- Views
 feature -- Attributes
 
 	traffic_map: TRAFFIC_MAP
-			-- Reference to the map where the game takes place
+			-- Reference to the map where the game takes place.
 			
 	hunter_count: INTEGER
-			-- Reference to number of hunters
+			-- Reference to number of hunters.
 
 	status_box: STATUS_BOX
 			-- Status box to display state of current player and general overview.
@@ -193,19 +202,104 @@ feature -- Attributes
 	player_status_box: STATUS_BOX
 			-- Status box to be displayed when a player button gets clicked.
 
-	active: BOOLEAN
-			-- Is game active or in pause?
+	paused: BOOLEAN
+			-- Is game paused?
+			
+	game_over: BOOLEAN
+			-- Is the game over?
 			
 	hash_from_button_to_player_displayer: HASH_TABLE [PLAYER_DISPLAYER, BUTTON]
-			-- Hash table to show correct status box when button clicked
+			-- Hash table to show correct status box when button clicked.
 			
 	player_displayers: ARRAYED_LIST [PLAYER_DISPLAYER]
-			-- Holds all player displayers
+			-- Holds all player displayers.
 			
+feature {NONE} -- Menu Handling
+
+	overlay: EM_DRAWABLE
+		-- To be blended over the whole game scene when game is `paused'.
+
+	pause_menu: NORMAL_MENU
+		-- Menu to be shown when game is `paused'.
+		
+	game_over_menu: NORMAL_MENU
+		-- Menu to be shown when game over.
+			
+	pause_menu_container: STATUS_BOX
+		-- Container in which `pause_menu' gets displayed.
+	
+	game_over_menu_container: STATUS_BOX
+		-- Container in which `game_over_menu' gets displayed.		
+		
+	build_pause_menu is
+			-- Build `pause_menu'.
+		do	
+			create pause_menu.make_with_custom_fonts (small_menu_font, small_menu_selected_font)
+			pause_menu.add_entry ("continue", agent continue_callback, true)
+			pause_menu.add_entry ("new game", agent newgame_callback, false)
+			pause_menu.add_entry ("quit", agent quit_callback, false)
+			pause_menu.set_alignment (Centered)
+			pause_menu.set_x_y (20, 90)
+
+			create pause_menu_container.make_from_position_and_size ((window_width - pause_menu.width) // 2 - 25, (window_height - pause_menu.height) // 2 - 10, pause_menu.width + 50, pause_menu.height + 20, " ")
+			pause_menu_container.set_font (black_status_font)
+			pause_menu_container.set_color (white)
+			pause_menu_container.set_opacity (200)
+			pause_menu_container.set_auto_resize (false)
+			pause_menu_container.add_line ("The game is paused.")
+			pause_menu_container.extend (pause_menu)
+		end
+		
+	build_game_over_menu is
+			-- Build `game_over_menu'.
+		do
+			create game_over_menu.make_with_custom_fonts (small_menu_font, small_menu_selected_font)
+			game_over_menu.add_entry ("new game", agent newgame_callback, false)
+			game_over_menu.add_entry ("quit", agent quit_callback, false)
+			game_over_menu.set_alignment (Centered)
+			game_over_menu.set_x_y (20, 90)
+
+			create game_over_menu_container.make_from_position_and_size ((window_width - game_over_menu.width) // 2 - 25, (window_height - game_over_menu.height) // 2 - 10, game_over_menu.width + 50, game_over_menu.height + 20, " ")
+			game_over_menu_container.set_font (black_status_font)
+			game_over_menu_container.set_color (white)
+			game_over_menu_container.set_opacity (200)
+			game_over_menu_container.set_auto_resize (false)
+			game_over_menu_container.add_line ("G A M E   O V E R")
+			game_over_menu_container.extend (game_over_menu)
+		end
+		
+	continue_callback is
+			-- What happens when "Continue" is selected in the `pause_menu'.
+		do
+			paused := false
+			if pause_callback /= Void then
+				pause_callback.call ([paused])				
+			end
+			-- Remove the `pause_menu_container' from the scene
+			main_container.remove_last
+			-- Remove the `overlay' from the scene
+			main_container.remove_last
+		end
+		
+	newgame_callback is
+			-- What happens when "New game" is selected in a menu.
+		do
+			next_scene := create {START_MENU_SCENE}.make_scene
+			event_loop.stop
+		end
+
+	quit_callback is
+			-- What happens when "Quit" is selected in a menu.
+		do
+			next_scene := Void
+			event_loop.stop
+		end
+		
+	
 feature -- Access
 
 	set_traffic_map (a_traffic_map: TRAFFIC_MAP) is
-			-- Set `traffic_map' to `a_traffic_map'
+			-- Set `traffic_map' to `a_traffic_map'.
 		require
 			a_traffic_map_exists: a_traffic_map /= Void
 		do
@@ -249,6 +343,23 @@ feature -- Access
 			big_zoomable_widget.center_on (a_player.position)
 		end
 		
+	display_end_game is
+			-- Display game over stats and the `game_over_menu'
+		do
+--			main_container.extend (overlay)
+			main_container.extend (game_over_menu_container)
+			game_over := true
+		end
+
+	set_pause_callback (a_callback: PROCEDURE [ANY, TUPLE [BOOLEAN]]) is
+			-- set `pause_callback' to `a_callback'
+		require
+			a_callback_exists: a_callback /= Void
+		do
+			pause_callback := a_callback
+		ensure
+			pause_callback_set: pause_callback = a_callback
+		end		
 		
 feature {NONE} -- Implementation
 	
@@ -384,10 +495,20 @@ feature {MAIN_CONTROLLER} -- Event Handling
 			-- Handle keyboard events.
 		do
 			Precursor {FLAT_HUNT_SCENE} (a_keyboard_event)
-			
-			if a_keyboard_event.key = sdlk_p then
-				-- Set game to pause mode and show pause menu
-				active := false
+			if paused then
+				pause_menu.handle_key_down_event (a_keyboard_event)
+			elseif game_over then
+				game_over_menu.handle_key_down_event (a_keyboard_event)	
+			else
+				if a_keyboard_event.key = sdlk_p then
+					-- Set game to pause mode and show pause menu
+					paused := true
+					if pause_callback /= Void then
+						pause_callback.call ([paused])						
+					end
+					main_container.extend (overlay)
+					main_container.extend (pause_menu_container)
+				end
 			end
 		end
 		
@@ -411,6 +532,9 @@ feature {MAIN_CONTROLLER} -- Event Handling
 			end
 			redraw
 		end
+		
+	pause_callback: PROCEDURE [ANY, TUPLE [BOOLEAN]]
+			-- Gets called when game paused
 
 invariant
 	traffic_map_not_void: traffic_map /= Void

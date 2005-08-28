@@ -299,7 +299,7 @@ feature -- Access
 			-- To be displayed in a status box of the game scene
 
 	checkpoints: BINARY_SEARCH_TREE_SET [INTEGER]
-			-- Estate agent has to show himself in these rounds
+			-- Estate agent has to show himself in these rounds		
 			
 feature -- Output
 
