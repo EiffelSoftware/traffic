@@ -10,7 +10,7 @@
     revision: "$Revision$"
   </description>
 
-  <cluster name="traffic" location="${TRAFFIC}/library">
+  <cluster name="traffic" location="${TRAFFIC}/library" prefix="tr_">
     <cluster name="util">
     	<cluster name="base_extension">
 				<cluster name="dispenser"/>       
