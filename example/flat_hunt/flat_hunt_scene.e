@@ -12,7 +12,7 @@ deferred class
 inherit
 	EM_SCENE
 		redefine
-			handle_key_down_event, handle_outside_event --, run, default_create
+			handle_key_down_event, handle_outside_event
 		end
 		
 	EM_KEY_CONSTANTS
@@ -24,50 +24,6 @@ inherit
 		undefine
 			default_create
 		end
-
-feature -- Initialization
-
---	default_create is
---		do
---			Precursor {EM_SCENE}
---			events_initialized := False
---		end
---		
---
---	run (a_screen: EM_SURFACE) is
---		local
---			last_running_scene: EM_SCENE
---		do
---			if display_frame_counter then
---				create frame_counter.make	
---			end
---			screen := a_screen			
---			
-----			if not events_initialized then
---				event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
---				event_loop.key_up_event.subscribe (agent handle_key_up_event (?))
---				event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))			
---				event_loop.mouse_button_up_event.subscribe (agent handle_mouse_button_up_event (?))			
---				event_loop.mouse_motion_event.subscribe (agent handle_mouse_motion_event (?))			
---				event_loop.quit_event.subscribe (agent handle_quit_event (?))
---				event_loop.quit_event.subscribe (agent quit)
---				event_loop.outside_event.subscribe (agent handle_outside_event)
---				event_loop.outside_event.subscribe (agent animate)
---				event_loop.outside_event.subscribe (agent redraw)
---				if main_container /= Void then 
---					event_loop.mouse_button_down_event.subscribe (agent main_container.publish_mouse_event)
---					event_loop.mouse_button_up_event.subscribe (agent main_container.publish_mouse_event)
---					event_loop.mouse_motion_event.subscribe (agent main_container.publish_mouse_event)
---				end
---				events_initialized := True
-----			end
---			is_running := True
---			last_running_scene := running_scene
---			set_running_scene (Current)
---			event_loop.dispatch
---			set_running_scene (last_running_scene)  -- TODO: necessary, or better not?
---			is_running := False
---		end
 		
 feature -- Event Handling
 
@@ -93,12 +49,6 @@ feature -- Event Handling
 --			if a_keyboard_event.key = sdlk_m then
 --				music_player.toggle_mute
 --			end
-
-			-- other
-			if a_keyboard_event.key = sdlk_q then
-				next_scene := Void
-				event_loop.stop
-			end
 		end
 
 	handle_outside_event is
@@ -122,8 +72,5 @@ feature -- Attributes
 
 	last_scene: FLAT_HUNT_SCENE
 		-- Scene that was running before Current
-
---	events_initialized: BOOLEAN
-		-- True if events already initialized
 
 end
