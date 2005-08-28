@@ -225,6 +225,7 @@ feature -- Element change
 		require 
 			prepare_state: state = Prepare_state
 		do
+
 			last_player := current_player
 --			if last_player /= Void then
 --				last_player.set_unmarked				
@@ -239,6 +240,9 @@ feature -- Element change
 					state := Agent_escapes
 				end
 			end
+			if current_player.possible_moves /= Void then
+				current_player.possible_moves.wipe_out				
+			end			
 		end
 
 	update_agent_visibility is
@@ -331,13 +335,13 @@ feature {NONE} -- Implementation
 			until
 				outgoing_line_sections.after -- or else (outgoing_line_sections.item.type = Tram_type and outgoing_line_sections.item.destination /= a_line_section.origin)
 			loop
-				if (outgoing_line_sections.item.type = Tram_type and outgoing_line_sections.item.destination /= a_line_section.origin) then
-					destination := outgoing_line_sections.item.destination				
+				if (outgoing_line_sections.item.type = Tram_type and then outgoing_line_sections.item.destination /= a_line_section.origin) then
+					destination := outgoing_line_sections.item.destination
 				end
 				outgoing_line_sections.forth
 			end
 			
-			if destination /= Void then
+			if destination /= Void and then not is_occupied (destination) then
 				create Result.make (a_line_section.origin, destination, Tram_type, Void)				
 			else
 				Result := Void
