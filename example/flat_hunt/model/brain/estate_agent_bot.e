@@ -17,6 +17,7 @@ feature {ESTATE_AGENT} -- Basic operations
 			best_move_so_far: TRAFFIC_LINE_SECTION
 			tmp_move: TRAFFIC_LINE_SECTION
 			best_distance: DOUBLE
+			tmp_distance: DOUBLE
 		do
 			if
 				last_estate_agent_location = Void
@@ -38,10 +39,11 @@ feature {ESTATE_AGENT} -- Basic operations
 					possible_moves.after
 				loop
 					tmp_move := possible_moves.item
+					tmp_distance := calculate_distance (last_estate_agent_location, tmp_move.destination)
 					if
-						tmp_move.length > best_distance
+						tmp_distance > best_distance
 					then
-						best_distance := tmp_move.length
+						best_distance := tmp_distance
 						best_move_so_far := tmp_move
 					end
 					possible_moves.forth

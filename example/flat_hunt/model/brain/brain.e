@@ -40,14 +40,14 @@ feature {NONE} -- Implementation
 	selected_place: TRAFFIC_PLACE
 			-- Place selected by user
 
---	calculate_distance (location_1: TRAFFIC_PLACE; location_2: TRAFFIC_PLACE): DOUBLE is
---			-- Calculate distance between `location_1' and `location_2'.
---		do
---			Result := sqrt((location_1.position.x-location_2.position.x)*(location_1.position.x-location_2.position.x) +
---							(location_1.position.y-location_2.position.y)*(location_1.position.y-location_2.position.y))
---		ensure
---		   calculation_is_correct: Result*Result >= (location_1.position.x-location_2.position.x)*(location_1.position.x-location_2.position.x) and
---							Result*Result >= (location_1.position.y-location_2.position.y)*(location_1.position.y-location_2.position.y)
---		end
+	calculate_distance (location_1: TRAFFIC_PLACE; location_2: TRAFFIC_PLACE): DOUBLE is
+			-- Calculate distance between `location_1' and `location_2'.
+		do
+			Result := sqrt((location_1.position.x - location_2.position.x) * (location_1.position.x - location_2.position.x) +
+							(location_1.position.y - location_2.position.y) * (location_1.position.y - location_2.position.y))
+		ensure
+		   calculation_is_correct: Result * Result >= (location_1.position.x - location_2.position.x) * (location_1.position.x - location_2.position.x) and
+							Result * Result >= (location_1.position.y - location_2.position.y) * (location_1.position.y - location_2.position.y)
+		end
 	
 end
