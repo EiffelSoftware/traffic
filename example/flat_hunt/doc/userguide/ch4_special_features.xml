@@ -111,10 +111,6 @@
                     <term>
                         <emphasis>page down</emphasis>: music player previous song </term>
                 </varlistentry>
-                <varlistentry>
-                    <term>
-                        <emphasis>q</emphasis>: quit the application </term>
-                </varlistentry>
             </variablelist>
         </blockquote>
     </section>
