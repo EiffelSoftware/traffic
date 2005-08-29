@@ -12,7 +12,7 @@
   </description>
 
   <inherit>
-	  <parent location="${EM}/misc/em_application.eant">
+    <parent location="${EM}/misc/em_application.eant">
       <redefine target="init_system"/>
     </parent>
   </inherit>
@@ -20,7 +20,7 @@
   <!-- Implementation -->
 
   <target name="init_system">
-	  <set name="system" value="city_3d"/>
+    <set name="system" value="city_3d"/>
     <set name="system_dir" value="${TRAFFIC}/example/city_3d"/>
   </target>
 
