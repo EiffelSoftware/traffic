@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<project name="city_3D" default="help">
+
+  <description>
+    description: "Eiffel Ant file for 'city_3D'"
+    system: "EiffelMedia examples"
+    copyright: "Copyright (c) 2004, Patrick Ruckstuhl, Benno Baumgartner, Till G. Bay and others"
+    license: "Eiffel Forum License v2 (see forum.txt)"
+    date: "$Date: 2005/07/19 13:14:47 $"
+    revision: "$Revision: 1.1 $"
+  </description>
+
+  <inherit>
+    <parent location="${EM}/misc/em_application.eant">
+      <redefine target="init_system"/>
+    </parent>
+  </inherit>
+  
+  <!-- Implementation -->
+
+  <target name="init_system">
+    <set name="system" value="city_3D"/>
+    <set name="system_dir" value="."/>
+  </target>
+  
+</project>
