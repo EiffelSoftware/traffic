@@ -1,0 +1,13 @@
+
+touch: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+TOUCH_APPLICATION   root's creation        Error while parsing ./map/paris.xml: paris.xml: File 'paris.xml' cannot be read:
+<00000000059B0024>                         Developer exception.          Exit
+-------------------------------------------------------------------------------
+TOUCH_APPLICATION   root's creation                                     
+<00000000059B0024>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
