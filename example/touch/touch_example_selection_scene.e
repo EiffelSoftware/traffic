@@ -223,6 +223,7 @@ feature -- Scene Initialization
 				
 				
 				--Put Drawables to main_container
+				make_scene
 				main_container.extend (scroll_up)
 				main_container.extend (scroll_down)
 				main_container.extend (upper_background)
