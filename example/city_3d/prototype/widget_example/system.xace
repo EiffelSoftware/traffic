@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<system name="widget_browser">
+  <description>
+    system: "EiffelMedia 'Widget Browser' application"
+    copyright: "Copyright (c) 2005"
+    license: "Eiffel Forum License v2 (see forum.txt)"
+    date: "$Date$"
+    revision: "$Revision$"
+  </description>
+  <root class="WIDGET_BROWSER" creation="make"/>
+  <option unless="${DEBUG}">
+    <option name="assertion" value="none"/>
+    <option name="garbage_collector" value="none"/>
+    <option name="finalize" value="true"/>
+    <option name="console_application" value="false"/>
+  </option>
+  <option if="${DEBUG}">
+    <option name="assertion" value="all"/>
+    <option name="garbage_collector" value="none"/>
+    <option name="finalize" value="false"/>
+    <option name="console_application" value="false"/>
+  </option>
+
+  <cluster name="em_widget_browser" location="${EM}/example/widget_browser">
+    <cluster name="demo_panels"/>
+  </cluster>
+
+  <mount location="${GOBO}/library/kernel.xace"/>
+  <mount location="${GOBO}/library/library.xace"/>
+  <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
+  <mount location="${EM}/library/library.xace"/>
+
+</system>
