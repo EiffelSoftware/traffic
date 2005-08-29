@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<system name="touch">
+  <description>
+    system: "Simple traffic application with esdl"
+    copyright: "Copyright (c) 2004, Michela Pedroni and others"
+    license: "Eiffel Forum License v2 (see forum.txt)"
+    date: "$Date$"
+    revision: "$Revision$"
+  </description>
+  <root class="TOUCH_APPLICATION" creation="make_and_launch"/>
+  <option unless="${DEBUG}">
+    <option name="assertion" value="none"/>
+    <option name="garbage_collector" value="none"/>
+    <option name="finalize" value="true"/>
+    <option name="console_application" value="false"/>
+  </option>
+  <option if="${DEBUG}">
+    <option name="assertion" value="all"/>
+    <option name="garbage_collector" value="none"/>
+    <option name="finalize" value="false"/>
+    <option name="console_application" value="false"/>
+  </option>
+
+  <cluster name="touch" location="${TRAFFIC}/example/touch" prefix="tc">
+		<cluster name="utils"/>
+		<cluster name="examples"/>
+		<cluster name="widgets"/>
+		<cluster name="visualization"/>
+	</cluster>
+	
+  <mount location="${GOBO}/library/kernel.xace"/>
+  <mount location="${GOBO}/library/library.xace"/>
+  <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
+  <mount location="${EM}/library/library.xace"/>
+  <mount location="${TRAFFIC}/library/library.xace"/>  
+
+</system>

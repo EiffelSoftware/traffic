@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>  
+<!--     An example how to use this DTD from your XML document:     
+<?xml version="1.0"?>     
+<!DOCTYPE city SYSTEM "city_simple_application.dtd">     
+<city>     
+...     
+</city> -->  
+
+<!--- A Map can have places and links. --> 
+<!ELEMENT city (background, places, links)> 
+<!ATTLIST city     
+	name   CDATA #IMPLIED
+    >   
+ 
+<!--- A Point must have two coordinates: x and y. --> 
+<!ELEMENT point EMPTY> 
+<!ATTLIST point     
+	y CDATA #REQUIRED     
+	x CDATA #REQUIRED   
+    >    
+
+<!--- A Color consists of 3 RGB-components and its use. --> 
+<!ELEMENT color EMPTY> 
+<!ATTLIST color     
+	blue  CDATA #REQUIRED     
+	green CDATA #REQUIRED     
+	red   CDATA #REQUIRED     
+	type  (standard|highlight) "standard"
+   >    
+
+<!--- Background -->
+<!ELEMENT background (file?, polygon*)>
+
+<!--- Background file -->
+<!ELEMENT file EMPTY>
+<!ATTLIST file
+	name CDATA #REQUIRED
+   >
+
+<!--- Background polygons -->
+<!ELEMENT polygon (color+, point, point, point*)>
+
+<!--- Places can be stops, landmarks... --> 
+<!ELEMENT places (place*)>   
+
+<!--- A place must have a name and a point. --> 
+<!ELEMENT place EMPTY> 
+<!ATTLIST place     
+	name CDATA #REQUIRED
+   >  
+
+<!--- Links connect places.  -->
+<!ELEMENT links (link*)>  
+
+<!--- A Link must be of a certain type and goes from one place to another one. --> 
+<!ELEMENT link (link_displayer)> 
+<!ATTLIST link     
+	type CDATA #REQUIRED
+	from CDATA #REQUIRED
+	to CDATA #REQUIRED     
+	direction (directed | undirected) "directed"
+  > 
+<!ELEMENT link_displayer (point, point+, color+)> 
