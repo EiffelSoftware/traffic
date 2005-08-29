@@ -63,7 +63,7 @@ feature {NONE} -- Implementation
 			gl_load_identity
 			gl_clear_color (1, 1, 1, 0)
 
-			-- Move the pyramid into the screen and rotate it
+			-- Move the cube into the screen and rotate it
 			gl_translatef( 0, 0, -9 )
 			gl_rotatef(angle, 0, 1, 0)
 
@@ -99,69 +99,6 @@ feature {NONE} -- Implementation
 
 			gl_end
 			
---			-- Clear the screen
---			gl_clear_color (0.6, 0.2, 0.3, 0)
---			gl_clear_depth (0.0)
---			gl_clear (Em_gl_color_buffer_bit | Em_gl_depth_buffer_bit)		
---			gl_ortho (-1.0, 1.0, -1.0, 1.0, -1.0, 1.0)
-			
---			
---			gl_translatef( 0, -5, -20)
---			gl_scalef (1,1,1)
-			
---			gl_color3f(1, 1, 1) -- White
---			gl_begin (em_gl_line_loop)
---				gl_vertex2f (-0.5,-0.5)
---				gl_color3f(0, 1, 0) -- Green
---				gl_vertex2f (-0.5,0.5)
---				gl_color3f(0, 0, 1) -- Blue
---				gl_vertex2f (0.5,0.5)
---				gl_vertex2f (0.5,-0.5)
---			gl_end
---			gl_flush
-			
-			
---			gl_load_identity
---
---			-- Move the pyramid into the screen and rotate it
---			
---
---
---			gl_begin (em_gl_quads)
---				-- Front
---				gl_color3f(1, 1, 1) -- White
---				gl_vertex3d (-10,0,-10)
---				gl_vertex3d (-10,0,10)
---				gl_vertex3d (10,0,10)
---				gl_vertex3d (10,0,-10)
---
---			gl_end
---			
---			gl_rotatef(angle, -10, 0.5, 0)
---			
---			gl_begin (em_gl_quads)
---				-- Front
---				gl_color3f(1, 0, 0) -- White
---				gl_vertex3f (-0.5,1,-5)
---				gl_vertex3f (-0.5,1,5)
---				gl_vertex3f (0.5,1,5)
---				gl_vertex3f (0.5,1,-5)
---			gl_end
---			
---			
---			
---			gl_rotatef(angle, 10, 0.5, 0)
---			
---			gl_begin (em_gl_quads)
---				-- Front
---				gl_color3f(1, 0, 0) -- White
---				gl_vertex3f (-5,1,4)
---				gl_vertex3f (-5,1,5)
---				gl_vertex3f (0,1,5)
---				gl_vertex3f (0,1,4)
---				
---			gl_end
-			
 			-- Increment the angle
 			if
 				angle < 360	
@@ -177,7 +114,7 @@ feature {NONE} -- Implementation
 		-- The angle of the rotation in degrees
 		
 	speed: EM_NORMALIZED_SPEED
-		-- Rotation speed for pyramid
+		-- Rotation speed for cube
 
 feature {NONE} -- Implementation
 	-- TODO: Find a better solution than repeating this

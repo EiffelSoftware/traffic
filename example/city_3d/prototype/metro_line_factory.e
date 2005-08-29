@@ -62,82 +62,7 @@ feature -- Implementation
 			m_x,m_y,m_z: DOUBLE
 			coords: ARRAY[TUPLE[DOUBLE]]
 			i: INTEGER
-		do	
---		create coords.make (1,71)
---		
---			coords.force ([0.0,1.0], 1)
---			coords.force ([-0.9589, 0.2837], 1)
---			coords.force ([-0.5440, -0.8391], 2)
---			coords.force ([ 0.6503, -0.7597], 3)
---			coords.force ([ 0.9129, 0.4081], 4)
---			coords.force ([-0.1324, 0.9912], 5)
---			coords.force ([-0.9880, 0.1543], 6)
---			coords.force ([-0.4282, -0.9037],7)
---			coords.force ([ 0.7451, -0.6669], 8)
---			coords.force ([ 0.8509, 0.5253], 9)
---			coords.force ([-0.2624, 0.9650], 10)
---			coords.force ([-0.9998, 0.0221], 11)
---			coords.force ([-0.3048, -0.9524], 12)
---			coords.force ([ 0.8268, -0.5625], 13)
---			coords.force ([ 0.7739, 0.6333], 14)
---			coords.force ([-0.3878, 0.9218], 15)
---			coords.force ([-0.9939,-0.1104], 16)
---			coords.force ([-0.1761,-0.9844], 17)
---			coords.force ([ 0.8940,-0.4481], 18)
---			coords.force ([ 0.6833, 0.7302], 19)
---			coords.force ([-0.5064, 0.8623], 20)
---			coords.force ([-0.9705, -0.2410], 21)
---			coords.force ([-0.0442,-0.9990], 22)
---			coords.force ([ 0.9454,-0.3258], 23)
---			coords.force ([ 0.5806, 0.8142], 24)
---			coords.force ([-0.6160, 0.7877], 25)
---			coords.force ([-0.9301,-0.3673], 26)
---			coords.force ([ 0.0884,-0.9961], 27)
---			coords.force ([ 0.9802,-0.1978], 28)
---			coords.force ([ 0.4677, 0.8839], 29)
---			coords.force ([-0.7149, 0.6993], 30)
---			coords.force ([-0.8733,-0.4872], 31)
---			coords.force ([ 0.2194,-0.9756], 32)
---			coords.force ([ 0.9978,-0.0663], 33)
---			coords.force ([ 0.3466, 0.9380], 34)
---			coords.force ([-0.8011, 0.5985], 35)
---			coords.force ([-0.8012,-0.5985], 36)
---			coords.force ([ 0.3466,-0.9380], 37)
---			coords.force ([ 0.9978, 0.0663], 38)
---			coords.force ([ 0.2195, 0.9756], 39)
---			coords.force ([-0.8733, 0.4872], 40)
---			coords.force ([-0.7149,-0.6992], 41)
---			coords.force ([ 0.4677,-0.8839], 42)
---			coords.force ([ 0.9802, 0.1978], 43)
---			coords.force ([ 0.0884, 0.9961], 44)
---			coords.force ([-0.9301, 0.3673], 45)
---			coords.force ([-0.6161, -0.7877],46)
---			coords.force ([ 0.5806, -0.8142],47)
---			coords.force ([ 0.9454, 0.3258], 48)
---			coords.force ([-0.0442, 0.9990], 49)
---			coords.force ([-0.9705, 0.2410], 50)
---			coords.force ([-0.5064,-0.8623], 51)
---			coords.force ([ 0.6832, -0.7302], 52)
---			coords.force ([ 0.8940, 0.4480], 53)
---			coords.force ([-0.1760, 0.9844], 54)
---			coords.force ([-0.9939, 0.1104], 55)
---			coords.force ([-0.3878, -0.9217], 56)
---			coords.force ([ 0.7739, -0.6333], 57)
---			coords.force ([ 0.8268, 0.5624], 58)
---			coords.force ([-0.3048, 0.9524], 59)
---			coords.force ([-0.9998, -0.0221], 60)
---			coords.force ([-0.2624, -0.9650], 61)
---			coords.force ([ 0.8509, -0.5253], 62)
---			coords.force ([ 0.7451, 0.6669], 63)
---			coords.force ([-0.4282, 0.9037], 64)
---			coords.force ([-0.9880, -0.1542], 65)
---			coords.force ([-0.1324, -0.9912], 66)
---			coords.force ([ 0.9129, -0.4081], 67)
---			coords.force ([ 0.6503, 0.7597], 68)
---			coords.force ([-0.5440, 0.8391], 69)
---			coords.force ([-0.9589, -0.2836], 70)
---			coords.force ([-0.0000, -1.0000], 71)
-			
+		do
 			identifier := identifier + 1
 			
 			gl_matrix_mode (Em_gl_modelview)
@@ -149,30 +74,7 @@ feature -- Implementation
 			glu_disk (glu_new_quadric, 0, 0.2, 72, 1)
 			gl_pop_matrix
 			
---			gl_begin (em_gl_polygon)
---			gl_color3d (0,0.14,1)
---			from i:= 1
---			until i > coords.count
---			loop
---				gl_vertex3d (coords.item(i).double_item(1)*0.2 + p1.double_item(1), 0.14,coords.item (i).double_item(2)*0.2 + p1.double_item(3))
---				i := i + 1
---			end
---			gl_end
 			gl_flush
-		
---			m_x := p1.double_item(1)
---			m_y := 0.14
---			m_z := p1.double_item(3)
---
---		gl_begin (em_gl_quads)
---				-- Front
---				gl_color3f (0, 0.14, 1) -- Blue
---				gl_vertex3d (p1.double_item(1)-0.15,0.14,p1.double_item(3)-0.15)
---				gl_vertex3d (p1.double_item(1)-0.15,0.14,p1.double_item(3)+0.15)
---				gl_vertex3d (p1.double_item(1)+0.15,0.14,p1.double_item(3)+0.15)
---				gl_vertex3d (p1.double_item(1)+0.15,0.14,p1.double_item(3)-0.15)
---			gl_end
---			gl_flush	
 		end
 		
 	draw_line (p1, p2: TUPLE[DOUBLE]) is
@@ -211,28 +113,6 @@ feature -- Implementation
 				gl_vertex3d (p4.double_item (1), p4.double_item (2), p4.double_item (3))
 			gl_end
 		end
-		
---	draw_circle(p1: TUPLE[DOUBLE]) is
---			-- draw a circle between metro segments
---		local
---			radius, x, y, i: DOUBLE
---		do
---			radius := line_width/2
---			gl_begin (em_gl_polygon)
---				gl_color3f (red, green, blue)
---				from
---					i := 0
---				until
---					i >= 100
---				loop
---					x := cosine (i/100*2*pi) * radius
---					y := sine (i/100*2*pi) * radius
---					gl_vertex3d (p1.double_item(1)+x,0.1,p1.double_item(3)+y)
---					i := i + 1
---				end
---			gl_end
---			gl_flush
---		end
 	
 	points: ARRAY[TUPLE[DOUBLE]]
 	

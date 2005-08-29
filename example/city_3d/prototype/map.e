@@ -59,7 +59,7 @@ feature -- Initialization
 			gl_matrix_mode (Em_gl_modelview)
 			gl_load_identity
 			
-			-- Initialize normalized speed for rotation of pyramid
+			-- Initialize normalized speed for rotation
 			create speed
 			speed.set_speed (100)
 			
@@ -123,7 +123,7 @@ feature -- Initialization
 				i := i + 1
 			end
 
-			-- User Interaction
+			-- user Interaction
 			create event_loop.make_poll
 			event_loop.key_down_event.subscribe (agent handle_key_down_event(?))
 			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))
@@ -203,7 +203,6 @@ feature {NONE} -- Implementation
 			
 			draw_plane ([px-delta_z*line_width/2/norm,py,pz+delta_x*line_width/2/norm],[px+delta_z*line_width/2/norm,py,pz-delta_x*line_width/2/norm], [qx+delta_z*line_width/2/norm,qy,qz-delta_x*line_width/2/norm] ,[qx-delta_z*line_width/2/norm,qy,qz+delta_x*line_width/2/norm],[0.5,0.5,0.5])
 			gl_flush
-	
 		end
 		
 	draw_cube (p1, p2: TUPLE[DOUBLE]) is
@@ -221,7 +220,6 @@ feature {NONE} -- Implementation
 			qz := p2.double_item (3)
 			
 			gl_begin (em_gl_quads)
-			
 				-- Front
 				gl_color3f (0, 0, 1) -- Blue
 				gl_vertex3d (qx, py, qz)
@@ -231,7 +229,6 @@ feature {NONE} -- Implementation
 			gl_end
 				
 			gl_begin(em_gl_quads)
-
 				-- Right
 				gl_color3f(0, 1, 0) -- Green
 				gl_vertex3d (px, qy, qz)
@@ -259,7 +256,6 @@ feature {NONE} -- Implementation
 				gl_vertex3d (px, qy, qz)
 				gl_vertex3d (qx, qy, qz)
 				gl_vertex3d (qx, qy, pz)
-				
 			gl_end
 			
 		end
@@ -297,6 +293,7 @@ feature {NONE} -- Movement
 					angle := -165
 				end
 			end
+			
 			if a_mouse_motion_event.button_state_left then
 				
 				viewport := viewport.memory_alloc (4)
@@ -308,7 +305,6 @@ feature {NONE} -- Movement
 				gl_get_doublev (em_gl_projection, projection)
 
 --				glu_un_project (a_mouse_motion_event.x_motion, 0, a_mouse_motion_event.y_motion ,modelview, viewport, projection, new_x.to_reference, new_y.to_reference, new_z.to_reference)
-				
 				
 --				new_z := new_z + (a_mouse_motion_event.x_motion*0.5)
 --				new_y := new_y + a_mouse_motion_event.x_motion
@@ -327,6 +323,7 @@ feature {NONE} -- Movement
 --				elseif angle <= -130 then
 --					angle := -130
 --				end
+
 			end
 		end
 
@@ -434,6 +431,7 @@ feature {NONE} -- Implementation
 	metro_lines: ARRAY[EM_3D_OBJECT]
 		-- List of all metro lines
 	metro_lines_coords: ARRAY[ARRAY[TUPLE[DOUBLE]]]
+		-- Coordinates of the metro lines
 	positions: ARRAY[TUPLE[DOUBLE]]
 	
 	red: REAL
@@ -452,7 +450,7 @@ feature {NONE} -- Implementation
 	y: REAL
 	z: REAL
 	f: REAL
-		-- Factor
+		-- Zoom factor
 	
 	width: INTEGER is 800 --1024
 		-- The width of the surface
