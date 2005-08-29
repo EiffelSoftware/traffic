@@ -38,24 +38,26 @@ feature -- Initialization
 			keyboard.enable_repeating_key_down_events (200, 100)
 
 --			set_application_icon ("images/icon.png")
-			set_application_name ("Widget Browser")
+			set_application_name ("City 3D")
 			
 			-- Set widget theme and options
 			widget_options.disable_transparency_refresh
 			load_eclipse_theme
 			
---			set_scene (create {TEST_COMPONENT_SCENE}.make)
---			set_scene (create {WIDGET_BROWSER_SCENE}.make)
 			
+	
+			set_scene (create {CITY_3D_SCENE}.make)
 			launch
+			full_collect
+			
 		end
 		
 feature{NONE} -- Implementation
 		
-	Window_width: INTEGER is 1024 --740
+	Window_width: INTEGER is 800 --1024
 			-- Window width
 			
-	Window_height: INTEGER is 768 --700
+	Window_height: INTEGER is 600 -- 768
 			-- Window height
 			
 	Screen_resolution: INTEGER is 32
