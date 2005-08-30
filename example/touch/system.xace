@@ -25,8 +25,8 @@
   <cluster name="touch" location="${TRAFFIC}/example/touch">
 		<cluster name="utils"/>
 		<cluster name="examples"/>
-		<cluster name="widgets"/>
-		<cluster name="visualizatio"/>
+		<cluster name="widgets" prefix="tc"/>
+		<cluster name="visualization"/>
 	</cluster>
 	
   <mount location="${GOBO}/library/kernel.xace"/>
