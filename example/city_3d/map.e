@@ -21,7 +21,7 @@ feature -- Interface
 	make is
 			-- Creation procedure.
 		do
-			
+
 		end
 		
 	draw is
