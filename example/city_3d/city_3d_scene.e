@@ -28,6 +28,7 @@ feature -- Interface
 --			map_panel: EM_PANEL
 			toolbar_panel: EM_PANEL
 			map: MAP
+			map_file: TRAFFIC_MAP_FILE
 		do
 			make_component_scene
 			
@@ -52,11 +53,14 @@ feature -- Interface
 			toolbar_panel.add_widget (checkbox)
 			
 			
+--			create map_file.make_from_file ("./zurich_little.xml")
+			
+			
 			if video_subsystem.opengl_enabled then
---				create map.make
+				create map.make
 ----				sierpinski.set_position (0, 40)
 ----				sierpinski.set_dimension (512, 400)
---				add_component (map)
+				add_component (map)
 			else
 				io.put_string ("OpenGL disabled: Sierpinski pyramid disabled%N")
 			end
