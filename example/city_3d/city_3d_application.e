@@ -13,6 +13,10 @@ inherit
 	
 	EM_SHARED_WIDGET_OPTIONS
 		export {NONE} all end
+		
+	SHARED_CONSTANTS
+		export {NONE} all end
+	
 create
 	make
 
@@ -51,19 +55,5 @@ feature -- Initialization
 			full_collect
 			
 		end
-		
-feature{NONE} -- Implementation
-		
-	Window_width: INTEGER is 800 --1024
-			-- Window width
-			
-	Window_height: INTEGER is 600 -- 768
-			-- Window height
-			
-	Screen_resolution: INTEGER is 32
-			-- Screen resolution
-			
-	Fullscreen: BOOLEAN is false
-			-- Fullscreen?
 
 end -- class CITY_3D_APPLICATION

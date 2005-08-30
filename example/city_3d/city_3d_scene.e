@@ -17,6 +17,9 @@ inherit
 --			handle_mouse_motion_event
 		end
 	
+	SHARED_CONSTANTS
+		export {NONE} all end
+	
 creation make
 
 feature -- Interface
@@ -28,7 +31,6 @@ feature -- Interface
 --			map_panel: EM_PANEL
 			toolbar_panel: EM_PANEL
 			map: MAP
-			map_file: TRAFFIC_MAP_FILE
 		do
 			make_component_scene
 			
@@ -52,19 +54,16 @@ feature -- Interface
 			checkbox.set_dimension (50,20)
 			toolbar_panel.add_widget (checkbox)
 			
-			
---			create map_file.make_from_file ("./zurich_little.xml")
-			
-			
 			if video_subsystem.opengl_enabled then
 				create map.make
-----				sierpinski.set_position (0, 40)
-----				sierpinski.set_dimension (512, 400)
+--				sierpinski.set_position (0, 40)
+--				sierpinski.set_dimension (512, 400)
 				add_component (map)
 			else
 				io.put_string ("OpenGL disabled: Sierpinski pyramid disabled%N")
 			end
 			
+			map.load_map ("./zurich_little.xml")
 			
 			create event_loop.make_poll
 			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
@@ -106,15 +105,5 @@ feature -- Event handling
 --			
 --		end
 --		
-		
-feature{NONE} -- Implementation
-		
-	Window_width: INTEGER is 800 --1024
-			-- Window width
 			
-	Window_height: INTEGER is 600 -- 768
-			-- Window height
-		
-		
-
 end -- class CITY_3D_SCENE

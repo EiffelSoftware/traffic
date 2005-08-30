@@ -15,6 +15,9 @@ inherit
 			prepare_drawing
 		end
 	
+	SHARED_CONSTANTS
+		export {NONE} all end
+	
 --	EM_SCENE
 
 
@@ -34,8 +37,22 @@ feature -- Interface
 			set_min_view_distance (1.0)
 			set_max_view_distance (140)
 
---			-- User Interaction
+			-- User Interaction
 			mouse_button_down_event.subscribe (agent mouse_button_down (?))
+		end
+		
+	filename: STRING
+	
+	map: TRAFFIC_MAP
+	
+	load_map (fn: STRING) is
+			-- load the map
+		local
+			map_file: TRAFFIC_MAP_FILE
+		do
+			filename := fn
+			create map_file.make_from_file (filename)
+			map := map_file.traffic_map
 		end
 		
 	prepare_drawing is
