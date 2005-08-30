@@ -109,14 +109,14 @@ feature -- Initialization
 				ewer.draw (1000, map)
 				
 				create traffic_line_factory
-				traffic_line_factory.set_line_width (0.1)
+				traffic_line_factory.set_line_width (0.05)
 				
 				lines := map.lines
 				
 				from lines.start
 				until lines.after
 				loop
-					traffic_line_factory.set_color ([0.0,1.0,0.0])
+					traffic_line_factory.set_color ([lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255])
 					traffic_line_factory.set_line (lines.item_for_iteration)
 					traffic_line_factory.create_object.draw
 					lines.forth

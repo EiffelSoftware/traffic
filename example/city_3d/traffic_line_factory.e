@@ -135,7 +135,7 @@ feature {NONE} -- Implementation
 	specify_object is
 			-- defining the object
 		do
-			line.do_all (agent draw_line_section (?))
+			line.linear_representation.do_all (agent draw_line_section (?))
 		end
 		
 	draw_line_section (s: TRAFFIC_LINE_SECTION) is
@@ -150,9 +150,10 @@ feature {NONE} -- Implementation
 			y_org := s.origin.position.y / 100
 			x_dst := s.destination.position.x / 100
 			y_dst := s.destination.position.y / 100
-			draw_circle ([x_org, 0.11, y_org], 1.5*line_width, [0.0,0.0,0.0])
-			draw_circle ([x_dst, 0.11, y_dst], 1.5*line_width, [0.0,0.0,0.0])
-
+			draw_circle ([x_org, 0.11, y_org], 2*line_width, [0.0,0.0,0.0])
+			draw_circle ([x_dst, 0.11, y_dst], 2*line_width, [0.0,0.0,0.0])
+--			io.put_string ("%N" + s.line.name + ": " + s.origin.name + x_org.out + y_org.out + " -> " + s.destination.name + x_dst.out + y_dst.out)
+			
 			-- draw a connecting line
 			rgb := [red, green, blue]
 			from
