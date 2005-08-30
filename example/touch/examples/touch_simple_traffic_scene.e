@@ -85,7 +85,11 @@ feature -- Initialization
 feature -- Access
 	initialized: BOOLEAN
 
-feature -- Views
+feature -- Widgets
+	blue_box: TOUCH_BITMAP_STATIC
+			-- The Box where the end button is in
+	foreground: TOUCH_BITMAP_STATIC
+			-- the foreground for the map
 	background : EM_RECTANGLE
 			-- the grey background for the map
 			
@@ -117,25 +121,35 @@ feature -- Scene Initialization
 				initialized := true
 				first_loop := true
 				
-				-- Build grey background color.
-				create background_color.make_with_rgb (100, 100, 100)	
+				-- Build black background color.
+				create background_color.make_with_rgb (0, 0, 0)	
 	
 				-- Build map widget.
 				build_map_widget (border, border, width-2*border, (0.7*height-2*border).rounded)
 	--			map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
 	
-				
-				--Build end button
+
+				--Build end button				
 				end_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height ("End Example", 250, 30)
-				end_button.set_x_y (width-2*border-end_button.width, (0.7*height+border).rounded)
+				end_button.set_x_y (width-3*border-end_button.width, (0.7*height+3*border).rounded)
 				end_button.subscribe_for_click (agent process_clicked_end_button)
+
+				--Build box for end button
+				create blue_box.make_with_image_file_and_width_and_height ("./images/background_filled.png", 250+4*border, 30+4*border)
+				blue_box.set_x_y (width-5*border-end_button.width, (0.7*height+border).rounded)
 	
 				-- Build Console
 				create console.make_with_width_and_height ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
 				console.set_x_y (border, (0.7*height+border).rounded)
+
+				--Build Map foreground
+				create foreground.make_with_image_file_and_width_and_height ("./images/map.png",width-2*border+2, (0.7*height-2*border).rounded+4)
+				foreground.set_x_y (border, border)
 				
+				main_container.extend (blue_box)
 				main_container.extend (console)
 				main_container.extend (end_button)
+				main_container.extend (foreground)
 				
 				--Render map_widget
 				map_widget.render
@@ -190,7 +204,16 @@ feature -- Basic Operation
 			background.set_x_y (zoomable_widget.x, zoomable_widget.y)
 			background.set_size (zoomable_widget.width, zoomable_widget.height)
 			
-			end_button.set_x_y ( zoomable_widget.x + zoomable_widget.width - end_button.width, 670)
+			-- Re-Build Map foreground
+			main_container.delete (foreground)
+			
+			create foreground.make_with_image_file_and_width_and_height ("./images/map.png", background.width+2, background.height+2)
+			foreground.set_x_y (background.x, background.y)
+			
+			main_container.extend (foreground)
+			
+			blue_box.set_x_y ( zoomable_widget.x + zoomable_widget.width - end_button.width - 4*border, 680-2*border)
+			end_button.set_x_y ( zoomable_widget.x + zoomable_widget.width - end_button.width-2*border, 680)
 		end
 	
 feature -- Model	
