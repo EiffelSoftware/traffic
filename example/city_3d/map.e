@@ -63,20 +63,26 @@ feature -- Initialization
 				gl_tex_envi (Em_gl_texture_env, Em_gl_texture_env_mode, Em_gl_modulate)
 			end
 			gl_viewport (x, Video_subsystem.video_surface.height - height - y, width, height)
+			
 			-- Reset depth buffer
 			gl_clear (Em_gl_depth_buffer_bit)
+			
 			-- Opengl settings
 			gl_enable (Em_gl_depth_test)
+			
 			-- Enable antialiasing
 			gl_enable (Em_gl_line_smooth)
 			gl_hint (Em_gl_line_smooth, Em_gl_nicest)
+			
 			-- Setup the projection matrix
 			gl_matrix_mode (Em_gl_projection)
 			gl_load_identity
 			glu_perspective (field_of_view, width/height, min_view_distance, max_view_distance)
+			
 			-- Setup the model view matrix
 			gl_matrix_mode (Em_gl_modelview)
-			gl_load_identity	
+			gl_load_identity
+			
 			-- Clearing background color to a nice blue
 			gl_clear_color (0.1,0.4,0.5,0)
 			gl_clear(em_gl_color_buffer_bit)
@@ -87,14 +93,14 @@ feature -- Initialization
 			gl_translated_external (x_coord*focus, y_coord*focus, z_coord*focus)
 			gl_rotatef(y_rotation, 0, 1, 0)
 			gl_rotatef (z_rotation, 0, 0, 1)
-			
 		end
-		
 		
 	draw is
 			-- Who the fuck knows that.
-		local 	ewer: BUILDING_EWER
-				traffic_line_factory: TRAFFIC_LINE_FACTORY
+		local
+			ewer: BUILDING_EWER
+			traffic_line_factory: TRAFFIC_LINE_FACTORY
+			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 		do
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(1,0,0))
 			
@@ -103,21 +109,22 @@ feature -- Initialization
 				ewer.draw (1000, map)
 				
 				create traffic_line_factory
-				traffic_line_factory.set_line_width (0.2)
+				traffic_line_factory.set_line_width (0.1)
 				
-				from map.lines.start
-				until map.lines.after
+				lines := map.lines
+				
+				from lines.start
+				until lines.after
 				loop
 					traffic_line_factory.set_color ([0.0,1.0,0.0])
-					traffic_line_factory.set_line (map.lines.item_for_iteration)
+					traffic_line_factory.set_line (lines.item_for_iteration)
 					traffic_line_factory.create_object.draw
+					lines.forth
 				end
 			end
 		end
 		
-	
-		
-		is_map_loaded: BOOLEAN
+	is_map_loaded: BOOLEAN
 			-- Has parsing already taken place?
 		
 feature -- Traffic stuff		
@@ -139,12 +146,10 @@ feature -- Traffic stuff
 		
 feature -- Drawing
 
-		
 	draw_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
 		-- draw a plane
 		do
 			gl_begin (em_gl_quads)
-				-- Boden
 				gl_color3dv (rgb.pointer) 
 				gl_vertex3dv (p1.pointer)
 				gl_vertex3dv (p2.pointer)
@@ -152,7 +157,6 @@ feature -- Drawing
 				gl_vertex3dv (p4.pointer)
 			gl_end
 		end
-		
 		
 feature{NONE} -- Event handling
 
@@ -174,8 +178,6 @@ feature{NONE} -- Event handling
 --			end
 		end
 		
-
-
 	mouse_button_down (event: EM_MOUSEBUTTON_EVENT) is	
 			-- Handle mouse events
 		require else
@@ -206,7 +208,7 @@ feature{NONE} -- Event handling
 --				create other_z.make (128)
 --				other_y.put_double (6,0)
 --				res := glu_un_project_external (10, 45, 17, modelview, projection, viewport, other_x.item, other_y.item, other_z.item)
-----				io.put_integer(res)
+--				io.put_integer(res)
 --				io.put_double (other_y.read_double (0))
 		end
 

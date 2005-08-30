@@ -27,16 +27,16 @@ feature -- Interface
 	make is
 			-- Creation procedure.
 		local 
-			checkbox: EM_CHECKBOX
+--			checkbox: EM_CHECKBOX
 			toolbar_panel: EM_PANEL
 			combo_box: EM_COMBOBOX[STRING]
 			button: EM_BUTTON
 		do
 			make_component_scene
-			create checkbox.make_from_text ("Do nothing")
+--			create checkbox.make_from_text ("Do nothing")
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded,window_height)
 			create combo_box.make_from_list (search_for_xml)
-			create button.make_from_text ("Parse")
+			create button.make_from_text ("Load map")
 			
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -55,7 +55,7 @@ feature -- Interface
 			
 			-- Button
 			button.set_position (50, 80)
-			button.set_dimension (50, 20)
+--			button.set_dimension (50, 20)
 			button.clicked_event.subscribe (agent button_click (button))
 			button.set_background_color (create {EM_COLOR}.make_with_rgb (127,127,127))
 			toolbar_panel.add_widget (button)
@@ -67,27 +67,24 @@ feature -- Interface
 			combo_box.set_selected_index (1)
 			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
-	
-			
 			
 			-- Checkbox
-			checkbox.set_position (10,350)
-			checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
-			checkbox.set_dimension (110,20)
+--			checkbox.set_position (10,350)
+--			checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+--			checkbox.set_dimension (110,20)
 --			checkbox.checked_event.subscribe (agent checkbox_click)
-			toolbar_panel.add_widget (checkbox)
-			
+--			toolbar_panel.add_widget (checkbox)
 			
 --			create event_loop.make_poll
-------			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
-----			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))
-----			event_loop.mouse_motion_event.subscribe (agent handle_mouse_motion_event (?))
+--			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
+--			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))
+--			event_loop.mouse_motion_event.subscribe (agent handle_mouse_motion_event (?))
 		end
 
 		
 feature -- Event handling
 
-	button_click(button: EM_BUTTON) is
+	button_click (button: EM_BUTTON) is
 			-- Checkbox has been clicked
 		do
 			button.set_pressed (false)
@@ -95,18 +92,18 @@ feature -- Event handling
 				map.load_map ("./zurich_little.xml")
 			else
 				map.load_map (map_file_name)
-			end	
+			end
 		end
 		
 		combo_selection_changed (name: STRING) is
 				-- Combo Box selection has been changed
-			require name_exists: name /= void and then not name.is_empty
+			require
+				name_exists: name /= void and then not name.is_empty
 			do
 				map_file_name := name
 			ensure 
 				map_file_name = name
 			end
-			
 
 feature{NONE} -- Implementation
 
@@ -133,12 +130,9 @@ feature{NONE} -- Implementation
 				end
 			end
 		end
-		
-		
 
 --	handle_key_down_event (event: EM_KEYBOARD_EVENT) is
 --			-- Handle key down event
---			
 --		do
 --			if event.key = event.sdlk_escape then
 --				next_scene := void
@@ -160,5 +154,5 @@ feature{NONE} -- Implementation
 --			
 --		end
 --		
-			
+
 end -- class CITY_3D_SCENE
