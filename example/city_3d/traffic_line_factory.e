@@ -32,8 +32,9 @@ inherit
 feature -- Implementation
 
 	identifier: INTEGER
+		-- For naming reasons
 
-	set_points (l : TRAFFIC_LINE) is
+	set_line (l : TRAFFIC_LINE) is
 			-- create a new object
 		require
 			l /= Void
@@ -75,13 +76,7 @@ feature -- Implementation
 			
 			gl_flush
 		end
-		
-	build_line: EM_3D_OBJECT is
-			-- foo
-		do
-			
-		end
-		
+
 		
 	draw_line (p1, p2: TUPLE[DOUBLE]) is
 			-- draw a line
@@ -151,10 +146,10 @@ feature {NONE} -- Implementation
 			f, t: INTEGER
 		do
 			-- draw circles at the origin and destination
-			x_org := s.origin.position.x
-			y_org := s.origin.position.y
-			x_dst := s.destination.position.x
-			y_dst := s.destination.position.y
+			x_org := s.origin.position.x / 100
+			y_org := s.origin.position.y / 100 
+			x_dst := s.destination.position.x / 100
+			y_dst := s.destination.position.y / 100
 			draw_circle ([x_org, y_org], 1.5*line_width)
 			draw_circle ([x_dst, y_dst], 1.5*line_width)
 			
@@ -165,12 +160,12 @@ feature {NONE} -- Implementation
 			until
 				f >= s.polypoints.count
 			loop
-				draw_line ([s.polypoints.i_th (f).x, s.polypoints.i_th (f).y], [s.polypoints.i_th (t).x, s.polypoints.i_th (t).y])
-				draw_circle([s.polypoints.i_th (f).x, s.polypoints.i_th (f).y], line_width)
+				draw_line ([s.polypoints.i_th (f).x / 100, s.polypoints.i_th (f).y / 100], [s.polypoints.i_th (t).x / 100, s.polypoints.i_th (t).y / 100])
+				draw_circle([s.polypoints.i_th (f).x / 100, s.polypoints.i_th (f).y / 100], line_width)
 				f := f + 1
 				t := t + 1
 			end
-			draw_circle ([s.polypoints.i_th (f).x, s.polypoints.i_th (f).y], line_width)
+			draw_circle ([s.polypoints.i_th (f).x / 100, s.polypoints.i_th (f).y / 100], line_width)
 		end
 
 end -- class TRAFFIC_LINE_FACTORY

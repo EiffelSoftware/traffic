@@ -97,20 +97,28 @@ feature -- Initialization
 				traffic_line_factory: TRAFFIC_LINE_FACTORY
 		do
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(1,0,0))
-			create ewer.make(-5, -5, 10, 10, .2)
-			ewer.draw (1000, map)
 			
-			create traffic_line_factory
-			traffic_line_factory.set_line_width (0.2)
-			
-			from map.lines.start
-			until map.lines.after
-			loop
-				traffic_line_factory.set_color ([0.0,0.0,0.0])
-				traffic_line_factory.set_points (map.lines.item_for_iteration)
-				traffic_line_factory.create_object.draw
+			if is_map_loaded then
+				create ewer.make(-5, -5, 10, 10, .2)
+				ewer.draw (1000, map)
+				
+				create traffic_line_factory
+				traffic_line_factory.set_line_width (0.2)
+				
+				from map.lines.start
+				until map.lines.after
+				loop
+					traffic_line_factory.set_color ([0.0,1.0,0.0])
+					traffic_line_factory.set_line (map.lines.item_for_iteration)
+					traffic_line_factory.create_object.draw
+				end
 			end
 		end
+		
+	
+		
+		is_map_loaded: BOOLEAN
+			-- Has parsing already taken place?
 		
 feature -- Traffic stuff		
 
@@ -126,6 +134,7 @@ feature -- Traffic stuff
 			filename := fn
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
+			is_map_loaded := true
 		end
 		
 feature -- Drawing
@@ -151,18 +160,18 @@ feature{NONE} -- Event handling
 			-- Mouse wheel down event
 		do
 			focus := focus + 0.1
-			if focus > 3 then
-				focus := 3
-			end
+--			if focus > 3 then
+--				focus := 3
+--			end
 		end
 		
 	mouse_wheel_up is
 			-- Mouse wheel up event
 		do
 			focus := focus - 0.1
-			if focus < 0.3 then
-				focus := 0.3
-			end
+--			if focus < 0.3 then
+--				focus := 0.3
+--			end
 		end
 		
 
