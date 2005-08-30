@@ -1,8 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "A simple EM_SCENE which displays a map."
+	author: "Roger Kueng"
+	date: "2005/08/25"
+	revision: "1.0"
 
 class
 	TOUCH_SIMPLE_TRAFFIC_SCENE
@@ -35,7 +35,7 @@ inherit
 		end
 
 create
- 	make,
+	make_with_map_file,
  	make_with_zurich_little,
  	make_with_zurich_big,
  	make_with_paris
@@ -44,6 +44,7 @@ feature -- Initialization
 	make_with_zurich_little (an_example: TOUCH_EXAMPLE) is
 			-- 
 		do
+			make_scene
 			make_with_map_file (an_example, "./map/zurich_little.xml")
 		ensure
 			traffic_map_not_void: traffic_map /= Void
@@ -52,6 +53,7 @@ feature -- Initialization
 	make_with_zurich_big (an_example: TOUCH_EXAMPLE) is
 			-- 
 		do
+			make_scene			
 			make_with_map_file (an_example, "./map/zurich_big.xml")
 		ensure
 			traffic_map_not_void: traffic_map /= Void
@@ -60,6 +62,7 @@ feature -- Initialization
 	make_with_paris (an_example: TOUCH_EXAMPLE) is
 			-- 
 		do
+			make_scene			
 			make_with_map_file (an_example, "./map/paris.xml")
 		ensure
 			traffic_map_not_void: traffic_map /= Void
@@ -70,7 +73,7 @@ feature -- Initialization
 		local
 			map_file: TRAFFIC_MAP_FILE
 		do
-			default_create
+			make_scene
 			-- Load `traffic_map'
 			example := an_example
 			create map_file.make_from_file (a_map_file)
@@ -78,19 +81,14 @@ feature -- Initialization
 		ensure
 			traffic_map_not_void: traffic_map /= Void
 		end
-		
-feature {NONE} --Implementation
-	first_loop: BOOLEAN
-	
-	example: TOUCH_EXAMPLE
-	
-feature -- Model
-	
-	traffic_map: TRAFFIC_MAP
-			-- The traffic map.
+
+feature -- Access
+	initialized: BOOLEAN
 
 feature -- Views
-		
+	background : EM_RECTANGLE
+			-- the grey background for the map
+			
 	zoomable_widget: EM_ZOOMABLE_WIDGET
 			-- Interactive container inside which 
 			-- `traffic_map' is displayed and can be zoomed
@@ -110,39 +108,42 @@ feature -- Scene Initialization
 		local			
 			width, height: INTEGER
 			border: INTEGER
-		do			
-			width := 1024
-			height := 768
-			border := 10
+		do	
 		
-			first_loop := true
-			
-			-- Build grey background color.
-			create background_color.make_with_rgb (100, 100, 100)	
+			if not initialized then
+				width := 1024
+				height := 768
+				border := 10
+				initialized := true
+				first_loop := true
+				
+				-- Build grey background color.
+				create background_color.make_with_rgb (100, 100, 100)	
+	
+				-- Build map widget.
+				build_map_widget (border, border, width-2*border, (0.7*height-2*border).rounded)
+	--			map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
+	
+				
+				--Build end button
+				end_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height ("End Example", 250, 30)
+				end_button.set_x_y (width-2*border-end_button.width, (0.7*height+border).rounded)
+				end_button.subscribe_for_click (agent process_clicked_end_button)
+	
+				-- Build Console
+				create console.make_with_width_and_height ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
+				console.set_x_y (border, (0.7*height+border).rounded)
+				
+				main_container.extend (console)
+				main_container.extend (end_button)
+				
+				--Render map_widget
+				map_widget.render
 
-			-- Build map widget.
-			build_map_widget (border, border, width-2*border, (0.7*height-2*border).rounded)
---			map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
-
-			
-			--Build end button
-			end_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height ("End Example", 250, 30)
-			end_button.set_x_y (width-2*border-end_button.width, (0.7*height+border).rounded)
-			end_button.subscribe_for_click (agent process_clicked_end_button)
-
-			-- Build Console
-			create console.make_with_width_and_height ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
-			console.set_x_y (border, (0.7*height+border).rounded)
-			
-			main_container.extend (console)
-			main_container.extend (end_button)
-			
-			--Render map_widget
-			map_widget.render		
-			
-			
-			map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
-			
+				map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)	
+			end	
+		ensure then
+			initialized: initialized = true
 		end
 		
 feature -- Basic Operation
@@ -169,7 +170,37 @@ feature -- Basic Operation
 			next_scene := a_scene
 		end
 		
+	big_console is
+			-- make the console bigger
+		require
+			is_initialized: initialized = true
+		local
+			size, border: INTEGER
+		do
+			size := 100
+			border := 10
+			
+			console.set_x_y ( border, 50)
+			console.set_width_height (400, 650) 
+			
+			zoomable_widget.set_x_y (border + console.width + border, 50)
+			zoomable_widget.set_size ( 580, 580)
+			zoomable_widget.calculate_object_area
+			
+			background.set_x_y (zoomable_widget.x, zoomable_widget.y)
+			background.set_size (zoomable_widget.width, zoomable_widget.height)
+			
+			end_button.set_x_y ( zoomable_widget.x + zoomable_widget.width - end_button.width, 670)
+		end
+	
+feature -- Model	
+	traffic_map: TRAFFIC_MAP
+			-- The traffic map.
+		
 feature {NONE} -- Implementation
+	first_loop: BOOLEAN
+	
+	example: TOUCH_EXAMPLE
 
 	rail_color: EM_COLOR is
 			-- Color used for rail lines.
@@ -183,19 +214,11 @@ feature {NONE} -- Implementation
 			-- and add it to `main_container'
 		require
 			traffic_map_not_void: traffic_map /= Void
-		local
-			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
-			background: EM_RECTANGLE
-			
-		do	
-			-- Create container to put background and widgets into.
-			create container.make
-			container.set_x_y (x, y)
-			
+		do				
 			-- Build white background
-			create background.make_from_coordinates (0, 0, width, height)
+			create background.make_from_position_and_size (x, y, width, height)
 			background.set_fill_color (create {EM_COLOR}.make_with_rgb (230, 230, 230))
-			container.extend (background)
+			main_container.extend (background)
 			
 			-- Build map widget to visualize `traffic_map'
 			create map_widget.make_with_map (traffic_map)
@@ -207,13 +230,12 @@ feature {NONE} -- Implementation
 			
 			-- Create zoomable widget to make map zoomable.
 			create zoomable_widget.make (width, height)
+			zoomable_widget.set_x_y (x,y)
 			zoomable_widget.extend (map_widget)
 			zoomable_widget.calculate_object_area
 			zoomable_widget.scroll_and_zoom_to_rectangle (map_widget.bounding_box)
-			container.extend (zoomable_widget)
+			main_container.extend (zoomable_widget)
 			
-			-- Extend scene with map widget.
-			main_container.extend (container)
 		end		
 
 		

@@ -29,7 +29,7 @@ feature -- Access
 	description: STRING is
 			-- 
 		once
-			Result := "Implementation of the TOUR example from the Textbook TOUCH"
+			Result := "Implementation of the FANCY_LINE example from the Textbook TOUCH"
 		end
 
 

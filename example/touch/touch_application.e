@@ -35,7 +35,7 @@ feature -- Initialization
 			standard_bmp_fonts.set_font_dirname ("font")
 			
 			-- Create first scene.
-			first_scene := create {TOUCH_EXAMPLE_SELECTION_SCENE}
+			first_scene := create {TOUCH_EXAMPLE_SELECTION_SCENE}.make_scene
 						
 			-- Set and launch the first scene.
 			set_scene (first_scene)

@@ -1,7 +1,10 @@
 indexing
-	description: "Implementation of the TOURISM class from The Textbook TOUCH"
+	description: "[
+					Contains all the predefines and classes to run 'explore'.
+					NOTE: 'Paris', 'Line8', 'Louvre' are not of the type of any TRAFFIC class.
+					]"
 	author: "Roger Kueng"
-	date: "2005/07/22"
+	date: "2005/08/25"
 	revision: "1.0"
 
 deferred class
@@ -11,7 +14,6 @@ inherit
 	TOUCH_EXAMPLE
 		redefine
 			run_with_scene,
-			pictures,
 			default_create
 		end
 	EM_SHARED_BITMAP_FACTORY
@@ -20,21 +22,17 @@ inherit
 			is_equal,
 			default_create
 		end
-		
---create 
---	make
-	
+
 feature -- Initialization
 	default_create is
 			-- 
 		do
-			--default_create
+			-- default_create
 			Precursor {TOUCH_EXAMPLE}
 			Precursor {EM_SHARED_BITMAP_FACTORY}
 			
-			create pictures.make_default
 			-- Load example picture
-			bitmap_factory.create_bitmap_from_image ("images/examples/example_1.png")
+			bitmap_factory.create_bitmap_from_image ("images/examples/example_preview.png")
 			if bitmap_factory.last_bitmap /= Void then
 				pictures.force_last (bitmap_factory.last_bitmap) 
 			end
@@ -44,13 +42,10 @@ feature -- Access
 	description: STRING is
 			-- 
 		once
-			Result := "Implementation of the PREVIEW example class from the TOUCH Textbook"
+			Result := "The First example of TOUCH"
 		end
 
-	pictures: DS_LINKED_LIST [EM_BITMAP]
-
-feature -- Basic operations
-
+feature -- Basic operation
 	run_with_scene (exit_scene: EM_SCENE): EM_SCENE is
 			-- 
 		do
@@ -67,18 +62,15 @@ feature -- Basic operations
 
 			-- Create the 'Louvre' object
 			create Louvre.make_with_place_and_map_widget (a_runtime.map.place ("Musee du Louvre"), a_runtime.map_widget)
-			--Create the 'Line8' object
+			-- Create the 'Line8' object
 			create Line8.make_with_line_and_map_widget (a_runtime.map.line ("tram 8"), a_runtime.map_widget)
 
 			Paris := a_runtime.map_widget
 			Paris.hide
 			
-			--Create Passenger
+			-- Create Passenger
 			create Passenger.make_on_map_place (a_runtime.map, a_runtime.map.place ("Notre Dame"))
 			create passenger_drawable.make_from_passenger (Passenger)
-			
---			bitmap_factory.create_bitmap_from_image ("images/star.png")			
---			passenger_drawable.set_picture (bitmap_factory.last_bitmap)
 
 			-- Add some simple sprite containing an animation and animate it.
 			create animation.make_from_file ("./pics/alien.anim")
@@ -86,19 +78,18 @@ feature -- Basic operations
 			example_scene.start_animating (sprite)
 			passenger_drawable.set_picture (sprite)
 
-
 			example_scene.start_animating (passenger_drawable)
 			
 			a_runtime.map_widget.extend (passenger_drawable)
 			
-			--Create Route1
+			-- Create Route1
 			create Route1.make_with_scene_and_map_widget (example_scene, a_runtime.map_widget)			
 			Route1.extend (a_runtime.map.place ("Tour Eiffel"))
 			Route1.extend (a_runtime.map.place ("Musee du Louvre"))
 			Route1.extend (a_runtime.map.place ("Notre Dame"))
 			Route1.calculate_shortest_path
 
-			--Create Route2
+			-- Create Route2
 			create Route2.make_with_scene_and_map_widget (example_scene, a_runtime.map_widget)			
 			Route2.extend (a_runtime.map.place ("Notre Dame"))
 			Route2.extend (a_runtime.map.place ("Tour Eiffel"))
@@ -108,33 +99,30 @@ feature -- Basic operations
 			
 		end
 
-feature  -- Deferred
+feature  -- Example main feature
 	explore is
 		deferred
 		end
 		
-feature {NONE} -- implementation
-
+feature {NONE} -- Implementation
 	example_scene: TOUCH_SIMPLE_TRAFFIC_SCENE
-
-	Louvre: TOUCH_GRAPHICAL_TRAFFIC_PLACE
-	
-	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
-	
-	Passenger: TOUCH_PASSENGER
 	passenger_drawable: MAP_WIDGET_PASSENGER_DRAWABLE
 
 	animation: EM_ANIMATION
 	image: EM_BITMAP
 	sprite: EM_SPRITE
 
+feature -- Predefines
+	Louvre: TOUCH_GRAPHICAL_TRAFFIC_PLACE
+	
+	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
+	
+	Passenger: TOUCH_PASSENGER
+
 	Paris: TRAFFIC_MAP_WIDGET
 
 	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
 	
 	Route2: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
-	
-invariant
-	invariant_clause: True -- Your invariant here
 
-end -- class EXAMPLE_1
+end -- class TOURISM

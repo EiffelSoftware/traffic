@@ -1,8 +1,8 @@
 indexing
 	description: "Basic Interface for examples"
 	author: "Roger Kueng"
-	date: "2005/06/20"
-	revision: "alpha"
+	date: "2005/08/25"
+	revision: "1.0"
 
 deferred class
 	TOUCH_EXAMPLE
@@ -26,6 +26,8 @@ feature -- Initialisation
 		do
 			Precursor {HASHABLE}
 			hash_code := id_generator.new_id
+			create pictures.make_default
+			
 		end
 		
 feature -- Access
@@ -36,12 +38,9 @@ feature -- Access
 		deferred
 		end
 		
-	pictures: DS_LINKED_LIST [EM_BITMAP] is
+	pictures: DS_LINKED_LIST [EM_BITMAP]
 			-- If a simple description is not enough the example can 
-			-- emit here a list of pictures
-		do
-			Result := create {DS_LINKED_LIST [EM_BITMAP]}.make_default
-		end
+			-- put here a list of pictures. 
 		
 	name: STRING is
 			-- the name of the example

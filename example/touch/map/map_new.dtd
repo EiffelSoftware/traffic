@@ -56,8 +56,9 @@
 <!--- A line must have a name. --> 
 <!ELEMENT line (color?, line_section*)> 
 <!ATTLIST line     
-	name CDATA #REQUIRED
-	type CDATA #REQUIRED
+	name   CDATA #REQUIRED
+	type   CDATA #REQUIRED
+	simple (true | false) "false"
    >  
 
 <!--- Line sections connect places.  -->

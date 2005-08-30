@@ -1,114 +1,73 @@
 indexing
-	description: "Implementation of FANCY_LINE from The TOUCH Textbook"
+	description: "Implementation of COMMANDS from The Textbook TOUCH"
 	author: "Roger Kueng"
-	date: "2005/07/12"
-	revision: "1.1"
+	date: "2005/08/25"
+	revision: "1.0"
 
 class
 	COMMANDS
 
 inherit
-	TOUCH_EXAMPLE
-		redefine
-			run_with_scene
-		end
-	PREDEFINED_OBJECTS_PARIS
-		undefine
-			copy,
-			is_equal,
-			default_create
-		end
-	EM_SHARED_BITMAP_FACTORY
-		undefine
-			copy,
-			is_equal,
-			default_create
-		end
-		
-feature -- Access
-	description: STRING is
-			-- 
-		once
-			Result := "Implementation of the COMMAND example from the Textbook TOUCH"
-		end
+	COMMANDS_PREDEFINES
+feature -- Basic Operations
 
-
-feature -- Basic operations
-	run_with_scene (exit_scene: EM_SCENE): EM_SCENE is
-			-- 
+	build_line_8 is
+		-- Recreate part of Line 8
 		do
-			example_scene := create {TOUCH_SIMPLE_TRAFFIC_SCENE}.make_with_paris (Current)
-			example_scene.set_next_scene (exit_scene)
-			Result := example_scene	
-		end
-		
-	run (a_runtime: TOUCH_EXAMPLE_RUNTIME) is
-			-- 
-		local
-			map_factory: TRAFFIC_MAP_FACTORY
-		do
-			map := a_runtime.map
-			runtime := a_runtime
-			Console := a_runtime.console
-			
-			create Louvre.make_with_place_and_map_widget (a_runtime.map.place ("Musee du Louvre"), a_runtime.map_widget)
-			
-			create Line8.make_with_line_and_map_widget (a_runtime.map.line ("tram 8"), a_runtime.map_widget)
-			
-			
-			create map_factory.make
-			map_factory.build_traffic_type ("tram")
-			
-			map_factory.build_simple_line ("simple line with funky name", "tram", map)
-			
-			Simple_Line8 ?= map_factory.simple_line
-			
-			Simple_Line8.extend_place (Place_Balard)
-			
-			--Set new default place renderer	
-			a_runtime.map_widget.set_default_place_renderer (create {TOUCH_PLACE_RENDERER}.make_with_map (a_runtime.map))
-			
-			action
-			
-		end
-		
-feature -- Obsolete
+			Simple_Line_8.remove_all_sections
 
-feature -- Inapplicable
-
-feature {NONE} -- Implementation
-	action is
-		-- Show some city info.
-		do
-			Simple_Line8.remove_all_sections
 			-- No need to add Station_Balard, since
 			-- remove_all_sections retains the 'one_end'.
-			Simple_Line8.extend_place (Place_La_Fourche)
-			Simple_Line8.extend_place (Place_Bastille)
+			Simple_Line_8.extend_place (Place_La_Motte_Picquet_Grenelle)
+			Simple_Line_8.extend_place (Place_Invalides)
+
 			-- We stop adding stations, to display some results:
-			Console.show (Simple_Line8.count)
-			Console.show (Simple_Line8.other_end.name)
+			Console.show (Simple_Line_8.count)
+			Console.show (Simple_Line_8.other_end.name)
+			Console.show (Simple_Line_8.one_end.name)
+			
 		end
 		
-feature {NONE} -- implementation
+		
+	build_line_8_full (a_runtime: TOUCH_EXAMPLE_RUNTIME) is
+			-- Recreate part of Line 8 without using any predefined objects
+		local
+			line: TRAFFIC_LINE
+			simple_line: TRAFFIC_SIMPLE_LINE
+		do
+			-- Get Line 8 from map
+			line := a_runtime.map.line ("tram 8")
 
-	example_scene: TOUCH_SIMPLE_TRAFFIC_SCENE
+			-- Assignment attempt
+			simple_line ?= line
+			
+			if simple_line /= Void then
+				simple_line.remove_all_sections
+				simple_line.extend_place ( a_runtime.map.place ("place La Motte - Picquet - Grenelle"))
+				simple_line.extend_place ( a_runtime.map.place ("place Invalides"))
+			end	
+			
+			-- Remove commentary-symbols to have line 8 highlighted
+			--show_line_8
+			
+		end
 
-	Louvre: TOUCH_GRAPHICAL_TRAFFIC_PLACE
-	
-	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
-
-	Simple_Line8: TRAFFIC_SIMPLE_LINE
-
-	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
-	
-	Console: TOUCH_CONSOLE
-	
-	map: TRAFFIC_MAP
-	
-	runtime: TOUCH_EXAMPLE_RUNTIME
-	
-invariant
-	invariant_clause: True -- Your invariant here
-
+feature -- Additional features
+	show_line_8 (a_runtime: TOUCH_EXAMPLE_RUNTIME) is
+			-- Highlight the "tram 8" line
+		local
+			line_section_renderer: TRAFFIC_LINE_SECTION_RENDERER
+			line: TRAFFIC_LINE
+		do
+			line := a_runtime.map.line("tram8")
+			
+			-- Create the line section renderer and set color to black and width to 4
+			create line_section_renderer.make_with_map (a_runtime.map)
+			line_section_renderer.set_line_color (create {EM_COLOR}.make_black)
+			line_section_renderer.set_line_width (4)
+			
+			-- Set special renderer
+			a_runtime.map_widget.set_line_special_renderer (line_section_renderer, line)
+		end
+		
 end -- class COMMANDS

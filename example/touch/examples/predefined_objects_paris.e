@@ -12,7 +12,7 @@ feature -- Access
 			-- 
 		deferred
 		end
-		
+	
 feature  -- Predefined objects (Places)
 
 	Place_Balard: TRAFFIC_PLACE is
@@ -110,8 +110,5 @@ feature  -- Predefined objects (Places)
 		ensure
 			Result_exists: Result /= Void
 		end
-		
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class PREDEFINED_OBJECTS

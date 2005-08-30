@@ -27,28 +27,6 @@ feature -- Access
 		end
 		
 	example_scene: TOUCH_SIMPLE_TRAFFIC_SCENE
-	
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
 
 feature -- Basic operations
 	run_with_scene (exit_scene: EM_SCENE): EM_SCENE is
@@ -75,9 +53,6 @@ feature -- Basic operations
 		end
 		
 
-feature -- Obsolete
-
-feature -- Inapplicable
 
 feature {NONE} -- Implementation
 
