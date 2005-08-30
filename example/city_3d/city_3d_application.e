@@ -47,13 +47,10 @@ feature -- Initialization
 			-- Set widget theme and options
 			widget_options.disable_transparency_refresh
 			load_eclipse_theme
-			
-			
-	
+
 			set_scene (create {CITY_3D_SCENE}.make)
 			launch
 			full_collect
-			
 		end
 
 end -- class CITY_3D_APPLICATION
