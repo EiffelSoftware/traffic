@@ -15,7 +15,7 @@ inherit
 --			handle_key_down_event --,
 --			handle_mouse_button_down_event,
 --			handle_mouse_motion_event
---		end
+		end
 	
 	SHARED_CONSTANTS
 		export {NONE} all end
@@ -29,10 +29,9 @@ feature -- Interface
 		local 
 			checkbox: EM_CHECKBOX
 			toolbar_panel: EM_PANEL
-			map: MAP
 		do
 			make_component_scene
-			create checkbox.make_from_text ("foo")
+			create checkbox.make_from_text ("Parse XML File")
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded,window_height)
 			
 			-- Has to be defined before toolpanel, because otherwise
@@ -40,13 +39,10 @@ feature -- Interface
 			if video_subsystem.opengl_enabled then
 				create map.make
 				map.set_position (0,0)
-
 				add_component (map)
 			else
-				io.put_string ("OpenGL disabled: Sierpinski pyramid disabled%N")
+				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
-			
-			map.load_map ("./zurich_little.xml")
 			
 			-- Toolbar Panel
 			toolbar_panel.set_background_color (create {EM_COLOR}.make_with_rgb (150,255,150))
@@ -57,8 +53,11 @@ feature -- Interface
 			
 			checkbox.set_position (50,50)
 			checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
-			checkbox.set_dimension (50,20)
+			checkbox.set_dimension (110,20)
+			checkbox.checked_event.subscribe (agent click)
 			toolbar_panel.add_widget (checkbox)
+
+			
 			
 			
 --			create map_file.make_from_file ("./zurich_little.xml")
@@ -67,7 +66,7 @@ feature -- Interface
 --			create event_loop.make_poll
 ------			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
 ----			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))
-----			event_loop.mouse_motion_event.subscribe (agent handle_mouse_motion_event (?))	
+----			event_loop.mouse_motion_event.subscribe (agent handle_mouse_motion_event (?))
 		end
 		
 --	redraw is
@@ -79,6 +78,17 @@ feature -- Interface
 --		
 		
 feature -- Event handling
+
+	click is
+			-- Checkbox has been clicked
+		do
+			map.load_map ("./zurich_little.xml")
+		end
+
+feature{NONE} -- Implementation
+		
+	map: MAP
+		
 
 --	handle_key_down_event (event: EM_KEYBOARD_EVENT) is
 --			-- Handle key down event
