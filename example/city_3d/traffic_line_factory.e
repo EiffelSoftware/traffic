@@ -76,6 +76,13 @@ feature -- Implementation
 			gl_flush
 		end
 		
+	build_line: EM_3D_OBJECT is
+			-- foo
+		do
+			
+		end
+		
+		
 	draw_line (p1, p2: TUPLE[DOUBLE]) is
 			-- draw a line
 		local

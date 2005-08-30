@@ -26,7 +26,7 @@ creation
 	
 	make
 	
-feature -- Interface
+feature -- Initialization
 
 	make is
 			-- Creation procedure.
@@ -53,20 +53,6 @@ feature -- Interface
 			mouse_wheel_down_event.subscribe (agent mouse_wheel_down)
 			mouse_wheel_up_event.subscribe (agent mouse_wheel_up)
 			key_down_event.subscribe (agent key_down (?))
-		end
-		
-	filename: STRING
-	
-	map: TRAFFIC_MAP
-	
-	load_map (fn: STRING) is
-			-- load the map
-		local
-			map_file: TRAFFIC_MAP_FILE
-		do
-			filename := fn
-			create map_file.make_from_file (filename)
-			map := map_file.traffic_map
 		end
 		
 	prepare_drawing is
@@ -107,17 +93,42 @@ feature -- Interface
 		
 	draw is
 			-- Who the fuck knows that.
+		local 	ewer: BUILDING_EWER
+				traffic_line_factory: TRAFFIC_LINE_FACTORY
 		do
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(1,0,0))
+			create ewer.make(-5, -5, 10, 10, .2)
+			ewer.draw (1000, map)
 			
---			gl_begin (em_gl_quads)
---				gl_color3d (1,0,0)
---				gl_vertex3d (-1,0,-1)
---				gl_vertex3d (1,0,-1)
---				gl_vertex3d (1,0,1)
---				gl_vertex3d (-1,0,1)
---			gl_end			
+			create traffic_line_factory
+			traffic_line_factory.set_line_width (0.2)
+			
+			from map.lines.start
+			until map.lines.after
+			loop
+				traffic_line_factory.set_color ([0.0,0.0,0.0])
+				traffic_line_factory.set_points (map.lines.item_for_iteration)
+				traffic_line_factory.create_object.draw
+			end
 		end
+		
+feature -- Traffic stuff		
+
+	filename: STRING
+	
+	map: TRAFFIC_MAP
+	
+	load_map (fn: STRING) is
+			-- load the map
+		local
+			map_file: TRAFFIC_MAP_FILE
+		do
+			filename := fn
+			create map_file.make_from_file (filename)
+			map := map_file.traffic_map
+		end
+		
+feature -- Drawing
 
 		
 	draw_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
@@ -160,8 +171,34 @@ feature{NONE} -- Event handling
 			-- Handle mouse events
 		require else
 			a_mouse_button_event_not_void: event /= void
+--		local res: INTEGER
+--			  viewport,modelview,projection: POINTER
+--			  new_x,new_y,new_z: DOUBLE
+--			  other_x,other_y,other_z: MANAGED_POINTER
+--			  outa: ARRAY[INTEGER_8]
 		do
-
+--				viewport := viewport.memory_alloc (128)
+--				modelview := modelview.memory_alloc (256)
+--				projection := projection.memory_alloc (256)
+--				gl_get_integerv (em_gl_viewport, viewport)
+--				gl_get_doublev (em_gl_modelview, modelview)
+--				gl_get_doublev (em_gl_projection, projection)
+--				create other_x.make_from_pointer (viewport, 128)
+--				create outa.make(1,2)
+--				outa := other_x.read_array (0,32)
+--				create new_x.default_create
+--				create new_y.default_create
+--				create new_z.default_create
+--				new_x := 14
+--				new_y := 48
+--				new_z := 98
+--				create other_x.make (128)
+--				create other_y.make (128)
+--				create other_z.make (128)
+--				other_y.put_double (6,0)
+--				res := glu_un_project_external (10, 45, 17, modelview, projection, viewport, other_x.item, other_y.item, other_z.item)
+----				io.put_integer(res)
+--				io.put_double (other_y.read_double (0))
 		end
 
 	mouse_dragged (event: EM_MOUSEMOTION_EVENT) is

@@ -43,20 +43,20 @@ feature
 			
 			from
 				i := 0
-				r := 0
+				r := 1
 			until
 				i > n
 			loop
 				xr := x + randomizer.double_i_th (r)*l
 				zr := z + randomizer.double_i_th (r+1)*b
 				
-				if m.lines.linear_representation.for_all (agent is_free(xr, zr, 0.2, 0.2, ?)) then
+--				if m.lines.linear_representation.for_all (agent is_free(xr, zr, 0.2, 0.2, ?)) then
 					house := factory.create_object
 					
 					house.set_origin (xr, 0, zr)
 					house.set_scale (0.2, 0.2, 0.2)
 					house.draw
-				end
+--				end
 				
 				i := i + 1
 				r := r + 2
