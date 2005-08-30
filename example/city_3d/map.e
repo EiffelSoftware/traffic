@@ -108,13 +108,29 @@ feature -- Interface
 	draw is
 			-- Who the fuck knows that.
 		do
+			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(1,0,0))
+			
+--			gl_begin (em_gl_quads)
+--				gl_color3d (1,0,0)
+--				gl_vertex3d (-1,0,-1)
+--				gl_vertex3d (1,0,-1)
+--				gl_vertex3d (1,0,1)
+--				gl_vertex3d (-1,0,1)
+--			gl_end			
+		end
+
+		
+	draw_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
+		-- draw a plane
+		do
 			gl_begin (em_gl_quads)
-				gl_color3d (1,0,0)
-				gl_vertex3d (-1,0,-1)
-				gl_vertex3d (1,0,-1)
-				gl_vertex3d (1,0,1)
-				gl_vertex3d (-1,0,1)
-			gl_end			
+				-- Boden
+				gl_color3dv (rgb.pointer) 
+				gl_vertex3dv (p1.pointer)
+				gl_vertex3dv (p2.pointer)
+				gl_vertex3dv (p3.pointer)
+				gl_vertex3dv (p4.pointer)
+			gl_end
 		end
 		
 		
