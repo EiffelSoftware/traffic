@@ -110,7 +110,8 @@ feature -- Status setting
 		require
 			file_name_set: has_file_name
 		do
-			(create {EXECUTION_ENVIRONMENT}).change_working_directory (File_system.absolute_parent_directory (file_name))
+			-- FIXME (create {EXECUTION_ENVIRONMENT}).change_working_directory (File_system.absolute_parent_directory (file_name))
+			(create {EXECUTION_ENVIRONMENT}).change_working_directory ("map")
 		end
 
 feature -- Basic operations
@@ -124,6 +125,7 @@ feature -- Basic operations
 		do
 			set_error (0, << >>)
 			create file.make (file_name)
+			io.put_string ((create {EXECUTION_ENVIRONMENT}).current_working_directory)
 			file.open_read
 			if file.is_open_read then
 				xml_parser.parse_from_stream (file)
