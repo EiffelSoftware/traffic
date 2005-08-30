@@ -130,7 +130,7 @@ feature -- Status report
 			end
 		end
 		
-feature -- Basic operation.
+feature -- Basic operation
 
 	calculate_shortest_path is
 			-- Calculate the shortest path from one place to visit to the next.

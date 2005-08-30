@@ -1,5 +1,9 @@
 indexing
-	description: "Line with undirected line sections."
+	description: "[
+					Line with undirected line sections.
+					TODO: The cursor does not work, if there's only one place, because the first
+					place is not in the places_xxx_direction.
+					]"
 	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -75,8 +79,11 @@ feature -- Basic operations
 			other_line_section: TRAFFIC_LINE_SECTION
 			pp, polypoints:  ARRAYED_LIST [EM_VECTOR_2D]
 		do
+			start_place := Void
+			
 			origin := a_line_section.origin
 			destination := a_line_section.destination
+			
 			
 			-- Copy polypoints reversed for other direction
 			polypoints := a_line_section.polypoints
@@ -95,8 +102,10 @@ feature -- Basic operations
 			else
 				create other_line_section.make (destination, origin, a_line_section.type, Void)				
 			end	
-			
-			
+
+			a_line_section.set_line (Current)			
+
+			other_line_section.set_line (Current)			
 			map.add_line_section (other_line_section)
 			
 			if terminal_1 = Void then -- no direction exists yet
@@ -129,8 +138,6 @@ feature -- Basic operations
 					end
 				end
 			end
-			a_line_section.set_line (Current)
-			other_line_section.set_line (Current)
 		end
 
 feature {NONE} -- Implementation
@@ -233,7 +240,11 @@ feature -- Cursor Queries
 
 	count: INTEGER is
 		do
-			Result := places_one_direction.count
+			if start_place /= Void then
+				Result := 1
+			else
+				Result := places_one_direction.count			
+			end
 		end
 		
 	item: TRAFFIC_PLACE is
@@ -246,7 +257,11 @@ feature -- Cursor Queries
 		require
 			i_correct_index: i >= 1 and then i <= count
 		do
-			Result := places_one_direction.i_th (i)
+			if start_place /= Void then
+				Result := start_place
+			else
+				Result := places_one_direction.i_th (i)			
+			end
 		ensure
 			result_not_void: Result /= Void
 		end		
@@ -279,20 +294,28 @@ feature -- Simple Line Queries
 	one_end: TRAFFIC_PLACE is
 			-- 
 		do
-			if places_one_direction.count > 0  then
-				Result := places_one_direction.first
+			if start_place /= Void then
+				Result:= start_place
 			else
-				Result := Void
+				if places_one_direction.count > 0  then
+					Result := places_one_direction.first
+				else
+					Result := Void
+				end				
 			end
 		end
 		
 	other_end: TRAFFIC_PLACE is
 			-- 
 		do
-			if places_one_direction.count > 0  then
-				Result := places_one_direction.last
+			if start_place /= Void then
+				Result:= start_place
 			else
-				Result := Void
+				if places_one_direction.count > 0  then
+					Result := places_one_direction.last
+				else
+					Result := Void
+				end				
 			end
 		end	
 		
@@ -357,6 +380,7 @@ feature -- Simple Line Commands
 		end
 
 invariant
+
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
 	count_line_section_not_void: count >= 0 -- List is initilalized.

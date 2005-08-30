@@ -32,7 +32,6 @@ feature -- Initialization
 		end
 
 feature -- Access
-
 	wait_time: INTEGER
 	
 	place: TRAFFIC_PLACE
@@ -59,7 +58,6 @@ feature -- Commands
 		end
 
 feature -- Queries
-
 is_exchange: BOOLEAN is
 		-- Do several lines have a stop on this place
 	local
@@ -85,6 +83,8 @@ is_exchange: BOOLEAN is
 	end
 		
 invariant
-	invariant_clause: True -- Your invariant here
+	place_set: place /= Void
+	map_widget_set: map_widget /= Void
+	wait_time_valid: wait_time >= 0
 
 end -- class TOUCH_GRAPHICAL_TRAFFIC_PLACE

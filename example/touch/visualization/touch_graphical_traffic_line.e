@@ -12,8 +12,7 @@ inherit
 create
 	make_with_line_and_map_widget
 	
-feature -- Initialization
-	
+feature -- Initialization	
 	make_with_line_and_map_widget (a_line: TRAFFIC_LINE; a_map_widget: TRAFFIC_MAP_WIDGET) is
 			-- 
 		require
@@ -30,37 +29,13 @@ feature -- Initialization
 		end
 
 feature -- Access
-
 	wait_time: INTEGER
 	
 	line: TRAFFIC_LINE
 
 	map_widget: TRAFFIC_MAP_WIDGET
-	
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
 
 feature -- Basic operations
-
 	feature highlight is
 			-- 
 		local
@@ -80,13 +55,10 @@ feature -- Basic operations
 			map_widget.render
 			
 		end
-feature -- Obsolete
-
-feature -- Inapplicable
-
-feature {NONE} -- Implementation
 
 invariant
-	invariant_clause: True -- Your invariant here
-
+	line_set: line /= Void
+	map_widget_set: map_widget /= Void
+	wait_time_valid: wait_time >= 0
+	
 end -- class TOUCH_GRAPHICAL_TRAFFIC_LINE
