@@ -54,8 +54,33 @@ feature -- Initialization
 			mouse_wheel_up_event.subscribe (agent mouse_wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 		end
+
 		
-	prepare_drawing is
+feature -- Traffic stuff	
+
+	is_map_loaded: BOOLEAN
+		-- Has parsing already taken place?
+
+	filename: STRING
+		-- Filename of XML file of map
+	
+	map: TRAFFIC_MAP
+		-- Parsed map
+	
+	load_map (fn: STRING) is
+			-- load the map
+		local
+			map_file: TRAFFIC_MAP_FILE
+		do
+			filename := fn
+			create map_file.make_from_file (filename)
+			map := map_file.traffic_map
+			is_map_loaded := true
+		end
+		
+feature -- Drawing
+
+		prepare_drawing is
 			-- Prepare for drawing.
 		do
 			if Video_subsystem.video_surface.gl_2d_mode then
@@ -102,7 +127,43 @@ feature -- Initialization
 			traffic_line_factory: TRAFFIC_LINE_FACTORY
 			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 		do
-			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,-5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-5,0,5), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(1,0,0))
+			-- Coordinate System
+			
+			gl_line_width (2)
+			gl_begin(em_gl_lines)
+				gl_color3d (1,1,1)
+				gl_vertex3d (0,0,0)
+				gl_vertex3d(1,0,0)
+			gl_end
+			
+			gl_begin(em_gl_lines)
+				gl_color3d (0.5,0.5,0.5)
+				gl_vertex3d (0,0,0)
+				gl_vertex3d(0,1,0)
+			gl_end
+			
+			gl_begin(em_gl_lines)
+				gl_color3d (0,0,0)
+				gl_vertex3d (0,0,0)
+				gl_vertex3d(0,0,1)
+			gl_end
+			
+			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(1,0,0))				
+			
+--			gl_line_width(400)
+--			gl_matrix_mode (Em_gl_modelview)
+--			gl_push_matrix
+--			gl_color3d(0.4,1,0)
+----			gl_translated (0, 1,0)
+--			gl_rotated (90, 1, 0,0)
+--				gl_begin(em_gl_line)
+--				gl_color3d(0.0,1.0,0.2)
+--				gl_vertex3d(-3,0,0)
+--				gl_vertex3d(3,0,0)
+--			gl_end
+--			gl_pop_matrix
+--			gl_flush
+			
 			
 			if is_map_loaded then
 				create ewer.make(-5, -5, 10, 10, .2)
@@ -116,35 +177,13 @@ feature -- Initialization
 				from lines.start
 				until lines.after
 				loop
-					traffic_line_factory.set_color ([lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255])
+					traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
 					traffic_line_factory.set_line (lines.item_for_iteration)
 					traffic_line_factory.create_object.draw
 					lines.forth
 				end
 			end
 		end
-		
-	is_map_loaded: BOOLEAN
-			-- Has parsing already taken place?
-		
-feature -- Traffic stuff		
-
-	filename: STRING
-	
-	map: TRAFFIC_MAP
-	
-	load_map (fn: STRING) is
-			-- load the map
-		local
-			map_file: TRAFFIC_MAP_FILE
-		do
-			filename := fn
-			create map_file.make_from_file (filename)
-			map := map_file.traffic_map
-			is_map_loaded := true
-		end
-		
-feature -- Drawing
 
 	draw_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
 		-- draw a plane
