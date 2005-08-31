@@ -27,13 +27,13 @@ feature -- Interface
 	make is
 			-- Creation procedure.
 		local 
---			checkbox: EM_CHECKBOX
+			checkbox: EM_CHECKBOX
 			toolbar_panel: EM_PANEL
 			combo_box: EM_COMBOBOX[STRING]
 			button: EM_BUTTON
 		do
 			make_component_scene
---			create checkbox.make_from_text ("Do nothing")
+			create checkbox.make_from_text ("Highlight lines")
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded,window_height)
 			create combo_box.make_from_list (search_for_xml)
 			create button.make_from_text ("Load map")
@@ -56,7 +56,7 @@ feature -- Interface
 			-- Button
 			button.set_position (50, 80)
 --			button.set_dimension (50, 20)
-			button.clicked_event.subscribe (agent button_click (button))
+			button.clicked_event.subscribe (agent button_clicked (button))
 			button.set_background_color (create {EM_COLOR}.make_with_rgb (127,127,127))
 			toolbar_panel.add_widget (button)
 
@@ -69,11 +69,12 @@ feature -- Interface
 			toolbar_panel.add_widget (combo_box)
 			
 			-- Checkbox
---			checkbox.set_position (10,350)
---			checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
---			checkbox.set_dimension (110,20)
---			checkbox.checked_event.subscribe (agent checkbox_click)
---			toolbar_panel.add_widget (checkbox)
+			checkbox.set_position (10,350)
+			checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+			checkbox.set_dimension (110,20)
+			checkbox.checked_event.subscribe (agent checkbox_checked)
+			checkbox.unchecked_event.subscribe (agent checkbox_unchecked)
+			toolbar_panel.add_widget (checkbox)
 			
 --			create event_loop.make_poll
 --			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
@@ -83,8 +84,20 @@ feature -- Interface
 
 		
 feature -- Event handling
+	
+	checkbox_checked is
+			-- Checkbox has been clicked
+		do
+			map.set_highlighted (true)
+		end
+		
+	checkbox_unchecked is
+			-- Checkbox has been clicked
+		do
+			map.set_highlighted (false)
+		end
 
-	button_click (button: EM_BUTTON) is
+	button_clicked (button: EM_BUTTON) is
 			-- Checkbox has been clicked
 		do
 			button.set_pressed (false)
