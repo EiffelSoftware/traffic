@@ -70,46 +70,33 @@ feature{NONE} -- Drawing
 			gl_load_name (identifier)
 			glu_disk (glu_new_quadric, 0, r, 72, 1)
 			gl_pop_matrix
-			gl_flush
---			io.new_line
---			io.put_string (p.double_item (1).out)
---			io.put_string (p.double_item (3).out)
-			
+			gl_flush			
 		end
 		
-	draw_line (p1, p2: TUPLE[DOUBLE]) is
+	draw_line (p,q: GL_VECTOR_3D[DOUBLE]) is
 			-- draw a line
 		local
-			px, py, pz, qx, qy, qz: DOUBLE
 			delta_x, delta_z: DOUBLE
 			norm: DOUBLE
 		do
-			px := p1.double_item (1)
-			py := p1.double_item (2)
-			pz := p1.double_item (3)
-			
-			qx := p2.double_item (1)
-			qy := p2.double_item (2)
-			qz := p2.double_item (3)
-			
-			delta_x := qx - px
-			delta_z := qz - pz
+			delta_x := q.x - p.x
+			delta_z := q.z - p.z
 			
 			norm := sqrt (delta_x*delta_x + delta_z*delta_z)
 			
-			draw_plane ([px-delta_z*line_width/norm,py,pz+delta_x*line_width/norm],[px+delta_z*line_width/norm,py,pz-delta_x*line_width/norm], [qx+delta_z*line_width/norm,qy,qz-delta_x*line_width/norm] ,[qx-delta_z*line_width/norm,qy,qz+delta_x*line_width/norm])
+			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x-delta_z*line_width/norm,p.y,p.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x+delta_z*line_width/norm,p.y,p.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x+delta_z*line_width/norm,q.y,q.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x-delta_z*line_width/norm,q.y,q.z+delta_x*line_width/norm))
 			gl_flush
 		end
 		
-	draw_plane (p1, p2, p3, p4: TUPLE[DOUBLE]) is
+	draw_plane (p1, p2, p3, p4: GL_VECTOR_3D[DOUBLE]) is
 			-- draw a plane
 		do
 			gl_begin (em_gl_quads)
 				gl_color3dv (line_color.pointer)
-				gl_vertex3d (p1.double_item (1), p1.double_item (2), p1.double_item (3))
-				gl_vertex3d (p2.double_item (1), p2.double_item (2), p2.double_item (3))
-				gl_vertex3d (p3.double_item (1), p3.double_item (2), p3.double_item (3))
-				gl_vertex3d (p4.double_item (1), p4.double_item (2), p4.double_item (3))
+				gl_vertex3d (p1.x, p1.y, p1.z)
+				gl_vertex3d (p2.x, p2.y, p2.z)
+				gl_vertex3d (p3.x, p3.y, p3.z)
+				gl_vertex3d (p4.x, p4.y, p4.z)
 			gl_end
 		end
 		
@@ -163,14 +150,13 @@ feature {NONE} -- Implementation
 			draw_circle (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_dst, 0.11, y_dst), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0,0,0), 2*line_width)
 			
 			-- draw a connecting line
---			rgb := [red, green, blue]
 			from
 				f := 1
 				t := 2
 			until
 				f >= s.polypoints.count
 			loop
-				draw_line ([s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100], [s.polypoints.i_th (t).x / 100, 0.1, s.polypoints.i_th (t).y / 100])
+				draw_line (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (t).x / 100, 0.1, s.polypoints.i_th (t).y / 100))
 --				draw_circle([s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100], line_width,rgb)
 				f := f + 1
 				t := t + 1
