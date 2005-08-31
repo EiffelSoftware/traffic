@@ -82,6 +82,7 @@ feature -- Traffic stuff
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
 			is_map_loaded := true
+			ewer.create_houses (1000,map)
 		end	
 		
 	set_highlighted(b: BOOLEAN) is
@@ -105,7 +106,13 @@ feature -- Traffic stuff
 		ensure show_houses = b
 		end
 		
-		
+	set_transparent(b: BOOLEAN) is
+			-- If true, houses are transparent
+		require variable_exists: b /= void
+		do
+			show_houses := b
+		ensure show_houses = b
+		end
 		
 feature -- Drawing
 
@@ -177,6 +184,7 @@ feature -- Drawing
 --			gl_end
 			
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(1,0,0))				
+
 			
 --			gl_line_width(400)
 --			gl_matrix_mode (Em_gl_modelview)
@@ -193,8 +201,8 @@ feature -- Drawing
 --			gl_flush	
 			
 			if is_map_loaded then
-				if show_houses then
-					ewer.draw (1000, map)
+				if show_houses then		
+					ewer.draw
 				end
 				
 
@@ -315,7 +323,7 @@ feature{NONE} -- Event handling
 			end
 		end
 
-feature{NONE} -- Factories
+feature{NONE} -- Factories and stuff
 	
 		ewer: BUILDING_EWER
 		

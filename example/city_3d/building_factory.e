@@ -20,13 +20,24 @@ inherit
 	GL_FUNCTIONS
 		export {NONE} all end
 
+	GLU_FUNCTIONS
+		export {NONE} all end	
+	
+
 creation
 
-	make
+	make, make_central
 
 feature -- Implementation
 
 	make is
+			-- Creation procedure
+		do
+			is_central := false
+		end
+		
+
+	make_central is
 			-- Creation procedure
 		do
 --	   		bitmap_factory.create_bitmap_from_image ("hello_world.gif")
@@ -34,20 +45,7 @@ feature -- Implementation
 --					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
 --				end
 --			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
-		end
-
-	set_central is
-			-- Set house to be in the centre.
-	   	do
-	   		is_central := true
-		ensure is_central = true
-		end
-		
-	set_outlying is
-			-- Set house to be outlying.
-		do
-				is_central := false
-		ensure is_central = false
+			is_central := true
 		end
 		
 	
@@ -69,23 +67,7 @@ feature {NONE} -- Implementation
 	
 	specify_object is
 			-- defining the object		
-		do
---			gl_enable (Em_gl_texture_2d)
-			gl_begin (em_gl_quads)
-				-- Front
-				gl_bind_texture (Em_gl_texture_2d, texture)
-				gl_color3f (0, 0.15, 1) -- White
-				gl_tex_coord2f (0, 0)
-				gl_vertex3d (0.0, 1.0, 0.0)
-				gl_tex_coord2f (1, 1)
-				gl_vertex3d (0.0, 0.0, 0.0)
-				gl_tex_coord2f (0, 1)
-				gl_vertex3d (0.0, 0.0, -1.0)
-				gl_tex_coord2f (1, 0)
-				gl_vertex3d (0.0, 1.0, -1.0)
-			gl_end
-			gl_disable (Em_gl_texture_2d)
-			
+		do	
 			gl_begin(em_gl_quads)
 				-- Back
 				gl_color3f(1, 0, 0) -- Red
@@ -115,13 +97,48 @@ feature {NONE} -- Implementation
 				gl_vertex3d (0.0, 1.0, 0.0)
 				gl_vertex3d (0.0, 1.0, -1.0)
 			gl_end
+			if is_central then
+--				gl_enable (Em_gl_texture_2d)
+				-- Front
+				gl_begin (em_gl_quads)
+					gl_bind_texture (Em_gl_texture_2d, texture)
+					gl_color3f (0, 0.15, 1) -- Blue
+					gl_tex_coord2f (0, 0)
+					gl_vertex3d (0.0, 1.0, 0.0)
+					gl_tex_coord2f (1, 1)
+					gl_vertex3d (0.0, 0.0, 0.0)
+					gl_tex_coord2f (0, 1)
+					gl_vertex3d (0.0, 0.0, -1.0)
+					gl_tex_coord2f (1, 0)
+					gl_vertex3d (0.0, 1.0, -1.0)
+				gl_end
+				gl_disable (Em_gl_texture_2d)
+				
+				gl_color3d (1,1,1) -- White
+				gl_matrix_mode (Em_gl_modelview)
+				gl_push_matrix
+				gl_translated (-0.5, 1, -0.5)
+				glu_sphere (glu_new_quadric, 0.5, 72, 72)
+				gl_pop_matrix
+			else
+--				gl_enable (Em_gl_texture_2d)
+				-- Front
+				gl_begin (em_gl_quads)
+					gl_bind_texture (Em_gl_texture_2d, texture)
+					gl_color3f (0, 0.15, 0.8) -- Blue
+					gl_tex_coord2f (0, 0)
+					gl_vertex3d (0.0, 1.0, 0.0)
+					gl_tex_coord2f (1, 1)
+					gl_vertex3d (0.0, 0.0, 0.0)
+					gl_tex_coord2f (0, 1)
+					gl_vertex3d (0.0, 0.0, -1.0)
+					gl_tex_coord2f (1, 0)
+					gl_vertex3d (0.0, 1.0, -1.0)
+				gl_end
+				gl_disable (Em_gl_texture_2d)
+				
+			end
 
---			gl_color3d (0,0.4,0.8) -- Some kind of blue
---			gl_matrix_mode (Em_gl_modelview)
---			gl_push_matrix
---			gl_translated (-0.5, 1, -0.5)
---			glu_sphere (glu_new_quadric, 0.5, 72, 72)
---			gl_pop_matrix
 
 			
 		end
