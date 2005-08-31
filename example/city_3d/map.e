@@ -46,6 +46,7 @@ feature -- Initialization
 			z_coord := -9
 			y_rotation := -90 -- -35
 			z_rotation := -40 -- -80
+			lines_height := 0.2
 			
 			-- Factory creation
 			create ewer.make(-5, -5, 10, 10, .5)
@@ -83,6 +84,17 @@ feature -- Traffic stuff
 			map := map_file.traffic_map
 			is_map_loaded := true
 		end
+		
+	set_highlighted(b: BOOLEAN) is
+			-- If true, metrolines are highlighted
+		do
+			if b then
+				lines_height := 3
+			else 
+				lines_height := 0.2
+			end
+		end
+		
 		
 feature -- Drawing
 
@@ -130,6 +142,7 @@ feature -- Drawing
 			-- Who the fuck knows that.
 		local
 			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
+			obj: EM_3D_OBJECT
 		do
 			-- Coordinate System
 			
@@ -166,18 +179,20 @@ feature -- Drawing
 --				gl_vertex3d(3,0,0)
 --			gl_end
 --			gl_pop_matrix
---			gl_flush
+--			gl_flush	
 			
 			if is_map_loaded then
 				ewer.draw (1000, map)
-				
+
 				lines := map.lines				
 				from lines.start
 				until lines.after
 				loop
 					traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
 					traffic_line_factory.set_line (lines.item_for_iteration)
-					traffic_line_factory.create_object.draw
+					obj := traffic_line_factory.create_object
+					obj.set_origin (-7,lines_height,-7)
+					obj.draw
 					lines.forth
 				end
 			end
@@ -306,5 +321,7 @@ feature{NONE} -- Variables
 		-- Rotation around the y axis
 	z_rotation: DOUBLE
 		-- Rotation around the z axis
+	lines_height: DOUBLE
+		-- Height of the metrolines on map
 
 end -- class MAP
