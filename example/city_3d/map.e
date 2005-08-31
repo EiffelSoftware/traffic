@@ -82,7 +82,7 @@ feature -- Traffic stuff
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
 			is_map_loaded := true
-			ewer.create_houses (1000,map)
+			ewer.create_buildings (1000,map)
 		end	
 		
 	set_highlighted(b: BOOLEAN) is
