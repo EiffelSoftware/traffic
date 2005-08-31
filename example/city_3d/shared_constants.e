@@ -20,5 +20,8 @@ feature -- Constants
 			
 	Fullscreen: BOOLEAN is false
 			-- Fullscreen?
+			
+	Line_width: DOUBLE
+			-- Width of the line
 
 end -- class SHARED_CONSTANTS

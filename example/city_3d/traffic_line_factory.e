@@ -162,8 +162,8 @@ feature {NONE} -- Implementation
 --			create org.make_xyz (s.origin.position.x / 100, 0.11, s.origin.position.y / 100)
 --			create dst.make_xyz (s.destination.position.x / 100, 0.11, s.destination.position.y / 100)
 			
-			create org.make_xyz (s.polypoints.first.x / 100, 0.11, s.polypoints.first.y / 100)
-			create dst.make_xyz (s.polypoints.last.x / 100, 0.11, s.polypoints.last.y / 100)
+			create org.make_xyz (s.polypoints.first.x / 50, 0.11, s.polypoints.first.y / 50)
+			create dst.make_xyz (s.polypoints.last.x / 50, 0.11, s.polypoints.last.y / 50)
 			create color.make_xyz (0,0,0)	-- Black
 			
 --			io.put_string ("%N" + s.line.name + ": " + s.origin.name + x_org.out + y_org.out + " -> " + s.destination.name + x_dst.out + y_dst.out)
@@ -177,12 +177,12 @@ feature {NONE} -- Implementation
 			until
 				f >= s.polypoints.count
 			loop
-				draw_line (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (t).x / 100, 0.1, s.polypoints.i_th (t).y / 100))
-				draw_circle(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100), line_color, line_width)
+				draw_line (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 50, 0.1, s.polypoints.i_th (f).y / 50), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (t).x / 50, 0.1, s.polypoints.i_th (t).y / 50))
+				draw_circle(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 50, 0.1, s.polypoints.i_th (f).y / 50), line_color, line_width)
 				f := f + 1
 				t := t + 1
 			end
-			draw_circle (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100), line_color, line_width)
+			draw_circle (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 50, 0.1, s.polypoints.i_th (f).y / 50), line_color, line_width)
 		end
 
 end -- class TRAFFIC_LINE_FACTORY
