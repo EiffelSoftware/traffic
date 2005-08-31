@@ -44,7 +44,7 @@ feature -- Drawing
 			i, j: INTEGER
 			building_factory: BUILDING_FACTORY
 			house: EM_3D_OBJECT
-			max_distance: DOUBLE
+			max_distance,distance: DOUBLE
 		do
 			max_distance := sqrt(depth^2 + width^2)
 			create randomizer.set_seed (42)
@@ -59,11 +59,19 @@ feature -- Drawing
 				z_coord := centre.z - (depth/2) + randomizer.double_i_th (j+1)*depth
 				
 --				if m.lines.linear_representation.for_all (agent is_free(xr, zr, 0.2, 0.2, ?)) then
-					house := building_factory.create_object
-					house.set_origin (x_coord, 0, z_coord)
+					
+					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord))
 --					io.put_double((max_distance - distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord)))*(0.5/14))
 --					io.put_new_line
-					house.set_scale (0.2,(max_distance - 2*distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord)))*(max_height/max_distance),0.2)
+					
+					if distance < 1 then
+						building_factory.set_central
+					else
+						building_factory.set_outlying
+					end
+					house := building_factory.create_object
+					house.set_origin (x_coord, 0, z_coord)
+					house.set_scale (0.2,(max_distance - 2*distance)*(max_height/max_distance),0.2)
 					house.draw
 --				end
 				i := i + 1
