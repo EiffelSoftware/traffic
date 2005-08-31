@@ -46,6 +46,12 @@ feature -- Initialization
 			z_coord := -9
 			y_rotation := -90 -- -35
 			z_rotation := -40 -- -80
+			
+			-- Factory creation
+			create ewer.make(-5, -5, 10, 10, .5)
+			create traffic_line_factory
+			traffic_line_factory.set_line_width (0.05)
+			
 
 			-- User Interaction
 			mouse_button_down_event.subscribe (agent mouse_button_down (?))
@@ -123,30 +129,28 @@ feature -- Drawing
 	draw is
 			-- Who the fuck knows that.
 		local
-			ewer: BUILDING_EWER
-			traffic_line_factory: TRAFFIC_LINE_FACTORY
 			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 		do
 			-- Coordinate System
 			
-			gl_line_width (2)
-			gl_begin(em_gl_lines)
-				gl_color3d (1,1,1)
-				gl_vertex3d (0,0,0)
-				gl_vertex3d(1,0,0)
-			gl_end
-			
-			gl_begin(em_gl_lines)
-				gl_color3d (0.5,0.5,0.5)
-				gl_vertex3d (0,0,0)
-				gl_vertex3d(0,1,0)
-			gl_end
-			
-			gl_begin(em_gl_lines)
-				gl_color3d (0,0,0)
-				gl_vertex3d (0,0,0)
-				gl_vertex3d(0,0,1)
-			gl_end
+--			gl_line_width (2)
+--			gl_begin(em_gl_lines)
+--				gl_color3d (1,1,1)
+--				gl_vertex3d (0,0,0)
+--				gl_vertex3d(1,0,0)
+--			gl_end
+--			
+--			gl_begin(em_gl_lines)
+--				gl_color3d (0.5,0.5,0.5)
+--				gl_vertex3d (0,0,0)
+--				gl_vertex3d(0,1,0)
+--			gl_end
+--			
+--			gl_begin(em_gl_lines)
+--				gl_color3d (0,0,0)
+--				gl_vertex3d (0,0,0)
+--				gl_vertex3d(0,0,1)
+--			gl_end
 			
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(1,0,0))				
 			
@@ -164,16 +168,12 @@ feature -- Drawing
 --			gl_pop_matrix
 --			gl_flush
 			
+
+			ewer.draw (1000, map)
 			
 			if is_map_loaded then
-				create ewer.make(-5, -5, 10, 10, .2)
-				ewer.draw (1000, map)
-				
-				create traffic_line_factory
-				traffic_line_factory.set_line_width (0.05)
-				
-				lines := map.lines
-				
+
+				lines := map.lines				
 				from lines.start
 				until lines.after
 				loop
@@ -286,6 +286,13 @@ feature{NONE} -- Event handling
 				y_rotation := y_rotation - 10
 			end
 		end
+
+feature{NONE} -- Factories
+	
+		ewer: BUILDING_EWER
+		
+		traffic_line_factory: TRAFFIC_LINE_FACTORY
+
 		
 feature{NONE} -- Variables
 
