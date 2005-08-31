@@ -214,7 +214,7 @@ feature -- Drawing
 					traffic_line_factory.set_line (lines.item_for_iteration)
 					obj := traffic_line_factory.create_object
 --					obj.set_scale (2,2,2)
-					obj.set_origin (-7,lines_height,-7)
+					obj.set_origin (-14,lines_height,-14)
 					obj.draw
 					lines.forth
 				end
