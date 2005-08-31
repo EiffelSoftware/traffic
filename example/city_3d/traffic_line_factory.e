@@ -43,6 +43,8 @@ feature -- Initialization
 		
 	set_color (rgb: GL_VECTOR_3D[DOUBLE]) is
 			-- set the color
+		require
+			rgb /= Void
 		do
 			create line_color.make_xyz (rgb.x,rgb.y,rgb.z)
 			unchanged := False
@@ -50,6 +52,8 @@ feature -- Initialization
 		
 	set_line_width (w: DOUBLE) is
 			-- set the line width
+		require
+			w > 0
 		do
 			line_width := w
 			unchanged := False
@@ -59,6 +63,10 @@ feature{NONE} -- Drawing
 		
 	draw_circle(p, rgb: GL_VECTOR_3D[DOUBLE]; r: DOUBLE; ) is
 			-- draw a circle between traffic line segments
+		require
+			p /= Void
+			rgb /= Void
+			r > 0
 		do
 			identifier := identifier + 1
 			
@@ -75,6 +83,9 @@ feature{NONE} -- Drawing
 		
 	draw_line (p,q: GL_VECTOR_3D[DOUBLE]) is
 			-- draw a line
+		require
+			p /= Void
+			q /= Void
 		local
 			delta_x, delta_z: DOUBLE
 			norm: DOUBLE
@@ -90,6 +101,11 @@ feature{NONE} -- Drawing
 		
 	draw_plane (p1, p2, p3, p4: GL_VECTOR_3D[DOUBLE]) is
 			-- draw a plane
+		require
+			p1 /= Void
+			p2 /= Void
+			p3 /= Void
+			p4 /= Void
 		do
 			gl_begin (em_gl_quads)
 				gl_color3dv (line_color.pointer)
@@ -107,6 +123,9 @@ feature{NONE} -- Variables
 	
 	line_color: GL_VECTOR_3D[DOUBLE]
 			-- Vector of RGB values for color.
+			
+	stations: LINKED_LIST[GL_VECTOR_3D[DOUBLE]]
+			-- Coordinates of the stations on the traffic line
 			
 	line_width: DOUBLE
 			-- Width of the line
@@ -130,24 +149,42 @@ feature {NONE} -- Implementation
 	specify_object is
 			-- defining the object
 		do
+			create stations.make
 			line.do_all (agent draw_line_section (?))
+			stations.do_all (agent draw_station (?))
+		end
+		
+	draw_station (s: GL_VECTOR_3D[DOUBLE]) is
+			-- draw a station on the map
+		require
+			s /= Void
+		local
+			color: GL_VECTOR_3D[DOUBLE]
+		do
+			create color.make_xyz (0,0,0)	-- Black
+			draw_circle (s, color, 2*line_width)
 		end
 		
 	draw_line_section (s: TRAFFIC_LINE_SECTION) is
 			-- draw a traffic line section on the map
+		require
+			s /= Void
 		local
-			x_org, y_org, x_dst, y_dst: DOUBLE
 			f, t: INTEGER
---			rgb: TUPLE[DOUBLE]
+			org, dst: GL_VECTOR_3D[DOUBLE]
+--			color: GL_VECTOR_3D[DOUBLE]
 		do
 			-- draw circles at the origin and destination
-			x_org := s.origin.position.x / 100
-			y_org := s.origin.position.y / 100
-			x_dst := s.destination.position.x / 100
-			y_dst := s.destination.position.y / 100
+			create org.make_xyz (s.origin.position.x / 100, 0.11, s.origin.position.y / 100)
+			create dst.make_xyz (s.destination.position.x / 100, 0.11, s.destination.position.y / 100)
+--			create color.make_xyz (0,0,0)	-- Black
+			
 --			io.put_string ("%N" + s.line.name + ": " + s.origin.name + x_org.out + y_org.out + " -> " + s.destination.name + x_dst.out + y_dst.out)
-			draw_circle (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_org, 0.11, y_org), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0,0,0), 2*line_width)
-			draw_circle (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_dst, 0.11, y_dst), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0,0,0), 2*line_width)
+--			draw_circle (org, color, 2*line_width)
+--			draw_circle (dst, color, 2*line_width)
+			
+			stations.force (org)
+			stations.force (dst)
 			
 			-- draw a connecting line
 			from
@@ -157,11 +194,11 @@ feature {NONE} -- Implementation
 				f >= s.polypoints.count
 			loop
 				draw_line (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (t).x / 100, 0.1, s.polypoints.i_th (t).y / 100))
---				draw_circle([s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100], line_width,rgb)
+				draw_circle(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100), line_color, line_width)
 				f := f + 1
 				t := t + 1
 			end
---			draw_circle ([s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100], line_width, rgb)
+			draw_circle (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 100, 0.1, s.polypoints.i_th (f).y / 100), line_color, line_width)
 		end
 
 end -- class TRAFFIC_LINE_FACTORY

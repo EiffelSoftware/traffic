@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE city SYSTEM "map_new.dtd"> 
+<map name="Zurich (little)"> 
+
+<description text="kleine zurich city map."/>
+
+<places>
+
+	<place name="Bahnhof Stadelhofen" x="" y="">
+		<file name="some_file_name"/>
+		<file name="some_other_file_name"/>
+		<description text="one of many stations in zurich"/>
+	</place>
+	<place name="Bellevue"/>
+	<place name="Boersenstrasse"/>
+	<place name="Buerkliplatz"/>
+	<place name="Central"/>
+	<place name="Hauptbahnhof"/>
+	<place name="Helmhaus"/>
+	<place name="Kunsthaus"/>
+	<place name="Neumarkt"/>
+	<place name="Paradeplatz"/>
+	<place name="Rennweg"/>
+	<place name="Rathaus"/>
+	<place name="Rudolf-Brun-Bruecke"/>
+
+</places>
+
+<lines>
+
+
+<!-- tram lines -->
+
+<line name="9" type="tram">
+	<color red="102" green="102" blue="153"/>
+	<line_section from="Paradeplatz" to="Boersenstrasse" direction="undirected">
+		        <point x="660" y="600"/> 
+		        <point x="740" y="520"/>
+	</line_section>
+	<line_section from="Boersenstrasse" to="Buerkliplatz" direction="undirected">
+		        <point x="740" y="520"/>
+		        <point x="744" y="515"/>
+		        <point x="750" y="515"/> 
+	</line_section>
+	<line_section from="Buerkliplatz" to="Bellevue" direction="undirected">
+		        <point x="750" y="515"/> 
+		        <point x="820" y="515"/>
+		        <point x="843" y="540"/>	   
+	</line_section>
+	<line_section from="Bellevue" to="Kunsthaus" direction="undirected">
+		        <point x="843" y="540"/> 
+		        <point x="940" y="638"/> 
+	</line_section>
+</line>
+
+<!-- bus lines -->
+<line name="31" type="bus">
+	<color red="153" green="204" blue="255"/>
+	<line_section from="Kunsthaus" to="Neumarkt" direction="undirected">
+			<point x="934" y="617"/>
+			<point x="880" y="671"/>
+	</line_section>
+	<line_section from="Neumarkt" to="Central" direction="undirected">
+			<point x="880" y="671"/>
+			<point x="833" y="718"/>
+	</line_section>
+	<line_section from="Central" to="Hauptbahnhof" direction="undirected">
+			<point x="833" y="718"/>
+			<point x="681" y="718"/>
+	</line_section>
+</line> 
+
+
+<!-- s lines -->
+<line name="s7" type="rail">
+	<color red="0" green="0" blue="0"/>
+	<line_section from="Hauptbahnhof" to="Bahnhof Stadelhofen" direction="undirected">
+			<point x="693" y="833"/>
+			<point x="811" y="833"/>
+			<point x="822" y="831"/>
+			<point x="831" y="827"/>
+			<point x="839" y="822"/>
+			<point x="846" y="814"/>
+			<point x="851" y="802"/>
+			<point x="853" y="792"/>
+			<point x="853" y="785"/>
+			<point x="853" y="569"/>
+			<point x="854" y="563"/>
+			<point x="859" y="557"/>
+			<point x="862" y="550"/>
+			<point x="902" y="510"/>
+	</line_section>
+</line>
+
+</lines>
+
+</map>
+
