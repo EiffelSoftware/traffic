@@ -124,9 +124,6 @@ feature{NONE} -- Variables
 	line_color: GL_VECTOR_3D[DOUBLE]
 			-- Vector of RGB values for color.
 			
-	stations: LINKED_LIST[GL_VECTOR_3D[DOUBLE]]
-			-- Coordinates of the stations on the traffic line
-			
 	line_width: DOUBLE
 			-- Width of the line
 	
@@ -149,20 +146,7 @@ feature {NONE} -- Implementation
 	specify_object is
 			-- defining the object
 		do
-			create stations.make
 			line.do_all (agent draw_line_section (?))
-			stations.do_all (agent draw_station (?))
-		end
-		
-	draw_station (s: GL_VECTOR_3D[DOUBLE]) is
-			-- draw a station on the map
-		require
-			s /= Void
-		local
-			color: GL_VECTOR_3D[DOUBLE]
-		do
-			create color.make_xyz (0,0,0)	-- Black
-			draw_circle (s, color, 2*line_width)
 		end
 		
 	draw_line_section (s: TRAFFIC_LINE_SECTION) is
@@ -172,20 +156,20 @@ feature {NONE} -- Implementation
 		local
 			f, t: INTEGER
 			org, dst: GL_VECTOR_3D[DOUBLE]
---			color: GL_VECTOR_3D[DOUBLE]
+			color: GL_VECTOR_3D[DOUBLE]
 		do
 			-- draw circles at the origin and destination
-			create org.make_xyz (s.origin.position.x / 100, 0.11, s.origin.position.y / 100)
-			create dst.make_xyz (s.destination.position.x / 100, 0.11, s.destination.position.y / 100)
---			create color.make_xyz (0,0,0)	-- Black
+--			create org.make_xyz (s.origin.position.x / 100, 0.11, s.origin.position.y / 100)
+--			create dst.make_xyz (s.destination.position.x / 100, 0.11, s.destination.position.y / 100)
+			
+			create org.make_xyz (s.polypoints.first.x / 100, 0.11, s.polypoints.first.y / 100)
+			create dst.make_xyz (s.polypoints.last.x / 100, 0.11, s.polypoints.last.y / 100)
+			create color.make_xyz (0,0,0)	-- Black
 			
 --			io.put_string ("%N" + s.line.name + ": " + s.origin.name + x_org.out + y_org.out + " -> " + s.destination.name + x_dst.out + y_dst.out)
---			draw_circle (org, color, 2*line_width)
---			draw_circle (dst, color, 2*line_width)
-			
-			stations.force (org)
-			stations.force (dst)
-			
+			draw_circle (org, color, 2*line_width)
+			draw_circle (dst, color, 2*line_width)
+
 			-- draw a connecting line
 			from
 				f := 1

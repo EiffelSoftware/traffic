@@ -168,11 +168,9 @@ feature -- Drawing
 --			gl_pop_matrix
 --			gl_flush
 			
-
-			ewer.draw (1000, map)
-			
 			if is_map_loaded then
-
+				ewer.draw (1000, map)
+				
 				lines := map.lines				
 				from lines.start
 				until lines.after
