@@ -27,14 +27,32 @@ creation
 feature -- Implementation
 
 	make is
-			-- creation procedure
-	   	do
+			-- Creation procedure
+		do
 --	   		bitmap_factory.create_bitmap_from_image ("hello_world.gif")
 --				check
 --					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
 --				end
---			texture := bitmap_factory.last_bitmap.gl_texture_mipmap	
+--			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
 		end
+
+	set_central is
+			-- Set house to be in the centre.
+	   	do
+	   		is_central := true
+		ensure is_central = true
+		end
+		
+	set_outlying is
+			-- Set house to be outlying.
+		do
+				is_central := false
+		ensure is_central = false
+		end
+		
+	
+	is_central: BOOLEAN
+			-- Is this house in the centre of town
 	
 	object_width: DOUBLE is 2.0
 			-- The size of the bounding box in x direction of created objects
@@ -43,7 +61,7 @@ feature -- Implementation
 			-- The size of the bounding box in y direction of created objects
 
 	object_depth: DOUBLE is 2.0
-			-- The size of the bounding box in z direction of created objects
+			-- The size of the bounding box in z direction of created objects.	
 		
 feature {NONE} -- Implementation
 
@@ -91,12 +109,21 @@ feature {NONE} -- Implementation
 				gl_vertex3d (-1.0, 1.0, -1.0)
 				
 				-- Top
-				gl_color3f(1, 1, 1) -- White
+				gl_color3d (1,1,1) -- White
 				gl_vertex3d (-1.0, 1.0, -1.0)
 				gl_vertex3d (-1.0, 1.0, 0.0)
 				gl_vertex3d (0.0, 1.0, 0.0)
 				gl_vertex3d (0.0, 1.0, -1.0)
 			gl_end
+
+--			gl_color3d (0,0.4,0.8) -- Some kind of blue
+--			gl_matrix_mode (Em_gl_modelview)
+--			gl_push_matrix
+--			gl_translated (-0.5, 1, -0.5)
+--			glu_sphere (glu_new_quadric, 0.5, 72, 72)
+--			gl_pop_matrix
+
+			
 		end
 
 end -- class BUILDING_FACTORY
