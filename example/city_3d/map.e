@@ -21,7 +21,6 @@ inherit
 		SHARED_CONSTANTS
 		export {NONE} all end
 		
-		
 creation
 	
 	make
@@ -83,17 +82,29 @@ feature -- Traffic stuff
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
 			is_map_loaded := true
-		end
+		end	
 		
 	set_highlighted(b: BOOLEAN) is
 			-- If true, metrolines are highlighted
+		require variable_exist: b /= void
 		do
 			if b then
 				lines_height := 3
 			else 
 				lines_height := 0.2
 			end
+		ensure b implies lines_height = 3
+			not b implies lines_height = 0.2
 		end
+		
+	set_houses_shown(b: BOOLEAN) is
+			-- If true, houses are shown
+		require variable_exists: b /= void
+		do
+			show_houses := b
+		ensure show_houses = b
+		end
+		
 		
 		
 feature -- Drawing
@@ -182,7 +193,10 @@ feature -- Drawing
 --			gl_flush	
 			
 			if is_map_loaded then
-				ewer.draw (1000, map)
+				if show_houses then
+					ewer.draw (1000, map)
+				end
+				
 
 				lines := map.lines				
 				from lines.start
@@ -191,6 +205,7 @@ feature -- Drawing
 					traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
 					traffic_line_factory.set_line (lines.item_for_iteration)
 					obj := traffic_line_factory.create_object
+--					obj.set_scale (2,2,2)
 					obj.set_origin (-7,lines_height,-7)
 					obj.draw
 					lines.forth
@@ -309,6 +324,8 @@ feature{NONE} -- Factories
 		
 feature{NONE} -- Variables
 
+	show_houses: BOOLEAN
+		-- Determines visualization of houses
 	focus: DOUBLE
 		-- Used to zoom in or out.
 	x_coord: DOUBLE

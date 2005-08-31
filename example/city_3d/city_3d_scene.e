@@ -27,13 +27,15 @@ feature -- Interface
 	make is
 			-- Creation procedure.
 		local 
-			checkbox: EM_CHECKBOX
+			highlighting_checkbox: EM_CHECKBOX
+			houses_checkbox: EM_CHECKBOX
 			toolbar_panel: EM_PANEL
 			combo_box: EM_COMBOBOX[STRING]
 			button: EM_BUTTON
 		do
 			make_component_scene
-			create checkbox.make_from_text ("Highlight lines")
+			create highlighting_checkbox.make_from_text ("Highlight lines")
+			create houses_checkbox.make_from_text ("Show houses")
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded,window_height)
 			create combo_box.make_from_list (search_for_xml)
 			create button.make_from_text ("Load map")
@@ -60,7 +62,7 @@ feature -- Interface
 			button.set_background_color (create {EM_COLOR}.make_with_rgb (127,127,127))
 			toolbar_panel.add_widget (button)
 
-			-- Combobox
+			-- Combobox for XML selection
 			combo_box.set_position (10,50)
 			combo_box.set_dimension (150,20)
 			combo_box.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
@@ -68,13 +70,21 @@ feature -- Interface
 			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
 			
-			-- Checkbox
-			checkbox.set_position (10,350)
-			checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
-			checkbox.set_dimension (110,20)
-			checkbox.checked_event.subscribe (agent checkbox_checked)
-			checkbox.unchecked_event.subscribe (agent checkbox_unchecked)
-			toolbar_panel.add_widget (checkbox)
+			-- Highlighting Checkbox
+			highlighting_checkbox.set_position (10,350)
+			highlighting_checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+			highlighting_checkbox.set_dimension (110,20)
+			highlighting_checkbox.checked_event.subscribe (agent highlighting_checked)
+			highlighting_checkbox.unchecked_event.subscribe (agent highlighting_unchecked)
+			toolbar_panel.add_widget (highlighting_checkbox)
+			
+			-- Houses Checkbox
+			houses_checkbox.set_position (10,390)
+			houses_checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+			houses_checkbox.set_dimension (110,20)
+			houses_checkbox.checked_event.subscribe (agent houses_checked)
+			houses_checkbox.unchecked_event.subscribe (agent houses_unchecked)
+			toolbar_panel.add_widget (houses_checkbox)
 			
 --			create event_loop.make_poll
 --			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
@@ -84,14 +94,26 @@ feature -- Interface
 
 		
 feature -- Event handling
+
+	houses_checked is
+			-- Checkbox has been clicked
+		do
+			map.set_houses_shown (true)
+		end
+		
+	houses_unchecked is
+			-- Checkbox has been clicked
+		do
+			map.set_houses_shown (false)
+		end
 	
-	checkbox_checked is
+	highlighting_checked is
 			-- Checkbox has been clicked
 		do
 			map.set_highlighted (true)
 		end
 		
-	checkbox_unchecked is
+	highlighting_unchecked is
 			-- Checkbox has been clicked
 		do
 			map.set_highlighted (false)
