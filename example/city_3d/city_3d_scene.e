@@ -10,12 +10,6 @@ class
 inherit
 	
 	EM_COMPONENT_SCENE
---		redefine
---			redraw,
---			handle_key_down_event --,
---			handle_mouse_button_down_event,
---			handle_mouse_motion_event
-		end
 	
 	SHARED_CONSTANTS
 		export {NONE} all end
@@ -39,6 +33,8 @@ feature -- Interface
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded,window_height)
 			create combo_box.make_from_list (search_for_xml)
 			create button.make_from_text ("Load map")
+			
+			
 			
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen

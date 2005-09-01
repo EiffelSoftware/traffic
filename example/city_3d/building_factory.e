@@ -71,12 +71,29 @@ feature {NONE} -- Implementation
 			
 			if is_central then
 				
-				gl_color3d (1,1,1) -- White
-				gl_matrix_mode (Em_gl_modelview)
-				gl_push_matrix
-				gl_translated (-0.5, 1, -0.5)
-				glu_sphere (glu_new_quadric, 0.5, 72, 72)
-				gl_pop_matrix
+			gl_color3d (1,1,1) -- White
+			
+			gl_matrix_mode (Em_gl_modelview)
+			gl_push_matrix
+			gl_translated (0, 0.6, 0)
+			glu_sphere (glu_new_quadric, 0.2, 72, 72)
+			gl_pop_matrix
+
+			gl_color3d (0.1,0.6,0.7) -- White
+			gl_matrix_mode (Em_gl_modelview)
+			gl_push_matrix
+			gl_rotated (90, 1, 0,0)
+			glu_disk (glu_new_quadric, 0, 0.2,72,72)
+			gl_pop_matrix
+						
+			gl_push_matrix
+			gl_translated (0,0.6,0)
+			gl_rotated (90, 1, 0,0)
+			glu_cylinder (glu_new_quadric, 0.2, 0.2, 0.8, 72,72)
+			gl_end
+			gl_pop_matrix
+			gl_flush
+			
 			else
 --				gl_enable (Em_gl_texture_2d)
 				-- Front
