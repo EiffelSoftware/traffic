@@ -68,51 +68,8 @@ feature {NONE} -- Implementation
 	specify_object is
 			-- defining the object		
 		do	
-			gl_begin(em_gl_quads)
-				-- Back
-				gl_color3f(1, 0, 0) -- Red
-				gl_vertex3d (-1.0, 0.0, -1.0)
-				gl_vertex3d (-1.0, 1.0, -1.0)
-				gl_vertex3d (-1.0, 1.0, 0.0)
-				gl_vertex3d (-1.0, 0.0, 0.0)
-
-				-- Right
-				gl_color3f(0, 1, 0) -- Green
-				gl_vertex3d (-1.0, 1.0, 0.0)
-				gl_vertex3d (-1.0, 0.0, 0.0)
-				gl_vertex3d (0.0, 0.0, 0.0)
-				gl_vertex3d (0.0, 1.0, 0.0)
-
-				-- Left
-				gl_color3f (1, 1, 0) -- Yellow
-				gl_vertex3d (0.0, 1.0, -1.0)
-				gl_vertex3d (0.0, 0.0, -1.0)
-				gl_vertex3d (-1.0, 0.0, -1.0)
-				gl_vertex3d (-1.0, 1.0, -1.0)
-				
-				-- Top
-				gl_color3d (1,1,1) -- White
-				gl_vertex3d (-1.0, 1.0, -1.0)
-				gl_vertex3d (-1.0, 1.0, 0.0)
-				gl_vertex3d (0.0, 1.0, 0.0)
-				gl_vertex3d (0.0, 1.0, -1.0)
-			gl_end
+			
 			if is_central then
---				gl_enable (Em_gl_texture_2d)
-				-- Front
-				gl_begin (em_gl_quads)
-					gl_bind_texture (Em_gl_texture_2d, texture)
-					gl_color3f (0, 0.15, 1) -- Blue
-					gl_tex_coord2f (0, 0)
-					gl_vertex3d (0.0, 1.0, 0.0)
-					gl_tex_coord2f (1, 1)
-					gl_vertex3d (0.0, 0.0, 0.0)
-					gl_tex_coord2f (0, 1)
-					gl_vertex3d (0.0, 0.0, -1.0)
-					gl_tex_coord2f (1, 0)
-					gl_vertex3d (0.0, 1.0, -1.0)
-				gl_end
-				gl_disable (Em_gl_texture_2d)
 				
 				gl_color3d (1,1,1) -- White
 				gl_matrix_mode (Em_gl_modelview)
@@ -137,6 +94,35 @@ feature {NONE} -- Implementation
 				gl_end
 				gl_disable (Em_gl_texture_2d)
 				
+				gl_begin(em_gl_quads)
+					-- Back
+					gl_color3f(1, 0, 0) -- Red
+					gl_vertex3d (-1.0, 0.0, -1.0)
+					gl_vertex3d (-1.0, 1.0, -1.0)
+					gl_vertex3d (-1.0, 1.0, 0.0)
+					gl_vertex3d (-1.0, 0.0, 0.0)
+	
+					-- Right
+					gl_color3f(0, 1, 0) -- Green
+					gl_vertex3d (-1.0, 1.0, 0.0)
+					gl_vertex3d (-1.0, 0.0, 0.0)
+					gl_vertex3d (0.0, 0.0, 0.0)
+					gl_vertex3d (0.0, 1.0, 0.0)
+	
+					-- Left
+					gl_color3f (1, 1, 0) -- Yellow
+					gl_vertex3d (0.0, 1.0, -1.0)
+					gl_vertex3d (0.0, 0.0, -1.0)
+					gl_vertex3d (-1.0, 0.0, -1.0)
+					gl_vertex3d (-1.0, 1.0, -1.0)
+					
+					-- Top
+					gl_color3d (1,1,1) -- White
+					gl_vertex3d (-1.0, 1.0, -1.0)
+					gl_vertex3d (-1.0, 1.0, 0.0)
+					gl_vertex3d (0.0, 1.0, 0.0)
+					gl_vertex3d (0.0, 1.0, -1.0)
+				gl_end
 			end
 
 
