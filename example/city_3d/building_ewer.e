@@ -39,15 +39,15 @@ feature -- Drawing
 			-- Draw all houses
 		local i: INTEGER
 		do
-			from i := 1
-			until i > buildings.count
+			from i := buildings.lower
+			until i > buildings.upper
 			loop
 				if buildings.item (i) /= void then
 					buildings.item(i).draw	
 				end
 				i := i + 1
-			end
-		end
+			end	
+		end		
 
 	create_buildings (n: INTEGER; map: TRAFFIC_MAP) is
 			-- Create `n' buildings randomly.
@@ -60,27 +60,37 @@ feature -- Drawing
 			outlying_building_factory: BUILDING_FACTORY
 			central_building_factory: BUILDING_FACTORY
 			building: EM_3D_OBJECT
-			collision_rec: EM_RECTANGLE_COLLIDABLE
+			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
 			max_distance,distance: DOUBLE
+			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 		do
 			create_collidable_pieces (map)
+--			create_collision_polygons (map)
 			create randomizer.set_seed (42)
 			create central_building_factory.make_central
 			create outlying_building_factory.make
-			create buildings.make (1,n+1)
+			create buildings.make (1,n)
+			
+			create poly_points.make
 			
 			max_distance := sqrt(depth^2 + width^2)
 			
-			from i := 0; j := 1
+			from i := 2; j := 1
 			until i > n
 			loop
-				x_coord := centre.x - (width/2) +  randomizer.double_i_th (j)*width
-				z_coord := centre.z - (depth/2) + randomizer.double_i_th (j+1)*depth
+				x_coord := centre.x - (width/2) +  randomizer.double_i_th (j)*width -- 3.6
+				z_coord := centre.z - (depth/2) + randomizer.double_i_th (j+1)*depth -- -0.5
 
 				-- ACHTUNG: Origin ist links unten!
-				create collision_rec.make_from_position_and_size (create {EM_VECTOR_2D}.make (x_coord+0.1, z_coord+0.1), 0.2,0.2)
+--				create collision_rec.make_from_position_and_size (create {EM_VECTOR_2D}.make (x_coord+0.5, z_coord+0.5), 1,1)
+				poly_points.force (create {EM_VECTOR_2D}.make (-0.2, -0.2),1)
+				poly_points.force (create {EM_VECTOR_2D}.make (-0.2, 0.2),2)
+				poly_points.force (create {EM_VECTOR_2D}.make (0.2, 0.2),3)
+				poly_points.force (create {EM_VECTOR_2D}.make (0.2, -0.2),4)
 				
-				if collidable_pieces.for_all (agent collides_with_piece (collision_rec, ?)) then
+				create collision_poly.make_from_relative_list (create {EM_VECTOR_2D}.make (x_coord+0.2, z_coord+0.2), poly_points)
+
+				if not has_collision(collision_poly, collidable_pieces) then
 					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord))
 					if distance < 3 then
 						building := central_building_factory.create_object
@@ -90,19 +100,17 @@ feature -- Drawing
 					building.set_origin (x_coord, 0, z_coord)
 					building.set_scale (0.2,(max_distance - 2*distance)*(max_height/max_distance),0.2)
 					buildings.force (building,i)
+					io.put_integer(i)
+					io.put_new_line
 					i := i + 1
 				end
 				j := j + 2
 			end			
 		end
-	
-	collides_with_piece (r: EM_RECTANGLE_COLLIDABLE; other: EM_RECTANGLE_COLLIDABLE): BOOLEAN is
-			-- Does the rectangle collide with the line piece?
-		do
-			Result := r.collides_with (other)
-		end
 		
-	collidable_pieces: ARRAYED_LIST[EM_RECTANGLE_COLLIDABLE]
+	
+		
+	collidable_pieces: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 	
 	create_collidable_pieces (map: TRAFFIC_MAP) is
 			-- Create a list of collidable pieces.
@@ -112,53 +120,70 @@ feature -- Drawing
 			lines: ARRAYED_LIST[TRAFFIC_LINE]
 			line: TRAFFIC_LINE
 			section: TRAFFIC_LINE_SECTION
-			collidable: EM_RECTANGLE_COLLIDABLE
-			f, t: INTEGER
+			collidable: EM_POLYGON_CONVEX_COLLIDABLE
+			i, j: INTEGER
 			delta_x, delta_y: DOUBLE
 			norm: DOUBLE
-			pf, pt: EM_VECTOR_2D
+			start_point, end_point: EM_VECTOR_2D 
+			polygon_points: DS_LINKED_LIST [EM_VECTOR_2D]
+			a_point,b_point,c_point,d_point: EM_VECTOR_2D
 		do
 			lines := map.lines.linear_representation
 			create collidable_pieces.make (0)
+			create polygon_points.make
 			
-			from
-				lines.start
-			until
-				lines.after
+			from lines.start
+			until lines.after
 			loop
 				line := lines.item
-				
-				from
-					line.start
-				until
-					line.after
+--				line := lines.first
+				from line.start
+				until line.after
 				loop
-					section := line.item
-					
+				section := line.item
+
+			
+--			section := line.first
 					from
-						f := 1
-						t := 2
+						i := 1
+						j := 2
 					until
-						f >= section.polypoints.count
+						i >= section.polypoints.count
 					loop
-						pf := section.polypoints.i_th (f)
-						pt := section.polypoints.i_th (t)
+						create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
+						create end_point.make(section.polypoints.i_th (j).x, section.polypoints.i_th (j).y)
+--						start_point :=  section.polypoints.i_th (i)
+--						end_point := section.polypoints.i_th (j)
 						
-						delta_x := pf.x - pt.x
-						delta_y := pf.y - pt.y
 						
-						norm := sqrt (delta_x^2 + delta_y^2)
+						-- TRANSFORMATION -> BUILD IN LIMITS
+						start_point.set_x ((start_point.x / 50) - 14)
+						start_point.set_y ((start_point.y / 50) - 14)	
+						end_point.set_x ((end_point.x / 50) - 14)
+						end_point.set_y ((end_point.y / 50) - 14)
 						
---						draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x-delta_z*line_width/norm,p.y,p.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x+delta_z*line_width/norm,p.y,p.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x+delta_z*line_width/norm,q.y,q.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x-delta_z*line_width/norm,q.y,q.z+delta_x*line_width/norm))
 						
-						create collidable.make (create {EM_VECTOR_2D}.make (pf.x-delta_y*line_width/norm, pf.y+delta_x*line_width/norm), create {EM_VECTOR_2D}.make (pt.x+delta_y*line_width/norm, pt.y-delta_x*line_width/norm))
+						delta_x := end_point.x - start_point.x
+						delta_y := end_point.y - start_point.y
+			
+						norm := sqrt (delta_x*delta_x + delta_y*delta_y)
+			
+						create a_point.make(start_point.x-delta_y*line_width/norm,start_point.y+delta_x*line_width/norm)
+						create b_point.make(start_point.x+delta_y*line_width/norm,start_point.y-delta_x*line_width/norm) 
+						create c_point.make(end_point.x+delta_y*line_width/norm,end_point.y-delta_x*line_width/norm) 
+						create d_point.make(end_point.x-delta_y*line_width/norm,end_point.y+delta_x*line_width/norm)
+
+						polygon_points.force ((a_point),1)
+						polygon_points.force ((b_point),2)
+						polygon_points.force ((c_point),3)
+						polygon_points.force ((d_point),4)
 						
+						create collidable.make_from_absolute_list (a_point + (d_point - a_point)/2,polygon_points)
 						collidable_pieces.force (collidable)
-						
-						f := f + 1
-						t := t + 1
-					end
-					
+
+						i := i + 1
+						j := j + 1
+					end				
 					line.forth
 				end
 				lines.forth
@@ -170,6 +195,9 @@ feature -- Drawing
 		do
 			Result := (sqrt((p.x-centre.x)^2 + (p.z-centre.z)^2))
 		end
+	
+	-- Delete me
+	planes: ARRAY[ARRAY[EM_VECTOR_2D]]
 	
 feature{NONE} -- Variables
 

@@ -66,7 +66,7 @@ feature -- Traffic stuff
 
 	is_map_loaded: BOOLEAN
 		-- Has parsing already taken place?
-
+		
 	filename: STRING
 		-- Filename of XML file of map
 	
@@ -82,7 +82,7 @@ feature -- Traffic stuff
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
 			is_map_loaded := true
-			ewer.create_buildings (1000,map)
+			ewer.create_buildings (10,map)
 		end	
 		
 	set_highlighted(b: BOOLEAN) is
@@ -90,11 +90,11 @@ feature -- Traffic stuff
 		require variable_exist: b /= void
 		do
 			if b then
-				lines_height := 3
+				lines_height := 1.5
 			else 
 				lines_height := 0.2
 			end
-		ensure b implies lines_height = 3
+		ensure b implies lines_height = 1.5
 			not b implies lines_height = 0.2
 		end
 		
@@ -161,6 +161,7 @@ feature -- Drawing
 		local
 			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 			obj: EM_3D_OBJECT
+			delta_line: DOUBLE
 		do
 			-- Coordinate System
 			
@@ -186,6 +187,7 @@ feature -- Drawing
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(1,0,0))				
 
 			
+			
 --			gl_line_width(400)
 --			gl_matrix_mode (Em_gl_modelview)
 --			gl_push_matrix
@@ -205,16 +207,20 @@ feature -- Drawing
 					ewer.draw
 				end
 				
-
 				lines := map.lines				
-				from lines.start
+				from lines.start; delta_line := 0
 				until lines.after
-				loop
+				loop 
 					traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
 					traffic_line_factory.set_line (lines.item_for_iteration)
 					obj := traffic_line_factory.create_object
 --					obj.set_scale (2,2,2)
-					obj.set_origin (-14,lines_height,-14)
+					if lines_height > 0.2 then
+						obj.set_origin (-14,lines_height+delta_line,-14)
+						delta_line := delta_line + 0.4
+					else
+						obj.set_origin (-14,lines_height,-14)
+					end	
 					obj.draw
 					lines.forth
 				end
