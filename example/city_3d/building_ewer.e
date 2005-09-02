@@ -51,7 +51,7 @@ feature -- Drawing
 		
 	create_buildings (n: INTEGER; map: TRAFFIC_MAP) is
 			-- Create `n' buildings randomly.
-		require n_exists_and_positive: n /= void and then n > 0
+		require n_exists_and_positive: n /= void and then n >= 0
 				map_exists: map /= void
 		local
 			randomizer: RANDOM
@@ -129,8 +129,6 @@ feature -- Drawing
 				list.forth
 			end
 		end
-		
-	
 		
 	collidable_pieces: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 	

@@ -22,7 +22,6 @@ inherit
 
 	GLU_FUNCTIONS
 		export {NONE} all end	
-	
 
 creation
 
@@ -35,7 +34,6 @@ feature -- Implementation
 		do
 			is_central := false
 		end
-		
 
 	make_central is
 			-- Creation procedure
@@ -47,7 +45,6 @@ feature -- Implementation
 --			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
 			is_central := true
 		end
-		
 	
 	is_central: BOOLEAN
 			-- Is this house in the centre of town
@@ -140,9 +137,6 @@ feature {NONE} -- Implementation
 					gl_vertex3d (0.0, 1.0, -1.0)
 				gl_end
 			end
-
-
-			
 		end
 
 end -- class BUILDING_FACTORY

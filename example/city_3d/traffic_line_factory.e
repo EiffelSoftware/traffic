@@ -61,7 +61,7 @@ feature -- Initialization
 		
 feature{NONE} -- Drawing
 		
-	draw_circle(p, rgb: GL_VECTOR_3D[DOUBLE]; r: DOUBLE; ) is
+	draw_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r: DOUBLE; ) is
 			-- draw a circle between traffic line segments
 		require
 			p /= Void

@@ -52,7 +52,6 @@ feature -- Initialization
 			create traffic_line_factory
 			traffic_line_factory.set_line_width (0.05)
 			
-
 			-- User Interaction
 			mouse_button_down_event.subscribe (agent mouse_button_down (?))
 			mouse_dragged_event.subscribe (agent mouse_dragged (?))
@@ -60,11 +59,10 @@ feature -- Initialization
 			mouse_wheel_up_event.subscribe (agent mouse_wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 		end
-
 		
 feature -- Traffic stuff	
 
-	is_map_loaded: BOOLEAN
+	is_loaded: BOOLEAN
 		-- Has parsing already taken place?
 		
 	filename: STRING
@@ -72,6 +70,9 @@ feature -- Traffic stuff
 	
 	map: TRAFFIC_MAP
 		-- Parsed map
+		
+	number_of_buildings: INTEGER
+		-- How many buildings should be displayed?
 	
 	load_map (fn: STRING) is
 			-- load the map
@@ -81,12 +82,12 @@ feature -- Traffic stuff
 			filename := fn
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
-			is_map_loaded := true
-			ewer.create_buildings (10,map)
+			is_loaded := true
+			ewer.create_buildings (number_of_buildings, map)
 		end	
 		
-	set_highlighted(b: BOOLEAN) is
-			-- If true, metrolines are highlighted
+	set_highlighted (b: BOOLEAN) is
+			-- If `b' then traffic lines are highlighted.
 		require variable_exist: b /= void
 		do
 			if b then
@@ -98,20 +99,31 @@ feature -- Traffic stuff
 			not b implies lines_height = 0.2
 		end
 		
-	set_houses_shown(b: BOOLEAN) is
-			-- If true, houses are shown
+	set_show_buildings (b: BOOLEAN) is
+			-- Set `show_buildings'.
 		require variable_exists: b /= void
 		do
-			show_houses := b
-		ensure show_houses = b
+			show_buildings := b
+		ensure show_buildings = b
+		end
+	
+	set_number_of_buildings (n: INTEGER) is
+			-- Set `number_of_buildings'.
+		require
+			n >= 0
+		do
+			number_of_buildings := n
+			if is_loaded then
+				ewer.create_buildings (number_of_buildings, map)
+			end
 		end
 		
-	set_transparent(b: BOOLEAN) is
-			-- If true, houses are transparent
+	set_transparent (b: BOOLEAN) is
+			-- Set `buildings_transparent'.
 		require variable_exists: b /= void
 		do
-			show_houses := b
-		ensure show_houses = b
+			buildings_transparent := b
+		ensure buildings_transparent = b
 		end
 		
 feature -- Drawing
@@ -186,8 +198,6 @@ feature -- Drawing
 			
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))				
 
-			
-			
 --			gl_line_width(400)
 --			gl_matrix_mode (Em_gl_modelview)
 --			gl_push_matrix
@@ -202,8 +212,8 @@ feature -- Drawing
 --			gl_pop_matrix
 --			gl_flush	
 			
-			if is_map_loaded then
-				if show_houses then		
+			if is_loaded then
+				if show_buildings then
 					ewer.draw
 				end
 				
@@ -239,7 +249,7 @@ feature -- Drawing
 			gl_end
 		end
 		
-feature{NONE} -- Event handling
+feature {NONE} -- Event handling
 
 	mouse_wheel_down is
 			-- Mouse wheel down event
@@ -311,7 +321,6 @@ feature{NONE} -- Event handling
 				end
 			elseif event.button_state_right then
 				
-				
 			end			
 		end
 
@@ -329,17 +338,18 @@ feature{NONE} -- Event handling
 			end
 		end
 
-feature{NONE} -- Factories and stuff
+feature {NONE} -- Factories and stuff
 	
 		ewer: BUILDING_EWER
 		
 		traffic_line_factory: TRAFFIC_LINE_FACTORY
 
-		
-feature{NONE} -- Variables
+feature {NONE} -- Variables
 
-	show_houses: BOOLEAN
-		-- Determines visualization of houses
+	show_buildings: BOOLEAN
+		-- Should the buildings be displayed?
+	buildings_transparent: BOOLEAN
+		-- Should the buildings be transparent?
 	focus: DOUBLE
 		-- Used to zoom in or out.
 	x_coord: DOUBLE
@@ -354,5 +364,9 @@ feature{NONE} -- Variables
 		-- Rotation around the z axis
 	lines_height: DOUBLE
 		-- Height of the metrolines on map
+
+invariant
+	
+	number_of_buildings >= 0
 
 end -- class MAP
