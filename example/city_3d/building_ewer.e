@@ -48,7 +48,7 @@ feature -- Drawing
 				i := i + 1
 			end	
 		end		
-
+		
 	create_buildings (n: INTEGER; map: TRAFFIC_MAP) is
 			-- Create `n' buildings randomly.
 		require n_exists_and_positive: n /= void and then n > 0
@@ -108,6 +108,28 @@ feature -- Drawing
 			end			
 		end
 		
+	has_collision(poly_a: EM_COLLIDABLE; list: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE] ): BOOLEAN is
+			-- Is there a collision
+		local collision_detector: EM_COLLISION_DETECTOR
+			  collisions: DS_LINKED_LIST [EM_COLLISION_COMPOSITION]
+		do
+			create collision_detector.make(2)
+			collision_detector.add (poly_a,1)
+			
+			from list.start
+			until list.after or Result
+			loop
+				collision_detector.add (list.item,2)
+				collision_detector.check_for_collision
+				collisions := collision_detector.last_collisions
+				if not collisions.is_empty then
+					Result := true
+				end
+				collision_detector.remove_from_set(list.item,2)
+				list.forth
+			end
+		end
+		
 	
 		
 	collidable_pieces: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
@@ -136,14 +158,10 @@ feature -- Drawing
 			until lines.after
 			loop
 				line := lines.item
---				line := lines.first
 				from line.start
 				until line.after
 				loop
 				section := line.item
-
-			
---			section := line.first
 					from
 						i := 1
 						j := 2
@@ -152,8 +170,6 @@ feature -- Drawing
 					loop
 						create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
 						create end_point.make(section.polypoints.i_th (j).x, section.polypoints.i_th (j).y)
---						start_point :=  section.polypoints.i_th (i)
---						end_point := section.polypoints.i_th (j)
 						
 						
 						-- TRANSFORMATION -> BUILD IN LIMITS
@@ -197,7 +213,7 @@ feature -- Drawing
 		end
 	
 	-- Delete me
-	planes: ARRAY[ARRAY[EM_VECTOR_2D]]
+	metro_line_segements: ARRAY[ARRAY[EM_VECTOR_2D]]
 	
 feature{NONE} -- Variables
 

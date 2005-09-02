@@ -72,7 +72,6 @@ feature {NONE} -- Implementation
 			if is_central then
 				
 			gl_color3d (1,1,1) -- White
-			
 			gl_matrix_mode (Em_gl_modelview)
 			gl_push_matrix
 			gl_translated (0, 0.6, 0)
