@@ -58,6 +58,7 @@ feature -- Initialization
 			mouse_wheel_down_event.subscribe (agent mouse_wheel_down)
 			mouse_wheel_up_event.subscribe (agent mouse_wheel_up)
 			key_down_event.subscribe (agent key_down (?))
+			mouse_clicked_event.subscribe (agent handle_mouse_clicked)
 		end
 		
 feature -- Traffic stuff	
@@ -83,18 +84,16 @@ feature -- Traffic stuff
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
 			is_loaded := true
-			ewer.create_buildings (number_of_buildings,map)
+			ewer.create_buildings (number_of_buildings, map)
 		end	
-		
+
 feature -- Options
 
-	show_houses: BOOLEAN
-		-- Determines visualization of houses
 	show_collision_objects: BOOLEAN
-		-- Determines if collision objects are shown
+		-- Determines if collision objects are shown.
 		
-	set_highlighted(b: BOOLEAN) is
-			-- If true, metrolines are highlighted
+	set_highlighted (b: BOOLEAN) is
+			-- If `b' then traffic lines are highlighted.
 		require variable_exist: b /= void
 		do
 			if b then
@@ -133,16 +132,17 @@ feature -- Options
 		ensure buildings_transparent = b
 		end
 		
-	set_collision_testing(b: BOOLEAN) is
-			-- If true, collision objects are shown
+	set_collision_testing (b: BOOLEAN) is
+			-- Set `show_collision_objects'.
 		require variable_exists: b /= void
 		do
 			show_collision_objects := b
 		ensure show_collision_objects = b
 		end
+		
 feature -- Drawing
 
-		prepare_drawing is
+	prepare_drawing is
 			-- Prepare for drawing.
 		do
 			if Video_subsystem.video_surface.gl_2d_mode then
@@ -164,7 +164,7 @@ feature -- Drawing
 			-- Setup the projection matrix
 			gl_matrix_mode (Em_gl_projection)
 			gl_load_identity
-			glu_perspective (field_of_view, width/height, min_view_distance, max_view_distance)
+			glu_perspective (field_of_view, width/height, min_view_distance, focus*max_view_distance)
 			
 			-- Setup the model view matrix
 			gl_matrix_mode (Em_gl_modelview)
@@ -183,7 +183,7 @@ feature -- Drawing
 		end
 		
 	draw is
-			-- Who the fuck knows that.
+			-- Draw the map.
 		local
 			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 			obj: EM_3D_OBJECT
@@ -210,7 +210,7 @@ feature -- Drawing
 --				gl_vertex3d(0,0,1)
 --			gl_end
 			
-			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
+			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))				
 			
 --			gl_line_width(400)
 --			gl_matrix_mode (Em_gl_modelview)
@@ -224,7 +224,7 @@ feature -- Drawing
 --				gl_vertex3d(3,0,0)
 --			gl_end
 --			gl_pop_matrix
---			gl_flush
+--			gl_flush	
 			if show_collision_objects then
 				ewer.draw_collision
 			end
@@ -234,7 +234,7 @@ feature -- Drawing
 					ewer.draw
 				end
 				
-				lines := map.lines				
+				lines := map.lines
 				from lines.start; delta_line := 0
 				until lines.after
 				loop 
@@ -284,6 +284,42 @@ feature {NONE} -- Event handling
 --			if focus < 0.3 then
 --				focus := 0.3
 --			end
+		end
+	
+	handle_mouse_clicked (event: EM_MOUSEBUTTON_EVENT) is
+			-- Handle mouse clicked event.
+		local
+			model_matrix, projection_matrix: ARRAY [DOUBLE]
+			model_c, projection_c: ANY
+			viewport: GL_VECTOR_4D [INTEGER]
+			y_new: INTEGER
+			result_x, result_y, result_z: DOUBLE
+			temp: ANY
+			click_1, click_2: GL_VECTOR_3D [DOUBLE]
+			window_z: REAL
+			
+		do
+			create model_matrix.make (0, 15)
+			create projection_matrix.make (0, 15)
+			create viewport.make_xyzt (0, 0, 0, 0)
+			model_c := model_matrix.to_c
+			projection_c := projection_matrix.to_c
+			
+			gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
+			gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
+			gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
+			y_new := video_subsystem.video_surface.height - event.screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
+			
+			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 0, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+			create click_1.make_xyz (result_x, result_y, result_z)
+			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 1, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+			create click_2.make_xyz (result_x, result_y, result_z)
+			io.put_string ("Click ray: "+click_1.out+" to "+click_2.out+"%N")
+			
+			gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
+			temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+			create click_1.make_xyz (result_x, result_y, result_z)
+			io.put_string ("Click point: "+click_1.out+"%N")
 		end
 		
 	mouse_button_down (event: EM_MOUSEBUTTON_EVENT) is	
@@ -344,22 +380,22 @@ feature {NONE} -- Event handling
 	key_down (event: EM_KEYBOARD_EVENT) is
 			-- Handle key events
 		do
-			if event.key = event.sdlk_right then
-				z_rotation := z_rotation - 10
-			elseif event.key = event.sdlk_left then
+			if event.key = event.sdlk_up then
 				z_rotation := z_rotation + 10
 			elseif event.key = event.sdlk_down then
-				y_rotation := y_rotation + 10
-			elseif event.key = event.sdlk_up then
+				z_rotation := z_rotation - 10
+			elseif event.key = event.sdlk_left then
 				y_rotation := y_rotation - 10
+			elseif event.key = event.sdlk_right then
+				y_rotation := y_rotation + 10
 			end
 		end
 
 feature {NONE} -- Factories and stuff
 	
-		ewer: BUILDING_EWER
-		
-		traffic_line_factory: TRAFFIC_LINE_FACTORY
+	ewer: BUILDING_EWER
+	
+	traffic_line_factory: TRAFFIC_LINE_FACTORY
 
 feature {NONE} -- Variables
 

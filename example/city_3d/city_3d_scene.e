@@ -141,7 +141,7 @@ feature -- Event handling
 	buildings_unchecked is
 			-- Checkbox has been clicked
 		do
-			map.set_houses_shown (false)
+			map.set_show_buildings (false)
 		end
 	
 	highlighting_checked is
