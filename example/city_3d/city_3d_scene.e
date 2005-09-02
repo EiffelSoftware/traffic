@@ -14,7 +14,7 @@ inherit
 	SHARED_CONSTANTS
 		export {NONE} all end
 	
-creation
+creation 
 	make
 
 feature -- Interface
@@ -24,6 +24,7 @@ feature -- Interface
 		local 
 			highlighting_checkbox: EM_CHECKBOX
 			buildings_checkbox: EM_CHECKBOX
+			collision_checkbox: EM_CHECKBOX
 			toolbar_panel: EM_PANEL
 			combo_box: EM_COMBOBOX[STRING]
 			button: EM_BUTTON
@@ -32,11 +33,12 @@ feature -- Interface
 		do
 			make_component_scene
 			create highlighting_checkbox.make_from_text ("Highlight lines")
-			create buildings_checkbox.make_from_text ("Show buildings")
+			create buildings_checkbox.make_from_text ("Show houses")
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded,window_height)
 			create combo_box.make_from_list (search_for_xml)
 			create button.make_from_text ("Load map")
-			
+			create collision_checkbox.make_from_text ("Collision test")
+
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
@@ -47,13 +49,14 @@ feature -- Interface
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
 			
-			-- Toolbar panel
+			-- Toolbar Panel
 			toolbar_panel.set_background_color (create {EM_COLOR}.make_with_rgb (150,255,150))
 			toolbar_panel.set_position ((window_width*0.75).rounded ,0)
 			add_component (toolbar_panel)
 			
 			-- Button
 			button.set_position (50, 80)
+--			button.set_dimension (50, 20)
 			button.clicked_event.subscribe (agent button_clicked (button))
 			button.set_background_color (create {EM_COLOR}.make_with_rgb (127,127,127))
 			toolbar_panel.add_widget (button)
@@ -66,7 +69,7 @@ feature -- Interface
 			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
 			
-			-- Highlighting checkbox
+			-- Highlighting Checkbox
 			highlighting_checkbox.set_position (10,350)
 			highlighting_checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
 			highlighting_checkbox.set_dimension (110,20)
@@ -74,9 +77,18 @@ feature -- Interface
 			highlighting_checkbox.unchecked_event.subscribe (agent highlighting_unchecked)
 			toolbar_panel.add_widget (highlighting_checkbox)
 			
-			-- Buildings checkbox
+			-- Collision Checkbox
+			collision_checkbox.set_position (10,310)
+			collision_checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+			collision_checkbox.set_dimension (110,20)
+			collision_checkbox.checked_event.subscribe (agent collision_checked)
+			collision_checkbox.unchecked_event.subscribe (agent collision_unchecked)
+			toolbar_panel.add_widget (collision_checkbox)
+			
+			-- Houses Checkbox
 			buildings_checkbox.set_position (10,390)
-			buildings_checkbox.set_background_color (create {EM_COLOR}.make_white)
+			buildings_checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+			buildings_checkbox.set_dimension (110,20)
 			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
 			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
 			toolbar_panel.add_widget (buildings_checkbox)
@@ -97,11 +109,13 @@ feature -- Interface
 			buildings_slider.position_changed_event.subscribe (agent number_of_buildings_changed (buildings_label, ?))
 			toolbar_panel.add_widget (buildings_slider)
 			
+			
 --			create event_loop.make_poll
 --			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
 --			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))
 --			event_loop.mouse_motion_event.subscribe (agent handle_mouse_motion_event (?))
 		end
+
 		
 feature -- Event handling
 
@@ -116,7 +130,7 @@ feature -- Event handling
 				map.set_number_of_buildings (number_of_buildings)
 			end
 		end
-		
+
 	buildings_checked is
 			-- Checkbox has been clicked
 		do
@@ -127,7 +141,7 @@ feature -- Event handling
 	buildings_unchecked is
 			-- Checkbox has been clicked
 		do
-			map.set_show_buildings (false)
+			map.set_houses_shown (false)
 		end
 	
 	highlighting_checked is
@@ -140,6 +154,18 @@ feature -- Event handling
 			-- Checkbox has been clicked
 		do
 			map.set_highlighted (false)
+		end
+	
+	collision_checked is
+			-- Checkbox has been clicked
+		do
+			map.set_collision_testing(true)
+		end
+		
+	collision_unchecked is
+			-- Checkbox has been clicked
+		do
+			map.set_collision_testing(false)
 		end
 
 	button_clicked (button: EM_BUTTON) is
@@ -155,17 +181,17 @@ feature -- Event handling
 			end
 		end
 		
-	combo_selection_changed (name: STRING) is
-			-- Combo Box selection has been changed
-		require
-			name_exists: name /= void and then not name.is_empty
-		do
-			map_file_name := name
-		ensure 
-			map_file_name = name
-		end
+		combo_selection_changed (name: STRING) is
+				-- Combo Box selection has been changed
+			require
+				name_exists: name /= void and then not name.is_empty
+			do
+				map_file_name := name
+			ensure 
+				map_file_name = name
+			end
 
-feature {NONE} -- Implementation
+feature{NONE} -- Implementation
 
 	map_file_name: STRING
 		
