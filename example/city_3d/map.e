@@ -83,11 +83,18 @@ feature -- Traffic stuff
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
 			is_loaded := true
-			ewer.create_buildings (number_of_buildings, map)
+			ewer.create_buildings (number_of_buildings,map)
 		end	
 		
-	set_highlighted (b: BOOLEAN) is
-			-- If `b' then traffic lines are highlighted.
+feature -- Options
+
+	show_houses: BOOLEAN
+		-- Determines visualization of houses
+	show_collision_objects: BOOLEAN
+		-- Determines if collision objects are shown
+		
+	set_highlighted(b: BOOLEAN) is
+			-- If true, metrolines are highlighted
 		require variable_exist: b /= void
 		do
 			if b then
@@ -126,6 +133,13 @@ feature -- Traffic stuff
 		ensure buildings_transparent = b
 		end
 		
+	set_collision_testing(b: BOOLEAN) is
+			-- If true, collision objects are shown
+		require variable_exists: b /= void
+		do
+			show_collision_objects := b
+		ensure show_collision_objects = b
+		end
 feature -- Drawing
 
 		prepare_drawing is
@@ -196,8 +210,8 @@ feature -- Drawing
 --				gl_vertex3d(0,0,1)
 --			gl_end
 			
-			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))				
-
+			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
+			
 --			gl_line_width(400)
 --			gl_matrix_mode (Em_gl_modelview)
 --			gl_push_matrix
@@ -210,7 +224,10 @@ feature -- Drawing
 --				gl_vertex3d(3,0,0)
 --			gl_end
 --			gl_pop_matrix
---			gl_flush	
+--			gl_flush
+			if show_collision_objects then
+				ewer.draw_collision
+			end
 			
 			if is_loaded then
 				if show_buildings then
