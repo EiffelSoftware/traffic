@@ -163,7 +163,7 @@ feature -- Implementation
 		
 	create_buildings (n: INTEGER; map: TRAFFIC_MAP) is
 			-- Create `n' buildings randomly.
-		require n_exists_and_positive: n /= void and then n > 0
+		require n_is_a_natural_number: n >= 0
 				map_exists: map /= void
 		local
 			randomizer: RANDOM
@@ -218,7 +218,6 @@ feature -- Implementation
 				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - 0.2, z_coord - 0.2),3)
 				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - 0.2, z_coord),4)
 				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-0.1, z_coord-0.1), poly_points)
-
 					
 				rectangle.force (create {EM_VECTOR_2D}.make (x_coord, z_coord),1)
 				rectangle.force (create {EM_VECTOR_2D}.make (x_coord, z_coord - 0.2),2)
@@ -301,8 +300,6 @@ feature -- Implementation
 --			collision_detector.empty_set(1)
 		end
 		
-	
-		
 	collidable_pieces: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 	
 	create_collidable_pieces (map: TRAFFIC_MAP) is
@@ -354,7 +351,8 @@ feature -- Implementation
 						create end_point.make(section.polypoints.i_th (j).x, section.polypoints.i_th (j).y)
 						
 						-- Delete me
-						create polygon.make (1,4)
+--						create polygon.make (1,4)
+						create polygon_points.make
 						
 						-- TRANSFORMATION -> BUILD IN LIMITS
 						start_point.set_x ((start_point.x / 50) - 14)
@@ -379,11 +377,11 @@ feature -- Implementation
 						polygon_points.force ((d_point),4)
 						
 						-- Delete me
-						polygon.force (a_point,1)
-						polygon.force (b_point,2)
-						polygon.force (c_point,3)
-						polygon.force (d_point,4)
-						centre_list.force ((a_point + (create {EM_VECTOR_2D}.make(line_width,line_width)) + (d_point - a_point)/2),l)
+--						polygon.force (a_point,1)
+--						polygon.force (b_point,2)
+--						polygon.force (c_point,3)
+--						polygon.force (d_point,4)
+						centre_list.force ((a_point + (c_point - a_point)/2),l)
 --						centre_list.force(a_point,l+1)
 --						centre_list.force(a_point,l+2)
 --						centre_list.force(a_point,l+3)
@@ -394,12 +392,12 @@ feature -- Implementation
 						
 						k := k + 1
 
-						create collidable.make_from_absolute_list (a_point + (d_point - a_point)/2,polygon_points)
+						create collidable.make_from_absolute_list (a_point + (c_point - a_point)/2,polygon_points)
 						collidable_pieces.force (collidable)
 
 						i := i + 1
 						j := j + 1
-					end				
+					end
 					line.forth
 				end
 				lines.forth

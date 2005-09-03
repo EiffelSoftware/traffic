@@ -59,7 +59,7 @@ feature -- Initialization
 			unchanged := False
 		end
 		
-feature{NONE} -- Drawing
+feature {NONE} -- Drawing
 		
 	draw_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r: DOUBLE; ) is
 			-- draw a circle between traffic line segments
@@ -116,7 +116,7 @@ feature{NONE} -- Drawing
 			gl_end
 		end
 		
-feature{NONE} -- Variables
+feature {NONE} -- Variables
 		
 	line: TRAFFIC_LINE
 			-- Traffic line provides information about points and segments.

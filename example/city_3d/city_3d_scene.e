@@ -14,7 +14,7 @@ inherit
 	SHARED_CONSTANTS
 		export {NONE} all end
 	
-creation 
+creation
 	make
 
 feature -- Interface
@@ -115,7 +115,6 @@ feature -- Interface
 --			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))
 --			event_loop.mouse_motion_event.subscribe (agent handle_mouse_motion_event (?))
 		end
-
 		
 feature -- Event handling
 
@@ -181,17 +180,17 @@ feature -- Event handling
 			end
 		end
 		
-		combo_selection_changed (name: STRING) is
-				-- Combo Box selection has been changed
-			require
-				name_exists: name /= void and then not name.is_empty
-			do
-				map_file_name := name
-			ensure 
-				map_file_name = name
-			end
+	combo_selection_changed (name: STRING) is
+			-- Combo Box selection has been changed
+		require
+			name_exists: name /= void and then not name.is_empty
+		do
+			map_file_name := name
+		ensure 
+			map_file_name = name
+		end
 
-feature{NONE} -- Implementation
+feature {NONE} -- Implementation
 
 	map_file_name: STRING
 		

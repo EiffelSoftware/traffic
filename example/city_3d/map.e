@@ -299,6 +299,33 @@ feature {NONE} -- Event handling
 			window_z: REAL
 			
 		do
+--			create model_matrix.make (0, 15)
+--			create projection_matrix.make (0, 15)
+--			create viewport.make_xyzt (0, 0, 0, 0)
+--			model_c := model_matrix.to_c
+--			projection_c := projection_matrix.to_c
+--			
+--			gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
+--			gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
+--			gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
+--			y_new := video_subsystem.video_surface.height - event.screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
+--			
+--			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 0, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+--			create click_1.make_xyz (result_x, result_y, result_z)
+--			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 1, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+--			create click_2.make_xyz (result_x, result_y, result_z)
+--			io.put_string ("Click ray: "+click_1.out+" to "+click_2.out+"%N")
+--			
+--			gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
+--			temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+--			create click_1.make_xyz (result_x, result_y, result_z)
+--			io.put_string ("Click point: "+click_1.out+"%N")
+
+			-- Vorbereitung fuer beide Varianten
+			if video_subsystem.video_surface.gl_2d_mode then
+				video_subsystem.video_surface.gl_leave_2d
+			end
+			
 			create model_matrix.make (0, 15)
 			create projection_matrix.make (0, 15)
 			create viewport.make_xyzt (0, 0, 0, 0)
@@ -309,20 +336,28 @@ feature {NONE} -- Event handling
 			gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
 			gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
 			y_new := video_subsystem.video_surface.height - event.screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
+
+			-- 1. Variante: Erzeuge Strahl durch Maus und teste anschliessend Schnittpunkte mit Objekten
+			-- http://www.3dkingdoms.com/selection.html#point
 			
 			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 0, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
 			create click_1.make_xyz (result_x, result_y, result_z)
 			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 1, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
 			create click_2.make_xyz (result_x, result_y, result_z)
 			io.put_string ("Click ray: "+click_1.out+" to "+click_2.out+"%N")
+			-- Jetzt testen, was Strahl von click1 bis click2 trifft, und was am naechsten ist.
+			
+			-- 2. Variante: Erzeuge Raumpunkt, der richtigen "Depth"-Wert erzeugt
+			-- http://wiki.delphigl.com/index.php/GluUnProject
 			
 			gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
 			temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
 			create click_1.make_xyz (result_x, result_y, result_z)
 			io.put_string ("Click point: "+click_1.out+"%N")
+			-- Jetzt testen, was am naechsten bei click1 ist.
 		end
 		
-	mouse_button_down (event: EM_MOUSEBUTTON_EVENT) is	
+	mouse_button_down (event: EM_MOUSEBUTTON_EVENT) is
 			-- Handle mouse events
 		require else
 			a_mouse_button_event_not_void: event /= void

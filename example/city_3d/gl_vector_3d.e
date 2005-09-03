@@ -13,7 +13,7 @@ class
 
 inherit
 	ANY
-		redefine 
+		redefine
 			out 
 		end
 	
