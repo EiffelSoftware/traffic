@@ -60,8 +60,9 @@ feature -- Drawing
 			
 	draw_collision is
 			-- Draw collision detection objects
-		local i: INTEGER
-				rec: ARRAY[EM_VECTOR_2D]
+		local
+			i: INTEGER
+			rec: ARRAY[EM_VECTOR_2D]
 		do
 			from i := polygon_list.lower
 			until i > polygon_list.upper
@@ -114,15 +115,14 @@ feature -- Drawing
 		
 feature -- Implementation 	
 
-	output_line(line: TRAFFIC_LINE) is
-			-- Throw out all duplicated sections
+	output_line (line: TRAFFIC_LINE) is
+			-- Display all sections of `line'.
 		do
 			from line.start
 			until line.after
 			loop
-				io.put_string("Start: ")
 				io.put_string(line.item.origin.name)
-				io.put_string (" nach ")
+				io.put_string (" -> ")
 				io.put_string(line.item.destination.name)
 				io.put_new_line
 				line.forth
@@ -163,8 +163,9 @@ feature -- Implementation
 		
 	create_buildings (n: INTEGER; map: TRAFFIC_MAP) is
 			-- Create `n' buildings randomly.
-		require n_is_a_natural_number: n >= 0
-				map_exists: map /= void
+		require
+			n_is_a_natural_number: n >= 0
+			map_exists: map /= void
 		local
 			randomizer: RANDOM
 			x_coord, z_coord: DOUBLE
@@ -256,9 +257,10 @@ feature -- Implementation
 			end			
 		end
 		
-	has_collision(poly_a: EM_COLLIDABLE): BOOLEAN is
+	has_collision (poly_a: EM_COLLIDABLE): BOOLEAN is
 			-- Is there a collision
-		local collisions: DS_LINKED_LIST [EM_COLLISION_COMPOSITION]
+		local
+			collisions: DS_LINKED_LIST [EM_COLLISION_COMPOSITION]
 		do
 			collision_detector.add (poly_a,2)
 			collision_detector.check_for_collision

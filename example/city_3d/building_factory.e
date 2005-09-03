@@ -64,8 +64,7 @@ feature {NONE} -- Implementation
 	
 	specify_object is
 			-- defining the object		
-		do	
-			
+		do
 			if is_central then
 				
 			gl_color3d (1,1,1) -- White

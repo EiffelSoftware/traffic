@@ -109,7 +109,6 @@ feature -- Interface
 			buildings_slider.position_changed_event.subscribe (agent number_of_buildings_changed (buildings_label, ?))
 			toolbar_panel.add_widget (buildings_slider)
 			
-			
 --			create event_loop.make_poll
 --			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
 --			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))

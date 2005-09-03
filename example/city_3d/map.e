@@ -18,8 +18,10 @@ inherit
 			prepare_drawing
 		end
 		
-		SHARED_CONSTANTS
+	SHARED_CONSTANTS
 		export {NONE} all end
+	
+	MEMORY
 		
 creation
 	
@@ -43,8 +45,8 @@ feature -- Initialization
 			x_coord := 0
 			y_coord := -1
 			z_coord := -9
-			y_rotation := -90 -- -35
-			z_rotation := -40 -- -80
+			y_rotation := 180  -- -35
+			x_rotation := 40  -- -80
 			lines_height := 0.2
 			
 			-- Factory creation
@@ -178,8 +180,8 @@ feature -- Drawing
 			gl_matrix_mode (em_gl_modelview_matrix)
 			gl_load_identity
 			gl_translated_external (x_coord*focus, y_coord*focus, z_coord*focus)
+			gl_rotatef (x_rotation, 1, 0, 0)
 			gl_rotatef(y_rotation, 0, 1, 0)
-			gl_rotatef (z_rotation, 0, 0, 1)
 		end
 		
 	draw is
@@ -224,7 +226,11 @@ feature -- Drawing
 --				gl_vertex3d(3,0,0)
 --			gl_end
 --			gl_pop_matrix
---			gl_flush	
+--			gl_flush
+			
+--			io.put_new_line
+--			io.put_integer (memory_statistics (0).total)
+			
 			if show_collision_objects then
 				ewer.draw_collision
 			end
@@ -396,29 +402,29 @@ feature {NONE} -- Event handling
 		do
 			if event.button_state_right then				
 				y_rotation := y_rotation + event.x_motion
-				if y_rotation >= -15 then
-					y_rotation := -15
-				elseif y_rotation <= -165 then
-					 y_rotation := -165
+				if y_rotation <= 90 then
+					y_rotation := 90
+				elseif y_rotation >= 270 then
+					 y_rotation := 270
 				end
-				z_rotation := z_rotation + event.y_motion
-				if z_rotation >= -15 then
-					z_rotation := -15
-				elseif z_rotation <= -90 then
-					z_rotation := -90
+				x_rotation := x_rotation + event.y_motion
+				if x_rotation <= 15 then
+					x_rotation := 15
+				elseif x_rotation >= 90 then
+					x_rotation := 90
 				end
 			elseif event.button_state_right then
 				
-			end			
+			end
 		end
 
 	key_down (event: EM_KEYBOARD_EVENT) is
 			-- Handle key events
 		do
 			if event.key = event.sdlk_up then
-				z_rotation := z_rotation + 10
+				x_rotation := x_rotation + 10
 			elseif event.key = event.sdlk_down then
-				z_rotation := z_rotation - 10
+				x_rotation := x_rotation - 10
 			elseif event.key = event.sdlk_left then
 				y_rotation := y_rotation - 10
 			elseif event.key = event.sdlk_right then
@@ -446,10 +452,10 @@ feature {NONE} -- Variables
 		-- Y coordinate of the centre
 	z_coord: DOUBLE
 		-- Z coordinate of the centre
+	x_rotation: DOUBLE
+		-- Rotation around the x axis
 	y_rotation: DOUBLE
 		-- Rotation around the y axis
-	z_rotation: DOUBLE
-		-- Rotation around the z axis
 	lines_height: DOUBLE
 		-- Height of the metrolines on map
 

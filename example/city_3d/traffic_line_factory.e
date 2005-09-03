@@ -81,7 +81,7 @@ feature {NONE} -- Drawing
 			gl_flush			
 		end
 		
-	draw_line (p,q: GL_VECTOR_3D[DOUBLE]) is
+	draw_line (p, q: GL_VECTOR_3D[DOUBLE]) is
 			-- draw a line
 		require
 			p /= Void
