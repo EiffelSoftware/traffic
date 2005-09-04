@@ -144,6 +144,8 @@ feature -- Options
 		
 feature -- Drawing
 
+	clicked_point: GL_VECTOR_3D[DOUBLE]
+	
 	prepare_drawing is
 			-- Prepare for drawing.
 		do
@@ -195,19 +197,22 @@ feature -- Drawing
 			
 --			gl_line_width (2)
 --			gl_begin(em_gl_lines)
---				gl_color3d (1,1,1)
+--				-- x axis
+--				gl_color3d (1,0,0)
 --				gl_vertex3d (0,0,0)
 --				gl_vertex3d(1,0,0)
 --			gl_end
 --			
 --			gl_begin(em_gl_lines)
---				gl_color3d (0.5,0.5,0.5)
+--				-- y axis
+--				gl_color3d (0,1,0)
 --				gl_vertex3d (0,0,0)
 --				gl_vertex3d(0,1,0)
 --			gl_end
 --			
 --			gl_begin(em_gl_lines)
---				gl_color3d (0,0,0)
+--				-- z axis
+--				gl_color3d (0,0,1)
 --				gl_vertex3d (0,0,0)
 --				gl_vertex3d(0,0,1)
 --			gl_end
@@ -257,6 +262,18 @@ feature -- Drawing
 					obj.draw
 					lines.forth
 				end
+			end
+			
+			-- draw the clicked point
+			if clicked_point /= Void then
+				gl_matrix_mode (Em_gl_modelview)
+				gl_push_matrix
+				gl_color3d (1, 0, 0)
+				gl_translated (clicked_point.x,0.1,clicked_point.z)
+				gl_rotated (90, 1, 0, 0)
+				glu_disk (glu_new_quadric, 0, 0.2, 72, 1)
+				gl_pop_matrix
+				gl_flush
 			end
 		end
 
@@ -361,6 +378,7 @@ feature {NONE} -- Event handling
 			create click_1.make_xyz (result_x, result_y, result_z)
 			io.put_string ("Click point: "+click_1.out+"%N")
 			-- Jetzt testen, was am naechsten bei click1 ist.
+			clicked_point := click_1
 		end
 		
 	mouse_button_down (event: EM_MOUSEBUTTON_EVENT) is
