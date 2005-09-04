@@ -22,6 +22,10 @@ inherit
 		export {NONE} all end
 	
 	MEMORY
+	
+	MATH_CONST
+	
+	DOUBLE_MATH
 		
 creation
 	
@@ -194,7 +198,6 @@ feature -- Drawing
 			delta_line: DOUBLE
 		do
 			-- Coordinate System
-			
 --			gl_line_width (2)
 --			gl_begin(em_gl_lines)
 --				-- x axis
@@ -217,7 +220,7 @@ feature -- Drawing
 --				gl_vertex3d(0,0,1)
 --			gl_end
 			
-			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))				
+			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-10,0,-10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(10,0,-10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(10,0,10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-10,0,10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))				
 			
 --			gl_line_width(400)
 --			gl_matrix_mode (Em_gl_modelview)
@@ -322,28 +325,6 @@ feature {NONE} -- Event handling
 			window_z: REAL
 			
 		do
---			create model_matrix.make (0, 15)
---			create projection_matrix.make (0, 15)
---			create viewport.make_xyzt (0, 0, 0, 0)
---			model_c := model_matrix.to_c
---			projection_c := projection_matrix.to_c
---			
---			gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
---			gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
---			gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
---			y_new := video_subsystem.video_surface.height - event.screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
---			
---			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 0, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
---			create click_1.make_xyz (result_x, result_y, result_z)
---			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 1, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
---			create click_2.make_xyz (result_x, result_y, result_z)
---			io.put_string ("Click ray: "+click_1.out+" to "+click_2.out+"%N")
---			
---			gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
---			temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
---			create click_1.make_xyz (result_x, result_y, result_z)
---			io.put_string ("Click point: "+click_1.out+"%N")
-
 			-- Vorbereitung fuer beide Varianten
 			if video_subsystem.video_surface.gl_2d_mode then
 				video_subsystem.video_surface.gl_leave_2d
@@ -375,8 +356,13 @@ feature {NONE} -- Event handling
 			
 			gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
 			temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
-			create click_1.make_xyz (result_x, result_y, result_z)
+			
+			create click_1.make_xyz (result_x/focus, result_y/focus, result_z/focus)
 			io.put_string ("Click point: "+click_1.out+"%N")
+			io.put_string ("Zoom: " + focus.out)
+			io.put_string ("%Nx_rotation: " + x_rotation.out)
+			io.put_string ("%Ny_rotation: " + y_rotation.out)
+			io.put_new_line
 			-- Jetzt testen, was am naechsten bei click1 ist.
 			clicked_point := click_1
 		end
