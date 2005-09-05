@@ -36,7 +36,6 @@ feature -- Initialization
 			width := w
 			depth := d
 			max_height := max_h
-			
 		ensure 
 			values_set_correctly: width = w and depth = d and max_height = max_h
 			centre_set: centre.x = x + d/2 and centre.z = z + w/2
@@ -44,7 +43,7 @@ feature -- Initialization
 		
 feature -- Implementation 	
 
---	output_line(line: TRAFFIC_LINE) is
+--	output_line (line: TRAFFIC_LINE) is
 --			-- Throw out all duplicated sections
 --		do
 --			from line.start
@@ -59,7 +58,7 @@ feature -- Implementation
 --			end
 --		end
 
---	clean_line(line: TRAFFIC_LINE): ARRAY[EM_VECTOR_2D] is
+--	clean_line (line: TRAFFIC_LINE): ARRAY[EM_VECTOR_2D] is
 --			-- Throw out all duplicated sections
 --		local i,j: INTEGER
 --			done: BOOLEAN
@@ -114,7 +113,7 @@ feature -- Implementation
 			-- Delete me
 			create rectangle_list.make (1,2)
 			k := 1
-
+			
 			max_distance := sqrt(depth^2 + width^2)
 			from i := 2; j := 1
 			until i > n
@@ -198,17 +197,16 @@ feature -- Implementation
 						end_point.set_x ((end_point.x / 50) - 14)
 						end_point.set_y ((end_point.y / 50) - 14)
 						
-						
 						delta_x := end_point.x - start_point.x
 						delta_y := end_point.y - start_point.y
-			
+						
 						norm := sqrt (delta_x*delta_x + delta_y*delta_y)
-			
+						
 						create a_point.make(start_point.x-delta_y*line_width/norm,start_point.y+delta_x*line_width/norm)
 						create b_point.make(start_point.x+delta_y*line_width/norm,start_point.y-delta_x*line_width/norm) 
 						create c_point.make(end_point.x+delta_y*line_width/norm,end_point.y-delta_x*line_width/norm) 
 						create d_point.make(end_point.x-delta_y*line_width/norm,end_point.y+delta_x*line_width/norm)
-
+						
 						create polygon_points.make
 						polygon_points.force ((a_point),1)
 						polygon_points.force ((b_point),2)
@@ -225,7 +223,7 @@ feature -- Implementation
 						polygon.force (d_point,4)
 						polygon_list.force (polygon,k)
 						k := k + 1
-
+						
 						i := i + 1
 					end
 					m := m + 1				
@@ -233,9 +231,9 @@ feature -- Implementation
 				lines.forth
 			end
 		end
-
+	
 	distance_to_centre (p: GL_VECTOR_3D[DOUBLE]): DOUBLE is
-				-- Calculates the distance to the centre.
+			-- Calculates the distance to the centre.
 		do
 			Result := (sqrt((p.x-centre.x)^2 + (p.z-centre.z)^2))
 		end
@@ -272,8 +270,6 @@ feature -- Collision detection
 				end
 				metro_lines_polygons.forth
 			end
-			
-			
 			
 ----------------------------------------------------------------------------------
 --			collision_detector.add (poly_a,2)
@@ -325,15 +321,11 @@ feature -- Collision detection
 --				end
 --			end
 			
-			
 --			collision_detector.remove_from_set(list.item,2)
 --			collision_detector.empty_set(1)
 		end
 		
-	
-		
 	metro_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-
 		
 feature -- Debugging
 			
@@ -383,7 +375,7 @@ feature -- Debugging
 	rectangle: ARRAY[EM_VECTOR_2D]
 	centre_list: ARRAY[EM_VECTOR_2D]
 	
-feature{NONE} -- Variables
+feature {NONE} -- Variables
 
  	collision_detector: EM_COLLISION_DETECTOR
  		-- Detector for collisions between lines and buildings

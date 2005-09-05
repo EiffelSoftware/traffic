@@ -192,7 +192,7 @@ feature -- Event handling
 			map_file_name = name
 		end
 
-feature{NONE} -- Implementation
+feature {NONE} -- Implementation
 
 	bg_color: EM_COLOR
 

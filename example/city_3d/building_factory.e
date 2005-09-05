@@ -68,8 +68,8 @@ feature {NONE} -- Implementation
 		do
 			if is_central then
 				
-				-- Front
---				gl_enable (Em_gl_texture_2d)
+			-- Front
+--			gl_enable (Em_gl_texture_2d)
 			gl_begin (em_gl_quads)
 				gl_bind_texture (Em_gl_texture_2d, texture)
 				gl_color3f (0, 0.15, 0.8) -- Blue

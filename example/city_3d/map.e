@@ -174,32 +174,11 @@ feature -- Drawing
 				gl_vertex3d (0,0,0)
 				gl_vertex3d(0,0,1)
 			gl_end
-
-			
 			
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
 			
 			if is_loaded then
 				if show_collision_objects then
-					-- Coordinate System
-					gl_line_width (2)
-					gl_begin(em_gl_lines) -- X AXIS WHITE
-						gl_color3d (1,1,1)
-						gl_vertex3d (0,0,0)
-						gl_vertex3d(1,0,0)
-					gl_end
-					
-					gl_begin(em_gl_lines) -- Y AXIS GREY
-						gl_color3d (0.5,0.5,0.5)
-						gl_vertex3d (0,0,0)
-						gl_vertex3d(0,1,0)
-					gl_end
-					
-					gl_begin(em_gl_lines) -- Z AXIS BLACK
-						gl_color3d (0,0,0)
-						gl_vertex3d (0,0,0)
-						gl_vertex3d(0,0,1)
-					gl_end
 					ewer.draw_collision
 				end
 				if show_buildings then
@@ -224,7 +203,8 @@ feature -- Drawing
 					lines.forth
 				end
 			end
-				-- draw the clicked point
+			
+			-- draw the clicked point
 			if clicked_point /= Void then
 				gl_matrix_mode (Em_gl_modelview)
 				gl_push_matrix
@@ -440,7 +420,7 @@ feature {NONE} -- Event handling
 --				io.put_integer(res)
 --				io.put_double (other_y.read_double (0))
 		end
-
+	
 	dragged (event: EM_MOUSEMOTION_EVENT) is
 			-- Handle mouse movement
 		do
@@ -461,7 +441,7 @@ feature {NONE} -- Event handling
 				
 			end
 		end
-
+	
 	key_down (event: EM_KEYBOARD_EVENT) is
 			-- Handle key events
 		do

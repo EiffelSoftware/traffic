@@ -35,19 +35,19 @@ feature -- Initialization
 			video_subsystem.set_opengl (True)
 			video_subsystem.enable
 			initialize_screen
-
+			
 			-- Enable unicode characters and repeating keyboard events
 			create keyboard.make_snapshot
 			keyboard.enable_unicode_characters
 			keyboard.enable_repeating_key_down_events (200, 100)
-
+			
 --			set_application_icon ("images/icon.png")
 			set_application_name ("City 3D")
 			
 			-- Set widget theme and options
 			widget_options.disable_transparency_refresh
 			load_eclipse_theme
-
+			
 			set_scene (create {CITY_3D_SCENE}.make)
 			launch
 			full_collect
