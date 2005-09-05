@@ -31,6 +31,7 @@ feature -- Interface
 			buildings_slider: EM_SLIDER
 			buildings_label: EM_LABEL
 			sun_checkbox: EM_CHECKBOX
+			marked_station_label: EM_LABEL
 		do
 			make_component_scene
 			create bg_color.make_with_rgb (150,255,150)
@@ -73,14 +74,13 @@ feature -- Interface
 			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
 			
-			-- Highlighting Checkbox
-			highlighting_checkbox.set_position (10,350)
---			highlighting_checkbox.set_font (create {EM_TTF_FONT}.make_from_ttf_file ("./herbert.ttf",20))
-			highlighting_checkbox.set_background_color (bg_color)
-			highlighting_checkbox.set_dimension (110,20)
-			highlighting_checkbox.checked_event.subscribe (agent highlighting_checked)
-			highlighting_checkbox.unchecked_event.subscribe (agent highlighting_unchecked)
-			toolbar_panel.add_widget (highlighting_checkbox)
+			-- Sun Checkbox
+			sun_checkbox.set_position (10,270)
+			sun_checkbox.set_background_color (bg_color)
+			sun_checkbox.set_dimension (110,20)
+			sun_checkbox.checked_event.subscribe (agent sun_checked)
+			sun_checkbox.unchecked_event.subscribe (agent sun_unchecked)
+			toolbar_panel.add_widget (sun_checkbox)
 			
 			-- Collision Checkbox
 			collision_checkbox.set_position (10,310)
@@ -90,21 +90,22 @@ feature -- Interface
 			collision_checkbox.unchecked_event.subscribe (agent collision_unchecked)
 			toolbar_panel.add_widget (collision_checkbox)
 			
-			-- Houses Checkbox
+			-- Highlighting Checkbox
+			highlighting_checkbox.set_position (10,350)
+--			highlighting_checkbox.set_font (create {EM_TTF_FONT}.make_from_ttf_file ("./herbert.ttf",20))
+			highlighting_checkbox.set_background_color (bg_color)
+			highlighting_checkbox.set_dimension (110,20)
+			highlighting_checkbox.checked_event.subscribe (agent highlighting_checked)
+			highlighting_checkbox.unchecked_event.subscribe (agent highlighting_unchecked)
+			toolbar_panel.add_widget (highlighting_checkbox)
+			
+			-- Buildings Checkbox
 			buildings_checkbox.set_position (10,390)
 			buildings_checkbox.set_background_color (bg_color)
 			buildings_checkbox.set_dimension (110,20)
 			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
 			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
 			toolbar_panel.add_widget (buildings_checkbox)
-			
-			-- Sun Checkbox
-			sun_checkbox.set_position (10,270)
-			sun_checkbox.set_background_color (bg_color)
-			sun_checkbox.set_dimension (110,20)
-			sun_checkbox.checked_event.subscribe (agent sun_checked)
-			sun_checkbox.unchecked_event.subscribe (agent sun_unchecked)
-			toolbar_panel.add_widget (sun_checkbox)
 			
 			-- Buildings label
 			create buildings_label.make_from_text (map.number_of_buildings.out)
@@ -122,6 +123,16 @@ feature -- Interface
 			buildings_slider.position_changed_event.subscribe (agent number_of_buildings_changed (buildings_label, ?))
 			toolbar_panel.add_widget (buildings_slider)
 			
+			-- Marked stations label
+			create marked_station_label.make_from_text ("")
+			marked_station_label.set_position (10, 470)
+			marked_station_label.set_dimension (180, 20)
+			marked_station_label.set_background_color (create {EM_COLOR}.make_white)
+			marked_station_label.set_tooltip ("Marked Station")
+			marked_station_label.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
+			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
+			toolbar_panel.add_widget (marked_station_label)
+			
 --			create event_loop.make_poll
 --			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
 --			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))
@@ -130,6 +141,16 @@ feature -- Interface
 		
 feature -- Event handling
 
+	handle_mouse_click (label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
+			-- Adapt the text on `marked_station_label'.
+		do
+			if map.marked_station /= Void then
+				label.set_text (map.marked_station.name)
+			else
+				label.set_text ("")
+			end
+		end
+	
 	number_of_buildings_changed (label: EM_LABEL; number: INTEGER) is
 			-- Change the text on `label'.
 		require

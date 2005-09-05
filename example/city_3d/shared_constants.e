@@ -23,5 +23,11 @@ feature -- Constants
 			
 	Line_width: DOUBLE is 0.2
 			-- Width of the line
+			
+	Station_radius: DOUBLE is
+			-- Radius of a station on the map
+		do
+			Result := 2*line_width
+		end
 
 end -- class SHARED_CONSTANTS
