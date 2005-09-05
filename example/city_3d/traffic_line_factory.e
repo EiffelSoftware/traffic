@@ -107,11 +107,16 @@ feature {NONE} -- Drawing
 			p3 /= Void
 			p4 /= Void
 		do
+			-- Normals all parallel to y axis
 			gl_begin (em_gl_quads)
 				gl_color3dv (line_color.pointer)
+				gl_normal3d (0,1,0)
 				gl_vertex3d (p1.x, p1.y, p1.z)
+				gl_normal3d (0,1,0)
 				gl_vertex3d (p2.x, p2.y, p2.z)
+				gl_normal3d (0,1,0)
 				gl_vertex3d (p3.x, p3.y, p3.z)
+				gl_normal3d (0,1,0)
 				gl_vertex3d (p4.x, p4.y, p4.z)
 			gl_end
 		end

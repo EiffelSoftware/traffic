@@ -97,20 +97,12 @@ feature -- Implementation
 				map_exists: map /= void
 		local
 			randomizer: RANDOM
-			x_coord, z_coord: DOUBLE
+			x_coord, z_coord, max_distance,distance: DOUBLE
 			i, j, k: INTEGER
-			outlying_building_factory: BUILDING_FACTORY
-			central_building_factory: BUILDING_FACTORY
+			outlying_building_factory, central_building_factory: BUILDING_FACTORY
 			building: EM_3D_OBJECT
 			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-			max_distance,distance: DOUBLE
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
-			poly_a: EM_POLYGON_CONVEX_COLLIDABLE
-				poly_b: EM_POLYGON_CONVEX_COLLIDABLE
-				poly_list: DS_LINKED_LIST[EM_VECTOR_2D]
---				collision_detector: EM_COLLISION_DETECTOR
-				collisions: DS_LINKED_LIST [EM_COLLISION_COMPOSITION]
-				collision_item: EM_COLLISION_COMPOSITION
 		do			
 			create_metro_lines_polygons (map)
 			
@@ -119,21 +111,11 @@ feature -- Implementation
 			create outlying_building_factory.make
 			create buildings.make (1,n)
 			
-			-- Collision detector
---			create collision_detector.make (2)
---			from metro_lines_polygons.start
---			until metro_lines_polygons.after
---			loop
---				collision_detector.add (metro_lines_polygons.item,1)
---				metro_lines_polygons.forth
---			end
-
 			-- Delete me
 			create rectangle_list.make (1,2)
 			k := 1
 
 			max_distance := sqrt(depth^2 + width^2)
-			
 			from i := 2; j := 1
 			until i > n
 			loop
@@ -159,23 +141,16 @@ feature -- Implementation
 				
 				if not has_collision(collision_poly) then					
 					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord))
---					if distance < 3 then
---						building := central_building_factory.create_object
---					else
+					if distance < 3 then
+						building := central_building_factory.create_object
+					else
 						building := outlying_building_factory.create_object
---					end
+					end
 					building.set_origin (x_coord, 0, z_coord)
 					building.set_scale (0.2,(max_distance - 2*distance)*(max_height/max_distance),0.2)
 					buildings.force (building,i)
-					io.put_integer(i)
-					io.put_new_line
 					i := i + 1
-				else
-					io.put_string("collision")
 				end
-				io.put_string("Try: ")
-				io.put_integer(j)
-				io.put_new_line
 				j := j + 2
 			end			
 		end
@@ -189,12 +164,10 @@ feature -- Implementation
 			line: TRAFFIC_LINE
 			section: TRAFFIC_LINE_SECTION
 			collidable: EM_POLYGON_CONVEX_COLLIDABLE
-			i,k,l,m: INTEGER
-			delta_x, delta_y: DOUBLE
-			norm: DOUBLE
-			start_point, end_point: EM_VECTOR_2D 
+			i,k,m: INTEGER
+			delta_x, delta_y, norm: DOUBLE
+			start_point, end_point, a_point,b_point,c_point,d_point: EM_VECTOR_2D 
 			polygon_points: DS_LINKED_LIST [EM_VECTOR_2D]
-			a_point,b_point,c_point,d_point: EM_VECTOR_2D
 		do			
 			lines := map.lines.linear_representation
 			create metro_lines_polygons.make (4)
@@ -203,7 +176,6 @@ feature -- Implementation
 			create polygon_list.make (1,2)
 			create centre_list.make (1,2)
 			k := 1
-			l := 1
 			
 			from lines.start
 			until lines.after
@@ -214,59 +186,47 @@ feature -- Implementation
 				until m > line.count//2 --line.after
 				loop
 					section := line.i_th (m)
---					if false then -- m = line.count//2 then
-	--				create polygon_points.make
-	--				polygon_points.force (create {EM_VECTOR_2D}.make (2.66,0.16),1)
-	--				polygon_points.force (create {EM_VECTOR_2D}.make (2.66,0.6),2)
-	--				polygon_points.force (create {EM_VECTOR_2D}.make (-0.38,0.56),3)
-	--				polygon_points.force (create {EM_VECTOR_2D}.make (-0.38,0.15),4)
-	--				create collidable.make_from_absolute_list (create {EM_VECTOR_2D}.make (1.14,0.36),  polygon_points)
-	--				metro_lines_polygons.force (collidable)
---					else
-						from i := 1; section.polypoints.start
-						until i >= section.polypoints.count
-						loop
-							create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
-							create end_point.make(section.polypoints.i_th (i+1).x, section.polypoints.i_th (i+1).y)
-	
-							-- TRANSFORMATION -> BUILD IN LIMITS
-							start_point.set_x ((start_point.x / 50) - 14)
-							start_point.set_y ((start_point.y / 50) - 14)	
-							end_point.set_x ((end_point.x / 50) - 14)
-							end_point.set_y ((end_point.y / 50) - 14)
-							
-							
-							delta_x := end_point.x - start_point.x
-							delta_y := end_point.y - start_point.y
-				
-							norm := sqrt (delta_x*delta_x + delta_y*delta_y)
-				
-							create a_point.make(start_point.x-delta_y*line_width/norm,start_point.y+delta_x*line_width/norm)
-							create b_point.make(start_point.x+delta_y*line_width/norm,start_point.y-delta_x*line_width/norm) 
-							create c_point.make(end_point.x+delta_y*line_width/norm,end_point.y-delta_x*line_width/norm) 
-							create d_point.make(end_point.x-delta_y*line_width/norm,end_point.y+delta_x*line_width/norm)
-	
-							create polygon_points.make
-							polygon_points.force ((a_point),1)
-							polygon_points.force ((b_point),2)
-							polygon_points.force ((c_point),3)
-							polygon_points.force ((d_point),4)
-							create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2),polygon_points)
-							metro_lines_polygons.force (collidable)
-							
-							-- Delete me
-							create polygon.make (1,4)
-							polygon.force (a_point,1)
-							polygon.force (b_point,2)
-							polygon.force (c_point,3)
-							polygon.force (d_point,4)
-	--						centre_list.force ((a_point + (create {EM_VECTOR_2D}.make(line_width,line_width)) + (d_point - a_point)/2),l)
-							l := l + 1
-							polygon_list.force (polygon,k)
-							k := k + 1
-	
-							i := i + 1
---						end	
+					from i := 1; section.polypoints.start
+					until i >= section.polypoints.count
+					loop
+						create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
+						create end_point.make(section.polypoints.i_th (i+1).x, section.polypoints.i_th (i+1).y)
+
+						-- TRANSFORMATION -> BUILD IN LIMITS
+						start_point.set_x ((start_point.x / 50) - 14)
+						start_point.set_y ((start_point.y / 50) - 14)	
+						end_point.set_x ((end_point.x / 50) - 14)
+						end_point.set_y ((end_point.y / 50) - 14)
+						
+						
+						delta_x := end_point.x - start_point.x
+						delta_y := end_point.y - start_point.y
+			
+						norm := sqrt (delta_x*delta_x + delta_y*delta_y)
+			
+						create a_point.make(start_point.x-delta_y*line_width/norm,start_point.y+delta_x*line_width/norm)
+						create b_point.make(start_point.x+delta_y*line_width/norm,start_point.y-delta_x*line_width/norm) 
+						create c_point.make(end_point.x+delta_y*line_width/norm,end_point.y-delta_x*line_width/norm) 
+						create d_point.make(end_point.x-delta_y*line_width/norm,end_point.y+delta_x*line_width/norm)
+
+						create polygon_points.make
+						polygon_points.force ((a_point),1)
+						polygon_points.force ((b_point),2)
+						polygon_points.force ((c_point),3)
+						polygon_points.force ((d_point),4)
+						create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2),polygon_points)
+						metro_lines_polygons.force (collidable)
+						
+						-- Delete me
+						create polygon.make (1,4)
+						polygon.force (a_point,1)
+						polygon.force (b_point,2)
+						polygon.force (c_point,3)
+						polygon.force (d_point,4)
+						polygon_list.force (polygon,k)
+						k := k + 1
+
+						i := i + 1
 					end
 					m := m + 1				
 				end
@@ -308,7 +268,6 @@ feature -- Collision detection
 			until metro_lines_polygons.after or Result
 			loop
 				if poly_a.collides_with (metro_lines_polygons.item) then
-					io.put_string("fuck")
 					Result := true
 				end
 				metro_lines_polygons.forth
@@ -401,57 +360,6 @@ feature -- Debugging
 				end
 				i := i + 1
 			end
---			from i := centre_list.lower
---			until i > centre_list.upper
---			loop
---				gl_color3d (1,1,1)
---				gl_matrix_mode(em_gl_modelview_matrix)
---				gl_push_matrix
---				gl_translated (centre_list.item(i).x,0.31,centre_list.item(i).y)
---				gl_rotated (90, 1, 0,0)
---				glu_disk (glu_new_quadric,0, 0.1, 72,72)
---				gl_end
---				gl_pop_matrix
---				gl_flush
---				i := i + 1
---			end
-
---			gl_color3d (0,0,0)
---			gl_matrix_mode(em_gl_modelview_matrix)
---			gl_push_matrix
---			gl_translated (1.14,0.31,0.36)
---			gl_rotated (90, 1, 0,0)				
---			glu_disk (glu_new_quadric,0, 0.1, 72,72)
---			gl_end
---			gl_pop_matrix
---			gl_flush
---
---
---			create rec.make (1,4)
---			rec.force (create {EM_VECTOR_2D}.make (2.66,0.16),1)
---			rec.force (create {EM_VECTOR_2D}.make (2.66,0.6),2)
---			rec.force (create {EM_VECTOR_2D}.make (-0.38,0.56),3)
---			rec.force (create {EM_VECTOR_2D}.make (-0.38,0.15),4)
---			draw_plane (rec)
---			
---			gl_color3d (1,1,1)
---			gl_matrix_mode(em_gl_modelview_matrix)
---			gl_push_matrix
---			gl_translated (1.6,0.31,-0.4)
---			gl_rotated (90, 1, 0,0)				
---			glu_disk (glu_new_quadric,0, 0.1, 72,72)
---			gl_end
---			gl_pop_matrix
---			gl_flush
---			
---			create rec.make (1,4)
---			rec.force (create {EM_VECTOR_2D}.make (1.7,-0.3),1)
---			rec.force (create {EM_VECTOR_2D}.make (1.7,-0.5),2)
---			rec.force (create {EM_VECTOR_2D}.make (1.5,-0.5),3)
---			rec.force (create {EM_VECTOR_2D}.make (1.5,-0.3),4)
---			draw_plane (rec)
-			
-			
 		end
 		
 	draw_plane (p: ARRAY[EM_VECTOR_2D]) is
