@@ -124,6 +124,14 @@ feature -- Drawing
 			sun_pos: GL_VECTOR_3D[DOUBLE]
 			light_0, light_1: GL_LIGHT
 		do	
+			create light_0.make (em_gl_light0)
+			create light_1.make (em_gl_light1)
+
+			-- Light 0 -> SUN
+			light_0.ambient.set_xyzt (0, 0, 0, 1)
+			light_0.specular.set_xyzt (0, 0, 0, 1)
+			light_0.diffuse.set_xyzt (1, 1, 1, 1)
+			
 			sun_angle := sun_angle + 0.005
 --			io.put_double(sun_angle)
 --			io.put_new_line
@@ -134,17 +142,20 @@ feature -- Drawing
 			if sun_angle < 1.0 or sun_angle > 5 then
 				create sun_pos.make_xyz (0,0,0)
 			else
+				if sun_angle < 2 then
+					light_0.diffuse.set_xyzt (0.8 + 0.2*(sun_angle - 1), 0.2 + 0.6*(sun_angle - 1), 0.1 + 0.9*(sun_angle - 1), 1)
+				elseif sun_angle > 4 then
+					light_0.diffuse.set_xyzt (1 - 0.2*(sun_angle - 4), 1 - 0.6*(sun_angle - 4), 1 - 0.9*(sun_angle - 4), 1)
+				end
 				create sun_pos.make_xyz (-sine(sun_angle),-cosine(sun_angle),0)
 			end
 			
-			create light_0.make (em_gl_light0)
-			light_0.ambient.set_xyzt (0, 0, 0, 1)
-			light_0.specular.set_xyzt (0, 0, 0, 1)
-			light_0.diffuse.set_xyzt (1, 1, 1, 1)
+			
+		
 			light_0.position.set_xyz (sun_pos.x, sun_pos.y, 0.0 )
 			light_0.apply_values
+
 			
-			create light_1.make (em_gl_light1)
 			light_1.ambient.set_xyzt (0, 0, 0, 1)
 			light_1.specular.set_xyzt (0, 0, 0, 1)
 			light_1.diffuse.set_xyzt (1.0, 0.25, 0.1, 1) -- Red
