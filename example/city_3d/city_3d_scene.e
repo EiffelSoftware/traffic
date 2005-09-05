@@ -14,7 +14,7 @@ inherit
 	SHARED_CONSTANTS
 		export {NONE} all end
 	
-creation
+creation 
 	make
 
 feature -- Interface
@@ -32,6 +32,7 @@ feature -- Interface
 			buildings_label: EM_LABEL
 		do
 			make_component_scene
+			create bg_color.make_with_rgb (150,255,150)
 			create highlighting_checkbox.make_from_text ("Highlight lines")
 			create buildings_checkbox.make_from_text ("Show houses")
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded,window_height)
@@ -50,12 +51,13 @@ feature -- Interface
 			end
 			
 			-- Toolbar Panel
-			toolbar_panel.set_background_color (create {EM_COLOR}.make_with_rgb (150,255,150))
+			toolbar_panel.set_background_color (bg_color)
 			toolbar_panel.set_position ((window_width*0.75).rounded ,0)
 			add_component (toolbar_panel)
 			
 			-- Button
 			button.set_position (50, 80)
+--			button.set_font (create {EM_TTF_FONT}.make_from_ttf_file ("./herbert.ttf",18))
 --			button.set_dimension (50, 20)
 			button.clicked_event.subscribe (agent button_clicked (button))
 			button.set_background_color (create {EM_COLOR}.make_with_rgb (127,127,127))
@@ -71,7 +73,8 @@ feature -- Interface
 			
 			-- Highlighting Checkbox
 			highlighting_checkbox.set_position (10,350)
-			highlighting_checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+--			highlighting_checkbox.set_font (create {EM_TTF_FONT}.make_from_ttf_file ("./herbert.ttf",20))
+			highlighting_checkbox.set_background_color (bg_color)
 			highlighting_checkbox.set_dimension (110,20)
 			highlighting_checkbox.checked_event.subscribe (agent highlighting_checked)
 			highlighting_checkbox.unchecked_event.subscribe (agent highlighting_unchecked)
@@ -79,7 +82,7 @@ feature -- Interface
 			
 			-- Collision Checkbox
 			collision_checkbox.set_position (10,310)
-			collision_checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+			collision_checkbox.set_background_color (bg_color)
 			collision_checkbox.set_dimension (110,20)
 			collision_checkbox.checked_event.subscribe (agent collision_checked)
 			collision_checkbox.unchecked_event.subscribe (agent collision_unchecked)
@@ -87,7 +90,7 @@ feature -- Interface
 			
 			-- Houses Checkbox
 			buildings_checkbox.set_position (10,390)
-			buildings_checkbox.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+			buildings_checkbox.set_background_color (bg_color)
 			buildings_checkbox.set_dimension (110,20)
 			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
 			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
@@ -189,7 +192,9 @@ feature -- Event handling
 			map_file_name = name
 		end
 
-feature {NONE} -- Implementation
+feature{NONE} -- Implementation
+
+	bg_color: EM_COLOR
 
 	map_file_name: STRING
 		
