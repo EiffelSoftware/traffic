@@ -67,7 +67,7 @@ feature -- Initialization
 feature -- Drawing
 
 	clicked_point: GL_VECTOR_3D[DOUBLE]
-
+	
 	prepare_drawing is
 			-- Prepare for drawing.
 		do
@@ -125,10 +125,10 @@ feature -- Drawing
 			light_0, light_1: GL_LIGHT
 		do	
 			sun_angle := sun_angle + 0.005
-			io.put_double(sun_angle)
-			io.put_new_line
+--			io.put_double(sun_angle)
+--			io.put_new_line
 			if sun_angle > 5 then
-				sun_angle := sun_angle - 5			
+				sun_angle := sun_angle - 5
 			end
 			
 			if sun_angle < 1.0 or sun_angle > 5 then
@@ -382,6 +382,7 @@ feature {NONE} -- Event handling
 			gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
 			gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
 			gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
+			viewport.set_xyzt (x, y, width, height)
 			y_new := video_subsystem.video_surface.height - event.screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
 
 			-- 1. Variante: Erzeuge Strahl durch Maus und teste anschliessend Schnittpunkte mit Objekten
@@ -400,7 +401,7 @@ feature {NONE} -- Event handling
 			gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
 			temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
 			
-			create click_1.make_xyz (result_x/focus, result_y/focus, result_z/focus)
+			create click_1.make_xyz (result_x, result_y, result_z)
 			io.put_string ("Click point: "+click_1.out+"%N")
 			io.put_string ("Zoom: " + focus.out)
 			io.put_string ("%Nx_rotation: " + x_rotation.out)
