@@ -23,7 +23,9 @@
   </option>
 
   <cluster name="city_3d" location="${TRAFFIC}/example/city_3d">
+	  <cluster name="tools"/>
   </cluster>
+  
 
   <mount location="${GOBO}/library/kernel.xace"/>
   <mount location="${GOBO}/library/library.xace"/>
