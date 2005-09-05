@@ -130,13 +130,12 @@ feature -- Drawing
 			if sun_angle > 5 then
 				sun_angle := sun_angle - 5			
 			end
+			
 			if sun_angle < 1.0 or sun_angle > 5 then
 				create sun_pos.make_xyz (0,0,0)
 			else
 				create sun_pos.make_xyz (-sine(sun_angle),-cosine(sun_angle),0)
 			end
-			
-		
 			
 			create light_0.make (em_gl_light0)
 			light_0.ambient.set_xyzt (0, 0, 0, 1)
@@ -154,7 +153,7 @@ feature -- Drawing
 			
 			light_0.enable
 --			light_1.enable
-
+			
 			if show_sun then
 				gl_matrix_mode (em_gl_modelview_matrix)
 				gl_push_matrix
@@ -165,7 +164,7 @@ feature -- Drawing
 				gl_pop_matrix
 			end
 			
-
+			-- Coordinate System
 			gl_line_width (2)
 			gl_begin(em_gl_lines)
 				-- x axis
@@ -217,7 +216,7 @@ feature -- Drawing
 				end
 			end
 			
-				-- draw the clicked point
+			-- draw the clicked point
 			if clicked_point /= Void then
 				gl_matrix_mode (Em_gl_modelview)
 				gl_push_matrix
@@ -246,7 +245,7 @@ feature -- Drawing
 			gl_end
 		end
 		
-feature -- Traffic stuff
+feature -- Traffic stuff	
 
 	is_loaded: BOOLEAN
 		-- Has parsing already taken place?
@@ -276,7 +275,7 @@ feature -- Options
 
 	show_sun: BOOLEAN
 		-- Should sun be displayed?
-
+		
 	show_collision_objects: BOOLEAN
 		-- Determines if collision objects are shown.
 		
@@ -444,7 +443,7 @@ feature {NONE} -- Event handling
 --				io.put_integer(res)
 --				io.put_double (other_y.read_double (0))
 		end
-
+	
 	dragged (event: EM_MOUSEMOTION_EVENT) is
 			-- Handle mouse movement
 		do
@@ -465,7 +464,7 @@ feature {NONE} -- Event handling
 				
 			end
 		end
-
+	
 	key_down (event: EM_KEYBOARD_EVENT) is
 			-- Handle key events
 		do
