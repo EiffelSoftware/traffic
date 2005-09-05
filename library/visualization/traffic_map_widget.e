@@ -1,7 +1,6 @@
 indexing
 	description: "Map widget to visualize a TRAFFIC_MAP with TRAFFIC_MAP_RENDERER."
-	author: "Rolf Bruderer, Roger Kueng"
-	date: "2005/07/20"
+	date: "2005/08/31"
 	revision: "1.1"
 
 class
@@ -19,6 +18,9 @@ feature -- Initialization
 			-- Initialize with `a_map' to visualize.
 		require
 			map_not_void: a_map /= Void
+		local
+			line_sections_model: TRAFFIC_LINE_SECTION_MODEL
+			places_model: TRAFFIC_PLACE_MODEL			
 		do
 			make
 
@@ -35,6 +37,8 @@ feature -- Initialization
 			render
 
 			display			
+		ensure
+			map_set: map = a_map
 		end
 		
 feature -- Access
@@ -76,8 +80,8 @@ feature -- Status - Places
 		end
 		
 	set_place_special_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]; a_place: TRAFFIC_PLACE) is
-		--set a proprietary renderer for a place
-		--does not re-render the scene. call render to see the changes
+		-- set a proprietary renderer for a place
+		-- does not re-render the scene. call render to see the changes
 		require
 			a_renderer_not_void: a_renderer /= Void
 			a_place_not_void: a_place /= Void
@@ -86,7 +90,7 @@ feature -- Status - Places
 		end
 	
 	reset_place_special_renderer (a_place: TRAFFIC_PLACE) is
-			-- 
+			-- reset the proprietary renderer for a place
 		require
 			a_place_not_void: a_place /= Void
 		do
@@ -94,7 +98,6 @@ feature -- Status - Places
 		end
 
 feature -- Status - Line_Sections
-
 	set_default_line_section_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]) is
 			-- set new default renderer for the line_sections
 		require
@@ -193,10 +196,6 @@ feature -- Basic Operation
 		
 		
 feature {NONE} -- Implementation
-	
-	line_sections_model: TRAFFIC_LINE_SECTION_MODEL
-	
-	places_model: TRAFFIC_PLACE_MODEL
 			
 	line_section_drawables: TRAFFIC_DRAWABLE_CONTAINER [TRAFFIC_LINE_SECTION]
 	

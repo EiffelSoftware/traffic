@@ -1,14 +1,12 @@
 indexing
 	description: "[		
-						Widget to visualize a TRAFFIC_MAP_MODEL
-						
-						Needs some TRAFFIC_ITEM_RENDERER's to render map 
-						the map model element items (ELEMENT) to appropriate drawable objects (EM_DRAWABLE) 
+						Container which contains drawable objects.
+						Needs some TRAFFIC_ITEM_RENDERER's to render the map model
+						element items (ELEMENT) to appropriate drawable objects (EM_DRAWABLE) 
 						for drawing them. Use `set_renderer_for_item' to customize the renderer used 
 						to render an item.
 					]"
 	note: "This class needs some improvement (bad performance of some implementations)"
-	author: "Rolf Bruderer, Roger Kueng"
 	date: "2005/07/20"
 	revision: "1.4"	
 
@@ -44,7 +42,6 @@ feature {NONE} -- Initialization
 			make
 			map := a_map
 			subscribe_for_map
---			create default_renderers.make (20)
 			default_renderer := a_renderer
 			create item_renderers.make (100)
 			create item_views.make (a_map.count * 2)
@@ -291,7 +288,6 @@ feature {NONE} -- Implementation
 			i_is_valid_index: 1 <= i and then i <= map.count
 		local
 			item_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]
-
 			view: EM_DRAWABLE
 			map_item: ELEMENT			
 		do

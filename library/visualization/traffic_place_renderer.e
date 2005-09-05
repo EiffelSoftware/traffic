@@ -1,8 +1,10 @@
 indexing
-	description: "A TRAFFIC_PLACE renderer"
-	author: "Roger Kueng"
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "[
+					A TRAFFIC_PLACE renderer. It renders a rectangle big enough to contain all the 
+					startpoints of the neighbouring line_sections.
+					]"
+	date: "2005/08/31"
+	revision: "1.0"
 
 class
 	TRAFFIC_PLACE_RENDERER
@@ -16,7 +18,6 @@ create
 	make_with_map
 	
 feature {NONE} -- Initialization
-
 	make_with_map (a_map: TRAFFIC_MAP) is
 			-- Initialize to render items of `a_map'.
 		require
@@ -25,7 +26,10 @@ feature {NONE} -- Initialization
 			size_extension := 10
 			map := a_map
 			create place_color.make_with_rgb (0, 0, 255)
+		ensure
+			map_set: map = a_map
 		end	
+		
 feature -- Status report
 	map : TRAFFIC_MAP
 		
@@ -99,7 +103,7 @@ feature -- Basic operations
 feature {NONE} -- Implementation
 
 invariant
-	invariant_clause: True -- Your invariant here
+	map_set: map /= Void
 
 end -- class TRAFFIC_PLACE
 

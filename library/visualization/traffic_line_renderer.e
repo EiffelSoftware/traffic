@@ -1,8 +1,9 @@
 indexing
-	description: "Objects that ..."
-	author: "Roger Küng"
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "[
+					Renders the LINE_SECTIONS
+					]"
+	date: "2005/08/31"
+	revision: "1.0"
 
 obsolete class
 	TRAFFIC_LINE_RENDERER

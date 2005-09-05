@@ -1,8 +1,10 @@
 indexing
-	description: "Objects that renders ITEMS from a TRAFFIC_MAP_MODEL"
-	author: "Roger Kueng"
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "[
+					Object that renders ITEMS from a TRAFFIC_MAP_MODEL.
+					What it exactly does is it converts an ITEM to a EM_DRAWABLE
+					]"
+	date: "2005/08/31"
+	revision: 1.0
 
 deferred class
 	TRAFFIC_ITEM_RENDERER [ITEM -> HASHABLE]
@@ -12,13 +14,7 @@ feature -- Basic operations
 			--function for drawing the object
 		require
 			an_object_not_void: an_object /= Void
-			--an_object_is_right_type: an_object.generating_type = render_type
 		deferred		
 		end
 		
-feature {NONE} -- Implementation
-
-invariant
-	invariant_clause: True -- Your invariant here
-
 end -- class TRAFFIC_ITEM_RENDERER

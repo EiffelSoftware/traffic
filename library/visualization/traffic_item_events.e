@@ -2,8 +2,7 @@ indexing
 	description: "[ 
 					All the events that have to do with elements changing
 					]"
-	author: "Roger Kueng"
-	date: "2005/06/09"
+	date: "2005/08/31"
 	revision: "1.0"
 
 class

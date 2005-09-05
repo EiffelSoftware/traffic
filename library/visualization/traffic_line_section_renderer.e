@@ -1,8 +1,13 @@
 indexing
-	description: "A TRAFFIC_LINE_SECTION renderer"
-	author: "Roger Küng"
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "[
+					A TRAFFIC_LINE_SECTION renderer.
+					It uses different colors and widths for the different TRAFFIC_TYPE's.
+					If no color is set for a specific type it takes the line_color.
+					If no line_color is set it renders the line secitons with 
+					their own color if one is available. Else it renders the standard color
+					]"
+	date: "2005/08/31"
+	revision: "1.0"
 
 class
 	TRAFFIC_LINE_SECTION_RENDERER
@@ -15,7 +20,6 @@ create
 	make_with_map
 	
 feature {NONE} -- Initialization
-
 	make_with_map (a_map: TRAFFIC_MAP) is
 			-- Initialize to render items of `a_map'.
 		require
@@ -42,7 +46,6 @@ feature -- Access
 			--|because traffic type not yet HASHABLE, should be?)
 			
 feature -- Status report
-		
 	line_color: EM_COLOR
 			-- Color used to draw traffic line sections
 			-- that have no appropriate `traffic_type_color' set
@@ -53,8 +56,7 @@ feature -- Status report
 			-- Line width used to draw traffic line sections.
 			-- (if none set for the traffic			
 			
-feature -- Status setting
-		
+feature -- Status setting	
 	set_line_color (a_color: EM_COLOR) is
 			-- Set `line_color' to `a_color'.
 		do
@@ -75,8 +77,7 @@ feature -- Status setting
 		
 feature -- Basic operations
 	render (a_line_section: TRAFFIC_LINE_SECTION): EM_DRAWABLE is
-			-- Polyline to visualize `a_line_section'.	
-			
+			-- Polyline to visualize `a_line_section'.				
 		local
 			col: EM_COLOR
 			tcol: TRAFFIC_COLOR
@@ -111,7 +112,5 @@ feature -- Basic operations
 			
 			Result := polyline
 		end		
-
-feature {NONE} -- Implementation
 
 end -- class TRAFFIC_LINE_SECTION_RENDERER

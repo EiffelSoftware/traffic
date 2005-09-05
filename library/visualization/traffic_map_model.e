@@ -1,31 +1,29 @@
 indexing
 	description: "[ 
-						Abstract data model that TRAFFIC_DRAWABLE_CONTAINER can visualize.
-						Inherit from this class to construct a model that can be
+						Abstract data model that is used by TRAFFIC_DRAWABLE_CONTAINER to visualize the 
+						elements of type ELEM_TYPE.
+						Inherit from this class to construct a model whoose items can be
 						visualized using a TRAFFIC_DRAWABLE_CONTAINER.
 					]"
-	author: "Rolf Bruderer, Roger Kueng"
-	date: "2005/06/09"
+	date: "2005/08/31"
 	revision: "1.5"
 
 deferred class
 	TRAFFIC_MAP_MODEL [ELEM_TYPE -> HASHABLE]
-	
---create
---	make_with_events
 	
 feature -- Access
 	events: TRAFFIC_ITEM_EVENTS [ELEM_TYPE]
 	
 feature -- Initialization
 	make_with_events (item_events: TRAFFIC_ITEM_EVENTS [ELEM_TYPE]) is
-			-- 
+			-- This would be the creation feature but since this class is deferred
+			-- it cannot have a creation feature
 		require
 			events_not_void: item_events /= Void
 		do
 			events := item_events
 		ensure
-			events_not_void: events /= Void
+			events_set: events = item_events
 		end
 		
 feature -- Queries
@@ -77,32 +75,7 @@ feature -- Event publishing
 			events.item_removed_event.publish ([i, an_item])
 		end		
 
-feature -- Events
-
---	changed_event: EVENT_TYPE [TUPLE []]
-			-- Event to inform views of `Current'
-			-- when `Current' changed such that
-			-- views need to re-render
-	
---	item_changed_event: EVENT_TYPE [TUPLE [INTEGER]]
-			-- Event to inform views of `Current' 
-			-- when item has been changed
-			-- at index passed as argument
-			
---	item_inserted_event: EVENT_TYPE [TUPLE [INTEGER]]
-			-- Event to inform views of `Current' 
-			-- when item has been inserted
-			-- at index passed as argument
-			
---	item_removed_event: EVENT_TYPE [TUPLE [INTEGER, ELEM_TYPE]]
-			-- Event to inform views of `Current' 
-			-- when item has been removed 
-			-- at index passed as argument
 
 invariant
---	changed_event_initialized: changed_event /= Void
---	item_changed_event_initialized: item_changed_event /= Void
---	item_inserted_event_initialized: item_inserted_event /= Void
---	item_removed_event_intialized: item_removed_event /= Void
 	events_not_void: events /= Void
 end
