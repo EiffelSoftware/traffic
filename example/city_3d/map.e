@@ -198,27 +198,27 @@ feature -- Drawing
 			delta_line: DOUBLE
 		do
 			-- Coordinate System
---			gl_line_width (2)
---			gl_begin(em_gl_lines)
---				-- x axis
---				gl_color3d (1,0,0)
---				gl_vertex3d (0,0,0)
---				gl_vertex3d(1,0,0)
---			gl_end
---			
---			gl_begin(em_gl_lines)
---				-- y axis
---				gl_color3d (0,1,0)
---				gl_vertex3d (0,0,0)
---				gl_vertex3d(0,1,0)
---			gl_end
---			
---			gl_begin(em_gl_lines)
---				-- z axis
---				gl_color3d (0,0,1)
---				gl_vertex3d (0,0,0)
---				gl_vertex3d(0,0,1)
---			gl_end
+			gl_line_width (2)
+			gl_begin(em_gl_lines)
+				-- x axis
+				gl_color3d (1,0,0)
+				gl_vertex3d (0,0,0)
+				gl_vertex3d(1,0,0)
+			gl_end
+			
+			gl_begin(em_gl_lines)
+				-- y axis
+				gl_color3d (0,1,0)
+				gl_vertex3d (0,0,0)
+				gl_vertex3d(0,1,0)
+			gl_end
+			
+			gl_begin(em_gl_lines)
+				-- z axis
+				gl_color3d (0,0,1)
+				gl_vertex3d (0,0,0)
+				gl_vertex3d(0,0,1)
+			gl_end
 			
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-10,0,-10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(10,0,-10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(10,0,10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-10,0,10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))				
 			
