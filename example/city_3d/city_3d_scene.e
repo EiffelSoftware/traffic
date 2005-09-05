@@ -30,6 +30,7 @@ feature -- Interface
 			button: EM_BUTTON
 			buildings_slider: EM_SLIDER
 			buildings_label: EM_LABEL
+			sun_checkbox: EM_CHECKBOX
 		do
 			make_component_scene
 			create bg_color.make_with_rgb (150,255,150)
@@ -39,6 +40,7 @@ feature -- Interface
 			create combo_box.make_from_list (search_for_xml)
 			create button.make_from_text ("Load map")
 			create collision_checkbox.make_from_text ("Collision test")
+			create sun_checkbox.make_from_text ("Show sun")
 
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -96,6 +98,14 @@ feature -- Interface
 			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
 			toolbar_panel.add_widget (buildings_checkbox)
 			
+			-- Sun Checkbox
+			sun_checkbox.set_position (10,270)
+			sun_checkbox.set_background_color (bg_color)
+			sun_checkbox.set_dimension (110,20)
+			sun_checkbox.checked_event.subscribe (agent sun_checked)
+			sun_checkbox.unchecked_event.subscribe (agent sun_unchecked)
+			toolbar_panel.add_widget (sun_checkbox)
+			
 			-- Buildings label
 			create buildings_label.make_from_text (map.number_of_buildings.out)
 			buildings_label.set_position (140, 430)
@@ -143,6 +153,18 @@ feature -- Event handling
 			-- Checkbox has been clicked
 		do
 			map.set_show_buildings (false)
+		end
+		
+	sun_checked is
+			-- Checkbox has been clicked
+		do
+			map.set_show_sun (true)
+		end
+		
+	sun_unchecked is
+			-- Checkbox has been clicked
+		do
+				map.set_show_sun (false)
 		end
 	
 	highlighting_checked is
@@ -192,7 +214,7 @@ feature -- Event handling
 			map_file_name = name
 		end
 
-feature {NONE} -- Implementation
+feature{NONE} -- Implementation
 
 	bg_color: EM_COLOR
 
