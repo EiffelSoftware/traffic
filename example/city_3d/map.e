@@ -11,10 +11,6 @@ inherit
 	
 	EM_3D_COMPONENT
 		redefine
-			mouse_button_down,
-			mouse_dragged,
-			mouse_wheel_down,
-			mouse_wheel_up,
 			prepare_drawing
 		end
 		
@@ -52,6 +48,7 @@ feature -- Initialization
 			y_rotation := 180  -- -35
 			x_rotation := 40  -- -80
 			lines_height := 0.2
+			sun_angle := 0
 			
 			-- Factory creation
 			create ewer.make(-5, -5, 10, 10, .5)
@@ -59,12 +56,201 @@ feature -- Initialization
 			traffic_line_factory.set_line_width (0.05)
 			
 			-- User Interaction
-			mouse_button_down_event.subscribe (agent mouse_button_down (?))
-			mouse_dragged_event.subscribe (agent mouse_dragged (?))
-			mouse_wheel_down_event.subscribe (agent mouse_wheel_down)
-			mouse_wheel_up_event.subscribe (agent mouse_wheel_up)
+			mouse_button_down_event.subscribe (agent button_down (?))
+			mouse_dragged_event.subscribe (agent dragged (?))
+			mouse_wheel_down_event.subscribe (agent wheel_down)
+			mouse_wheel_up_event.subscribe (agent wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent handle_mouse_clicked)
+		end
+		
+feature -- Drawing
+
+	clicked_point: GL_VECTOR_3D[DOUBLE]
+
+	prepare_drawing is
+			-- Prepare for drawing.
+		do
+			if Video_subsystem.video_surface.gl_2d_mode then
+				Video_subsystem.video_surface.gl_leave_2d
+				gl_tex_envi (Em_gl_texture_env, Em_gl_texture_env_mode, Em_gl_modulate)
+			end
+			gl_viewport (x, Video_subsystem.video_surface.height - height - y, width, height)
+			
+			-- Reset depth buffer
+			gl_clear (Em_gl_depth_buffer_bit)
+			
+			-- Opengl settings
+			gl_enable (Em_gl_depth_test)
+			
+			-- Enable antialiasing
+			gl_enable (Em_gl_line_smooth)
+			gl_hint (Em_gl_line_smooth, Em_gl_nicest)
+			
+			-- Setup the projection matrix
+			gl_matrix_mode (Em_gl_projection)
+			gl_load_identity
+			glu_perspective (field_of_view, width/height, min_view_distance, focus*max_view_distance)
+			
+			-- Setup the model view matrix
+			gl_matrix_mode (Em_gl_modelview)
+			gl_load_identity
+			
+			-- Clearing background color to a nice blue
+			gl_clear_color (0.1,0.4,0.5,0)
+			gl_clear(em_gl_color_buffer_bit)
+			
+			-- Do viewing transformations
+			gl_matrix_mode (em_gl_modelview_matrix)
+			gl_load_identity
+			gl_translated_external (x_coord*focus, y_coord*focus, z_coord*focus)
+			gl_rotatef (x_rotation, 1, 0, 0)
+			gl_rotatef(y_rotation, 0, 1, 0)
+			
+			-- Light settings
+			gl_enable (em_gl_lighting)
+			gl_enable (em_gl_color_material)
+			gl_color_material (Em_gl_front_and_back, Em_gl_ambient_and_diffuse)
+			gl_depth_func (em_gl_lequal)
+			gl_enable (em_gl_depth_test)
+		end
+		
+	draw is
+			-- Draw the map.
+		local
+			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
+			obj: EM_3D_OBJECT
+			delta_line: DOUBLE
+			light_0, light_1: GL_LIGHT
+		do	
+			sun_angle := sun_angle + 0.005
+			if sun_angle > 360 then
+				sun_angle := sun_angle - 360	
+			end
+			
+			create light_0.make (em_gl_light0)
+			light_0.ambient.set_xyzt (0, 0, 0, 1)
+			light_0.specular.set_xyzt (0, 0, 0, 1)
+			light_0.diffuse.set_xyzt (1, 1, 1, 1)
+			light_0.position.set_xyz (sine(sun_angle), 0.7, cosine(sun_angle))
+			light_0.apply_values
+			
+			create light_1.make (em_gl_light1)
+			light_1.ambient.set_xyzt (0, 0, 0, 1)
+			light_1.specular.set_xyzt (0, 0, 0, 1)
+			light_1.diffuse.set_xyzt (1.0, 0.25, 0.1, 1) -- Red
+			light_1.position.set_xyz (1, 1, 1)
+			light_1.apply_values
+			
+			light_0.enable
+--			light_1.enable
+
+			gl_matrix_mode (em_gl_modelview_matrix)
+			gl_push_matrix
+			gl_color3d (1,1,1)
+			gl_translated (0,1,0)
+			gl_rotated (90,1,0,0)
+			glu_sphere (glu_new_quadric, 1, 72, 100)
+			gl_pop_matrix
+
+			gl_line_width (2)
+			gl_begin(em_gl_lines)
+				-- x axis
+				gl_color3d (1,0,0)
+				gl_vertex3d (0,0,0)
+				gl_vertex3d(1,0,0)
+			gl_end
+			
+			gl_begin(em_gl_lines)
+				-- y axis
+				gl_color3d (0,1,0)
+				gl_vertex3d (0,0,0)
+				gl_vertex3d(0,1,0)
+			gl_end
+			
+			gl_begin(em_gl_lines)
+				-- z axis
+				gl_color3d (0,0,1)
+				gl_vertex3d (0,0,0)
+				gl_vertex3d(0,0,1)
+			gl_end
+
+			
+			
+			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
+			
+			if is_loaded then
+				if show_collision_objects then
+					-- Coordinate System
+					gl_line_width (2)
+					gl_begin(em_gl_lines) -- X AXIS WHITE
+						gl_color3d (1,1,1)
+						gl_vertex3d (0,0,0)
+						gl_vertex3d(1,0,0)
+					gl_end
+					
+					gl_begin(em_gl_lines) -- Y AXIS GREY
+						gl_color3d (0.5,0.5,0.5)
+						gl_vertex3d (0,0,0)
+						gl_vertex3d(0,1,0)
+					gl_end
+					
+					gl_begin(em_gl_lines) -- Z AXIS BLACK
+						gl_color3d (0,0,0)
+						gl_vertex3d (0,0,0)
+						gl_vertex3d(0,0,1)
+					gl_end
+					ewer.draw_collision
+				end
+				if show_buildings then
+					ewer.draw
+				end
+				
+				lines := map.lines
+				from lines.start; delta_line := 0
+				until lines.after
+				loop 
+					traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
+					traffic_line_factory.set_line (lines.item_for_iteration)
+					obj := traffic_line_factory.create_object
+--					obj.set_scale (2,2,2)
+					if lines_height > 0.2 then
+						obj.set_origin (-14,lines_height+delta_line,-14)
+						delta_line := delta_line + 0.4
+					else
+						obj.set_origin (-14,lines_height,-14)
+					end	
+					obj.draw
+					lines.forth
+				end
+			end
+				-- draw the clicked point
+			if clicked_point /= Void then
+				gl_matrix_mode (Em_gl_modelview)
+				gl_push_matrix
+				gl_color3d (1, 0, 0)
+				gl_translated (clicked_point.x,0.1,clicked_point.z)
+				gl_rotated (90, 1, 0, 0)
+				glu_disk (glu_new_quadric, 0, 0.2, 72, 1)
+				gl_pop_matrix
+				gl_flush
+			end
+		end
+
+	draw_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
+		-- draw a plane
+		do
+			gl_begin (em_gl_quads)
+				gl_color3dv (rgb.pointer)
+				gl_normal3d (0,1,0)
+				gl_vertex3dv (p1.pointer)
+				gl_normal3d (0,1,0)
+				gl_vertex3dv (p2.pointer)
+				gl_normal3d (0,1,0)
+				gl_vertex3dv (p3.pointer)
+				gl_normal3d (0,1,0)
+				gl_vertex3dv (p4.pointer)
+			gl_end
 		end
 		
 feature -- Traffic stuff	
@@ -146,155 +332,9 @@ feature -- Options
 		ensure show_collision_objects = b
 		end
 		
-feature -- Drawing
-
-	clicked_point: GL_VECTOR_3D[DOUBLE]
-	
-	prepare_drawing is
-			-- Prepare for drawing.
-		do
-			if Video_subsystem.video_surface.gl_2d_mode then
-				Video_subsystem.video_surface.gl_leave_2d
-				gl_tex_envi (Em_gl_texture_env, Em_gl_texture_env_mode, Em_gl_modulate)
-			end
-			gl_viewport (x, Video_subsystem.video_surface.height - height - y, width, height)
-			
-			-- Reset depth buffer
-			gl_clear (Em_gl_depth_buffer_bit)
-			
-			-- Opengl settings
-			gl_enable (Em_gl_depth_test)
-			
-			-- Enable antialiasing
-			gl_enable (Em_gl_line_smooth)
-			gl_hint (Em_gl_line_smooth, Em_gl_nicest)
-			
-			-- Setup the projection matrix
-			gl_matrix_mode (Em_gl_projection)
-			gl_load_identity
-			glu_perspective (field_of_view, width/height, min_view_distance, focus*max_view_distance)
-			
-			-- Setup the model view matrix
-			gl_matrix_mode (Em_gl_modelview)
-			gl_load_identity
-			
-			-- Clearing background color to a nice blue
-			gl_clear_color (0.1,0.4,0.5,0)
-			gl_clear(em_gl_color_buffer_bit)
-			
-			-- Do viewing transformations
-			gl_matrix_mode (em_gl_modelview_matrix)
-			gl_load_identity
-			gl_translated_external (x_coord*focus, y_coord*focus, z_coord*focus)
-			gl_rotatef (x_rotation, 1, 0, 0)
-			gl_rotatef(y_rotation, 0, 1, 0)
-		end
-		
-	draw is
-			-- Draw the map.
-		local
-			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
-			obj: EM_3D_OBJECT
-			delta_line: DOUBLE
-		do
-			-- Coordinate System
-			gl_line_width (2)
-			gl_begin(em_gl_lines)
-				-- x axis
-				gl_color3d (1,0,0)
-				gl_vertex3d (0,0,0)
-				gl_vertex3d(1,0,0)
-			gl_end
-			
-			gl_begin(em_gl_lines)
-				-- y axis
-				gl_color3d (0,1,0)
-				gl_vertex3d (0,0,0)
-				gl_vertex3d(0,1,0)
-			gl_end
-			
-			gl_begin(em_gl_lines)
-				-- z axis
-				gl_color3d (0,0,1)
-				gl_vertex3d (0,0,0)
-				gl_vertex3d(0,0,1)
-			gl_end
-			
-			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-10,0,-10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(10,0,-10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(10,0,10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-10,0,10), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))				
-			
---			gl_line_width(400)
---			gl_matrix_mode (Em_gl_modelview)
---			gl_push_matrix
---			gl_color3d(0.4,1,0)
-----			gl_translated (0, 1,0)
---			gl_rotated (90, 1, 0,0)
---				gl_begin(em_gl_line)
---				gl_color3d(0.0,1.0,0.2)
---				gl_vertex3d(-3,0,0)
---				gl_vertex3d(3,0,0)
---			gl_end
---			gl_pop_matrix
---			gl_flush
-			
---			io.put_new_line
---			io.put_integer (memory_statistics (0).total)
-			
-			if show_collision_objects then
-				ewer.draw_collision
-			end
-			
-			if is_loaded then
-				if show_buildings then
-					ewer.draw
-				end
-				
-				lines := map.lines
-				from lines.start; delta_line := 0
-				until lines.after
-				loop 
-					traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
-					traffic_line_factory.set_line (lines.item_for_iteration)
-					obj := traffic_line_factory.create_object
---					obj.set_scale (2,2,2)
-					if lines_height > 0.2 then
-						obj.set_origin (-14,lines_height+delta_line,-14)
-						delta_line := delta_line + 0.4
-					else
-						obj.set_origin (-14,lines_height,-14)
-					end	
-					obj.draw
-					lines.forth
-				end
-			end
-			
-			-- draw the clicked point
-			if clicked_point /= Void then
-				gl_matrix_mode (Em_gl_modelview)
-				gl_push_matrix
-				gl_color3d (1, 0, 0)
-				gl_translated (clicked_point.x,0.1,clicked_point.z)
-				gl_rotated (90, 1, 0, 0)
-				glu_disk (glu_new_quadric, 0, 0.2, 72, 1)
-				gl_pop_matrix
-				gl_flush
-			end
-		end
-
-	draw_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
-		-- draw a plane
-		do
-			gl_begin (em_gl_quads)
-				gl_color3dv (rgb.pointer) 
-				gl_vertex3dv (p1.pointer)
-				gl_vertex3dv (p2.pointer)
-				gl_vertex3dv (p3.pointer)
-				gl_vertex3dv (p4.pointer)
-			gl_end
-		end
-		
 feature {NONE} -- Event handling
 
-	mouse_wheel_down is
+	wheel_down is
 			-- Mouse wheel down event
 		do
 			focus := focus + 0.1
@@ -303,7 +343,7 @@ feature {NONE} -- Event handling
 --			end
 		end
 		
-	mouse_wheel_up is
+	wheel_up is
 			-- Mouse wheel up event
 		do
 			focus := focus - 0.1
@@ -367,7 +407,7 @@ feature {NONE} -- Event handling
 			clicked_point := click_1
 		end
 		
-	mouse_button_down (event: EM_MOUSEBUTTON_EVENT) is
+	button_down (event: EM_MOUSEBUTTON_EVENT) is
 			-- Handle mouse events
 		require else
 			a_mouse_button_event_not_void: event /= void
@@ -401,7 +441,7 @@ feature {NONE} -- Event handling
 --				io.put_double (other_y.read_double (0))
 		end
 
-	mouse_dragged (event: EM_MOUSEMOTION_EVENT) is
+	dragged (event: EM_MOUSEMOTION_EVENT) is
 			-- Handle mouse movement
 		do
 			if event.button_state_right then				
@@ -444,6 +484,8 @@ feature {NONE} -- Factories and stuff
 
 feature {NONE} -- Variables
 
+	sun_angle: DOUBLE
+		-- Angle of sun rotation
 	show_buildings: BOOLEAN
 		-- Should the buildings be displayed?
 	buildings_transparent: BOOLEAN
