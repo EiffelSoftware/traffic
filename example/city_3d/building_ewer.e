@@ -98,6 +98,7 @@ feature{NONE} -- Implementation
 			create randomizer.set_seed (42)
 			create central_building_factory.make_central
 			create outlying_building_factory.make
+			create city_centre_building_factory.make_city_centre
 			create buildings.make (1,n)
 			
 			max_distance := sqrt(plane_size^2 + plane_size^2)
@@ -117,13 +118,18 @@ feature{NONE} -- Implementation
 	
 				if not has_collision(collision_poly) then					
 					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord))
-					if distance < 3 then
+					if distance < 1 then
+						building := city_centre_building_factory.create_object
+						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
+						
+					elseif distance < 3 then
 						building := central_building_factory.create_object
+						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
 					else
 						building := outlying_building_factory.create_object
+						building.set_scale (building_width , calculate_building_height (max_distance ,distance), building_width)
 					end
 					building.set_origin (x_coord, 0, z_coord)
-					building.set_scale (building_width , calculate_building_height (max_distance ,distance), building_width)
 					buildings.force (building,i)
 					i := i + 1
 				end
@@ -162,13 +168,18 @@ feature{NONE} -- Implementation
 	
 				if not has_collision(collision_poly) then					
 					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord))
-					if distance < 3 then
+					if distance < 1 then
+						building := city_centre_building_factory.create_object
+						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
+						
+					elseif distance < 3 then
 						building := central_building_factory.create_object
+						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
 					else
 						building := outlying_building_factory.create_object
+						building.set_scale (building_width , calculate_building_height (max_distance ,distance), building_width)
 					end
 					building.set_origin (x_coord, 0, z_coord)
-					building.set_scale (building_width , calculate_building_height (max_distance ,distance), building_width)
 					buildings.force (building,i)
 					i := i + 1
 					io.put_integer (i)
@@ -250,6 +261,8 @@ feature {NONE} -- Variables
 
 	randomizer: RANDOM
 		-- Random number generator for building distribution
+	city_centre_building_factory: BUILDING_FACTORY
+		-- Factory for most central builings
 	outlying_building_factory: BUILDING_FACTORY
 		-- Factory for outlying buildings
 	central_building_factory: BUILDING_FACTORY
