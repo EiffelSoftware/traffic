@@ -83,7 +83,7 @@ feature -- Interface
 			toolbar_panel.add_widget (sun_checkbox)
 			
 			-- Collision Checkbox
-			collision_checkbox.set_position (10,310)
+			collision_checkbox.set_position (10,290)
 			collision_checkbox.set_background_color (bg_color)
 			collision_checkbox.set_dimension (110,20)
 			collision_checkbox.checked_event.subscribe (agent collision_checked)
@@ -91,7 +91,7 @@ feature -- Interface
 			toolbar_panel.add_widget (collision_checkbox)
 			
 			-- Highlighting Checkbox
-			highlighting_checkbox.set_position (10,350)
+			highlighting_checkbox.set_position (10,310)
 --			highlighting_checkbox.set_font (create {EM_TTF_FONT}.make_from_ttf_file ("./herbert.ttf",20))
 			highlighting_checkbox.set_background_color (bg_color)
 			highlighting_checkbox.set_dimension (110,20)
@@ -100,7 +100,7 @@ feature -- Interface
 			toolbar_panel.add_widget (highlighting_checkbox)
 			
 			-- Buildings Checkbox
-			buildings_checkbox.set_position (10,390)
+			buildings_checkbox.set_position (10,330)
 			buildings_checkbox.set_background_color (bg_color)
 			buildings_checkbox.set_dimension (110,20)
 			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
@@ -110,7 +110,7 @@ feature -- Interface
 			-- Buildings label
 			create buildings_label.make_from_text (map.number_of_buildings.out)
 			buildings_label.set_position (140, 430)
-			buildings_label.set_background_color (create {EM_COLOR}.make_white)
+			buildings_label.set_background_color (bg_color)
 			buildings_label.set_dimension (50, 20)
 			buildings_label.set_tooltip ("Number of buildings")
 			toolbar_panel.add_widget (buildings_label)
@@ -127,7 +127,7 @@ feature -- Interface
 			create marked_station_label.make_from_text ("")
 			marked_station_label.set_position (10, 470)
 			marked_station_label.set_dimension (180, 20)
-			marked_station_label.set_background_color (create {EM_COLOR}.make_white)
+			marked_station_label.set_background_color (bg_color)
 			marked_station_label.set_tooltip ("Marked Station")
 			marked_station_label.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
 			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))

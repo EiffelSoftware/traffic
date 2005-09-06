@@ -33,6 +33,12 @@ feature -- Implementation
 			-- Creation procedure
 		do
 			is_central := false
+--			bitmap_factory.create_bitmap_from_image ("house3.gif")
+--				check
+--					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
+--				end
+--			bitmap_factory.last_bitmap.do_not_free_gl_textures
+--			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
 		end
 
 	make_central is
@@ -137,6 +143,89 @@ feature {NONE} -- Implementation
 --			gl_flush
 			
 			else
+--				gl_enable (Em_gl_texture_2d)
+--				gl_begin (em_gl_quads)
+--					-- Front
+--					gl_bind_texture (Em_gl_texture_2d, texture)
+--					gl_color3f (1, 1, 1) -- White
+--					
+--					gl_normal3d (1,0,0)
+--					gl_tex_coord2f (0, 0)
+--					gl_vertex3d (0.0, 1.0, 0.0)
+--					gl_normal3d (1,0,0)
+--					gl_tex_coord2f (0, 1)
+--					gl_vertex3d (0.0, 0.0, 0.0)
+--					gl_normal3d (1,0,0)
+--					gl_tex_coord2f (1, 1)
+--					gl_vertex3d (0.0, 0.0, -1.0)
+--					gl_normal3d (1,0,0)
+--					gl_tex_coord2f (1, 0)
+--					gl_vertex3d (0.0, 1.0, -1.0)
+--	
+--					-- Back
+--					gl_color3f(1, 1, 1) -- White
+--					gl_normal3d (-1,0,0)
+--					gl_tex_coord2f (0, 0)
+--					gl_vertex3d (-1.0, 0.0, -1.0)
+--					gl_normal3d (-1,0,0)
+--					gl_tex_coord2f (0, 1)
+--					gl_vertex3d (-1.0, 1.0, -1.0)
+--					gl_normal3d (-1,0,0)
+--					gl_tex_coord2f (1, 1)
+--					gl_vertex3d (-1.0, 1.0, 0.0)
+--					gl_normal3d (-1,0,0)
+--					gl_tex_coord2f (1, 0)
+--					gl_vertex3d (-1.0, 0.0, 0.0)
+--	
+--					-- Left
+--					gl_color3f(1, 1, 1) -- White
+--					gl_normal3d (0,0,1)
+--					gl_tex_coord2f (0, 0)
+--					gl_vertex3d (-1.0, 1.0, 0.0)
+--					gl_normal3d (0,0,1)
+--					gl_tex_coord2f (0, 1)
+--					gl_vertex3d (-1.0, 0.0, 0.0)
+--					gl_normal3d (0,0,1)
+--					gl_tex_coord2f (1, 1)
+--					gl_vertex3d (0.0, 0.0, 0.0)
+--					gl_normal3d (0,0,1)
+--					gl_tex_coord2f (1, 0)
+--					gl_vertex3d (0.0, 1.0, 0.0)
+--	
+--					-- Right
+--					gl_color3f(1, 1, 1) -- White
+--					gl_normal3d (0,0,-1)
+--					gl_tex_coord2f (0, 0)
+--					gl_vertex3d (0.0, 1.0, -1.0)
+--					gl_normal3d (0,0,-1)
+--					gl_tex_coord2f (0, 1)
+--					gl_vertex3d (0.0, 0.0, -1.0)
+--					gl_normal3d (0,0,-1)
+--					gl_tex_coord2f (1, 1)
+--					gl_vertex3d (-1.0, 0.0, -1.0)
+--					gl_normal3d (0,0,-1)
+--					gl_tex_coord2f (1, 0)
+--					gl_vertex3d (-1.0, 1.0, -1.0)
+--					
+--					-- Top
+--					gl_color3f(1, 1, 1) -- White
+--					gl_normal3d (0,1,0)
+--					gl_tex_coord2f (0, 0)
+--					gl_vertex3d (-1.0, 1.0, -1.0)
+--					
+--					gl_normal3d (0,1,0)
+--					gl_tex_coord2f (0, 1)
+--					gl_vertex3d (-1.0, 1.0, 0.0)
+--					
+--					gl_normal3d (0,1,0)
+--					gl_tex_coord2f (1,1)
+--					gl_vertex3d (0.0, 1.0, 0.0)
+--					
+--					gl_normal3d (0,1,0)
+--					gl_tex_coord2f (1, 0)
+--					gl_vertex3d (0.0, 1.0, -1.0)
+--				gl_end
+				gl_disable (Em_gl_texture_2d)
 				-- Front
 --				gl_enable (Em_gl_texture_2d)
 				gl_begin (em_gl_quads)
