@@ -22,7 +22,7 @@ inherit
 	MATH_CONST
 	
 	DOUBLE_MATH
-		
+	
 creation
 	
 	make
@@ -564,7 +564,7 @@ feature {NONE} -- Event handling
 			-- Handle mouse movement
 		local
 			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
-			delta_x, delta_y: DOUBLE
+			delta_x, delta_y, delta, mouse_delta: DOUBLE
 		do
 			if event.button_state_right then				
 				y_rotation := y_rotation + event.x_motion
@@ -582,22 +582,16 @@ feature {NONE} -- Event handling
 			elseif event.button_state_left then
 				start_vec := transform_coords (event.x, event.y)
 				end_vec := transform_coords (event.x + event.x_motion, event.y + event.y_motion)
-				io.put_new_line
-				io.put_string (start_vec.out)
-				io.put_new_line
-				io.put_string (end_vec.out)
 				
 				delta_x := end_vec.x - start_vec.x
 				delta_y := end_vec.z - start_vec.z
 				
-				io.put_string("%Ndelta_x: " + delta_x.out)
-				io.put_string("%Ndelta_y: " + delta_y.out)
+				delta := sqrt (delta_x^2 + delta_y^2)
+				mouse_delta := sqrt (event.x_motion^2 + event.y_motion^2)
 				
-				if delta_x.abs < 5 and delta_y.abs < 5 then
-					io.put_string ("%Nx_translation: " + x_translation.out)
-					io.put_string ("%Nz_translation: " + y_translation.out)
-					x_translation := x_translation - delta_x
-					y_translation := y_translation - delta_y
+				if mouse_delta > 0 and then delta/mouse_delta <= 3 and then sqrt (start_vec.x^2 + start_vec.y^2) < plane_size/2 then
+					x_translation := x_translation + event.x_motion*(delta/mouse_delta)
+					y_translation := y_translation + event.y_motion*(delta/mouse_delta)
 				end
 			end
 		end
