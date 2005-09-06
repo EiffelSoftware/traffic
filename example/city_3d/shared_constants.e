@@ -6,8 +6,18 @@ indexing
 
 class
 	SHARED_CONSTANTS
+	
+	inherit
+		
+		DOUBLE_MATH
 
 feature -- Constants
+
+	Building_width: DOUBLE is 0.2
+		-- Width of the quadratic (!) base of the building.
+
+	Max_building_height: DOUBLE is 1.0
+		-- Maximum height of buildings
 
 	Plane_size: DOUBLE is 14.0
 		-- Length, resp. width, of plane
@@ -42,6 +52,16 @@ feature -- Constants
 		do
 			create Result.make ((vec.x / 50) - Plane_size, (vec.y / 50) - Plane_size)		
 		end
+		
+	calculate_building_height(max_distance, distance: DOUBLE): DOUBLE is
+			-- Calculate height of building
+		do	
+			Result := (max_distance - 2*distance)*(max_building_height/max_distance)		
+			
+			
+			
+		end
+	
 		
 
 end -- class SHARED_CONSTANTS

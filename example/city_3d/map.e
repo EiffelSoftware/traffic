@@ -50,7 +50,6 @@ feature -- Initialization
 			sun_angle := 0
 			
 			-- Factory creation
-			create ewer.make(-5, -5, 10, 10, .5)
 			create traffic_line_factory
 			
 			-- User Interaction
@@ -199,13 +198,11 @@ feature -- Drawing
 				gl_vertex3d (0,0,0)
 				gl_vertex3d(0,0,1)
 			gl_end
+
 			
-			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,-7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-7,0,7), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
+			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
 			
 			if is_loaded then
-				if show_collision_objects then
-					ewer.draw_collision
-				end
 				if show_buildings then
 					ewer.draw
 				end
@@ -355,7 +352,7 @@ feature -- Traffic stuff
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
 			is_loaded := true
-			ewer.create_buildings (number_of_buildings, map)
+			create ewer.make(-7, -7, number_of_buildings, map)
 		end	
 
 feature -- Options
@@ -403,7 +400,7 @@ feature -- Options
 		do
 			number_of_buildings := n
 			if is_loaded then
-				ewer.create_buildings (number_of_buildings, map)
+				ewer.set_building_number (number_of_buildings)
 			end
 		end
 		
