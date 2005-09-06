@@ -101,6 +101,7 @@ feature -- Drawing
 			gl_matrix_mode (em_gl_modelview_matrix)
 			gl_load_identity
 			gl_translated_external (x_coord*focus, y_coord*focus, z_coord*focus)
+			gl_translated_external (x_translation, -y_translation, 0)
 			gl_rotatef (x_rotation, 1, 0, 0)
 			gl_rotatef(y_rotation, 0, 1, 0)
 			
@@ -198,7 +199,6 @@ feature -- Drawing
 				gl_vertex3d (0,0,0)
 				gl_vertex3d(0,0,1)
 			gl_end
-
 			
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
 			
@@ -353,7 +353,7 @@ feature -- Traffic stuff
 			map := map_file.traffic_map
 			is_loaded := true
 			create ewer.make(-7, -7, number_of_buildings, map)
-		end	
+		end
 
 feature -- Options
 
@@ -564,7 +564,7 @@ feature {NONE} -- Event handling
 			-- Handle mouse movement
 		local
 			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
-			delta_x, delta_y, delta_z: DOUBLE
+			delta_x, delta_y: DOUBLE
 		do
 			if event.button_state_right then				
 				y_rotation := y_rotation + event.x_motion
@@ -582,25 +582,22 @@ feature {NONE} -- Event handling
 			elseif event.button_state_left then
 				start_vec := transform_coords (event.x, event.y)
 				end_vec := transform_coords (event.x + event.x_motion, event.y + event.y_motion)
+				io.put_new_line
+				io.put_string (start_vec.out)
+				io.put_new_line
+				io.put_string (end_vec.out)
 				
 				delta_x := end_vec.x - start_vec.x
-				delta_y := end_vec.y - start_vec.y
-				delta_z := end_vec.z - start_vec.z
+				delta_y := end_vec.z - start_vec.z
 				
-				io.put_string("x: ")
-				io.put_double(delta_x)
-				io.put_new_line
-				io.put_string("y: ")
-				io.put_double(delta_y)
-				io.put_new_line
-				io.put_string("z: ")
-				io.put_double(delta_z)
-				io.put_new_line
+				io.put_string("%Ndelta_x: " + delta_x.out)
+				io.put_string("%Ndelta_y: " + delta_y.out)
 				
 				if delta_x.abs < 5 and delta_y.abs < 5 then
-					x_coord := x_coord - delta_x
---					y_coord := y_coord - (end_vec.y - start_vec.y)	
-					z_coord := z_coord - delta_z
+					io.put_string ("%Nx_translation: " + x_translation.out)
+					io.put_string ("%Nz_translation: " + y_translation.out)
+					x_translation := x_translation - delta_x
+					y_translation := y_translation - delta_y
 				end
 			end
 		end
@@ -620,6 +617,8 @@ feature {NONE} -- Event handling
 				x_coord := 0
 				y_coord := -1
 				z_coord := -9
+				x_translation := 0
+				y_translation := 0
 			end
 		end
 
@@ -640,15 +639,19 @@ feature {NONE} -- Variables
 	focus: DOUBLE
 		-- Used to zoom in or out.
 	x_coord: DOUBLE
-		-- X coordinate of the centre
+		-- X coordinate of the viewer
 	y_coord: DOUBLE
-		-- Y coordinate of the centre
+		-- Y coordinate of the viewer
 	z_coord: DOUBLE
-		-- Z coordinate of the centre
+		-- Z coordinate of the viewer
 	x_rotation: DOUBLE
 		-- Rotation around the x axis
 	y_rotation: DOUBLE
 		-- Rotation around the y axis
+	x_translation: DOUBLE
+		-- Translation of the map's origin in x direction
+	y_translation: DOUBLE
+		-- Translation of the map's origin in y direction
 	highlighting_delta: DOUBLE
 		-- Height difference between highlighted and normal line representation
 
