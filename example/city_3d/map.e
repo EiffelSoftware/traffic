@@ -124,6 +124,9 @@ feature -- Drawing
 			sun_pos: GL_VECTOR_3D[DOUBLE]
 			light_0, light_1: GL_LIGHT
 		do	
+--			io.put_double(x_coord)
+--			io.put_new_line
+		
 			create light_0.make (em_gl_light0)
 			create light_1.make (em_gl_light1)
 
@@ -460,7 +463,7 @@ feature {NONE} -- Event handling
 --			y_new: INTEGER
 --			result_x, result_y, result_z: DOUBLE
 --			temp: ANY
-			click_1, click_2: GL_VECTOR_3D [DOUBLE]
+--			click_1, click_2: GL_VECTOR_3D [DOUBLE]
 --			window_z: REAL
 			places: HASH_TABLE[TRAFFIC_PLACE, STRING]
 			place_x, place_z, delta_x, delta_z, delta: DOUBLE
@@ -502,38 +505,37 @@ feature {NONE} -- Event handling
 --					gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
 --					temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
 
-					create click_1.make_xyz (result_vec.x, result_vec.y, result_vec.z)
+					create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
 --					io.put_string ("Click point: "+click_1.out+"%N")
 --					io.put_string ("Zoom: " + focus.out)
 --					io.put_string ("%Nx_rotation: " + x_rotation.out)
 --					io.put_string ("%Ny_rotation: " + y_rotation.out)
 --					io.put_new_line
 					-- Jetzt testen, was am naechsten bei click1 ist.
-					clicked_point := click_1
-					
-					if map /= Void then
-				from
-					places := map.places
-					places.start
-					is_found := False
-				until
-					is_found or else places.after
-				loop
-					place_x := places.item_for_iteration.position.x/50 - 14
-					place_z := places.item_for_iteration.position.y/50 - 14
-					delta_x := place_x - clicked_point.x
-					delta_z := place_z - clicked_point.z
-					delta := sqrt (delta_x^2 + delta_z^2)
-					if delta < station_radius then
-						marked_station := places.item_for_iteration
-						is_found := True
+	
+				if map /= Void then
+					from
+						places := map.places
+						places.start
+						is_found := False
+					until
+						is_found or else places.after
+					loop
+						place_x := places.item_for_iteration.position.x/50 - 14
+						place_z := places.item_for_iteration.position.y/50 - 14
+						delta_x := place_x - clicked_point.x
+						delta_z := place_z - clicked_point.z
+						delta := sqrt (delta_x^2 + delta_z^2)
+						if delta < station_radius then
+							marked_station := places.item_for_iteration
+							is_found := True
+						end
+						places.forth
 					end
-					places.forth
+					if not is_found then
+						marked_station := Void
+					end
 				end
-				if not is_found then
-					marked_station := Void
-				end
-			end
 			end
 		end
 		
@@ -574,7 +576,8 @@ feature {NONE} -- Event handling
 	dragged (event: EM_MOUSEMOTION_EVENT) is
 			-- Handle mouse movement
 		local
-			result_vec: GL_VECTOR_3D[DOUBLE]
+			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
+			delta_x, delta_y, delta_z: DOUBLE
 		do
 			if event.button_state_right then				
 				y_rotation := y_rotation + event.x_motion
@@ -590,13 +593,28 @@ feature {NONE} -- Event handling
 					x_rotation := 90
 				end
 			elseif event.button_state_left then
-				result_vec := transform_coords (event.x_motion, event.y_motion)
-				io.put_double(result_vec.x)
+				start_vec := transform_coords (event.x, event.y)
+				end_vec := transform_coords (event.x + event.x_motion, event.y + event.y_motion)
+				
+				delta_x := end_vec.x - start_vec.x
+				delta_y := end_vec.y - start_vec.y
+				delta_z := end_vec.z - start_vec.z
+				
+				io.put_string("x: ")
+				io.put_double(delta_x)
 				io.put_new_line
-				io.put_double(result_vec.y)
+				io.put_string("y: ")
+				io.put_double(delta_y)
 				io.put_new_line
-				io.put_double(result_vec.z)
+				io.put_string("z: ")
+				io.put_double(delta_z)
 				io.put_new_line
+				
+				if delta_x.abs < 5 and delta_y.abs < 5 then
+					x_coord := x_coord - delta_x
+--					y_coord := y_coord - (end_vec.y - start_vec.y)	
+					z_coord := z_coord - delta_z
+				end
 			end
 		end
 	
@@ -611,6 +629,10 @@ feature {NONE} -- Event handling
 				y_rotation := y_rotation - 10
 			elseif event.key = event.sdlk_right then
 				y_rotation := y_rotation + 10
+			elseif event.key = event.sdlk_return then
+				x_coord := 0
+				y_coord := -1
+				z_coord := -9
 			end
 		end
 
