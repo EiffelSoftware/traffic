@@ -21,13 +21,17 @@ feature -- Constants
 	Fullscreen: BOOLEAN is false
 			-- Fullscreen?
 			
-	Line_width: DOUBLE is 0.2
+	Line_width: DOUBLE is 0.075
 			-- Width of the line
+	
+	Line_height: DOUBLE is 0.05
+			-- Height of the line representation on the map
 			
 	Station_radius: DOUBLE is
 			-- Radius of a station on the map
 		do
 			Result := 2*line_width
 		end
+		
 
 end -- class SHARED_CONSTANTS

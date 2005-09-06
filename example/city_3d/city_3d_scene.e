@@ -127,7 +127,7 @@ feature -- Interface
 			create marked_station_label.make_from_text ("")
 			marked_station_label.set_position (10, 470)
 			marked_station_label.set_dimension (180, 20)
-			marked_station_label.set_background_color (bg_color)
+			marked_station_label.set_background_color (create {EM_COLOR}.make_white)
 			marked_station_label.set_tooltip ("Marked Station")
 			marked_station_label.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
 			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))

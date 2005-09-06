@@ -28,6 +28,8 @@ inherit
 	
 	DOUBLE_MATH
 		export {NONE} all end
+	
+	SHARED_CONSTANTS
 
 feature -- Initialization
 
@@ -47,15 +49,6 @@ feature -- Initialization
 			rgb /= Void
 		do
 			create line_color.make_xyz (rgb.x,rgb.y,rgb.z)
-			unchanged := False
-		end
-		
-	set_line_width (w: DOUBLE) is
-			-- set the line width
-		require
-			w > 0
-		do
-			line_width := w
 			unchanged := False
 		end
 		
@@ -128,9 +121,6 @@ feature {NONE} -- Variables
 	
 	line_color: GL_VECTOR_3D[DOUBLE]
 			-- Vector of RGB values for color.
-			
-	line_width: DOUBLE
-			-- Width of the line
 	
 	identifier: INTEGER
 			-- Unique name for OpenGL reasons.

@@ -47,13 +47,11 @@ feature -- Initialization
 			z_coord := -9
 			y_rotation := 180  -- -35
 			x_rotation := 40  -- -80
-			lines_height := 0.2
 			sun_angle := 0
 			
 			-- Factory creation
 			create ewer.make(-5, -5, 10, 10, .5)
 			create traffic_line_factory
-			traffic_line_factory.set_line_width (0.05)
 			
 			-- User Interaction
 			mouse_button_down_event.subscribe (agent button_down (?))
@@ -120,13 +118,12 @@ feature -- Drawing
 		local
 			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 			obj: EM_3D_OBJECT
-			delta_line: DOUBLE
 			sun_pos: GL_VECTOR_3D[DOUBLE]
 			light_0, light_1: GL_LIGHT
 		do	
 --			io.put_double(x_coord)
 --			io.put_new_line
-		
+			
 			create light_0.make (em_gl_light0)
 			create light_1.make (em_gl_light1)
 
@@ -214,19 +211,14 @@ feature -- Drawing
 				end
 				
 				lines := map.lines
-				from lines.start; delta_line := 0
+				from lines.start
 				until lines.after
 				loop 
 					traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
 					traffic_line_factory.set_line (lines.item_for_iteration)
 					obj := traffic_line_factory.create_object
 --					obj.set_scale (2,2,2)
-					if lines_height > 0.2 then
-						obj.set_origin (-14,lines_height+delta_line,-14)
-						delta_line := delta_line + 0.4
-					else
-						obj.set_origin (-14,lines_height,-14)
-					end	
+					obj.set_origin (-14,line_height+highlighting_delta,-14)
 					obj.draw
 					lines.forth
 				end
@@ -249,9 +241,9 @@ feature -- Drawing
 				gl_matrix_mode (Em_gl_modelview)
 				gl_push_matrix
 				gl_color3d (1, 0, 0)
-				gl_translated (clicked_point.x,0.35,clicked_point.z)
+				gl_translated (clicked_point.x,0.1,clicked_point.z)
 				gl_rotated (90, 1, 0, 0)
-				glu_disk (glu_new_quadric, 0, 0.15, 72, 1)
+				glu_disk (glu_new_quadric, 0, station_radius, 72, 1)
 				gl_pop_matrix
 				gl_flush
 			end
@@ -273,7 +265,7 @@ feature -- Drawing
 			gl_end
 		end
 		
-	transform_coords(screen_x,screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
+	transform_coords (screen_x,screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
 			-- Transforms mouse coords with gl_un_project
 			-- screen = event.screen_
 			-- rel = event.x
@@ -285,13 +277,9 @@ feature -- Drawing
 			y_new: INTEGER
 			result_x, result_y, result_z: DOUBLE
 			temp: ANY
-			click_1: GL_VECTOR_3D [DOUBLE]
 			window_z: REAL
-			places: HASH_TABLE[TRAFFIC_PLACE, STRING]
-			place_x, place_z, delta_x, delta_z, delta: DOUBLE
-			is_found: BOOLEAN
 		do
-				-- Vorbereitung fuer beide Varianten
+			-- Vorbereitung fuer beide Varianten
 			if video_subsystem.video_surface.gl_2d_mode then
 				video_subsystem.video_surface.gl_leave_2d
 			end
@@ -391,12 +379,13 @@ feature -- Options
 		require variable_exist: b /= void
 		do
 			if b then
-				lines_height := 1.5
+				highlighting_delta := 2
 			else 
-				lines_height := 0.2
+				highlighting_delta := 0
 			end
-		ensure b implies lines_height = 1.5
-			not b implies lines_height = 0.2
+		ensure
+			b implies highlighting_delta = 2
+			not b implies highlighting_delta = 0
 		end
 		
 	set_show_buildings (b: BOOLEAN) is
@@ -463,7 +452,6 @@ feature {NONE} -- Event handling
 --			y_new: INTEGER
 --			result_x, result_y, result_z: DOUBLE
 --			temp: ANY
---			click_1, click_2: GL_VECTOR_3D [DOUBLE]
 --			window_z: REAL
 			places: HASH_TABLE[TRAFFIC_PLACE, STRING]
 			place_x, place_z, delta_x, delta_z, delta: DOUBLE
@@ -472,47 +460,48 @@ feature {NONE} -- Event handling
 		do
 			if event.is_left_button then
 				result_vec := transform_coords(event.screen_x, event.screen_y)
-						-- Vorbereitung fuer beide Varianten
---					if video_subsystem.video_surface.gl_2d_mode then
---						video_subsystem.video_surface.gl_leave_2d
---					end
---					
---					create model_matrix.make (0, 15)
---					create projection_matrix.make (0, 15)
---					create viewport.make_xyzt (0, 0, 0, 0)
---					model_c := model_matrix.to_c
---					projection_c := projection_matrix.to_c
---					
---					gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
---					gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
---					gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
---					viewport.set_xyzt (x, y, width, height)
---					y_new := video_subsystem.video_surface.height - event.screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
-		
-					-- 1. Variante: Erzeuge Strahl durch Maus und teste anschliessend Schnittpunkte mit Objekten
-					-- http://www.3dkingdoms.com/selection.html#point
+				
+--				-- Vorbereitung fuer beide Varianten
+--				if video_subsystem.video_surface.gl_2d_mode then
+--					video_subsystem.video_surface.gl_leave_2d
+--				end
+--				
+--				create model_matrix.make (0, 15)
+--				create projection_matrix.make (0, 15)
+--				create viewport.make_xyzt (0, 0, 0, 0)
+--				model_c := model_matrix.to_c
+--				projection_c := projection_matrix.to_c
+--				
+--				gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
+--				gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
+--				gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
+--				viewport.set_xyzt (x, y, width, height)
+--				y_new := video_subsystem.video_surface.height - event.screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
+				
+				-- 1. Variante: Erzeuge Strahl durch Maus und teste anschliessend Schnittpunkte mit Objekten
+				-- http://www.3dkingdoms.com/selection.html#point
+				
+--				temp := glu_un_project_external (event.x.to_double, y_new.to_double, 0, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+--				create click_1.make_xyz (result_x, result_y, result_z)
+--				temp := glu_un_project_external (event.x.to_double, y_new.to_double, 1, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+--				create click_2.make_xyz (result_x, result_y, result_z)
+--				io.put_string ("Click ray: "+click_1.out+" to "+click_2.out+"%N")
+--				-- Jetzt testen, was Strahl von click1 bis click2 trifft, und was am naechsten ist.
 					
---					temp := glu_un_project_external (event.x.to_double, y_new.to_double, 0, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
---					create click_1.make_xyz (result_x, result_y, result_z)
---					temp := glu_un_project_external (event.x.to_double, y_new.to_double, 1, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
---					create click_2.make_xyz (result_x, result_y, result_z)
---					io.put_string ("Click ray: "+click_1.out+" to "+click_2.out+"%N")
-					-- Jetzt testen, was Strahl von click1 bis click2 trifft, und was am naechsten ist.
+				-- 2. Variante: Erzeuge Raumpunkt, der richtigen "Depth"-Wert erzeugt
+				-- http://wiki.delphigl.com/index.php/GluUnProject
 					
-					-- 2. Variante: Erzeuge Raumpunkt, der richtigen "Depth"-Wert erzeugt
-					-- http://wiki.delphigl.com/index.php/GluUnProject
-					
---					gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
---					temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+--				gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
+--				temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
 
-					create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
---					io.put_string ("Click point: "+click_1.out+"%N")
---					io.put_string ("Zoom: " + focus.out)
---					io.put_string ("%Nx_rotation: " + x_rotation.out)
---					io.put_string ("%Ny_rotation: " + y_rotation.out)
---					io.put_new_line
-					-- Jetzt testen, was am naechsten bei click1 ist.
-	
+				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
+--				io.put_string ("Click point: "+click_1.out+"%N")
+--				io.put_string ("Zoom: " + focus.out)
+--				io.put_string ("%Nx_rotation: " + x_rotation.out)
+--				io.put_string ("%Ny_rotation: " + y_rotation.out)
+--				io.put_new_line
+				-- Jetzt testen, was am naechsten bei click1 ist.
+					
 				if map /= Void then
 					from
 						places := map.places
@@ -532,6 +521,7 @@ feature {NONE} -- Event handling
 						end
 						places.forth
 					end
+					
 					if not is_found then
 						marked_station := Void
 					end
@@ -584,7 +574,7 @@ feature {NONE} -- Event handling
 				if y_rotation <= 90 then
 					y_rotation := 90
 				elseif y_rotation >= 270 then
-					 y_rotation := 270
+					y_rotation := 270
 				end
 				x_rotation := x_rotation + event.y_motion
 				if x_rotation <= 15 then
@@ -662,8 +652,8 @@ feature {NONE} -- Variables
 		-- Rotation around the x axis
 	y_rotation: DOUBLE
 		-- Rotation around the y axis
-	lines_height: DOUBLE
-		-- Height of the metrolines on map
+	highlighting_delta: DOUBLE
+		-- Height difference between highlighted and normal line representation
 
 invariant
 	
