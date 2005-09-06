@@ -155,12 +155,17 @@ feature -- Drawing
 			
 			light_1.ambient.set_xyzt (0, 0, 0, 1)
 			light_1.specular.set_xyzt (0, 0, 0, 1)
-			light_1.diffuse.set_xyzt (1.0, 0.25, 0.1, 1) -- Red
+			light_1.diffuse.set_xyzt (1.0, 1, 1, 1) -- Red
 			light_1.position.set_xyz (1, 1, 1)
 			light_1.apply_values
 			
-			light_0.enable
---			light_1.enable
+			if show_sun then
+				light_0.enable
+				light_1.disable
+			else
+				light_0.disable
+				light_1.enable
+			end
 			
 			if show_sun then
 				gl_matrix_mode (em_gl_modelview_matrix)
@@ -224,7 +229,7 @@ feature -- Drawing
 				end
 			end
 			
---			-- draw the clicked point
+			-- draw the clicked point
 --			if clicked_point /= Void then
 --				gl_matrix_mode (Em_gl_modelview)
 --				gl_push_matrix
@@ -235,15 +240,15 @@ feature -- Drawing
 --				gl_pop_matrix
 --				gl_flush
 --			end
-			
+
 			-- draw marked station
 			if marked_station /= Void then
 				gl_matrix_mode (Em_gl_modelview)
 				gl_push_matrix
 				gl_color3d (1, 0, 0)
-				gl_translated (clicked_point.x,0.1,clicked_point.z)
+				gl_translated (clicked_point.x,0.35,clicked_point.z)
 				gl_rotated (90, 1, 0, 0)
-				glu_disk (glu_new_quadric, 0, 0.2, 72, 1)
+				glu_disk (glu_new_quadric, 0, 0.15, 72, 1)
 				gl_pop_matrix
 				gl_flush
 			end
@@ -263,6 +268,74 @@ feature -- Drawing
 				gl_normal3d (0,1,0)
 				gl_vertex3dv (p4.pointer)
 			gl_end
+		end
+		
+	transform_coords(screen_x,screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
+			-- Transforms mouse coords with gl_un_project
+			-- screen = event.screen_
+			-- rel = event.x
+		require screen_x /= void and then screen_y /= void
+		local
+			model_matrix, projection_matrix: ARRAY [DOUBLE]
+			model_c, projection_c: ANY
+			viewport: GL_VECTOR_4D [INTEGER]
+			y_new: INTEGER
+			result_x, result_y, result_z: DOUBLE
+			temp: ANY
+			click_1: GL_VECTOR_3D [DOUBLE]
+			window_z: REAL
+			places: HASH_TABLE[TRAFFIC_PLACE, STRING]
+			place_x, place_z, delta_x, delta_z, delta: DOUBLE
+			is_found: BOOLEAN
+		do
+				-- Vorbereitung fuer beide Varianten
+			if video_subsystem.video_surface.gl_2d_mode then
+				video_subsystem.video_surface.gl_leave_2d
+			end
+			
+			create model_matrix.make (0, 15)
+			create projection_matrix.make (0, 15)
+			create viewport.make_xyzt (0, 0, 0, 0)
+			model_c := model_matrix.to_c
+			projection_c := projection_matrix.to_c
+			
+			gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
+			gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
+			gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
+			viewport.set_xyzt (x, y, width, height)
+			y_new := video_subsystem.video_surface.height - screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
+
+			gl_read_pixels (screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
+			temp := glu_un_project (screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+			
+			create Result.make_xyz (result_x, result_y, result_z)
+			
+--			create click_1.make_xyz (result_x, result_y, result_z)
+--			clicked_point := click_1
+--			
+--			if map /= Void then
+--				from
+--					places := map.places
+--					places.start
+--					is_found := False
+--				until
+--					is_found or else places.after
+--				loop
+--					place_x := places.item_for_iteration.position.x/50 - 14
+--					place_z := places.item_for_iteration.position.y/50 - 14
+--					delta_x := place_x - clicked_point.x
+--					delta_z := place_z - clicked_point.z
+--					delta := sqrt (delta_x^2 + delta_z^2)
+--					if delta < station_radius then
+--						marked_station := places.item_for_iteration
+--						is_found := True
+--					end
+--					places.forth
+--				end
+--				if not is_found then
+--					marked_station := Void
+--				end
+--			end
 		end
 		
 feature -- Traffic stuff	
@@ -381,62 +454,64 @@ feature {NONE} -- Event handling
 	handle_mouse_clicked (event: EM_MOUSEBUTTON_EVENT) is
 			-- Handle mouse clicked event.
 		local
-			model_matrix, projection_matrix: ARRAY [DOUBLE]
-			model_c, projection_c: ANY
-			viewport: GL_VECTOR_4D [INTEGER]
-			y_new: INTEGER
-			result_x, result_y, result_z: DOUBLE
-			temp: ANY
+--			model_matrix, projection_matrix: ARRAY [DOUBLE]
+--			model_c, projection_c: ANY
+--			viewport: GL_VECTOR_4D [INTEGER]
+--			y_new: INTEGER
+--			result_x, result_y, result_z: DOUBLE
+--			temp: ANY
 			click_1, click_2: GL_VECTOR_3D [DOUBLE]
-			window_z: REAL
+--			window_z: REAL
 			places: HASH_TABLE[TRAFFIC_PLACE, STRING]
 			place_x, place_z, delta_x, delta_z, delta: DOUBLE
 			is_found: BOOLEAN
+			result_vec: GL_VECTOR_3D[DOUBLE]
 		do
-			-- Vorbereitung fuer beide Varianten
-			if video_subsystem.video_surface.gl_2d_mode then
-				video_subsystem.video_surface.gl_leave_2d
-			end
-			
-			create model_matrix.make (0, 15)
-			create projection_matrix.make (0, 15)
-			create viewport.make_xyzt (0, 0, 0, 0)
-			model_c := model_matrix.to_c
-			projection_c := projection_matrix.to_c
-			
-			gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
-			gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
-			gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
-			viewport.set_xyzt (x, y, width, height)
-			y_new := video_subsystem.video_surface.height - event.screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
+			if event.is_left_button then
+				result_vec := transform_coords(event.screen_x, event.screen_y)
+						-- Vorbereitung fuer beide Varianten
+--					if video_subsystem.video_surface.gl_2d_mode then
+--						video_subsystem.video_surface.gl_leave_2d
+--					end
+--					
+--					create model_matrix.make (0, 15)
+--					create projection_matrix.make (0, 15)
+--					create viewport.make_xyzt (0, 0, 0, 0)
+--					model_c := model_matrix.to_c
+--					projection_c := projection_matrix.to_c
+--					
+--					gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
+--					gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
+--					gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
+--					viewport.set_xyzt (x, y, width, height)
+--					y_new := video_subsystem.video_surface.height - event.screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
+		
+					-- 1. Variante: Erzeuge Strahl durch Maus und teste anschliessend Schnittpunkte mit Objekten
+					-- http://www.3dkingdoms.com/selection.html#point
+					
+--					temp := glu_un_project_external (event.x.to_double, y_new.to_double, 0, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+--					create click_1.make_xyz (result_x, result_y, result_z)
+--					temp := glu_un_project_external (event.x.to_double, y_new.to_double, 1, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+--					create click_2.make_xyz (result_x, result_y, result_z)
+--					io.put_string ("Click ray: "+click_1.out+" to "+click_2.out+"%N")
+					-- Jetzt testen, was Strahl von click1 bis click2 trifft, und was am naechsten ist.
+					
+					-- 2. Variante: Erzeuge Raumpunkt, der richtigen "Depth"-Wert erzeugt
+					-- http://wiki.delphigl.com/index.php/GluUnProject
+					
+--					gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
+--					temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
 
---			-- 1. Variante: Erzeuge Strahl durch Maus und teste anschliessend Schnittpunkte mit Objekten
---			-- http://www.3dkingdoms.com/selection.html#point
---			
---			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 0, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
---			create click_1.make_xyz (result_x, result_y, result_z)
---			temp := glu_un_project_external (event.x.to_double, y_new.to_double, 1, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
---			create click_2.make_xyz (result_x, result_y, result_z)
---			io.put_string ("Click ray: "+click_1.out+" to "+click_2.out+"%N")
---			-- Jetzt testen, was Strahl von click1 bis click2 trifft, und was am naechsten ist.
---			
---			-- 2. Variante: Erzeuge Raumpunkt, der richtigen "Depth"-Wert erzeugt
---			-- http://wiki.delphigl.com/index.php/GluUnProject
-			
-			gl_read_pixels (event.screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
-			temp := glu_un_project (event.screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
-			
-			create click_1.make_xyz (result_x, result_y, result_z)
---			io.put_string ("Click point: "+click_1.out+"%N")
---			io.put_string ("Zoom: " + focus.out)
---			io.put_string ("%Nx_rotation: " + x_rotation.out)
---			io.put_string ("%Ny_rotation: " + y_rotation.out)
---			io.put_new_line
-			-- Jetzt testen, was am naechsten bei click1 ist.
-			clicked_point := click_1
-			
-			-- Find the clicked traffic station
-			if map /= Void then
+					create click_1.make_xyz (result_vec.x, result_vec.y, result_vec.z)
+--					io.put_string ("Click point: "+click_1.out+"%N")
+--					io.put_string ("Zoom: " + focus.out)
+--					io.put_string ("%Nx_rotation: " + x_rotation.out)
+--					io.put_string ("%Ny_rotation: " + y_rotation.out)
+--					io.put_new_line
+					-- Jetzt testen, was am naechsten bei click1 ist.
+					clicked_point := click_1
+					
+					if map /= Void then
 				from
 					places := map.places
 					places.start
@@ -459,7 +534,7 @@ feature {NONE} -- Event handling
 					marked_station := Void
 				end
 			end
-			
+			end
 		end
 		
 	button_down (event: EM_MOUSEBUTTON_EVENT) is
@@ -498,6 +573,8 @@ feature {NONE} -- Event handling
 	
 	dragged (event: EM_MOUSEMOTION_EVENT) is
 			-- Handle mouse movement
+		local
+			result_vec: GL_VECTOR_3D[DOUBLE]
 		do
 			if event.button_state_right then				
 				y_rotation := y_rotation + event.x_motion
@@ -512,8 +589,14 @@ feature {NONE} -- Event handling
 				elseif x_rotation >= 90 then
 					x_rotation := 90
 				end
-			elseif event.button_state_right then
-				
+			elseif event.button_state_left then
+				result_vec := transform_coords (event.x_motion, event.y_motion)
+				io.put_double(result_vec.x)
+				io.put_new_line
+				io.put_double(result_vec.y)
+				io.put_new_line
+				io.put_double(result_vec.z)
+				io.put_new_line
 			end
 		end
 	
