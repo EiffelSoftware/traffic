@@ -167,7 +167,7 @@ feature -- Event handling
 		require
 			label /= Void
 		do
-			number_of_buildings := 100*number
+			number_of_buildings := 150*number
 			label.set_text (number_of_buildings.out)
 			if map /= Void and then map.is_loaded then
 				map.set_number_of_buildings (number_of_buildings)
