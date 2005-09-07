@@ -41,7 +41,7 @@ feature -- Initialization
 			set_max_view_distance (140)
 			
 			-- Variable initialization
-			focus := 2
+			focus := 0.156*plane_size - 0.1875
 			x_coord := 0
 			y_coord := -1
 			z_coord := -9
@@ -68,7 +68,7 @@ feature -- Initialization
 		
 feature -- Drawing
 
-	clicked_point: GL_VECTOR_3D[DOUBLE]
+--	clicked_point: GL_VECTOR_3D[DOUBLE]
 	
 	prepare_drawing is
 			-- Prepare for drawing.
@@ -124,8 +124,8 @@ feature -- Drawing
 			
 			constant_light.ambient.set_xyzt (0, 0, 0, 1)
 			constant_light.specular.set_xyzt (0, 0, 0, 1)
-			constant_light.diffuse.set_xyzt (1.0, 1, 1, 1) -- White
-			constant_light.position.set_xyz (1, 1, 1)
+			constant_light.diffuse.set_xyzt (1, 1, 1, 1) -- White
+			constant_light.position.set_xyz (0, 1, 0)
 			constant_light.apply_values
 		end
 		
@@ -171,8 +171,12 @@ feature -- Drawing
 
 			-- Draw plane
 			gl_call_list (1)
-			-- Draw coord system
-			gl_call_list (2)
+			
+			if show_coordinates then
+				-- Draw coord system
+				gl_call_list (2)
+			end
+		
 			
 			if is_loaded then
 				if show_buildings then
@@ -181,17 +185,28 @@ feature -- Drawing
 				draw_metro_lines
 			end
 
-			-- draw marked station
+			-- draw marked stations
 			if marked_origin /= Void then
 				gl_matrix_mode (Em_gl_modelview)
 				gl_push_matrix
-				gl_color3d (1, 0, 0)
-				gl_translated (clicked_point.x,0.1,clicked_point.z)
+				gl_color3d (0, 1, 0)
+				gl_translated (map_to_gl_coords (marked_origin.position).x , line_height + 0.08, map_to_gl_coords (marked_origin.position).y)
 				gl_rotated (90, 1, 0, 0)
-				glu_disk (glu_new_quadric, 0, station_radius, 72, 1)
+				glu_disk (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
 				gl_pop_matrix
 				gl_flush
 			end
+			if marked_destination /= Void then
+				gl_matrix_mode (Em_gl_modelview)
+				gl_push_matrix
+				gl_color3d (1, 0, 0)
+				gl_translated (map_to_gl_coords (marked_destination.position).x , line_height + 0.08, map_to_gl_coords (marked_destination.position).y)
+				gl_rotated (90, 1, 0, 0)
+				glu_disk (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
+				gl_pop_matrix
+				gl_flush
+			end
+			
 		end
 		
 	draw_metro_lines is
@@ -202,9 +217,9 @@ feature -- Drawing
 			until i > traffic_line_objects.upper
 			loop
 				if highlighting_delta > 0 then
-					traffic_line_objects.item(i).set_origin (-14, line_height + highlighting_delta + 0.4*i, -14)
+					traffic_line_objects.item(i).set_origin (0, line_height + highlighting_delta + 0.4*i, 0)
 				else
-					traffic_line_objects.item(i).set_origin (-14, line_height, -14)
+					traffic_line_objects.item(i).set_origin (0, line_height, 0)
 				end
 				traffic_line_objects.item(i).draw
 				i := i + 1
@@ -370,7 +385,7 @@ feature -- Traffic stuff
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
 			is_loaded := true
-			create ewer.make(-7, -7, number_of_buildings, map)
+			create ewer.make(-plane_size/2, -plane_size/2, number_of_buildings, map)
 			create_metro_line_representation
 		end
 
@@ -379,7 +394,7 @@ feature -- Options
 	show_sun: BOOLEAN
 		-- Should sun be displayed?
 		
-	show_collision_objects: BOOLEAN
+	show_coordinates: BOOLEAN
 		-- Determines if collision objects are shown.
 		
 	set_show_sun (b: BOOLEAN) is
@@ -431,12 +446,12 @@ feature -- Options
 		ensure buildings_transparent = b
 		end
 		
-	set_collision_testing (b: BOOLEAN) is
-			-- Set `show_collision_objects'.
+	set_show_coordinates (b: BOOLEAN) is
+			-- Set `show_coordinates_objects'.
 		require variable_exists: b /= void
 		do
-			show_collision_objects := b
-		ensure show_collision_objects = b
+			show_coordinates := b
+		ensure show_coordinates = b
 		end
 		
 feature {NONE} -- Event handling
@@ -462,41 +477,101 @@ feature {NONE} -- Event handling
 	handle_mouse_clicked (event: EM_MOUSEBUTTON_EVENT) is
 			-- Handle mouse clicked event.
 		local
-			places: HASH_TABLE[TRAFFIC_PLACE, STRING]
+			section: TRAFFIC_LINE_SECTION
+			line: TRAFFIC_LINE
+			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 			place_x, place_z, delta_x, delta_z, delta: DOUBLE
 			is_found: BOOLEAN
 			result_vec: GL_VECTOR_3D[DOUBLE]
+			clicked_point: GL_VECTOR_3D[DOUBLE]
 		do
 			if event.is_left_button then
 				result_vec := transform_coords(event.screen_x, event.screen_y)				
 				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
 				if map /= Void then
-					from
-						places := map.places
-						places.start
-						is_found := False
-					until
-						is_found or else places.after
-					loop
-						place_x := places.item_for_iteration.position.x/50 - 14
-						place_z := places.item_for_iteration.position.y/50 - 14
-						delta_x := place_x - clicked_point.x
-						delta_z := place_z - clicked_point.z
-						delta := sqrt (delta_x^2 + delta_z^2)
-						if delta < station_radius then
-							marked_origin := places.item_for_iteration
-							is_found := True
-						end
-						places.forth
-					end
 					
+					from lines := map.lines
+						lines.start
+						is_found := False
+					until is_found or else lines.after
+					loop
+						from line := lines.item_for_iteration
+							line.start
+						until line.after
+						loop
+							section := line.item
+							-- Checking origin of section
+							place_x := map_to_gl_coords (section.polypoints.first).x
+							place_z := map_to_gl_coords (section.polypoints.first).y
+							delta_x := place_x - clicked_point.x
+							delta_z := place_z - clicked_point.z
+							delta := sqrt (delta_x^2 + delta_z^2)
+							if delta < station_radius then
+								marked_origin := section.origin
+								is_found := True
+							end
+							
+							-- Checking destination of section
+							place_x := map_to_gl_coords (section.polypoints.last).x
+							place_z := map_to_gl_coords (section.polypoints.last).y
+							delta_x := place_x - clicked_point.x
+							delta_z := place_z - clicked_point.z
+							delta := sqrt (delta_x^2 + delta_z^2)
+							if delta < station_radius then
+								marked_origin := section.destination
+								is_found := True
+							end
+							line.forth
+						end
+						lines.forth
+					end	
 					if not is_found then
 						marked_origin := Void
 					end
 				end
-			elseif event.button_state_right then
-				
-				
+			elseif event.is_right_button then
+				result_vec := transform_coords(event.screen_x, event.screen_y)				
+				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
+				if map /= Void then
+					from lines := map.lines
+						lines.start
+						is_found := False
+					until is_found or else lines.after
+					loop
+						from line := lines.item_for_iteration
+							line.start
+						until line.after
+						loop
+							section := line.item
+							-- Checking origin of section
+							place_x := map_to_gl_coords (section.polypoints.first).x
+							place_z := map_to_gl_coords (section.polypoints.first).y
+							delta_x := place_x - clicked_point.x
+							delta_z := place_z - clicked_point.z
+							delta := sqrt (delta_x^2 + delta_z^2)
+							if delta < station_radius then
+								marked_destination := section.origin
+								is_found := True
+							end
+							
+							-- Checking destination of section
+							place_x := map_to_gl_coords (section.polypoints.last).x
+							place_z := map_to_gl_coords (section.polypoints.last).y
+							delta_x := place_x - clicked_point.x
+							delta_z := place_z - clicked_point.z
+							delta := sqrt (delta_x^2 + delta_z^2)
+							if delta < station_radius then
+								marked_destination := section.destination
+								is_found := True
+							end
+							line.forth
+						end
+						lines.forth
+					end	
+					if not is_found then
+						marked_destination := Void
+					end
+				end
 			end
 		end
 		

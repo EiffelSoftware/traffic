@@ -25,7 +25,7 @@ inherit
 
 creation
 
-	make, make_central, make_city_centre
+	make --, make_central, make_city_centre
 
 feature -- Implementation
 
@@ -40,26 +40,49 @@ feature -- Implementation
 --			bitmap_factory.last_bitmap.do_not_free_gl_textures
 --			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
 		end
-
-	make_central is
-			-- Creation procedure
+--
+--	make_central is
+--			-- Creation procedure
+--		do
+--	   		bitmap_factory.create_bitmap_from_image ("house3.gif")
+--				check
+--					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
+--				end
+--			bitmap_factory.last_bitmap.do_not_free_gl_textures
+--			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
+--			is_central := true
+--		end
+--		
+--	make_city_centre is
+--			-- Creation procedure
+--		do
+--			is_city_centre := True	
+--		end
+		
+	set_central is
+		 	-- Set building to be in the centre
 		do
-	   		bitmap_factory.create_bitmap_from_image ("house3.gif")
-				check
-					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
-				end
-			bitmap_factory.last_bitmap.do_not_free_gl_textures
-			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
 			is_central := true
+			is_city_centre := false
+			unchanged := False
 		end
-		
-	make_city_centre is
-			-- Creation procedure
+
+	set_city_centre is
+			-- Set building to be in the city centre
 		do
-			is_city_centre := True	
+			is_city_centre := true
+			is_central := false
+			unchanged := False
 		end
-		
-	
+
+	set_outlying is
+			-- Set building to be outlying
+		do
+			is_central := false
+			is_city_centre := false
+			unchanged := False
+		end
+
 	is_central: BOOLEAN
 			-- Is this house in the centre of town
 	is_city_centre: BOOLEAN

@@ -61,14 +61,12 @@ feature {NONE} -- Drawing
 			rgb /= Void
 			r > 0
 		do
-			identifier := identifier + 1
-			
 			gl_matrix_mode (Em_gl_modelview)
 			gl_push_matrix
 			gl_color3dv(rgb.pointer)
-			gl_translated (p.x,p.y,p.z)
+			-- a little bit higher than line
+			gl_translated (p.x,p.y+0.02,p.z)
 			gl_rotated (90, 1, 0, 0)
-			gl_load_name (identifier)
 			glu_disk (glu_new_quadric, 0, r, 72, 1)
 			gl_pop_matrix
 			gl_flush			
@@ -122,11 +120,6 @@ feature {NONE} -- Variables
 	line_color: GL_VECTOR_3D[DOUBLE]
 			-- Vector of RGB values for color.
 	
-	identifier: INTEGER
-			-- Unique name for OpenGL reasons.
-			
-	texture: INTEGER
-	
 	object_width: DOUBLE is 2.0
 			-- The size of the bounding box in x direction of created objects.
 
@@ -144,40 +137,36 @@ feature {NONE} -- Implementation
 			line.do_all (agent draw_line_section (?))
 		end
 		
-	draw_line_section (s: TRAFFIC_LINE_SECTION) is
+	draw_line_section (section: TRAFFIC_LINE_SECTION) is
 			-- draw a traffic line section on the map
 		require
-			s /= Void
+			section /= Void
 		local
-			f, t: INTEGER
+			i: INTEGER
 			org, dst: GL_VECTOR_3D[DOUBLE]
 			color: GL_VECTOR_3D[DOUBLE]
 		do
 			-- draw circles at the origin and destination
---			create org.make_xyz (s.origin.position.x / 100, 0.11, s.origin.position.y / 100)
---			create dst.make_xyz (s.destination.position.x / 100, 0.11, s.destination.position.y / 100)
-			
-			create org.make_xyz (s.polypoints.first.x / 50, 0.11, s.polypoints.first.y / 50)
-			create dst.make_xyz (s.polypoints.last.x / 50, 0.11, s.polypoints.last.y / 50)
-			create color.make_xyz (0,0,0)	-- Black
-			
---			io.put_string ("%N" + s.line.name + ": " + s.origin.name + x_org.out + y_org.out + " -> " + s.destination.name + x_dst.out + y_dst.out)
+			create org.make_xyz (map_to_gl_coords (section.polypoints.first).x, line_height, map_to_gl_coords (section.polypoints.first).y)
+			create dst.make_xyz (map_to_gl_coords (section.polypoints.last).x, line_height, map_to_gl_coords (section.polypoints.last).y)
+			create color.make_xyz (0.8,0.8,0.8)	-- Black
+
 			draw_circle (org, color, 2*line_width)
 			draw_circle (dst, color, 2*line_width)
 
 			-- draw a connecting line
 			from
-				f := 1
-				t := 2
+				i := 1
 			until
-				f >= s.polypoints.count
+				i >= section.polypoints.count
 			loop
-				draw_line (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 50, 0.1, s.polypoints.i_th (f).y / 50), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (t).x / 50, 0.1, s.polypoints.i_th (t).y / 50))
-				draw_circle(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 50, 0.1, s.polypoints.i_th (f).y / 50), line_color, line_width)
-				f := f + 1
-				t := t + 1
+				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i)).y)
+				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i+1)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i+1)).y)
+				draw_line (org, dst)
+				draw_circle(org, line_color, line_width)
+				i := i + 1
 			end
-			draw_circle (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (s.polypoints.i_th (f).x / 50, 0.1, s.polypoints.i_th (f).y / 50), line_color, line_width)
+			draw_circle (dst, line_color, line_width)
 		end
 
 end -- class TRAFFIC_LINE_FACTORY

@@ -98,9 +98,10 @@ feature{NONE} -- Implementation
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 		do
 			create randomizer.set_seed (42)
-			create central_building_factory.make_central
-			create outlying_building_factory.make
-			create city_centre_building_factory.make_city_centre
+			create building_factory.make
+--			create central_building_factory.make_central
+--			create outlying_building_factory.make
+--			create city_centre_building_factory.make_city_centre
 			create buildings.make (1,n)
 			
 			max_distance := sqrt(plane_size^2 + plane_size^2)
@@ -121,14 +122,17 @@ feature{NONE} -- Implementation
 				if not has_collision(collision_poly) then					
 					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord))
 					if distance < 1 then
-						building := city_centre_building_factory.create_object
+						building_factory.set_city_centre
+						building := building_factory.create_object
 						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
 						
 					elseif distance < 3 then
-						building := central_building_factory.create_object
+						building_factory.set_central
+						building := building_factory.create_object
 						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
 					else
-						building := outlying_building_factory.create_object
+						building_factory.set_outlying
+						building := building_factory.create_object
 						building.set_scale (building_width , calculate_building_height (max_distance ,distance), building_width)
 					end
 					building.set_origin (x_coord, 0, z_coord)
@@ -171,14 +175,17 @@ feature{NONE} -- Implementation
 				if not has_collision(collision_poly) then					
 					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord))
 					if distance < 1 then
-						building := city_centre_building_factory.create_object
+						building_factory.set_city_centre
+						building := building_factory.create_object
 						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
 						
 					elseif distance < 3 then
-						building := central_building_factory.create_object
+						building_factory.set_central
+						building := building_factory.create_object
 						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
 					else
-						building := outlying_building_factory.create_object
+						building_factory.set_outlying
+						building := building_factory.create_object
 						building.set_scale (building_width , calculate_building_height (max_distance ,distance), building_width)
 					end
 					building.set_origin (x_coord, 0, z_coord)
@@ -263,12 +270,14 @@ feature {NONE} -- Variables
 
 	randomizer: RANDOM
 		-- Random number generator for building distribution
-	city_centre_building_factory: BUILDING_FACTORY
-		-- Factory for most central builings
-	outlying_building_factory: BUILDING_FACTORY
-		-- Factory for outlying buildings
-	central_building_factory: BUILDING_FACTORY
-		-- Factory for central buildings
+	building_factory: BUILDING_FACTORY
+		-- Factory for buildings
+--	city_centre_building_factory: BUILDING_FACTORY
+--		-- Factory for most central builings
+--	outlying_building_factory: BUILDING_FACTORY
+--		-- Factory for outlying buildings
+--	central_building_factory: BUILDING_FACTORY
+--		-- Factory for central buildings
 	number_of_buildings: INTEGER
 		-- Number of buildings that should be shown.
 	buildings: ARRAY[EM_3D_OBJECT]

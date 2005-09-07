@@ -24,7 +24,7 @@ feature -- Interface
 		local 
 			highlighting_checkbox: EM_CHECKBOX
 			buildings_checkbox: EM_CHECKBOX
-			collision_checkbox: EM_CHECKBOX
+			coordinates_checkbox: EM_CHECKBOX
 			toolbar_panel: EM_PANEL
 			combo_box: EM_COMBOBOX[STRING]
 			button: EM_BUTTON
@@ -40,7 +40,7 @@ feature -- Interface
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded,window_height)
 			create combo_box.make_from_list (search_for_xml)
 			create button.make_from_text ("Load map")
-			create collision_checkbox.make_from_text ("Collision test")
+			create coordinates_checkbox.make_from_text ("Show coords")
 			create sun_checkbox.make_from_text ("Show sun")
 
 			-- Has to be defined before toolpanel, because otherwise
@@ -82,13 +82,13 @@ feature -- Interface
 			sun_checkbox.unchecked_event.subscribe (agent sun_unchecked)
 			toolbar_panel.add_widget (sun_checkbox)
 			
-			-- Collision Checkbox
-			collision_checkbox.set_position (10,290)
-			collision_checkbox.set_background_color (bg_color)
-			collision_checkbox.set_dimension (110,20)
-			collision_checkbox.checked_event.subscribe (agent collision_checked)
-			collision_checkbox.unchecked_event.subscribe (agent collision_unchecked)
-			toolbar_panel.add_widget (collision_checkbox)
+			-- coordinates Checkbox
+			coordinates_checkbox.set_position (10,290)
+			coordinates_checkbox.set_background_color (bg_color)
+			coordinates_checkbox.set_dimension (110,20)
+			coordinates_checkbox.checked_event.subscribe (agent coordinates_checked)
+			coordinates_checkbox.unchecked_event.subscribe (agent coordinates_unchecked)
+			toolbar_panel.add_widget (coordinates_checkbox)
 			
 			-- Highlighting Checkbox
 			highlighting_checkbox.set_position (10,310)
@@ -127,7 +127,8 @@ feature -- Interface
 			create marked_station_label.make_from_text ("")
 			marked_station_label.set_position (10, 470)
 			marked_station_label.set_dimension (180, 20)
-			marked_station_label.set_background_color (create {EM_COLOR}.make_white)
+--			marked_station_label.set_border (create {EM_LINE_BORDER}.make (create {EM_COLOR}.make_black, 1))
+			marked_station_label.set_background_color (bg_color)   --(create {EM_COLOR}.make_white)
 			marked_station_label.set_tooltip ("Marked Station")
 			marked_station_label.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
 			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
@@ -200,16 +201,16 @@ feature -- Event handling
 			map.set_highlighted (false)
 		end
 	
-	collision_checked is
+	coordinates_checked is
 			-- Checkbox has been clicked
 		do
-			map.set_collision_testing(true)
+			map.set_show_coordinates(true)
 		end
 		
-	collision_unchecked is
+	coordinates_unchecked is
 			-- Checkbox has been clicked
 		do
-			map.set_collision_testing(false)
+			map.set_show_coordinates(false)
 		end
 
 	button_clicked (button: EM_BUTTON) is
