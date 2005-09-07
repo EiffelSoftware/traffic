@@ -36,7 +36,7 @@ feature -- Interface
 			make_component_scene
 			create bg_color.make_with_rgb (150,255,150)
 			create highlighting_checkbox.make_from_text ("Highlight lines")
-			create buildings_checkbox.make_from_text ("Show houses")
+			create buildings_checkbox.make_from_text ("Show buildings")
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded,window_height)
 			create combo_box.make_from_list (search_for_xml)
 			create button.make_from_text ("Load map")
@@ -68,8 +68,9 @@ feature -- Interface
 
 			-- Combobox for XML selection
 			combo_box.set_position (10,50)
-			combo_box.set_dimension (150,20)
-			combo_box.set_background_color (create {EM_COLOR}.make_with_rgb (255,255,255))
+			combo_box.set_optimal_dimension (150,20)
+			combo_box.set_to_optimal_dimension
+			combo_box.set_background_color (create {EM_COLOR}.make_white)
 			combo_box.set_selected_index (1)
 			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
@@ -77,15 +78,19 @@ feature -- Interface
 			-- Sun Checkbox
 			sun_checkbox.set_position (10,270)
 			sun_checkbox.set_background_color (bg_color)
-			sun_checkbox.set_dimension (110,20)
+			sun_checkbox.set_optimal_dimension (110,20)
+			sun_checkbox.set_to_optimal_dimension
+			sun_checkbox.set_background_color (bg_color)
 			sun_checkbox.checked_event.subscribe (agent sun_checked)
 			sun_checkbox.unchecked_event.subscribe (agent sun_unchecked)
 			toolbar_panel.add_widget (sun_checkbox)
 			
-			-- coordinates Checkbox
+			-- Coordinates Checkbox
 			coordinates_checkbox.set_position (10,290)
 			coordinates_checkbox.set_background_color (bg_color)
-			coordinates_checkbox.set_dimension (110,20)
+			sun_checkbox.set_optimal_dimension (110,20)
+			sun_checkbox.set_to_optimal_dimension
+			sun_checkbox.set_background_color (bg_color)
 			coordinates_checkbox.checked_event.subscribe (agent coordinates_checked)
 			coordinates_checkbox.unchecked_event.subscribe (agent coordinates_unchecked)
 			toolbar_panel.add_widget (coordinates_checkbox)
@@ -94,7 +99,8 @@ feature -- Interface
 			highlighting_checkbox.set_position (10,310)
 --			highlighting_checkbox.set_font (create {EM_TTF_FONT}.make_from_ttf_file ("./herbert.ttf",20))
 			highlighting_checkbox.set_background_color (bg_color)
-			highlighting_checkbox.set_dimension (110,20)
+			highlighting_checkbox.set_optimal_dimension (110,20)
+			highlighting_checkbox.set_to_optimal_dimension
 			highlighting_checkbox.checked_event.subscribe (agent highlighting_checked)
 			highlighting_checkbox.unchecked_event.subscribe (agent highlighting_unchecked)
 			toolbar_panel.add_widget (highlighting_checkbox)
@@ -102,7 +108,8 @@ feature -- Interface
 			-- Buildings Checkbox
 			buildings_checkbox.set_position (10,330)
 			buildings_checkbox.set_background_color (bg_color)
-			buildings_checkbox.set_dimension (110,20)
+			buildings_checkbox.set_optimal_dimension (120,20)
+			buildings_checkbox.set_to_optimal_dimension
 			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
 			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
 			toolbar_panel.add_widget (buildings_checkbox)
@@ -110,15 +117,18 @@ feature -- Interface
 			-- Buildings label
 			create buildings_label.make_from_text (map.number_of_buildings.out)
 			buildings_label.set_position (140, 430)
+			buildings_label.set_optimal_dimension (50, 20)
+			buildings_label.set_to_optimal_dimension
 			buildings_label.set_background_color (bg_color)
-			buildings_label.set_dimension (50, 20)
 			buildings_label.set_tooltip ("Number of buildings")
 			toolbar_panel.add_widget (buildings_label)
 			
 			-- Buildings slider
 			create buildings_slider.make_from_range_horizontal (0, 100)
 			buildings_slider.set_position (10, 430)
-			buildings_slider.set_dimension (120, 20)
+			buildings_slider.set_optimal_dimension (120, 20)
+			buildings_slider.set_to_optimal_dimension
+			buildings_slider.set_background_color (bg_color)
 			buildings_slider.set_tooltip ("Number of buildings")
 			buildings_slider.position_changed_event.subscribe (agent number_of_buildings_changed (buildings_label, ?))
 			toolbar_panel.add_widget (buildings_slider)
@@ -126,9 +136,9 @@ feature -- Interface
 			-- Marked stations label
 			create marked_station_label.make_from_text ("")
 			marked_station_label.set_position (10, 470)
-			marked_station_label.set_dimension (180, 20)
---			marked_station_label.set_border (create {EM_LINE_BORDER}.make (create {EM_COLOR}.make_black, 1))
-			marked_station_label.set_background_color (bg_color)   --(create {EM_COLOR}.make_white)
+			marked_station_label.set_optimal_dimension (180, 20)
+			marked_station_label.set_to_optimal_dimension
+			marked_station_label.set_background_color (bg_color)
 			marked_station_label.set_tooltip ("Marked Station")
 			marked_station_label.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
 			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
@@ -212,7 +222,7 @@ feature -- Event handling
 		do
 			map.set_show_coordinates(false)
 		end
-
+		
 	button_clicked (button: EM_BUTTON) is
 			-- Checkbox has been clicked
 		require
@@ -235,7 +245,7 @@ feature -- Event handling
 		ensure 
 			map_file_name = name
 		end
-
+		
 feature{NONE} -- Implementation
 
 	bg_color: EM_COLOR
