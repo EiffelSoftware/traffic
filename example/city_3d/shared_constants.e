@@ -61,7 +61,5 @@ feature -- Constants
 			
 			
 		end
-	
-		
 
 end -- class SHARED_CONSTANTS

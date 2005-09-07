@@ -49,8 +49,13 @@ feature -- Initialization
 			x_rotation := 40  -- -80
 			sun_angle := 0
 			
-			-- Factory creation
+			-- Various creations
 			create traffic_line_factory
+			create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
+			create_coord_system
+			create sun_light.make (em_gl_light0)
+			create constant_light.make (em_gl_light1)
+			
 			
 			-- User Interaction
 			mouse_button_down_event.subscribe (agent button_down (?))
@@ -111,30 +116,26 @@ feature -- Drawing
 			gl_color_material (Em_gl_front_and_back, Em_gl_ambient_and_diffuse)
 			gl_depth_func (em_gl_lequal)
 			gl_enable (em_gl_depth_test)
+			
+			sun_light.ambient.set_xyzt (0, 0, 0, 1)
+			sun_light.specular.set_xyzt (0, 0, 0, 1)
+			sun_light.diffuse.set_xyzt (1, 1, 1, 1)
+			sun_light.apply_values
+			
+			constant_light.ambient.set_xyzt (0, 0, 0, 1)
+			constant_light.specular.set_xyzt (0, 0, 0, 1)
+			constant_light.diffuse.set_xyzt (1.0, 1, 1, 1) -- White
+			constant_light.position.set_xyz (1, 1, 1)
+			constant_light.apply_values
 		end
 		
 	draw is
 			-- Draw the map.
 		local
-			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 			obj: EM_3D_OBJECT
 			sun_pos: GL_VECTOR_3D[DOUBLE]
-			light_0, light_1: GL_LIGHT
 		do	
---			io.put_double(x_coord)
---			io.put_new_line
-			
-			create light_0.make (em_gl_light0)
-			create light_1.make (em_gl_light1)
-
-			-- Light 0 -> SUN
-			light_0.ambient.set_xyzt (0, 0, 0, 1)
-			light_0.specular.set_xyzt (0, 0, 0, 1)
-			light_0.diffuse.set_xyzt (1, 1, 1, 1)
-			
 			sun_angle := sun_angle + 0.005
---			io.put_double(sun_angle)
---			io.put_new_line
 			if sun_angle > 5 then
 				sun_angle := sun_angle - 5
 			end
@@ -143,31 +144,20 @@ feature -- Drawing
 				create sun_pos.make_xyz (0,0,0)
 			else
 				if sun_angle < 2 then
-					light_0.diffuse.set_xyzt (0.8 + 0.2*(sun_angle - 1), 0.2 + 0.6*(sun_angle - 1), 0.1 + 0.9*(sun_angle - 1), 1)
+					sun_light.diffuse.set_xyzt (0.8 + 0.2*(sun_angle - 1), 0.2 + 0.6*(sun_angle - 1), 0.1 + 0.9*(sun_angle - 1), 1)
 				elseif sun_angle > 4 then
-					light_0.diffuse.set_xyzt (1 - 0.2*(sun_angle - 4), 1 - 0.6*(sun_angle - 4), 1 - 0.9*(sun_angle - 4), 1)
+					sun_light.diffuse.set_xyzt (1 - 0.2*(sun_angle - 4), 1 - 0.6*(sun_angle - 4), 1 - 0.9*(sun_angle - 4), 1)
 				end
 				create sun_pos.make_xyz (-sine(sun_angle),-cosine(sun_angle),0)
 			end
 			
-			light_0.position.set_xyz (sun_pos.x, sun_pos.y, 0.0 )
-			light_0.apply_values
-			
-			light_1.ambient.set_xyzt (0, 0, 0, 1)
-			light_1.specular.set_xyzt (0, 0, 0, 1)
-			light_1.diffuse.set_xyzt (1.0, 1, 1, 1) -- Red
-			light_1.position.set_xyz (1, 1, 1)
-			light_1.apply_values
-			
+			sun_light.position.set_xyz (sun_pos.x, sun_pos.y, 0.0 )
+			sun_light.apply_values
+
 			if show_sun then
-				light_0.enable
-				light_1.disable
-			else
-				light_0.disable
-				light_1.enable
-			end
-			
-			if show_sun then
+				sun_light.enable
+				constant_light.disable
+				-- "Sun"
 				gl_matrix_mode (em_gl_modelview_matrix)
 				gl_push_matrix
 				gl_color3d (1,1,0)
@@ -175,63 +165,22 @@ feature -- Drawing
 				gl_rotated (90,1,0,0)
 				glu_sphere (glu_new_quadric, 1, 72, 100)
 				gl_pop_matrix
+			else
+				sun_light.disable
+				constant_light.enable
 			end
-			
-			-- Coordinate System
-			gl_line_width (2)
-			gl_begin(em_gl_lines)
-				-- x axis
-				gl_color3d (1,0,0)
-				gl_vertex3d (0,0,0)
-				gl_vertex3d(1,0,0)
-			gl_end
-			
-			gl_begin(em_gl_lines)
-				-- y axis
-				gl_color3d (0,1,0)
-				gl_vertex3d (0,0,0)
-				gl_vertex3d(0,1,0)
-			gl_end
-			
-			gl_begin(em_gl_lines)
-				-- z axis
-				gl_color3d (0,0,1)
-				gl_vertex3d (0,0,0)
-				gl_vertex3d(0,0,1)
-			gl_end
-			
-			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
+
+			-- Draw plane
+			gl_call_list (1)
+			-- Draw coord system
+			gl_call_list (2)
 			
 			if is_loaded then
 				if show_buildings then
 					ewer.draw
 				end
-				
-				lines := map.lines
-				from lines.start
-				until lines.after
-				loop 
-					traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
-					traffic_line_factory.set_line (lines.item_for_iteration)
-					obj := traffic_line_factory.create_object
---					obj.set_scale (2,2,2)
-					obj.set_origin (-14,line_height+highlighting_delta,-14)
-					obj.draw
-					lines.forth
-				end
+				draw_metro_lines
 			end
-			
-			-- draw the clicked point
---			if clicked_point /= Void then
---				gl_matrix_mode (Em_gl_modelview)
---				gl_push_matrix
---				gl_color3d (1, 0, 0)
---				gl_translated (clicked_point.x,0.1,clicked_point.z)
---				gl_rotated (90, 1, 0, 0)
---				glu_disk (glu_new_quadric, 0, 0.2, 72, 1)
---				gl_pop_matrix
---				gl_flush
---			end
 
 			-- draw marked station
 			if marked_station /= Void then
@@ -245,22 +194,91 @@ feature -- Drawing
 				gl_flush
 			end
 		end
-
-	draw_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
-		-- draw a plane
+		
+	draw_metro_lines is
+			-- Draw representation of metro lines
+		local i: INTEGER
 		do
-			gl_begin (em_gl_quads)
-				gl_color3dv (rgb.pointer)
-				gl_normal3d (0,1,0)
-				gl_vertex3dv (p1.pointer)
-				gl_normal3d (0,1,0)
-				gl_vertex3dv (p2.pointer)
-				gl_normal3d (0,1,0)
-				gl_vertex3dv (p3.pointer)
-				gl_normal3d (0,1,0)
-				gl_vertex3dv (p4.pointer)
-			gl_end
+			from i := traffic_line_objects.lower
+			until i > traffic_line_objects.upper
+			loop
+				if highlighting_delta > 0 then
+					traffic_line_objects.item(i).set_origin (-14, line_height + highlighting_delta + 0.4*i, -14)
+				else
+					traffic_line_objects.item(i).set_origin (-14, line_height, -14)
+				end
+				traffic_line_objects.item(i).draw
+				i := i + 1
+			end
 		end
+
+	create_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
+		-- OpenGL display list Nr. `1' for a plane.
+		do
+			gl_new_list (1, em_gl_compile)
+				gl_begin (em_gl_quads)
+					gl_color3dv (rgb.pointer)
+					gl_normal3d (0,1,0)
+					gl_vertex3dv (p1.pointer)
+					gl_normal3d (0,1,0)
+					gl_vertex3dv (p2.pointer)
+					gl_normal3d (0,1,0)
+					gl_vertex3dv (p3.pointer)
+					gl_normal3d (0,1,0)
+					gl_vertex3dv (p4.pointer)
+				gl_end
+			gl_end_list
+		end
+		
+	create_coord_system is
+			-- OpenGL display list Nr `2' for coord system
+		do
+			gl_new_list (2, em_gl_compile)
+				gl_line_width (2)
+				gl_begin(em_gl_lines)
+					-- x axis
+					gl_color3d (1,0,0)
+					gl_vertex3d (0,0,0)
+					gl_vertex3d(1,0,0)
+				gl_end
+				
+				gl_begin(em_gl_lines)
+					-- y axis
+					gl_color3d (0,1,0)
+					gl_vertex3d (0,0,0)
+					gl_vertex3d(0,1,0)
+				gl_end
+				
+				gl_begin(em_gl_lines)
+					-- z axis
+					gl_color3d (0,0,1)
+					gl_vertex3d (0,0,0)
+					gl_vertex3d(0,0,1)
+				gl_end
+			gl_end_list
+		end
+		
+	create_metro_line_representation is
+			-- Create the objects necessary for displaying the metro lines
+		local lines: HASH_TABLE [TRAFFIC_LINE, STRING]
+			  metro_line: EM_3D_OBJECT
+			  i: INTEGER
+		do
+			create traffic_line_objects.make (1,1)
+			lines := map.lines
+			from lines.start; i := 1
+			until lines.after
+			loop 
+				traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
+				traffic_line_factory.set_line (lines.item_for_iteration)
+				metro_line := traffic_line_factory.create_object
+				traffic_line_objects.force (metro_line,i)
+				i := i + 1
+				lines.forth
+			end
+		end
+		
+	
 		
 	transform_coords (screen_x,screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
 			-- Transforms mouse coords with gl_un_project
@@ -353,6 +371,7 @@ feature -- Traffic stuff
 			map := map_file.traffic_map
 			is_loaded := true
 			create ewer.make(-7, -7, number_of_buildings, map)
+			create_metro_line_representation
 		end
 
 feature -- Options
@@ -621,9 +640,15 @@ feature {NONE} -- Factories and stuff
 	ewer: BUILDING_EWER
 	
 	traffic_line_factory: TRAFFIC_LINE_FACTORY
+	
+	traffic_line_objects: ARRAY[EM_3D_OBJECT]
 
 feature {NONE} -- Variables
-
+	
+	sun_light: GL_LIGHT
+		-- Light that imitates the sun
+	constant_light: GL_LIGHT
+		-- Constant white light from a direction
 	sun_angle: DOUBLE
 		-- Angle of sun rotation
 	show_buildings: BOOLEAN

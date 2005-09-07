@@ -52,6 +52,8 @@ feature -- Interface
 			else
 				number_of_buildings := n
 			end
+		ensure number_of_buildings = n
+				buildings.count >= number_of_buildings
 		end
 
 	draw is
