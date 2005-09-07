@@ -64,12 +64,13 @@ feature {NONE} -- Drawing
 			gl_matrix_mode (Em_gl_modelview)
 			gl_push_matrix
 			gl_color3dv(rgb.pointer)
-			-- a little bit higher than line
+			gl_color3i (1, 0, 0)
+			-- a little bit higher than the line
 			gl_translated (p.x,p.y+0.02,p.z)
 			gl_rotated (90, 1, 0, 0)
 			glu_disk (glu_new_quadric, 0, r, 72, 1)
 			gl_pop_matrix
-			gl_flush			
+			gl_flush
 		end
 		
 	draw_line (p, q: GL_VECTOR_3D[DOUBLE]) is
@@ -149,7 +150,7 @@ feature {NONE} -- Implementation
 			-- draw circles at the origin and destination
 			create org.make_xyz (map_to_gl_coords (section.polypoints.first).x, line_height, map_to_gl_coords (section.polypoints.first).y)
 			create dst.make_xyz (map_to_gl_coords (section.polypoints.last).x, line_height, map_to_gl_coords (section.polypoints.last).y)
-			create color.make_xyz (0.8,0.8,0.8)	-- Black
+			create color.make_xyz (1,1,1)	-- Black
 
 			draw_circle (org, color, 2*line_width)
 			draw_circle (dst, color, 2*line_width)
@@ -163,7 +164,7 @@ feature {NONE} -- Implementation
 				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i)).y)
 				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i+1)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i+1)).y)
 				draw_line (org, dst)
-				draw_circle(org, line_color, line_width)
+				draw_circle (org, line_color, line_width)
 				i := i + 1
 			end
 			draw_circle (dst, line_color, line_width)

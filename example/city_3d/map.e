@@ -176,7 +176,6 @@ feature -- Drawing
 				-- Draw coord system
 				gl_call_list (2)
 			end
-		
 			
 			if is_loaded then
 				if show_buildings then
@@ -280,10 +279,13 @@ feature -- Drawing
 		do
 			create traffic_line_objects.make (1,1)
 			lines := map.lines
-			from lines.start; i := 1
-			until lines.after
+			from
+				lines.start
+				i := 1
+			until
+				lines.after
 			loop 
-				traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.red/255))
+				traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.blue/255))
 				traffic_line_factory.set_line (lines.item_for_iteration)
 				metro_line := traffic_line_factory.create_object
 				traffic_line_objects.force (metro_line,i)
@@ -291,8 +293,6 @@ feature -- Drawing
 				lines.forth
 			end
 		end
-		
-	
 		
 	transform_coords (screen_x,screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
 			-- Transforms mouse coords with gl_un_project
