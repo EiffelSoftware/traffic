@@ -144,8 +144,8 @@ feature -- Event handling
 	handle_mouse_click (label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
 			-- Adapt the text on `marked_station_label'.
 		do
-			if map.marked_station /= Void then
-				label.set_text (map.marked_station.name)
+			if map.marked_origin /= Void then
+				label.set_text (map.marked_origin.name)
 			else
 				label.set_text ("")
 			end
