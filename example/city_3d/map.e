@@ -38,7 +38,7 @@ feature -- Initialization
 			set_width (600)
 			set_height (600)
 			set_min_view_distance (1.0)
-			set_max_view_distance (140)
+			set_max_view_distance (10000)
 			
 			-- Variable initialization
 			focus := 0.156*plane_size - 0.1875
@@ -92,7 +92,7 @@ feature -- Drawing
 			-- Setup the projection matrix
 			gl_matrix_mode (Em_gl_projection)
 			gl_load_identity
-			glu_perspective (field_of_view, width/height, min_view_distance, focus*max_view_distance)
+			glu_perspective (field_of_view, width/height, focus*min_view_distance, focus*max_view_distance)
 			
 			-- Setup the model view matrix
 			gl_matrix_mode (Em_gl_modelview)
@@ -105,7 +105,7 @@ feature -- Drawing
 			-- Do viewing transformations
 			gl_matrix_mode (em_gl_modelview_matrix)
 			gl_load_identity
-			gl_translated_external (x_coord*focus, y_coord*focus, z_coord*focus)
+			gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
 			gl_translated_external (x_translation, -y_translation, 0)
 			gl_rotatef (x_rotation, 1, 0, 0)
 			gl_rotatef(y_rotation, 0, 1, 0)
@@ -365,8 +365,8 @@ feature {NONE} -- Event handling
 			-- Mouse wheel up event
 		do
 			if focus > 3 then
-				focus := focus - 1 --  sqrt(focus) -- - 0.1
-			else
+				focus := focus - 1
+			elseif focus > 0.1 then
 				focus := focus - 0.1
 			end
 		end
