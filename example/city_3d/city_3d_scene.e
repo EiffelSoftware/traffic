@@ -33,6 +33,7 @@ feature -- Interface
 			buildings_label: EM_LABEL
 			sun_checkbox: EM_CHECKBOX
 			marked_station_label: EM_LABEL
+			shortest_path_checkbox: EM_CHECKBOX
 		do
 			make_component_scene
 			create bg_color.make_with_rgb (150,255,150)
@@ -77,7 +78,6 @@ feature -- Interface
 			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
 			
-			
 			-- Buildings transparent Checkbox
 			buildings_transparent_checkbox.set_position (10,250)
 			buildings_transparent_checkbox.set_background_color (bg_color)
@@ -117,7 +117,6 @@ feature -- Interface
 			highlighting_checkbox.unchecked_event.subscribe (agent highlighting_unchecked)
 			toolbar_panel.add_widget (highlighting_checkbox)
 			
-			
 			-- Buildings Checkbox
 			buildings_checkbox.set_position (10,330)
 			buildings_checkbox.set_background_color (bg_color)
@@ -126,7 +125,6 @@ feature -- Interface
 			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
 			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
 			toolbar_panel.add_widget (buildings_checkbox)
-
 			
 			-- Buildings label
 			create buildings_label.make_from_text (map.number_of_buildings.out)
@@ -157,6 +155,16 @@ feature -- Interface
 			marked_station_label.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
 			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
 			toolbar_panel.add_widget (marked_station_label)
+			
+			-- Shortest Path Checkbox
+			create shortest_path_checkbox.make_from_text ("Shortest path")
+			shortest_path_checkbox.set_position (10,350)
+			shortest_path_checkbox.set_background_color (bg_color)
+			shortest_path_checkbox.set_optimal_dimension (120,20)
+			shortest_path_checkbox.set_to_optimal_dimension
+			shortest_path_checkbox.checked_event.subscribe (agent shortest_path_checked)
+			shortest_path_checkbox.unchecked_event.subscribe (agent shortest_path_unchecked)
+			toolbar_panel.add_widget (shortest_path_checkbox)
 			
 --			create event_loop.make_poll
 --			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
@@ -201,6 +209,18 @@ feature -- Event handling
 		end
 		
 
+	shortest_path_checked is
+			-- Checkbox has been clicked
+		do
+			map.set_show_shortest_path (true)
+		end
+		
+	shortest_path_unchecked is
+			-- Checkbox has been clicked
+		do
+			map.set_show_shortest_path (false)
+		end
+		
 	buildings_checked is
 			-- Checkbox has been clicked
 		do

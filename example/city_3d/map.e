@@ -16,10 +16,10 @@ inherit
 		
 	SHARED_CONSTANTS
 		export {NONE} all end
-	
+		
 	MATH_CONST
 		export {NONE} all end
-	
+		
 	DOUBLE_MATH
 		export {NONE} all end
 		
@@ -55,7 +55,7 @@ feature -- Initialization
 			create_coord_system
 			create sun_light.make (em_gl_light0)
 			create constant_light.make (em_gl_light1)
-
+			
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
 			mouse_wheel_down_event.subscribe (agent wheel_down)
@@ -133,13 +133,13 @@ feature -- Drawing
 			-- Draw the map.
 		local
 			sun_pos: GL_VECTOR_3D[DOUBLE]
-		do	
+		do
 			-- Change angle of sun
 			sun_angle := sun_angle + 0.005
 			if sun_angle > 5 then
 				sun_angle := sun_angle - 5
 			end
-
+			
 			if sun_shown then
 				-- Draw sunset/rise differently
 				if sun_angle < 1.0 or sun_angle > 5 then
@@ -214,6 +214,27 @@ feature -- Drawing
 				gl_pop_matrix
 				gl_flush
 			end
+			
+			if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
+				map.find_shortest_path (map.places.item (marked_origin.name), map.places.item (marked_destination.name))
+				from
+					map.shortest_path.start
+				until
+					map.shortest_path.after
+				loop
+					gl_matrix_mode (Em_gl_modelview)
+					gl_push_matrix
+					gl_color3d (0, 0, 1)
+--					gl_translated (map_to_gl_coords (map.shortest_path.item.position).x , line_height + 0.08, map_to_gl_coords (map.shortest_path.item.position).y)
+--					io.put_string (map.shortest_path.item.name)
+					gl_rotated (90, 1, 0, 0)
+					glu_disk (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
+					gl_pop_matrix
+					gl_flush
+					map.shortest_path.forth
+				end
+			end
+			
 		end
 		
 feature -- Traffic map loading
@@ -308,6 +329,14 @@ feature -- Options
 			b implies highlighting_delta = 2
 			not b implies highlighting_delta = 0
 		end
+	
+	set_show_shortest_path (b: BOOLEAN) is
+			-- Set `show_shortest_path'.
+		require variable_exists: b /= void
+		do
+			show_shortest_path := b
+		ensure show_shortest_path = b
+		end
 		
 	sun_shown: BOOLEAN
 		-- Should sun be displayed?
@@ -317,7 +346,8 @@ feature -- Options
 		-- Should the buildings be displayed?
 	buildings_transparent: BOOLEAN
 		-- Should the buildings be transparent?
-		
+	show_shortest_path: BOOLEAN
+		-- Should the shortest path be displayed?
 		
 feature {NONE} -- Event handling
 
@@ -665,7 +695,7 @@ feature {NONE} -- Variables
 		-- Height difference between highlighted and normal line representation
 
 invariant
-
+	
 	number_of_buildings >= 0
 
 end -- class MAP
