@@ -374,7 +374,12 @@ feature -- Traffic stuff
 		
 	marked_origin: TRAFFIC_PLACE
 		-- Currently marked traffic station
+	marked_origin_coords: EM_VECTOR_2D
+		-- Coords of the origin
 	marked_destination: TRAFFIC_PLACE
+		-- Currently marked destination
+	marked_destination_coords: EM_VECTOR_2D
+		-- Coords of the destination
 	
 	load_map (fn: STRING) is
 			-- load the map
