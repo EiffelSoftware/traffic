@@ -35,12 +35,17 @@ feature -- Initialization
 		do
 			create centre.make_xyz (x+plane_size/2,0,z+plane_size/2)
 			create_metro_lines_polygons (map)
-			create_buildings(no_buildings)
+			create randomizer.set_seed (42)
+			create building_factory.make
+			create buildings.make (1,no_buildings)
+			add_buildings(no_buildings)
 		ensure 
 			centre_set: centre.x = x + plane_size/2 and centre.z = z + plane_size/2
 		end
 
 feature -- Interface
+
+	progress: INTEGER
 
 	set_building_number(n: INTEGER) is
 			-- Set the number of buildings that are shown
@@ -85,72 +90,14 @@ feature {NONE} -- Collision detection
 		
 	metro_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 	
-feature{NONE} -- Implementation 	
-		
-	create_buildings (n: INTEGER) is
-			-- Create `n' buildings randomly.
-		require n_exists_and_positive: n /= void and then n >= 0
-		local
-			x_coord, z_coord, max_distance,distance: DOUBLE
-			i, j: INTEGER
-			building: EM_3D_OBJECT
-			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
-		do
-			create randomizer.set_seed (42)
-			create building_factory.make
---			create central_building_factory.make_central
---			create outlying_building_factory.make
---			create city_centre_building_factory.make_city_centre
-			create buildings.make (1,n)
-			
-			max_distance := sqrt(plane_size^2 + plane_size^2)
-			from i := 1; j := 1
-			until i > n
-			loop
-				x_coord := centre.x - (plane_size/2) +  randomizer.double_i_th (j)*plane_size -- 1.7
-				z_coord := centre.z - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size -- -0.3
-
-				-- ACHTUNG: Origin ist links unten!
-				create poly_points.make
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord),1)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord - building_width),2)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - building_width, z_coord - building_width),3)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - building_width, z_coord),4)
-				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-0.1, z_coord-0.1), poly_points)
-	
-				if not has_collision(collision_poly) then					
-					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord))
-					if distance < 1 then
-						building_factory.set_city_centre
-						building := building_factory.create_object
-						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
-						
-					elseif distance < 3 then
-						building_factory.set_central
-						building := building_factory.create_object
-						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
-					else
-						building_factory.set_outlying
-						building := building_factory.create_object
-						building.set_scale (building_width , calculate_building_height (max_distance ,distance), building_width)
-					end
-					building.set_origin (x_coord, 0, z_coord)
-					buildings.force (building,i)
-					i := i + 1
-				end
-				j := j + 2
-			end
-			number_of_buildings := n
-		ensure number_of_buildings = n
-		end
+feature{NONE} -- Implementation
 	
 	add_buildings (n: INTEGER) is
 			-- adds buildings to list
 		require n_exists_and_positive: n /= void and then n >= 0
 		local
 			x_coord, z_coord, max_distance,distance: DOUBLE
-			i, j: INTEGER
+			j, sign: INTEGER
 			building: EM_3D_OBJECT
 			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
@@ -158,8 +105,8 @@ feature{NONE} -- Implementation
 		do
 			old_number := buildings.count
 			max_distance := sqrt((plane_size^2)*2)
-			from i := buildings.count + 1 ; j := 1
-			until i > (n + old_number)
+			from progress := buildings.count + 1 ; j := 1
+			until progress > (n + old_number)
 			loop
 				x_coord := centre.x - (plane_size/2) +  randomizer.double_i_th (j)*plane_size -- 1.7
 				z_coord := centre.z - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size -- -0.3
@@ -174,25 +121,33 @@ feature{NONE} -- Implementation
 	
 				if not has_collision(collision_poly) then					
 					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord,0,z_coord))
-					if distance < 1 then
+				if distance < 5 then
 						building_factory.set_city_centre
 						building := building_factory.create_object
 						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
-						
-					elseif distance < 3 then
+					elseif distance < 10 then
 						building_factory.set_central
 						building := building_factory.create_object
 						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
+					elseif distance < 20 then
+						if sign > 0 then
+							building_factory.set_central
+						else
+							building_factory.set_outlying
+						end
+						building := building_factory.create_object
+						building.set_scale (building_width , calculate_building_height (max_distance ,distance)-0.2, building_width)
+						sign := sign * (-1)
 					else
 						building_factory.set_outlying
 						building := building_factory.create_object
 						building.set_scale (building_width , calculate_building_height (max_distance ,distance), building_width)
 					end
 					building.set_origin (x_coord, 0, z_coord)
-					buildings.force (building,i)
-					i := i + 1
-					io.put_integer (i)
-					io.put_new_line
+					buildings.force (building,progress)
+					progress := progress + 1
+--					io.put_integer (i)
+--					io.put_new_line
 				end
 				j := j + 2
 			end
