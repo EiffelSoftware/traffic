@@ -387,6 +387,8 @@ feature -- Traffic stuff
 			is_loaded := true
 			create ewer.make(-plane_size/2, -plane_size/2, number_of_buildings, map)
 			create_metro_line_representation
+			marked_destination := void
+			marked_origin := void
 		end
 
 feature -- Options
@@ -459,7 +461,12 @@ feature {NONE} -- Event handling
 	wheel_down is
 			-- Mouse wheel down event
 		do
-			focus := focus + 0.1
+			if focus > 5 then
+				focus := focus + 1 -- sqrt(focus) -- 0.1
+			else
+				focus := focus + 0.1
+			end
+			
 --			if focus > 3 then
 --				focus := 3
 --			end
@@ -468,7 +475,12 @@ feature {NONE} -- Event handling
 	wheel_up is
 			-- Mouse wheel up event
 		do
-			focus := focus - 0.1
+			if focus > 5 then
+				focus := focus - 1 --  sqrt(focus) -- - 0.1
+			else
+				focus := focus - 0.1
+			end
+			
 --			if focus < 0.3 then
 --				focus := 0.3
 --			end
