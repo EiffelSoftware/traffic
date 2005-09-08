@@ -183,7 +183,7 @@ feature -- Event handling
 		do
 			number_of_buildings := 150*number
 			label.set_text (number_of_buildings.out)
-			if map /= Void and then map.is_loaded then
+			if map /= Void and then map.is_map_loaded then
 				map.set_number_of_buildings (number_of_buildings)
 			end
 		end
@@ -191,63 +191,63 @@ feature -- Event handling
 	transparency_checked is
 			-- Checkbox has been clicked
 		do
-			map.set_transparent (true)
+			map.set_buildings_transparent (true)
 		end
 		
 	transparency_unchecked is
 			-- Checkbox has been unclicked
 		do
-			map.set_transparent (false)
+			map.set_buildings_transparent (false)
 		end
 		
 
 	buildings_checked is
 			-- Checkbox has been clicked
 		do
-			map.set_show_buildings (true)
+			map.set_buildings_shown (true)
 			map.set_number_of_buildings (number_of_buildings)
 		end
 		
 	buildings_unchecked is
 			-- Checkbox has been clicked
 		do
-			map.set_show_buildings (false)
+			map.set_buildings_shown (false)
 		end
 		
 	sun_checked is
 			-- Checkbox has been clicked
 		do
-			map.set_show_sun (true)
+			map.set_sun_shown (true)
 		end
 		
 	sun_unchecked is
 			-- Checkbox has been clicked
 		do
-				map.set_show_sun (false)
+				map.set_sun_shown (false)
 		end
 	
 	highlighting_checked is
 			-- Checkbox has been clicked
 		do
-			map.set_highlighted (true)
+			map.set_lines_highlighted (true)
 		end
 		
 	highlighting_unchecked is
 			-- Checkbox has been clicked
 		do
-			map.set_highlighted (false)
+			map.set_lines_highlighted (false)
 		end
 	
 	coordinates_checked is
 			-- Checkbox has been clicked
 		do
-			map.set_show_coordinates(true)
+			map.set_coordinates_shown(true)
 		end
 		
 	coordinates_unchecked is
 			-- Checkbox has been clicked
 		do
-			map.set_show_coordinates(false)
+			map.set_coordinates_shown (false)
 		end
 		
 	button_clicked (button: EM_BUTTON) is
