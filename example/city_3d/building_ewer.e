@@ -43,9 +43,10 @@ feature -- Initialization
 			centre_set: centre.x = x + plane_size/2 and centre.z = z + plane_size/2
 		end
 
-feature -- Interface
+feature{MAP} -- Interface
 
 	progress: INTEGER
+		-- Used as loop variable and for progress bar
 
 	set_building_number(n: INTEGER) is
 			-- Set the number of buildings that are shown
@@ -146,8 +147,6 @@ feature{NONE} -- Implementation
 					building.set_origin (x_coord, 0, z_coord)
 					buildings.force (building,progress)
 					progress := progress + 1
---					io.put_integer (i)
---					io.put_new_line
 				end
 				j := j + 2
 			end

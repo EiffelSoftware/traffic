@@ -25,6 +25,7 @@ feature -- Interface
 			highlighting_checkbox: EM_CHECKBOX
 			buildings_checkbox: EM_CHECKBOX
 			coordinates_checkbox: EM_CHECKBOX
+			buildings_transparent_checkbox: EM_CHECKBOX
 			toolbar_panel: EM_PANEL
 			combo_box: EM_COMBOBOX[STRING]
 			button: EM_BUTTON
@@ -42,6 +43,7 @@ feature -- Interface
 			create button.make_from_text ("Load map")
 			create coordinates_checkbox.make_from_text ("Show coords")
 			create sun_checkbox.make_from_text ("Show sun")
+			create buildings_transparent_checkbox.make_from_text ("Set transparent")
 
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -75,6 +77,16 @@ feature -- Interface
 			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
 			
+			
+			-- Buildings transparent Checkbox
+			buildings_transparent_checkbox.set_position (10,250)
+			buildings_transparent_checkbox.set_background_color (bg_color)
+			buildings_transparent_checkbox.set_optimal_dimension (120,20)
+			buildings_transparent_checkbox.set_to_optimal_dimension
+			buildings_transparent_checkbox.checked_event.subscribe (agent transparency_checked)
+			buildings_transparent_checkbox.unchecked_event.subscribe (agent transparency_unchecked)
+			toolbar_panel.add_widget (buildings_transparent_checkbox)
+			
 			-- Sun Checkbox
 			sun_checkbox.set_position (10,270)
 			sun_checkbox.set_background_color (bg_color)
@@ -105,6 +117,7 @@ feature -- Interface
 			highlighting_checkbox.unchecked_event.subscribe (agent highlighting_unchecked)
 			toolbar_panel.add_widget (highlighting_checkbox)
 			
+			
 			-- Buildings Checkbox
 			buildings_checkbox.set_position (10,330)
 			buildings_checkbox.set_background_color (bg_color)
@@ -113,6 +126,7 @@ feature -- Interface
 			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
 			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
 			toolbar_panel.add_widget (buildings_checkbox)
+
 			
 			-- Buildings label
 			create buildings_label.make_from_text (map.number_of_buildings.out)
@@ -173,6 +187,19 @@ feature -- Event handling
 				map.set_number_of_buildings (number_of_buildings)
 			end
 		end
+		
+	transparency_checked is
+			-- Checkbox has been clicked
+		do
+			map.set_transparent (true)
+		end
+		
+	transparency_unchecked is
+			-- Checkbox has been unclicked
+		do
+			map.set_transparent (false)
+		end
+		
 
 	buildings_checked is
 			-- Checkbox has been clicked

@@ -67,8 +67,6 @@ feature -- Initialization
 		end
 		
 feature -- Drawing
-
---	clicked_point: GL_VECTOR_3D[DOUBLE]
 	
 	prepare_drawing is
 			-- Prepare for drawing.
@@ -179,7 +177,13 @@ feature -- Drawing
 			
 			if is_loaded then
 				if show_buildings then
+					if buildings_transparent then
+						gl_polygon_mode (em_gl_front_and_back, em_gl_line)
+						gl_flush
+					end
 					ewer.draw
+					gl_polygon_mode (em_gl_front_and_back, em_gl_fill)
+					gl_flush
 				end
 				draw_metro_lines
 			end
@@ -395,11 +399,7 @@ feature -- Traffic stuff
 
 feature -- Options
 
-	show_sun: BOOLEAN
-		-- Should sun be displayed?
-		
-	show_coordinates: BOOLEAN
-		-- Determines if collision objects are shown.
+
 		
 	set_show_sun (b: BOOLEAN) is
 			-- Set `show_sun'.
@@ -457,6 +457,21 @@ feature -- Options
 			show_coordinates := b
 		ensure show_coordinates = b
 		end
+		
+	get_progress:DOUBLE is
+			-- gives back the progress
+		do
+			Result := ewer.progress/number_of_buildings
+		end
+		
+	show_sun: BOOLEAN
+		-- Should sun be displayed?
+	show_coordinates: BOOLEAN
+		-- Determines if collision objects are shown.
+	show_buildings: BOOLEAN
+		-- Should the buildings be displayed?
+	buildings_transparent: BOOLEAN
+		-- Should the buildings be transparent?
 		
 feature {NONE} -- Event handling
 
@@ -700,10 +715,6 @@ feature {NONE} -- Variables
 		-- Constant white light from a direction
 	sun_angle: DOUBLE
 		-- Angle of sun rotation
-	show_buildings: BOOLEAN
-		-- Should the buildings be displayed?
-	buildings_transparent: BOOLEAN
-		-- Should the buildings be transparent?
 	focus: DOUBLE
 		-- Used to zoom in or out.
 	x_coord: DOUBLE
