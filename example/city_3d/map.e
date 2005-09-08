@@ -17,12 +17,12 @@ inherit
 	SHARED_CONSTANTS
 		export {NONE} all end
 	
-	MEMORY
-	
 	MATH_CONST
+		export {NONE} all end
 	
 	DOUBLE_MATH
-	
+		export {NONE} all end
+		
 creation
 	
 	make
@@ -55,8 +55,7 @@ feature -- Initialization
 			create_coord_system
 			create sun_light.make (em_gl_light0)
 			create constant_light.make (em_gl_light1)
-			
-			
+
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
 			mouse_wheel_down_event.subscribe (agent wheel_down)
@@ -135,29 +134,31 @@ feature -- Drawing
 		local
 			sun_pos: GL_VECTOR_3D[DOUBLE]
 		do	
+			-- Change angle of sun
 			sun_angle := sun_angle + 0.005
 			if sun_angle > 5 then
 				sun_angle := sun_angle - 5
 			end
-			
-			if sun_angle < 1.0 or sun_angle > 5 then
-				create sun_pos.make_xyz (0,0,0)
-			else
-				if sun_angle < 2 then
-					sun_light.diffuse.set_xyzt (0.8 + 0.2*(sun_angle - 1), 0.2 + 0.6*(sun_angle - 1), 0.1 + 0.9*(sun_angle - 1), 1)
-				elseif sun_angle > 4 then
-					sun_light.diffuse.set_xyzt (1 - 0.2*(sun_angle - 4), 1 - 0.6*(sun_angle - 4), 1 - 0.9*(sun_angle - 4), 1)
-				end
-				create sun_pos.make_xyz (-sine(sun_angle),-cosine(sun_angle),0)
-			end
-			
-			sun_light.position.set_xyz (sun_pos.x, sun_pos.y, 0.0 )
-			sun_light.apply_values
 
-			if show_sun then
+			if sun_shown then
+				-- Draw sunset/rise differently
+				if sun_angle < 1.0 or sun_angle > 5 then
+					create sun_pos.make_xyz (0,0,0)
+				else
+					if sun_angle < 2 then
+						sun_light.diffuse.set_xyzt (0.8 + 0.2*(sun_angle - 1), 0.2 + 0.6*(sun_angle - 1), 0.1 + 0.9*(sun_angle - 1), 1)
+					elseif sun_angle > 4 then
+						sun_light.diffuse.set_xyzt (1 - 0.2*(sun_angle - 4), 1 - 0.6*(sun_angle - 4), 1 - 0.9*(sun_angle - 4), 1)
+					end
+					create sun_pos.make_xyz (-sine(sun_angle),-cosine(sun_angle),0)
+				end
+				sun_light.position.set_xyz (sun_pos.x, sun_pos.y, 0.0 )
+				sun_light.apply_values
+				
 				sun_light.enable
 				constant_light.disable
-				-- "Sun"
+				
+				-- Draw "Sun"
 				gl_matrix_mode (em_gl_modelview_matrix)
 				gl_push_matrix
 				gl_color3d (1,1,0)
@@ -173,14 +174,15 @@ feature -- Drawing
 			-- Draw plane
 			gl_call_list (1)
 			
-			if show_coordinates then
-				-- Draw coord system
+			-- Show coord system
+			if coordinates_shown then
 				gl_call_list (2)
 			end
 			
+			-- Display buildings and lines
 			if is_map_loaded then
-				if show_buildings then
-					if show_buildings_transparent then
+				if buildings_shown then
+					if buildings_transparent then
 						gl_polygon_mode (em_gl_front_and_back, em_gl_line)
 						gl_flush
 					end
@@ -191,7 +193,7 @@ feature -- Drawing
 				draw_metro_lines
 			end
 
-			-- draw marked stations
+			-- Draw marked stations
 			if marked_origin /= Void then
 				gl_matrix_mode (Em_gl_modelview)
 				gl_push_matrix
@@ -212,7 +214,6 @@ feature -- Drawing
 				gl_pop_matrix
 				gl_flush
 			end
-			
 		end
 		
 feature -- Traffic map loading
@@ -250,27 +251,27 @@ feature -- Traffic map loading
 feature -- Options
 
 	set_coordinates_shown (b: BOOLEAN) is
-			-- Set `show_coordinates_objects'.
+			-- Set `coordinates_shown'.
 		require variable_exists: b /= void
 		do
-			show_coordinates := b
-		ensure show_coordinates = b
+			coordinates_shown := b
+		ensure coordinates_shown = b
 		end
 
 	set_sun_shown (b: BOOLEAN) is
-			-- Set `show_sun'.
+			-- Set `sun_shown'.
 		require variable_exists: b /= void
 		do
-			show_sun := b
-		ensure show_sun = b
+			sun_shown := b
+		ensure sun_shown = b
 		end
 		
 	set_buildings_shown (b: BOOLEAN) is
-			-- Set `show_buildings'.
+			-- Set `buildings_shown'.
 		require variable_exists: b /= void
 		do
-			show_buildings := b
-		ensure show_buildings = b
+			buildings_shown := b
+		ensure buildings_shown = b
 		end
 	
 	set_number_of_buildings (n: INTEGER) is
@@ -282,14 +283,16 @@ feature -- Options
 			if is_map_loaded then
 				ewer.set_building_number (number_of_buildings)
 			end
+		ensure 
+			number_of_buildings = n
 		end
 		
 	set_buildings_transparent (b: BOOLEAN) is
 			-- Set `buildings_transparent'.
 		require variable_exists: b /= void
 		do
-			show_buildings_transparent := b
-		ensure show_buildings_transparent = b
+			buildings_transparent := b
+		ensure buildings_transparent = b
 		end
 
 	set_lines_highlighted (b: BOOLEAN) is
@@ -306,13 +309,13 @@ feature -- Options
 			not b implies highlighting_delta = 0
 		end
 		
-	show_sun: BOOLEAN
+	sun_shown: BOOLEAN
 		-- Should sun be displayed?
-	show_coordinates: BOOLEAN
+	coordinates_shown: BOOLEAN
 		-- Determines if collision objects are shown.
-	show_buildings: BOOLEAN
+	buildings_shown: BOOLEAN
 		-- Should the buildings be displayed?
-	show_buildings_transparent: BOOLEAN
+	buildings_transparent: BOOLEAN
 		-- Should the buildings be transparent?
 		
 		

@@ -30,6 +30,7 @@ inherit
 		export {NONE} all end
 	
 	SHARED_CONSTANTS
+		export {NONE} all end
 
 feature -- Initialization
 

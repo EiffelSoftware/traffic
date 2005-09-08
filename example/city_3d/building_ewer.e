@@ -8,19 +8,11 @@ class
 	BUILDING_EWER
 
 inherit
-	MATH_CONST
-	
-	DOUBLE_MATH
 	
 	SHARED_CONSTANTS
-	
-	GL_FUNCTIONS
 		export {NONE} all end
 		
-	GLU_FUNCTIONS
-		export {NONE} all end
-	
-	EM_CONSTANTS
+	DOUBLE_MATH
 		export {NONE} all end
 
 create
@@ -226,12 +218,6 @@ feature {NONE} -- Variables
 		-- Random number generator for building distribution
 	building_factory: BUILDING_FACTORY
 		-- Factory for buildings
---	city_centre_building_factory: BUILDING_FACTORY
---		-- Factory for most central builings
---	outlying_building_factory: BUILDING_FACTORY
---		-- Factory for outlying buildings
---	central_building_factory: BUILDING_FACTORY
---		-- Factory for central buildings
 	number_of_buildings: INTEGER
 		-- Number of buildings that should be shown.
 	buildings: ARRAY[EM_3D_OBJECT]
