@@ -216,26 +216,73 @@ feature -- Drawing
 			end
 			
 			if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
+				calculate_shortest_path
+			end
+			
+		end
+		
+feature -- Shortest path
+
+	shortest_path_line: EM_3D_OBJECT
+	
+	marked_station_changed: BOOLEAN
+
+	calculate_shortest_path is
+			-- Calculate shortest path
+		local bar: LINKED_GRAPH_WEIGHTED_EDGE[TRAFFIC_PLACE,TRAFFIC_LINE_SECTION]
+			line: TRAFFIC_LINE
+			i: INTEGER
+			origin, destination: TRAFFIC_PLACE
+			new_segments: LINKED_LIST[TRAFFIC_LINE_SECTION]
+		do
+			if marked_station_changed then
 				map.find_shortest_path (map.places.item (marked_origin.name), map.places.item (marked_destination.name))
+				create line.make ("SHORTEST PATH", create {TRAFFIC_TYPE_WALKING}.make)
 				from
 					map.shortest_path.start
 				until
 					map.shortest_path.after
 				loop
-					gl_matrix_mode (Em_gl_modelview)
-					gl_push_matrix
-					gl_color3d (0, 0, 1)
---					gl_translated (map_to_gl_coords (map.shortest_path.item.position).x , line_height + 0.08, map_to_gl_coords (map.shortest_path.item.position).y)
---					io.put_string (map.shortest_path.item.name)
-					gl_rotated (90, 1, 0, 0)
-					glu_disk (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
-					gl_pop_matrix
-					gl_flush
+					bar := map.shortest_path.item
+					line.force (bar.label)
 					map.shortest_path.forth
 				end
+				
+				create new_segments.make
+				
+				if not line.first.polypoints.first.is_equal(marked_origin.position) then
+					create origin.make_with_position (marked_origin.name, marked_origin.position.x.rounded , marked_origin.position.y.rounded)
+					create destination.make_with_position (line.first.origin.name, line.first.polypoints.first.x.rounded , line.first.polypoints.first.y.rounded)
+					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination,  create {TRAFFIC_TYPE_WALKING}.make, void))
+				end
+				
+				if not line.last.polypoints.last.is_equal(marked_destination.position) then
+					create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded , line.last.polypoints.last.y.rounded)
+					create destination.make_with_position (marked_destination.name, marked_destination.position.x.rounded , marked_destination.position.y.rounded)
+					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination,  create {TRAFFIC_TYPE_WALKING}.make, void))
+				end
+				
+				from i := 1; line.start
+				until i >= line.count
+				loop
+					if not line.i_th (i).polypoints.last.is_equal(line.i_th(i+1).polypoints.first) then
+						create origin.make_with_position (line.i_th (i).destination.name, line.i_th (i).polypoints.last.x.rounded , line.i_th (i).polypoints.last.y.rounded)
+						create destination.make_with_position (line.i_th (i+1).origin.name, line.i_th (i+1).polypoints.first.x.rounded , line.i_th (i+1).polypoints.first.y.rounded)
+						new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination,  create {TRAFFIC_TYPE_WALKING}.make, void))
+					end
+					i := i + 1
+				end
+	
+				line.append (new_segments)
+				traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1,1,1))
+				traffic_line_factory.set_line (line)
+				shortest_path_line := traffic_line_factory.create_object
+				shortest_path_line.set_origin (0,line_height+0.2,0)
+				marked_station_changed := false
 			end
-			
 		end
+		
+		
 		
 feature -- Traffic map loading
 
@@ -334,6 +381,9 @@ feature -- Options
 			-- Set `show_shortest_path'.
 		require variable_exists: b /= void
 		do
+			if show_shortest_path then
+				shortest_path_line := void
+			end
 			show_shortest_path := b
 		ensure show_shortest_path = b
 		end
@@ -406,6 +456,7 @@ feature {NONE} -- Event handling
 							if delta < station_radius then
 								create marked_origin.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
 								is_found := True
+								marked_station_changed := true
 							end
 							
 							-- Checking destination of section
@@ -417,6 +468,7 @@ feature {NONE} -- Event handling
 							if delta < station_radius then
 								create marked_origin.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
 								is_found := True
+								marked_station_changed := true
 							end
 							line.forth
 						end
@@ -424,6 +476,7 @@ feature {NONE} -- Event handling
 					end	
 					if not is_found then
 						marked_origin := Void
+						marked_destination := Void
 					end
 				end
 			elseif event.is_right_button then
@@ -545,6 +598,9 @@ feature{NONE} -- Auxiliary drawing features
 				end
 				traffic_line_objects.item(i).draw
 				i := i + 1
+			end
+			if shortest_path_line /= void then
+				shortest_path_line.draw
 			end
 		end
 
