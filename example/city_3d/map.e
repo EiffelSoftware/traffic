@@ -375,14 +375,8 @@ feature -- Traffic stuff
 	marked_origin: TRAFFIC_PLACE
 			-- Currently marked traffic station
 		
-	marked_origin_coords: EM_VECTOR_2D
-			-- Coords of the origin
-		
 	marked_destination: TRAFFIC_PLACE
 			-- Currently marked destination
-		
-	marked_destination_coords: EM_VECTOR_2D
-			-- Coords of the destination
 	
 	load_map (fn: STRING) is
 			-- load the map
@@ -527,7 +521,8 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								marked_origin := section.origin
+--								marked_origin := section.origin
+								create marked_origin.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
 								is_found := True
 							end
 							
@@ -538,7 +533,8 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								marked_origin := section.destination
+--								marked_origin := section.destination
+								create marked_origin.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
 								is_found := True
 							end
 							line.forth
@@ -570,7 +566,8 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								marked_destination := section.origin
+--								marked_destination := section.origin
+								create marked_destination.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
 								is_found := True
 							end
 							
@@ -581,7 +578,8 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								marked_destination := section.destination
+--								marked_destination := section.destination
+								create marked_destination.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
 								is_found := True
 							end
 							line.forth
@@ -590,6 +588,7 @@ feature {NONE} -- Event handling
 					end	
 					if not is_found then
 						marked_destination := Void
+						marked_origin := Void
 					end
 				end
 			end
