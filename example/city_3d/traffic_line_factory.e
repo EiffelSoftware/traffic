@@ -54,7 +54,7 @@ feature -- Initialization
 		
 feature {NONE} -- Drawing
 		
-	draw_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r: DOUBLE; ) is
+	draw_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r, h: DOUBLE) is
 			-- draw a circle between traffic line segments
 		require
 			p /= Void
@@ -64,9 +64,8 @@ feature {NONE} -- Drawing
 			gl_matrix_mode (Em_gl_modelview)
 			gl_push_matrix
 			gl_color3dv(rgb.pointer)
-			gl_color3i (1, 0, 0)
 			-- a little bit higher than the line
-			gl_translated (p.x,p.y+0.02,p.z)
+			gl_translated (p.x,h,p.z)
 			gl_rotated (90, 1, 0, 0)
 			glu_disk (glu_new_quadric, 0, r, 72, 1)
 			gl_pop_matrix
@@ -150,10 +149,10 @@ feature {NONE} -- Implementation
 			-- draw circles at the origin and destination
 			create org.make_xyz (map_to_gl_coords (section.polypoints.first).x, line_height, map_to_gl_coords (section.polypoints.first).y)
 			create dst.make_xyz (map_to_gl_coords (section.polypoints.last).x, line_height, map_to_gl_coords (section.polypoints.last).y)
-			create color.make_xyz (1,1,1)	-- Black
+			create color.make_xyz (0,0,0)	-- Black
 
-			draw_circle (org, color, 2*line_width)
-			draw_circle (dst, color, 2*line_width)
+			draw_circle (org, color, 2*line_width, line_height+0.02)
+			draw_circle (dst, color, 2*line_width, line_height+0.02)
 
 			-- draw a connecting line
 			from
@@ -164,10 +163,10 @@ feature {NONE} -- Implementation
 				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i)).y)
 				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i+1)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i+1)).y)
 				draw_line (org, dst)
-				draw_circle (org, line_color, line_width)
+				draw_circle (org, line_color, line_width, line_height+0.01)
 				i := i + 1
 			end
-			draw_circle (dst, line_color, line_width)
+			draw_circle (dst, line_color, line_width, line_height+0.01)
 		end
 
 end -- class TRAFFIC_LINE_FACTORY
