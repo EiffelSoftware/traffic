@@ -361,25 +361,28 @@ feature -- Drawing
 feature -- Traffic stuff	
 
 	is_loaded: BOOLEAN
-		-- Has parsing already taken place?
+			-- Has parsing already taken place?
 		
 	filename: STRING
-		-- Filename of XML file of map
+			-- Filename of XML file of map
 	
 	map: TRAFFIC_MAP
-		-- Parsed map
+			-- Parsed map
 		
 	number_of_buildings: INTEGER
-		-- How many buildings should be displayed?
+			-- How many buildings should be displayed?
 		
 	marked_origin: TRAFFIC_PLACE
-		-- Currently marked traffic station
+			-- Currently marked traffic station
+		
 	marked_origin_coords: EM_VECTOR_2D
-		-- Coords of the origin
+			-- Coords of the origin
+		
 	marked_destination: TRAFFIC_PLACE
-		-- Currently marked destination
+			-- Currently marked destination
+		
 	marked_destination_coords: EM_VECTOR_2D
-		-- Coords of the destination
+			-- Coords of the destination
 	
 	load_map (fn: STRING) is
 			-- load the map

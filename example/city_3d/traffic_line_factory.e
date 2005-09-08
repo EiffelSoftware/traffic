@@ -67,6 +67,7 @@ feature {NONE} -- Drawing
 			-- a little bit higher than the line
 			gl_translated (p.x,h,p.z)
 			gl_rotated (90, 1, 0, 0)
+			gl_disable (em_gl_lighting)
 			glu_disk (glu_new_quadric, 0, r, 72, 1)
 			gl_pop_matrix
 			gl_flush
