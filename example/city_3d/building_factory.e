@@ -32,18 +32,18 @@ feature -- Implementation
 			-- Creation procedure
 		do
 			is_central := False
---			bitmap_factory.create_bitmap_from_image ("house3.gif")
+--			bitmap_factory.create_bitmap_from_image ("building.gif")
 --				check
 --					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
 --				end
 --			bitmap_factory.last_bitmap.do_not_free_gl_textures
 --			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
 		end
---
+		
 --	make_central is
 --			-- Creation procedure
 --		do
---	   		bitmap_factory.create_bitmap_from_image ("house3.gif")
+--	   		bitmap_factory.create_bitmap_from_image ("building.gif")
 --				check
 --					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
 --				end

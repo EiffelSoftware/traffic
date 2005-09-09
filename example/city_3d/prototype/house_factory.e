@@ -1,6 +1,5 @@
 indexing
 	description: "Factory for houses"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 	
@@ -27,13 +26,13 @@ creation
 feature -- Implementation
 
 	make is
-			-- creation procedure
+			-- Creation procedure
 	   	do
-	   		bitmap_factory.create_bitmap_from_image ("hello_world.gif")
-				check
-					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
-				end
-			texture := bitmap_factory.last_bitmap.gl_texture_mipmap	
+--	   		bitmap_factory.create_bitmap_from_image ("hello_world.gif")
+--				check
+--					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
+--				end
+--			texture := bitmap_factory.last_bitmap.gl_texture_mipmap	
 		end
 	
 	object_width: DOUBLE is 2.0

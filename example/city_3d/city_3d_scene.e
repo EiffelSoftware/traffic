@@ -19,7 +19,7 @@ creation
 feature -- Interface
 	
 	make is
-			-- Creation procedure.
+			-- Creation procedure
 		local 
 			highlighting_checkbox: EM_CHECKBOX
 			buildings_checkbox: EM_CHECKBOX

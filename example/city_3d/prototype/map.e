@@ -1,6 +1,5 @@
 indexing
 	description: "Map of a city"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -174,13 +173,13 @@ feature {NONE} -- Implementation
 		end
 		
 	draw_metro_line (m: EM_3D_OBJECT) is
-			-- draw metro line
+			-- Draw a metro line.
 		do
 			m.draw
 		end
 		
 	draw_line (p1, p2: TUPLE[DOUBLE]) is
-			-- draw a line
+			-- Draw a line.
 		local
 			px, py, pz, delta_x, delta_z: DOUBLE
 			qx, qy, qz, norm: DOUBLE
@@ -207,7 +206,7 @@ feature {NONE} -- Implementation
 		end
 		
 	draw_cube (p1, p2: TUPLE[DOUBLE]) is
-		-- draw a cube
+		-- Draw a cube.
 		local
 			px, py, pz: DOUBLE
 			qx, qy, qz: DOUBLE
@@ -265,7 +264,7 @@ feature {NONE} -- Implementation
 		end
 	
 	draw_plane (p1, p2, p3, p4, rgb: TUPLE[DOUBLE]) is
-		-- draw a plane
+		-- Draw a plane.
 		do
 			gl_begin (em_gl_quads)
 				-- Boden
@@ -280,8 +279,8 @@ feature {NONE} -- Implementation
 feature {NONE} -- Movement
 
 	handle_mouse_motion_event (a_mouse_motion_event: EM_MOUSEMOTION_EVENT) is
-			-- Handle mouse motion
-		local viewport,modelview,projection, x_pointer, y_pointer, z_pointer: POINTER
+			-- Handle mouse motion.
+		local viewport, modelview, projection, x_pointer, y_pointer, z_pointer: POINTER
 		do
 			if a_mouse_motion_event.button_state_right then
 				alpha := alpha + a_mouse_motion_event.y_motion
@@ -331,7 +330,7 @@ feature {NONE} -- Movement
 		end
 
 	handle_mouse_button_down_event (a_mouse_button_event: EM_MOUSEBUTTON_EVENT) is
-			-- Handle mouse events
+			-- Handle mouse events.
 		require else
 			a_mouse_button_event_not_void: a_mouse_button_event /= void
 		do
@@ -346,7 +345,7 @@ feature {NONE} -- Movement
 		end
 
 	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
-			-- handle keyboard events
+			-- Handle keyboard events.
 		require else
 			a_keyboard_event_not_void: a_keyboard_event /= Void
 		do
@@ -382,38 +381,38 @@ feature {NONE} -- Movement
 				screen.redraw
 			elseif a_keyboard_event.key = a_keyboard_event.sdlk_u then
 				new_x := new_x + 1
-				io.put_string("new_x")
+				io.put_string("new_x: ")
 				io.put_real(new_x)
 				io.put_new_line
 			elseif a_keyboard_event.key = a_keyboard_event.sdlk_j then
 				new_x := new_x - 1
-				io.put_string("new_x")
+				io.put_string("new_x: ")
 				io.put_real(new_x)
 				io.put_new_line
 			elseif a_keyboard_event.key = a_keyboard_event.sdlk_i then
 				new_y := new_y + 1
-				io.put_string("new_y")
+				io.put_string("new_y: ")
 				io.put_real(new_y)
 				io.put_new_line
 			elseif a_keyboard_event.key = a_keyboard_event.sdlk_k then
 				new_y := new_y - 1
-				io.put_string("new_y")
+				io.put_string("new_y: ")
 				io.put_real(new_y)
 				io.put_new_line
 			elseif a_keyboard_event.key = a_keyboard_event.sdlk_o then
 				new_z := new_z + 1
-				io.put_string("new_z")
+				io.put_string("new_z: ")
 				io.put_real(new_z)
 				io.put_new_line
 			elseif a_keyboard_event.key = a_keyboard_event.sdlk_l then
 				new_z := new_z - 1
-				io.put_string("new_z")
+				io.put_string("new_z: ")
 				io.put_real(new_z)
 				io.put_new_line
 			end
 		end
 
-feature{NONE} -- Factories
+feature {NONE} -- Factories
 	
 	house_factory: HOUSE_FACTORY
 	metro_line_factory: METRO_LINE_FACTORY

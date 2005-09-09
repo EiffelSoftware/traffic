@@ -54,7 +54,7 @@ feature {MAP} -- Interface
 		end
 	
 	draw is
-			-- Draw all houses.
+			-- Draw all buildings.
 		local
 			i: INTEGER
 		do

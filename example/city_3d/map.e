@@ -29,7 +29,7 @@ creation
 feature -- Initialization
 
 	make is
-			-- Creation procedure.
+			-- Creation procedure
 		do
 			make_3d_component
 			set_keyboard_sensitive (True)

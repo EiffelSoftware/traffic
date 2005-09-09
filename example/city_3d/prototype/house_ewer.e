@@ -1,6 +1,5 @@
 indexing
 	description: "Places houses randomly on a plane"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -18,7 +17,7 @@ create
 feature
 	
 	make (xx, zz, ll, bb, hh: DOUBLE) is
-			-- create a new object
+			-- Create a new object.
 		do
 			x := xx
 			z := zz
@@ -30,7 +29,7 @@ feature
 	x, z, l, b, h: DOUBLE
 	
 	draw (n: INTEGER; m: ARRAY[ARRAY[TUPLE[DOUBLE]]]) is
-			-- draw `n' houses randomly
+			-- Draw `n' houses randomly.
 		local
 			randomizer: RANDOM
 			xr, zr: DOUBLE
@@ -61,7 +60,6 @@ feature
 				i := i + 1
 				r := r + 2
 			end
-			
 		end
 	
 	is_free (xx, zz, ll, bb: DOUBLE; m: ARRAY[TUPLE[DOUBLE]]): BOOLEAN is

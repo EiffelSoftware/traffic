@@ -1,6 +1,5 @@
 indexing
 	description: "Factory for metro lines"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -32,7 +31,7 @@ feature -- Implementation
 	identifier: INTEGER
 
 	set_points (ps : ARRAY[TUPLE[DOUBLE]]) is
-			-- create a new object
+			-- Create a new object.
 		require
 			ps /= Void
 			ps.count > 0
@@ -42,7 +41,7 @@ feature -- Implementation
 		end
 		
 	set_color (rgb: TUPLE[DOUBLE]) is
-			-- set the color
+			-- Set the color.
 		do
 			red := rgb.double_item(1)
 			green := rgb.double_item(2)
@@ -51,13 +50,13 @@ feature -- Implementation
 		end
 		
 	set_line_width (w: DOUBLE) is
-			-- set the line width
+			-- Set the line width.
 		do
 			line_width := w
 		end
 		
-	draw_circle(p1: TUPLE[DOUBLE]) is
-			-- draw a circle between metro segments
+	draw_circle (p1: TUPLE[DOUBLE]) is
+			-- Draw a circle between two metro segments.
 		local
 			m_x,m_y,m_z: DOUBLE
 			coords: ARRAY[TUPLE[DOUBLE]]
@@ -176,7 +175,7 @@ feature -- Implementation
 		end
 		
 	draw_line (p1, p2: TUPLE[DOUBLE]) is
-			-- draw a line
+			-- Draw a line.
 		local
 			px, py, pz, qx, qy, qz: DOUBLE
 			delta_x, delta_z: DOUBLE
@@ -200,10 +199,9 @@ feature -- Implementation
 		end
 		
 	draw_plane (p1, p2, p3, p4, rgb: TUPLE[DOUBLE]) is
-			-- draw a plane
+			-- Draw a plane.
 		do
 			gl_begin (em_gl_quads)
-				-- Boden
 				gl_color3d(rgb.double_item(1), rgb.double_item(2), rgb.double_item(3))
 				gl_vertex3d (p1.double_item (1), p1.double_item (2), p1.double_item (3))
 				gl_vertex3d (p2.double_item (1), p2.double_item (2), p2.double_item (3))
@@ -254,7 +252,7 @@ feature {NONE} -- Implementation
 	line_width: DOUBLE
 	
 	specify_object is
-			-- defining the object
+			-- Defines the object.
 		local
 			v, n: INTEGER
 		do
