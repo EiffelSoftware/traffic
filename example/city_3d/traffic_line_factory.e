@@ -1,6 +1,5 @@
 indexing
 	description: "Factory for traffic lines"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -35,7 +34,7 @@ inherit
 feature -- Initialization
 
 	set_line (l : TRAFFIC_LINE) is
-			-- create a new object
+			-- Create a new object.
 		require
 			l /= Void
 			l.count > 0
@@ -44,19 +43,19 @@ feature -- Initialization
 			unchanged := False
 		end
 		
-	set_color (rgb: GL_VECTOR_3D[DOUBLE]) is
-			-- set the color
+	set_line_color (rgb: GL_VECTOR_3D[DOUBLE]) is
+			-- Set `line_color'.
 		require
 			rgb /= Void
 		do
-			create line_color.make_xyz (rgb.x,rgb.y,rgb.z)
+			create line_color.make_xyz (rgb.x, rgb.y, rgb.z)
 			unchanged := False
 		end
 		
 feature {NONE} -- Drawing
 		
 	draw_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r, h: DOUBLE) is
-			-- draw a circle between traffic line segments
+			-- Draw a circle between two traffic line segments.
 		require
 			p /= Void
 			rgb /= Void
@@ -66,7 +65,7 @@ feature {NONE} -- Drawing
 			gl_push_matrix
 			gl_color3dv(rgb.pointer)
 			-- a little bit higher than the line
-			gl_translated (p.x,h,p.z)
+			gl_translated (p.x, h, p.z)
 			gl_rotated (90, 1, 0, 0)
 			gl_disable (em_gl_lighting)
 			glu_disk (glu_new_quadric, 0, r, 72, 1)
@@ -75,7 +74,7 @@ feature {NONE} -- Drawing
 		end
 		
 	draw_line (p, q: GL_VECTOR_3D[DOUBLE]) is
-			-- draw a line
+			-- Draw a line from `p' to `q'.
 		require
 			p /= Void
 			q /= Void
@@ -88,12 +87,12 @@ feature {NONE} -- Drawing
 			
 			norm := sqrt (delta_x*delta_x + delta_z*delta_z)
 			
-			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x-delta_z*line_width/norm,p.y,p.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x+delta_z*line_width/norm,p.y,p.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x+delta_z*line_width/norm,q.y,q.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x-delta_z*line_width/norm,q.y,q.z+delta_x*line_width/norm))
+			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x-delta_z*line_width/norm, p.y, p.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x+delta_z*line_width/norm, p.y, p.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x+delta_z*line_width/norm, q.y, q.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x-delta_z*line_width/norm, q.y, q.z+delta_x*line_width/norm))
 			gl_flush
 		end
 		
 	draw_plane (p1, p2, p3, p4: GL_VECTOR_3D[DOUBLE]) is
-			-- draw a plane
+			-- Draw a plane with vertices `p1', `p2', `p3' and `p4'.
 		require
 			p1 /= Void
 			p2 /= Void
@@ -114,7 +113,7 @@ feature {NONE} -- Drawing
 			gl_end
 		end
 		
-feature {NONE} -- Variables
+feature {NONE} -- Attributes
 		
 	line: TRAFFIC_LINE
 			-- Traffic line provides information about points and segments.
@@ -134,13 +133,13 @@ feature {NONE} -- Variables
 feature {NONE} -- Implementation
 	
 	specify_object is
-			-- defining the object
+			-- Defines the object.
 		do
 			line.do_all (agent draw_line_section (?))
 		end
 		
 	draw_line_section (section: TRAFFIC_LINE_SECTION) is
-			-- draw a traffic line section on the map
+			-- Draw a traffic line section on the map.
 		require
 			section /= Void
 		local
@@ -151,7 +150,7 @@ feature {NONE} -- Implementation
 			-- draw circles at the origin and destination
 			create org.make_xyz (map_to_gl_coords (section.polypoints.first).x, line_height, map_to_gl_coords (section.polypoints.first).y)
 			create dst.make_xyz (map_to_gl_coords (section.polypoints.last).x, line_height, map_to_gl_coords (section.polypoints.last).y)
-			create color.make_xyz (0,0,0)	-- Black
+			create color.make_xyz (0, 0, 0)	-- Black
 
 			draw_circle (org, color, 2*line_width, line_height+0.02)
 			draw_circle (dst, color, 2*line_width, line_height+0.02)

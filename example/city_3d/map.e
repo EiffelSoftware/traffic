@@ -1,6 +1,5 @@
 indexing
 	description: "Map of a city"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -33,7 +32,7 @@ feature -- Initialization
 			-- Creation procedure.
 		do
 			make_3d_component
-			set_keyboard_sensitive (true)
+			set_keyboard_sensitive (True)
 			set_field_of_view (60)
 			set_width (600)
 			set_height (600)
@@ -99,8 +98,8 @@ feature -- Drawing
 			gl_load_identity
 			
 			-- Clearing background color to a nice blue
-			gl_clear_color (0.1,0.4,0.5,0)
-			gl_clear(em_gl_color_buffer_bit)
+			gl_clear_color (0.1, 0.4, 0.5,0)
+			gl_clear (em_gl_color_buffer_bit)
 			
 			-- Do viewing transformations
 			gl_matrix_mode (em_gl_modelview_matrix)
@@ -108,7 +107,7 @@ feature -- Drawing
 			gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
 			gl_translated_external (x_translation, -y_translation, 0)
 			gl_rotatef (x_rotation, 1, 0, 0)
-			gl_rotatef(y_rotation, 0, 1, 0)
+			gl_rotatef (y_rotation, 0, 1, 0)
 			
 			-- Light settings
 			gl_enable (em_gl_lighting)
@@ -141,7 +140,7 @@ feature -- Drawing
 			end
 			
 			if sun_shown then
-				-- Draw sunset/rise differently
+				-- Draw sunset/sunrise differently
 				if sun_angle < 1.0 or sun_angle > 5 then
 					create sun_pos.make_xyz (0,0,0)
 				else
@@ -150,9 +149,9 @@ feature -- Drawing
 					elseif sun_angle > 4 then
 						sun_light.diffuse.set_xyzt (1 - 0.2*(sun_angle - 4), 1 - 0.6*(sun_angle - 4), 1 - 0.9*(sun_angle - 4), 1)
 					end
-					create sun_pos.make_xyz (-sine(sun_angle),-cosine(sun_angle),0)
+					create sun_pos.make_xyz (-sine(sun_angle), -cosine(sun_angle), 0)
 				end
-				sun_light.position.set_xyz (sun_pos.x, sun_pos.y, 0.0 )
+				sun_light.position.set_xyz (sun_pos.x, sun_pos.y, 0)
 				sun_light.apply_values
 				
 				sun_light.enable
@@ -161,9 +160,9 @@ feature -- Drawing
 				-- Draw "Sun"
 				gl_matrix_mode (em_gl_modelview_matrix)
 				gl_push_matrix
-				gl_color3d (1,1,0)
-				gl_translated (0,8,0)
-				gl_rotated (90,1,0,0)
+				gl_color3d (1, 1, 0)
+				gl_translated (0, 8, 0)
+				gl_rotated (90, 1, 0, 0)
 				glu_sphere (glu_new_quadric, 1, 72, 100)
 				gl_pop_matrix
 			else
@@ -218,7 +217,6 @@ feature -- Drawing
 			if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
 				calculate_shortest_path
 			end
-			
 		end
 		
 feature -- Shortest path
@@ -226,17 +224,19 @@ feature -- Shortest path
 	shortest_path_line: EM_3D_OBJECT
 	
 	marked_station_changed: BOOLEAN
-
+			-- Has the marked station changed?
+	
 	calculate_shortest_path is
-			-- Calculate shortest path
-		local line: TRAFFIC_LINE
+			-- Calculate the shortest path.
+		local
+			line: TRAFFIC_LINE
 			i: INTEGER
 			origin, destination: TRAFFIC_PLACE
 			new_segments: LINKED_LIST[TRAFFIC_LINE_SECTION]
 		do
 			if marked_station_changed then
 				map.find_shortest_path (map.places.item (marked_origin.name), map.places.item (marked_destination.name))
-				create line.make ("SHORTEST PATH", create {TRAFFIC_TYPE_WALKING}.make)
+				create line.make ("Shortest path", create {TRAFFIC_TYPE_WALKING}.make)
 				from
 					map.shortest_path.start
 				until
@@ -248,44 +248,43 @@ feature -- Shortest path
 				
 				create new_segments.make
 				
-				if not line.first.polypoints.first.is_equal(marked_origin.position) then
-					create origin.make_with_position (marked_origin.name, marked_origin.position.x.rounded , marked_origin.position.y.rounded)
-					create destination.make_with_position (line.first.origin.name, line.first.polypoints.first.x.rounded , line.first.polypoints.first.y.rounded)
-					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination,  create {TRAFFIC_TYPE_WALKING}.make, void))
+				if not line.empty and then not line.first.polypoints.first.is_equal(marked_origin.position) then
+					create origin.make_with_position (marked_origin.name, marked_origin.position.x.rounded, marked_origin.position.y.rounded)
+					create destination.make_with_position (line.first.origin.name, line.first.polypoints.first.x.rounded, line.first.polypoints.first.y.rounded)
+					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
 				end
 				
-				if not line.last.polypoints.last.is_equal(marked_destination.position) then
-					create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded , line.last.polypoints.last.y.rounded)
-					create destination.make_with_position (marked_destination.name, marked_destination.position.x.rounded , marked_destination.position.y.rounded)
-					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination,  create {TRAFFIC_TYPE_WALKING}.make, void))
+				if not line.empty and then not line.last.polypoints.last.is_equal(marked_destination.position) then
+					create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
+					create destination.make_with_position (marked_destination.name, marked_destination.position.x.rounded, marked_destination.position.y.rounded)
+					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
 				end
 				
 				from i := 1; line.start
 				until i >= line.count
 				loop
 					if not line.i_th (i).polypoints.last.is_equal(line.i_th(i+1).polypoints.first) then
-						create origin.make_with_position (line.i_th (i).destination.name, line.i_th (i).polypoints.last.x.rounded , line.i_th (i).polypoints.last.y.rounded)
-						create destination.make_with_position (line.i_th (i+1).origin.name, line.i_th (i+1).polypoints.first.x.rounded , line.i_th (i+1).polypoints.first.y.rounded)
-						new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination,  create {TRAFFIC_TYPE_WALKING}.make, void))
+						create origin.make_with_position (line.i_th (i).destination.name, line.i_th (i).polypoints.last.x.rounded, line.i_th (i).polypoints.last.y.rounded)
+						create destination.make_with_position (line.i_th (i+1).origin.name, line.i_th (i+1).polypoints.first.x.rounded, line.i_th (i+1).polypoints.first.y.rounded)
+						new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
 					end
 					i := i + 1
 				end
 				line.append (new_segments)
-				traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1,1,1))
+				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1))
 				traffic_line_factory.set_line (line)
 				shortest_path_line := traffic_line_factory.create_object
-				shortest_path_line.set_origin (0,line_height+0.2,0)
+				shortest_path_line.set_origin (0, line_height+0.2, 0)
 				marked_station_changed := false
 			end
 		end
 		
-		
-		
 feature -- Traffic map loading
 
 	load_map (filename: STRING) is
-			-- load the map
-		require name_valid: filename /= void and then not filename.is_empty
+			-- Load the map.
+		require
+			name_valid: filename /= void and then not filename.is_empty
 		local
 			map_file: TRAFFIC_MAP_FILE
 		do
@@ -298,10 +297,11 @@ feature -- Traffic map loading
 			marked_origin := void
 			shortest_path_line := void
 			marked_station_changed := true
-		ensure map /= void
-				is_map_loaded = true
-				ewer /= void
-				traffic_line_objects /= void
+		ensure
+			map /= void
+			is_map_loaded = true
+			ewer /= void
+			traffic_line_objects /= void
 		end
 		
 	is_map_loaded: BOOLEAN
@@ -311,7 +311,7 @@ feature -- Traffic map loading
 	number_of_buildings: INTEGER
 			-- How many buildings should be displayed?
 	marked_origin: TRAFFIC_PLACE
-			-- Currently marked traffic station
+			-- Currently marked origin
 	marked_destination: TRAFFIC_PLACE
 			-- Currently marked destination
 
@@ -391,7 +391,7 @@ feature -- Options
 	sun_shown: BOOLEAN
 		-- Should sun be displayed?
 	coordinates_shown: BOOLEAN
-		-- Determines if collision objects are shown.
+		-- Should the coordinate system be displayed?
 	buildings_shown: BOOLEAN
 		-- Should the buildings be displayed?
 	buildings_transparent: BOOLEAN
@@ -402,7 +402,7 @@ feature -- Options
 feature {NONE} -- Event handling
 
 	wheel_down is
-			-- Mouse wheel down event
+			-- Handle mouse wheel down event.
 		do
 			if focus > 3 then
 				focus := focus + 1
@@ -412,7 +412,7 @@ feature {NONE} -- Event handling
 		end
 		
 	wheel_up is
-			-- Mouse wheel up event
+			-- Handle mouse wheel up event.
 		do
 			if focus > 3 then
 				focus := focus - 1
@@ -447,6 +447,7 @@ feature {NONE} -- Event handling
 						until line.after
 						loop
 							section := line.item
+							
 							-- Checking origin of section
 							place_x := map_to_gl_coords (section.polypoints.first).x
 							place_z := map_to_gl_coords (section.polypoints.first).y
@@ -481,6 +482,7 @@ feature {NONE} -- Event handling
 						marked_station_changed := true
 					end
 				end
+				
 			elseif event.is_right_button then
 				result_vec := transform_coords(event.screen_x, event.screen_y)				
 				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
@@ -495,6 +497,7 @@ feature {NONE} -- Event handling
 						until line.after
 						loop
 							section := line.item
+							
 							-- Checking origin of section
 							place_x := map_to_gl_coords (section.polypoints.first).x
 							place_z := map_to_gl_coords (section.polypoints.first).y
@@ -533,7 +536,7 @@ feature {NONE} -- Event handling
 		end
 	
 	mouse_drag (event: EM_MOUSEMOTION_EVENT) is
-			-- Handle mouse movement
+			-- Handle mouse movement event.
 		local
 			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
 			delta_x, delta_y, delta, mouse_delta: DOUBLE
@@ -569,7 +572,7 @@ feature {NONE} -- Event handling
 		end
 	
 	key_down (event: EM_KEYBOARD_EVENT) is
-			-- Handle key events
+			-- Handle key events.
 		do
 			if event.key = event.sdlk_up then
 				x_rotation := x_rotation + 10
@@ -588,11 +591,12 @@ feature {NONE} -- Event handling
 			end
 		end
 		
-feature{NONE} -- Auxiliary drawing features
+feature {NONE} -- Auxiliary drawing features
 		
 	draw_metro_lines is
-			-- Draw representation of metro lines
-		local i: INTEGER
+			-- Draw representation of metro lines.
+		local 
+			i: INTEGER
 		do
 			from i := traffic_line_objects.lower
 			until i > traffic_line_objects.upper
@@ -612,6 +616,12 @@ feature{NONE} -- Auxiliary drawing features
 
 	create_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
 		-- OpenGL display list Nr. `1' for a plane.
+		require
+			p1 /= Void
+			p2 /= Void
+			p3 /= Void
+			p4 /= Void
+			rgb /= Void
 		do
 			gl_new_list (1, em_gl_compile)
 				gl_begin (em_gl_quads)
@@ -629,7 +639,7 @@ feature{NONE} -- Auxiliary drawing features
 		end
 		
 	create_coord_system is
-			-- OpenGL display list Nr `2' for coord system
+			-- OpenGL display list Nr `2' for coordinate system.
 		do
 			gl_new_list (2, em_gl_compile)
 				gl_line_width (2)
@@ -657,10 +667,13 @@ feature{NONE} -- Auxiliary drawing features
 		end
 		
 	create_metro_line_representation is
-			-- Create the objects necessary for displaying the metro lines
-		local lines: HASH_TABLE [TRAFFIC_LINE, STRING]
-			  metro_line: EM_3D_OBJECT
-			  i: INTEGER
+			-- Create the objects necessary for displaying the metro lines.
+		require
+			traffic_line_factory /= Void
+		local
+			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
+			metro_line: EM_3D_OBJECT
+			i: INTEGER
 		do
 			create traffic_line_objects.make (1,1)
 			lines := map.lines
@@ -670,7 +683,7 @@ feature{NONE} -- Auxiliary drawing features
 			until
 				lines.after
 			loop 
-				traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.blue/255))
+				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.blue/255))
 				traffic_line_factory.set_line (lines.item_for_iteration)
 				metro_line := traffic_line_factory.create_object
 				traffic_line_objects.force (metro_line,i)
@@ -682,10 +695,11 @@ feature{NONE} -- Auxiliary drawing features
 		end
 		
 	transform_coords (screen_x,screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
-			-- Transforms mouse coords with gl_un_project
+			-- Transform mouse coordinates with gl_un_project to 3D coordinates.
 			-- screen = event.screen_
 			-- rel = event.x
-		require screen_x /= void and then screen_y /= void
+		require
+			screen_x /= void and then screen_y /= void
 		local
 			model_matrix, projection_matrix: ARRAY [DOUBLE]
 			model_c, projection_c: ANY
@@ -723,39 +737,39 @@ feature{NONE} -- Auxiliary drawing features
 feature {NONE} -- Shared objects
 	
 	ewer: BUILDING_EWER
-		-- Ewer for creation and distribution of buildings
+			-- Ewer for creation and distribution of buildings
 	traffic_line_factory: TRAFFIC_LINE_FACTORY
-		-- Factory for traffic lines
+			-- Factory for traffic lines
 	traffic_line_objects: ARRAY[EM_3D_OBJECT]
-		-- Container for objects created with traffic line factory
+			-- Container for objects created with traffic line factory
 	sun_light: GL_LIGHT
-		-- Light that imitates the sun
+			-- Light that imitates the sun
 	constant_light: GL_LIGHT
-		-- Constant white light from a direction
+			-- Constant white light from one direction
 
-feature {NONE} -- Variables
+feature {NONE} -- Attributes
 
 	sun_angle: DOUBLE
-		-- Angle of sun rotation
+			-- Angle of sun rotation
 	focus: DOUBLE
-		-- Used to zoom in or out.
+			-- Used to zoom in or out.
 	x_coord: DOUBLE
-		-- X coordinate of the viewer
+			-- X coordinate of the viewer
 	y_coord: DOUBLE
-		-- Y coordinate of the viewer
+			-- Y coordinate of the viewer
 	z_coord: DOUBLE
-		-- Z coordinate of the viewer
+			-- Z coordinate of the viewer
 	x_rotation: DOUBLE
-		-- Rotation around the x axis
+			-- Rotation around the x axis
 	y_rotation: DOUBLE
-		-- Rotation around the y axis
+			-- Rotation around the y axis
 	x_translation: DOUBLE
-		-- Translation of the map's origin in x direction
+			-- Translation of the map's origin in x direction
 	y_translation: DOUBLE
-		-- Translation of the map's origin in y direction
+			-- Translation of the map's origin in y direction
 	highlighting_delta: DOUBLE
-		-- Height difference between highlighted and normal line representation
-
+			-- Height difference between highlighted and normal line representation
+	
 invariant
 	
 	number_of_buildings >= 0

@@ -1,6 +1,5 @@
 indexing
 	description: "Some shared constants"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,13 +9,13 @@ class
 feature -- Constants
 
 	Building_width: DOUBLE is 0.2
-		-- Width of the quadratic (!) base of the building.
+			-- Width of the quadratic (!) base of the building.
 
 	Max_building_height: DOUBLE is 1.0
-		-- Maximum height of buildings
+			-- Maximum height of buildings
 
 	Plane_size: DOUBLE is 50.0
-		-- Length, resp. width, of plane
+			-- Length, resp. width, of plane
 
 	Window_width: INTEGER is 800 --1024
 			-- Window width
@@ -43,20 +42,17 @@ feature -- Constants
 		end
 		
 	map_to_gl_coords (vec: EM_VECTOR_2D): EM_VECTOR_2D is
-			-- Transform map coords to ones used by OpenGL.
+			-- Transform map coords to the ones used by OpenGL.
 		require vec /= void
 		do
 			-- (669,718) are the coords of the HB, where the centre is.
 			create Result.make ((1350 - vec.x - 669)/30,(vec.y - 718)/30)
 		end
 		
-	calculate_building_height(max_distance, distance: DOUBLE): DOUBLE is
-			-- Calculate height of building
+	calculate_building_height (max_distance, distance: DOUBLE): DOUBLE is
+			-- Calculate height of a building.
 		do	
-			Result := (max_distance - 2*distance)*(max_building_height/max_distance)		
-			
-			
-			
+			Result := (max_distance - 2*distance)*(max_building_height/max_distance)
 		end
 
 end -- class SHARED_CONSTANTS
