@@ -353,9 +353,11 @@ feature {NONE} -- Implementation
 			
 			create directory.make_open_read ("./map")
 			if directory.is_readable and not directory.is_empty then
-				from directory.start
+				from
+					directory.start
 					directory.readentry
-				until directory.lastentry = void
+				until
+					directory.lastentry = void
 				loop
 					if directory.lastentry.has_substring (".xml") then
 						Result.force_last (directory.lastentry)
