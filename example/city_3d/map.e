@@ -229,8 +229,7 @@ feature -- Shortest path
 
 	calculate_shortest_path is
 			-- Calculate shortest path
-		local bar: LINKED_GRAPH_WEIGHTED_EDGE[TRAFFIC_PLACE,TRAFFIC_LINE_SECTION]
-			line: TRAFFIC_LINE
+		local line: TRAFFIC_LINE
 			i: INTEGER
 			origin, destination: TRAFFIC_PLACE
 			new_segments: LINKED_LIST[TRAFFIC_LINE_SECTION]
@@ -243,8 +242,7 @@ feature -- Shortest path
 				until
 					map.shortest_path.after
 				loop
-					bar := map.shortest_path.item
-					line.force (bar.label)
+					line.force (map.shortest_path.item.label)
 					map.shortest_path.forth
 				end
 				
@@ -272,7 +270,6 @@ feature -- Shortest path
 					end
 					i := i + 1
 				end
-	
 				line.append (new_segments)
 				traffic_line_factory.set_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1,1,1))
 				traffic_line_factory.set_line (line)
@@ -299,6 +296,8 @@ feature -- Traffic map loading
 			create_metro_line_representation
 			marked_destination := void
 			marked_origin := void
+			shortest_path_line := void
+			marked_station_changed := true
 		ensure map /= void
 				is_map_loaded = true
 				ewer /= void
@@ -385,6 +384,7 @@ feature -- Options
 				shortest_path_line := void
 			end
 			show_shortest_path := b
+			marked_station_changed := true
 		ensure show_shortest_path = b
 		end
 		
@@ -477,6 +477,8 @@ feature {NONE} -- Event handling
 					if not is_found then
 						marked_origin := Void
 						marked_destination := Void
+						shortest_path_line := void
+						marked_station_changed := true
 					end
 				end
 			elseif event.is_right_button then
@@ -502,6 +504,7 @@ feature {NONE} -- Event handling
 							if delta < station_radius then
 								create marked_destination.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
 								is_found := True
+								marked_station_changed := true
 							end
 							
 							-- Checking destination of section
@@ -513,6 +516,7 @@ feature {NONE} -- Event handling
 							if delta < station_radius then
 								create marked_destination.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
 								is_found := True
+								marked_station_changed := true
 							end
 							line.forth
 						end
@@ -521,6 +525,8 @@ feature {NONE} -- Event handling
 					if not is_found then
 						marked_destination := Void
 						marked_origin := Void
+						shortest_path_line := void
+						marked_station_changed := true
 					end
 				end
 			end

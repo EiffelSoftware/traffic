@@ -32,7 +32,10 @@ feature -- Interface
 			buildings_slider: EM_SLIDER
 			buildings_label: EM_LABEL
 			sun_checkbox: EM_CHECKBOX
-			marked_station_label: EM_LABEL
+			marked_origin_label: EM_LABEL
+			marked_origin_title: EM_LABEL
+			marked_destination_label: EM_LABEL
+			marked_destination_title: EM_LABEL
 			shortest_path_checkbox: EM_CHECKBOX
 		do
 			make_component_scene
@@ -45,6 +48,13 @@ feature -- Interface
 			create coordinates_checkbox.make_from_text ("Show coords")
 			create sun_checkbox.make_from_text ("Show sun")
 			create buildings_transparent_checkbox.make_from_text ("Set transparent")
+			create buildings_label.make_from_text ("0")
+			create buildings_slider.make_from_range_horizontal (0, 100)
+			create marked_origin_title.make_from_text ("Marked origin:")
+			create marked_origin_label.make_from_text ("")
+			create marked_destination_title.make_from_text ("Marked destination:")
+			create marked_destination_label.make_from_text ("")
+			create shortest_path_checkbox.make_from_text ("Shortest path")
 
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -127,8 +137,7 @@ feature -- Interface
 			toolbar_panel.add_widget (buildings_checkbox)
 			
 			-- Buildings label
-			create buildings_label.make_from_text (map.number_of_buildings.out)
-			buildings_label.set_position (140, 430)
+			buildings_label.set_position (140, 410)
 			buildings_label.set_optimal_dimension (50, 20)
 			buildings_label.set_to_optimal_dimension
 			buildings_label.set_background_color (bg_color)
@@ -136,8 +145,7 @@ feature -- Interface
 			toolbar_panel.add_widget (buildings_label)
 			
 			-- Buildings slider
-			create buildings_slider.make_from_range_horizontal (0, 100)
-			buildings_slider.set_position (10, 430)
+			buildings_slider.set_position (10, 410)
 			buildings_slider.set_optimal_dimension (120, 20)
 			buildings_slider.set_to_optimal_dimension
 			buildings_slider.set_background_color (bg_color)
@@ -145,19 +153,46 @@ feature -- Interface
 			buildings_slider.position_changed_event.subscribe (agent number_of_buildings_changed (buildings_label, ?))
 			toolbar_panel.add_widget (buildings_slider)
 			
-			-- Marked stations label
-			create marked_station_label.make_from_text ("")
-			marked_station_label.set_position (10, 470)
-			marked_station_label.set_optimal_dimension (180, 20)
-			marked_station_label.set_to_optimal_dimension
-			marked_station_label.set_background_color (bg_color)
-			marked_station_label.set_tooltip ("Marked Station")
-			marked_station_label.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
-			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_station_label, ?))
-			toolbar_panel.add_widget (marked_station_label)
+			
+			-- Marked origin title
+			marked_origin_title.set_position (10, 460)
+			marked_origin_title.set_optimal_dimension (180, 20)
+			marked_origin_title.set_to_optimal_dimension
+			marked_origin_title.set_background_color (bg_color)
+--			marked_origin_title.set_tooltip ("Marked Origin Title")
+			toolbar_panel.add_widget (marked_origin_title)
+			
+			-- Marked destination label
+			marked_destination_label.set_position (15, 520)
+			marked_destination_label.set_optimal_dimension (180, 20)
+			marked_destination_label.set_to_optimal_dimension
+			marked_destination_label.set_background_color (bg_color)
+			marked_destination_label.set_tooltip ("Marked Station")
+--			marked_destination_label.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_origin_label, marked_destination_label, ?))
+--			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_origin_label, marked_destination_label, ?))
+			toolbar_panel.add_widget (marked_destination_label)			
+			
+			-- Marked origin label
+			marked_origin_label.set_position (15, 480)
+			marked_origin_label.set_optimal_dimension (180, 20)
+			marked_origin_label.set_to_optimal_dimension
+			marked_origin_label.set_background_color (bg_color)
+			marked_origin_label.set_tooltip ("Marked Station")
+--			marked_origin_label.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_origin_label, marked_destination_label, ?))
+			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_origin_label, marked_destination_label, ?))
+			toolbar_panel.add_widget (marked_origin_label)
+			
+			
+			-- Marked destination title
+			marked_destination_title.set_position (10, 500)
+			marked_destination_title.set_optimal_dimension (180, 20)
+			marked_destination_title.set_to_optimal_dimension
+			marked_destination_title.set_background_color (bg_color)
+--			marked_destination_title.set_tooltip ("Marked Station")
+			toolbar_panel.add_widget (marked_destination_title)
+
 			
 			-- Shortest Path Checkbox
-			create shortest_path_checkbox.make_from_text ("Shortest path")
 			shortest_path_checkbox.set_position (10,350)
 			shortest_path_checkbox.set_background_color (bg_color)
 			shortest_path_checkbox.set_optimal_dimension (120,20)
@@ -166,21 +201,23 @@ feature -- Interface
 			shortest_path_checkbox.unchecked_event.subscribe (agent shortest_path_unchecked)
 			toolbar_panel.add_widget (shortest_path_checkbox)
 			
---			create event_loop.make_poll
---			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
---			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))
---			event_loop.mouse_motion_event.subscribe (agent handle_mouse_motion_event (?))
+
 		end
 		
 feature -- Event handling
 
-	handle_mouse_click (label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
-			-- Adapt the text on `marked_station_label'.
+	handle_mouse_click (origin_label, destin_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
+			-- Adapt the text on `marked_origin_label'.
 		do
-			if map.marked_origin /= Void then
-				label.set_text (map.marked_origin.name)
+			if map.marked_origin /= Void and then map.show_shortest_path then
+				origin_label.set_text (map.marked_origin.name)
 			else
-				label.set_text ("")
+				origin_label.set_text ("")
+			end
+			if map.marked_destination /= void and then map.show_shortest_path then
+				destin_label.set_text (map.marked_destination.name)
+			else
+				destin_label.set_text ("")
 			end
 		end
 	
