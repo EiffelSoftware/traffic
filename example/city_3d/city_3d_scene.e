@@ -20,22 +20,6 @@ feature -- Interface
 	
 	make is
 			-- Creation procedure
-		local 
-			highlighting_checkbox: EM_CHECKBOX
-			buildings_checkbox: EM_CHECKBOX
-			coordinates_checkbox: EM_CHECKBOX
-			buildings_transparent_checkbox: EM_CHECKBOX
-			toolbar_panel: EM_PANEL
-			combo_box: EM_COMBOBOX[STRING]
-			button: EM_BUTTON
-			buildings_slider: EM_SLIDER
-			buildings_label: EM_LABEL
-			sun_checkbox: EM_CHECKBOX
-			marked_origin_label: EM_LABEL
-			marked_origin_title: EM_LABEL
-			marked_destination_label: EM_LABEL
-			marked_destination_title: EM_LABEL
-			shortest_path_checkbox: EM_CHECKBOX
 		do
 			make_component_scene
 			create bg_color.make_with_rgb (150,255,150)
@@ -49,9 +33,9 @@ feature -- Interface
 			create buildings_transparent_checkbox.make_from_text ("Set transparent")
 			create buildings_label.make_from_text ("0")
 			create buildings_slider.make_from_range_horizontal (0, 100)
-			create marked_origin_title.make_from_text ("Marked origin:")
+			create marked_origin_title.make_from_text ("Marked station:")
 			create marked_origin_label.make_from_text ("")
-			create marked_destination_title.make_from_text ("Marked destination:")
+			create marked_destination_title.make_from_text ("")
 			create marked_destination_label.make_from_text ("")
 			create shortest_path_checkbox.make_from_text ("Shortest path")
 			
@@ -74,7 +58,7 @@ feature -- Interface
 			button.set_position (50, 80)
 --			button.set_font (create {EM_TTF_FONT}.make_from_ttf_file ("./herbert.ttf",18))
 --			button.set_dimension (50, 20)
-			button.clicked_event.subscribe (agent button_clicked (button))
+			button.clicked_event.subscribe (agent button_clicked)
 			button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (button)
 
@@ -198,18 +182,18 @@ feature -- Interface
 		
 feature -- Event handling
 
-	handle_mouse_click (origin_label, destin_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
-			-- Adapt the text on `origin_label' and `destin_label'.
+	handle_mouse_click (origin_label, destination_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
+			-- Adapt the text on `origin_label' and `destination_label'.
 		do
-			if map.marked_origin /= Void and then map.show_shortest_path then
+			if map.marked_origin /= Void then
 				origin_label.set_text (map.marked_origin.name)
 			else
 				origin_label.set_text ("")
 			end
 			if map.marked_destination /= void and then map.show_shortest_path then
-				destin_label.set_text (map.marked_destination.name)
+				destination_label.set_text (map.marked_destination.name)
 			else
-				destin_label.set_text ("")
+				destination_label.set_text ("")
 			end
 		end
 	
@@ -241,12 +225,23 @@ feature -- Event handling
 			-- Checkbox has been checked.
 		do
 			map.set_show_shortest_path (True)
+			marked_destination_title.set_text ("Marked destination:")
+			marked_origin_title.set_text ("Marked origin:")
+			if map.marked_destination /= Void then
+				marked_destination_label.set_text (map.marked_destination.name)
+			end
+			if map.marked_origin /= Void then
+				marked_origin_label.set_text (map.marked_origin.name)
+			end
 		end
 		
 	shortest_path_unchecked is
 			-- Checkbox has been unchecked.
 		do
 			map.set_show_shortest_path (False)
+			marked_destination_title.set_text ("")
+			marked_destination_label.set_text ("")
+			marked_origin_title.set_text ("Marked station:")
 		end
 		
 	buildings_checked is
@@ -298,7 +293,7 @@ feature -- Event handling
 			map.set_coordinates_shown (False)
 		end
 		
-	button_clicked (button: EM_BUTTON) is
+	button_clicked is
 			-- Button has been clicked.
 		require
 			button /= Void
@@ -320,6 +315,24 @@ feature -- Event handling
 		ensure 
 			map_file_name = name
 		end
+		
+feature -- Widgets
+
+	highlighting_checkbox: EM_CHECKBOX
+	buildings_checkbox: EM_CHECKBOX
+	coordinates_checkbox: EM_CHECKBOX
+	buildings_transparent_checkbox: EM_CHECKBOX
+	toolbar_panel: EM_PANEL
+	combo_box: EM_COMBOBOX[STRING]
+	button: EM_BUTTON
+	buildings_slider: EM_SLIDER
+	buildings_label: EM_LABEL
+	sun_checkbox: EM_CHECKBOX
+	marked_origin_label: EM_LABEL
+	marked_origin_title: EM_LABEL
+	marked_destination_label: EM_LABEL
+	marked_destination_title: EM_LABEL
+	shortest_path_checkbox: EM_CHECKBOX
 		
 feature {NONE} -- Implementation
 
