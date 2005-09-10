@@ -9,7 +9,7 @@ deferred class
 
 inherit
 	
-	EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
+	EM_DRAWABLE_CONTAINER [MENU_ENTRY]
 	
 	THEME
 		undefine
@@ -19,95 +19,80 @@ inherit
 feature -- Initialization
 		
 	make_with_default_fonts is
-			-- Create menu with default fonts
+			-- Create menu with default fonts.
 		do
 			make_with_custom_fonts (menu_font, menu_selected_font)
-		end
-		
+		end		
 		
 	make_with_custom_fonts (a_font, a_selected_font: EM_FONT) is
-			-- Create menu with user specified fonts
+			-- Create menu with user specified fonts.
 		require
-			a_font_not_void: a_font /= Void
-			a_selected_font_not_void: a_selected_font /= Void
+			a_font_exists: a_font /= Void
+			a_selected_exists: a_selected_font /= Void
 		do
 			make
 			font := a_font
 			selected_font := a_selected_font
 			
+			-- Set defaults.
 			active := true
 			alignment := Centered
-			selected_entry := 1
-			next_index := 1
 			max_entry_width := 0
-			create entries.make (0)
---			create scenes.make (0)
+			selected_entry := 1
 		ensure
 			font_set: font = a_font
 			selected_font_set: selected_font = a_selected_font
-		-- TODO: ensure of entries /= Void and scenes /= Void not necessary because of
-		-- class invariant, right?
 		end
 		
 
 feature -- Access
 
 	add_entry (a_text: STRING; a_callback: PROCEDURE [ANY, TUPLE]; selected: BOOLEAN) is
-			-- Add an entry to the menu
+			-- Add an entry to the menu.
 		require
-			a_text_not_void: a_text /= Void
+			a_text_exists: a_text /= Void
 		do			
+			extend (create {MENU_ENTRY}.make_from_string (a_text, font, selected_font, a_callback))
 			if selected then
-				entries.extend (create {MENU_ENTRY}.make_from_string (a_text, selected_font, a_callback), next_index)
-				selected_entry := next_index
-			else
-				entries.extend (create {MENU_ENTRY}.make_from_string (a_text, font, a_callback), next_index)			
+				last.update (true)
+				selected_entry := count
 			end
 
---			scenes.extend (a_scene, next_index)	
-			
-			if entries.item (next_index).width > max_entry_width then
-				max_entry_width := entries.item (next_index).width
+			if last.width > max_entry_width then 
+				max_entry_width := last.width
 			end
-			
-			set_entry_position (next_index)
-			next_index := next_index + 1
+
+			update_positions
 			update
 		ensure
-			entries_updated: entries.count = old entries.count + 1
---			scenes_updated: scenes.has_item (a_scene)
-			next_index_updated: next_index = old next_index + 1
+			entry_added: count = old count + 1
 		end
 
 	deactivate is
-			-- Deactivate menu
+			-- Deactivate menu.
 		do
 			active := false
 			from
-				entries.start
+				start
 			until
-				entries.after
+				after
 			loop
-				entries.item_for_iteration.set_font (font)
-				entries.forth
+				item_for_iteration.update (false)
+				forth
 			end
-		ensure
-			-- TODO: postcondition to check if font set for every item in entries (necessary?) ?
 		end
 
 	activate is
-			-- Activate menu
+			-- Activate menu.
 		do
 			active := true
-			entries.item (selected_entry).set_font (selected_font)
-		ensure
-			selected_entry_font_set: entries.item (selected_entry).font = selected_font
+			item (selected_entry).update (true)
 		end		
 
 feature -- Settings
 
 	set_alignment (an_alignment: like alignment) is
-			-- Set alignment of entries
+			-- Set alignment of entries.
 		require
 			an_alignment_valid: an_alignment >= 0 and an_alignment < 4
 		do
@@ -126,11 +111,11 @@ feature -- Event handling
 				if a_keyboard_event.key = sdlk_up then
 					selected_entry := selected_entry - 1
 					if selected_entry < 1 then
-						selected_entry := entries.count
+						selected_entry := count
 					end
 				elseif a_keyboard_event.key = sdlk_down then
 					selected_entry := selected_entry + 1
-					if selected_entry > entries.count then
+					if selected_entry > count then
 						selected_entry := 1
 					end
 				elseif a_keyboard_event.key = sdlk_return then
@@ -141,10 +126,10 @@ feature -- Event handling
 		end
 		
 	on_select is
-			-- Action taken when entry selected
+			-- Action taken when entry selected.
 		do
-			if entries.item (selected_entry).callback /= Void then
-				entries.item (selected_entry).callback.call([])
+			if item (selected_entry).callback /= Void then
+				item (selected_entry).callback.call([])
 			end
 		end
 
@@ -152,28 +137,19 @@ feature -- Event handling
 feature -- Attributes
 
 	selected_entry: INTEGER
-		-- Index of selected entry in menu
+		-- Index of selected entry in menu.
 
 	alignment: INTEGER
-		-- Alignment of entries
-
-	next_index: INTEGER
-		-- To keep track at which index the next entry will be added
-
-	entries: HASH_TABLE [MENU_ENTRY, INTEGER]
-		-- All the entries in this menu
-	
---	scenes: HASH_TABLE [EM_SCENE, INTEGER]
---		-- Scenes corresponding to entries in menu
+		-- Alignment of entries.
 
 	font: EM_FONT
-		-- Font for unselected items
+		-- Font for unselected items.
 	
 	selected_font: EM_FONT
-		-- Font for selected item
+		-- Font for selected item.
 	
 	max_entry_width: INTEGER
-		-- Maximum width of menu entries
+		-- Maximum width of menu entries.
 
 	active: BOOLEAN
 		-- Is the menu currently active?
@@ -181,69 +157,51 @@ feature -- Attributes
 
 feature {NONE} -- Implementation
 
-	update_entry (i: INTEGER) is
-			-- Update entry at position i
-		require
-			valid_index: i > 0 and i <= entries.count
-		deferred
-		end
-
 	update is
-			-- Update whole menu
+			-- Update whole menu.
 		local
 			i: INTEGER
 		do
 			i := 1
 			from
-				entries.start
+				start
 			until
-				entries.after
+				after
 			loop
-				update_entry (i)
-				entries.forth
+				if i = selected_entry then
+					item (i).update (true)
+				else
+					item (i).update (false)
+				end
+				forth
 				i := i + 1
 			end			
 		end
 
 	set_entry_position (i: INTEGER) is
-			-- Set position of entry at index `i'
+			-- Set position of entry at index `i'.
 		require
-			valid_index: i > 0 and i <= entries.count
+			valid_index: i > 0 and i <= count
 		deferred
 		end
 		
 	update_positions is
-			-- Update positions of all entries according to current alignment
+			-- Update positions of all entries according to current alignment.
 		local
 			i: INTEGER
 		do
 			from
 				i := 1
 			until
-				i > entries.count
+				i > count
 			loop
 				set_entry_position (i)
 				i := i + 1
 			end
 		end
 		
-	display_entry (i: INTEGER) is
-			-- Display entry at index `i'
-		require
-			valid_index: i > 0 and i <= entries.count
-		do
-			if has (entries.item (i)) then
-				replace (entries.item (i), i)
-			else
-				put (entries.item (i), i)
-			end
-		ensure
-			entry_i_displayed: has (entries.item (i))
-		end
-		
 invariant
-	entries_not_void: entries /= Void
---	scenes_not_void: scenes /= Void
-	font_not_void: font /= Void
-	selected_font_not_void: selected_font /= Void
+	font_exists: font /= Void
+	selected_font_exists: selected_font /= Void
+	alignment_valid: alignment >= Left and alignment <= Centered
 end

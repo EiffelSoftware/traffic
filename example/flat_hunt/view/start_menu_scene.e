@@ -37,12 +37,14 @@ feature -- Initialization
 			background_box.set_font (small_menu_font)
 			background_box.set_opacity (70)
 			background_box.set_auto_resize (false)
+			main_container.extend (background_box)
 			
 			menu.add_entry ("start game", agent start_callback, true)
 			menu.add_entry ("credits", agent credits_callback, false)
 			menu.add_entry ("quit", agent quit_callback, false)
 			menu.set_alignment (Right)
 			menu.set_x_y (window_width - menu.width - 50, window_height - menu.height)
+			main_container.extend (menu)
 
 			options_position_x := 550
 			options_position_y := 175
@@ -92,11 +94,7 @@ feature -- Initialization
 			list.extend ("glass")
 			list.extend ("white")
 			add_option_menu (list, options_position_x, options_position_y)
-			
-			main_container.extend (background_box)
-			display_option_menus
-			main_container.extend (menu)
-			
+
 			main_container.extend (create {EM_STRING}.make ("use tab to toggle between main menu and option settings", small_credits_font))
 			main_container.last.set_x_y (50, 510)
 			
@@ -172,7 +170,7 @@ feature -- Event handling
 			create a_game.make
 			a_game.set_game_mode (option_menus.item (1).selected_entry)
 			a_game.set_number_of_hunters (option_menus.item (2).selected_entry)
-			a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./zurich_" + option_menus.item (3).entries.item (option_menus.item (3).selected_entry).text.value + ".xml")
+			a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./zurich_" + option_menus.item (3).item (option_menus.item (3).selected_entry).text.value + ".xml")
 			a_game.set_traffic_map (a_map_file.traffic_map)
 
 			-- Create scene that displays the game.
@@ -184,7 +182,7 @@ feature -- Event handling
 
 			-- Load correct player pics according to settings.
 			player_pic_directory.wipe_out
-			player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).entries.item (option_menus.item (4).selected_entry).text.value + "/")
+			player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).item (option_menus.item (4).selected_entry).text.value + "/")
 
 			main_controller.initialize_with_game_and_scene (a_game, a_game_scene)
 			main_controller.start_game

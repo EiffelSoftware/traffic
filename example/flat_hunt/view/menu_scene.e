@@ -35,8 +35,7 @@ feature -- Initialization
 			Precursor
 			create menu.make_with_default_fonts
 			create option_menus.make (0)
-		end
-		
+		end	
 
 	initialize_scene is
 			-- Initialize menu scene
@@ -52,18 +51,6 @@ feature -- Event handling
 		do
 			Precursor {FLAT_HUNT_SCENE} (a_keyboard_event)
 		end
-
---	on_select is
---			-- Agent that gets called when menu entry is selected
---		require
---			scenes_not_void: menu.scenes /= Void
---			scenes_has_selected_entry_scene: menu.scenes.has (menu.selected_entry)
---		do
---			next_scene := menu.scenes @ (menu.selected_entry)
---			event_loop.stop
---		ensure
-----			next_scene_set: next_scene = menu.scenes @ (menu.selected_entry)
---		end
 
 feature -- Attributes
 
@@ -95,27 +82,35 @@ feature {NONE} -- Implementation
 				a_list.forth
 			end
 			option_menus.item (option_menus.count).set_x_y (an_x, a_y)
-			option_menus.item (option_menus.count).show_pics
 			option_menus.item (option_menus.count).deactivate
+			main_container.extend (option_menus.item (option_menus.count))
+			add_arrow_pics (option_menus.count)
 		ensure
 			option_menu_added: option_menus.count = old option_menus.count + 1
---			option_menu_positioned: option_menus.item (option_menus.count).x = an_x and option_menus.item (option_menus).y = a_y
-		end
+		end	
 
-	display_option_menus is
-			-- Display the option menus of the scene
-		require
-			option_menus_not_void: option_menus /= Void
+	add_arrow_pics (i: INTEGER) is
+			-- Create arrow pics for option menu `i'.
+		local
+			left_arrow_pic: EM_DRAWABLE
+			right_arrow_pic: EM_DRAWABLE
+			left_x, right_x, left_y, right_y: INTEGER
 		do
-			from
-				option_menus.start
-			until
-				option_menus.after
-			loop
-				option_menus.item_for_iteration.deactivate
-				main_container.extend (option_menus.item_for_iteration)
-				option_menus.forth
-			end
+			bitmap_factory.create_bitmap_from_image (Left_arrow)
+			left_arrow_pic := bitmap_factory.last_bitmap
+			bitmap_factory.create_bitmap_from_image (Right_arrow)
+			right_arrow_pic := bitmap_factory.last_bitmap				
+			
+			left_x := option_menus.item (i).x - 2 * left_arrow_pic.width
+			right_x := option_menus.item (i).x + option_menus.item (i).max_entry_width + right_arrow_pic.width
+			left_y := option_menus.item (i).y + (option_menus.item (i).height - left_arrow_pic.height) // 2
+			right_y := option_menus.item (i).y + (option_menus.item (i).height - right_arrow_pic.height) // 2
+			
+			left_arrow_pic.set_x_y (left_x, left_y)
+			right_arrow_pic.set_x_y (right_x, right_y)
+			
+			main_container.extend (left_arrow_pic)
+			main_container.extend (right_arrow_pic)
 		end
 		
 end
