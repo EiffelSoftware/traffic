@@ -32,6 +32,9 @@
     <cluster name="view">
       <option name="recursive" value="true"/>
     </cluster>
+    <cluster name="util">
+      <option name="recursive" value="true"/>
+    </cluster>	    
   </cluster>  
 
   <option unless="${GOBO_OS}=windows">
