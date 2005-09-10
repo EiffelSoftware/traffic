@@ -170,7 +170,7 @@ feature -- Event handling
 			create a_game.make
 			a_game.set_game_mode (option_menus.item (1).selected_entry)
 			a_game.set_number_of_hunters (option_menus.item (2).selected_entry)
-			a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./zurich_" + option_menus.item (3).item (option_menus.item (3).selected_entry).text.value + ".xml")
+			a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./map/zurich_" + option_menus.item (3).item (option_menus.item (3).selected_entry).text.value + ".xml")
 			a_game.set_traffic_map (a_map_file.traffic_map)
 
 			-- Create scene that displays the game.
