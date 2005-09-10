@@ -29,7 +29,7 @@ feature {ESTATE_AGENT} -- Basic operations
 					best_move_so_far := possible_moves.item
 					best_distance := 0
 				invariant
-					-- best_move_so_far is longest move between possible_moves.start and possible_moves.item
+					-- `best_move_so_far' is longest move between `possible_moves.start' and `possible_moves.item'.
 					best_distance >= 0
 					1 <= possible_moves.index
 					possible_moves.index <= possible_moves.count + 1
@@ -51,8 +51,8 @@ feature {ESTATE_AGENT} -- Basic operations
 				chosen_move := best_move_so_far
 			end
 		ensure then
-			result_not_void: chosen_move /= Void
-			result_has_place: chosen_move.origin = my_location or chosen_move.destination = my_location
+			result_exists: chosen_move /= Void
+			result_has_place: chosen_move.origin = my_location
 		end		
 		
 end

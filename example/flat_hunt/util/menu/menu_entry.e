@@ -1,5 +1,5 @@
 indexing
-	description: "Customizable menu entry"
+	description: "Customizable menu entry."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -14,50 +14,33 @@ create
 	
 feature -- Initialization
 	
-	make_from_string (a_text: STRING; a_font, a_selected_font: EM_FONT; a_callback: PROCEDURE [ANY, TUPLE]) is
-			-- Create menu entry from string `a_text' with callback `a_callback'
+	make_from_string (a_text: STRING; a_font: like font; a_selected_font: like selected_font; a_callback: like callback) is
+			-- Create menu entry from string `a_text'.
 		require
 			a_text_exists: a_text /= Void
 			a_font_exists: a_font /= Void
 			a_selected_font_exists: a_selected_font /= Void
 		do
-			set_font (a_font)
-			set_selected_font (a_selected_font)
-			text := create {EM_STRING}.make (a_text, font)
-			callback := a_callback
 			make
-			extend (text)
+			font := a_font
+			selected_font := a_selected_font
+			callback := a_callback
+			
+			-- Create and display `text'.
+			create text.make (a_text, font)
+			extend (text)			
 		ensure
 			font_set: font = a_font
+			selected_font_set: selected_font = a_selected_font			
+			callback_set: callback = a_callback			
 			text_not_void: text /= Void
 			text_added: has (text)
-			callback_set: callback = a_callback
 		end
 
 feature -- Access
 
-	set_font (a_font: EM_FONT) is
-			-- Set font for this entry
-		require
-			a_font_not_void: a_font /= Void
-		do
-			font := a_font
-		ensure
-			font_set: font = a_font
-		end
-
-	set_selected_font (a_font: EM_FONT) is
-			-- Set font for this entry
-		require
-			a_font_not_void: a_font /= Void
-		do
-			selected_font := a_font
-		ensure
-			selected_font_set: selected_font = a_font
-		end		
-
 	update (selected: BOOLEAN) is
-			-- Update this entry
+			-- Update this entry.
 		do
 			if selected then
 				text.set_font (selected_font)
@@ -69,18 +52,30 @@ feature -- Access
 					  not selected implies text.font = font
 		end
 
+	call is
+			-- Call `callback'.
+		do
+			if callback /= Void then
+				callback.call ([])
+			end
+		end
+
 feature -- Attributes
 		
 	font: EM_FONT
-		-- Font to be used for this entry
+			-- Font to be used for this entry
 	
 	selected_font: EM_FONT
-		-- Font to be used for this entry when selected
+			-- Font to be used for this entry when selected
 		
 	text: EM_STRING
-		-- Text to be displayed for this entry
+			-- Text to be displayed for this entry
 		
 	callback: PROCEDURE [ANY, TUPLE]
-		-- Callback that gets called when menu entry selected
+			-- Callback that gets called when menu entry selected
 
+invariant
+	font_exists: font /= Void
+	selected_font_exists: selected_font /= Void
+	text_exists: text /= Void
 end

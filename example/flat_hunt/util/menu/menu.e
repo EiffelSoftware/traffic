@@ -15,35 +15,34 @@ inherit
 		undefine
 			default_create, copy, is_equal
 		end
-		
+
 feature -- Initialization
 		
 	make_with_default_fonts is
 			-- Create menu with default fonts.
 		do
-			make_with_custom_fonts (menu_font, menu_selected_font)
+			make_with_custom_fonts (Menu_font, Menu_selected_font)
 		end		
 		
-	make_with_custom_fonts (a_font, a_selected_font: EM_FONT) is
+	make_with_custom_fonts (a_font: like font; a_selected_font: like selected_font) is
 			-- Create menu with user specified fonts.
 		require
 			a_font_exists: a_font /= Void
 			a_selected_exists: a_selected_font /= Void
 		do
-			make
-			font := a_font
-			selected_font := a_selected_font
-			
 			-- Set defaults.
-			active := true
+			active := True
 			alignment := Centered
 			max_entry_width := 0
 			selected_entry := 1
+			
+			make
+			font := a_font
+			selected_font := a_selected_font
 		ensure
 			font_set: font = a_font
 			selected_font_set: selected_font = a_selected_font
 		end
-		
 
 feature -- Access
 
@@ -53,15 +52,19 @@ feature -- Access
 			a_text_exists: a_text /= Void
 		do			
 			extend (create {MENU_ENTRY}.make_from_string (a_text, font, selected_font, a_callback))
+			
+			-- Special handling if entry selected.
 			if selected then
-				last.update (true)
+				last.update (True)
 				selected_entry := count
 			end
-
+			
+			-- Update max_entry_width.
 			if last.width > max_entry_width then 
 				max_entry_width := last.width
 			end
 
+			-- Update entries.
 			update_positions
 			update
 		ensure
@@ -71,13 +74,13 @@ feature -- Access
 	deactivate is
 			-- Deactivate menu.
 		do
-			active := false
+			active := False
 			from
 				start
 			until
 				after
 			loop
-				item_for_iteration.update (false)
+				item_for_iteration.update (False)
 				forth
 			end
 		end
@@ -85,8 +88,8 @@ feature -- Access
 	activate is
 			-- Activate menu.
 		do
-			active := true
-			item (selected_entry).update (true)
+			active := True
+			item (selected_entry).update (True)
 		end		
 
 feature -- Settings
@@ -108,17 +111,19 @@ feature -- Event handling
 			-- Handle keyboard events.
 		do
 			if active then
-				if a_keyboard_event.key = sdlk_up then
+				if a_keyboard_event.key = Sdlk_up then
+					-- Deselect current entry, select previous entry.
 					selected_entry := selected_entry - 1
 					if selected_entry < 1 then
 						selected_entry := count
 					end
-				elseif a_keyboard_event.key = sdlk_down then
+				elseif a_keyboard_event.key = Sdlk_down then
+					-- Deselect current entry, select next entry.
 					selected_entry := selected_entry + 1
 					if selected_entry > count then
 						selected_entry := 1
 					end
-				elseif a_keyboard_event.key = sdlk_return then
+				elseif a_keyboard_event.key = Sdlk_return then
 					on_select
 				end	
 				update
@@ -128,32 +133,28 @@ feature -- Event handling
 	on_select is
 			-- Action taken when entry selected.
 		do
-			if item (selected_entry).callback /= Void then
-				item (selected_entry).callback.call([])
-			end
+			item (selected_entry).call
 		end
-
 
 feature -- Attributes
 
 	selected_entry: INTEGER
-		-- Index of selected entry in menu.
+			-- Index of selected entry in menu.
 
 	alignment: INTEGER
-		-- Alignment of entries.
+			-- Alignment of entries.
 
 	font: EM_FONT
-		-- Font for unselected items.
+			-- Font for unselected items.
 	
 	selected_font: EM_FONT
-		-- Font for selected item.
+			-- Font for selected item.
 	
 	max_entry_width: INTEGER
-		-- Maximum width of menu entries.
+			-- Maximum width of menu entries.
 
 	active: BOOLEAN
-		-- Is the menu currently active?
-
+			-- Is the menu currently active?
 
 feature {NONE} -- Implementation
 
@@ -169,9 +170,9 @@ feature {NONE} -- Implementation
 				after
 			loop
 				if i = selected_entry then
-					item (i).update (true)
+					item (i).update (True)
 				else
-					item (i).update (false)
+					item (i).update (False)
 				end
 				forth
 				i := i + 1
@@ -199,7 +200,7 @@ feature {NONE} -- Implementation
 				i := i + 1
 			end
 		end
-		
+
 invariant
 	font_exists: font /= Void
 	selected_font_exists: selected_font /= Void

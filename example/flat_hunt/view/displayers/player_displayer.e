@@ -24,7 +24,7 @@ inherit
 		end
 	
 	DISPLAY_CONSTANTS
-		export
+		export 
 			{NONE} all
 		undefine
 			default_create, out
@@ -35,13 +35,20 @@ inherit
 			out
 		end
 	
+	EM_TIME_SINGLETON
+		undefine
+			out
+		end
+	
 feature -- Initialization
 		
-	make_from_player (a_player: PLAYER; a_pic: EM_DRAWABLE; a_traffic_map: TRAFFIC_MAP; a_map_widget: TRAFFIC_MAP_WIDGET) is
+	make_from_player (a_player: PLAYER; a_pic: like picture; a_traffic_map: like traffic_map; a_map_widget: like map_widget) is
 			-- Initialize displayer for `a_player'.
 		require
 			player_exists: a_player /= Void
+			a_pic_exists: a_pic /= Void
 		do
+			possible_moves_unmarked := True
 			player := a_player
 			picture := a_pic
 			map_widget := a_map_widget
@@ -49,7 +56,7 @@ feature -- Initialization
 			create marking_circle.make_inside_box (picture.bounding_box)
 			marking_circle.set_line_width (1)
 			marking_circle.set_line_color (red)
-			marking_circle.set_filled (false)
+			marking_circle.set_filled (False)
 			update_position
 		ensure
 			player_set: player = a_player
@@ -58,20 +65,6 @@ feature -- Initialization
 
 --feature -- Basic operations
 
---	clear is
---			-- Remove all players (clear_game).
---		do
-----			unmark_player
-----			remove_command (pixmap)
-----			unmark_possible_moves_special
---		end
---	
---	clear_markings is
---			-- Remove all markings (end_game).
---		do
-----			unmark_player
-----			unmark_possible_moves_special
---		end
 --		
 --	animate_defeat is
 --			-- Animate the defeat of the player.
@@ -151,21 +144,6 @@ feature -- Access
 			update_position			
 		end
 		
-	draw (surface: EM_SURFACE) is
-			-- Draw 'Current' onto `surf'.
-		do
-			update_position
-			if picture /= Void then
-				surface.draw_object (picture)
-			end
-			if player.marked then
-				surface.draw_object (marking_circle)
-				mark_possible_moves
-			else
-				unmark_possible_moves
-			end
-		end
-		
 	width: INTEGER is
 			-- 
 		do
@@ -213,24 +191,38 @@ feature {NONE} -- Implementation
 			traffic_map_not_void: traffic_map /= Void
 			map_widget_not_void: map_widget /= Void
 		local
-			place_renderer: TRAFFIC_PLACE_RENDERER			
+			place_renderer: TRAFFIC_PLACE_RENDERER		
+			t1, t2: INTEGER
 		do
 			if player.possible_moves /= Void then
+				
+				io.putstring ("%N Ticks for place_renderer init: ")
+				t1 := time.ticks
 				-- Set place color for possible moves to yellow
 				create place_renderer.make_with_map (traffic_map)
-					place_renderer.set_place_color (Yellow)
+				place_renderer.set_place_color (Yellow)
+				t2 := time.ticks
+				io.putint (t2 - t1)
+				io.putstring ("%N Ticks for marking loop: ")
+				t1 := time.ticks				
 				from
 					player.possible_moves.start
 				until
 					player.possible_moves.after
 				loop
 					map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
-					
-					-- Re-Render the Scene for the effects to be visible
-					map_widget.render
 					player.possible_moves.forth
 				end
+				t2 := time.ticks
+				io.putint (t2 - t1)
+				io.putstring ("%N Ticks for marking map_widget.render: ")
+				t1 := time.ticks
+				-- Re-render the scene for the effects to be visible.				
+				map_widget.render
+				t2 := time.ticks
+				io.putint (t2 - t1)
 			end
+			possible_moves_unmarked := False
 		end
 
 	unmark_possible_moves is
@@ -240,28 +232,55 @@ feature {NONE} -- Implementation
 			map_widget_not_void: map_widget /= Void			
 		local
 			place_renderer: TRAFFIC_PLACE_RENDERER
+			t1, t2: INTEGER
 		do
 			if player.possible_moves /= Void then
-
-				-- Reset place color
+				
+				io.putstring ("%N Ticks for place_renderer init: ")
+				t1 := time.ticks
+				-- Reset place color.
 				create place_renderer.make_with_map (traffic_map)
 				place_renderer.set_place_color (Blue)
+				t2 := time.ticks
+				io.putint (t2 - t1)
+				io.putstring ("%N Ticks for unmarking loop: ")
+				t1 := time.ticks
 				from
 					player.possible_moves.start
 				until
 					player.possible_moves.after
 				loop
 					map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
-					
-					-- Re-Render the Scene for the effects to be visible
-					map_widget.render
-					player.possible_moves.forth
+					player.possible_moves.forth					
 				end
+				t2 := time.ticks
+				io.putint (t2 - t1)
+				io.putstring ("%N Ticks for unmarking map_widget.render: ")
+				t1 := time.ticks
+				-- Re-render the scene for the effects to be visible.				
+				map_widget.render
+				t2 := time.ticks
+				io.putint (t2 - t1)
 			end
+			possible_moves_unmarked := True
 		end
 		
-feature {NONE} -- Implementation
-		
+	draw (surface: EM_SURFACE) is
+			-- Draw 'Current' onto `surf'.
+		do
+			io.putstring ("%N%N" + player.name)
+			update_position
+			if picture /= Void then
+				surface.draw_object (picture)
+			end
+			if player.marked then
+				surface.draw_object (marking_circle)
+				mark_possible_moves
+			elseif not possible_moves_unmarked then
+				unmark_possible_moves
+			end
+		end
+
 	marking_circle: EM_CIRCLE
 			-- Circle for marking current player
 	
@@ -270,11 +289,11 @@ feature {NONE} -- Implementation
 	
 	map_widget: TRAFFIC_MAP_WIDGET
 			-- Reference to map widget where player gets displayed
+			
+	possible_moves_unmarked: BOOLEAN
+			-- Are the possible moves unmarked?
 
---	main_controller: MAIN_CONTROLLER
-			-- Used to access sleep and process_events
-		
 invariant
 	displayer_has_player: player /= Void
-
+	
 end

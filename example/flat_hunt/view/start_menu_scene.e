@@ -31,39 +31,47 @@ feature -- Initialization
 		do
 			Precursor
 
-			create background_box.make_from_coordinates (50, 95, Window_width - 50, 445, "options")
-			background_box.set_color (menu_color)
-			background_box.set_title_font (menu_font)
-			background_box.set_font (small_menu_font)
+			-- Build background box.
+			create background_box.make_from_coordinates (Margin, 95, Window_width - Margin, 445, "options")
+			background_box.set_color (Menu_color)
+			background_box.set_title_font (Menu_font)
+			background_box.set_font (Small_menu_font)
 			background_box.set_opacity (70)
-			background_box.set_auto_resize (false)
+			background_box.set_auto_resize (False)
 			main_container.extend (background_box)
 			
-			menu.add_entry ("start game", agent start_callback, true)
-			menu.add_entry ("credits", agent credits_callback, false)
-			menu.add_entry ("quit", agent quit_callback, false)
+			-- Build menu.
+			menu.add_entry ("start game", agent start_callback, True)
+			menu.add_entry ("credits", agent credits_callback, False)
+			menu.add_entry ("quit", agent quit_callback, False)
 			menu.set_alignment (Right)
-			menu.set_x_y (window_width - menu.width - 50, window_height - menu.height)
+			menu.set_x_y (Window_width - menu.width - Margin, Window_height - menu.height)
 			main_container.extend (menu)
 
+			-- Calculate position of first option menu.			
 			options_position_x := 550
 			options_position_y := 175
-			create list.make (0)
 
+			-- Build caption for first option menu.
 			background_box.add_line ("game mode :")
 			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 			
+			-- Build first option menu.
+			create list.make (0)
 			list.extend ("hunt")
 			list.extend ("escape")
 			list.extend ("versus")
 			list.extend ("demo")
 			add_option_menu (list, options_position_x, options_position_y)
 
+			-- Calculate position of second option menu.
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height
 			
+			-- Build caption for second option menu.
 			background_box.add_line ("nr of hunters :")
 			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 			
+			-- Build second option menu.
 			list.wipe_out
 			list.extend ("one")
 			list.extend ("two")
@@ -75,50 +83,54 @@ feature -- Initialization
 			list.extend ("eight")
 			add_option_menu (list, options_position_x, options_position_y)
 
+			-- Calculate position of third option menu.
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height
 
+			-- Build caption for third option menu.
 			background_box.add_line ("map size :")
 			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 
+			-- Build third option menu.
 			list.wipe_out	
 			list.extend ("little")			
 			list.extend ("big")
 			add_option_menu (list, options_position_x, options_position_y)
 
+			-- Calculate position of fourth option menu.
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height			
 
+			-- Build caption for fourth option menu
 			background_box.add_line ("characters :")
 			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 
+			-- Build fourth option menu.
 			list.wipe_out			
 			list.extend ("glass")
 			list.extend ("white")
 			add_option_menu (list, options_position_x, options_position_y)
 
+			-- Build info text and display it below option menu status box.
 			main_container.extend (create {EM_STRING}.make ("use tab to toggle between main menu and option settings", small_credits_font))
-			main_container.last.set_x_y (50, 510)
+			main_container.last.set_x_y (Margin, 510)
 			
-			-- Set active menu to normal menu
+			-- Set active menu to normal menu.
 			active_menu := option_menus.count + 1
 
 		ensure then
-			menu_not_void: menu /= Void
 			menu_displayed: main_container.has (menu)
-			menu_positioned: menu.x = window_width - menu.width - 50 and menu.y = window_height - menu.height
-			option_menus_not_void: option_menus /= Void
+			menu_positioned: menu.x = Window_width - menu.width - Margin and menu.y = Window_height - menu.height
 			option_menus_not_empty: not option_menus.is_empty
-		-- TODO: option_menus_displayed, option_menus_positioned: necessary? and how to do it if not one by one?
 		end
 
 feature -- Event handling
 
 	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
-			-- Handle keyboard events
+			-- Handle keyboard events.
 		do			
 			Precursor {MENU_SCENE} (a_keyboard_event)
 
-			-- Toggle between main menu and option menus
-			if a_keyboard_event.key = sdlk_tab then
+			-- Toggle between main menu and option menus.
+			if a_keyboard_event.key = Sdlk_tab then
 				if active_menu = option_menus.count + 1 then
 					-- Main menu is currently active -> switch to option menus.
 					active_menu := 1
@@ -132,13 +144,13 @@ feature -- Event handling
 				end
 			end
 			
-			-- Main menu event handling
+			-- Main menu event handling.
 			if active_menu = option_menus.count + 1 then
 				menu.handle_key_down_event (a_keyboard_event)
 				
-			-- Option menu event handling
+			-- Option menu event handling.
 			elseif active_menu > 0 and active_menu <= option_menus.count then
-				if a_keyboard_event.key = sdlk_down then
+				if a_keyboard_event.key = Sdlk_down then
 					-- Switch to next option menu.
 					option_menus.item (active_menu).deactivate
 					active_menu := active_menu + 1
@@ -146,7 +158,7 @@ feature -- Event handling
 						active_menu := 1
 					end
 					option_menus.item (active_menu).activate
-				elseif a_keyboard_event.key = sdlk_up then
+				elseif a_keyboard_event.key = Sdlk_up then
 					-- Switch to previous option menu.
 					option_menus.item (active_menu).deactivate
 					active_menu := active_menu - 1
@@ -160,50 +172,134 @@ feature -- Event handling
 		end
 		
 	start_callback is
-			-- Callback for `start game' entry
+			-- Callback for `start game' entry.
 		local
-			a_game_scene: GAME_SCENE
-			a_game: GAME
 			a_map_file: TRAFFIC_MAP_FILE
 		do
-			-- Create game with settings from option menus.
-			create a_game.make
-			a_game.set_game_mode (option_menus.item (1).selected_entry)
-			a_game.set_number_of_hunters (option_menus.item (2).selected_entry)
-			a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./map/zurich_" + option_menus.item (3).item (option_menus.item (3).selected_entry).text.value + ".xml")
-			a_game.set_traffic_map (a_map_file.traffic_map)
+			-- Create game and make game settings.
+			if game = Void then
+				game := create {GAME}.make
+			end
+				
+			-- Set game mode.
+			if not game.game_mode_set then
+				game.set_game_mode (option_menus.item (1).selected_entry)				
+			end
+
+			-- Set number of hunters.	
+			if not game.hunter_count_set then
+				game.set_number_of_hunters (option_menus.item (2).selected_entry)				
+			end
+
+			-- Set traffic map.
+			if not game.traffic_map_set then
+				a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./map/zurich_" + option_menus.item (3).item (option_menus.item (3).selected_entry).text.value + ".xml")
+				game.set_traffic_map (a_map_file.traffic_map)				
+			end
 
 			-- Create scene that displays the game.
---			a_game_scene := create {GAME_SCENE}.make_scene
---			a_game_scene.set_traffic_map (a_map_file.traffic_map)
---			a_game_scene.set_hunter_count (option_menus.item (2).selected_entry)
-			a_game_scene := create {GAME_SCENE}.make_scene (a_map_file.traffic_map, option_menus.item (2).selected_entry)
-			a_game_scene.set_last_scene (Current)
+			game_scene := create {GAME_SCENE}.make_scene (game.traffic_map, option_menus.item (2).selected_entry)
+--			game_scene.set_last_scene (Current)
 
 			-- Load correct player pics according to settings.
-			player_pic_directory.wipe_out
-			player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).item (option_menus.item (4).selected_entry).text.value + "/")
+			Player_pic_directory.wipe_out
+			Player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).item (option_menus.item (4).selected_entry).text.value + "/")
 
-			main_controller.initialize_with_game_and_scene (a_game, a_game_scene)
+			-- Initialize `main_controller' and start a new game.
+			main_controller.initialize_with_game_and_scene (game, game_scene)
 			main_controller.start_game
 
 			-- Go to the above created game scene.			
-			next_scene := a_game_scene
+			next_scene := game_scene
 			event_loop.stop
 		end
 		
 		credits_callback is
-				-- Callback for `credits' entry
+				-- Callback for `credits' entry.
 			do
-				credits_scene.set_last_scene (Current)
-				next_scene := credits_scene
+				next_scene := create {CREDITS_SCENE}.make_scene
 				event_loop.stop				
 			end
 			
 		quit_callback is
-				-- Callback for `quit' entry
+				-- Callback for `quit' entry.
 			do
 				event_loop.stop
 			end
+
+--feature -- Game settings
+--
+--	set_traffic_map (a_traffic_map: like traffic_map) is
+--			-- Set `traffic_map' to `a_traffic_map'.
+--		require
+--			a_traffic_map_exists: a_traffic_map /= Void
+--		do
+--			traffic_map := a_traffic_map
+--			traffic_map_set := True
+--		ensure
+--			traffic_map_correct: traffic_map = a_traffic_map
+--		end
+--
+--	set_game_mode (a_mode: like game_mode) is
+--			-- Set `game_mode' to `a_mode'.
+--		require
+--			a_mode_valid: a_mode >= 1 and a_mode <= 4
+--		do
+--			game_mode := a_mode
+--			game_mode_set := True
+--		ensure
+--			game_mode_correct: game_mode = a_mode
+--		end
+--		
+--	set_number_of_hunters (a_hunter_count: like hunter_count) is
+--			-- Set `hunter_count' to `a_hunter_count'.
+--		require
+--			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)			
+--		do
+--			hunter_count := a_hunter_count
+--			hunter_count_set := True
+--		ensure
+--			hunter_count_correct: hunter_count = a_hunter_count
+--		end
+
+feature -- Settings
+
+	set_game (a_game: GAME) is
+			-- Set `game' to `a_game'
+		require
+			a_game_exists: a_game /= Void
+		do
+			game := a_game
+		ensure
+			game_correct: game = a_game
+		end
+		
+
+feature {NONE} -- Implementation
+
+	game: GAME
+			-- The game logic.
+			
+	game_scene: GAME_SCENE
+			-- Visualization of the game.
+			
+--
+--	traffic_map: TRAFFIC_MAP
+--			-- Map on which the game will take place.
+--			
+--	game_mode: INTEGER
+--			-- Game mode.
+--	
+--	hunter_count: INTEGER
+--			-- Number of hunters.
+--	
+--	traffic_map_set: BOOLEAN
+--			-- Is `traffic_map' set manually?
+--	
+--	game_mode_set: BOOLEAN
+--			-- Is `game_mode' set manually?
+--	
+--	hunter_count_set: BOOLEAN
+--			-- Is `hunter_count' set manually?
 
 end

@@ -49,14 +49,6 @@ feature -- Initialization
 			hunter_count_set: hunter_count = a_hunter_count
 		end
 		
---	make_scene is
---			-- Creation procedure
---		do
---			Precursor
---			create status.make (0)
---		end
-	
-		
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
 		require else
@@ -291,33 +283,32 @@ feature {NONE} -- Menu Handling
 	quit_callback is
 			-- What happens when "Quit" is selected in a menu.
 		do
-			next_scene := Void
 			event_loop.stop
 		end
 		
 	
 feature -- Access
 
-	set_traffic_map (a_traffic_map: TRAFFIC_MAP) is
+	set_traffic_map (a_traffic_map: like traffic_map) is
 			-- Set `traffic_map' to `a_traffic_map'.
 		require
 			a_traffic_map_exists: a_traffic_map /= Void
 		do
 			traffic_map := a_traffic_map
 		ensure
-			traffic_map_set: traffic_map = a_traffic_map
-		end
-	
-	set_hunter_count (a_count: INTEGER) is
-			-- Set `hunter_count' to `a_count'
-		require
-			a_count_valid: a_count > 0 and a_count <= 8
-		do
-			hunter_count := a_count
-		ensure
-			hunter_count_set: hunter_count = a_count
+			traffic_map_correct: traffic_map = a_traffic_map
 		end
 		
+	set_number_of_hunters (a_hunter_count: like hunter_count) is
+			-- Set `hunter_count' to `a_hunter_count'.
+		require
+			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)			
+		do
+			hunter_count := a_hunter_count
+		ensure
+			hunter_count_correct: hunter_count = a_hunter_count
+		end
+
 		
 	set_status (a_status: ARRAYED_LIST [STRING]) is
 			-- Set `status' to `a_status'
@@ -329,8 +320,7 @@ feature -- Access
 			-- Update the overview status box
 		do
 			if status_box /= Void then
-				status_box.clear
-				status_box.add_lines (status)
+				status_box.replace_text (status)
 				if screen /= Void then
 					redraw
 				end				
@@ -527,8 +517,7 @@ feature {MAIN_CONTROLLER} -- Event Handling
 				last_clicked_button := a_button
 				player_status_box.set_visibility (true)
 				player_status_box.set_title ("Status of " + tmp_player_displayer.out)
-				player_status_box.clear
-				player_status_box.add_lines (tmp_player_displayer.statistics)
+				player_status_box.replace_text (tmp_player_displayer.statistics)
 			end
 			redraw
 		end

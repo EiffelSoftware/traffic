@@ -29,7 +29,7 @@ feature {FLAT_HUNTER} -- Basic operations
 					best_move_so_far := possible_moves.item
 					best_distance  := feature {INTEGER}.max_value
 				invariant
-					-- best_move_so_far is shortest move between possible_moves.start and possible_moves.item
+					-- `best_move_so_far' is shortest move between `possible_moves.start' and `possible_moves.item'.
 					best_distance <= feature {INTEGER}.max_value
 					1 <= possible_moves.index
 					possible_moves.index <= possible_moves.count + 1
@@ -52,7 +52,7 @@ feature {FLAT_HUNTER} -- Basic operations
 			end
 		ensure then 
 			result_not_void: chosen_move /= Void
-			result_has_place: chosen_move.origin = my_location or chosen_move.destination = my_location
+			result_has_place: chosen_move.origin = my_location
 		end		
 
 end

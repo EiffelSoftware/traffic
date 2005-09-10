@@ -1,5 +1,5 @@
 indexing
-	description: "Application settings and launch"
+	description: "Application settings and launch."
 	date: "$Date$"
 	revision: "$Revision$"
 	
@@ -30,14 +30,17 @@ create
 	make_and_launch
 
 feature -- Initialization
+
 	make_and_launch is
 			-- Create and execute the application.
+		local
+			start_menu_scene: START_MENU_SCENE
 		do
 			-- Video subsystem settings.
 			video_subsystem.enable
---			video_subsystem.set_fullscreen (true)
+--			video_subsystem.set_fullscreen (True)
 --			video_subsystem.show_cursor
-			video_subsystem.set_doublebuffered (true)			
+			video_subsystem.set_doublebuffered (True)			
 			video_subsystem.set_video_surface_width (Window_width)			
 			video_subsystem.set_video_surface_height (Window_height)
 		
@@ -52,11 +55,26 @@ feature -- Initialization
 			
 			-- Begin playing the game music.
 			music_player.play_game_music
-			
+
 			-- Set and launch the first scene.
-			set_scene (start_menu_scene)			
+			create start_menu_scene.make_scene
+			create game.make
+			adjust_game_settings			
+			start_menu_scene.set_game (game)
+			set_scene (start_menu_scene)	
 			launch
 			video_subsystem.disable
 		end
+		
+	adjust_game_settings is
+			-- Adjust game settings
+		do
+			-- Do nothing. Redefined in class START.
+		end
+		
+feature	-- Access
+
+	game: GAME
+			-- The game which will be played.
 		
 end

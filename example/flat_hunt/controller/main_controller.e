@@ -13,11 +13,6 @@ class
 	MAIN_CONTROLLER 
 
 inherit
---	KL_SHARED_FILE_SYSTEM 
---		undefine
---			default_create, copy
---		end	
-
 	GAME_CONSTANTS
 	
 	THEME
@@ -30,33 +25,29 @@ create
 feature -- Initialization
 
 	make is
-			-- Creation procedure
+			-- Creation procedure.
 		do
 			default_create
 		end
 
-	initialize_with_game_and_scene (a_game: GAME; a_game_scene: GAME_SCENE) is
+	initialize_with_game_and_scene (a_game: like game; a_game_scene: like game_scene) is
 			-- Initialize main controller
 		require
-			a_game_not_void: a_game /= Void
-			a_game_scene_not_void: a_game_scene /= Void
+			a_game_exists: a_game /= Void
+			a_game_scene_exists: a_game_scene /= Void
 		do
 			game := a_game
 			game_scene := a_game_scene
+			
 			create status.make (0)
 			game_scene.set_pause_callback (agent take_a_pause)
 		ensure
 			game_set: game = a_game
 			game_scene_set: game_scene = a_game_scene
+			status_exists: status /= Void
 		end
 
 feature -- Game operations
-
-	start is
-			-- Adjust the game settings and start the game.
-		do
-			-- Nothing, redefined in class START
-		end
 
 	start_game is
 			-- Create and start game.
@@ -230,13 +221,13 @@ feature {NONE} -- Event handling
 				if game.state = game.Play_state then
 					play
 					if game.current_player /= Void and then game.current_player.brain.generating_type.substring (1, 3).is_equal ("BOT") then
-						sleep_and_process (1800)
+						sleep_and_process (1000)
 					end
 				end
 				if not paused and game.state = game.Move_state then
 					move
 				if game.last_player /= Void then
-						sleep_and_process (1600)
+						sleep_and_process (1000)
 					end
 				end
 				if game.is_game_over then

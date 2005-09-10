@@ -1,5 +1,5 @@
 indexing
-	description: "Brain for the players to choose their moves"
+	description: "Brain for the players to choose their moves."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -8,8 +8,10 @@ deferred class
 	
 inherit
 	DOUBLE_MATH
+	
 	ANY
-		export {ANY} generating_type
+		export 
+			{ANY} generating_type
 		end
 	
 feature {PLAYER} -- Basic operations
@@ -24,12 +26,14 @@ feature {PLAYER} -- Basic operations
 			possible_move_chosen: chosen_move /= Void implies possible_moves.has (chosen_move)
 		end		
 		
-feature {PLAYER} -- Status
+feature {PLAYER} -- Access
 	
-	set_selected_place (a_place: TRAFFIC_PLACE) is
+	set_selected_place (a_place: like selected_place) is
 			-- Set `selected_place' to `a_place'.
 		do
 			selected_place := a_place
+		ensure
+			place_set: selected_place = a_place
 		end
 
 	chosen_move: TRAFFIC_LINE_SECTION
@@ -38,7 +42,7 @@ feature {PLAYER} -- Status
 feature {NONE} -- Implementation
 
 	selected_place: TRAFFIC_PLACE
-			-- Place selected by user
+			-- Place selected by user.
 
 	calculate_distance (location_1: TRAFFIC_PLACE; location_2: TRAFFIC_PLACE): DOUBLE is
 			-- Calculate distance between `location_1' and `location_2'.

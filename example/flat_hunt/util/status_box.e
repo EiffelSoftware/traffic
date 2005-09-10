@@ -18,77 +18,57 @@ inherit
 		end
 
 create
-	make_at_position,
-	make_from_coordinates,
-	make_from_position_and_size
+	make_at_position, make_from_coordinates, make_from_position_and_size
 
 feature -- Initialization
-
---	make is
---			-- Create status box with default values
---		do
---			Precursor
---			
---			-- Create box.
---			create box.make_from_coordinates (0, 0, 0, 0)
---			
---			-- Initialization.
---			set_default_values
---			initialize_box
---			
---		ensure then
---			box_not_void: box /= Void
---		end
 	
 	make_at_position (an_x: INTEGER; a_y: INTEGER; a_title: STRING) is
-			-- Create status box with default values at position (x,y)
+			-- Create status box with default values at position (`an_x', `a_y').
 		require
-			a_title_not_void: a_title /= Void
+			a_title_exists: a_title /= Void
 		do
 			make
 			set_default_values
 			set_x_y (an_x, a_y)
-			create box.make_from_coordinates (0, 0, 50, 50)
-			initialize_box
+			create box.make_from_coordinates (0, 0, 0, 0)
 			initialize_with_title (a_title)
 		ensure
-			box_not_void: box /= Void
 			positioned: x = an_x and y = a_y
 		end
 
 	make_from_coordinates (x1: INTEGER; y1: INTEGER; x2: INTEGER; y2: INTEGER; a_title: STRING) is
 			-- Create status box from coordinates (x1, y1) to (x2, y2)
 		require
-			a_title_not_void: a_title /= Void
+			a_title_exists: a_title /= Void
+			position1_valid: x1 >= 0 and x1 <= Window_width and y1 >= 0 and y1 <= Window_height
+			position2_valid: x2 >= 0 and x2 <= Window_width and y2 >= 0 and y2 <= Window_height			
 		do
 			make
 			set_default_values
 			set_x_y (x1, y1)
+			
 			create box.make_from_coordinates (0, 0, x2 - x1, y2 - y1)
-			initialize_box
 			initialize_with_title (a_title)
 		ensure
-			box_not_void: box /= Void
 			positioned: x = x1 and y = y1
---			box_width_set: box.width = x2 - x1 
---			box_height_set: box.height = y2 - y1
 		end
 		
-	make_from_position_and_size (x1: INTEGER; y1: INTEGER; a_width: INTEGER; a_height: INTEGER; a_title: STRING) is
-			-- Create status box from position (x1, y1) and size (a_width, a_height)
+	make_from_position_and_size (an_x: INTEGER; a_y: INTEGER; a_width: INTEGER; a_height: INTEGER; a_title: STRING) is
+			-- Create status box from position (`an_x', `a_y') and size (`a_width', `a_height').
 		require
-			a_title_not_void: a_title /= Void
+			a_title_exists: a_title /= Void
+			a_width_positive: a_width >= 0
+			a_height_positive: a_height >= 0
+			position_valid: an_x >= 0 and an_x <= Window_width and a_y >= 0 and a_y <= Window_height
 		do
 			make
 			set_default_values
-			set_x_y (x1, y1)
+			set_x_y (an_x, a_y)
+			
 			create box.make_from_position_and_size (0, 0, a_width, a_height)
-			initialize_box
 			initialize_with_title (a_title)
 		ensure
-			box_not_void: box /= Void
-			positioned: x = x1 and y = y1
---			box_resized: box.width = a_width and box.height = a_height
+			positioned: x = an_x and y = a_y
 		end
 
 feature {NONE} -- Initialization Implementation
@@ -97,24 +77,24 @@ feature {NONE} -- Initialization Implementation
 			-- Set default values for all attributes.
 		do
 			opacity := 100			
-			color := status_color
+			color := Status_color
 			alignment := Left
-			font := small_default_font
-			title_font := big_default_font
+			font := Small_default_font
+			title_font := Big_default_font
 			max_line_width := 0
 			text_height := 0
-			box_auto_resize := false
-			visible := true
+			box_auto_resize := False
+			visible := True
 		ensure
-			color_not_void: color /= Void
-			font_not_void: font /= Void
-			title_font_not_void: title_font /= Void			
+			color_set: color = Status_color
+			font_set: font = Small_default_font
+			title_font_setexists: title_font = Big_default_font		
 		end
 		
 	initialize_box is
 			-- Initialize box with default values.
 		require
-			color_not_void: color /= Void
+			color_exists: color /= Void
 		do
 			box.set_rounded_corner_radius (10)
 			box.set_line_width (1)			
@@ -124,34 +104,49 @@ feature {NONE} -- Initialization Implementation
 			box.fill_color.set_alpha (opacity)
 			extend (box)
 		ensure
-			box_displayed: has (box)
-		-- TODO: postcondition for every box-attribute that is set ?? 			
+			box_added: has (box)		
 		end
 
 	initialize_with_title (a_title: STRING) is
+			-- Initialize box with `a_title'.
 		require
-			a_title_not_void: a_title /= Void
+			a_title_exists: a_title /= Void
 		do
+			-- Initialize background box.
+			initialize_box
+			
+			-- Create title.
 			create title.make (a_title, title_font)
 			title.set_x_y (15, 0)
+			extend (title)
+			
+			-- Create list for text.
 			create lines.make
-			set_box_position
-			extend (title)	
 			extend (lines)
+			
+			set_box_position
 		ensure
-			title_not_void: title /= Void
-			lines_not_void: lines /= Void
-			lines_displayed: has (lines)
-			title_displayed: has (title)
+			title_exists: title /= Void
+			lines_exists: lines /= Void
+			lines_added: has (lines)
+			title_added: has (title)
 		end
 		
 feature -- Access
 
-	add_lines (some_lines: ARRAYED_LIST [STRING]) is
-			-- Add lines `some_lines' to status box
+	replace_text (some_lines: ARRAYED_LIST [STRING]) is
+			-- Replace `lines' by `some_lines'.
 		require
-			some_lines_not_void: some_lines /= Void
-			lines_not_void: lines /= Void
+			some_lines_exists: some_lines /= Void
+		do
+			clear
+			add_lines (some_lines)
+		end
+
+	add_lines (some_lines: ARRAYED_LIST [STRING]) is
+			-- Add lines `some_lines' to status box.
+		require
+			some_lines_exists: some_lines /= Void
 		do
 			from
 				some_lines.start
@@ -164,69 +159,37 @@ feature -- Access
 		end
 		
 	add_line (a_line: STRING) is
-			-- Add a credit line
+			-- Add a line.
 		require
-			lines_not_void: lines /= Void
+			lines_exists: lines /= Void
+			a_line_exists: a_line /= Void
 		do
 			lines.extend (create {EM_STRING}.make (a_line, font))
+			
+			-- Update max_line_width.
 			if lines.last.width > max_line_width then
 				max_line_width := lines.last.width
 			end
-			text_height := text_height + lines.last.height // 2 + padding
+			
+			text_height := text_height + lines.last.height // 2 + Padding
 			set_line_position (lines.count)	
 		ensure
-			text_height_set: text_height = old text_height + lines.last.height // 2 + padding
+			text_height_set: text_height = old text_height + lines.last.height // 2 + Padding
 			max_line_width_set: max_line_width >= lines.last.width
 		end	
 	
 	clear is
-			-- Remove all lines
+			-- Remove all lines.
 		do
 			lines.wipe_out
 		end
-		
 
-	draw (a_surface: EM_SURFACE) is
-			-- Draw 'Current' onto `surf'.
-		local
-			cursor: DS_LINKED_LIST_CURSOR [EM_DRAWABLE]
-			translation: EM_VECTOR_2D
-			old_clipping_area, clipping_area: EM_ORTHOGONAL_RECTANGLE
-		do
-			-- Translate coordinate system for drawing all contained objects.
-			create translation.make (x, y)
-			a_surface.translate_coordinates (translation)
-			
-			-- Change clipping area to clip all objects to container boundaries.
-			old_clipping_area := a_surface.coordinate_area
-			create clipping_area.make_from_coordinates (0, 0, width, height)
-			clipping_area := clipping_area.intersection (old_clipping_area)
-			a_surface.clip_coordinates (clipping_area)			
-			
-			-- Draw all contained objects.
-			if visible then
-				cursor := new_cursor
-				from
-					cursor.start
-				until
-					cursor.off
-				loop
-					a_surface.draw_object (cursor.item)
-					cursor.forth				
-				end	
-			end
-			
-			-- Reset coordinate system.
-			a_surface.clip_coordinates (old_clipping_area)
-			a_surface.translate_coordinates (- translation)
-		end
-
-feature -- Status settings
+feature -- Settings
 		
 	set_opacity (an_opacity: like opacity) is
-			-- Set opacity of status box
+			-- Set `opacity' to `an_opacity'.
 		require
-			an_opacity_not_void: an_opacity /= Void
+			an_opacity_exists: an_opacity /= Void
 		do
 			opacity := an_opacity
 			update_color
@@ -235,9 +198,9 @@ feature -- Status settings
 		end
 		
 	set_color (a_color: like color) is
-			-- Set color of status box¨
+			-- Set `color' to `a_color'.
 		require
-			a_color_not_void: a_color /= Void
+			a_color_exists: a_color /= Void
 		do
 			color := a_color
 			update_color
@@ -246,7 +209,7 @@ feature -- Status settings
 		end
 		
 	set_alignment (an_alignment: like alignment) is
-			-- Set alignment of the lines
+			-- Set `alignment' of the lines to `an_alignment'.
 		require
 			an_alignment_valid: an_alignment >= 0 and an_alignment < 4
 		do
@@ -257,9 +220,9 @@ feature -- Status settings
 		end
 		
 	set_font (a_font: like font) is
-			-- Set font to be used for the text in this status box
+			-- Set `font' to be used for the text to `a_font'.
 		require
-			a_font_not_void: a_font /= Void
+			a_font_exists: a_font /= Void
 		do
 			font := a_font
 			update_lines
@@ -268,9 +231,9 @@ feature -- Status settings
 		end
 
 	set_title_font (a_font: like title_font) is
-			-- Set font to be used for the text in this status box
+			-- Set `title_font' to be used for the title to `a_font'.
 		require
-			a_font_not_void: a_font /= Void
+			a_font_exists: a_font /= Void
 		do
 			title_font := a_font
 			update_title
@@ -279,9 +242,9 @@ feature -- Status settings
 		end	
 	
 	set_title (a_title: STRING) is
-			-- Set title to `a_title'
+			-- Set title to `a_title'.
 		require
-			a_title_not_void: a_title /= Void
+			a_title_exists: a_title /= Void
 		do
 			title.set_value (a_title)
 		ensure
@@ -294,127 +257,123 @@ feature -- Status settings
 			box_auto_resize := b
 		end
 		
-	set_visibility (b: BOOLEAN) is
-			-- Set visibility of status box
+	set_visibility (b: like visible) is
+			-- Set visibility of status box to `b'.
 		do
 			visible := b
 		end
 		
 	toggle_visibility is
-			-- Toggle visibility of status box
+			-- Toggle visibility of status box.
 		do
 			set_visibility (not visible)
 		end
 
-	set_position_and_size (x1: INTEGER; y1: INTEGER; a_width: INTEGER; a_height: INTEGER) is
-			-- Set status box to position (x1, y1) and size (a_width, a_height)
+	set_position_and_size (an_x: INTEGER; a_y: INTEGER; a_width: INTEGER; a_height: INTEGER) is
+			-- Set status box to position (`an_x', `a_y') and size (`a_width', `a_height').
 		do
-			set_x_y (x1, y1)
+			set_x_y (an_x, a_y)
 			box.set_size (a_width, a_height)
 		ensure
-			positioned: x = x1 and y = y1
+			positioned: x = an_x and y = a_y
 			box_resized: box.width = a_width and box.height = a_height
 		end		
 
 feature -- Attributes		
 
 	visible: BOOLEAN
-		-- Is this status box visible?
+			-- Is this status box visible?
 	
 	alignment: INTEGER
-		-- Alignment of the lines
+			-- Alignment of the lines.
 
 	opacity: INTEGER
-		-- Opacity of the status box
+			-- Opacity of the background box.
 	
 	color: EM_COLOR
-		-- Color of the status box
+			-- Color of the background box.
 
 	lines: EM_DRAWABLE_CONTAINER [EM_STRING]
-		-- Text to be displayed in status box
+			-- Text to be displayed.
 		
 	box: EM_RECTANGLE
-		-- Box in the background
-	
-	vertical_margin: INTEGER is 15
-		-- Distance between top border <-> text, bottom border <-> text
-	
-	horizontal_margin: INTEGER is 18
-		-- Distance between left border <-> text, right border <-> text	
-		
-	padding: INTEGER is 5
-		-- Padding between two lines
+			-- Box in the background.
 	
 	font: EM_COLOR_TTF_FONT
-		-- Font of the text within this status box
+			-- Font of the text.
 	
 	title: EM_STRING
-		-- Title of the status box, displayed on top
+			-- Title of the status box, displayed on top.
 	
 	title_font: EM_COLOR_TTF_FONT
-		-- Font used for `title'
+			-- Font used for `title'.
 
 	max_line_width: INTEGER
-		-- Width of longest line
+			-- Width of longest line.
 	
 	text_height: INTEGER
-		-- Height of all lines combined
+			-- Height of all lines combined.
 	
 	box_auto_resize: BOOLEAN
-		-- Should the box automatically determine its size according to the inserted lines?
+			-- Should the box automatically determine its size according to the inserted lines?
+
+feature {NONE} -- Constants
+
+	Vertical_margin: INTEGER is 15
+			-- Distance between top border <-> text, bottom border <-> text.
+	
+	Horizontal_margin: INTEGER is 18
+			-- Distance between left border <-> text, right border <-> text.
+		
+	Padding: INTEGER is 5
+			-- Padding between two lines.
 		
 feature {NONE} -- Implementation		
 
 	update_color is
-			-- Update color of the status box and its stroke
+			-- Update color of the background box and its stroke.
 		do
 			box.fill_color.set_alpha (opacity)
 			box.set_fill_color (color)
 			box.set_line_color (color)
-		ensure
--- TODO: violation, why?			alpha_set: box.fill_color.alpha = opacity
-			colors_set: box.fill_color = color and box.line_color = color
 		end
 		
 	set_line_position (i: INTEGER) is
-			-- Set position of line at index `i'
+			-- Set position of line at index `i'.
 		require
 			valid_index: i > 0 and i <= lines.count
 		local
 			next_y: INTEGER
 		do
 			if i = 1 then
-				next_y := box.y + vertical_margin
+				next_y := box.y + Vertical_margin
 			else 
-				next_y := lines.item (i - 1).y + lines.item (i).height // 2 + padding
+				next_y := lines.item (i - 1).y + lines.item (i).height // 2 + Padding
 			end
-			
-			if next_y + lines.item (i).height <= width then						
-				if alignment = Left then
-					lines.item (i).set_x_y (box.x + horizontal_margin, next_y)
-				elseif alignment = Right then
-					if box_auto_resize then
-						lines.item (i).set_x_y (box.x + max_line_width - lines.item (i).width - horizontal_margin, next_y)							
-					else
-						lines.item (i).set_x_y (box.x + box.width - lines.item (i).width - horizontal_margin, next_y)
-					end
-				else -- alignment = Centered
-					if box_auto_resize then
-						lines.item (i).set_x_y (box.x + (max_line_width + 2 * horizontal_margin - lines.item (i).width) // 2, next_y)
-					else
-						lines.item (i).set_x_y (box.x + (box.width - lines.item (i).width) // 2, next_y)
-					end
-				end		
-			end
+					
+			if alignment = Left then
+				lines.item (i).set_x_y (box.x + Horizontal_margin, next_y)
+			elseif alignment = Right then
+				if box_auto_resize then
+					lines.item (i).set_x_y (box.x + max_line_width - lines.item (i).width - Horizontal_margin, next_y)							
+				else
+					lines.item (i).set_x_y (box.x + box.width - lines.item (i).width - Horizontal_margin, next_y)
+				end
+			else -- alignment = Centered
+				if box_auto_resize then
+					lines.item (i).set_x_y (box.x + (max_line_width + 2 * Horizontal_margin - lines.item (i).width) // 2, next_y)
+				else
+					lines.item (i).set_x_y (box.x + (box.width - lines.item (i).width) // 2, next_y)
+				end
+			end		
 		ensure
-		-- TODO: line_positioned: how ??	
+			item_y_set: i = 1 implies lines.item (i).y	= box.y + Vertical_margin
+						i /= 1 implies lines.item (i).y = lines.item (i - 1).y + lines.item (i).height // 2 + Padding
+		-- TODO: item_x_set: viel zu verschachtelt für eine postcondition, oder?
 		end
 		
 	update_lines is
-			-- Update positions of all entries according to current alignment and font
-		require
-			lines_not_void: lines /= Void
-			font_not_void: font /= Void
+			-- Update positions of all entries according to current alignment and font.
 		local
 			i: INTEGER
 		do
@@ -439,10 +398,7 @@ feature {NONE} -- Implementation
 
 		
 	update_title is
-			-- Update title according to current `title_font'
-		require
-			title_not_void: title /= Void
-			title_font_not_void: title_font /= Void
+			-- Update title according to current `title_font'.
 		do
 			title.set_font (title_font)
 			set_box_position
@@ -454,21 +410,58 @@ feature {NONE} -- Implementation
 			-- Set box to the correct position.
 		do
 			box.set_x_y (0, title.height // 2 + title.height // 18)
-		end
-		
+		ensure
+			box_positioned: box.y = title.height // 2 + title.height // 18 and box.x = 0
+		end	
 		
 	update_box is
 			-- Update the background box
 		do
 			if box_auto_resize then
-				box.set_size (max_line_width + horizontal_margin * 2, text_height + vertical_margin * 2)				
+				box.set_size (max_line_width + Horizontal_margin * 2, text_height + Vertical_margin * 2)				
 			end
 			set_box_position
-		ensure
-		-- TODO: conditional invariant box_resized: ... ??
+		end
+
+	draw (a_surface: EM_SURFACE) is
+			-- Draw 'Current' onto `surf'.
+		local
+			cursor: DS_LINKED_LIST_CURSOR [EM_DRAWABLE]
+			translation: EM_VECTOR_2D
+			old_clipping_area, clipping_area: EM_ORTHOGONAL_RECTANGLE
+		do
+			-- Translate coordinate system for drawing all contained objects.
+			create translation.make (x, y)
+			a_surface.translate_coordinates (translation)
+			
+			-- Change clipping area to clip all objects to container boundaries.
+			old_clipping_area := a_surface.coordinate_area
+			create clipping_area.make_from_coordinates (0, 0, width, height)
+			clipping_area := clipping_area.intersection (old_clipping_area)
+			a_surface.clip_coordinates (clipping_area)			
+			
+			-- Draw all contained objects if visible.
+			if visible then
+				cursor := new_cursor
+				from
+					cursor.start
+				until
+					cursor.off
+				loop
+					a_surface.draw_object (cursor.item)
+					cursor.forth				
+				end	
+			end
+			
+			-- Reset coordinate system.
+			a_surface.clip_coordinates (old_clipping_area)
+			a_surface.translate_coordinates (- translation)
 		end
 
 invariant
-	box_not_void: box /= Void
-
+	box_exists: box /= Void
+	lines_exists: lines /= Void
+	title_exists: title /= Void
+	font_exists: font /= Void
+	title_font_exists: title_font /= Void
 end

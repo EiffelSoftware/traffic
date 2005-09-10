@@ -1,5 +1,5 @@
 indexing
-	description: "Menu with menu entries all visible. Use up and down arrow keys to navigate."
+	description: "Menu with all menu entries visible. Use up and down arrow keys to navigate."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -15,24 +15,32 @@ create
 feature {NONE} -- Implementation
 
 	set_entry_position (i: INTEGER) is
-			-- Set position of entry at index `i'
+			-- Set position of entry at index `i'.
 		local
 			next_y: INTEGER
 		do
+			-- Calculate and set y position of entry.
 			if i = 1 then
 				next_y := 0
 			else
 				next_y := item (i - 1).y + item (i).height // 2
 			end
+			item (i).set_y (next_y)
+			
+			-- Calculate and set x position of entry based on `alignment'.
 			if alignment = Left then
-				item (i).set_x_y (0, next_y)
+				item (i).set_x (0)
 			elseif alignment = Right then
-				item (i).set_x_y (max_entry_width - item (i).width, next_y)
-			else -- alignment = Centered
-				item (i).set_x_y ((max_entry_width - item (i).width) // 2, next_y)
+				item (i).set_x (max_entry_width - item (i).width)
+			else -- alignment = Centered.
+				item (i).set_x ((max_entry_width - item (i).width) // 2)
 			end		
 		ensure then
-			-- TODO: postcondition to ensure position of item (i) set correctly
-			-- How ???
+			item_y_set: i = 1 implies item (i).y = 0
+						i /= 1 implies item (i).y = item (i - 1).y + item (i).height // 2
+			item_x_set:	alignment = Left implies item (i).x = 0
+						alignment = Right implies item (i).x = max_entry_width - item (i).width
+						not ((alignment = Left) or (alignment = Right)) implies item (i).x = (max_entry_width - item (i).width) // 2
 		end
+		
 end

@@ -1,5 +1,5 @@
 indexing
-	description: "Display the agent on the board"
+	description: "Displays the agent on the board."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -15,7 +15,7 @@ inherit
 create 
 	make_from_player
 
-feature -- Access
+feature -- Attributes
 
 	player: ESTATE_AGENT
 			-- Reference to player to be displayed
@@ -67,21 +67,26 @@ feature -- Output
 
 		
 feature {NONE} -- Implementation
-		
+	
+--	statistics: ARRAYED_LIST [STRING]
+--			-- Statistics
 	draw (surface: EM_SURFACE) is
 			-- Draw 'Current' onto `surf'.
 		do
+			io.putstring ("%N%N" + player.name)			
 			update_position
 			if player.is_visible then
 				if picture /= Void then
 					surface.draw_object (picture)
 					if player.marked then
 						surface.draw_object (marking_circle)
-						mark_possible_moves
-					else
+						mark_possible_moves	
+					elseif not possible_moves_unmarked then
 						unmark_possible_moves
 					end
 				end
+			else
+				
 			end
 		end
 

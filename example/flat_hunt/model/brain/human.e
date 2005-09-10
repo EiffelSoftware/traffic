@@ -29,6 +29,6 @@ feature {PLAYER} -- Basic operations
 				selected_place := Void
 			end
 		ensure then
-			result_has_place_if_not_void: chosen_move /= Void implies (chosen_move.origin = my_location or chosen_move.destination = my_location)
+			result_has_place_if_not_void: chosen_move /= Void implies chosen_move.origin = my_location
 		end		
 end

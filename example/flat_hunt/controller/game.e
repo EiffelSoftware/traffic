@@ -15,6 +15,8 @@ inherit
 		undefine
 			default_create
 		end
+	
+	EM_TIME_SINGLETON
 		
 create 
 	make, make_with_constants
@@ -24,12 +26,20 @@ feature -- Initialization
 	make is
 			-- Creation procedure.
 		do
+			-- Set default values.
+			traffic_map_set := False
+			game_mode_set := False
+			hunter_count_set := False
+			
+			-- Build checkpoints.
 			create checkpoints.make
 			checkpoints.fill (<< 3, 8, 13, 18, 23 >>)
+		ensure
+			checkpoints_exist: checkpoints /= Void
 		end			
 
-	make_with_constants (a_game_mode: INTEGER; a_hunter_count: INTEGER; a_traffic_map: TRAFFIC_MAP) is
-			-- Create with given game mode, hunter count, traffic map
+	make_with_constants (a_game_mode: like game_mode; a_hunter_count: like hunter_count; a_traffic_map: like traffic_map) is
+			-- Create with given game settings.
 		do
 			make
 			set_game_mode (a_game_mode)
@@ -38,13 +48,14 @@ feature -- Initialization
 		end
 		
 	create_players is
-			-- Create and prepare players
+			-- Create and prepare players.
 		require
-			correct_number_of_hunters: 1 <= hunter_count and hunter_count <= 8
-			correct_game_mode: (Hunt <= game_mode) and (game_mode <= Demo)
+			hunter_count_valid: 1 <= hunter_count and hunter_count <= 8
+			game_mode_valid: (Hunt <= game_mode) and (game_mode <= Demo)
 		local
 			player_factory: PLAYER_FACTORY
 		do
+			-- Build players.
 			create player_factory.make (traffic_map)
 			create players.make (hunter_count + 1)
 			if game_mode = Hunt then
@@ -57,6 +68,8 @@ feature -- Initialization
 				player_factory.build_players (True, True, hunter_count)
 			end
 			players := player_factory.players
+			
+			-- Estate agent special handling.
 			estate_agent ?= players.first
 			check 
 				estate_agent /= Void 
@@ -65,51 +78,65 @@ feature -- Initialization
 			estate_agent_exists: estate_agent /= Void
 			players_exist: players /= Void			
 		end
-		
 
 	start_game is
 			-- Prepare the board, start the game.
 		require
 			players_exist: players /= Void
 		do
+			-- Set defaults.
 			current_round_number := 0
 			current_player_index := 0
 			state := Prepare_state
+			
+			-- Begin.
 			next_turn
 		ensure
 			correct_round_number: current_round_number = 1
 		end
 
-feature -- Status setting
+feature -- Game settings
 
-	set_traffic_map (a_traffic_map: TRAFFIC_MAP) is
-			-- Set the game's map.
+	set_traffic_map (a_traffic_map: like traffic_map) is
+			-- Set `traffic_map' to `a_traffic_map'.
+		require
+			a_traffic_map_exists: a_traffic_map /= Void
 		do
 			traffic_map := a_traffic_map
+			traffic_map_set := True
+		ensure
+			traffic_map_correct: traffic_map = a_traffic_map
 		end
 
-	set_game_mode (a_mode: INTEGER) is
-			-- Set mode of game.
+	set_game_mode (a_mode: like game_mode) is
+			-- Set `game_mode' to `a_mode'.
+		require
+			a_mode_valid: a_mode >= Hunt and a_mode <= Demo
 		do
 			game_mode := a_mode
+			game_mode_set := True
+		ensure
+			game_mode_correct: game_mode = a_mode
 		end
 		
-	set_number_of_hunters (a_number: INTEGER) is
-			-- Set `number_of_flat_hunters' to `a_number'.
+	set_number_of_hunters (a_hunter_count: like hunter_count) is
+			-- Set `hunter_count' to `a_hunter_count'.
 		require
-			correct_number: (1 <= a_number) and (a_number <= 8)			
+			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)			
 		do
-			hunter_count := a_number
+			hunter_count := a_hunter_count
+			hunter_count_set := True
 		ensure
-			correct_number_of_hunters: (1 <= hunter_count) and (hunter_count <= 8)
+			hunter_count_correct: hunter_count = a_hunter_count
 		end
-	
+
 feature {NONE} -- Status report
 
 	is_occupied (a_location: TRAFFIC_PLACE): BOOLEAN is
 			-- Check if `a_location' is occupied by some flat hunter.
 		require
-			a_location_not_void: a_location /= Void
+			a_location_exists: a_location /= Void
+			players_exist: players /= Void
 		local
 			old_cursor: CURSOR			
 		do
@@ -119,7 +146,7 @@ feature {NONE} -- Status report
 			-- Loop over all players to check if one occupies `a_location'.
 			from
 				players.start
-				players.forth -- do not consider estate agent
+				players.forth -- do not consider estate agent, hence skip the first entry in `players'.
 			until
 				players.after or Result
 			loop
@@ -142,9 +169,16 @@ feature {NONE} -- Status report
 			tmp_line_section: TRAFFIC_LINE_SECTION
 			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
 			possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]
+			tmp_ticks1, tmp_ticks2: INTEGER
 		do
 			create possible_moves.make
+			io.putstring ("%N Ticks for outgoing line sections calc: ")
+			tmp_ticks1 := time.ticks
 			outgoing_line_sections := traffic_map.line_sections_of_place (a_player.location.name)
+			tmp_ticks2 := time.ticks
+			io.putint (tmp_ticks2 - tmp_ticks1)
+			io.putstring ("%N Ticks for loop: ")
+			tmp_ticks1 := time.ticks
 			from
 				outgoing_line_sections.start
 			until
@@ -166,7 +200,13 @@ feature {NONE} -- Status report
 				end
 				outgoing_line_sections.forth
 			end
+			tmp_ticks2 := time.ticks
+			io.putint (tmp_ticks2 - tmp_ticks1)
+			io.putstring ("%N Ticks for setting possible moves: ")
+			tmp_ticks1 := time.ticks
 			a_player.set_possible_moves (possible_moves)
+			tmp_ticks2 := time.ticks
+			io.putint (tmp_ticks2 - tmp_ticks1)
 		ensure
 			possible_moves_set: a_player.possible_moves /= Void
 		end
@@ -225,7 +265,6 @@ feature -- Element change
 		require 
 			prepare_state: state = Prepare_state
 		do
-
 			last_player := current_player
 --			if last_player /= Void then
 --				last_player.set_unmarked				
@@ -265,8 +304,19 @@ feature -- Element change
 		do
 			selected_place := a_place
 		end
-	
+		
 feature -- Access
+
+	traffic_map_set: BOOLEAN
+			-- Is `traffic_map' already set?
+	
+	game_mode_set: BOOLEAN
+			-- Is `game_mode' already set?
+	
+	hunter_count_set: BOOLEAN
+			-- Is `hunter_count' already set?	
+	
+feature -- Attributes
 
 	traffic_map: TRAFFIC_MAP
 			-- The game's map including all the places, line_sections etc.
@@ -351,5 +401,5 @@ feature {NONE} -- Implementation
 --			result_starts_in_origin: Result /= void implies Result.from_place = origin
 --			result_has_other_destination: Result /= void implies (Result.to_place /= Void and Result.to_place /= a_line_section.from_place and Result.to_place /= a_line_section.to_place)			
 		end
-	
+			
 end

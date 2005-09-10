@@ -1,5 +1,5 @@
 indexing
-	description: "Display a flat hunter on the board"
+	description: "Displays a flat hunter on the board."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -15,15 +15,15 @@ inherit
 create 
 	make_from_player
 
-feature -- Access
+feature -- Attributes
 
 	player: FLAT_HUNTER
-			-- Reference to player to be displayed
+			-- Reference to player to be displayed.
 	
 feature -- Output
 
 	statistics: ARRAYED_LIST [STRING] is
-			-- Number of tickets left etc.
+			-- Location and number of tickets left.
 		do
 			create Result.make (0)
 			Result.extend ("Location: " + player.location.name)

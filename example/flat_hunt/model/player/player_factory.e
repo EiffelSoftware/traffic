@@ -1,5 +1,5 @@
 indexing
-	description: "Create the list of the players"
+	description: "Create the list of players."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -14,7 +14,7 @@ create
 
 feature -- Initialization
 
-	make (a_map: TRAFFIC_MAP) is
+	make (a_map: like map) is
 			-- Initialize factory to produce players in `a_map'.
 		require
 			a_map_exists: a_map /= Void
@@ -24,10 +24,19 @@ feature -- Initialization
 			rng.set_seed (time.ticks)
 			rng.start
 			create occupied_numbers.make
+		ensure
+			map_set: map = a_map
 		end
 
+feature -- Attributes
+
 	players: ARRAYED_LIST [PLAYER]
-			-- List of all the players
+			-- List of all the players.
+
+	map: TRAFFIC_MAP
+			-- Map on which to produce players.			
+
+feature -- Basic Operations
 	
 	build_players (estate_agent_bot, flat_hunters_bot: BOOLEAN; hunter_count: INTEGER) is
 			-- Build players and add to list.
@@ -39,8 +48,13 @@ feature -- Initialization
 			i: INTEGER
 		do
 			create players.make (hunter_count + 1)
-			create estate_agent.make (map, map.places.item ("Hauptbahnhof"), estate_agent_bot)
+			
+			-- Create estate agent.
+			calculate_random_place
+			create estate_agent.make (map, random_place, estate_agent_bot)
 			players.extend (estate_agent)
+			
+			-- Create flat hunters.
 			from
 				i := 1
 			until
@@ -48,13 +62,13 @@ feature -- Initialization
 			loop
 				calculate_random_place
 				if random_place /= Void then
-					create flat_hunter.make (map, random_place, estate_agent, flat_hunters_bot, "Hunter " + (i-1).out)
+					create flat_hunter.make (map, random_place, estate_agent, flat_hunters_bot, "Hunter " + i.out)
 					players.extend (flat_hunter)				
 				end
 				i := i + 1
 			end	
 		ensure
-			players_count_right: players.count = hunter_count + 1
+			players_count_correct: players.count = hunter_count + 1
 		end
 		
 feature {NONE} -- Implementation
@@ -74,7 +88,7 @@ feature {NONE} -- Implementation
 				rng.forth
 				if not occupied_numbers.has (random_number) then
 					random_place := map.places.linear_representation @ (random_number)
-					if random_place = players.first.location then
+					if not players.is_empty and then random_place = players.first.location then
 						random_place := Void
 					end
 					occupied_numbers.extend (random_number)
@@ -84,9 +98,6 @@ feature {NONE} -- Implementation
 
 	random_place: TRAFFIC_PLACE
 			-- Free random location choosen by `calculate_random_place'.
-	
-	map: TRAFFIC_MAP
-			-- Map on which to produce players.
 		
 	rng: RANDOM
 			-- Random number generator
@@ -96,5 +107,7 @@ feature {NONE} -- Implementation
 			
 invariant
 	map_exists: map /= Void
+	rng_exists: rng /= Void
+	occupied_numbers_exists: occupied_numbers /= Void
 	
 end

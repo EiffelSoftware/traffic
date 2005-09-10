@@ -21,68 +21,71 @@ inherit
 		
 feature -- Colors
 
-	dark_blue: EM_COLOR is
+	Dark_blue: EM_COLOR is
 		once
 			Result := create {EM_COLOR}.make_with_rgb (0, 0, 200)
 		ensure
-			color_not_void: Result /= Void
+			color_exists: Result /= Void
 		end
 
-	light_violet: EM_COLOR is
+	Light_violet: EM_COLOR is
 		once
 			Result := create {EM_COLOR}.make_with_rgb (100, 0, 150)
 		ensure
-			color_not_void: Result /= Void
+			color_exists: Result /= Void
 		end
 
-	light_gray: EM_COLOR is
+	Light_gray: EM_COLOR is
 		once
 			Result := create {EM_COLOR}.make_with_rgb (200, 200, 200)
 		ensure
-			color_not_void: Result /= Void
+			color_exists: Result /= Void
 		end	
 		
-	gray: EM_COLOR is
+	Gray: EM_COLOR is
 		once
 			Result := create {EM_COLOR}.make_with_rgb (150, 150, 150)
 		ensure
-			color_not_void: Result /= Void
+			color_exists: Result /= Void
 		end
 			
-	dark_gray: EM_COLOR is
+	Dark_gray: EM_COLOR is
 		once
 			Result := create {EM_COLOR}.make_with_rgb (25, 25, 25)
 		ensure
-			color_not_void: Result /= Void
+			color_exists: Result /= Void
 		end	
 	
-	dark_red: EM_COLOR is
+	Dark_red: EM_COLOR is
 		once
 			Result := create {EM_COLOR}.make_with_rgb (200, 0, 0)
 		ensure
-			color_not_void: Result /= Void
+			color_exists: Result /= Void
 		end
 		
-	orange: EM_COLOR is
+	Orange: EM_COLOR is
 		once
 			Result := create {EM_COLOR}.make_with_rgb (200, 100, 0)
 		ensure
-			color_not_void: Result /= Void
+			color_exists: Result /= Void
 		end		
 
 feature -- Fonts
 
 	Font_directory: STRING is "./resources/font/"
-			-- Path to the font directory
+			-- Path to the font directory.
 
    	create_font (a_name: STRING; a_size: INTEGER; a_color: EM_COLOR): EM_COLOR_TTF_FONT is
-			-- Create new font from `a_name'.ttf with size `a_size' and color `a_color'
+			-- Create new font from `a_name'.ttf with size `a_size' and color `a_color'.
+		require
+			a_name_exists: a_name /= Void
+			a_name_not_empty: not a_name.is_empty
 		local
 		   font: EM_COLOR_TTF_FONT
 		   color: EM_COLOR
 		   id: STRING
 		do
-			-- Set default for color to black if a_color void
+			-- Set default for color to black if `a_color' void.
 			if a_color = Void then
 				create color.make_with_rgb (0, 0, 0)
 			else
@@ -99,28 +102,28 @@ feature -- Fonts
 			font.set_color (color)
 			Result := font
 		ensure
-			font_not_void: Result /= Void
+			font_exists: Result /= Void
 			color_set: Result.color = a_color
 		end
-		
 
 feature -- Constants (Numbers)
 
 	Left, Right, Centered: INTEGER is unique
-			-- Alignment constants
+			-- Alignment constants.
 
 	Window_width: INTEGER is 1024
-			-- Initial width for this window
+			-- Initial width for this window.
 
 	Window_height: INTEGER is 768
-			-- Initial height for this window
+			-- Initial height for this window.
 
 	Map_area_width: INTEGER is  650
-			-- Width of the area where the map gets displayed
+			-- Width of the area where the map gets displayed.
 		
 	Map_area_height: INTEGER is 580
-			-- Height of the area where the map gets displayed
+			-- Height of the area where the map gets displayed.
 			
 	Margin: INTEGER is 30
-		
+			-- Margin between game widgets and window border.
+			
 end
