@@ -9,16 +9,40 @@ class
 inherit
 	PLAYER_DISPLAYER
 		redefine
-			player, statistics, draw
+			make_from_player, player, statistics, draw
 		end
 
 create 
 	make_from_player
 
+feature -- Initialization
+
+	make_from_player (a_player: PLAYER; a_pic: like picture; a_traffic_map: like traffic_map; a_map_widget: like map_widget) is
+			-- Initialize displayer for `a_player'.
+		do
+			Precursor (a_player, a_pic, a_traffic_map, a_map_widget)
+			create overlay.make (marking_circle.center, marking_circle.radius - 1.0)
+			overlay.set_fill_color (create {EM_COLOR}.make_black)
+			overlay.fill_color.set_alpha (150)
+		end
+
 feature -- Attributes
 
 	player: ESTATE_AGENT
 			-- Reference to player to be displayed
+
+	update_last_visible_position is
+			-- Update position to passenger's position.
+		local
+			pos: EM_VECTOR_2D
+			tmp_x, tmp_y: INTEGER
+		do
+			pos := player.last_visible_location.position.twin
+			x := (pos.x.floor - (overlay.width // 2))
+			y := (pos.y.floor - (overlay.height // 2))
+			picture.set_x_y (x, y)
+			overlay.set_x_y (x, y)
+		end	
 
 feature -- Output
 
@@ -67,27 +91,34 @@ feature -- Output
 
 		
 feature {NONE} -- Implementation
-	
---	statistics: ARRAYED_LIST [STRING]
---			-- Statistics
+
 	draw (surface: EM_SURFACE) is
-			-- Draw 'Current' onto `surf'.
+			-- Draw 'Current' onto `surface'.
 		do
-			io.putstring ("%N%N" + player.name)			
-			update_position
+			io.putstring ("%N%N" + player.name)	
+--			update_position		
+			if not possible_moves_unmarked then
+				unmark_possible_moves
+			end
 			if player.is_visible then
+				update_position
 				if picture /= Void then
 					surface.draw_object (picture)
 					if player.marked then
 						surface.draw_object (marking_circle)
-						mark_possible_moves	
-					elseif not possible_moves_unmarked then
-						unmark_possible_moves
+						mark_possible_moves
 					end
 				end
 			else
-				
+--				if player.last_visible_location /= Void then
+--					update_last_visible_position
+--					surface.draw_object (picture)
+--					surface.draw_object (overlay)
+--				end	
 			end
 		end
+	
+	overlay: EM_CIRCLE
+			-- Overlay for when agent shown at last_visible_location.
 
 end
