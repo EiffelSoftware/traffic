@@ -167,6 +167,7 @@ feature {NONE} -- Status report
 			player_exists: a_player /= Void
 		local
 			tmp_line_section: TRAFFIC_LINE_SECTION
+			tmp_two_station_line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
 			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
 			possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]
 			tmp_ticks1, tmp_ticks2: INTEGER
@@ -189,11 +190,18 @@ feature {NONE} -- Status report
 					if not is_occupied (tmp_line_section.destination) then
 						possible_moves.extend (tmp_line_section)
 						-- Special handling for tram line sections, because with a tram you
-						-- can move two stations at once if desired
+						-- can move two stations at once if desired.
 						if tmp_line_section.type = Tram_type then
-							tmp_line_section := two_station_tram_line_section (tmp_line_section)
-							if tmp_line_section /= Void then
-								possible_moves.extend (tmp_line_section)								
+							tmp_two_station_line_sections := two_station_tram_line_section (tmp_line_section)
+							from
+								tmp_two_station_line_sections.start
+							until
+								tmp_two_station_line_sections.after
+							loop
+								if tmp_two_station_line_sections.item /= Void then
+									possible_moves.extend (tmp_two_station_line_sections.item)
+								end
+								tmp_two_station_line_sections.forth
 							end
 						end
 					end
@@ -225,7 +233,6 @@ feature {MAIN_CONTROLLER} -- Basic operations
 					state := Agent_stuck
 				else
 					current_player.set_unmarked
---					current_player.set_possible_moves (Void)
 					next_turn
 					if not is_game_over then
 						state := Prepare_state
@@ -249,6 +256,9 @@ feature {MAIN_CONTROLLER} -- Basic operations
 	move is
 			-- Make the chosen move.
 		do
+			if current_player = estate_agent then
+				update_agent_visibility
+			end		
 			current_player.move
 			if current_player.location = estate_agent.location and current_player /= estate_agent then
 				state := Agent_caught
@@ -266,12 +276,8 @@ feature -- Element change
 			prepare_state: state = Prepare_state
 		do
 			last_player := current_player
---			if last_player /= Void then
---				last_player.set_unmarked				
---			end
 			current_player_index := (current_player_index \\ players.count) + 1
-			current_player := players.i_th (current_player_index)
---			current_player.set_marked			
+			current_player := players.i_th (current_player_index)		
 			if current_player_index = 1 then
 				current_round_number := current_round_number + 1
 				update_agent_visibility
@@ -286,13 +292,11 @@ feature -- Element change
 
 	update_agent_visibility is
 			-- Make agent visible if current round is a checkpoint.
-		require 
---			prepare_state: state = Prepare_state
 		do
 			if checkpoints.has (current_round_number) then
 				estate_agent.set_last_visible_location
 			end
-			if game_mode /= Hunt or is_game_over or checkpoints.has (current_round_number) then
+			if game_mode /= Hunt or is_game_over or (checkpoints.has (current_round_number) and state = Prepare_state) then
 				estate_agent.set_visible (true)
 			else
 				estate_agent.set_visible (false)
@@ -371,35 +375,28 @@ feature -- Output
 
 feature {NONE} -- Implementation
 
-	two_station_tram_line_section (a_line_section: TRAFFIC_LINE_SECTION): TRAFFIC_LINE_SECTION is
-			-- Create line_section to tram stop that is two segments away from `a_line_section.origin' going  through `a_line_section'.
+	two_station_tram_line_section (a_line_section: TRAFFIC_LINE_SECTION): LINKED_LIST [TRAFFIC_LINE_SECTION] is
+			-- Create line sections to tram stops that are two segments away from `a_line_section.origin' going  through `a_line_section'.
 		require
 			a_line_section_exists: a_line_section /= Void
 		local
 			destination: TRAFFIC_PLACE
 			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
 		do				
+			create Result.make
 			outgoing_line_sections := traffic_map.line_sections_of_place (a_line_section.destination.name)
 			from
 				outgoing_line_sections.start
 			until
-				outgoing_line_sections.after -- or else (outgoing_line_sections.item.type = Tram_type and outgoing_line_sections.item.destination /= a_line_section.origin)
+				outgoing_line_sections.after
 			loop
-				if (outgoing_line_sections.item.type = Tram_type and then outgoing_line_sections.item.destination /= a_line_section.origin) then
+				if (outgoing_line_sections.item.type = Tram_type and then outgoing_line_sections.item.destination /= a_line_section.origin) then 
+				-- TODO: and then outgoing_line_sections.item.line = a_line_section.line ??
 					destination := outgoing_line_sections.item.destination
+					Result.extend (create {TRAFFIC_LINE_SECTION}.make (a_line_section.origin, destination, Tram_type, Void))
 				end
 				outgoing_line_sections.forth
 			end
-			
-			if destination /= Void and then not is_occupied (destination) then
-				create Result.make (a_line_section.origin, destination, Tram_type, Void)				
-			else
-				Result := Void
-			end
-		ensure
---			result_is_tram_line_section: Result /= Void implies Result.type.is_equal (a_line_section.Tram_type)
---			result_starts_in_origin: Result /= void implies Result.from_place = origin
---			result_has_other_destination: Result /= void implies (Result.to_place /= Void and Result.to_place /= a_line_section.from_place and Result.to_place /= a_line_section.to_place)			
 		end
 			
 end
