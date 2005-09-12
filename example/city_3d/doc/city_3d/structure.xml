@@ -61,6 +61,8 @@
 </section>
 
 <section id="scene">
+	<para>
+	</para>
 	<title>CITY_3D_SCENE</title>
 	<para>
 	</para>
@@ -88,6 +90,8 @@
 </section>
 
 <section id="map">
+	<para>
+	</para>
 	<title>MAP</title>
 	<para>
 	</para>
@@ -151,15 +155,21 @@
 </section>
 
 <section id="factories">
+	<para>
+	</para>
 	<title>Factories</title>
 	<para>
 	</para>
 	<title>Description</title>
 		Description
+	<para>
+	</para>
 	<toplink/>
 </section>
 	
 <section id="line_factory">
+	<para>
+	</para>
 	<title>Line factory</title>
 	<para>
 	</para>
@@ -182,6 +192,8 @@
 </section>
 
 <section id="building_factory">
+	<para>
+	</para>
 	<title>Building factory</title>
 	<para>
 	</para>
@@ -201,96 +213,89 @@
 </section>
 
 <section id="building_ewer">
+	<para>
+	</para>
 	<title>Building ewer</title>
 	<para>
 	</para>
 	<title>Description</title>
-		Description
+	<para>
+	The class <classname>BUILDING_EWER</classname> is responsible for distributing houses on the plane.
+	It takes the number of buildings from the map object and places the according number 
+	of houses on the plane with help of a random number generator and a collision detection, 
+	which checks for collisions with metro lines. It stores the created objects (houses) in a container 
+	and provides a feature for the map object that does the necessary drawings.
+	</para>
+	<title>Building distribution</title>
+	<para>
+	First, the centre of the new house is decided with help of the random generator. 
+	Next, the collision polygon is created with help of these coordinates. Then the feature <featurename>has_collision</featurename>
+	checks for collisions with the polygons of the metro lines that have been created in the creation procedure earlier. 
+	If there're any, the coordinates are discarded and new ones decided. If not, the distance to the centre is calculated 
+	and depending on this distance, a different form and height of the building is chosen. Finally, the building is set on the 
+	right position and put into the container, where it is stored. 
+	</para>
+	<title>Adding houses</title>
+	<para>
+	If the slide bar is moved and additional houses have to be displayed, <featurename>set_building_number</featurename>
+	calculates how many and calls <featurename>add_buildings</featurename>, which takes the random generator and the 
+	container of the houses that have already been created and adds the difference to it. Similary, if less houses should be displayed, 
+	i.e. the slide bar is moved left, the container stays invariant and only the feature <featurename>draw</featurename>, 
+	which is essentially a loop over the container and a draw call to all the items, is changed by setting 
+	a new upper limit.
+	</para>
 	<toplink/>
 </section>
 
 <section id="shared_constants">
+	<para>
+	</para>
 	<title>Shared constants</title>
 	<para>
 	</para>
 	<title>Description</title>
-		Description
+	<para>
+	The intention of this class is to collect information that would be spread over the whole project otherwise. 
+	This helps adjusting the project and makes minor changes easier, as a constant (like <featurename>line_width</featurename>
+	for example) only has to be changed a single time to take effects on the whole project. 
+	All classes that want to use constants or procedures from <classname>SHARED_CONSTANTS</classname> inherit from this class, 
+	but do not export them so that the inherited features are not visible in the interface.
+	</para>
+	<title>Constants</title>
+	<para>
+	In addition to constants of minor importance, such as line- or window height and width, the most important one is <featurename>plane_size</featurename> that is used 
+	mostly in the classes <classname>MAP</classname> and <classname>BUILDING_EWER</classname> for calculation related to the 
+	distribution of houses for example.
+	</para>
+	<title>map_to_gl_coords</title>
+	<para>
+	This query is of great importance to the project as it maps the coordinates of the XML files that vary from 0 to 1500 to the coordinates of the plane, 
+	which are in the range of -plane_size/2 to +plane_size/2. 
+	All coordinate transformation that have to be done, call this procedure. This makes an adjustment to new coordinates in an XML file pretty easy, 
+	because only this feature would have to be changed.
+	</para>
 	<toplink/>
 </section>
 
-<section id="utitlites">
+<section id="utilities">
+	<para>
+	</para>
 	<title>Utilities</title>
 	<para>
 	</para>
-	<title>Description</title>
-		Description
+	<title>GL_VECTOR</title>
+	<para>
+	The <classname>GL_VECTOR_3D</classname> and <classname>GL_VECTOR_4D</classname> functions are pretty 
+	neat to pass vectors in a feature call, because they can be passed  directly to the OpenGL features. Moreover, they help to simplify the source 
+	code ultimately. 
+	</para>
+	<title>GL_LIGHT</title>
+	<para>
+	<classname>GL_LIGHT</classname> is another class that comes pretty handy, because it embeddes all the information that is needed 
+	to create and change a  light source for a scene. Instead of calling the appropriate OpenGL functions directly, when the position or color of a 
+	light has to be changed, the according feature of this class is called. This avoids calling the same OpenGL functions on and on again and gives 
+	the whole thing an object orientated  touch.
+	</para>
 	<toplink/>
 </section>
-	
-	
-	
-<section id="tag_summary">
-	<title>Tag Summary</title>
-
-	
-  <variablelist>
-  	<varlistentry>
-  		<term>
-  			A little summary for important tags
-  		</term>
-  		<listitem><para>
-  			<![CDATA[<para>]]> : paragraph
-  		</para></listitem>
-  		<listitem><para>
-  			<![CDATA[<programlisting>]]>: mark programcode (see below)
-  		</para></listitem>
-  		<listitem><para>
-  			<![CDATA[<classname>]]> : mark classnames (example: <classname>EM_SURFACE</classname>)
-  		</para></listitem>
-  		<listitem><para>
-  			<![CDATA[<featurename>]]> : mark a featurename (example: <featurename>my_feature</featurename>)
-  		</para></listitem>
-  		<listitem><para>
-  			<![CDATA[<argument>]]> : mark an argument (example: <argument>my_argument</argument>)
-  		</para></listitem>
-  		<listitem><para>
-  			<![CDATA[<comment>]]> : mark a comment (example: <comment>my_comment</comment>)
-  		</para></listitem>
-  		<listitem><para>
-  			<![CDATA[<filename>]]> : mark a comment (example: <filename>my_file.bin</filename>)
-  		</para></listitem>
-  		<listitem><para>
-  			<![CDATA[<expression>]]> : mark an expression (see below)
-  		</para></listitem>
-  		<listitem><para>
-  			<![CDATA[<assign>]]> : mark an assignment (see below) (German: "Zuweisung")
-  		</para></listitem>
-  		<listitem><para>
-  			<![CDATA[<equal>]]> : mark an equality (see below)
-  		</para></listitem>
-
-
-  	</varlistentry>
-  </variablelist>
-<para>
-example:
-</para>
-<para>
-<programlisting>
-<text>    </text><featurename>set_foo</featurename> (<argument>a_foo</argument>: like <featurename>foo</featurename>) is
-<text>            </text><comment>Set <featurename>foo</featurename> to <argument>a_foo</argument>.</comment>
-<text>        </text>require
-<text>            </text>a_foo_not_void: <argument>a_foo</argument> /= Void
-<text>        </text>do
-<text>            </text><assign><target><featurename>foo</featurename></target>
-			<expression><argument>a_foo</argument></expression></assign>
-<text>        </text>ensure
-<text>            </text>foo_set: <equal><expression><featurename>foo</featurename></expression>
-					<expression><argument>a_foo</argument></expression></equal>
-<text>        </text>end
-</programlisting>
-</para>
-<toplink/>
-</section>
-
 </chapter>
