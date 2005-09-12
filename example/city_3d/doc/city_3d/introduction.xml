@@ -3,12 +3,12 @@
 <!--
 	description:
 
-		"Traffic 3D front end documentation"
+		"Introduction Traffic 3D front end documentation"
 
-	copyright: "Copyright (c) 2005, Till Bay and others"
-	license: "Eiffel Forum License v2 (see forum.txt)"
-	date: "$Date$"
-	revision: "$Revision$"
+	copyright: ""
+	license: ""
+	date: ""
+	revision: ""
 -->
 
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/introduction">
@@ -29,52 +29,99 @@
 <title>Page Index</title>
 <para>
 <itemizedlist>
-    <listitem><para>
-    	<indexlink url="#installation">Installation of gobo-Documentation</indexlink>
-    </para></listitem>
-    <listitem><para>
-    	<indexlink url="#start_doc">Create an own Documentation</indexlink>
-    </para></listitem>
+    <listitem>
+    <para>
+    	<indexlink url="#purpose">Purpose of this work</indexlink>
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+    	<indexlink url="#goal">Goals</indexlink>
+    </para>
+    </listitem>
+     <listitem>
+    <para>
+    	<indexlink url="#enviroment">Enviroment and used libraries</indexlink>
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+    	<indexlink url="#structure">Structure of docmentation</indexlink>
+    </para>
+    </listitem>
 </itemizedlist>
 </para>
 </section>
-<section id="installation">
-	<title>Installation of gobo-Documentation</title>
+<section id="purpose">
+	<title>Purpose of this work</title>
 	<para>
-		First of all, make sure you have the latest GOBO-Version from the CVS!
-		</para>
-		<para>
-		To be prepared for the compilation you have to make a <featurename>geant install
-		</featurename>in the <filename class="directory">$GOBO/library/</filename>.
-		Then you have to compile the tool gexslt from <filename class="directory">
-		$GOBO/src/gexslt</filename> as known with <featurename>geant compile</featurename>.
-		</para>
-		To use this tool in each directory, you have to add it to the path-variable 
-		(<filename>$GOBO/src/gexslt/</filename>).
-		<para>
-		You are now prepared to parse the documentation-xml-files. For example go to 
-		<filename class="directory">$EM/doc/sample/</filename> and install this help
-		with <featurename>geant install</featurename>. To delete the *.html-files you can use
-		<featurename>geant clobber</featurename>.
+	The purpose of this work was to provide a 3
+	dimensional visualization of a map from an XML file. 
+	his map stores information about places and metro
+	lines of a town, which should be displayed in an appropriate way. 
 	</para>
-
 <toplink/>
 </section>
 
-<section id="start_doc">
-	<title>Create an own Documentation</title>
+<section id="goal">
+	<title>Our goals</title>
 	<para>
-		To start your documentation I recommend to copy and rename the sample-folder from 
-		the directory <filename class="directory">$EM/doc/sample</filename>. 
-		Please create your folder directly in this directory <filename class="directory">
-		$EM/doc/</filename>! (replace the words "sample" through your foldername in all 
-		*.xml-files). It is important to have an <filename>index.xml</filename> as an 
-		overview about the whole documentation.
+	Our goal was to implement a program that parses this
+	map and generates the data structures, displays metro lines as
+	colored polygons on a plane, adds houses on this plane
+	randomly but checks for "collisions" with metro lines,
+	provides useful mouse and keyboard support such that changing
+	the viewport (zooming, rotation, different centres) should be
+	possible (easily). Moreover different light settings should be
+	implemented, existing features such as the shortest path
+	algorithm, visualized and extended.
+	</para>
+<toplink/>
+</section>
+<section id="enviroment">
+	<title>Environment and used libraries</title>
+	<para>
+	<title>1 EiffelStudio 5.5</title>
 	</para>
 	<para>
-		 To add or remove documentation-files, you have also to change the <filename>
-		 build.geant</filename>. At the end of this file, you'll find a list with all
-		 activated files ("index" has to be the last item).
+	<title>	2 GOBO</title>
+	</para>
+	<para>
+	<title>	3 EWG</title>
+	</para>
+	<para>
+	<title>	4 EM EiffelMedia Library:</title> 
+	<para>
+	Provides the Components for
+	doing the whole graphics stuff (e.g. Access to the SDL
+	commands or the widgets that were used for the GUI).
+	</para>
+	</para>
+	<para>
+	<title>	5.TRAFFIC  Library:</title> 
+	<para>
+	Provides the whole map parsing,
+	datastructures and things like the calculation of the
+	shortest path.
+	</para>
+	</para>
+<toplink/>
+</section>
+<section id="structure">
+	<title>Structure of documentation</title>
+	<para>
+	The next part explaines the overall structure and all the used
+	classes and factories with their features in detail. 
+	Part three gives information about all the dependencies
+	between the different classes. Besides it explaines which
+	parts are depending on the information in the XML files and
+	which features would have to be changed using a different one.
+	Part four concentrates on the reuse of the MAP class and
+	factories, using a different scene. It explains how options
+	are set using the apropriate features and what would be to do
+	going beyond changing only the scene.
+	Finally, part five presents some ideas of what could be implemented in
+	the future and how to embed it into the project.
 	</para>
 <toplink/>
 </section>
