@@ -38,7 +38,7 @@ This document is structured as follows:
 <variablelist>
 	<varlistentry>
 		<term>
-			<ulink url="introduction.html">Intro</ulink>
+			<ulink url="introduction.html">Introduction</ulink>
 		</term>
 		<listitem><para>
 			Presents overall structure of projects and
@@ -48,18 +48,18 @@ This document is structured as follows:
 
 	<varlistentry>
 		<term>
-			<ulink url="class_map.html">Class MAP</ulink>
+			<ulink url="structure.html">Classes</ulink>
 		</term>
 		<listitem><para>
-			Presents the basic class of the project
+			Presents the basic classes of the project
 		</para></listitem>
 	</varlistentry>
 	<varlistentry>
 		<term>
-			<ulink url="factories.html"> Factories</ulink>
+			<ulink url="miscellaneous.html">Miscellaneous</ulink>
 		</term>
 		<listitem><para>
-			Overview over factories that have been used.
+			Dependencies, reuseability, future perspective
 		</para></listitem>
 	</varlistentry>
 </variablelist>
