@@ -91,7 +91,7 @@ feature -- Fonts
    	Small_default_font: EM_COLOR_TTF_FONT is
 			-- Standard default font.
 		once
-			Result := create_font (default_font_name, 30, white)
+			Result := create_font (Default_font_name, 30, white)
 		ensure
 			font_exists: Result /= Void
 		end
@@ -99,7 +99,7 @@ feature -- Fonts
    	Medium_default_font: EM_COLOR_TTF_FONT is
 			-- Standard default font.
 		once
-			Result := create_font (default_font_name, 50, white)
+			Result := create_font (Default_font_name, 50, white)
 		ensure
 			font_exists: Result /= Void
 		end
@@ -107,7 +107,7 @@ feature -- Fonts
    	Big_default_font: EM_COLOR_TTF_FONT is
 			-- Standard default font.
 		once
-			Result := create_font (default_font_name, 72, white)
+			Result := create_font (Default_font_name, 72, white)
 		ensure
 			font_exists: Result /= Void
 		end
@@ -115,7 +115,7 @@ feature -- Fonts
    	Menu_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu.
 		once
-			Result := create_font (menu_font_name, 72, menu_color)
+			Result := create_font (Menu_font_name, 72, Menu_color)
 		ensure
 			font_exists: Result /= Void
 		end
@@ -123,7 +123,7 @@ feature -- Fonts
    	Small_menu_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu.
 		once
-			Result := create_font (menu_font_name, 50, menu_color)
+			Result := create_font (Menu_font_name, 50, Menu_color)
 		ensure
 			font_exists: Result /= Void
 		end
@@ -131,7 +131,7 @@ feature -- Fonts
 	Menu_selected_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu.
 		once
-			Result := create_font (menu_font_name, 72, menu_selected_color)
+			Result := create_font (Menu_font_name, 72, Menu_selected_color)
 		ensure
 			font_exists: Result /= Void
 		end		
@@ -139,7 +139,7 @@ feature -- Fonts
 	Small_menu_selected_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu.
 		once
-			Result := create_font (menu_font_name, 50, menu_selected_color)
+			Result := create_font (Menu_font_name, 50, Menu_selected_color)
 		ensure
 			font_exists: Result /= Void
 		end	
@@ -147,7 +147,7 @@ feature -- Fonts
    	Big_credits_font: EM_COLOR_TTF_FONT is
 			-- Standard font for credits.
 		once
-			Result := create_font (credits_font_name, 40, credits_color)
+			Result := create_font (Credits_font_name, 40, Credits_color)
 		ensure
 			font_exists: Result /= Void
 		end
@@ -155,7 +155,7 @@ feature -- Fonts
    	Small_credits_font: EM_COLOR_TTF_FONT is
 			-- Standard font for credits.
 		once
-			Result := create_font (credits_font_name, 30, credits_color)
+			Result := create_font (Credits_font_name, 30, Credits_color)
 		ensure
 			font_exists: Result /= Void
 		end
@@ -163,7 +163,7 @@ feature -- Fonts
 	Big_game_widget_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in game widgets.
 		once
-			Result := create_font (default_font_name, 50, game_widget_color)
+			Result := create_font (Default_font_name, 50, Game_widget_color)
 		ensure
 			font_exists: Result /= Void
 		end	
@@ -171,7 +171,7 @@ feature -- Fonts
 	Medium_game_widget_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in game widgets.
 		once
-			Result := create_font (default_font_name, 40, game_widget_color)
+			Result := create_font (Default_font_name, 40, Game_widget_color)
 		ensure
 			font_exists: Result /= Void
 		end 
@@ -179,7 +179,7 @@ feature -- Fonts
 	Small_game_widget_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in game widgets.
 		once
-			Result := create_font (default_font_name, 30, game_widget_color)
+			Result := create_font (Default_font_name, 30, Game_widget_color)
 		ensure
 			font_exists: Result /= Void
 		end 
@@ -187,7 +187,7 @@ feature -- Fonts
 	Status_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in status boxes for players.
 		once
-			Result := create_font (status_font_name, 12, status_font_color)
+			Result := create_font (Status_font_name, 12, Status_font_color)
 		ensure
 			font_exists: Result /= Void
 		end
@@ -195,11 +195,19 @@ feature -- Fonts
 	Black_status_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in light-colored status boxes.
 		once
-			Result := create_font (status_font_name, 12, black)
+			Result := create_font (Status_font_name, 12, black)
 		ensure
 			font_exists: Result/= Void
 		end
 	
+	Place_label_font: EM_COLOR_TTF_FONT is
+			-- Standard font used for labeling places on the map.
+		once
+			Result := create_font (Status_font_name, 14, white)
+		ensure
+			font_exists: Result /= Void
+		end
+
 feature -- Images
 
 	Image_directory: STRING is "./resources/pic/"

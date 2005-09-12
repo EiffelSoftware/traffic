@@ -295,7 +295,7 @@ feature -- Element change
 			-- Make agent visible if current round is a checkpoint.
 		do
 			if checkpoints.has (current_round_number) then
-				estate_agent.set_last_visible_location
+				estate_agent.set_last_visible_location_and_round
 			end
 			if game_mode /= Hunt or is_game_over or (checkpoints.has (current_round_number) and state = Prepare_state) then
 				estate_agent.set_visible (True)

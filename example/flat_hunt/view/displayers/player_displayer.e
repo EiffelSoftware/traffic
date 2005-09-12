@@ -200,7 +200,7 @@ feature {NONE} -- Implementation
 			traffic_map_not_void: traffic_map /= Void
 			map_widget_not_void: map_widget /= Void
 		local
-			place_renderer: TRAFFIC_PLACE_RENDERER		
+			place_renderer: FLAT_HUNT_PLACE_RENDERER		
 			t1, t2: INTEGER
 		do
 			if player.possible_moves /= Void then
@@ -240,7 +240,7 @@ feature {NONE} -- Implementation
 			traffic_map_not_void: traffic_map /= Void
 			map_widget_not_void: map_widget /= Void			
 		local
-			place_renderer: TRAFFIC_PLACE_RENDERER
+			place_renderer: FLAT_HUNT_PLACE_RENDERER
 			t1, t2: INTEGER
 		do
 			if player.possible_moves /= Void then

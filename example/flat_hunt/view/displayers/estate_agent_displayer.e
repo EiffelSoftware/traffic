@@ -20,7 +20,7 @@ feature -- Initialization
 	make_from_player (a_player: PLAYER; a_pic: like picture; a_traffic_map: like traffic_map; a_map_widget: like map_widget) is
 			-- Initialize displayer for `a_player'.
 		do
-			Precursor (a_player, a_pic, a_traffic_map, a_map_widget)	
+			Precursor (a_player, a_pic, a_traffic_map, a_map_widget)
 		end
 
 feature -- Attributes
@@ -71,7 +71,7 @@ feature -- Output
 				else
 					last_visible_location := "In hiding.. Last visbible location unknown."
 				end
-				Result := "Location: " + last_visible_location + "%NRail tickets: " + player.rail_tickets.out + ", Tram tickets: " + player.tram_tickets.out + ", Bus tickets: " + player.bus_tickets.out			
+				Result := "Location: " + last_visible_location + "%NRail tickets: " + player.rail_tickets.out + ", Tram tickets: " + player.tram_tickets.out + ", Bus tickets: " + player.bus_tickets.out + last_visible_travel_history
 			end
 
 		end
@@ -86,11 +86,10 @@ feature -- Output
 			until 
 				player.taken_transports.after
 			loop
-				Result := "%N" + Result
 				if player.is_visible and then not player.taken_transports.islast then
-					Result := player.visited_places.item + Result
+					Result := "%N" + player.visited_places.item + Result
 				end
-				Result := "Round " + player.visited_places.index.out + ": " + player.taken_transports.item + Result
+				Result := "%NRound " + player.visited_places.index.out + ": " + player.taken_transports.item + Result
 				player.taken_transports.forth
 				player.visited_places.forth
 			end
@@ -98,6 +97,30 @@ feature -- Output
 			has_result: Result /= Void
 		end
 
+	last_visible_travel_history: STRING is
+			-- Types ot transport taken etc.
+		local
+			i: INTEGER
+		do
+			Result := ""
+			from 
+				player.taken_transports.start
+				player.visited_places.start
+				i := 1
+			until 
+				i > player.last_visible_round
+			loop
+				if not (i = player.last_visible_round) then
+					Result := "%N" + player.visited_places.item + Result
+				end
+				Result := "%NRound " + player.visited_places.index.out + ": " + player.taken_transports.item + Result
+				player.taken_transports.forth
+				player.visited_places.forth
+				i := i + 1
+			end
+		ensure
+			has_result: Result /= Void
+		end
 		
 feature {NONE} -- Implementation
 

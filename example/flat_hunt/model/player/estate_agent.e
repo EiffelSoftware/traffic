@@ -20,6 +20,7 @@ feature {NONE} -- Initialization
 			make_from_map_and_place (a_map, a_location)
 			name := "Agent"
 			last_visible_location := Void
+			last_visible_round := 0
 			set_visible (False)
 			
 			-- Create brain and set number of tickets.
@@ -43,6 +44,9 @@ feature -- Attributes
 
 	last_visible_location: TRAFFIC_PLACE
 			-- Last location where the estate agent showed up.
+			
+	last_visible_round: INTEGER
+			-- Round in which the estate agent last showed up.
 		
 	visible: BOOLEAN
 			-- Is it a checkpoint?
@@ -62,10 +66,11 @@ feature -- Settings
 			visible := a_visibility
 		end
 
-	set_last_visible_location is
+	set_last_visible_location_and_round is
 			-- Set `last_visible_location' to `location'.
 		do
 			last_visible_location := location
+			last_visible_round := visited_places.index
 		end
 		
 feature -- Measurement

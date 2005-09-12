@@ -71,16 +71,18 @@ feature -- Initialization
 			status_box.set_title_font (medium_game_widget_font)
 			status_box.set_color (game_widget_color)
 			status_box.set_opacity (70)
+			status_box.set_padding (-3)
 			main_container.extend (status_box)
 			update_status_box
 
 			-- Build player status box.
-			create player_status_box.make_from_position_and_size (margin, margin + map_area_height - 100, map_area_width, 100, " ")
+			create player_status_box.make_from_position_and_size (margin, margin + map_area_height - 150, map_area_width, 150, " ")
 			player_status_box.set_font (status_font)
 			player_status_box.set_title_font (small_credits_font)
 			player_status_box.set_color (status_color)
 			player_status_box.set_opacity (80)
-			player_status_box.set_visibility (false)
+			player_status_box.set_padding (-3)
+			player_status_box.set_visibility (False)
 			main_container.extend (player_status_box)
 			
 			-- Build the menus.
@@ -150,7 +152,6 @@ feature -- Initialization
 				hash_from_button_to_player_displayer.forth
 			end
 		end
-		
 			
 feature -- Views
 
@@ -287,8 +288,7 @@ feature {NONE} -- Menu Handling
 			-- What happens when "Quit" is selected in a menu.
 		do
 			event_loop.stop
-		end
-		
+		end		
 	
 feature -- Access
 
@@ -331,6 +331,15 @@ feature -- Access
 				if screen /= Void then
 					redraw
 				end				
+			end
+		end
+
+	update_player_status_box (current_player_index: INTEGER) is
+			-- Update the player status box.
+		do
+			if player_status_box /= Void and then player_status_box.visible and then player_status_box.title.value.has_substring (player_displayers.i_th (current_player_index).out) then
+				player_status_box.set_title ("Status of " + player_displayers.i_th (current_player_index).out)
+				player_status_box.set_text (player_displayers.i_th (current_player_index).statistics)							
 			end
 		end
 
@@ -377,6 +386,7 @@ feature {NONE} -- Implementation
 			traffic_map_not_void: traffic_map /= Void
 		local
 			background_box: EM_RECTANGLE
+			tmp_place_renderer: FLAT_HUNT_PLACE_RENDERER
 		do			
 			-- Create container to put background and widgets into.
 			create big_container.make
@@ -393,9 +403,11 @@ feature {NONE} -- Implementation
 			
 			-- Create and customize big map widget to visualize `traffic_map'
 			create big_map_widget.make_with_map (traffic_map)			
+			create tmp_place_renderer.make_with_map (traffic_map)
 			big_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
 			big_map_widget.line_section_renderer.traffic_type_colors.put (rail_color, "rail")
 			big_map_widget.line_section_renderer.traffic_type_line_widths.put (2, "bus")
+			big_map_widget.set_default_place_renderer (tmp_place_renderer)
 			big_map_widget.render
 			
 			-- Create zoomable widget to make map zoomable

@@ -127,7 +127,7 @@ feature -- Status Report
 			elseif game.state = agent_stuck then
 				status := status +"%NEstate agent was encircled in round " + game.current_round_number.out + "%Nat " + game.estate_agent.location.name
 			elseif game.state = agent_escapes then
-				status := status + "Estate agent escaped!" + "%NEstate agent: " + game.estate_agent.location.name			
+				status := status + "%NEstate agent escaped!" + "%NEstate agent: " + game.estate_agent.location.name			
 			end			
 		end
 		
@@ -136,7 +136,7 @@ feature -- Status Report
 		do
 			status.wipe_out
 			status_overview			
-			status := status + "%N%NStatus of current player: " + game_scene.player_displayers.i_th (game.current_player_index).statistics	
+			status := status + "%N%NStatus of current player:%N" + game_scene.player_displayers.i_th (game.current_player_index).statistics
 		end
 
 	status_overview is
@@ -150,6 +150,7 @@ feature -- Status Report
 		do
 			game_scene.set_status (status)
 			game_scene.update_status_box
+			game_scene.update_player_status_box (game.current_player_index)
 		end		
 		
 feature -- Attributes
@@ -192,7 +193,7 @@ feature {NONE} -- Event handling
 	process_clicked_place (a_place: TRAFFIC_PLACE; a_mouse_event: EM_MOUSEBUTTON_EVENT) is
 			-- What happens when a place gets clicked on the big map widget.
 		local
-			place_renderer: TRAFFIC_PLACE_RENDERER
+			place_renderer: FLAT_HUNT_PLACE_RENDERER
 		do
 			-- Only react if left mouse button pressed, and `a_place' is destination of a possible move of current player.
 			if a_mouse_event.is_left_button and then game.current_player.possible_moves.there_exists (agent has_place (?, a_place)) then
@@ -226,13 +227,13 @@ feature {NONE} -- Event handling
 				if game.state = game.Play_state then
 					play
 					if game.current_player /= Void and then game.current_player.brain.generating_type.substring (1, 3).is_equal ("BOT") then
-						sleep_and_process (1000)
+						sleep_and_process (1500)
 					end
 				end
 				if not paused and game.state = game.Move_state then
 					move
 				if game.last_player /= Void then
-						sleep_and_process (1000)
+						sleep_and_process (1500)
 					end
 				end
 				if game.is_game_over then
