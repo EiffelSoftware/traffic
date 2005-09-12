@@ -11,17 +11,20 @@
 	revision: "$Revision$"
 -->
 
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/introduction">
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
 <chapterinfo>
 	<copyright>
 		<year>2005</year>
-		<holder>Till Bay</holder>
+		<holder>David Stefan, Valentin Wuestholz</holder>
 	</copyright>
 	<author>
-		<firstname>Till</firstname><surname>Bay</surname>
+		<firstname>David</firstname><surname>Stefan</surname>
 	</author>
-	<email>bay@inf.ethz.ch</email>
-	<date>2 August 2005</date>
+    <author>
+		<firstname>Valentin</firstname><surname>Wuestholz</surname>
+	</author>
+	<!--<email>bay@inf.ethz.ch</email>-->
+	<date>12. September 2005</date>
 </chapterinfo>
 
 <title>Introduction</title>
