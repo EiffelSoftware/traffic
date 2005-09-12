@@ -262,6 +262,7 @@ feature {MAIN_CONTROLLER} -- Basic operations
 			current_player.move
 			if current_player.location = estate_agent.location and current_player /= estate_agent then
 				state := Agent_caught
+				update_agent_visibility
 			else
 				state := Prepare_state			
 				next_turn
@@ -297,9 +298,9 @@ feature -- Element change
 				estate_agent.set_last_visible_location
 			end
 			if game_mode /= Hunt or is_game_over or (checkpoints.has (current_round_number) and state = Prepare_state) then
-				estate_agent.set_visible (true)
+				estate_agent.set_visible (True)
 			else
-				estate_agent.set_visible (false)
+				estate_agent.set_visible (False)
 			end
 		end
 		

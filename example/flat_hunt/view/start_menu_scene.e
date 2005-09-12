@@ -25,7 +25,7 @@ feature -- Initialization
 	initialize_scene is
 			-- Initialize menu scene
 		local
-			background_box: STATUS_BOX
+			background_box: TEXT_BOX
 			list: ARRAYED_LIST [STRING]
 			options_position_x, options_position_y: INTEGER
 		do
@@ -53,8 +53,10 @@ feature -- Initialization
 			options_position_y := 175
 
 			-- Build caption for first option menu.
-			background_box.add_line ("game mode :")
-			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
+			background_box.extend (create {EM_STRING}.make ("game mode: ", Small_menu_font))
+			background_box.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
+--			background_box.add_line ("game mode :")
+--			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 			
 			-- Build first option menu.
 			create list.make (0)
@@ -68,8 +70,10 @@ feature -- Initialization
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height
 			
 			-- Build caption for second option menu.
-			background_box.add_line ("nr of hunters :")
-			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
+			background_box.extend (create {EM_STRING}.make ("nr of hunters: ", Small_menu_font))
+			background_box.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
+--			background_box.add_line ("nr of hunters :")
+--			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 			
 			-- Build second option menu.
 			list.wipe_out
@@ -87,8 +91,10 @@ feature -- Initialization
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height
 
 			-- Build caption for third option menu.
-			background_box.add_line ("map size :")
-			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
+			background_box.extend (create {EM_STRING}.make ("map size: ", Small_menu_font))
+			background_box.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
+--			background_box.add_line ("map size :")
+--			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 
 			-- Build third option menu.
 			list.wipe_out	
@@ -100,8 +106,10 @@ feature -- Initialization
 			options_position_y := options_position_y + option_menus.item (option_menus.count).height			
 
 			-- Build caption for fourth option menu
-			background_box.add_line ("characters :")
-			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
+			background_box.extend (create {EM_STRING}.make ("characters: ", Small_menu_font))
+			background_box.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
+--			background_box.add_line ("characters :")
+--			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 
 			-- Build fourth option menu.
 			list.wipe_out			

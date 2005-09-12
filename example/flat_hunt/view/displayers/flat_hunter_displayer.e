@@ -22,14 +22,10 @@ feature -- Attributes
 	
 feature -- Output
 
-	statistics: ARRAYED_LIST [STRING] is
+	statistics: STRING is
 			-- Location and number of tickets left.
 		do
-			create Result.make (0)
-			Result.extend ("Location: " + player.location.name)
-			Result.extend ("Rail tickets: " + player.rail_tickets.out)
-			Result.extend ("Tram tickets: " + player.tram_tickets.out)
-			Result.extend ("Bus tickets: " + player.bus_tickets.out)
+			Result := "Location: " + player.location.name + "%NRail tickets: " + player.rail_tickets.out + "%NTram tickets: " + player.tram_tickets.out + "%NBus tickets: " + player.bus_tickets.out
 		end
 
 end

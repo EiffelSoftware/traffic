@@ -29,6 +29,9 @@ feature -- Initialization
 			map := a_map
 			location := a_location			
 			create position.make (location.position.x, location.position.y)
+			
+			-- Set defaults.
+			set_defeated (False)
 		ensure
 			map_set: map = a_map
 			location_set: location = a_location
@@ -73,6 +76,9 @@ feature -- Attributes
 
 	marked: BOOLEAN
 			-- Is it this players turn?
+	
+	defeated: BOOLEAN
+			-- Is player defeated?
 			
 feature {NONE} -- Constants
 
@@ -111,6 +117,12 @@ feature {GAME, MAIN_CONTROLLER} -- Status setting
 		do
 			marked := false
 		end		
+		
+	set_defeated (b: like defeated) is
+			-- Set `defeated' to `b'.
+		do
+			defeated := b
+		end
 		
 feature -- Status report
 
@@ -153,7 +165,12 @@ feature -- Queries
 		do
 			Result := marked
 		end
-		
+
+	is_defeated: BOOLEAN is
+			-- Is player defeated?
+		do
+			Result := defeated
+		end		
 		
 feature {NONE} -- Implementation
 

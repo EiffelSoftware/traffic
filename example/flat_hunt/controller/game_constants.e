@@ -26,7 +26,7 @@ feature -- State constants
 	state: INTEGER
 			-- Current game state.
 	
-	Is_game_over: BOOLEAN is
+	is_game_over: BOOLEAN is
 			-- `True' if agent stuck, caught or escaped.
 		do
 			Result := (state = Agent_stuck or state = Agent_caught or state = Agent_escapes)

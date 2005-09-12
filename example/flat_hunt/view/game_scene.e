@@ -107,6 +107,7 @@ feature -- Initialization
 			cur_button_x: INTEGER
 			cur_button_y: INTEGER
 			tmp_button: BUTTON
+			tmp_agent_displayer: ESTATE_AGENT_DISPLAYER
 			tmp_player_displayer: PLAYER_DISPLAYER
 		do
 			cur_button_x := margin
@@ -119,11 +120,13 @@ feature -- Initialization
 				i > a_player_list.count
 			loop
 				if i <= 1 then
-					tmp_button := create {BUTTON}.make_with_picture (estate_agent_button_pic)
-					tmp_player_displayer := create {ESTATE_AGENT_DISPLAYER}.make_from_player (a_player_list.first, estate_agent_pic, traffic_map, big_map_widget)
+					tmp_button := create {BUTTON}.make_with_picture (Estate_agent_button_pic)
+					create tmp_agent_displayer.make_from_player (a_player_list.first, Estate_agent_pic, traffic_map, big_map_widget)
+					tmp_agent_displayer.set_last_visible_location_picture (Estate_agent_lvl_pic)
+					tmp_player_displayer := tmp_agent_displayer
 				else
-					tmp_button := create {BUTTON}.make_with_picture (flat_hunter_button_pics.item (i-1))
-					tmp_player_displayer := create {FLAT_HUNTER_DISPLAYER}.make_from_player (a_player_list.i_th (i), flat_hunter_pics.item (i-1), traffic_map, big_map_widget)
+					tmp_button := create {BUTTON}.make_with_picture (Flat_hunter_button_pics.item (i-1))
+					tmp_player_displayer := create {FLAT_HUNTER_DISPLAYER}.make_from_player (a_player_list.i_th (i), Flat_hunter_pics.item (i-1), traffic_map, big_map_widget)
 				end
 				tmp_button.subscribe_for_click (agent process_clicked_player_button)
 				tmp_button.set_x_y (cur_button_x, cur_button_y)
@@ -188,10 +191,10 @@ feature -- Attributes
 	hunter_count: INTEGER
 			-- Reference to number of hunters.
 
-	status_box: STATUS_BOX
+	status_box: TEXT_BOX
 			-- Status box to display state of current player and general overview.
 			
-	player_status_box: STATUS_BOX
+	player_status_box: TEXT_BOX
 			-- Status box to be displayed when a player button gets clicked.
 
 	paused: BOOLEAN
@@ -217,10 +220,10 @@ feature {NONE} -- Menu Handling
 	game_over_menu: NORMAL_MENU
 		-- Menu to be shown when game over.
 			
-	pause_menu_container: STATUS_BOX
+	pause_menu_container: TEXT_BOX
 		-- Container in which `pause_menu' gets displayed.
 	
-	game_over_menu_container: STATUS_BOX
+	game_over_menu_container: TEXT_BOX
 		-- Container in which `game_over_menu' gets displayed.		
 		
 	build_pause_menu is
@@ -238,7 +241,7 @@ feature {NONE} -- Menu Handling
 			pause_menu_container.set_color (white)
 			pause_menu_container.set_opacity (200)
 			pause_menu_container.set_auto_resize (false)
-			pause_menu_container.add_line ("The game is paused.")
+			pause_menu_container.set_text ("The game is paused.")
 			pause_menu_container.extend (pause_menu)
 		end
 		
@@ -256,7 +259,7 @@ feature {NONE} -- Menu Handling
 			game_over_menu_container.set_color (white)
 			game_over_menu_container.set_opacity (200)
 			game_over_menu_container.set_auto_resize (false)
-			game_over_menu_container.add_line ("G A M E   O V E R")
+			game_over_menu_container.set_text ("G A M E   O V E R")
 			game_over_menu_container.extend (game_over_menu)
 		end
 		
@@ -310,17 +313,21 @@ feature -- Access
 		end
 
 		
-	set_status (a_status: ARRAYED_LIST [STRING]) is
-			-- Set `status' to `a_status'
+	set_status (a_status: STRING) is
+			-- Set `status' to `a_status'.
+		require
+			a_status_exists: a_status /= Void
 		do
 			status := a_status
+		ensure
+			status_set: status = a_status
 		end
 
 	update_status_box is
-			-- Update the overview status box
+			-- Update the overview status box.
 		do
 			if status_box /= Void then
-				status_box.replace_text (status)
+				status_box.set_text (status)
 				if screen /= Void then
 					redraw
 				end				
@@ -338,7 +345,7 @@ feature -- Access
 		do
 --			main_container.extend (overlay)
 			main_container.extend (game_over_menu_container)
-			game_over := true
+			game_over := True
 		end
 
 	set_pause_callback (a_callback: PROCEDURE [ANY, TUPLE [BOOLEAN]]) is
@@ -353,7 +360,7 @@ feature -- Access
 		
 feature {NONE} -- Implementation
 	
-	status: ARRAYED_LIST [STRING]
+	status: STRING
 			
 	last_clicked_button: BUTTON
 	
@@ -446,7 +453,7 @@ feature {NONE} -- Implementation
 			main_container.extend (container)
 		end	
 
-	initialize_player_status_box (a_status_box: STATUS_BOX; a_title: STRING) is
+	initialize_player_status_box (a_status_box: TEXT_BOX; a_title: STRING) is
 			-- Initialize a status box
 		do			
 			a_status_box.set_position_and_size (big_map_widget.x, big_map_widget.y + big_map_widget.height - 50, big_map_widget.width, 100)		
@@ -454,28 +461,8 @@ feature {NONE} -- Implementation
 			a_status_box.set_font (status_font)
 			a_status_box.set_color (status_color)
 			a_status_box.set_opacity (70)
-			a_status_box.set_visibility (false)
+			a_status_box.set_visibility (False)
 			main_container.extend (a_status_box)
-			
---			create status_boxes.make (hunter_count + 1)  -- the + 1 is for the estate agent
---			from
---				i := 1
---			until
---				i > hunter_count + 1
---			loop
---				if i = hunter_count + 1 then -- estate agent
---					status_boxes.put (create {STATUS_BOX}.make_from_coordinates (margin, margin + map_area_height - 70, margin + map_area_width, margin + map_area_height + 30, "Status of estate agent"), i)										
---				else
---					status_boxes.put (create {STATUS_BOX}.make_from_coordinates (margin, margin + map_area_height - 70, margin + map_area_width, margin + map_area_height + 30, "Status of hunter " + i.out), i)				
---				end
---				status_boxes.item (i).set_font (small_credits_font)
---				status_boxes.item (i).set_title_font (big_credits_font)
---				status_boxes.item (i).set_color (credits_color)
---				status_boxes.item (i).set_opacity (70)
---				status_boxes.item (i).set_visibility (false)
---				main_container.extend (status_boxes.item (i))
---				i := i + 1
---			end
 		end
 		
 		
@@ -515,9 +502,9 @@ feature {MAIN_CONTROLLER} -- Event Handling
 				player_status_box.toggle_visibility
 			else
 				last_clicked_button := a_button
-				player_status_box.set_visibility (true)
+				player_status_box.set_visibility (True)
 				player_status_box.set_title ("Status of " + tmp_player_displayer.out)
-				player_status_box.replace_text (tmp_player_displayer.statistics)
+				player_status_box.set_text (tmp_player_displayer.statistics)
 			end
 			redraw
 		end

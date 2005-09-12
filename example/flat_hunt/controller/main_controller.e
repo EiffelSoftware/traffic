@@ -75,13 +75,14 @@ feature -- Game operations
 		require
 			game_exists: game /= Void
 		local
-			i: INTEGER
+			i: INTEGER		
 		do
 			if not end_game_called_once then
 				end_game_called_once := True
 				status_game_over
 				update_status
 				
+				-- Unmark players.
 				from
 					game.players.start
 				until
@@ -90,21 +91,25 @@ feature -- Game operations
 					game.players.item.set_unmarked
 					game.players.forth
 				end
+				
+				-- Display players and their defeat animation.
+				game.estate_agent.set_visible (True)				
 				if game.state = game.Agent_caught or game.state = game.Agent_stuck then
-					game.estate_agent.set_visible (true)
---					main_window.update_player_info_box (game.estate_agent)
+					-- Flat hunters win.
+					game.estate_agent.set_defeated (True)
 					game_scene.center_on_player (game.estate_agent)
---					game_scene.player_displayers.first.animate_defeat
 				elseif game.state = game.Agent_escapes then
+					-- Estate agent wins.
 					from
 						i := 2
 					until
 						i > game.players.count or paused or not game.is_game_over
 					loop
---						game_scene.player_displayers.i_th (i).animate_defeat
+						game.players.i_th (i).set_defeated (True)
 						i := i + 1
 					end
-				end	
+				end			
+				
 				game_scene.display_end_game
 			end
 		end		
@@ -116,34 +121,28 @@ feature -- Status Report
 			-- Status to be displayed when game is over
 		do
 			status.wipe_out
-			status.extend ("G A M E   O V E R!")
+			status := "G A M E   O V E R!"
 			if game.state = agent_caught then
-				status.extend ("Estate agent was found in round " + game.current_round_number.out)
-				status.extend( "at " + game.estate_agent.location.name)
+				status := status + "%NEstate agent was found in round " + game.current_round_number.out + "%Nat " + game.estate_agent.location.name
 			elseif game.state = agent_stuck then
-				status.extend ("Estate agent was encircled in round " + game.current_round_number.out)
-				status.extend ("at " + game.estate_agent.location.name)
+				status := status +"%NEstate agent was encircled in round " + game.current_round_number.out + "%Nat " + game.estate_agent.location.name
 			elseif game.state = agent_escapes then
-				status.extend ("Estate agent escaped!")
+				status := status + "Estate agent escaped!" + "%NEstate agent: " + game.estate_agent.location.name			
 			end			
-			status.extend ("Estate agent: " + game.estate_agent.location.name)
 		end
 		
 	status_before_prepare is
 			-- Status of player before the move
 		do
 			status.wipe_out
-			status.copy (game_scene.player_displayers.i_th (game.current_player_index).statistics)
-			status.put_front ("Status of current player: ")
-			status_overview	
+			status_overview			
+			status := status + "%N%NStatus of current player: " + game_scene.player_displayers.i_th (game.current_player_index).statistics	
 		end
 
 	status_overview is
 			-- General overview
 		do
-			status.put_front (" ")
-			status.put_front ("Current Player: " + game.current_player.name)
-			status.put_front ("Round: " + game.current_round_number.out)
+			status := "Round: " + game.current_round_number.out + "%NCurrent Player: " + game.current_player.name
 		end
 
 	update_status is
@@ -151,14 +150,11 @@ feature -- Status Report
 		do
 			game_scene.set_status (status)
 			game_scene.update_status_box
-			if game_scene.screen /= Void then
-				game_scene.redraw
-			end
 		end		
 		
 feature -- Attributes
 
-	status: ARRAYED_LIST [STRING]
+	status: STRING
 			-- Status of current `game' to be displayed in `game_scene'
 
 	game_scene: GAME_SCENE
@@ -194,12 +190,12 @@ feature {NONE} -- Event handling
 		end
 
 	process_clicked_place (a_place: TRAFFIC_PLACE; a_mouse_event: EM_MOUSEBUTTON_EVENT) is
-			-- 
+			-- What happens when a place gets clicked on the big map widget.
 		local
 			place_renderer: TRAFFIC_PLACE_RENDERER
 		do
-			if a_mouse_event.is_left_button then
-				
+			-- Only react if left mouse button pressed, and `a_place' is destination of a possible move of current player.
+			if a_mouse_event.is_left_button and then game.current_player.possible_moves.there_exists (agent has_place (?, a_place)) then
 				--Color place red
 				create place_renderer.make_with_map (game.traffic_map)
 				place_renderer.set_place_color (red)
@@ -210,7 +206,16 @@ feature {NONE} -- Event handling
 				game_scene.big_map_widget.render
 			end			
 		end	
-			
+	
+	has_place (a_line_section: TRAFFIC_LINE_SECTION; a_place: TRAFFIC_PLACE): BOOLEAN is
+			-- Is `a_line_section.destination' equal `a_place'?
+		require
+			a_line_section_exists: a_line_section /= Void
+			a_place_exists: a_place /= Void
+		do
+			Result := (a_line_section.destination = a_place)
+		end
+
 	idle_action is
 			-- Things that are done when nothing else is processing
 		do

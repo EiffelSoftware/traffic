@@ -48,32 +48,35 @@ feature -- Initialization
 			player_exists: a_player /= Void
 			a_pic_exists: a_pic /= Void
 		do
-			possible_moves_unmarked := True
 			player := a_player
 			picture := a_pic
 			map_widget := a_map_widget
 			traffic_map := a_traffic_map
+
 			create marking_circle.make_inside_box (picture.bounding_box)
 			marking_circle.set_line_width (1)
 			marking_circle.set_line_color (red)
 			marking_circle.set_filled (False)
+
+			-- Set defaults.
+			possible_moves_unmarked := True
+
 			update_position
 		ensure
 			player_set: player = a_player
 			picture_set: picture = a_pic
 		end
 
---feature -- Basic operations
-
---		
---	animate_defeat is
---			-- Animate the defeat of the player.
+feature -- Basic operations
+		
+	animate_defeat is
+			-- Animate the victory of the player.
 ----		local
 ----			cir: EM_CIRCLE
 ----			position: EM_VECTOR_2D
 ----			color: EM_COLOR
 ----			count: INTEGER
---		do
+		do
 ----			create position.make (player.location.position.x, player.location.position.y)
 ----			create cir.make (position)
 ----			create color.make_with_8_bit_rgb (0, 0, 0)
@@ -91,7 +94,7 @@ feature -- Initialization
 ----				process (80)
 ----				-- `process' should be kept, but you can change the number 
 ----			end
---		end
+		end
 --		
 --	process (msec: INTEGER) is
 --				-- Wait and process events.
@@ -119,12 +122,18 @@ feature -- Access
 
 	picture: EM_DRAWABLE
 			-- Picture for the player
-			
-	set_picture (a_pic: EM_DRAWABLE) is
+	
+feature -- Status setting
+
+	set_picture (a_pic: like picture) is
 			-- Set `picture' to `a_pic'.
+		require
+			a_pic_exists: a_pic /= Void
 		do
 			picture := a_pic
 			update_position
+		ensure
+			picture_set: picture = a_pic
 		end
 		
 	update_position is
@@ -172,7 +181,7 @@ feature -- Mouse handling
 	
 feature -- Status report
 
-	statistics: ARRAYED_LIST [STRING] is
+	statistics: STRING is
 			-- Number of tickets left etc.
 		deferred
 		end
@@ -278,6 +287,9 @@ feature {NONE} -- Implementation
 				mark_possible_moves
 			elseif not possible_moves_unmarked then
 				unmark_possible_moves
+			end
+			if player.is_defeated then
+				animate_defeat	
 			end
 		end
 

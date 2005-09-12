@@ -273,6 +273,15 @@ feature -- Player Images
 			pic_exists: Result /= Void
 		end
 
+	Estate_agent_lvl_pic: EM_DRAWABLE is
+			-- Creates picture for the estate agent at last visible location.
+		once
+			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "agent_lvl.png")
+			Result := bitmap_factory.last_bitmap		
+		ensure
+			pic_exists: Result /= Void
+		end		
+
 	Flat_hunter_button_pics: HASH_TABLE [EM_DRAWABLE, INTEGER] is
 			-- Creates pictures for flat hunter buttons.
 		local
