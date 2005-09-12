@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 
 <!--
 	description:
@@ -15,13 +15,13 @@
 <chapterinfo>
 	<copyright>
 		<year>2005</year>
-		<holder>David Stefan, Valentin Wuestholz</holder>
+		<holder>David Stefan, Valentin Wüstholz</holder>
 	</copyright>
 	<author>
 		<firstname>David</firstname><surname>Stefan</surname>
 	</author>
     <author>
-		<firstname>Valentin</firstname><surname>Wuestholz</surname>
+		<firstname>Valentin</firstname><surname>Wüstholz</surname>
 	</author>
 	<!--<email>bay@inf.ethz.ch</email>-->
 	<date>12. September 2005</date>
