@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<!--
+	description:
+
+		"Traffic 3D front end documentation"
+
+	copyright: "Copyright (c) 2005, Till Bay and others"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date$"
+	revision: "$Revision$"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Till Bay</holder>
+	</copyright>
+	<author>
+		<firstname>Till</firstname><surname>Bay</surname>
+	</author>
+	<email>bay@inf.ethz.ch</email>
+	<date>2 August 2005</date>
+</chapterinfo>
+
+<title>Traffic 3D front end</title>
+
+<para>
+The Traffic 3D front end project provides a 3 dimensional
+visualization of a traffic map file and adds some functionaliy.
+</para>
+
+<para>
+This document is structured as follows:
+
+<blockquote>
+<variablelist>
+	<varlistentry>
+		<term>
+			<ulink url="introduction.html">Intro</ulink>
+		</term>
+		<listitem><para>
+			Presents overall structure of projects and
+		it's intends.
+		</para></listitem>
+	</varlistentry>
+
+	<varlistentry>
+		<term>
+			<ulink url="class_map.html">Class MAP</ulink>
+		</term>
+		<listitem><para>
+			Presents the basic class of the project
+		</para></listitem>
+	</varlistentry>
+	<varlistentry>
+		<term>
+			<ulink url="factories.html"> Factories</ulink>
+		</term>
+		<listitem><para>
+			Overview over factories that have been used.
+		</para></listitem>
+	</varlistentry>
+</variablelist>
+</blockquote>
+
+</para>
+
+</chapter>

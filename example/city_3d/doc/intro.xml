@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<!--
+	description:
+
+		"Traffic 3D front end documentation"
+
+	copyright: "Copyright (c) 2005, Till Bay and others"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date$"
+	revision: "$Revision$"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Till Bay</holder>
+	</copyright>
+	<author>
+		<firstname>Till</firstname><surname>Bay</surname>
+	</author>
+	<email>bay@inf.ethz.ch</email>
+	<date>2 August 2005</date>
+</chapterinfo>
+
+<title>Traffic 3D front end</title>
+
+<para>
+The <libraryname>EiffelMedia Sample Library</libraryname> gives Eiffel
+programmers access to Documentation functionalities.
+</para>
+
+<para>
+This document is structured as follows:
+
+<blockquote>
+<variablelist>
+	<varlistentry>
+		<term>
+			<ulink url="introduction.html">Few intro texts</ulink>
+		</term>
+		<listitem><para>
+			Just a few words for the installation of this documentation
+		</para></listitem>
+	</varlistentry>
+
+	<varlistentry>
+		<term>
+			<ulink url="class_map.html">Main class Map</ulink>
+		</term>
+		<listitem><para>
+			Few samples
+		</para></listitem>
+	</varlistentry>
+</variablelist>
+</blockquote>
+
+</para>
+
+</chapter>

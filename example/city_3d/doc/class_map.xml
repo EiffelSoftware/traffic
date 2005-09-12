@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+
+<!--
+	description:
+
+		"EiffelMedia Sample Library documentation"
+
+	copyright: "Copyright (c) 2005, Till Bay and others"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date$"
+	revision: "$Revision$"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Till Bay</holder>
+	</copyright>
+	<author>
+		<firstname>Till</firstname><surname>Bay</surname>
+	</author>
+	<email>bay@inf.ethz.ch</email>
+	<date>2 August 2005</date>
+</chapterinfo>
+
+<title>Tag Summary</title>
+<section id="page_index">
+<title>Page Index</title>
+<para>
+<itemizedlist>
+    <listitem><para>
+    	<indexlink url="#structure">Structure of gobo-Documentation</indexlink>
+    </para></listitem>
+    <listitem><para>
+    	<indexlink url="#tag_summary">Tag Summary</indexlink>
+    </para></listitem>
+</itemizedlist>
+</para>
+</section>
+<section id="structure">
+	<title>Structure of gobo-Documentation</title>
+	<para>
+	The structure for gobo-Documentation for *.xml is as followed:
+	</para>
+	<programlisting><![CDATA[
+<?xml version="1.0"?>
+<!--
+	description:
+	(see current-.xml)
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
+<chapterinfo>
+	(see current-.xml)
+</chapterinfo>
+<title>Document Title</title> // Here: Use Gobodoc
+<section id="intro"> // A new subchapter
+	<title>Introduction</title>
+</section>
+...
+</chapter> ]]></programlisting>
+<toplink/>
+</section>
+	
+<section id="tag_summary">
+	<title>Tag Summary</title>
+
+	
+  <variablelist>
+  	<varlistentry>
+  		<term>
+  			A little summary for important tags
+  		</term>
+  		<listitem><para>
+  			<![CDATA[<para>]]> : paragraph
+  		</para></listitem>
+  		<listitem><para>
+  			<![CDATA[<programlisting>]]>: mark programcode (see below)
+  		</para></listitem>
+  		<listitem><para>
+  			<![CDATA[<classname>]]> : mark classnames (example: <classname>EM_SURFACE</classname>)
+  		</para></listitem>
+  		<listitem><para>
+  			<![CDATA[<featurename>]]> : mark a featurename (example: <featurename>my_feature</featurename>)
+  		</para></listitem>
+  		<listitem><para>
+  			<![CDATA[<argument>]]> : mark an argument (example: <argument>my_argument</argument>)
+  		</para></listitem>
+  		<listitem><para>
+  			<![CDATA[<comment>]]> : mark a comment (example: <comment>my_comment</comment>)
+  		</para></listitem>
+  		<listitem><para>
+  			<![CDATA[<filename>]]> : mark a comment (example: <filename>my_file.bin</filename>)
+  		</para></listitem>
+  		<listitem><para>
+  			<![CDATA[<expression>]]> : mark an expression (see below)
+  		</para></listitem>
+  		<listitem><para>
+  			<![CDATA[<assign>]]> : mark an assignment (see below) (German: "Zuweisung")
+  		</para></listitem>
+  		<listitem><para>
+  			<![CDATA[<equal>]]> : mark an equality (see below)
+  		</para></listitem>
+
+
+  	</varlistentry>
+  </variablelist>
+<para>
+example:
+</para>
+<para>
+<programlisting>
+<text>    </text><featurename>set_foo</featurename> (<argument>a_foo</argument>: like <featurename>foo</featurename>) is
+<text>            </text><comment>Set <featurename>foo</featurename> to <argument>a_foo</argument>.</comment>
+<text>        </text>require
+<text>            </text>a_foo_not_void: <argument>a_foo</argument> /= Void
+<text>        </text>do
+<text>            </text><assign><target><featurename>foo</featurename></target>
+			<expression><argument>a_foo</argument></expression></assign>
+<text>        </text>ensure
+<text>            </text>foo_set: <equal><expression><featurename>foo</featurename></expression>
+					<expression><argument>a_foo</argument></expression></equal>
+<text>        </text>end
+</programlisting>
+</para>
+<toplink/>
+</section>
+
+</chapter>
