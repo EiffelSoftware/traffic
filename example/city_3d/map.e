@@ -524,7 +524,7 @@ feature {NONE} -- Event handling
 							line.forth
 						end
 						lines.forth
-					end	
+					end
 					if not is_found then
 						marked_destination := Void
 						marked_origin := Void

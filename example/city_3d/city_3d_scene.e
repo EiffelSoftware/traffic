@@ -299,11 +299,8 @@ feature -- Event handling
 			button /= Void
 		do
 			button.set_pressed (false)
-			if map_file_name = void then
-				map.load_map ("./zurich_little.xml")
-			else
-				map.load_map (map_file_name)
-			end
+			map.load_map (map_file_name)
+			buildings_slider.set_current_value (buildings_slider.left_value)
 		end
 		
 	combo_selection_changed (name: STRING) is
