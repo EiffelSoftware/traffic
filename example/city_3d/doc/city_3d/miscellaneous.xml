@@ -47,9 +47,9 @@
 <section id="installation">
 	<title>Dependencies</title>
     <para>
-        <para>
-            This Section lists some things that are kind of ugly in the sense that they may not work perfectly if some parameters are changed.
-        </para>
+        This section lists some things that are kind of ugly in the sense that they may not work perfectly if some parameters are changed.
+    </para>
+    <para>
     1) Map files:
         they must be in the map subdirectory and in the main directory. This is some deficiency of the TRAFFIC Library and will probably be fixed someday.
     </para>
@@ -58,10 +58,10 @@
         <itemizedlist>
             <listitem><para>
                 <featurename>Plane_size</featurename> is magic number that is chosen with our example maps in mind. This works for them but it might not work perfectly for other map files. So this might have to be changed or made independent of the map file by either calculating it somehow or saving it in some configuration file.
-                </para></listitem>
+            </para></listitem>
             <listitem><para>
                 <featurename>map_to_gl_coords</featurename> is also optimized for our example maps. They use the range of the coordinates from the map.
-                </para></listitem>
+            </para></listitem>
         </itemizedlist>
     </para>
 
@@ -71,17 +71,19 @@
 <section id="reuseability">
 	<title>Reuseability</title>
 	<para>
-		To start your documentation I recommend to copy and rename the sample-folder from 
-		the directory <filename class="directory">$EM/doc/sample</filename>. 
-		Please create your folder directly in this directory <filename class="directory">
-		$EM/doc/</filename>! (replace the words "sample" through your foldername in all 
-		*.xml-files). It is important to have an <filename>index.xml</filename> as an 
-		overview about the whole documentation.
+		This section discusses some scenarios of how you could reuse our work.
+	</para>
+    <para>
+		 1) change some minor things like the representation of the traffic lines or the buildings
+         
 	</para>
 	<para>
-		 To add or remove documentation-files, you have also to change the <filename>
-		 build.geant</filename>. At the end of this file, you'll find a list with all
-		 activated files ("index" has to be the last item).
+		 2) keep everything and add some new features like the ones we put on the toolbar
+         
+	</para>
+    <para>
+		 3) keep the MAP class and replace the GUI
+         
 	</para>
 <toplink/>
 </section>
@@ -89,18 +91,51 @@
 <section id="future_perspective">
 	<title>Future perspective</title>
 	<para>
-		To start your documentation I recommend to copy and rename the sample-folder from 
-		the directory <filename class="directory">$EM/doc/sample</filename>. 
-		Please create your folder directly in this directory <filename class="directory">
-		$EM/doc/</filename>! (replace the words "sample" through your foldername in all 
-		*.xml-files). It is important to have an <filename>index.xml</filename> as an 
-		overview about the whole documentation.
+		This section lists some things one could do in the future to inprove or enhance what we have do so far.
 	</para>
 	<para>
-		 To add or remove documentation-files, you have also to change the <filename>
-		 build.geant</filename>. At the end of this file, you'll find a list with all
-		 activated files ("index" has to be the last item).
-	</para>
+    1) new features:
+        <itemizedlist>
+            <listitem><para>
+                First-person traveling through the city
+            </para></listitem>
+            <listitem><para>
+                extra XML file with things especially for the 3D map
+            </para></listitem>
+        </itemizedlist>
+    </para>
+    <para>
+    2) extensions:
+        <itemizedlist>
+            <listitem><para>
+                Text console or other GUI extensions
+            </para></listitem>
+            <listitem><para>
+                time tables for the means of transport; maybe updateable over the internet
+            </para></listitem>
+            <listitem><para>
+                Integration of Events like concerts, cinemas, theaters etc.
+            </para></listitem>
+        </itemizedlist>
+    </para>
+    <para>
+    3) improvements:
+        <itemizedlist>
+            <listitem><para>
+                faster parsing of the XML file
+            </para></listitem>
+            <listitem><para>
+                even more speed optimizations for the Graphics
+            </para></listitem>
+            <listitem><para>
+                more buildings etc. - would probably need an extra XML file
+            </para></listitem>
+        </itemizedlist>
+    </para>
+    <para>
+    4) completely new things:
+        
+    </para>
 <toplink/>
 </section>
 
