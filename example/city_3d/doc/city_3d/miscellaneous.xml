@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+
+<!--
+	description:
+
+		"Traffic 3D front end documentation"
+
+	copyright: "Copyright (c) 2005, Till Bay and others"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date$"
+	revision: "$Revision$"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/introduction">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Till Bay</holder>
+	</copyright>
+	<author>
+		<firstname>Till</firstname><surname>Bay</surname>
+	</author>
+	<email>bay@inf.ethz.ch</email>
+	<date>2 August 2005</date>
+</chapterinfo>
+
+<title>Introduction</title>
+<section id="page_index">
+<title>Page Index</title>
+<para>
+<itemizedlist>
+    <listitem><para>
+    	<indexlink url="#installation">Installation of gobo-Documentation</indexlink>
+    </para></listitem>
+    <listitem><para>
+    	<indexlink url="#start_doc">Create an own Documentation</indexlink>
+    </para></listitem>
+</itemizedlist>
+</para>
+</section>
+<section id="installation">
+	<title>Installation of gobo-Documentation</title>
+	<para>
+		First of all, make sure you have the latest GOBO-Version from the CVS!
+		</para>
+		<para>
+		To be prepared for the compilation you have to make a <featurename>geant install
+		</featurename>in the <filename class="directory">$GOBO/library/</filename>.
+		Then you have to compile the tool gexslt from <filename class="directory">
+		$GOBO/src/gexslt</filename> as known with <featurename>geant compile</featurename>.
+		</para>
+		To use this tool in each directory, you have to add it to the path-variable 
+		(<filename>$GOBO/src/gexslt/</filename>).
+		<para>
+		You are now prepared to parse the documentation-xml-files. For example go to 
+		<filename class="directory">$EM/doc/sample/</filename> and install this help
+		with <featurename>geant install</featurename>. To delete the *.html-files you can use
+		<featurename>geant clobber</featurename>.
+	</para>
+
+<toplink/>
+</section>
+
+<section id="start_doc">
+	<title>Create an own Documentation</title>
+	<para>
+		To start your documentation I recommend to copy and rename the sample-folder from 
+		the directory <filename class="directory">$EM/doc/sample</filename>. 
+		Please create your folder directly in this directory <filename class="directory">
+		$EM/doc/</filename>! (replace the words "sample" through your foldername in all 
+		*.xml-files). It is important to have an <filename>index.xml</filename> as an 
+		overview about the whole documentation.
+	</para>
+	<para>
+		 To add or remove documentation-files, you have also to change the <filename>
+		 build.geant</filename>. At the end of this file, you'll find a list with all
+		 activated files ("index" has to be the last item).
+	</para>
+<toplink/>
+</section>
+
+</chapter>

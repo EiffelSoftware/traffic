@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+ <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+   
+  <title>Introduction</title>
+  <link rel="stylesheet" type="text/css" href="../misc/style.css"/>
+ </head>
+ <body bgcolor="#FFFFFF"><a name="top_of_page"></a><table border="0" width="100%">
+   <tr>
+    <td>
+     <h1>Introduction</h1>
+    </td>
+    <td align="right"><a href="miscellaneous.html"><img src="../misc/image/previous.gif" alt="Previous" border="0"/></a><a href="structure.html"><img src="../misc/image/next.gif" alt="Next" border="0"/></a></td>
+   </tr>
+  </table>
+  <hr size="1"/>
+  <div><a name="page_index"></a>
+   
+   <h2>Page Index</h2>
+   
+   <p>
+    
+    <ul>
+     <li>
+      	<a href="#installation"><font color="#CC6600">Installation of gobo-Documentation</font></a>
+      
+     </li>
+     <li>
+      	<a href="#start_doc"><font color="#CC6600">Create an own Documentation</font></a>
+      
+     </li>
+    </ul>
+    
+   </p>
+   
+  </div>
+  <div><a name="installation"></a>
+   	
+   <h2>Installation of gobo-Documentation</h2>
+   	
+   <p>
+    		First of all, make sure you have the latest GOBO-Version from the CVS!
+    		
+   </p>
+   		
+   <p>
+    		To be prepared for the compilation you have to make a <font color="#008080"><i><tt>geant install
+       		</tt></i></font>in the <font color="#800000"><i><tt>$GOBO/library/</tt></i></font>.
+    		Then you have to compile the tool gexslt from <font color="#800000"><i><tt>
+       		$GOBO/src/gexslt</tt></i></font> as known with <font color="#008080"><i><tt>geant compile</tt></i></font>.
+    		
+   </p>
+   		To use this tool in each directory, you have to add it to the path-variable 
+   		(<font color="#800000"><i><tt>$GOBO/src/gexslt/</tt></i></font>).
+   		
+   <p>
+    		You are now prepared to parse the documentation-xml-files. For example go to 
+    		<font color="#800000"><i><tt>$EM/doc/sample/</tt></i></font> and install this help
+    		with <font color="#008080"><i><tt>geant install</tt></i></font>. To delete the *.html-files you can use
+    		<font color="#008080"><i><tt>geant clobber</tt></i></font>.
+    	
+   </p>
+   
+   <a href="#top_of_page"><font color="#CC6600">
+     top
+     </font></a>
+   
+  </div>
+  <div><a name="start_doc"></a>
+   	
+   <h2>Create an own Documentation</h2>
+   	
+   <p>
+    		To start your documentation I recommend to copy and rename the sample-folder from 
+    		the directory <font color="#800000"><i><tt>$EM/doc/sample</tt></i></font>. 
+    		Please create your folder directly in this directory <font color="#800000"><i><tt>
+       		$EM/doc/</tt></i></font>! (replace the words "sample" through your foldername in all 
+    		*.xml-files). It is important to have an <font color="#800000"><i><tt>index.xml</tt></i></font> as an 
+    		overview about the whole documentation.
+    	
+   </p>
+   	
+   <p>
+    		 To add or remove documentation-files, you have also to change the <font color="#800000"><i><tt>
+       		 build.geant</tt></i></font>. At the end of this file, you'll find a list with all
+    		 activated files ("index" has to be the last item).
+    	
+   </p>
+   <a href="#top_of_page"><font color="#CC6600">
+     top
+     </font></a>
+   
+  </div>
+  <hr size="1"/>
+  <table border="0" width="100%">
+   <tr>
+    <td>
+     <address><font size="2"><b>Copyright © 2005, Till Bay</b><br/><b>mailto:</b><a href="mailto:bay@inf.ethz.ch">bay@inf.ethz.ch</a><br/><a href="http://se.inf.ethz.ch/eiffelmedia">http://se.inf.ethz.ch/eiffelmedia</a> (login: eiffelmedia pw: EIFFEL)
+       				<br/><b>Last Updated: </b>2 August 2005</font></address>
+    </td>
+    <td align="right" valign="top"><a href="http://se.inf.ethz.ch/eiffelmedia"><img src="../misc/image/home.gif" alt="Home" border="0"/></a><a href="index.html"><img src="../misc/image/toc.gif" alt="Toc" border="0"/></a><a href="miscellaneous.html"><img src="../misc/image/previous.gif" alt="Previous" border="0"/></a><a href="structure.html"><img src="../misc/image/next.gif" alt="Next" border="0"/></a></td>
+   </tr>
+  </table>
+ </body>
+</html>
