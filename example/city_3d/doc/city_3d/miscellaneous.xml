@@ -74,16 +74,22 @@
 		This section discusses some scenarios of how you could reuse our work.
 	</para>
     <para>
-		 1) change some minor things like the representation of the traffic lines or the buildings
-         
+		 1) change some minor things like the representation of the traffic lines or the buildings:
+         <para>
+            You could directly change the related classes. e.g. <classname>TRAFFIC_LINE_FACTORY</classname> or<classname>BUILDING_FACTORY</classname>. This should have immediate consequences on their graphical representation.
+         </para>
 	</para>
 	<para>
-		 2) keep everything and add some new features like the ones we put on the toolbar
-         
+		 2) keep everything and add some new features like the ones we put on the toolbar:
+         <para>
+            You would have to add the new features in <classname>MAP</classname> and make them accessible by adding corresponding controle options to the GUI by changing <classname>CITY_3D_SCENE</classname>.
+         </para>
 	</para>
     <para>
-		 3) keep the MAP class and replace the GUI
-         
+		 3) keep the MAP class and replace the GUI:
+         <para>
+            You could also throw away our GUI and replace it with your own or just integrate the 'map part' of the application into your own application. This could easily be done by just creating an instance of <classname>MAP</classname> in your application. Then you could use the features you like or even add new features to <classname>MAP</classname>.
+         </para>
 	</para>
 <toplink/>
 </section>
