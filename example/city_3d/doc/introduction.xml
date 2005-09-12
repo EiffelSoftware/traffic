@@ -112,17 +112,15 @@
 	<para>
 	The next part explaines the overall structure and all the used
 	classes and factories with their features in detail. 
-	</para>
-	<para>
 	Part three gives information about all the dependencies
 	between the different classes. Besides it explaines which
 	parts are depending on the information in the XML files and
 	which features would have to be changed using a different one.
-	</para><para>Part four concentrates on the reuse of the MAP class and
+	Part four concentrates on the reuse of the MAP class and
 	factories, using a different scene. It explains how options
 	are set using the apropriate features and what would be to do
 	going beyond changing only the scene.
-	</para><para>Finally, part five presents some ideas of what could be implemented in
+	Finally, part five presents some ideas of what could be implemented in
 	the future and how to embed it into the project.
 	</para>
 <toplink/>
