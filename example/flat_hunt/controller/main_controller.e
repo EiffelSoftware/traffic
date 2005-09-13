@@ -108,8 +108,7 @@ feature -- Game operations
 						game.players.i_th (i).set_defeated (True)
 						i := i + 1
 					end
-				end			
-				
+				end	
 				game_scene.display_end_game
 			end
 		end		
@@ -176,7 +175,7 @@ feature -- Attributes
 	end_game_called_once: BOOLEAN
 			-- Is the game already game over?
 
-feature {NONE} -- Event handling
+feature -- Event handling
 
 	subscribe_to_clicked_place_event (an_agent: PROCEDURE [ANY, TUPLE [TRAFFIC_PLACE]]) is
 			-- Subscribe `an_agent' to clicked place event
