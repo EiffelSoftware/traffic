@@ -342,13 +342,4 @@ feature -- Sound
 		once
 			Result := "far_away.ogg"
 		end
-		
-feature -- Misc (Strings)
-
-	My_application_name: STRING is "Flat Hunt v2"
-			-- Name of the application.
-	
-	Application_icon: STRING is "flat_hunt_icon.png"
-			-- Name of the application icon.
-		
 end

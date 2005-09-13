@@ -20,12 +20,12 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>6 August 2005</date>
+        <date>13 September 2005</date>
     </chapterinfo>
     <title>Flat Hunt Developer Guide</title>
     <para>
-        <libraryname>TRAFFIC</libraryname> [<link linkend="references">sa05</link>],
-            <projectname>Touch</projectname> [<link linkend="references">rk05</link>] and
+        <libraryname>TRAFFIC</libraryname> [<link url="references.html">sa05</link>],
+            <projectname>Touch</projectname> [<link url="references.html">rk05</link>] and
             <projectname>Flat Hunt</projectname> is software that hopefully makes learning to
         program more fun and more interesting for you. <libraryname>TRAFFIC</libraryname> is a
         library that supports the reading and display of public transportation systems. A library is
@@ -33,45 +33,46 @@
             Hunt</projectname> is an application that uses the <libraryname>TRAFFIC</libraryname>
         library to model a city map. For the visualization the
         <libraryname>EiffelMedia</libraryname> Library (formerly known as
-        <libraryname>ESDL</libraryname> [<link linkend="references">tgb03, bb04</link>]) is used. It is a strategy game, similar to Scotland Yard,
-        but with a different background story (for more information about the story and gameplay of
-            <projectname>Flat Hunt</projectname>, see <link linkend="../userguide/index">Flat Hunt
-            User Guide</link>). <projectname>Touch</projectname> is also an application that uses
-        the <libraryname>TRAFFIC</libraryname> library. For more information on
+        <libraryname>ESDL</libraryname> [<link url="references">tgb03, bb04</link>]) is used. It is
+        a strategy game, similar to Scotland Yard, but with a different background story (for more
+        information about the story and gameplay of <projectname>Flat Hunt</projectname>, see <link
+            url="../userguide/index.html">Flat Hunt User Guide</link>).
+        <projectname>Touch</projectname> is also an application that uses the
+        <libraryname>TRAFFIC</libraryname> library. For more information on
         <libraryname>TRAFFIC</libraryname> and <projectname>Touch</projectname>: see [<link
-            linkend="references">sa05</link>] and [<link linkend="references">rk05</link>] or visit
-            <ulink url="http://se.inf.ethz.ch/traffic">this website</ulink>. </para>
+            url="references.html">sa05</link>] and [<link url="references.html">rk05</link>] or visit
+            <link url="http://se.inf.ethz.ch/traffic">this website</link>. </para>
     <para> This document describes how <projectname>Flat Hunt</projectname> is built, what classes
         are important and highlights some of their features. It is structured as follows: <blockquote>
             <variablelist>
                 <varlistentry>
                     <term>
-                        <link linkend="ch1_getting_started">Chapter 1: Getting Started</link>
+                        <link url="ch1_getting_started.html">Chapter 1: Getting Started</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <link linkend="ch2_design">Chapter 2: Design</link>
+                        <link url="ch2_design.html">Chapter 2: Design</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <link linkend="ch3_states">Chapter 3: The States of the Game</link>
+                        <link url="ch3_states.html">Chapter 3: The States of the Game</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <link linkend="ch4_walkthrough">Chapter 4: Guided "Walk-Through"</link>
+                        <link url="ch4_walkthrough.html">Chapter 4: Guided "Walk-Through"</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <link linkend="legal_and_thanks">Legal Stuff and Thanks</link>
+                        <link url="legal_and_thanks.html">Legal Stuff and Thanks</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <link linkend="references">References</link>
+                        <link url="references.html">References</link>
                     </term>
                 </varlistentry>
             </variablelist>

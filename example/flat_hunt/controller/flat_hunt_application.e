@@ -50,8 +50,8 @@ feature -- Initialization
 
 			-- Initialize the screen.
 			initialize_screen
-			set_application_name (My_application_name)
---			set_application_icon (Application_icon)
+			set_application_icon ("icon.png")
+			set_application_name ("Flat Hunt v2")
 			
 			-- Begin playing the game music.
 			music_player.play_game_music

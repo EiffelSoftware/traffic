@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
 	description:
 
@@ -9,28 +9,25 @@
 	date: "$Date $"
 	revision: "$Revision $"
 -->
-
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer_guide/getting_started">
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation"
+    id="developer_guide/getting_started">
     <chapterinfo>
         <copyright>
             <year>2005</year>
             <holder>Ursina Caluori</holder>
         </copyright>
         <author>
-            <firstname>Ursina</firstname><surname>Caluori</surname>
+            <firstname>Ursina</firstname>
+            <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
         <date>6 August 2005</date>
     </chapterinfo>
-    
     <title>Chapter 1: Getting Started</title>
-    
     <para>
         <emphasis>What you need for running <projectname>Flat Hunt</projectname>...</emphasis>
     </para>
-    <para>
-        This chapter is structured as follows: 
-    </para>
+    <para> This chapter is structured as follows: </para>
     <para>
         <itemizedlist>
             <listitem>
@@ -47,8 +44,42 @@
     </para>
     <section id="req">
         <title>Requirements</title>
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        <keyword>EiffelStudio</keyword>: <link
+                            url="http://www.eiffel.com/downloads/"
+                        >http://www.eiffel.com/downloads/</link>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <keyword>TRAFFIC</keyword>: <link url="http://se.inf.ethz.ch/traffic/"
+                            >http://se.inf.ethz.ch/traffic/</link>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <keyword>EiffelMedia</keyword>: <link
+                            url="http://se.inf.ethz.ch/eiffelmedia/"
+                            >http://se.inf.ethz.ch/eiffelmedia/</link>
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </para>
     </section>
     <section id="install">
         <title>Installation</title>
+        <para>
+            <keyword>EiffelStudio</keyword>, as well as <keyword>EiffelMedia</keyword>, come with an
+            installer. Just follow the onscreen instructions like you would when installing any
+            other program. No magic there..</para>
+        <para>
+            <keyword>TRAFFIC</keyword> does not need to be installed, just download the zip-file and
+            unzip it to a directory of your choice. <keyword>Flat Hunt</keyword> is located in the
+            directory <filename>traffic/example/flat_hunt</filename>. To get it to run, however, you'll have to 
+           
+        </para>
     </section>
 </chapter>
