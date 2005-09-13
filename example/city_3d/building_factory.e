@@ -24,7 +24,7 @@ inherit
 
 creation
 
-	make --, make_central, make_city_centre
+	make
 
 feature -- Implementation
 
@@ -39,24 +39,6 @@ feature -- Implementation
 --			bitmap_factory.last_bitmap.do_not_free_gl_textures
 --			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
 		end
-		
---	make_central is
---			-- Creation procedure
---		do
---	   		bitmap_factory.create_bitmap_from_image ("building.gif")
---				check
---					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void
---				end
---			bitmap_factory.last_bitmap.do_not_free_gl_textures
---			texture := bitmap_factory.last_bitmap.gl_texture_mipmap
---			is_central := true
---		end
---		
---	make_city_centre is
---			-- Creation procedure
---		do
---			is_city_centre := True	
---		end
 		
 	set_central is
 		 	-- Set building to be in the centre.
@@ -95,14 +77,15 @@ feature -- Implementation
 			-- The size of the bounding box in y direction of created objects
 			
 	object_depth: DOUBLE is 2.0
-			-- The size of the bounding box in z direction of created objects.	
+			-- The size of the bounding box in z direction of created objects
 			
 feature {NONE} -- Implementation
 
 	texture: INTEGER
+			-- Texture of the buildings
 	
 	specify_object is
-			-- defining the object		
+			-- Defines the object.		
 		do
 			if is_central then
 				-- Pyramid

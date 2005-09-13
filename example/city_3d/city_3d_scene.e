@@ -27,7 +27,9 @@ feature -- Interface
 			create buildings_checkbox.make_from_text ("Show buildings")
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded, window_height)
 			create combo_box.make_from_list (search_for_xml)
-			create button.make_from_text ("Load map")
+			create load_button.make_from_text ("Load map")
+			create zoom_in_button.make_from_text ("Zoom in")
+			create zoom_out_button.make_from_text ("Zoom out")
 			create coordinates_checkbox.make_from_text ("Show coords")
 			create sun_checkbox.make_from_text ("Show sun")
 			create buildings_transparent_checkbox.make_from_text ("Set transparent")
@@ -54,13 +56,13 @@ feature -- Interface
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
 			add_component (toolbar_panel)
 			
-			-- Button
-			button.set_position (50, 80)
---			button.set_font (create {EM_TTF_FONT}.make_from_ttf_file ("./herbert.ttf",18))
---			button.set_dimension (50, 20)
-			button.clicked_event.subscribe (agent button_clicked)
-			button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
-			toolbar_panel.add_widget (button)
+			-- Load Button
+			load_button.set_position (50, 80)
+--			load_button.set_font (create {EM_TTF_FONT}.make_from_ttf_file ("./herbert.ttf",18))
+--			load_button.set_dimension (50, 20)
+			load_button.clicked_event.subscribe (agent load_button_clicked)
+			load_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+			toolbar_panel.add_widget (load_button)
 
 			-- Combobox for XML selection
 			combo_box.set_position (10, 50)
@@ -70,6 +72,19 @@ feature -- Interface
 			combo_box.set_selected_index (1)
 			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
+			
+			-- Zoom out Button
+			zoom_out_button.set_position (180-zoom_out_button.width, 170)
+			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
+			zoom_out_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+			toolbar_panel.add_widget (zoom_out_button)
+			
+			-- Zoom in Button
+			zoom_in_button.set_position (20, 170)
+			zoom_in_button.set_dimension (zoom_out_button.width, zoom_out_button.height)
+			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
+			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+			toolbar_panel.add_widget (zoom_in_button)
 			
 			-- Buildings transparent Checkbox
 			buildings_transparent_checkbox.set_position (10, 250)
@@ -293,14 +308,32 @@ feature -- Event handling
 			map.set_coordinates_shown (False)
 		end
 		
-	button_clicked is
-			-- Button has been clicked.
+	load_button_clicked is
+			-- "Load" button has been clicked.
 		require
-			button /= Void
+			load_button /= Void
 		do
-			button.set_pressed (false)
+			load_button.set_pressed (false)
 			map.load_map (map_file_name)
 			buildings_slider.set_current_value (buildings_slider.left_value)
+		end
+		
+	zoom_in_button_clicked is
+			-- "Zoom in" button has been clicked.
+		require
+			zoom_in_button /= Void
+		do
+			zoom_in_button.set_pressed (false)
+			map.zoom_in
+		end
+		
+	zoom_out_button_clicked is
+			-- "Zoom out" button has been clicked.
+		require
+			zoom_out_button /= Void
+		do
+			zoom_out_button.set_pressed (false)
+			map.zoom_out
 		end
 		
 	combo_selection_changed (name: STRING) is
@@ -315,31 +348,42 @@ feature -- Event handling
 		
 feature -- Widgets
 
+	buildings_transparent_checkbox: EM_CHECKBOX
+	sun_checkbox: EM_CHECKBOX
+	coordinates_checkbox: EM_CHECKBOX
 	highlighting_checkbox: EM_CHECKBOX
 	buildings_checkbox: EM_CHECKBOX
-	coordinates_checkbox: EM_CHECKBOX
-	buildings_transparent_checkbox: EM_CHECKBOX
+	shortest_path_checkbox: EM_CHECKBOX
+	
 	toolbar_panel: EM_PANEL
+	
 	combo_box: EM_COMBOBOX[STRING]
-	button: EM_BUTTON
+	
+	load_button: EM_BUTTON
+	zoom_in_button: EM_BUTTON
+	zoom_out_button: EM_BUTTON
+	
 	buildings_slider: EM_SLIDER
 	buildings_label: EM_LABEL
-	sun_checkbox: EM_CHECKBOX
+	
 	marked_origin_label: EM_LABEL
 	marked_origin_title: EM_LABEL
 	marked_destination_label: EM_LABEL
 	marked_destination_title: EM_LABEL
-	shortest_path_checkbox: EM_CHECKBOX
 		
 feature {NONE} -- Implementation
 
 	bg_color: EM_COLOR
+			-- Background color of the scene
 
 	map_file_name: STRING
+			-- Name of the map file to be loaded
 		
 	map: MAP
+			-- The 3 dimensional representation of the map
 	
 	number_of_buildings: INTEGER
+			-- Number of buildings on the map
 	
 	search_for_xml: DS_LINKED_LIST[STRING] is
 			-- Search for xml files.

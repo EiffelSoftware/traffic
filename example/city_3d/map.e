@@ -317,6 +317,18 @@ feature -- Traffic map loading
 
 feature -- Options
 
+	zoom_in is
+			-- Zoom in.
+		do
+			wheel_up
+		end
+	
+	zoom_out is
+			-- Zoom in.
+		do
+			wheel_down
+		end
+
 	set_coordinates_shown (b: BOOLEAN) is
 			-- Set `coordinates_shown'.
 		require variable_exists: b /= void
@@ -409,6 +421,8 @@ feature {NONE} -- Event handling
 			else
 				focus := focus + 0.1
 			end
+		ensure
+			focus_incremented: focus > old focus
 		end
 		
 	wheel_up is
@@ -419,6 +433,8 @@ feature {NONE} -- Event handling
 			elseif focus > 0.1 then
 				focus := focus - 0.1
 			end
+		ensure
+			focus_decremented: focus > 0.1 implies focus < old focus
 		end
 	
 	mouse_click (event: EM_MOUSEBUTTON_EVENT) is
@@ -773,5 +789,7 @@ feature {NONE} -- Attributes
 invariant
 	
 	number_of_buildings >= 0
+	
+	focus_greater_than_0: focus > 0
 
 end -- class MAP
