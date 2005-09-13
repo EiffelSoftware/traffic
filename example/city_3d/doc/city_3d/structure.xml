@@ -39,6 +39,12 @@
     	<indexlink url="#map">MAP</indexlink>
     </para></listitem>
     <listitem><para>
+    	<indexlink url="#building_ewer">BUILDING_EWER</indexlink>
+    </para></listitem>
+    <listitem><para>
+    	<indexlink url="#shared_constants">SHARED_CONSTANTS</indexlink>
+    </para></listitem>
+    <listitem><para>
     	<indexlink url="#factories">Factories:</indexlink>
     </para></listitem>
     <listitem><para>
@@ -46,12 +52,6 @@
     </para></listitem>
     <listitem><para>
     	<indexlink url="#building_factory">BUILDING_FACTORY</indexlink>
-    </para></listitem>
-    <listitem><para>
-    	<indexlink url="#building_ewer">BUILDING_EWER</indexlink>
-    </para></listitem>
-    <listitem><para>
-    	<indexlink url="#shared_constants">SHARED_CONSTANTS</indexlink>
     </para></listitem>
      <listitem><para>
     	<indexlink url="#utilities">Utilities:</indexlink>
@@ -159,56 +159,6 @@
 <toplink/>
 </section>
 
-<section id="factories">
-	<para/>
-	<title>Factories:</title>
-	<para>
-	</para>
-</section>
-	
-<section id="line_factory">
-	<para>
-	</para>
-	<title>LINE_FACTORY</title>
-	<para>
-	</para>
-	<title>Description</title>
-	<para>
-	This class is a factory for creating displayable representations of <classname>TRAFFIC_LINE</classname> objects. 
-	It inherits from <classname>EM_3D_OBJECT_FACTORY</classname>, which provides the necessary structures, 
-	such as the feature <featurename>create_object</featurename> or <featurename>specify_object</featurename> 
-	that contains the (OpenGL) commands 
-	to create the object and has to be implemented.
-	</para>
-	<title>Building a line</title>
-	<para>
-	Each line segment is drawn independently, putting a circle at the beginning and the end to indicate that 
-	there're stations there. Next, the polypoints list is traversed and for each two points, a rectangle of 
-	width <featurename>line_width</featurename> is created. These rectangles are connected with circles again, but smaller as the ones 
-	representing the stations.
-	</para>
-	<toplink/>
-</section>
-
-<section id="building_factory">
-	<para/>
-	<title>BUILDING_FACTORY</title>
-	<para>
-	</para>
-	<title>Description</title>
-	<para>
-	Similar to <classname>TRAFFIC_LINE_FACTORY</classname>, this class is responsible for creating new buildings 
-	and stores the information about the different types, such as central or outlying. 
-	</para>
-	<title>Type of buildings</title>
-	<para>
-	There're three different types of buildings implemented: city_centre, central and outlying. City_centre is the most central type and its buildings consist of a cylinder, which is completed by a hemisphere. 
-	Central consists of cubes with the same size as the ones that are used for outlying, but with a pyramid roof.
-	As said before, the third and last type, outlying, are only mere cubes.
-	</para>
-	<toplink/>
-</section>
-
 <section id="building_ewer">
 	<para/>
 	<title>BUILDING_EWER</title>
@@ -268,6 +218,56 @@
 	which are in the range of -plane_size/2 to +plane_size/2. 
 	All coordinate transformations that have to be done, call this procedure. This makes an adjustment to new coordinates in an XML file pretty easy, 
 	because only this feature would have to be changed.
+	</para>
+	<toplink/>
+</section>
+
+<section id="factories">
+	<para/>
+	<title>Factories:</title>
+	<para>
+	</para>
+</section>
+	
+<section id="line_factory">
+	<para>
+	</para>
+	<title>LINE_FACTORY</title>
+	<para>
+	</para>
+	<title>Description</title>
+	<para>
+	This class is a factory for creating displayable representations of <classname>TRAFFIC_LINE</classname> objects. 
+	It inherits from <classname>EM_3D_OBJECT_FACTORY</classname>, which provides the necessary structures, 
+	such as the feature <featurename>create_object</featurename> or <featurename>specify_object</featurename> 
+	that contains the (OpenGL) commands 
+	to create the object and has to be implemented.
+	</para>
+	<title>Building a line</title>
+	<para>
+	Each line segment is drawn independently, putting a circle at the beginning and the end to indicate that 
+	there're stations there. Next, the polypoints list is traversed and for each two points, a rectangle of 
+	width <featurename>line_width</featurename> is created. These rectangles are connected with circles again, but smaller as the ones 
+	representing the stations.
+	</para>
+	<toplink/>
+</section>
+
+<section id="building_factory">
+	<para/>
+	<title>BUILDING_FACTORY</title>
+	<para>
+	</para>
+	<title>Description</title>
+	<para>
+	Similar to <classname>TRAFFIC_LINE_FACTORY</classname>, this class is responsible for creating new buildings 
+	and stores the information about the different types, such as central or outlying. 
+	</para>
+	<title>Type of buildings</title>
+	<para>
+	There're three different types of buildings implemented: city_centre, central and outlying. City_centre is the most central type and its buildings consist of a cylinder, which is completed by a hemisphere. 
+	Central consists of cubes with the same size as the ones that are used for outlying, but with a pyramid roof.
+	As said before, the third and last type, outlying, are only mere cubes.
 	</para>
 	<toplink/>
 </section>
