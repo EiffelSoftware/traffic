@@ -141,7 +141,7 @@ feature {NONE} -- Implementation
 					elseif player.is_defeated then
 						marking_circle.set_line_width (4)
 						surface.draw_object (marking_circle)
-						animate_defeat
+						animate_defeat (surface)
 					end
 				end
 			else

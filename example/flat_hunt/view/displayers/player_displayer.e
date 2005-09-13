@@ -12,11 +12,6 @@ inherit
 		redefine
 			publish_mouse_event, out
 		end
-		
-	EM_ANIMATABLE
-		undefine
-			out
-		end
 	
 	HASHABLE
 		undefine
@@ -36,6 +31,16 @@ inherit
 		end
 	
 	EM_TIME_SINGLETON
+		undefine
+			out
+		end
+
+	EM_SHARED_SCENE
+		undefine
+			out
+		end
+
+	SHARED_MAIN_CONTROLLER
 		undefine
 			out
 		end
@@ -69,33 +74,57 @@ feature -- Initialization
 
 feature -- Basic operations
 		
-	animate_defeat is
-			-- Animate the victory of the player.
-----		local
-----			cir: EM_CIRCLE
-----			position: EM_VECTOR_2D
-----			color: EM_COLOR
-----			count: INTEGER
+	animate_defeat (a_surface: EM_SURFACE) is
+			-- Animate the defeat of the player.
+		local
+			circle: EM_CIRCLE
+			position: EM_VECTOR_2D
+			count: INTEGER
 		do
-----			create position.make (player.location.position.x, player.location.position.y)
-----			create cir.make (position)
-----			create color.make_with_8_bit_rgb (0, 0, 0)
-----			cir.set_color (color)
-----			cir.set_diameter (50)
-----			cir.draw (canvas)
-----				-- Remove the last few commands if you use them in the loop
-----			from
-----				-- Fill
-----			until
-----				True
-----				-- Replace `True' and fill
-----			loop
-----				-- Fill
-----				process (80)
-----				-- `process' should be kept, but you can change the number 
-----			end
+			create position.make (player.location.position.x, player.location.position.y)
+			create circle.make_inside_box (picture.bounding_box)
+			circle.set_line_color (white)
+			circle.set_filled (False)
+			circle.set_line_width (2)
+			circle.draw (a_surface)
+
+			-- Remove the last few commands if you use them in the loop.
+			from
+				count := 0
+			until
+				count = 5
+				-- Replace `True' and fill.
+			loop
+--				sleep (1000)
+				circle.set_radius (circle.radius + 5)
+--				running_scene.redraw
+				circle.draw (a_surface)
+				-- Fill
+--				process (80)
+--				main_controller.sleep_and_process (500)
+				-- `process' should be kept, but you can change the number 
+				count := count + 1
+			end
 		end
---		
+
+--	sleep (msec: INTEGER) is
+--			-- Wait for `msec' milliseconds, then continue.
+--		local
+--			cur_time, end_time: INTEGER
+--		do
+--			from
+--				cur_time := time.ticks
+--				end_time := cur_time + msec
+--			until
+--				cur_time > end_time
+--			loop
+--				main_controller.game_scene.event_loop.process_events
+--				cur_time := time.ticks
+--			end
+--			running_scene.redraw
+--		end
+		
+
 --	process (msec: INTEGER) is
 --				-- Wait and process events.
 --		local
@@ -289,7 +318,7 @@ feature {NONE} -- Implementation
 				unmark_possible_moves
 			end
 			if player.is_defeated then
-				animate_defeat	
+				animate_defeat (surface)
 			end
 		end
 
