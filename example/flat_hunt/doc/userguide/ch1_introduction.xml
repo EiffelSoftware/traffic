@@ -9,7 +9,6 @@
 	date: "$Date $"
 	revision: "$Revision $"
 -->
-
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="user_guide/introduction">
     <chapterinfo>
         <copyright>
@@ -17,37 +16,25 @@
             <holder>Ursina Caluori</holder>
         </copyright>
         <author>
-            <firstname>Ursina</firstname><surname>Caluori</surname>
+            <firstname>Ursina</firstname>
+            <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>5 August 2005</date>
+        <date>13 September 2005</date>
     </chapterinfo>
-    
     <title>Chapter 1: Introduction</title>
-    
+    <para> Welcome to <projectname>Flat Hunt</projectname>! </para>
     <para>
-        Welcome to <projectname>Flat Hunt</projectname>!
+        <projectname>Flat Hunt</projectname> is a simple adaptation of the well-known board game
+        "Scotland Yard" (<emphasis>see Figure 1</emphasis>). Instead of some agents hunting Mr. X
+        all around London, it is about a group of students starting off at ETH Zurich. To make their
+        student life a bit more pleasant, they are desperately trying to find a flat in this little
+        big city. But to get a flat, they must first meet the estate agent, who is running all
+        around Zurich showing his flats to other people… </para>
+    <para>
+        <image src="pic/in_action.png"/>
     </para>
     <para>
-	    <projectname>Flat Hunt</projectname> is a simple adaptation of the well-known board game "Scotland Yard" (<emphasis>see Figure 1</emphasis>).
-        Instead of some agents hunting Mr. X all around London, it is about a group of students starting off
-        at ETH Zurich. To make their student life a bit more pleasant, they are desperately trying to find a
-        flat in this little big city. But to get a flat, they must first meet the estate agent, who is running all
-        around Zurich showing his flats to other people…
+        <emphasis>Figure 1: Screenshot of <projectname>Flat Hunt</projectname> in action</emphasis>
     </para>
-    
-    <para>
-        <mediaobjectco>
-            <imageobjectco>
-                <areaspec>
-                    <area />
-                </areaspec>
-                <imageobject>
-                    <imagedata fileref="pic/in_action.png"></imagedata>
-                </imageobject>                
-            </imageobjectco>
-        </mediaobjectco>
-	<emphasis>Figure 1: Screenshot of <projectname>Flat Hunt</projectname> in action</emphasis>
-    </para>
-    
 </chapter>

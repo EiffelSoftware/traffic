@@ -9,7 +9,6 @@
 	date: "$Date $"
 	revision: "$Revision $"
 -->
-
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="user_guide/index">
     <chapterinfo>
         <copyright>
@@ -17,59 +16,56 @@
             <holder>Ursina Caluori</holder>
         </copyright>
         <author>
-            <firstname>Ursina</firstname><surname>Caluori</surname>
+            <firstname>Ursina</firstname>
+            <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>5 August 2005</date>
+        <date>13 September 2005</date>
     </chapterinfo>
-    
     <title>Flat Hunt User Guide</title>
-    
     <para>
-        <projectname>Flat Hunt</projectname> is an application that is used to teach you programming, along with another application named <projectname>Touch</projectname> [<link linkend="references">rk05</link>]. 
-        <projectname>Flat Hunt</projectname> is a "Scotland Yard"-like game that will mainly appear in the assignments for the Introduction to Programming course.
-        It is based on <libraryname>TRAFFIC</libraryname> [<link linkend="references">sa05</link>] for modeling the city where the game takes place and on <libraryname>EiffelMedia</libraryname> 
-        (formerly known as <libraryname>ESDL</libraryname> [<link linkend="references">tgb03</link>]) for visualization.
-    </para>
-    
-    <para>
-        This document describes how to use <projectname>Flat Hunt</projectname> and is structured as follows:
-        
-        <blockquote>
+        <projectname>Flat Hunt</projectname> is an application that is used to teach you
+        programming, along with another application named <projectname>Touch</projectname> [<link
+            url="references.html">rk05</link>]. <projectname>Flat Hunt</projectname> is a "Scotland
+        Yard"-like game that will mainly appear in the assignments for the Introduction to
+        Programming course. It is based on <libraryname>TRAFFIC</libraryname> [<link
+            url="references.html">sa05</link>] for modeling the city where the game takes place and
+        on <libraryname>EiffelMedia</libraryname> (formerly known as <libraryname>ESDL</libraryname>
+            [<link url="references.html">tgb03</link>]) for visualization. </para>
+    <para> This document describes how to use <projectname>Flat Hunt</projectname> and is structured
+        as follows: <blockquote>
             <variablelist>
                 <varlistentry>
                     <term>
-                        <ulink url="ch1_introduction.html">Chapter 1: Introduction</ulink>
-                    </term>
-                </varlistentry>                
-                <varlistentry>
-                    <term>
-                        <ulink url="ch2_story.html">Chapter 2: The Story</ulink>
+                        <link url="ch1_introduction.html">Chapter 1: Introduction</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <ulink url="ch3_gameplay.html">Chapter 3: Gameplay</ulink>
+                        <link url="ch2_story.html">Chapter 2: The Story</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <ulink url="ch4_special_features.html">Chapter 4: Special Features</ulink>
+                        <link url="ch3_gameplay.html">Chapter 3: Gameplay</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <ulink url="legal_and_thanks.html">Legal Stuff and Thanks</ulink>
+                        <link url="ch4_special_features.html">Chapter 4: Special Features</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <ulink url="references.html">References</ulink>
+                        <link url="legal_and_thanks.html">Legal Stuff and Thanks</link>
+                    </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <link url="references.html">References</link>
                     </term>
                 </varlistentry>
             </variablelist>
         </blockquote>
-        
     </para>
-    
 </chapter>
