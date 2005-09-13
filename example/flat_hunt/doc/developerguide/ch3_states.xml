@@ -44,7 +44,7 @@
             Hunt</projectname> has six states in total; three playing states and three game over
             states (<emphasis>see Figure 1</emphasis>). These game states are defined in class
                 <classname>GAME_CONSTANTS</classname>:
-            <programlisting>Agent_stuck, Agent_stuck, Agent_caught, Agent_escapes, Prepare_state, Play_state, Move_state: INTEGER is unique
+            <programlisting>Agent_stuck, Agent_stuck, Agent_caught, Agent_escapes, Prepare_state, Play_state, Move_state: <classname>INTEGER</classname> <keyword>is unique</keyword>
                 <comment>Possible states of the game.</comment></programlisting>
         </para>
         <para>
@@ -92,6 +92,31 @@
                         loop starts again in state <keyword>Prepare</keyword>. </para>
                 </listitem>
             </itemizedlist>
+        </para>
+        <para> In the classes <classname>MAIN_CONTROLLER</classname>, <classname>GAME</classname>
+            and <classname>PLAYER</classname>, you can find the features
+            <featurename>prepare</featurename>, <featurename>play</featurename> and
+                <featurename>move</featurename> that deal with these game states. As an example,
+            let’s have a look at feature <featurename>move</featurename> in class
+            <classname>GAME</classname>: </para>
+        <para>
+            <programlisting>
+<text>    </text>move <keyword>is</keyword>
+<text>            </text><comment>Make the chosen move.</comment>
+<text>        </text><keyword>do</keyword>
+<text>            </text><keyword>if</keyword> current_player = estate_agent <keyword>then</keyword>
+<text>                </text>update_agent_visibility
+<text>            </text><keyword>end</keyword>		
+<text>            </text>current_player.move
+<text>            </text><keyword>if</keyword> current_player.location = estate_agent.location and current_player /= estate_agent <keyword>then</keyword>
+<text>                </text>state := Agent_caught
+<text>                </text>update_agent_visibility
+<text>            </text><keyword>else</keyword>
+<text>                </text>state := Prepare_state			
+<text>                </text>next_turn
+<text>            </text><keyword>end</keyword>    
+<text>        </text><keyword>end</keyword> 
+            </programlisting>
         </para>
     </section>
 </chapter>

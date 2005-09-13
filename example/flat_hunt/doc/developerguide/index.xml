@@ -33,7 +33,7 @@
             Hunt</projectname> is an application that uses the <libraryname>TRAFFIC</libraryname>
         library to model a city map. For the visualization the
         <libraryname>EiffelMedia</libraryname> Library (formerly known as
-        <libraryname>ESDL</libraryname> [<link url="references">tgb03, bb04</link>]) is used. It is
+        <libraryname>ESDL</libraryname> [<link url="references.html">tgb03, bb04</link>]) is used. It is
         a strategy game, similar to Scotland Yard, but with a different background story (for more
         information about the story and gameplay of <projectname>Flat Hunt</projectname>, see <link
             url="../userguide/index.html">Flat Hunt User Guide</link>).

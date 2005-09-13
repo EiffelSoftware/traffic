@@ -78,7 +78,8 @@
         <para>
             <keyword>TRAFFIC</keyword> does not need to be installed, just download the zip-file and
             unzip it to a directory of your choice. <keyword>Flat Hunt</keyword> is located in the
-            directory <filename>traffic/example/flat_hunt</filename>. To get it to run, however, you'll have to 
+            directory <filename>traffic/example/flat_hunt</filename>. To get it to run, however, you'll have to compile it first.
+            <warning>TODO: further steps</warning>
            
         </para>
     </section>
