@@ -61,8 +61,8 @@
 	<para>
 	The purpose of this work was to provide a 3
 	dimensional visualization of a map from an XML file. 
-	his map stores information about places and metro
-	lines of a town, which should be displayed in an appropriate way. 
+	This map contains information about places and traffic
+	lines of a city, which should be displayed in an appropriate way. 
 	</para>
 <toplink/>
 </section>
@@ -72,14 +72,14 @@
 	<title>Our goals</title>
 	<para>
 	Our goal was to implement a program that parses this
-	map and generates the data structures, displays metro lines as
-	colored polygons on a plane, adds houses on this plane
-	randomly but checks for "collisions" with metro lines,
+	map file and generates the data structures, displays traffic lines as
+	colored polygons on a plane, adds buildings on this plane
+	randomly but checks for "collisions" with traffic lines,
 	provides useful mouse and keyboard support such that changing
 	the viewport (zooming, rotation, different centres) should be
 	possible (easily). Moreover different light settings should be
 	implemented, existing features such as the shortest path
-	algorithm, visualized and extended.
+	algorithm, integrateted and visualized.
 	</para>
 <toplink/>
 </section>
@@ -87,46 +87,49 @@
 	<para/>
 	<title>Environment and used libraries</title>
 	<para>
-	<title>1 EiffelStudio 5.5</title>
-	</para>
-	<para>
-	<title>	2 GOBO</title>
-	</para>
-	<para>
-	<title>	3 EWG</title>
-	</para>
-	<para>
-	<title>	4 EM EiffelMedia Library:</title> 
-	<para>
-	Provides the Components for
+    
+    
+    <itemizedlist>
+    <listitem><para>
+    	EiffelStudio 5.5
+    </para></listitem>
+    <listitem><para>
+    	GOBO
+    </para></listitem>
+    <listitem><para>
+    	EWG
+    </para></listitem>
+    <listitem><para>
+    	EM EiffelMedia Library: Provides the Components for
 	doing the whole graphics stuff (e.g. Access to the SDL
 	commands or the widgets that were used for the GUI).
-	</para>
-	</para>
-	<para>
-	<title>	5.TRAFFIC  Library:</title> 
-	<para>
-	Provides the whole map parsing,
-	datastructures and things like the calculation of the
+    </para></listitem>
+    <listitem><para>
+    	TRAFFIC  Library: Provides the whole map parsing,
+	data structures and things like the calculation of the
 	shortest path.
-	</para>
+    </para></listitem>
+    </itemizedlist>
 	</para>
 <toplink/>
 </section>
+
 <section id="structure">
 	<para/>
 	<title>Structure of documentation</title>
 	<para>
-	<ulink url="structure.html">The next part </ulink>explaines the overall structure and all the used
-	classes and factories with their features in detail. 
+    <para>
+	<ulink url="structure.html">The next part</ulink> explaines the overall structure and all the used
+	classes and factories with their most important features. 
+    </para>
+    <para>
 	<ulink url="miscellaneous.html">Part three</ulink> gives information about all the dependencies
 	between the different classes. Besides it explaines which
 	parts are depending on the information in the XML files and
-	which features would have to be changed using a different one. Moreover it discusses a possible reuse of the MAP class and
-	factories, using a different scene. It explains how options
-	are set using the apropriate features and what would be to do
-	going beyond changing only the scene. Finally, it presents some ideas of what could be implemented in
+	which features would have to be changed using different ones. Moreover it discusses some possible reuse scenarios of our work. It explains how control options
+	are added to the GUI and what would have to be done if one would like to change more than just the GUI. Finally, it presents some ideas of what could be implemented in
 	the future and how to embed it into the project.
+    </para>
 	</para>
 <toplink/>
 </section>
