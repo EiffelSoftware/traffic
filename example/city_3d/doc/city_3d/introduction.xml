@@ -74,7 +74,7 @@
 	Our goal was to implement a program that parses this
 	map file, generates the data structures, displays traffic lines as
 	colored polygons on a plane, adds buildings on this plane
-	randomly but checks for "collisions" with traffic lines and provides useful mouse and keyboard support such that changing
+	randomly but checks for 'collisions' with traffic lines and provides useful mouse and keyboard support such that changing
 	the viewpoint (zooming, rotation, different centres) should be
 	possible (easily). Moreover different light settings should be
 	implemented and existing features such as the shortest path
