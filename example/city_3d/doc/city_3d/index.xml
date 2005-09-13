@@ -30,7 +30,7 @@
 <title>Traffic 3D front end</title>
 
 <para>
-The Traffic 3D front end project implements a 3 dimensional
+The 'Traffic 3D front end' project implements a 3 dimensional
 visualization of a TRAFFIC map file and adds some additional functionaliy.
 </para>
 
@@ -44,8 +44,7 @@ This document is structured as follows:
 			<ulink url="introduction.html">Introduction</ulink>
 		</term>
 		<listitem><para>
-			Presents overall structure of projects and
-		it's intends.
+			Presents the overall structure of projects and it's intends.
 		</para></listitem>
 	</varlistentry>
 
@@ -54,7 +53,7 @@ This document is structured as follows:
 			<ulink url="structure.html">Classes</ulink>
 		</term>
 		<listitem><para>
-			Presents the basic classes of the project
+			Presents the basic classes of the project.
 		</para></listitem>
 	</varlistentry>
 	<varlistentry>

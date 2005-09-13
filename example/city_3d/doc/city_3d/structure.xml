@@ -147,17 +147,17 @@
 	<para>
 	 ii) Chang lighting of the map: Initially, the scene is lit by a constant light comming down the y axis. 
 	 However, this can be changed to a variable light that is tries to imitates the effect of the sun
-	 </para>
+    </para>
 	<para>
 	 iii) Change the number of buildings to be displayed on the map: The number of buildings can be varied from 150 up to 15000. 
-	 They are randomly distributed using using the class <classname>BUILDING_EWER</classname>.
-	 </para>
+	 They are randomly distributed using the class <classname>BUILDING_EWER</classname>.
+    </para>
 	<para>
 	 iv) Highlight the traffic lines by drawing them with different heights on the map, in order to achieve a better overview.
-	 </para>
+    </para>
 	<para>
 	 v) Show the shortest path between two marked stations and displays it with a white line.
-	 </para>
+    </para>
 	<para>
 	 vi) Make the buildings transparent in order to achieve a better overview.
 	</para>

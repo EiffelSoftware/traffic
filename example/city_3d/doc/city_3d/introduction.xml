@@ -49,7 +49,7 @@
     </listitem>
     <listitem>
     <para>
-    	<indexlink url="#structure">Structure of docmentation</indexlink>
+    	<indexlink url="#structure">Structure of the documentation</indexlink>
     </para>
     </listitem>
 </itemizedlist>
@@ -100,7 +100,7 @@
     	EWG
     </para></listitem>
     <listitem><para>
-    	EM EiffelMedia Library: Provides the Components for
+    	EiffelMedia Library: Provides the Components for
 	doing the whole graphics stuff (e.g. Access to the SDL
 	commands or the widgets that were used for the GUI).
     </para></listitem>
@@ -116,7 +116,7 @@
 
 <section id="structure">
 	<para/>
-	<title>Structure of documentation</title>
+	<title>Structure of the documentation</title>
 	<para>
     <para>
 	<ulink url="structure.html">The next part</ulink> explaines the overall structure and all the used
