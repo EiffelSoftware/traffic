@@ -68,7 +68,8 @@
             top-level clusters (<emphasis>see Figure 1</emphasis>): <keyword>Model</keyword>,
                 <keyword>View</keyword>, <keyword>Controller</keyword> and <keyword>Util</keyword>.
             Some clusters contain sub-clusters and in each cluster there are several classes.
-        <warning>TODO: add class diagram of Flat Hunt</warning></para>
+                <warning>TODO: add class diagram of Flat Hunt</warning>
+        </para>
     </section>
     <section id="controller">
         <title>Controller cluster</title>
@@ -114,29 +115,53 @@
         <para>
             <itemizedlist>
                 <listitem>
-                    <para><strong>PLAYER</strong>:</para>
+                    <para>
+                        <strong>PLAYER</strong>: Class <classname>PLAYER</classname> knows the basic
+                        things one needs to know about a player of Flat Hunt, like how many tickets
+                        he got left. It features the commands <featurename>play</featurename> and
+                            <featurename>move</featurename> and has either a
+                        <classname>HUMAN</classname> or a <classname>BOT</classname> brain.</para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <strong>ESTATE_AGENT</strong>: This is one of the two heirs of class
+                            <classname>PLAYER</classname>. It has some additional information that
+                        is special for an estate agent player like knowing where he last showed
+                        himself. </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <strong>BRAIN</strong>: Class <classname>BRAIN</classname> includes the
+                        intelligence to choose the next move. </para>
                 </listitem>
             </itemizedlist>
         </para>
         <para>
             <warning>TODO: add class diagram of Model cluster</warning>
-        </para>        
+        </para>
     </section>
     <section id="view">
         <title>View cluster</title>
         <para> This clusters job is to make sure that the user sees what is going on. It includes
-            all scenes and menus, as well as displayers for the game players and status information.
-        </para>
+            all scenes and menus, as well as displayers for the game players and status information. </para>
         <para>
             <itemizedlist>
                 <listitem>
-                    <para><strong>GAME_SCENE</strong>:</para>
+                    <para>
+                        <strong>PLAYER_DISPLAYER</strong>: This class displays the player on the map and prints the amount of
+                        tickets left. <classname>PLAYER_DISPLAYER</classname> knows this information because of the client-supplier
+                        relationship with class <classname>PLAYER</classname>.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <strong>GAME_SCENE</strong>: Contains all the drawables of the current game scene and displays them.</para>
                 </listitem>
             </itemizedlist>
         </para>
         <para>
             <warning>TODO: add class diagram of View cluster</warning>
-        </para> 
+        </para>
     </section>
     <section id="util">
         <title>Util cluster</title>
