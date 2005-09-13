@@ -32,6 +32,7 @@ feature -- Implementation
 			-- Creation procedure
 		do
 			is_central := False
+			is_city_centre := false
 --			bitmap_factory.create_bitmap_from_image ("building.gif")
 --				check
 --					todo_proper_error_handling: bitmap_factory.last_bitmap /= Void

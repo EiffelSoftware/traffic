@@ -249,13 +249,13 @@ feature -- Shortest path
 				
 				create new_segments.make
 				
-				if not line.empty and then not line.first.polypoints.first.is_equal(marked_origin.position) then
+				if not line.is_empty and then not line.first.polypoints.first.is_equal(marked_origin.position) then
 					create origin.make_with_position (marked_origin.name, marked_origin.position.x.rounded, marked_origin.position.y.rounded)
 					create destination.make_with_position (line.first.origin.name, line.first.polypoints.first.x.rounded, line.first.polypoints.first.y.rounded)
 					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
 				end
 				
-				if not line.empty and then not line.last.polypoints.last.is_equal(marked_destination.position) then
+				if not line.is_empty and then not line.last.polypoints.last.is_equal(marked_destination.position) then
 					create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
 					create destination.make_with_position (marked_destination.name, marked_destination.position.x.rounded, marked_destination.position.y.rounded)
 					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
