@@ -124,7 +124,6 @@ feature -- Access
 			end
 			
 			set_volume (volume)
---			cross_fade (available_songs.i_th (current_song), available_songs.i_th (next_song))
 			available_songs.i_th (next_song).play (1)
 			current_song := next_song
 		end
@@ -268,9 +267,6 @@ feature -- Attributes
 --	
 --	paused: BOOLEAN
 --			-- Is music player currently paused?
-
-	fade: BOOLEAN
-			-- Is crossfading enabled?
 		
 	volume: INTEGER
 			-- Current volume.		
@@ -296,22 +292,6 @@ feature {NONE} -- Implementation
 		do
 			Result := rng.item \\ available_songs.count + 1
 			rng.forth
-		end
-
-	cross_fade (a_song, another_song: EM_MUSIC) is
-			-- Cross fade `a_song' into `another_song'.
-		do
-			if not a_song.is_fading then
-				from
-					a_song.stop_with_fade_out (5000)
-				until
-					not a_song.is_fading_out
-				loop
-				end
-			else
-				a_song.stop
-			end
-			another_song.play_with_fade_in (1, 5000)
 		end
 
 invariant
