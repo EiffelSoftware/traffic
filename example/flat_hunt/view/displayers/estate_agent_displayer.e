@@ -108,7 +108,7 @@ feature -- Output
 				player.visited_places.start
 				i := 1
 			until 
-				i > player.last_visible_round
+				i > player.last_visible_round or else player.taken_transports.after
 			loop
 				if not (i = player.last_visible_round) then
 					Result := "%N" + player.visited_places.item + Result

@@ -261,6 +261,9 @@ feature {NONE} -- Game loop
 			end
 			
 			-- Update status boxes.
+			if game.current_player = game.estate_agent then
+				game.update_agent_visibility				
+			end
 			status_before_prepare
 			update_status			
 --			main_window.update_player_info_box (game.current_player)

@@ -20,7 +20,7 @@ feature {NONE} -- Initialization
 			make_from_map_and_place (a_map, a_location)
 			name := "Agent"
 			last_visible_location := Void
-			last_visible_round := 0
+			last_visible_round := 1
 			set_visible (False)
 			
 			-- Create brain and set number of tickets.
