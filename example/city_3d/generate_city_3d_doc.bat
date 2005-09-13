@@ -1,0 +1,1 @@
+%EM%/resource/tools/eiffeldoc/eiffeldoc -v -l %TRAFFIC%/library/library.xace -s %TRAFFIC%/example/city_3d/system.xace -i em,city_3d,tr_traffic -e generated_wrapper -m %GOBO%/library/library.xace,%GOBO%/library/kernel.xace,%EWG%/library/runtime/eiffel/library.xace -o %TRAFFIC%/example/city_3d/doc -t "Eiffel Media API Specification" -u "Eiffel Media API"
