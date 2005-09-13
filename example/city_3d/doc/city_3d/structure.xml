@@ -100,8 +100,9 @@
 	</para>
 	<title>Description</title>
 	<para>
-	This class is the place where all the OpenGL operations are managed. It is also responsible for parsing the map XML file. 
-	This means it has a reference of type MAP. Most of the OpenGL operations are realized as simple procedures. 
+	This class is the place where most operations are managed. It is also responsible for parsing the map XML file. 
+	This means it has a reference of type <classname>TRAFFIC_MAP</classname>. Most of the OpenGL operations are realized 
+	as simple procedures. 
 	Examples of such operations are things like shortest path calculation, lighting and the other options that are available to the user. 
 	The whole handling of mouse and keyboard interaction is also handled here. So there are event handlers for things like zooming, 
 	translation or rotation.
@@ -109,20 +110,22 @@
 	<title>Event handling</title>
 	<para>
 	 i) Mouse wheel:
-	Controls the zooming factor.
+	Controls the zooming factor, whereas the position stays invariant. There are two different zooming speeds depending on the distance to the plane.
 	</para>
 	<para>
 	 ii) Mouse click:
-	Is used to mark stations on the map.
+	Is used to mark stations on the map. The origin can be marked with the left mousebutton, the destination with the right. If the user clicks on an empty spot,
+	the marked stations are revoked.
 	</para>
 	<para>
 	 iii) Mouse dragging:
         <itemizedlist>
             <listitem><para>
-                Right mouse button: By dragging the mouse while pressing the right mouse button you are able to translate the position of the maps in the window.
+                Left mouse button: By dragging the mouse while pressing the left button one is able to translate the position of the maps in the window, i.e.
+		move the plane in the window.
             </para></listitem>
             <listitem><para>
-                Left mouse button: By dragging the mouse while pressing the left mouse button you are able to rotate the map around the the origin.
+                Right mouse button: By dragging the mouse while pressing the right button one is able to rotate the map around the the origin.
             </para></listitem>
         </itemizedlist>
 	</para>
@@ -130,31 +133,33 @@
 	 iv) Keyboard:
         <itemizedlist>
             <listitem><para>
-                By pressing the up-/down- or left-/right- arrow keys the map will be rotated around the x- or y-axis respectively.
+                By pressing the up-/down- or left-/right- arrow keys the same effects are achieved as by dragging the right mouse.
             </para></listitem>
             <listitem><para>
-                By pressing the enter key the map will be moved back to its initial view.
+                By pressing the enter key the translation will be reset to its initial value. However, zoom as well as rotation aren't affected 
             </para></listitem>
         </itemizedlist>
 	</para>
 	<title>Options</title>
 	<para>
-	 i) Show a coordinate system
+	 i) Show a coordinate system: This shows a coordinate system at the origin for better orientation
 	 </para>
 	<para>
-	 ii) Enable/Disable lighting of the map
+	 ii) Chang lighting of the map: Initially, the scene is lit by a constant light comming down the y axis. 
+	 However, this can be changed to a variable light that is tries to imitates the effect of the sun
 	 </para>
 	<para>
-	 iii) Change the number of buildings to be displayed on the map
+	 iii) Change the number of buildings to be displayed on the map: The number of buildings can be varied from 150 up to 15000. 
+	 They are randomly distributed using using the class <classname>BUILDING_EWER</classname>.
 	 </para>
 	<para>
-	 iv) Highlight the traffic lines by drawing them with different heights on the map
+	 iv) Highlight the traffic lines by drawing them with different heights on the map, in order to achieve a better overview.
 	 </para>
 	<para>
-	 v) Show the shortest path between the two marked stations.
+	 v) Show the shortest path between two marked stations and displays it with a white line.
 	 </para>
 	<para>
-	 vi) Make the buildings transparent
+	 vi) Make the buildings transparent in order to achieve a better overview.
 	</para>
 <toplink/>
 </section>
