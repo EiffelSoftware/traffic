@@ -56,6 +56,7 @@
 </para>
 </section>
 <section id="purpose">
+	<para/>
 	<title>Purpose of this work</title>
 	<para>
 	The purpose of this work was to provide a 3
@@ -67,6 +68,7 @@
 </section>
 
 <section id="goal">
+	<para/>
 	<title>Our goals</title>
 	<para>
 	Our goal was to implement a program that parses this
@@ -82,6 +84,7 @@
 <toplink/>
 </section>
 <section id="enviroment">
+	<para/>
 	<title>Environment and used libraries</title>
 	<para>
 	<title>1 EiffelStudio 5.5</title>
@@ -111,19 +114,18 @@
 <toplink/>
 </section>
 <section id="structure">
+	<para/>
 	<title>Structure of documentation</title>
 	<para>
-	The next part explaines the overall structure and all the used
+	<ulink url="structure.html">The next part </ulink>explaines the overall structure and all the used
 	classes and factories with their features in detail. 
-	Part three gives information about all the dependencies
+	<ulink url="miscellaneous.html">Part three</ulink> gives information about all the dependencies
 	between the different classes. Besides it explaines which
 	parts are depending on the information in the XML files and
-	which features would have to be changed using a different one.
-	Part four concentrates on the reuse of the MAP class and
+	which features would have to be changed using a different one. Moreover it discusses a possible reuse of the MAP class and
 	factories, using a different scene. It explains how options
 	are set using the apropriate features and what would be to do
-	going beyond changing only the scene.
-	Finally, part five presents some ideas of what could be implemented in
+	going beyond changing only the scene. Finally, it presents some ideas of what could be implemented in
 	the future and how to embed it into the project.
 	</para>
 <toplink/>

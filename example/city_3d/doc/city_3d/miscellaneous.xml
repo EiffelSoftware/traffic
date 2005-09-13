@@ -5,10 +5,10 @@
 
 		"Traffic 3D front end documentation"
 
-	copyright: "Copyright (c) 2005, Till Bay and others"
-	license: "Eiffel Forum License v2 (see forum.txt)"
-	date: "$Date$"
-	revision: "$Revision$"
+	copyright: ""
+	license: ""
+	date: "$Date:"
+	revision: "$Revision:"
 -->
 
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
@@ -44,23 +44,26 @@
 </itemizedlist>
 </para>
 </section>
-<section id="installation">
+<section id="dependencies">
 	<title>Dependencies</title>
     <para>
-        This section lists some things that are kind of ugly in the sense that they may not work perfectly if some parameters are changed.
+        This section lists some things that are kind of ugly in the sense that the project may not work perfectly if some parameters are changed.
     </para>
     <para>
     1) Map files:
-        they must be in the map subdirectory and in the main directory. This is some deficiency of the TRAFFIC Library and will probably be fixed someday.
+        they must be in the map subdirectory and in the main directory. This is some deficiency of the TRAFFIC library parser and hopefully will be fixed.
     </para>
     <para>
     2) in <classname>SHARED_CONSTANTS</classname>:
         <itemizedlist>
             <listitem><para>
-                <featurename>Plane_size</featurename> is magic number that is chosen with our example maps in mind. This works for them but it might not work perfectly for other map files. So this might have to be changed or made independent of the map file by either calculating it somehow or saving it in some configuration file.
+                <featurename>Plane_size</featurename> is a magic number that is chosen with our example maps in mind. This works for them 
+		but it might not work perfectly for other map files. So this might have to be changed or made independent of the map file by either 
+		calculating it somehow or saving it in some configuration file.
             </para></listitem>
             <listitem><para>
-                <featurename>map_to_gl_coords</featurename> is also optimized for our example maps. They use the range of the coordinates from the map.
+                <featurename>map_to_gl_coords</featurename> is also optimized for our example maps. It use the range of the coordinates from 
+		the existing map xml files and centers the Zurich main station on the screen. This might not be intended for other examples.
             </para></listitem>
         </itemizedlist>
     </para>
@@ -69,44 +72,56 @@
 </section>
 
 <section id="reuseability">
+	<para/>
 	<title>Reuseability</title>
 	<para>
-		This section discusses some scenarios of how you could reuse our work.
+		This section discusses some scenarios of how one could reuse this work.
 	</para>
     <para>
-		 1) change some minor things like the representation of the traffic lines or the buildings:
+		 1) Minor changes like the representation of the traffic lines or buildings:
          <para>
-            You could directly change the related classes. e.g. <classname>TRAFFIC_LINE_FACTORY</classname> or<classname>BUILDING_FACTORY</classname>. This should have immediate consequences on their graphical representation.
+            One could directly change the related classes. e.g. <classname>TRAFFIC_LINE_FACTORY</classname> or
+	    <classname>BUILDING_FACTORY</classname>. This could be done by changing the OpenGL statements in 
+	    <featurename>specify_object</featurename> for example and should have immediate consequences on their graphical representation.
          </para>
 	</para>
 	<para>
-		 2) keep everything and add some new features like the ones we put on the toolbar:
+		 2) keep representation and add some new features like the ones on the toolbar:
          <para>
-            You would have to add the new features in <classname>MAP</classname> and make them accessible by adding corresponding controle options to the GUI by changing <classname>CITY_3D_SCENE</classname>.
+            One would have to add the new features in <classname>MAP</classname>  in the section options and make them accessible by adding 
+	    corresponding controle options (widgets) to the GUI by changing <classname>CITY_3D_SCENE</classname>. Then one would have to 
+	    add a boolean query to feature <featurename>draw</featurename> like this is done with all the other options.  
          </para>
 	</para>
     <para>
 		 3) keep the MAP class and replace the GUI:
          <para>
-            You could also throw away our GUI and replace it with your own or just integrate the 'map part' of the application into your own application. This could easily be done by just creating an instance of <classname>MAP</classname> in your application. Then you could use the features you like or even add new features to <classname>MAP</classname>.
+            One could also replace the GUI with it's own or just integrate the 'map part' of the application into a bigger application. 
+	    This could easily be done by creating an instance of <classname>MAP</classname> in the application. 
+	    Then one could use the features from the option section like this is done in <classname>CITY_3D_SCENE</classname>
+	    or even add new features to <classname>MAP</classname>.
          </para>
 	</para>
 <toplink/>
 </section>
 
 <section id="future_perspective">
+	<para/>
 	<title>Future perspective</title>
 	<para>
-		This section lists some things one could do in the future to inprove or enhance what we have do so far.
+		This section lists some things one could do in the future to inprove or enhance what we have done so far.
 	</para>
 	<para>
     1) new features:
         <itemizedlist>
             <listitem><para>
-                First-person traveling through the city
+                First-person traveling: would make it possible to choose a origin and destination and travel through the city alongside the route. 
+		This would be done by changing the viewpoint continously according to the position in the city.
             </para></listitem>
             <listitem><para>
-                extra XML file with things especially for the 3D map
+                Extra XML file: that would contain additional information like the position of special buildings, their texture, height, etc. 
+		Moreover, things like the transformation that have to be done in <featurename>map_to_gl_coords</featurename> could be
+		stored in this file.
             </para></listitem>
         </itemizedlist>
     </para>
@@ -114,13 +129,14 @@
     2) extensions:
         <itemizedlist>
             <listitem><para>
-                Text console or other GUI extensions
+                Text console or other GUI extensions like they're used in the already existing TRAFFIC applications. But as mentioned above, 
+		abolishing <classname>CITY_3D_SCENE</classname> and taking the rest would probably be the more reasonable way.
             </para></listitem>
             <listitem><para>
-                time tables for the means of transport; maybe updateable over the internet
+                Time tables for the means of transport: This would comprise automatic update or requesting from the internet, for example.
             </para></listitem>
             <listitem><para>
-                Integration of Events like concerts, cinemas, theaters etc.
+                Integration of events like concerts, cinemas, theaters etc.
             </para></listitem>
         </itemizedlist>
     </para>
@@ -128,20 +144,23 @@
     3) improvements:
         <itemizedlist>
             <listitem><para>
-                faster parsing of the XML file
+	Faster parsing of the XML file as this is one of the main bottlenecks of the project. If the parsing would go faster, more information 
+	could be stored and therefore used from the xml file. Otherwise, this project won't 'scale', because adding new features that would go
+	with extending the xml file would make the whole project unreasonably slower.
             </para></listitem>
-            <listitem><para>
-                even more speed optimizations for the Graphics
+	    <listitem><para>
+	An other way to bypass this would to add multithreading, which isn't reliably supported by Eiffel until now. This would make it possible to 
+	do the parsing in the background while the user can still interact with the program or even parts are already been displayed.
             </para></listitem>
             <listitem><para>
                 more buildings etc. - would probably need an extra XML file
             </para></listitem>
         </itemizedlist>
     </para>
-    <para>
+    <!--para>
     4) completely new things:
         
-    </para>
+    </para-->
 <toplink/>
 </section>
 

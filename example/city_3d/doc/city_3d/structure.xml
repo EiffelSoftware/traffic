@@ -67,8 +67,7 @@
 </section>
 
 <section id="scene">
-	<para>
-	</para>
+	<para/>
 	<title>CITY_3D_SCENE</title>
 	<para>
 	</para>
@@ -95,8 +94,7 @@
 </section>
 
 <section id="map">
-	<para>
-	</para>
+	<para/>
 	<title>MAP</title>
 	<para>
 	</para>
@@ -162,8 +160,7 @@
 </section>
 
 <section id="factories">
-	<para>
-	</para>
+	<para/>
 	<title>Factories:</title>
 	<para>
 	</para>
@@ -194,8 +191,7 @@
 </section>
 
 <section id="building_factory">
-	<para>
-	</para>
+	<para/>
 	<title>BUILDING_FACTORY</title>
 	<para>
 	</para>
@@ -214,8 +210,7 @@
 </section>
 
 <section id="building_ewer">
-	<para>
-	</para>
+	<para/>
 	<title>BUILDING_EWER</title>
 	<para>
 	</para>
@@ -249,8 +244,7 @@
 </section>
 
 <section id="shared_constants">
-	<para>
-	</para>
+	<para/>
 	<title>SHARED_CONSTANTS</title>
 	<para>
 	</para>
@@ -279,16 +273,14 @@
 </section>
 
 <section id="utilities">
-	<para>
-	</para>
+	<para/>
 	<title>Utilities:</title>
 	<para>
 	</para>
 </section>
 
 <section id="gl_vector">
-	<para>
-	</para>
+	<para/>
 	<title>GL_VECTOR</title>
     <para>
 	</para>
@@ -301,8 +293,7 @@
 </section>
 
 <section id="gl_light">
-	<para>
-	</para>
+	<para/>
 	<title>GL_LIGHT</title>
     <para>
 	</para>
