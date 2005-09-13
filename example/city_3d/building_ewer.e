@@ -85,6 +85,7 @@ feature {NONE} -- Collision detection
 		end
 		
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+			-- Collision polygons to check for collisions with traffic lines
 	
 feature {NONE} -- Implementation
 	
@@ -195,8 +196,8 @@ feature {NONE} -- Implementation
 						
 						norm := sqrt (delta_x*delta_x + delta_y*delta_y)
 						
-						create a_point.make (start_point.x-delta_y*line_width/norm, start_point.y+delta_x*1.5*line_width/norm)
-						create c_point.make (end_point.x+delta_y*line_width/norm, end_point.y-delta_x*1.5*line_width/norm) 
+						create a_point.make (start_point.x-delta_y*1.5*line_width/norm, start_point.y+delta_x*1.5*line_width/norm)
+						create c_point.make (end_point.x+delta_y*1.5*line_width/norm, end_point.y-delta_x*1.5*line_width/norm) 
 						
 						create polygon_points.make
 						polygon_points.force ((a_point),1)
