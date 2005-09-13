@@ -62,7 +62,7 @@
 	The purpose of this work was to provide a 3
 	dimensional visualization of a map from an XML file. 
 	This map contains information about places and traffic
-	lines of a city, which should be displayed in an appropriate way. 
+	lines of a city which should be displayed in an appropriate way. 
 	</para>
 <toplink/>
 </section>
@@ -72,14 +72,13 @@
 	<title>Our goals</title>
 	<para>
 	Our goal was to implement a program that parses this
-	map file and generates the data structures, displays traffic lines as
+	map file, generates the data structures, displays traffic lines as
 	colored polygons on a plane, adds buildings on this plane
-	randomly but checks for "collisions" with traffic lines,
-	provides useful mouse and keyboard support such that changing
-	the viewport (zooming, rotation, different centres) should be
+	randomly but checks for "collisions" with traffic lines and provides useful mouse and keyboard support such that changing
+	the viewpoint (zooming, rotation, different centres) should be
 	possible (easily). Moreover different light settings should be
-	implemented, existing features such as the shortest path
-	algorithm, integrateted and visualized.
+	implemented and existing features such as the shortest path
+	algorithm integrateted and visualized.
 	</para>
 <toplink/>
 </section>
@@ -87,8 +86,6 @@
 	<para/>
 	<title>Environment and used libraries</title>
 	<para>
-    
-    
     <itemizedlist>
     <listitem><para>
     	EiffelStudio 5.5
@@ -101,8 +98,8 @@
     </para></listitem>
     <listitem><para>
     	EiffelMedia Library: Provides the Components for
-	doing the whole graphics stuff (e.g. Access to the SDL
-	commands or the widgets that were used for the GUI).
+	doing the whole graphics such as the access to the SDL
+	commands or the widgets that were used for the GUI.
     </para></listitem>
     <listitem><para>
     	TRAFFIC  Library: Provides the whole map parsing,
@@ -119,12 +116,10 @@
 	<title>Structure of the documentation</title>
 	<para>
     <para>
-	<ulink url="structure.html">The next part</ulink> explaines the overall structure and all the used
-	classes and factories with their most important features. 
+	<ulink url="structure.html">The next part</ulink> explaines the overall structure and all the used classes and factories with their most important features. 
     </para>
     <para>
-	<ulink url="miscellaneous.html">Part three</ulink> gives information about all the dependencies
-	between the different classes. Besides it explaines which
+	<ulink url="miscellaneous.html">Part three</ulink> explaines which
 	parts are depending on the information in the XML files and
 	which features would have to be changed using different ones. Moreover it discusses some possible reuse scenarios of our work. It explains how control options
 	are added to the GUI and what would have to be done if one would like to change more than just the GUI. Finally, it presents some ideas of what could be implemented in
