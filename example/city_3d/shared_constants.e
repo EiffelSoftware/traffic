@@ -42,10 +42,10 @@ feature -- Constants
 		end
 		
 	map_to_gl_coords (vec: EM_VECTOR_2D): EM_VECTOR_2D is
-			-- Transform map coords to the ones used by OpenGL.
+			-- Transform map coordinates to the ones used by OpenGL.
 		require vec /= void
 		do
-			-- (669,718) are the coords of the HB, where the centre is.
+			-- (669,718) are the coordinates of the HB, where the centre is.
 			create Result.make ((1350 - vec.x - 669)/30,(vec.y - 718)/30)
 		end
 		

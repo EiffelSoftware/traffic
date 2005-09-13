@@ -1,5 +1,5 @@
 indexing
-	description: "Map of a city"
+	description: "3 dimensional map of a city"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -50,7 +50,7 @@ feature -- Initialization
 			
 			-- Various creations
 			create traffic_line_factory
-			create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz(0.5,0.5,0.5))
+			create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
 			create_coord_system
 			create sun_light.make (em_gl_light0)
 			create constant_light.make (em_gl_light1)
@@ -173,7 +173,7 @@ feature -- Drawing
 			-- Draw plane
 			gl_call_list (1)
 			
-			-- Show coord system
+			-- Show coordinate system
 			if coordinates_shown then
 				gl_call_list (2)
 			end
@@ -222,6 +222,7 @@ feature -- Drawing
 feature -- Shortest path
 
 	shortest_path_line: EM_3D_OBJECT
+			-- Artificial traffic line for the shortest path
 	
 	marked_station_changed: BOOLEAN
 			-- Has the marked station changed?
@@ -306,12 +307,16 @@ feature -- Traffic map loading
 		
 	is_map_loaded: BOOLEAN
 			-- Has parsing already taken place?
+			
 	map: TRAFFIC_MAP
 			-- Parsed map
+			
 	number_of_buildings: INTEGER
 			-- How many buildings should be displayed?
+			
 	marked_origin: TRAFFIC_PLACE
 			-- Currently marked origin
+			
 	marked_destination: TRAFFIC_PLACE
 			-- Currently marked destination
 
@@ -402,12 +407,16 @@ feature -- Options
 		
 	sun_shown: BOOLEAN
 		-- Should sun be displayed?
+		
 	coordinates_shown: BOOLEAN
 		-- Should the coordinate system be displayed?
+		
 	buildings_shown: BOOLEAN
 		-- Should the buildings be displayed?
+		
 	buildings_transparent: BOOLEAN
 		-- Should the buildings be transparent?
+		
 	show_shortest_path: BOOLEAN
 		-- Should the shortest path be displayed?
 		
@@ -754,12 +763,16 @@ feature {NONE} -- Shared objects
 	
 	ewer: BUILDING_EWER
 			-- Ewer for creation and distribution of buildings
+			
 	traffic_line_factory: TRAFFIC_LINE_FACTORY
 			-- Factory for traffic lines
+			
 	traffic_line_objects: ARRAY[EM_3D_OBJECT]
 			-- Container for objects created with traffic line factory
+			
 	sun_light: GL_LIGHT
 			-- Light that imitates the sun
+			
 	constant_light: GL_LIGHT
 			-- Constant white light from one direction
 
@@ -767,22 +780,31 @@ feature {NONE} -- Attributes
 
 	sun_angle: DOUBLE
 			-- Angle of sun rotation
+			
 	focus: DOUBLE
 			-- Used to zoom in or out.
+			
 	x_coord: DOUBLE
 			-- X coordinate of the viewer
+			
 	y_coord: DOUBLE
 			-- Y coordinate of the viewer
+			
 	z_coord: DOUBLE
 			-- Z coordinate of the viewer
+			
 	x_rotation: DOUBLE
 			-- Rotation around the x axis
+			
 	y_rotation: DOUBLE
 			-- Rotation around the y axis
+			
 	x_translation: DOUBLE
 			-- Translation of the map's origin in x direction
+			
 	y_translation: DOUBLE
 			-- Translation of the map's origin in y direction
+			
 	highlighting_delta: DOUBLE
 			-- Height difference between highlighted and normal line representation
 	

@@ -231,7 +231,5 @@ feature {NONE} -- Attributes
 			-- Array of all buildings
 	centre: GL_VECTOR_3D[DOUBLE]
 			-- Centre of the city
-	coords: GL_VECTOR_3D[DOUBLE]
-			-- Edge coordinates of plane
 		
 end -- class BUILDING_EWER

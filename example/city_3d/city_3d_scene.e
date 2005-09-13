@@ -30,9 +30,9 @@ feature -- Interface
 			create load_button.make_from_text ("Load map")
 			create zoom_in_button.make_from_text ("Zoom in")
 			create zoom_out_button.make_from_text ("Zoom out")
-			create coordinates_checkbox.make_from_text ("Show coords")
+			create coordinates_checkbox.make_from_text ("Show coordinates")
 			create sun_checkbox.make_from_text ("Show sun")
-			create buildings_transparent_checkbox.make_from_text ("Set transparent")
+			create buildings_transparent_checkbox.make_from_text ("Transparent buildings")
 			create buildings_label.make_from_text ("0")
 			create buildings_slider.make_from_range_horizontal (0, 100)
 			create marked_origin_title.make_from_text ("Marked station:")
@@ -86,10 +86,10 @@ feature -- Interface
 			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (zoom_in_button)
 			
-			-- Buildings transparent Checkbox
+			-- Transparent buildings  Checkbox
 			buildings_transparent_checkbox.set_position (10, 250)
 			buildings_transparent_checkbox.set_background_color (bg_color)
-			buildings_transparent_checkbox.set_optimal_dimension (120, 20)
+			buildings_transparent_checkbox.set_optimal_dimension (180, 20)
 			buildings_transparent_checkbox.set_to_optimal_dimension
 			buildings_transparent_checkbox.checked_event.subscribe (agent transparency_checked)
 			buildings_transparent_checkbox.unchecked_event.subscribe (agent transparency_unchecked)
