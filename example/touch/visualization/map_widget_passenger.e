@@ -1,7 +1,6 @@
 indexing
 	description: "Passenger in a TRAFFIC_MAP, for exercises"
 	note: "Prototype, needs reviewing and developing."
-	author: "Rolf Bruderer"	
 	date: "2005/03/10"
 	revision: "0.3"
 
@@ -18,7 +17,6 @@ create
 	make_on_map_place
 	
 feature -- Iniitialization
-
 	make_on_map_place (a_map: TRAFFIC_MAP; a_place: TRAFFIC_PLACE) is
 			-- Initialize passenger standing on `a_place' in `a_map'.
 		require
@@ -29,12 +27,7 @@ feature -- Iniitialization
 			create position.make (place.position.x, place.position.y)
 		end	
 
-feature -- Access
-
-feature -- Measurement
-
 feature -- Status report
-
 	map: TRAFFIC_MAP
 			-- Map where player is inside.
 
@@ -45,7 +38,8 @@ feature -- Status report
 			-- Place currently standing on	
 			
 	move_to (a_place: TRAFFIC_PLACE) is
-			-- 
+			-- move the passenger to a_place. the place must be a neighbour
+			-- of the place the passenger stands on.
 		require
 			a_place_is_different: place /= a_place
 			a_place_is_reachable: map.has_line_section_between (place.name, a_place.name)

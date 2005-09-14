@@ -4,7 +4,6 @@ indexing
 				It does draw the rectangle, but it also draws the first picture of the information.
 				And it draws the name of the places(NOT YET).
 				]"
-	author: "Roger Kueng"
 	date: "2005/07/12"
 	revision: "1.0"
 
@@ -13,32 +12,29 @@ class
 
 inherit
 	TRAFFIC_PLACE_RENDERER
-	redefine
-		render
-	end
+		redefine
+			render
+		end
 	
 	EM_SHARED_BITMAP_FACTORY
-	undefine
-		is_equal,
-		default_create,
-		copy
-	end
+		undefine
+			is_equal,
+			default_create,
+			copy
+		end
 	
 create 
 	make_with_map
 
 feature -- Basic operations
-
 	render (a_place: TRAFFIC_PLACE): EM_DRAWABLE is
 			-- Render place as rectangle and add a picture if it has any
 		local
 			bitmap: EM_BITMAP
 			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
---			line: EM_POLYLINE
 		do
 			create container.make
-			
---			container.extend (Precursor {TRAFFIC_PLACE_RENDERER} (a_place))
+
 			container.extend (Precursor {TRAFFIC_PLACE_RENDERER} (a_place))
 			
 			if a_place.information /= Void then
@@ -49,10 +45,6 @@ feature -- Basic operations
 					if bitmap /= Void then
 						bitmap.set_x_y (a_place.position.x.rounded - bitmap.width//2 - 30, a_place.position.y.rounded - bitmap.height//2 - 30)
 						container.extend (bitmap)				
-						
---						create line.make_empty
---						line.extend (create {EM_VECTOR_2D}.make (a_place.position.x, a_place.position.y))
---						line.extend (create {EM_VECTOR_2D}.make (a_place.position.x, a_place.position.y))
 					end
 				end
 			end

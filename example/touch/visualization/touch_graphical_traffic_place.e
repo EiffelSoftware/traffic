@@ -2,7 +2,6 @@ indexing
 	description: "[
 				class to visualize a TRAFFIC_PLACE
 				]"
-	author: "Roger Kueng"
 	date: "2005/07/12"
 	revision: "1.0"
 
@@ -15,7 +14,6 @@ create
 	make_with_place_and_map_widget
 	
 feature -- Initialization
-	
 	make_with_place_and_map_widget (a_place: TRAFFIC_PLACE; a_map_widget: TRAFFIC_MAP_WIDGET) is
 			-- 
 		require
@@ -39,7 +37,7 @@ feature -- Access
 	map_widget: TRAFFIC_MAP_WIDGET
 
 feature -- Commands
-	feature spotlight is
+	spotlight is
 			-- display the place different than normal
 		local
 			place_renderer: TRAFFIC_PLACE_RENDERER	
@@ -58,29 +56,29 @@ feature -- Commands
 		end
 
 feature -- Queries
-is_exchange: BOOLEAN is
-		-- Do several lines have a stop on this place
-	local
-		line: TRAFFIC_LINE
-		line_sections: LIST [TRAFFIC_LINE_SECTION]
-	do
-		line_sections := map_widget.map.line_sections_of_place (place.name)
-		Result := false
-		from
-			line_sections.start
-		until
-			line_sections.after or else Result = true
-		loop
-			if line = Void then
-				line := line_sections.item.line
-			else 
-				if line = line_sections.item.line then
-					Result := true
+	is_exchange: BOOLEAN is
+			-- Do several lines have a stop on this place
+		local
+			line: TRAFFIC_LINE
+			line_sections: LIST [TRAFFIC_LINE_SECTION]
+		do
+			line_sections := map_widget.map.line_sections_of_place (place.name)
+			Result := false
+			from
+				line_sections.start
+			until
+				line_sections.after or else Result = true
+			loop
+				if line = Void then
+					line := line_sections.item.line
+				else 
+					if line = line_sections.item.line then
+						Result := true
+					end
 				end
+				line_sections.forth
 			end
-			line_sections.forth
 		end
-	end
 		
 invariant
 	place_set: place /= Void

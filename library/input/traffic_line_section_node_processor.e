@@ -64,8 +64,8 @@ feature -- Basic operations
 						else
 							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), Void, map, line)
 							line_section_one_direction := map_factory.line_section
-							--line_section_other_direction is generated but not accessible
-							--search for line section other direction
+							-- line_section_other_direction is generated but not accessible
+							-- search for line section other direction
 							line_sections := map.line_sections_of_place ( (attribute("to")))
 							from
 								line_sections.start

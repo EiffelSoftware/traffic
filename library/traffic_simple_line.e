@@ -2,7 +2,7 @@ indexing
 	description: "[
 					Line with undirected line sections.
 					TODO: The cursor does not work, if there's only one place, because the first
-					place is not in the places_xxx_direction.
+					place is not in the 'places_one_direction' nor in the 'places_other_direction'.
 					]"
 	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
@@ -13,7 +13,6 @@ class
 	
 inherit
 	TRAFFIC_LINE
-
 		rename
 			make as make_line,
 			start as start_line,
@@ -31,14 +30,12 @@ inherit
 		redefine 
 			start_to_terminal,
 			extend
-
 		end
 
 create
 	make
 
 feature {NONE} -- Initialization
-
 	make (a_name: STRING; a_type: TRAFFIC_TYPE; a_map: TRAFFIC_MAP) is
 			-- Create simple line.
 		require
@@ -59,7 +56,6 @@ feature {NONE} -- Initialization
 		end
 		
 feature -- Access
-
 	start_to_terminal (a_terminal: TRAFFIC_PLACE): TRAFFIC_PLACE is
 			-- The start place to existing terminal `a_terminal'.
 		do
@@ -71,7 +67,6 @@ feature -- Access
 		end
 		
 feature -- Basic operations
-
 	extend (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Add `a_line_section' at beginning or end of existing direction(s).
 		local
@@ -141,7 +136,6 @@ feature -- Basic operations
 		end
 
 feature {NONE} -- Implementation
-
 	start_place: TRAFFIC_PLACE
 			-- Used to maintain a station, when remove_all_sections is called
 			-- and is used, when a line is built using extend_place
@@ -267,7 +261,6 @@ feature -- Cursor Queries
 		end		
 
 feature -- Cursor Commands
-
 	forth is
 		do
 			places_one_direction.forth
@@ -290,9 +283,8 @@ feature -- Cursor Commands
 
 
 feature -- Simple Line Queries
-
 	one_end: TRAFFIC_PLACE is
-			-- 
+			-- One end of the line
 		do
 			if start_place /= Void then
 				Result:= start_place
@@ -306,7 +298,7 @@ feature -- Simple Line Queries
 		end
 		
 	other_end: TRAFFIC_PLACE is
-			-- 
+			-- Other end of the line
 		do
 			if start_place /= Void then
 				Result:= start_place
@@ -320,9 +312,8 @@ feature -- Simple Line Queries
 		end	
 		
 feature -- Simple Line Commands
-
 	remove_all_sections is
-			--
+			-- Remove all line sections but keep the first place
 		do
 			from
 				start_line
@@ -337,13 +328,11 @@ feature -- Simple Line Commands
 			
 			if places_one_direction.count > 0 then
 				start_place := places_one_direction.first
-				--remove all places
-				
+
+				--remove all places		
 				places_one_direction.wipe_out
 				places_other_direction.wipe_out
-				
---				places_one_direction.force (start_place)
---				places_other_direction.force (start_place)
+
 				
 				terminal_1 := Void
 				terminal_2 := Void
@@ -353,7 +342,9 @@ feature -- Simple Line Commands
 		end
 		
 	extend_place (a_place: TRAFFIC_PLACE) is
-			-- 
+			-- Extend the simple line by a place.
+			-- Line sections in both directions are added to the line if there
+			-- is at least one place in the line
 		require
 			a_place_not_void: a_place /= Void
 			a_place_not_in_places_of_line: not has (a_place)
@@ -380,7 +371,6 @@ feature -- Simple Line Commands
 		end
 
 invariant
-
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
 	count_line_section_not_void: count >= 0 -- List is initilalized.

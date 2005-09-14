@@ -1,6 +1,5 @@
 indexing
-	description: "Simple Visualization of MAP_WIDGET_PASSENGER for exercises."
-	author: "Rolf Bruderer"
+	description: "Simple Visualization of MAP_WIDGET_PASSENGER."
 	date: "2005/03/10"
 	revision: "0.3"
 

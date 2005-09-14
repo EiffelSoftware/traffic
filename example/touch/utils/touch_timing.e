@@ -1,6 +1,5 @@
 indexing
 	description: "A class providing simple timing commands"
-	author: "Roger Kueng"
 	date: "2005/07/12"
 	revision: "1.0"
 
@@ -11,30 +10,6 @@ inherit
 	EM_TIME_SINGLETON
 		export {NONE} all
 		end
-
-feature -- Access
-
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
 
 feature -- Basic operations
 	wait (wait_time: INTEGER) is
@@ -58,14 +33,5 @@ feature -- Basic operations
 			end
 			
 		end
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
-feature {NONE} -- Implementation
-
-invariant
-	invariant_clause: True -- Your invariant here
-
+		
 end -- class TOUCH_TIMING

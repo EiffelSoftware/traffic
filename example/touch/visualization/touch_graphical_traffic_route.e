@@ -4,7 +4,6 @@ indexing
 					and has also a praphical part. It uses a TOUCH_PASSENGER to visualize
 					the Route.
 				]"
-	author: "Roger Kueng"
 	date: "2005/07/12"
 	revision: "1.0"
 
@@ -13,7 +12,6 @@ class
 
 inherit	
 	TRAFFIC_ROUTE
-
 
 create 
 	make_with_scene_and_map_widget
@@ -39,7 +37,6 @@ feature -- Access
 	map_widget: TRAFFIC_MAP_WIDGET
 
 feature -- Status setting
-
 	set_scene (a_scene: EM_SCENE) is
 			-- 
 		do
@@ -56,8 +53,7 @@ feature -- Status setting
 			map_widget_set: map_widget = a_map_widget
 		end
 
-feature -- Basic operations
-		
+feature -- Basic operations	
 	animate is
 			--animate the route with a passenger
 		require

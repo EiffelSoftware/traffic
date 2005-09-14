@@ -3,7 +3,6 @@ indexing
 					The TOUCH_PASSENGER class extends the MAP_WIDGET_PASSENGER, to be able
 					to walk a given route.
 					]"
-	author: "Roger Kueng"
 	date: "2005/07/12"
 	revision: "1.0"
 
@@ -17,9 +16,8 @@ create
 	make_on_map_place
 
 feature -- Basic operations	
-
 	move_route (a_route: TRAFFIC_ROUTE) is
-			-- 
+			-- move a given route, which starts at the place, where the passenger is on.
 		require
 			a_route_correct: a_route /= Void and then a_route.places_on_route.first = place
 		do

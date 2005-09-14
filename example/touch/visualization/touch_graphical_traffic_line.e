@@ -2,13 +2,15 @@ indexing
 	description: "[
 				class to visualize a TRAFFIC_LINE
 				]"
-	author: "Roger Kueng"
 	date: "2005/07/12"
 	revision: "1.0"
+	
 class
 	TOUCH_GRAPHICAL_TRAFFIC_LINE
+	
 inherit
 	TOUCH_TIMING
+	
 create
 	make_with_line_and_map_widget
 	

@@ -9,8 +9,8 @@ class
 	
 inherit
 	HASHABLE
-		rename 
-			out as hashable_out
+		redefine 
+			out
 		end
 
 create
