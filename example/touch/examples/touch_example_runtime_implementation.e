@@ -2,8 +2,7 @@ indexing
 	description: "[
 				A straightforward implementation of the TOUCH_EXAMPLE_RUNTIME
 				]"
-	author: "Roger Kueng"
-	date: "2005/07/12"
+	date: "2005/08/31"
 	revision: "1.0"
 class
 	TOUCH_EXAMPLE_RUNTIME_IMPLEMENTATION
@@ -76,4 +75,5 @@ invariant
 	map_set: intern_map /= Void
 	map_widget_set: intern_map_widget /= Void
 	textlist_set: intern_console /= Void
+	
 end -- class TOUCH_EXAMPLE_RUNTIME_IMPLEMENTATION

@@ -1,6 +1,5 @@
 indexing
 	description: "Basic Interface for examples"
-	author: "Roger Kueng"
 	date: "2005/08/25"
 	revision: "1.0"
 
@@ -31,8 +30,6 @@ feature -- Initialisation
 		end
 		
 feature -- Access
-
-
 	description: STRING is
 			-- simple and short describtion of the example
 		deferred
@@ -47,9 +44,6 @@ feature -- Access
 		do
 			Result := Current.generating_type
 		end
-
-feature -- Status report
-	hash_code : INTEGER 
 
 feature -- Basic operations
 	
@@ -68,10 +62,7 @@ feature -- Basic operations
 	deferred
 	end
 
-feature {NONE} -- Implementation
-	hash_number: INTEGER
-	
-invariant
-	invariant_clause: True -- Your invariant here
+feature {NONE} -- From base class HASHABLE
+	hash_code : INTEGER 
 
 end -- class TOUCH_EXAMPLE

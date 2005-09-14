@@ -3,7 +3,6 @@ indexing
 					Contains all the predefines and classes to run 'explore'.
 					NOTE: 'Paris', 'Line8', 'Louvre' are not of the type of any TRAFFIC class.
 					]"
-	author: "Roger Kueng"
 	date: "2005/08/25"
 	revision: "1.0"
 
@@ -56,7 +55,7 @@ feature -- Basic operation
 		
 	run (a_runtime: TOUCH_EXAMPLE_RUNTIME) is
 			-- 
-		do
+		do			
 			-- Set new default place renderer			
 			a_runtime.map_widget.set_default_place_renderer (create {TOUCH_PLACE_RENDERER}.make_with_map (a_runtime.map))
 

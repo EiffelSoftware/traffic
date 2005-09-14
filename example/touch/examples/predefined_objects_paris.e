@@ -1,8 +1,7 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Some features for places in Paris"
+	date: "2005/08/31"
+	revision: "1.0"
 
 deferred class
 	PREDEFINED_OBJECTS_PARIS

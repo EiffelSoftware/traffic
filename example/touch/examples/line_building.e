@@ -1,6 +1,5 @@
 indexing
 	description: "Implementation of LINE_BUILDING from The TOUCH Textbook"
-	author: "Roger Kueng"
 	date: "2005/08/25"
 	revision: "1.0"
 

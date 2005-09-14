@@ -1,8 +1,7 @@
 indexing
 	description: "A Container for examples. Examples can subscribe here."
-	author: "Roger Kueng"
 	date: "2005/06/20"
-	revision: "alpha"
+	revision: "1.0"
 
 class
 	TOUCH_EXAMPLE_CONTAINER

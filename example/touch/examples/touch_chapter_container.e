@@ -1,8 +1,7 @@
 indexing
-	description: "Objects that ..."
-	author: "Roger Kueng"
-	date: "2005/07/12"
-	revision: "alpha"
+	description: "A simple Container wrap"
+	date: "2005/08/31"
+	revision: "1.0"
 
 class
 	TOUCH_CHAPTER_CONTAINER

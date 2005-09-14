@@ -1,6 +1,5 @@
 indexing
 	description: "Contains all the predefines and classes to run 'queries'"
-	author: "Roger Kueng"
 	date: "2005/08/25"
 	revision: "1.0"
 

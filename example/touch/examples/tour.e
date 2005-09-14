@@ -1,6 +1,5 @@
 indexing
 	description: "Implementation of FANCY_LINE from The TOUCH Textbook"
-	author: "Roger Kueng"
 	date: "2005/07/12"
 	revision: "1.1"
 

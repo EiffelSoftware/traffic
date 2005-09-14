@@ -1,6 +1,5 @@
 indexing
 	description: "Implementation of COMMANDS from The Textbook TOUCH"
-	author: "Roger Kueng"
 	date: "2005/08/25"
 	revision: "1.0"
 

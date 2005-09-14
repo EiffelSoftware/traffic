@@ -1,8 +1,7 @@
 indexing
 	description: "Class managing the display and execution of examples"
-	author: "Roger Kueng"
 	date: "2005/06/20"
-	revision: "alpha"
+	revision: "1.0"
 
 obsolete class
 	TOUCH_EXAMPLE_MANAGER

@@ -1,8 +1,7 @@
 indexing
 	description: "The Access-Interface for a running example"
-	author: "Roger Kueng"
-	date: "2005/06/20"
-	revision: "alpha"
+	date: "2005/08/31"
+	revision: "1.0"
 
 deferred class
 	TOUCH_EXAMPLE_RUNTIME

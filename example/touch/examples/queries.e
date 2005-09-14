@@ -1,6 +1,5 @@
 indexing
 	description: "Class QUERIES from the Texbook TOUCH."
-	author: "Roger Kueng"
 	date: "2005/08/25"
 	revision: "0.1"
 
@@ -15,10 +14,12 @@ feature -- Basic operations
 			-- Do some queries
 		do
 			Console.show ("Places")
+
 			Console.show (Simple_Line_8.i_th (1))
 			Console.show (Simple_Line_8.i_th (Simple_Line_8.count))
-			
+
 			Console.show ("Line Sections")
+
 			Console.show (Line_8.i_th (1))
 			Console.show (Line_8.i_th (Line_8.count))
 		end

@@ -1,6 +1,5 @@
 indexing
 	description: "Contains all the predefines and classes to run 'build_line_8'."
-	author: "Roger Kueng"
 	date: "2005/08/25"
 	revision: "1.0"
 
@@ -63,8 +62,8 @@ feature -- Basic operation
 	run (a_runtime: TOUCH_EXAMPLE_RUNTIME) is
 			-- 
 		do
+			runtime := a_runtime
 			map := a_runtime.map
-			
 			Console := a_runtime.console
 			
 			Simple_Line_8 ?= map.line ("tram 8")
@@ -92,6 +91,8 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Predefines
 	map: TRAFFIC_MAP
+	
+	runtime: TOUCH_EXAMPLE_RUNTIME
 	
 	Console: TOUCH_CONSOLE
 	

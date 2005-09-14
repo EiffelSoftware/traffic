@@ -1,3 +1,8 @@
+indexing
+	description: "The first example from TOUCH"
+	date: "2005/08/31"
+	revision: "1.0"
+	
 class PREVIEW inherit
 	TOURISM
 feature	
@@ -12,4 +17,4 @@ feature
 			Route1.animate
 			Passenger.move_route (Route2)
 		end
-end
+end -- class PREVIEW

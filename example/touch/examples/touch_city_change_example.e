@@ -1,8 +1,7 @@
 indexing
 	description: "Simple Traffic-Map Example"
-	author: "Roger Kueng"
 	date: "2005/06/20"
-	revision: "alpha"
+	revision: "1.0"
 
 class
 	TOUCH_CITY_CHANGE_EXAMPLE
