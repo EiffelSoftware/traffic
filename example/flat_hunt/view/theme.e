@@ -10,16 +10,10 @@ indexing
 deferred class
 	THEME
 	
-inherit
-	
+inherit	
 	DISPLAY_CONSTANTS
 	
 	EM_SHARED_BITMAP_FACTORY	
-		undefine
-			default_create
-		end
-	
-	EM_SHARED_STANDARD_FONTS
 		undefine
 			default_create
 		end

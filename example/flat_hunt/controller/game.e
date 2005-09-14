@@ -1,5 +1,5 @@
 indexing
-	description	: "Logic for the Flat Hunt game"
+	description	: "Logic for the Flat Hunt game."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -15,49 +15,72 @@ inherit
 		undefine
 			default_create
 		end
-	
-	EM_TIME_SINGLETON
-		
+
 create 
-	make, make_with_constants
+	make
 	
 feature -- Initialization
 
-	make is
-			-- Creation procedure.
+	make (a_game_mode: like game_mode; a_hunter_count: like hunter_count; a_traffic_map: like traffic_map) is
+			-- Create with given game settings.
+		require
+			a_game_mode_valid: a_game_mode >= 1 and a_game_mode <= 4			
+			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)
+			a_traffic_map_exists: a_traffic_map /= Void
 		do
-			-- Set default values.
-			traffic_map_set := False
-			game_mode_set := False
-			hunter_count_set := False
+			-- Settings.
+			game_mode := a_game_mode
+			hunter_count := a_hunter_count
+			traffic_map := a_traffic_map
+
+			-- Create `players'.
+			create players.make (hunter_count + 1)
 			
 			-- Build checkpoints.
 			create checkpoints.make
-			checkpoints.fill (<< 3, 8, 13, 18, 23 >>)
+			checkpoints.fill (<< 3, 8, 13, 18, 23 >>)			
 		ensure
-			checkpoints_exist: checkpoints /= Void
-		end			
-
-	make_with_constants (a_game_mode: like game_mode; a_hunter_count: like hunter_count; a_traffic_map: like traffic_map) is
-			-- Create with given game settings.
-		do
-			make
-			set_game_mode (a_game_mode)
-			set_number_of_hunters (hunter_count)
-			set_traffic_map (a_traffic_map)
+			game_mode_set: game_mode = a_game_mode
+			hunter_count_set: hunter_count = a_hunter_count
+			traffic_map_set: traffic_map = a_traffic_map
 		end
 		
+feature -- Access
+
+	traffic_map: TRAFFIC_MAP
+			-- The game's map including all the places, line_sections etc.
+			
+	estate_agent: ESTATE_AGENT
+			-- Estate agent, the guy who rents the flat.
+			
+	players: ARRAYED_LIST [PLAYER]
+			-- List of all the players (estate agent is first).
+			
+	last_player: PLAYER 
+			-- Last player that moved.
+
+	current_player: PLAYER 
+			-- Player whose turn it is.
+			
+	current_player_index: INTEGER 
+			-- Index of `current_player' in `players'.
+	
+	current_round_number: INTEGER
+			-- Count from 1 to `default_number_of_rounds'.
+
+	hunter_count: INTEGER
+			-- Number of hunters.
+
+feature -- Basic Operations
+
 	create_players is
 			-- Create and prepare players.
-		require
-			hunter_count_valid: 1 <= hunter_count and hunter_count <= 8
-			game_mode_valid: (Hunt <= game_mode) and (game_mode <= Demo)
 		local
 			player_factory: PLAYER_FACTORY
 		do
+			create player_factory.make (traffic_map)			
+	
 			-- Build players.
-			create player_factory.make (traffic_map)
-			create players.make (hunter_count + 1)
 			if game_mode = Hunt then
 				player_factory.build_players (True, False, hunter_count)
 			elseif game_mode = Escape then
@@ -76,13 +99,10 @@ feature -- Initialization
 			end
 		ensure
 			estate_agent_exists: estate_agent /= Void
-			players_exist: players /= Void			
 		end
 
 	start_game is
 			-- Prepare the board, start the game.
-		require
-			players_exist: players /= Void
 		do
 			-- Set defaults.
 			current_round_number := 0
@@ -94,52 +114,122 @@ feature -- Initialization
 		ensure
 			correct_round_number: current_round_number = 1
 		end
+	
+feature {MAIN_CONTROLLER} -- Game operations
 
-feature -- Game settings
-
-	set_traffic_map (a_traffic_map: like traffic_map) is
-			-- Set `traffic_map' to `a_traffic_map'.
+	prepare is
+			-- Display current player, check if not stuck.
 		require
-			a_traffic_map_exists: a_traffic_map /= Void
+			prepare_state: state = Prepare_state
 		do
-			traffic_map := a_traffic_map
-			traffic_map_set := True
+			if current_player = estate_agent then
+				update_agent_visibility
+			end
+			calculate_possible_moves (current_player)
+			if current_player.possible_moves.is_empty then
+				if current_player = estate_agent then
+					state := Agent_stuck
+				else
+					current_player.set_unmarked
+					next_turn
+					if not is_game_over then
+						state := Prepare_state
+					end
+				end
+			else
+				state := Play_state
+			end				
+		end
+	
+	play is
+			-- Give player possibility to make a move.
+		require
+			play_state: state = Play_state
+		do
+			current_player.play (selected_place)
+			set_selected_place (Void)
+			if current_player.next_move /= Void then
+				state := Move_state			
+			end
 		ensure
-			traffic_map_correct: traffic_map = a_traffic_map
+			state_set: current_player.next_move /= Void implies state = Move_state
 		end
 
-	set_game_mode (a_mode: like game_mode) is
-			-- Set `game_mode' to `a_mode'.
+	move is
+			-- Make the chosen move.
 		require
-			a_mode_valid: a_mode >= Hunt and a_mode <= Demo
+			move_state: state = Move_state
 		do
-			game_mode := a_mode
-			game_mode_set := True
+			if current_player = estate_agent then
+				update_agent_visibility
+			end		
+			current_player.move
+			if current_player.location = estate_agent.location and current_player /= estate_agent then
+				state := Agent_caught
+				update_agent_visibility
+			else
+				state := Prepare_state			
+				next_turn
+			end
+		end
+
+	next_turn is
+			-- Change the player's state before the next game loop.
+		require 
+			prepare_state: state = Prepare_state
+		do
+			last_player := current_player
+			current_player_index := (current_player_index \\ players.count) + 1
+			current_player := players.i_th (current_player_index)		
+			if current_player_index = 1 then
+				current_round_number := current_round_number + 1
+				update_agent_visibility
+				if current_round_number = Default_number_of_rounds then
+					state := Agent_escapes
+				end
+			end
+			if current_player.possible_moves /= Void then
+				current_player.possible_moves.wipe_out				
+			end
 		ensure
-			game_mode_correct: game_mode = a_mode
+			current_player_index_set: current_player_index = (old current_player_index \\ players.count) + 1
+		end
+
+	update_agent_visibility is
+			-- Make agent visible if current round is a checkpoint.
+		do
+			if checkpoints.has (current_round_number) then
+				estate_agent.set_last_visible_location_and_round
+			end
+			if game_mode /= Hunt or is_game_over or (checkpoints.has (current_round_number) and state = Prepare_state) then
+				estate_agent.set_visibility (True)
+			else
+				estate_agent.set_visibility (False)
+			end
+		end
+
+feature -- Status setting
+		
+	set_selected_place (a_place: TRAFFIC_PLACE) is
+			-- Set place being passed to player.
+			-- Can have `Void' as an argument.
+		do
+			selected_place := a_place
+		ensure
+			selected_place_set: selected_place = a_place
 		end
 		
-	set_number_of_hunters (a_hunter_count: like hunter_count) is
-			-- Set `hunter_count' to `a_hunter_count'.
-		require
-			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)			
-		do
-			hunter_count := a_hunter_count
-			hunter_count_set := True
-		ensure
-			hunter_count_correct: hunter_count = a_hunter_count
-		end
-
 feature {NONE} -- Status report
 
 	is_occupied (a_location: TRAFFIC_PLACE): BOOLEAN is
 			-- Check if `a_location' is occupied by some flat hunter.
 		require
 			a_location_exists: a_location /= Void
-			players_exist: players /= Void
 		local
 			old_cursor: CURSOR			
 		do
+			Result := False
+			
 			-- Remember old cursor position.
 			old_cursor := players.cursor		
 
@@ -160,26 +250,26 @@ feature {NONE} -- Status report
 			players.go_to (old_cursor)						
 		end
 
+feature {NONE} -- Implementation
+
+	selected_place: TRAFFIC_PLACE
+			-- Used to pass clicked place to player.
+
+	checkpoints: BINARY_SEARCH_TREE_SET [INTEGER]
+			-- Estate agent has to show himself in these rounds.
+
 	calculate_possible_moves (a_player: PLAYER) is
 			-- Create list of possible moves for `a_player' (if enough tickets available).
 		require
-			traffic_map_exists: traffic_map /= Void
-			player_exists: a_player /= Void
+			a_player_exists: a_player /= Void
 		local
 			tmp_line_section: TRAFFIC_LINE_SECTION
 			tmp_two_station_line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
 			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
 			possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]
-			tmp_ticks1, tmp_ticks2: INTEGER
 		do
 			create possible_moves.make
-			io.putstring ("%N Ticks for outgoing line sections calc: ")
-			tmp_ticks1 := time.ticks
 			outgoing_line_sections := traffic_map.line_sections_of_place (a_player.location.name)
-			tmp_ticks2 := time.ticks
-			io.putint (tmp_ticks2 - tmp_ticks1)
-			io.putstring ("%N Ticks for loop: ")
-			tmp_ticks1 := time.ticks
 			from
 				outgoing_line_sections.start
 			until
@@ -208,176 +298,13 @@ feature {NONE} -- Status report
 				end
 				outgoing_line_sections.forth
 			end
-			tmp_ticks2 := time.ticks
-			io.putint (tmp_ticks2 - tmp_ticks1)
-			io.putstring ("%N Ticks for setting possible moves: ")
-			tmp_ticks1 := time.ticks
 			a_player.set_possible_moves (possible_moves)
-			tmp_ticks2 := time.ticks
-			io.putint (tmp_ticks2 - tmp_ticks1)
 		ensure
 			possible_moves_set: a_player.possible_moves /= Void
 		end
-	
-feature {MAIN_CONTROLLER} -- Basic operations
-
-	prepare is
-			-- Display current player, check if not stuck.
-		do
-			if current_player = estate_agent then
-				update_agent_visibility
-			end
-			calculate_possible_moves (current_player)
-			if current_player.possible_moves.is_empty then
-				if current_player = estate_agent then
-					state := Agent_stuck
-				else
-					current_player.set_unmarked
-					next_turn
-					if not is_game_over then
-						state := Prepare_state
-					end
-				end
-			else
-				state := Play_state
-			end				
-		end
-	
-	play is
-			-- Give player possibility to make a move.
-		do
-			current_player.play (selected_place)
-			set_selected_place (Void)
-			if current_player.next_move /= Void then
-				state := Move_state			
-			end
-		end
-
-	move is
-			-- Make the chosen move.
-		do
-			if current_player = estate_agent then
-				update_agent_visibility
-			end		
-			current_player.move
-			if current_player.location = estate_agent.location and current_player /= estate_agent then
-				state := Agent_caught
-				update_agent_visibility
-			else
-				state := Prepare_state			
-				next_turn
-			end
-		end
-
-feature -- Element change
-
-	next_turn is
-			-- Change the player's state before the next game loop.
-		require 
-			prepare_state: state = Prepare_state
-		do
-			last_player := current_player
-			current_player_index := (current_player_index \\ players.count) + 1
-			current_player := players.i_th (current_player_index)		
-			if current_player_index = 1 then
-				current_round_number := current_round_number + 1
-				update_agent_visibility
-				if current_round_number = Default_number_of_rounds then
-					state := Agent_escapes
-				end
-			end
-			if current_player.possible_moves /= Void then
-				current_player.possible_moves.wipe_out				
-			end			
-		end
-
-	update_agent_visibility is
-			-- Make agent visible if current round is a checkpoint.
-		do
-			if checkpoints.has (current_round_number) then
-				estate_agent.set_last_visible_location_and_round
-			end
-			if game_mode /= Hunt or is_game_over or (checkpoints.has (current_round_number) and state = Prepare_state) then
-				estate_agent.set_visibility (True)
-			else
-				estate_agent.set_visibility (False)
-			end
-		end
-		
-	set_selected_place (a_place: TRAFFIC_PLACE) is
-			-- Set place being passed to player.
-		do
-			selected_place := a_place
-		end
-		
-feature -- Access
-
-	traffic_map_set: BOOLEAN
-			-- Is `traffic_map' already set?
-	
-	game_mode_set: BOOLEAN
-			-- Is `game_mode' already set?
-	
-	hunter_count_set: BOOLEAN
-			-- Is `hunter_count' already set?	
-	
-feature -- Attributes
-
-	traffic_map: TRAFFIC_MAP
-			-- The game's map including all the places, line_sections etc.
-
-	hunter_count: INTEGER
-			-- Number of hunters
-			
-	players: ARRAYED_LIST [PLAYER]
-			-- List of all the players (estate agent is first)
-	
-	current_player: PLAYER 
-			-- Player whose turn it is
-			
-	current_player_index: INTEGER 
-			-- Index of `current_player' in `players'.
-			
-	last_player: PLAYER 
-			-- Last player that moved
-			
-	estate_agent: ESTATE_AGENT
-			-- Estate agent, the guy who rents the flat
-
-	selected_place: TRAFFIC_PLACE
-			-- Used to pass clicked place to player
-
-	current_round_number: INTEGER
-			-- Count from 1 to `default_number_of_rounds'
-			
-	info_text: ARRAYED_LIST [STRING]
-			-- To be displayed in a status box of the game scene
-
-	checkpoints: BINARY_SEARCH_TREE_SET [INTEGER]
-			-- Estate agent has to show himself in these rounds		
-			
-feature -- Output
-
-	print_hunter_locations: STRING is
-			-- Display the location of each flat hunter.
-		local
-			i: INTEGER
-		do
-			Result := ""
-			from 
-				i := 2
-			until
-				i > players.count
-			loop
-				Result.append (players.i_th (i).location.name)
-				i := i + 1
-			end
-		end	
-
-feature {NONE} -- Implementation
 
 	two_station_tram_line_section (a_line_section: TRAFFIC_LINE_SECTION): LINKED_LIST [TRAFFIC_LINE_SECTION] is
-			-- Create line sections to tram stops that are two segments away from `a_line_section.origin' going  through `a_line_section'.
+			-- Create line sections to all tram stops that are two segments away from `a_line_section.origin' going  through `a_line_section'.
 		require
 			a_line_section_exists: a_line_section /= Void
 		local
@@ -399,5 +326,12 @@ feature {NONE} -- Implementation
 				outgoing_line_sections.forth
 			end
 		end
-			
+
+invariant
+	checkpoints_exist: checkpoints /= Void
+	game_mode_valid: game_mode >= 1 and game_mode <= 4			
+	hunter_count_valid: (1 <= hunter_count) and (hunter_count <= 8)
+	traffic_map_exists: traffic_map /= Void			
+	players_exist: players /= Void
+	
 end

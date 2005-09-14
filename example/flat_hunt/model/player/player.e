@@ -7,7 +7,6 @@ deferred class
 	PLAYER
 
 inherit
-
 	TRAFFIC_TYPE_FACTORY
 		rename
 			make as make_type_factory

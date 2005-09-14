@@ -133,7 +133,7 @@ feature {NONE} -- Implementation
 
 	hash_code: INTEGER
 			-- Hash code of this button.
-		
+			
 	down: BOOLEAN
 			-- Is button pressed down?
 

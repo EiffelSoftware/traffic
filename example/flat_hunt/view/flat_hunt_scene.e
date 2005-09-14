@@ -25,6 +25,11 @@ inherit
 			default_create
 		end
 		
+	THEME
+		undefine
+			default_create
+		end
+		
 feature {NONE} -- Event Handling
 
 	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is

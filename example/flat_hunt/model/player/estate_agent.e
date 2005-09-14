@@ -38,8 +38,6 @@ feature -- Initialization
 			
 			create taken_transports.make
 			create visited_places.make
-		ensure
-			name_set: name = "Agent"
 		end
 
 feature -- Access

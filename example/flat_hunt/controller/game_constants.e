@@ -6,7 +6,6 @@ indexing
 deferred class
 	GAME_CONSTANTS
 
-
 feature -- General constants
 			
 	Default_number_of_rounds: INTEGER is 24

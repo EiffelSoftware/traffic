@@ -12,18 +12,13 @@ inherit
 			initialize_scene, handle_key_down_event
 		end
 
-	SHARED_MAIN_CONTROLLER
-		undefine
-			default_create
-		end
-
 create
 	make_scene
 	
 feature -- Initialization
 
 	initialize_scene is
-			-- Initialize menu scene
+			-- Initialize menu scene.
 		local
 			background_box: TEXT_BOX
 			list: ARRAYED_LIST [STRING]
@@ -55,8 +50,6 @@ feature -- Initialization
 			-- Build caption for first option menu.
 			background_box.extend (create {EM_STRING}.make ("game mode: ", Small_menu_font))
 			background_box.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
---			background_box.add_line ("game mode :")
---			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 			
 			-- Build first option menu.
 			create list.make (0)
@@ -72,8 +65,6 @@ feature -- Initialization
 			-- Build caption for second option menu.
 			background_box.extend (create {EM_STRING}.make ("nr of hunters: ", Small_menu_font))
 			background_box.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
---			background_box.add_line ("nr of hunters :")
---			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 			
 			-- Build second option menu.
 			list.wipe_out
@@ -93,8 +84,6 @@ feature -- Initialization
 			-- Build caption for third option menu.
 			background_box.extend (create {EM_STRING}.make ("map size: ", Small_menu_font))
 			background_box.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
---			background_box.add_line ("map size :")
---			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 
 			-- Build third option menu.
 			list.wipe_out	
@@ -108,8 +97,6 @@ feature -- Initialization
 			-- Build caption for fourth option menu
 			background_box.extend (create {EM_STRING}.make ("characters: ", Small_menu_font))
 			background_box.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
---			background_box.add_line ("characters :")
---			background_box.lines.last.set_x_y (options_position_x - 400, options_position_y - background_box.y)
 
 			-- Build fourth option menu.
 			list.wipe_out			
@@ -129,6 +116,38 @@ feature -- Initialization
 			menu_positioned: menu.x = Window_width - menu.width - Margin and menu.y = Window_height - menu.height
 			option_menus_not_empty: not option_menus.is_empty
 		end
+
+feature -- Status Setting
+
+	set_map (a_map_name: like map_name) is
+			-- Set `map_name' to `a_map_name'.
+		require
+			a_map_name_exists: a_map_name /= Void
+		do
+			map_name := a_map_name
+		ensure
+			map_name_set: map_name = a_map_name
+		end		
+		
+	set_game_mode (a_mode: like mode) is
+			-- Set `game_mode' to `a_game_mode'.
+		require
+			a_mode_valid: a_mode >= 1 and a_mode <= 4
+		do
+			mode := a_mode
+		ensure
+			mode_set: mode = a_mode
+		end
+		
+	set_number_of_hunters (a_hunter_count: like hunter_count) is
+			-- Set hunter count to `a_hunter_count'.
+		require
+			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)
+		do
+			hunter_count := a_hunter_count
+		ensure
+			hunter_count_set: hunter_count = a_hunter_count
+		end	
 
 feature -- Event handling
 
@@ -178,109 +197,6 @@ feature -- Event handling
 				option_menus.item (active_menu).handle_key_down_event (a_keyboard_event)
 			end
 		end
-		
-	start_callback is
-			-- Callback for `start game' entry.
-		local
-			a_map_file: TRAFFIC_MAP_FILE
-		do
-			-- Create game and make game settings.
-			if game = Void then
-				game := create {GAME}.make
-			end
-				
-			-- Set game mode.
-			if not game.game_mode_set then
-				game.set_game_mode (option_menus.item (1).selected_entry)				
-			end
-
-			-- Set number of hunters.	
-			if not game.hunter_count_set then
-				game.set_number_of_hunters (option_menus.item (2).selected_entry)				
-			end
-
-			-- Set traffic map.
-			if not game.traffic_map_set then
-				a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./map/zurich_" + option_menus.item (3).item (option_menus.item (3).selected_entry).text.value + ".xml")
-				game.set_traffic_map (a_map_file.traffic_map)				
-			end
-
-			-- Create scene that displays the game.
-			game_scene := create {GAME_SCENE}.make_scene (game.traffic_map, option_menus.item (2).selected_entry)
-
-			-- Load correct player pics according to settings.
-			Player_pic_directory.wipe_out
-			Player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).item (option_menus.item (4).selected_entry).text.value + "/")
-
-			-- Initialize `main_controller' and start a new game.
-			main_controller.initialize_with_game_and_scene (game, game_scene)
-			main_controller.start_game
-
-			-- Go to the above created game scene.			
-			next_scene := game_scene
-			event_loop.stop
-		end
-		
-		credits_callback is
-				-- Callback for `credits' entry.
-			do
-				next_scene := create {CREDITS_SCENE}.make_scene
-				event_loop.stop				
-			end
-			
-		quit_callback is
-				-- Callback for `quit' entry.
-			do
-				event_loop.stop
-			end
-
---feature -- Game settings
---
---	set_traffic_map (a_traffic_map: like traffic_map) is
---			-- Set `traffic_map' to `a_traffic_map'.
---		require
---			a_traffic_map_exists: a_traffic_map /= Void
---		do
---			traffic_map := a_traffic_map
---			traffic_map_set := True
---		ensure
---			traffic_map_correct: traffic_map = a_traffic_map
---		end
---
---	set_game_mode (a_mode: like game_mode) is
---			-- Set `game_mode' to `a_mode'.
---		require
---			a_mode_valid: a_mode >= 1 and a_mode <= 4
---		do
---			game_mode := a_mode
---			game_mode_set := True
---		ensure
---			game_mode_correct: game_mode = a_mode
---		end
---		
---	set_number_of_hunters (a_hunter_count: like hunter_count) is
---			-- Set `hunter_count' to `a_hunter_count'.
---		require
---			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)			
---		do
---			hunter_count := a_hunter_count
---			hunter_count_set := True
---		ensure
---			hunter_count_correct: hunter_count = a_hunter_count
---		end
-
-feature -- Settings
-
-	set_game (a_game: GAME) is
-			-- Set `game' to `a_game'
-		require
-			a_game_exists: a_game /= Void
-		do
-			game := a_game
-		ensure
-			game_correct: game = a_game
-		end
-		
 
 feature {NONE} -- Implementation
 
@@ -289,24 +205,85 @@ feature {NONE} -- Implementation
 			
 	game_scene: GAME_SCENE
 			-- Visualization of the game.
+	
+	map_name: STRING
+			-- Name of the map to be loaded for the game.
+	
+	traffic_map: TRAFFIC_MAP
+			-- Traffic map to be used for the game.
+	
+	mode: INTEGER
+			-- Game mode in which the game will be started.
 			
---
---	traffic_map: TRAFFIC_MAP
---			-- Map on which the game will take place.
---			
---	game_mode: INTEGER
---			-- Game mode.
---	
---	hunter_count: INTEGER
---			-- Number of hunters.
---	
---	traffic_map_set: BOOLEAN
---			-- Is `traffic_map' set manually?
---	
---	game_mode_set: BOOLEAN
---			-- Is `game_mode' set manually?
---	
---	hunter_count_set: BOOLEAN
---			-- Is `hunter_count' set manually?
+	hunter_count: INTEGER
+			-- Number of hunters that will play.
+
+	start_callback is
+			-- Callback for `start game' entry.
+		do
+			-- Settings from start menu.
+			set_game_mode (option_menus.item (1).selected_entry)				
+			set_number_of_hunters (option_menus.item (2).selected_entry)				
+			set_map ("./map/zurich_" + option_menus.item (3).item (option_menus.item (3).selected_entry).text.value + ".xml")
+			
+			-- Start the game.
+			start
+		end
+
+	start is
+			-- Adjust the game settings and start the game.
+		do
+			-- Redefined in class START.
+			start_game
+		end
+
+	start_game is
+			-- Start the game.
+		local
+			main_controller: MAIN_CONTROLLER
+		do
+			-- Create game and make game settings.
+			open_map
+			create game.make (mode, hunter_count, traffic_map)
+			
+			-- Create scene that displays the game.
+			game_scene := create {GAME_SCENE}.make_scene (traffic_map, option_menus.item (2).selected_entry)
+
+			-- Load correct player pics according to settings.
+			Player_pic_directory.wipe_out
+			Player_pic_directory.append_string (Image_directory + "player/" + option_menus.item (4).item (option_menus.item (4).selected_entry).text.value + "/")
+
+			-- Initialize `main_controller' and start a new game.
+			create main_controller.make (game, game_scene)
+			main_controller.start_game
+
+			-- Go to the above created game scene.			
+			next_scene := game_scene
+			event_loop.stop			
+		end
+
+	open_map is
+			-- Open map with name `map_name'.
+		local
+			a_map_file: TRAFFIC_MAP_FILE			
+		do
+			create a_map_file.make_from_file (map_name)
+			traffic_map := a_map_file.traffic_map
+		ensure
+			traffic_map_exits: traffic_map /= Void
+		end	
+		
+	credits_callback is
+			-- Callback for `credits' entry.
+		do
+			next_scene := create {CREDITS_SCENE}.make_scene
+			event_loop.stop				
+		end
+		
+	quit_callback is
+			-- Callback for `quit' entry.
+		do
+			event_loop.stop
+		end
 
 end

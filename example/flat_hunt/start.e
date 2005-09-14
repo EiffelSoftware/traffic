@@ -1,5 +1,5 @@
 indexing
-	description: "Start of the application, used for assignment 2."
+	description: ", used for assignment 2."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -7,30 +7,28 @@ class
 	START
 
 inherit
-	FLAT_HUNT_APPLICATION
+	START_MENU_SCENE
 		redefine
-			adjust_game_settings
+			start
 		end
-	
+			
 	GAME_CONSTANTS
 	
 create
-	make_and_launch
+	make_scene
 	
 feature -- Initialization
 
-		adjust_game_settings is
+		start is
 			-- Adjust the game settings and start the game.
-		local
-			a_map_file: TRAFFIC_MAP_FILE
 		do
 --			POSSIBLE ASSIGNMENT (sample solution):
---			game.set_game_mode (Hunt)
---			game.set_number_of_hunters (5)
---			Warning: the following lines preload the given traffic map, which leads to some delay
---			in displaying the start menu. Just so you know and won't be shocked :)
---			a_map_file := create {TRAFFIC_MAP_FILE}.make_from_file ("./map/zurich_little.xml")
---			game.set_traffic_map (a_map_file.traffic_map)
+--			set_map ("./map/zurich_little.xml")
+--			set_game_mode (Hunt)
+--			set_number_of_hunters (3)
+			-- If `start_game' is left out, you will be stuck on the start menu scene, because no 
+			-- game will be started, even if you hit enter on "start game".
+			start_game
 		end
 		
 end

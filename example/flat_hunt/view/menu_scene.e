@@ -11,15 +11,9 @@ deferred class
 	MENU_SCENE
 
 inherit
-	
 	FLAT_HUNT_SCENE
 		redefine
 			make_scene, handle_key_down_event
-		end
-		
-	THEME
-		undefine
-			default_create
 		end
 
 feature -- Initialization		

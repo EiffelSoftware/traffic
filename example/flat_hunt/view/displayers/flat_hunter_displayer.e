@@ -15,11 +15,6 @@ inherit
 create 
 	make_from_player
 
-feature -- Attributes
-
-	player: FLAT_HUNTER
-			-- Reference to player to be displayed.
-	
 feature -- Output
 
 	statistics: STRING is
@@ -28,5 +23,10 @@ feature -- Output
 			Result := "Location: " + player.location.name + "%NRail tickets: " + player.rail_tickets.out + "%NTram tickets: " + player.tram_tickets.out + "%NBus tickets: " + player.bus_tickets.out
 		end
 
+feature {NONE} -- Implementation
+
+	player: FLAT_HUNTER
+			-- Reference to player to be displayed.
+	
 end
 

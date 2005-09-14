@@ -14,11 +14,6 @@ inherit
 			default_create
 		end
 		
-	EM_KEY_CONSTANTS
-		undefine
-			default_create
-		end
-		
 feature -- Colors
 
 	Dark_blue: EM_COLOR is
@@ -30,7 +25,7 @@ feature -- Colors
 
 	Light_violet: EM_COLOR is
 		once
-			Result := create {EM_COLOR}.make_with_rgb (100, 0, 150)
+			Result := create {EM_COLOR}.make_with_rgb (150, 0, 190)
 		ensure
 			color_exists: Result /= Void
 		end

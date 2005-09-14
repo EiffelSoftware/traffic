@@ -9,28 +9,31 @@ class
 inherit
 	PLAYER_DISPLAYER
 		redefine
-			make_from_player, player, statistics, draw
+			player, statistics, draw
 		end
 
 create 
 	make_from_player
 
-feature -- Initialization
+feature -- Output
 
-	make_from_player (a_player: PLAYER; a_pic: like picture; a_traffic_map: like traffic_map; a_map_widget: like map_widget) is
-			-- Initialize displayer for `a_player'.
+	statistics: STRING is
+			-- Number of tickets left etc.
+		local
+			last_visible_location: STRING
 		do
-			Precursor (a_player, a_pic, a_traffic_map, a_map_widget)
+			if player.is_visible then
+				Result := "Location: " + player.location.name + "%N" + "Tickets: Rail: " + player.rail_tickets.out + ", Tram: " + player.tram_tickets.out + ", Bus: " + player.bus_tickets.out + "%N" + travel_history
+			else
+				if player.last_visible_location /= Void then
+					last_visible_location := "In hiding.. Last seen at: " + player.last_visible_location.name + "%N"
+				else
+					last_visible_location := "In hiding.. Last seen at unknown.%N"
+				end
+				Result := "Location: " + last_visible_location + "Tickets: Rail: " + player.rail_tickets.out + ", Tram: " + player.tram_tickets.out + ", Bus: " + player.bus_tickets.out + "%N" + last_visible_travel_history
+			end
 		end
-
-feature -- Attributes
-
-	player: ESTATE_AGENT
-			-- Reference to player to be displayed
-
-	last_visible_location_picture: EM_DRAWABLE
-			-- Picture that is displayed at last visible location if estate agent currently not visible.
-
+		
 feature -- Status setting
 
 	set_last_visible_location_picture (a_pic: like last_visible_location_picture) is
@@ -42,8 +45,16 @@ feature -- Status setting
 			update_position
 		ensure
 			lvl_pic_set: last_visible_location_picture = a_pic
-		end
+		end		
 		
+feature {NONE} -- Implementation
+
+	player: ESTATE_AGENT
+			-- Reference to player to be displayed
+
+	last_visible_location_picture: EM_DRAWABLE
+			-- Picture that is displayed at last visible location if estate agent currently not visible.
+
 	update_last_visible_position is
 			-- Update position to passenger's position.
 		local
@@ -53,28 +64,8 @@ feature -- Status setting
 			pos := player.last_visible_location.position.twin
 			tmp_x := (pos.x.floor - (picture.width // 2))
 			tmp_y := (pos.y.floor - (picture.height // 2))
-			last_visible_location_picture.set_x_y (tmp_x, tmp_y)				
+			last_visible_location_picture.set_x_y (tmp_x, tmp_y)
 		end	
-
-feature -- Output
-
-	statistics: STRING is
-			-- Number of tickets left etc.
-		local
-			last_visible_location: STRING
-		do
-			if player.is_visible then
-				Result := "Location: " + player.location.name + "%NRail tickets: " + player.rail_tickets.out + ", Tram tickets: " + player.tram_tickets.out + ", Bus tickets: " + player.bus_tickets.out + "%N%N" + travel_history
-			else
-				if player.last_visible_location /= Void then
-					last_visible_location := "In hiding.. Last seen at: " + player.last_visible_location.name
-				else
-					last_visible_location := "In hiding.. Last visbible location unknown."
-				end
-				Result := "Location: " + last_visible_location + "%NRail tickets: " + player.rail_tickets.out + ", Tram tickets: " + player.tram_tickets.out + ", Bus tickets: " + player.bus_tickets.out + last_visible_travel_history
-			end
-
-		end
 		
 	travel_history: STRING is
 			-- Types ot transport taken etc.
@@ -86,15 +77,15 @@ feature -- Output
 			until 
 				player.taken_transports.after
 			loop
-				if player.is_visible and then not player.taken_transports.islast then
+				if not player.taken_transports.islast then
 					Result := "%N" + player.visited_places.item + Result
 				end
-				Result := "%NRound " + player.visited_places.index.out + ": " + player.taken_transports.item + Result
+				Result := "%N" + "Round " + player.visited_places.index.out + ": " + player.taken_transports.item + Result
 				player.taken_transports.forth
 				player.visited_places.forth
 			end
 		ensure
-			has_result: Result /= Void
+			result_exists: Result /= Void
 		end
 
 	last_visible_travel_history: STRING is
@@ -108,40 +99,41 @@ feature -- Output
 				player.visited_places.start
 				i := 1
 			until 
-				i > player.last_visible_round or else player.taken_transports.after
+				player.taken_transports.after
 			loop
-				if not (i = player.last_visible_round) then
+				if not (i >= player.last_visible_round) then
 					Result := "%N" + player.visited_places.item + Result
 				end
-				Result := "%NRound " + player.visited_places.index.out + ": " + player.taken_transports.item + Result
+				Result := "%N" + "Round " + player.visited_places.index.out + ": " + player.taken_transports.item + Result
 				player.taken_transports.forth
 				player.visited_places.forth
 				i := i + 1
 			end
 		ensure
-			has_result: Result /= Void
+			result_exists: Result /= Void
 		end
 		
-feature {NONE} -- Implementation
-
 	draw (surface: EM_SURFACE) is
 			-- Draw `Current' onto `surface'.
 		do
-			io.putstring ("%N%N" + player.name)	
 			if not possible_moves_unmarked then
 				unmark_possible_moves
 			end
+			-- Only draw the estate agent if he is currently visible.
 			if player.is_visible then
 				update_position
 				if picture /= Void then
 					surface.draw_object (picture)
+					-- If it's the estate agent's turn mark him with the marking circle and 
+					-- highlight his possible moves.
 					if player.is_marked then
 						surface.draw_object (marking_circle)
 						mark_possible_moves
+					-- If the estate agent is defeated mark his defeat.
 					elseif player.is_defeated then
 						marking_circle.set_line_width (4)
 						surface.draw_object (marking_circle)
-						animate_defeat (surface)
+						mark_defeat (surface)
 					end
 				end
 			else

@@ -79,10 +79,12 @@ feature -- Event Handling
 			menu.handle_key_down_event (a_keyboard_event)
 		end
 
+feature {NONE} -- Implementation
+
 	back_callback is
 		-- Callback for back button.
 		do
-			next_scene := create {START_MENU_SCENE}.make_scene
+			next_scene := create {START}.make_scene
 			event_loop.stop
 		end
 

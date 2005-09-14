@@ -7,8 +7,7 @@ deferred class
 	
 	MENU
 
-inherit
-	
+inherit	
 	EM_DRAWABLE_CONTAINER [MENU_ENTRY]
 	
 	THEME

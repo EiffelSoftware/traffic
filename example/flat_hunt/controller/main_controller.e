@@ -17,46 +17,34 @@ inherit
 	
 	THEME
 	
-	EM_TIME_SINGLETON
-	
 create
 	make
 
 feature -- Initialization
 
-	make is
+	make (a_game: like game; a_game_scene: like game_scene) is
 			-- Creation procedure.
-		do
-			default_create
-		end
-
-	initialize_with_game_and_scene (a_game: like game; a_game_scene: like game_scene) is
-			-- Initialize main controller
 		require
 			a_game_exists: a_game /= Void
 			a_game_scene_exists: a_game_scene /= Void
 		do
+			default_create
 			game := a_game
 			game_scene := a_game_scene
-			
+			game_scene.set_pause_callback (agent take_a_pause)			
 			create status.make (0)
-			game_scene.set_pause_callback (agent take_a_pause)
 		ensure
 			game_set: game = a_game
 			game_scene_set: game_scene = a_game_scene
 			status_exists: status /= Void
 		end
-
+			
 feature -- Game operations
 
 	start_game is
 			-- Create and start game.
-		require
-			traffic_map_exists: game.traffic_map /= Void
-			correct_number_of_hunters: (1 <= game.hunter_count) and (game.hunter_count <= 8)
-			correct_game_mode: (Hunt <= game.game_mode) and (game.game_mode <= Demo)
 		do
-			end_game_called_once := false
+			end_game_called_once := False
 			game.create_players
 			game_scene.create_players_from_list (game.players)
 			subscribe_to_clicked_place_event (agent process_clicked_place)			
@@ -65,15 +53,17 @@ feature -- Game operations
 			status_before_prepare
 			update_status
 			
-			play_called_once := false
-			move_called_once := false
-			take_a_pause (false)
+			play_called_once := False
+			move_called_once := False
+			take_a_pause (False)
+		ensure
+			end_game_called_once_set: end_game_called_once = False
+			play_called_once_set: play_called_once = False
+			move_called_once_set: move_called_once = False
 		end
 
 	end_game is
-			-- Display end game text, animation and menu when game over.
-		require
-			game_exists: game /= Void
+			-- Display end game text, markings and menu when game over.
 		local
 			i: INTEGER		
 		do
@@ -92,7 +82,7 @@ feature -- Game operations
 					game.players.forth
 				end
 				
-				-- Display players and their defeat animation.
+				-- Display players and their defeat marking.
 				game.estate_agent.set_visibility (True)				
 				if game.state = game.Agent_caught or game.state = game.Agent_stuck then
 					-- Flat hunters win.
@@ -113,8 +103,7 @@ feature -- Game operations
 			end
 		end		
 
-
-feature -- Status Report
+feature -- Output
 
 	status_game_over is
 			-- Status to be displayed when game is over
@@ -151,29 +140,6 @@ feature -- Status Report
 			game_scene.update_status_box
 			game_scene.update_player_status_box (game.current_player_index)
 		end		
-		
-feature -- Attributes
-
-	status: STRING
-			-- Status of current `game' to be displayed in `game_scene'
-
-	game_scene: GAME_SCENE
-			-- Where the game is visualized
-
-	game: GAME
-			-- Game logic
-	
-	paused: BOOLEAN
-			-- Is game currently on paused?
-
-	play_called_once: BOOLEAN
-			-- Has the current player already played (i.e. chosen his move) ?
-
-	move_called_once: BOOLEAN
-			-- Has the current player already moved?	
-
-	end_game_called_once: BOOLEAN
-			-- Is the game already game over?
 
 feature -- Event handling
 
@@ -206,18 +172,93 @@ feature -- Event handling
 				game_scene.big_map_widget.render
 			end			
 		end	
-	
-	has_place (a_line_section: TRAFFIC_LINE_SECTION; a_place: TRAFFIC_PLACE): BOOLEAN is
-			-- Is `a_line_section.destination' equal `a_place'?
+
+feature {NONE} -- Game loop implementation
+
+	prepare is
+			-- Prepare current player to make a move.
 		require
-			a_line_section_exists: a_line_section /= Void
-			a_place_exists: a_place /= Void
+			no_pause_taken: not paused
+			game_state_prepare: game.state = game.Prepare_state
 		do
-			Result := (a_line_section.destination = a_place)
+			-- Prepare current player.
+			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
+				game_scene.center_on_player (game.current_player)
+				game.current_player.set_marked
+			end
+			
+			-- Update status boxes.
+			if game.current_player = game.estate_agent then
+				game.update_agent_visibility				
+			end
+			status_before_prepare
+			update_status			
+				
+			-- Prepare game and redraw scene.
+			game.prepare
+			game_scene.redraw
+		ensure
+			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck
+		end		
+
+	play is
+			-- Let current player choose next move.
+		require
+			no_pause_taken: not paused
+			game_state_play: game.state = game.Play_state
+		do
+			if not play_called_once then
+				play_called_once := True
+			end
+			game.play
+			game_scene.redraw
+			move_called_once := False
+		ensure
+			correct_game_state: game.state = game.Play_state or game.state = game.Move_state
+		end
+		
+	move is
+			-- Perform player's move and update display.
+		require
+			no_pause_taken: not paused
+			move_state_set: game.state = game.Move_state
+		do
+			if not move_called_once then
+				move_called_once := True
+				game.move
+				game.last_player.set_unmarked				
+				game_scene.redraw
+				play_called_once := False
+			end
+		ensure
+			correct_game_state: game.state = game.Prepare_state or game.state = game.Agent_caught or game.state = game.Agent_escapes
 		end
 
+feature {NONE} -- Implementation
+
+	game: GAME
+			-- Game logic.
+
+	game_scene: GAME_SCENE
+			-- Where the game is visualized.
+			
+	status: STRING
+			-- Status of current `game' to be displayed in `game_scene',
+
+	paused: BOOLEAN
+			-- Is game currently on paused?
+
+	play_called_once: BOOLEAN
+			-- Has the current player already played (i.e. chosen his move)?
+
+	move_called_once: BOOLEAN
+			-- Has the current player already moved?	
+
+	end_game_called_once: BOOLEAN
+			-- Is the game already game over?
+			
 	idle_action is
-			-- Things that are done when nothing else is processing
+			-- Things that are done when nothing else is processing.
 		do
 			if game /= Void and then not paused then
 				if game.state = game.Prepare_state then
@@ -242,77 +283,12 @@ feature -- Event handling
 			end
 		end
 
-	sleep_and_process (a_time: INTEGER) is
-		do
-			game_scene.event_loop.delay_and_process (a_time)
-		end
-
-feature {NONE} -- Game loop
-
-	prepare is
-			-- Prepare current player to make a move.
-		require
-			no_pause_taken: not paused
-			game_state_prepare: game.state = game.Prepare_state
-		do
-			-- Prepare current player.
-			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
-				game_scene.center_on_player (game.current_player)
-				game.current_player.set_marked
-			end
-			
-			-- Update status boxes.
-			if game.current_player = game.estate_agent then
-				game.update_agent_visibility				
-			end
-			status_before_prepare
-			update_status			
---			main_window.update_player_info_box (game.current_player)
-				
-			-- Prepare game and redraw scene.
-			game.prepare
-			game_scene.redraw
-		ensure
-			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck
-		end		
-
-	play is
-			-- Let current player choose next move.
-		require
-			no_pause_taken: not paused
-			game_state_play: game.state = game.Play_state
-		do
-			if not play_called_once then
-				play_called_once := true
-			end
-			game.play
-			game_scene.redraw
-			move_called_once := false
-		ensure
-			correct_game_state: game.state = game.Play_state or game.state = game.Move_state
-		end
-		
-	move is
-			-- Perform player's move and update display.
-		require
-			no_pause_taken: not paused
-			move_state_set: game.state = game.Move_state
-		do
-			if not move_called_once then
-				move_called_once := true
-				game.move
-				game.last_player.set_unmarked				
-				game_scene.redraw
-				play_called_once := false
-			end
-		ensure
-			correct_game_state: game.state = game.Prepare_state or game.state = game.Agent_caught or game.state = game.Agent_escapes
-		end
-		
 	take_a_pause (b: BOOLEAN) is
 			-- Pause game.
 		do
 			paused := b
+		ensure
+			paused_set: paused = b
 		end
 
 	toggle_paused is
@@ -320,4 +296,24 @@ feature {NONE} -- Game loop
 		do
 			take_a_pause (not paused)
 		end
+
+	sleep_and_process (a_time: INTEGER) is
+			-- Sleep for `a_time' milliseconds and let event loop process events in the meantime.
+		do
+			game_scene.event_loop.delay_and_process (a_time)
+		end		
+
+	has_place (a_line_section: TRAFFIC_LINE_SECTION; a_place: TRAFFIC_PLACE): BOOLEAN is
+			-- Is `a_line_section.destination' equal `a_place'?
+		require
+			a_line_section_exists: a_line_section /= Void
+			a_place_exists: a_place /= Void
+		do
+			Result := (a_line_section.destination = a_place)
+		end
+
+invariant
+	game_exists: game /= Void
+	status_exists: status /= Void
+	
 end
