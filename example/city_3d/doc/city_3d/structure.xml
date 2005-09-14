@@ -141,7 +141,7 @@
 	 </para>
 	<para>
 	 ii) Change lighting of the map: Initially, the scene is lit by a constant light coming down the y axis. 
-	 However, this can be changed to a variable light that tries to imitates the effect of the sun.
+	 However, this can be changed to a variable light that tries to imitate the effect of the sun.
     </para>
 	<para>
 	 iii) Change the number of buildings to be displayed on the map: The number of buildings can be varied from 150 up to 15000. 
@@ -177,7 +177,7 @@
 	First, the centre of the new building is calculated using the random number generator. 
 	Next, the collision polygon is created using these coordinates. Then the feature <featurename>has_collision</featurename>
 	checks for collisions with the polygons of the traffic lines that have been created earlier in the creation procedure. 
-	If there're any collisions, the coordinates are discarded and new ones calculated. If not, the distance to the centre is calculated 
+	If there are any collisions, the coordinates are discarded and new ones calculated. If not, the distance to the centre is calculated 
 	and depending on this distance a different form and height of the building is chosen. Finally, the building is set to the 
 	right position and put into the container where it is stored. 
 	</para>
