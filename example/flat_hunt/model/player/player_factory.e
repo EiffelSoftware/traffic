@@ -28,13 +28,10 @@ feature -- Initialization
 			map_set: map = a_map
 		end
 
-feature -- Attributes
+feature -- Access
 
 	players: ARRAYED_LIST [PLAYER]
 			-- List of all the players.
-
-	map: TRAFFIC_MAP
-			-- Map on which to produce players.			
 
 feature -- Basic Operations
 	
@@ -72,7 +69,19 @@ feature -- Basic Operations
 		end
 		
 feature {NONE} -- Implementation
+
+	map: TRAFFIC_MAP
+			-- Map on which to produce players.		
+
+	random_place: TRAFFIC_PLACE
+			-- Free random location choosen by `calculate_random_place'.
 		
+	rng: RANDOM
+			-- Random number generator
+			
+	occupied_numbers: LINKED_LIST [INTEGER]
+			-- Indices of places that have already been occupied.
+
 	calculate_random_place is
 			-- Find a free location randomly.
 		local
@@ -94,16 +103,7 @@ feature {NONE} -- Implementation
 					occupied_numbers.extend (random_number)
 				end				
 			end
-		end
-
-	random_place: TRAFFIC_PLACE
-			-- Free random location choosen by `calculate_random_place'.
-		
-	rng: RANDOM
-			-- Random number generator
-			
-	occupied_numbers: LINKED_LIST [INTEGER]
-			-- Indices of places that have already been occupied.
+		end			
 			
 invariant
 	map_exists: map /= Void

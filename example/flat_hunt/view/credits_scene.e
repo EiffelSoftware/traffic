@@ -44,9 +44,9 @@ feature -- Initialization
 			inner_boxes.last.set_text ("Ursina Caluori")
 			inner_boxes.extend (create {TEXT_BOX}.make_at_position (background_box.x + 620, background_box.y + 230, "Sound"))
 			inner_boxes.last.set_text ("under construction")
-			inner_boxes.extend (create {TEXT_BOX}.make_at_position (background_box.x + 200, background_box.height - 100, "Created with"))
+			inner_boxes.extend (create {TEXT_BOX}.make_at_position (background_box.x + 200, background_box.height - 110, "Created with"))
 			inner_boxes.last.set_text ("TRAFFIC by Michela Pedroni and others%NEiffelMedia by Till G. Bay and others%NEiffel by Bertrand Meyer%NPhotoshop")
-			inner_boxes.extend (create {TEXT_BOX}.make_at_position (background_box.x + 150, background_box.y + 280, "Assistant"))
+			inner_boxes.extend (create {TEXT_BOX}.make_at_position (background_box.x + 150, background_box.y + 270, "Assistant"))
 			inner_boxes.last.set_text ("Michela Pedroni")
 
 			-- Set visualization details for all inner boxes and display them.
@@ -57,8 +57,7 @@ feature -- Initialization
 			loop	
 				inner_boxes.item.set_auto_resize (True)
 				inner_boxes.item.set_font (Small_credits_font)
-				inner_boxes.item.set_title_font (Big_credits_font)
-				inner_boxes.item.title_font.set_color (Menu_color)
+				inner_boxes.item.set_title_font (Small_menu_font)
 				inner_boxes.item.set_color (Credits_color)
 				inner_boxes.item.set_opacity (50)
 				inner_boxes.item.set_alignment (Centered)
@@ -74,14 +73,14 @@ feature -- Initialization
 feature -- Event Handling
 
 	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
-			-- Handle keyboard events
+			-- Handle keyboard events.
 		do
 			Precursor {MENU_SCENE} (a_keyboard_event)
 			menu.handle_key_down_event (a_keyboard_event)
 		end
 
 	back_callback is
-		-- Callback for back button
+		-- Callback for back button.
 		do
 			next_scene := create {START_MENU_SCENE}.make_scene
 			event_loop.stop

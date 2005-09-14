@@ -93,7 +93,7 @@ feature -- Game operations
 				end
 				
 				-- Display players and their defeat animation.
-				game.estate_agent.set_visible (True)				
+				game.estate_agent.set_visibility (True)				
 				if game.state = game.Agent_caught or game.state = game.Agent_stuck then
 					-- Flat hunters win.
 					game.estate_agent.set_defeated (True)
@@ -236,6 +236,7 @@ feature -- Event handling
 					end
 				end
 				if game.is_game_over then
+					take_a_pause (True)
 					end_game
 				end
 			end

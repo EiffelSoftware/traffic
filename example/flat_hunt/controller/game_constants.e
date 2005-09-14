@@ -10,7 +10,7 @@ deferred class
 feature -- General constants
 			
 	Default_number_of_rounds: INTEGER is 24
-			-- Maximum number of rounds		
+			-- Maximum number of rounds.	
 
 feature -- Mode constants
 

@@ -9,7 +9,7 @@ class
 inherit
 	TRAFFIC_PLACE_RENDERER
 		redefine
-			make_with_map, render
+			render
 		end
 	
 	THEME
@@ -18,14 +18,6 @@ inherit
 
 create
 	make_with_map
-
-feature -- Initialization
-
-	make_with_map (a_map: TRAFFIC_MAP) is
-			-- Initialize to render items of `a_map'.
-		do
-			Precursor {TRAFFIC_PLACE_RENDERER} (a_map)
-		end
 
 feature -- Basic operations		
 		

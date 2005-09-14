@@ -46,6 +46,27 @@ feature -- Initialization
 
 feature -- Access
 
+	selected_entry: INTEGER
+			-- Index of selected entry in menu.
+			
+	max_entry_width: INTEGER
+			-- Maximum width of menu entries.
+			
+feature -- Status Setting
+
+	set_alignment (an_alignment: like alignment) is
+			-- Set alignment of entries.
+		require
+			an_alignment_valid: an_alignment >= 0 and an_alignment < 4
+		do
+			alignment := an_alignment
+			update_positions
+		ensure
+			alignment_set: alignment = an_alignment
+		end
+
+feature -- Basic Operations
+
 	add_entry (a_text: STRING; a_callback: PROCEDURE [ANY, TUPLE]; selected: BOOLEAN) is
 			-- Add an entry to the menu.
 		require
@@ -83,6 +104,8 @@ feature -- Access
 				item_for_iteration.update (False)
 				forth
 			end
+		ensure
+			active_set: active = False
 		end
 
 	activate is
@@ -90,20 +113,9 @@ feature -- Access
 		do
 			active := True
 			item (selected_entry).update (True)
-		end		
-
-feature -- Settings
-
-	set_alignment (an_alignment: like alignment) is
-			-- Set alignment of entries.
-		require
-			an_alignment_valid: an_alignment >= 0 and an_alignment < 4
-		do
-			alignment := an_alignment
-			update_positions
 		ensure
-			alignment_set: alignment = an_alignment
-		end
+			active_set: active = True
+		end					
 
 feature -- Event handling
 		
@@ -136,10 +148,7 @@ feature -- Event handling
 			item (selected_entry).call
 		end
 
-feature -- Attributes
-
-	selected_entry: INTEGER
-			-- Index of selected entry in menu.
+feature {NONE} -- Implementation
 
 	alignment: INTEGER
 			-- Alignment of entries.
@@ -149,23 +158,18 @@ feature -- Attributes
 	
 	selected_font: EM_FONT
 			-- Font for selected item.
-	
-	max_entry_width: INTEGER
-			-- Maximum width of menu entries.
 
 	active: BOOLEAN
 			-- Is the menu currently active?
-
-feature {NONE} -- Implementation
 
 	update is
 			-- Update whole menu.
 		local
 			i: INTEGER
 		do
-			i := 1
 			from
 				start
+				i := 1
 			until
 				after
 			loop

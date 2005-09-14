@@ -18,7 +18,7 @@ create
 feature -- Initialization
 
 	make_with_default_fonts is
-			-- Create menu with default fonts
+			-- Create menu with default fonts.
 		do
 			make_with_custom_fonts (Small_menu_font, Small_menu_selected_font)
 		end
@@ -74,7 +74,7 @@ feature {NONE} -- Implementation
 		end
 		
 	draw (a_surface: EM_SURFACE) is
-			-- Draw `Current' to `a_surface'
+			-- Draw `Current' to `a_surface'.
 		local
 			cursor: DS_LINKED_LIST_CURSOR [MENU_ENTRY]
 			translation: EM_VECTOR_2D

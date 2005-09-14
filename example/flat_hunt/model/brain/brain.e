@@ -12,9 +12,24 @@ inherit
 	ANY
 		export 
 			{ANY} generating_type
-		end
+		end	
+		
+feature -- Access
+
+	chosen_move: TRAFFIC_LINE_SECTION
+			-- The move the brain has chosen.
 	
-feature {PLAYER} -- Basic operations
+feature -- Status Setting
+
+	set_selected_place (a_place: like selected_place) is
+			-- Set `selected_place' to `a_place'.
+		do
+			selected_place := a_place
+		ensure
+			place_set: selected_place = a_place
+		end
+
+feature -- Basic operations
 
 	choose_next_move (possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: TRAFFIC_PLACE) is
 			-- Choose next move.
@@ -24,20 +39,7 @@ feature {PLAYER} -- Basic operations
 		deferred
 		ensure
 			possible_move_chosen: chosen_move /= Void implies possible_moves.has (chosen_move)
-		end		
-		
-feature {PLAYER} -- Access
-	
-	set_selected_place (a_place: like selected_place) is
-			-- Set `selected_place' to `a_place'.
-		do
-			selected_place := a_place
-		ensure
-			place_set: selected_place = a_place
-		end
-
-	chosen_move: TRAFFIC_LINE_SECTION
-			-- The move the brain has chosen.
+		end	
 		
 feature {NONE} -- Implementation
 

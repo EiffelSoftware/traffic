@@ -66,8 +66,68 @@ feature -- Initialization
 				end
 			end			
 		end
-
+		
 feature -- Access
+
+	available_songs: ARRAYED_LIST [EM_MUSIC]
+			-- All available songs in Sound_directory.
+	
+	current_song: INTEGER
+			-- Index of song currently playing.
+
+	volume: INTEGER
+			-- Current volume.		
+
+feature -- Status Report
+
+	is_in_shuffle: BOOLEAN is
+			-- Is music player in shuffle mode?
+		do
+			Result := shuffle
+		end
+		
+	is_music_playing: BOOLEAN is
+			-- Is music player currently playing something?
+		do
+			Result := available_songs.i_th (current_song).is_playing
+		end
+
+feature -- Status Setting
+
+	set_volume (a_volume: like volume) is
+			-- Set `volume' to `a_volume'.
+		require
+			a_volume_valid: a_volume >= 0 and a_volume <= Em_max_volume
+		do
+			volume := a_volume
+			if available_songs.i_th (current_song).volume /= volume then
+				available_songs.i_th (current_song).set_volume (volume)
+			end	
+		ensure
+			volume_set: volume = a_volume and available_songs.i_th (current_song).volume = a_volume
+		end
+
+	set_shuffle (b: like shuffle) is
+			-- Enable or disable shuffle mode.
+		do
+			if shuffle /= b then
+				if b then
+					played_songs.wipe_out
+				end
+				shuffle := b				
+			end
+		ensure
+			shuffle_set: shuffle = b
+			played_songs_wiped: b implies played_songs.is_empty
+		end
+	
+	toggle_shuffle is
+			-- Toggle shuffle mode.
+		do
+			set_shuffle (not shuffle)
+		end
+
+feature -- Basic Operations
 
 	play_game_music is
 			-- Play the default background music.
@@ -182,94 +242,7 @@ feature -- Access
 			end
 			
 			set_volume (tmp_volume)
-		end		
-
-feature -- Settings
-
-	set_volume (a_volume: like volume) is
-			-- Set `volume' to `a_volume'.
-		require
-			a_volume_valid: a_volume >= 0 and a_volume <= Em_max_volume
-		do
-			volume := a_volume
-			if available_songs.i_th (current_song).volume /= volume then
-				available_songs.i_th (current_song).set_volume (volume)
-			end	
-		ensure
-			volume_set: volume = a_volume and available_songs.i_th (current_song).volume = a_volume
-		end
-
-	set_shuffle (b: like shuffle) is
-			-- Enable or disable shuffle mode.
-		do
-			if shuffle /= b then
-				if b then
-					played_songs.wipe_out
-				end
-				shuffle := b				
-			end
-		ensure
-			shuffle_set: shuffle = b
-			played_songs_wiped: b implies played_songs.is_empty
-		end
-	
-	toggle_shuffle is
-			-- Toggle shuffle mode.
-		do
-			set_shuffle (not shuffle)
-		end
-
---	toggle_mute is
---		do
---			mute := not mute
---		end
---		
---	toggle_pause is
---		do
---			paused := not paused
---		end
---
---	toggle_fading is
---		do
---			fading := not fading
---		end
-
-feature -- Queries
-
-	is_in_shuffle: BOOLEAN is
-			-- Is music player in shuffle mode?
-		do
-			Result := shuffle
-		end
-		
-	is_music_playing: BOOLEAN is
-			-- Is music player currently playing something?
-		do
-			Result := available_songs.i_th (current_song).is_playing
-		end
-
-feature -- Attributes
-
-	available_songs: ARRAYED_LIST [EM_MUSIC]
-			-- All available songs in Sound_directory.
-	
-	current_song: INTEGER
-			-- Index of song currently playing.
-
-	played_songs: ARRAYED_LIST [INTEGER]
-			-- To keep track of played songs when in shuffle mode.
-	
-	shuffle: BOOLEAN
-			-- Is music player in shuffle mode?
-
---	mute: BOOLEAN
---			-- Is music player currently mute?
---	
---	paused: BOOLEAN
---			-- Is music player currently paused?
-		
-	volume: INTEGER
-			-- Current volume.		
+		end	
 
 feature {NONE} -- Constants
 
@@ -281,6 +254,12 @@ feature {NONE} -- Constants
 
 feature {NONE} -- Implementation
 
+	played_songs: ARRAYED_LIST [INTEGER]
+			-- To keep track of played songs when in shuffle mode.
+	
+	shuffle: BOOLEAN
+			-- Is music player in shuffle mode?
+			
 	rng: RANDOM
 			-- Random number generator for shuffle mode.
 

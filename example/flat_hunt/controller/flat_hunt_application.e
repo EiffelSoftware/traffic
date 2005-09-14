@@ -12,13 +12,6 @@ inherit
 	
 	EM_AUDIO_CONSTANTS
 	
-	SHARED_SCENES
-		undefine
-			default_create
-		end
-		
-	EM_SHARED_STANDARD_FONTS
-	
 	THEME
 		undefine
 			default_create
@@ -65,6 +58,8 @@ feature -- Initialization
 			launch
 			video_subsystem.disable
 		end
+
+feature -- Basic Operations
 		
 	adjust_game_settings is
 			-- Adjust game settings
@@ -72,7 +67,7 @@ feature -- Initialization
 			-- Do nothing. Redefined in class START.
 		end
 		
-feature	-- Access
+feature	{NONE} -- Implementation
 
 	game: GAME
 			-- The game which will be played.

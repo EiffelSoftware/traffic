@@ -39,6 +39,11 @@ feature -- Initialization
 
 feature -- Access
 
+	text: EM_STRING
+			-- Text to be displayed for this entry
+
+feature -- Basic Operations
+
 	update (selected: BOOLEAN) is
 			-- Update this entry.
 		do
@@ -60,16 +65,13 @@ feature -- Access
 			end
 		end
 
-feature -- Attributes
+feature {NONE} -- Implementation
 		
 	font: EM_FONT
 			-- Font to be used for this entry
 	
 	selected_font: EM_FONT
 			-- Font to be used for this entry when selected
-		
-	text: EM_STRING
-			-- Text to be displayed for this entry
 		
 	callback: PROCEDURE [ANY, TUPLE]
 			-- Callback that gets called when menu entry selected

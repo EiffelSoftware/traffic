@@ -25,7 +25,7 @@ inherit
 			default_create
 		end
 		
-feature -- Event Handling
+feature {NONE} -- Event Handling
 
 	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
 			-- Handle keyboard events.
@@ -58,20 +58,4 @@ feature -- Event Handling
 			full_collect
 		end
 		
---feature -- Settings
---
---	set_last_scene (a_scene: like last_scene) is
---			-- Set `last_scene' to `a_scene'
---		do
---			last_scene := a_scene
---		ensure
---			scene_set: last_scene = a_scene
---		end
---		
---
---feature -- Attributes
---
---	last_scene: FLAT_HUNT_SCENE
-		-- Scene that was running before Current
-
 end

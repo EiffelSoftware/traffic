@@ -207,7 +207,6 @@ feature -- Event handling
 
 			-- Create scene that displays the game.
 			game_scene := create {GAME_SCENE}.make_scene (game.traffic_map, option_menus.item (2).selected_entry)
---			game_scene.set_last_scene (Current)
 
 			-- Load correct player pics according to settings.
 			Player_pic_directory.wipe_out

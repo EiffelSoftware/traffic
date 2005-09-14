@@ -311,7 +311,7 @@ feature {NONE} -- Implementation
 			if picture /= Void then
 				surface.draw_object (picture)
 			end
-			if player.marked then
+			if player.is_marked then
 				surface.draw_object (marking_circle)
 				mark_possible_moves
 			elseif not possible_moves_unmarked then

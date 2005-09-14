@@ -64,8 +64,16 @@ feature -- Initialization
 			text_exists: text /= Void
 			text_added: has (text)
 		end	
+
+feature -- Access
+
+	picture: EM_DRAWABLE
+			-- Picture to be displayed as button.
 	
-feature -- Queries
+	text: EM_STRING
+			-- Text to be displayed as button.
+	
+feature -- Status Report
 
 	is_down: BOOLEAN is
 			-- Is button currently pressed down?
@@ -120,14 +128,6 @@ feature -- Event Handling
 		ensure
 			a_listener_subscribed: clicked_event.has (a_listener)
 		end
-
-feature -- Attributes
-
-	picture: EM_DRAWABLE
-			-- Picture to be displayed as button.
-	
-	text: EM_STRING
-			-- Text to be displayed as button.
 
 feature {NONE} -- Implementation
 

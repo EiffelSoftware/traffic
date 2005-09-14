@@ -27,7 +27,7 @@ feature -- Initialization
 		do
 			make_from_map_and_place (a_map, a_location)
 			name := a_name
-			flat_hunter_stuck := False
+			stuck := False
 			
 			-- Create brain and set number of tickets.
 			if is_bot then
@@ -42,26 +42,21 @@ feature -- Initialization
 				tram_tickets := Default_tram_tickets
 			end
 			estate_agent := an_estate_agent
+		ensure
+			name_set: name = a_name
+			estate_agent_set: estate_agent = an_estate_agent
 		end
-
-feature -- Attributes
-	
-	estate_agent: ESTATE_AGENT
-			-- Reference to estate agent for bot brain and tickets exchange.
-
-	flat_hunter_stuck: BOOLEAN
-			-- Is flat hunter in a position where he can not move anymore?
-
+		
 feature -- Basic operations
 
 	choose_move is
 			-- Choose the next move.
 		do
 			if possible_moves.is_empty then
-				flat_hunter_stuck := True
+				stuck := True
 				possible_moves := Void
 			else
-				flat_hunter_stuck := False
+				stuck := False
 				brain.choose_next_move (possible_moves, location, estate_agent.location)
 				next_move := brain.chosen_move
 			end
@@ -69,12 +64,18 @@ feature -- Basic operations
 
 feature {NONE} -- Implementation
 
-	decrease_ticket_count (a_move: TRAFFIC_LINE_SECTION) is
-			-- Decrease number tickets according to type of `a_move'.
+	estate_agent: ESTATE_AGENT
+			-- Reference to estate agent for bot brain and tickets exchange.
+
+	stuck: BOOLEAN
+			-- Is flat hunter in a position where he can not move anymore?
+
+	decrease_ticket_count (a_type: TRAFFIC_TYPE) is
+			-- Decrease number tickets according `a_type'.
 			-- Give ticket to the estate agent.
 		do
-			Precursor (a_move)
-			estate_agent.increase_ticket_count (a_move)
+			Precursor (a_type)
+			estate_agent.increase_ticket_count (a_type)
 		end
 
 invariant

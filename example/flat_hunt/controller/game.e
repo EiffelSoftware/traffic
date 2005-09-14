@@ -298,9 +298,9 @@ feature -- Element change
 				estate_agent.set_last_visible_location_and_round
 			end
 			if game_mode /= Hunt or is_game_over or (checkpoints.has (current_round_number) and state = Prepare_state) then
-				estate_agent.set_visible (True)
+				estate_agent.set_visibility (True)
 			else
-				estate_agent.set_visible (False)
+				estate_agent.set_visibility (False)
 			end
 		end
 		

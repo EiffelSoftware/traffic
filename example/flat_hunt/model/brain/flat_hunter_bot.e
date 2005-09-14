@@ -1,5 +1,5 @@
 indexing
-	description: "Robot brain (AI) calculating the next move for a flat hunter"
+	description: "Robot brain (AI) calculating the next move for a flat hunter."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -9,7 +9,7 @@ class
 inherit
 	BRAIN
 
-feature {FLAT_HUNTER} -- Basic operations
+feature -- Basic operations
 
 	choose_next_move (possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: TRAFFIC_PLACE) is
 			-- Choose next move for a flat hunter.

@@ -337,7 +337,7 @@ feature -- Access
 	update_player_status_box (current_player_index: INTEGER) is
 			-- Update the player status box.
 		do
-			if player_status_box /= Void and then player_status_box.visible and then player_status_box.title.value.has_substring (player_displayers.i_th (current_player_index).out) then
+			if player_status_box /= Void and then player_status_box.is_visible and then player_status_box.title.value.has_substring (player_displayers.i_th (current_player_index).out) then
 				player_status_box.set_title ("Status of " + player_displayers.i_th (current_player_index).out)
 				player_status_box.set_text (player_displayers.i_th (current_player_index).statistics)							
 			end

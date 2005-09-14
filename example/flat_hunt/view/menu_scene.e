@@ -16,11 +16,6 @@ inherit
 		redefine
 			make_scene, handle_key_down_event
 		end
-	
-	SHARED_SCENES
-		undefine
-			default_create
-		end
 		
 	THEME
 		undefine
@@ -46,15 +41,7 @@ feature -- Initialization
 			extended: main_container.has (Background_picture) and main_container.has (Flathunt_logo)
 		end
 
-feature -- Event handling		
-
-	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
-			-- Handle keyboard events.
-		do
-			Precursor {FLAT_HUNT_SCENE} (a_keyboard_event)
-		end
-
-feature -- Attributes
+feature -- Access
 
 	menu: NORMAL_MENU
 		-- The menu.
@@ -64,6 +51,14 @@ feature -- Attributes
 		
 	active_menu: INTEGER
 		-- Index of active menu.
+
+feature -- Event handling		
+
+	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
+			-- Handle keyboard events.
+		do
+			Precursor {FLAT_HUNT_SCENE} (a_keyboard_event)
+		end
 
 feature {NONE} -- Implementation
 

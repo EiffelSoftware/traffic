@@ -160,6 +160,20 @@ feature -- Access
 			end			
 		end
 
+	text: STRING
+			-- Text to be drawn in the status box.
+
+	title: EM_STRING
+			-- Title of the status box, displayed on top.
+			
+feature -- Status Report
+
+	is_visible: BOOLEAN is
+			-- Is this status box currently visible?
+		do
+			Result := visible
+		end
+
 feature -- Status setting
 
 	set_text (a_text: like text) is
@@ -275,10 +289,15 @@ feature -- Status setting
 			box_resized: box.width = a_width and box.height = a_height
 		end		
 
-feature -- Attributes		
+feature {NONE} -- Constants
 
-	text: STRING
-			-- Text to be drawn in the status box.
+	Vertical_margin: INTEGER is 15
+			-- Distance between top border <-> text, bottom border <-> text.
+	
+	Horizontal_margin: INTEGER is 18
+			-- Distance between left border <-> text, right border <-> text.
+		
+feature {NONE} -- Implementation		
 
 	lines: LIST [STRING]
 			-- `text' divided into lines.
@@ -301,9 +320,6 @@ feature -- Attributes
 	font: EM_COLOR_TTF_FONT
 			-- Font of the text.
 	
-	title: EM_STRING
-			-- Title of the status box, displayed on top.
-	
 	title_font: EM_COLOR_TTF_FONT
 			-- Font used for `title'.
 
@@ -319,16 +335,6 @@ feature -- Attributes
 	padding: INTEGER
 			-- Padding between two lines.
 			
-feature {NONE} -- Constants
-
-	Vertical_margin: INTEGER is 15
-			-- Distance between top border <-> text, bottom border <-> text.
-	
-	Horizontal_margin: INTEGER is 18
-			-- Distance between left border <-> text, right border <-> text.
-		
-feature {NONE} -- Implementation		
-
 	update_color is
 			-- Update color of the background box and its stroke.
 		do
