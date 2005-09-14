@@ -20,7 +20,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>6 August 2005</date>
+        <date>14 September 2005</date>
     </chapterinfo>
     <title>Chapter 2: Design</title>
     <para>
@@ -65,10 +65,15 @@
             top-level clusters <keyword>Traffic</keyword> and <keyword>Flat_hunt</keyword> are
             important.</para>
         <para> To remove complexity, <projectname>Flat Hunt</projectname> is structured in four
-            top-level clusters (<emphasis>see Figure 1</emphasis>): <keyword>Model</keyword>,
+            top-level clusters (<emphasis>see Figure 3</emphasis>): <keyword>Model</keyword>,
                 <keyword>View</keyword>, <keyword>Controller</keyword> and <keyword>Util</keyword>.
             Some clusters contain sub-clusters and in each cluster there are several classes.
-                <warning>TODO: add class diagram of Flat Hunt</warning>
+        </para>
+        <para>
+            <image src="pic/flat_hunt_clusters.png" />
+        </para>
+        <para>
+            <emphasis>Figure 3: Flat Hunt Clusters</emphasis>
         </para>
     </section>
     <section id="controller">
@@ -99,7 +104,10 @@
             </itemizedlist>
         </para>
         <para>
-            <warning>TODO: add class diagram of Controller cluster</warning>
+            <image src="pic/controller.png" />
+        </para>
+        <para>
+            <emphasis>Figure 4: Diagram of the Controller Cluster</emphasis>
         </para>
     </section>
     <section id="model">
@@ -137,7 +145,10 @@
             </itemizedlist>
         </para>
         <para>
-            <warning>TODO: add class diagram of Model cluster</warning>
+            <image src="pic/model.png" />
+        </para>
+        <para>
+            <emphasis>Figure 5: Diagram of the Model Cluster</emphasis> 
         </para>
     </section>
     <section id="view">
@@ -160,7 +171,10 @@
             </itemizedlist>
         </para>
         <para>
-            <warning>TODO: add class diagram of View cluster</warning>
+            <image src="pic/view.png" />
+        </para>
+        <para>
+            <emphasis>Figure 6: Diagram of the View Cluster</emphasis>
         </para>
     </section>
     <section id="util">

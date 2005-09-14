@@ -20,7 +20,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>6 August 2005</date>
+        <date>14 September 2005</date>
     </chapterinfo>
     <title>Chapter 4: Guided "Walk-Through"</title>
     <para> What happens when you start <projectname>Flat Hunt</projectname>? In this last chapter we
@@ -30,21 +30,19 @@
         <orderedlist>
             <listitem>
                 <para> At the very beginning, the application has to be launched. By calling
-                        <featurename>make_and_launch</featurename> of class
-                        <classname>FLAT_HUNT_APPLICATION</classname> exactly that is achieved. This
-                    feature sets the application name, resolution and several other options and then
-                    launches the first scene to be displayed, which is a
-                    <classname>START_MENU_SCENE</classname>. </para>
+                        <featurename>make_and_launch</featurename> of the root class
+                        <classname>FLAT_HUNT</classname> exactly that is achieved. This feature sets
+                    the application name, resolution and several other options and then launches the
+                    first scene to be displayed, which is of type <classname>START</classname> and
+                    is an heir of <classname>START_MENU_SCENE</classname>. </para>
             </listitem>
             <listitem>
                 <para> When <keyword>start game</keyword> is selected in this scene,
-                        <featurename>start_callback</featurename> in
-                    <classname>START_MENU_SCENE</classname> is called and creates a game with the
-                    proper settings and a game scene, whose job it is to visualize the game.
-                        <featurename>start_callback</featurename> also calls
-                        <featurename>initialize_with_game_and_scene</featurename> and
-                        <featurename>start_game</featurename>, both of which belong to
-                        <classname>MAIN_CONTROLLER</classname>. </para>
+                        <featurename>start_callback</featurename> is called and creates a game with
+                    the proper settings and a game scene, whose job it is to visualize the game.
+                        <featurename>start_callback</featurename> also creates the
+                        <classname>MAIN_CONTROLLER</classname> and calls
+                    <featurename>main_controller.start_game</featurename>. </para>
             </listitem>
             <listitem>
                 <para>
@@ -114,17 +112,15 @@
                 </para>
             </listitem>
             <listitem>
-                <para> 
-                    This calls <featurename>brain.choose_move</featurename>, where <featurename>brain</featurename> is
-                    either a <classname>FLAT_HUNTER_BRAIN</classname>, <classname>ESTATE_AGENT_BRAIN</classname> or
-                    <classname>HUMAN</classname>.
+                <para> This calls <featurename>brain.choose_move</featurename>, where
+                        <featurename>brain</featurename> is either a
+                    <classname>FLAT_HUNTER_BRAIN</classname>,
+                    <classname>ESTATE_AGENT_BRAIN</classname> or <classname>HUMAN</classname>.
                 </para>
             </listitem>
             <listitem>
-                <para>
-                    The next move is now chosen, and thus the player moves. Control goes back to <featurename>idle_action</featurename>
-                    and we are back at step 6. 
-                </para>
+                <para> The next move is now chosen, and thus the player moves. Control goes back to
+                        <featurename>idle_action</featurename> and we are back at step 6. </para>
             </listitem>
         </orderedlist>
     </para>

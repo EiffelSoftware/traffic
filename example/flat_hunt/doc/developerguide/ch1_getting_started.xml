@@ -21,7 +21,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>6 August 2005</date>
+        <date>14 September 2005</date>
     </chapterinfo>
     <title>Chapter 1: Getting Started</title>
     <para>
@@ -78,9 +78,49 @@
         <para>
             <keyword>TRAFFIC</keyword> does not need to be installed, just download the zip-file and
             unzip it to a directory of your choice. <keyword>Flat Hunt</keyword> is located in the
-            directory <filename>traffic/example/flat_hunt</filename>. To get it to run, however, you'll have to compile it first.
-            <warning>TODO: further steps</warning>
-           
+            directory <filename>traffic/example/flat_hunt</filename>. To get it to run, however,
+            you'll have to compile it first. </para>
+        <para> For that you have to complete the following steps: </para>
+        <para>
+            <orderedlist>
+                <listitem>
+                    <para> Start EiffelStudio </para>
+                </listitem>
+                <listitem>
+                    <para> Click on "File -&gt;New Project...". Choose "Open existing Ace
+                        (control file)" from the dialog (<emphasis>see Figure 1)</emphasis> and
+                        click on "Next". </para>
+                    <para>
+                        <image src="pic/new_project.png" />
+                    </para>
+                    <para>
+                        <emphasis>Figure 1: New Project Dialog</emphasis>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para> This will open a file dialog that lets you choose the Ace file. Browse to
+                        the directory <filename>traffic/example/flat_hunt</filename>.
+                        Depending on the operating system you are working on, choose
+                            <emphasis>ise_windows.ace</emphasis> or
+                        <emphasis>ise_linux.ace</emphasis>. Click on "Open". </para>
+                </listitem>
+                <listitem>
+                    <para> The dialog shown in <emphasis>Figure 2</emphasis> lets you choose the
+                        project directory. In most cases you can leave both paths (Ace file and
+                        location) as EiffelStudio proposes. Make sure that the checkbox for
+                        compiling the generated project is selected. Click on "OK". This will start
+                        the compilation of the project. </para>
+                    <para><image src="pic/choose_directory.png" /></para>
+                    <para><emphasis>Figure 2: Project Directory Dialog</emphasis></para>
+                </listitem>
+                <listitem>
+                    <para>Once the project is compiled you can execute it by clicking on the
+                        "Launch" button in EiffelStudio or by hitting <strong>F5</strong>. </para>
+                </listitem>
+            </orderedlist>
+        </para>
+        <para>
+            <emphasis>Now you are ready for playing Flat Hunt. Enjoy...</emphasis>
         </para>
     </section>
 </chapter>

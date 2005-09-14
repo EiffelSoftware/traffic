@@ -20,7 +20,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>13 September 2005</date>
+        <date>14 September 2005</date>
     </chapterinfo>
     <title>Chapter 3: The States of the Game</title>
     <para> This chapter is structured as follows: </para>
@@ -42,7 +42,7 @@
         <title>Overview</title>
         <para> Every game has at least two states: playing and game over. <projectname>Flat
             Hunt</projectname> has six states in total; three playing states and three game over
-            states (<emphasis>see Figure 1</emphasis>). These game states are defined in class
+            states (<emphasis>see Figure 7</emphasis>). These game states are defined in class
                 <classname>GAME_CONSTANTS</classname>:
             <programlisting>Agent_stuck, Agent_stuck, Agent_caught, Agent_escapes, Prepare_state, Play_state, Move_state: <classname>INTEGER</classname> <keyword>is unique</keyword>
                 <comment>Possible states of the game.</comment></programlisting>
@@ -51,7 +51,7 @@
             <image src="pic/gameloop_sm.png"/>
         </para>
         <para>
-            <emphasis>Figure 1: Game states and loop</emphasis>
+            <emphasis>Figure 7: Game states and loop</emphasis>
         </para>
     </section>
     <section id="gameloop">
