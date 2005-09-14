@@ -91,200 +91,200 @@ feature {NONE} -- Implementation
 --			if is_central then
 --				-- Pyramid
 --				-- Front
---				gl_color3d (0.65, 0.65, 0.65)
---				gl_begin (Em_gl_triangles)
+--				gl_color3d_external (0.65, 0.65, 0.65)
+--				gl_begin_external (Em_gl_triangles)
 --					-- Front
---					gl_normal3d (-0.5, 1.5, -0.5)
---					gl_vertex3d (-0.5, 1.5, -0.5)
---					gl_normal3d (0, 1, 0)
---					gl_vertex3d (0, 1, 0)
---					gl_normal3d (0, 1, -1)
---					gl_vertex3d (0, 1, -1)
+--					gl_normal3d_external (-0.5, 1.5, -0.5)
+--					gl_vertex3d_external (-0.5, 1.5, -0.5)
+--					gl_normal3d_external (0, 1, 0)
+--					gl_vertex3d_external (0, 1, 0)
+--					gl_normal3d_external (0, 1, -1)
+--					gl_vertex3d_external (0, 1, -1)
 --					
 --					-- Right
---					gl_normal3d (-0.5, 1.5, -0.5)
---					gl_vertex3d (-0.5, 1.5, -0.5)
---					gl_normal3d (0, 1, -1)
---					gl_vertex3d (0, 1, -1)
---					gl_normal3d (-1, 1, -1)
---					gl_vertex3d (-1, 1, -1)
+--					gl_normal3d_external (-0.5, 1.5, -0.5)
+--					gl_vertex3d_external (-0.5, 1.5, -0.5)
+--					gl_normal3d_external (0, 1, -1)
+--					gl_vertex3d_external (0, 1, -1)
+--					gl_normal3d_external (-1, 1, -1)
+--					gl_vertex3d_external (-1, 1, -1)
 --					
 --					-- Back
---					gl_normal3d (-0.5, 1.5, -0.5)
---					gl_vertex3d (-0.5, 1.5, -0.5)
---					gl_normal3d (-1, 1, -1)
---					gl_vertex3d (-1, 1, -1)
---					gl_normal3d (-1, 1, 0)
---					gl_vertex3d (-1, 1, 0)
+--					gl_normal3d_external (-0.5, 1.5, -0.5)
+--					gl_vertex3d_external (-0.5, 1.5, -0.5)
+--					gl_normal3d_external (-1, 1, -1)
+--					gl_vertex3d_external (-1, 1, -1)
+--					gl_normal3d_external (-1, 1, 0)
+--					gl_vertex3d_external (-1, 1, 0)
 --					
 --					-- Left
---					gl_normal3d (-0.5, 1.5, -0.5)
---					gl_vertex3d (-0.5, 1.5, -0.5)
---					gl_normal3d (-1, 1, 0)
---					gl_vertex3d (-1, 1, 0)
---					gl_normal3d (0, 1, 0)
---					gl_vertex3d (0, 1, 0)
---				gl_end
+--					gl_normal3d_external (-0.5, 1.5, -0.5)
+--					gl_vertex3d_external (-0.5, 1.5, -0.5)
+--					gl_normal3d_external (-1, 1, 0)
+--					gl_vertex3d_external (-1, 1, 0)
+--					gl_normal3d_external (0, 1, 0)
+--					gl_vertex3d_external (0, 1, 0)
+--				gl_end_external
 --				-- Cube
---	--			gl_enable (Em_gl_texture_2d)
---				gl_begin (em_gl_quads)
+--	--			gl_enable_external (Em_gl_texture_2d)
+--				gl_begin_external (em_gl_quads)
 --					-- Front
 --	--				gl_bind_texture (Em_gl_texture_2d, texture)
---					gl_color3f (0, 0.15, 0.8) -- Blue
---					gl_normal3d (1, 0, 0)
---					gl_tex_coord2f (0, 0)
---					gl_vertex3d (0.0, 1.0, 0.0)
---					gl_normal3d (1, 0, 0)
---					gl_tex_coord2f (0, 1)
---					gl_vertex3d (0.0, 0.0, 0.0)
---					gl_normal3d (1, 0, 0)
---					gl_tex_coord2f (1, 1)
---					gl_vertex3d (0.0, 0.0, -1.0)
---					gl_normal3d (1, 0, 0)
---					gl_tex_coord2f (1, 0)
---					gl_vertex3d (0.0, 1.0, -1.0)
+--					gl_color3d_external (0, 0.15, 0.8) -- Blue
+--					gl_normal3d_external (1, 0, 0)
+--					gl_tex_coord2f_external (0, 0)
+--					gl_vertex3d_external (0.0, 1.0, 0.0)
+--					gl_normal3d_external (1, 0, 0)
+--					gl_tex_coord2f_external (0, 1)
+--					gl_vertex3d_external (0.0, 0.0, 0.0)
+--					gl_normal3d_external (1, 0, 0)
+--					gl_tex_coord2f_external (1, 1)
+--					gl_vertex3d_external (0.0, 0.0, -1.0)
+--					gl_normal3d_external (1, 0, 0)
+--					gl_tex_coord2f_external (1, 0)
+--					gl_vertex3d_external (0.0, 1.0, -1.0)
 --	
 --					-- Back
 --					gl_color3f(1, 0, 0) -- Red
---					gl_normal3d (-1, 0, 0)
---					gl_tex_coord2f (0, 0)
---					gl_vertex3d (-1.0, 0.0, -1.0)
---					gl_normal3d (-1, 0, 0)
---					gl_tex_coord2f (0, 1)
---					gl_vertex3d (-1.0, 1.0, -1.0)
---					gl_normal3d (-1, 0, 0)
---					gl_tex_coord2f (1, 1)
---					gl_vertex3d (-1.0, 1.0, 0.0)
---					gl_normal3d (-1, 0, 0)
---					gl_tex_coord2f (1, 0)
---					gl_vertex3d (-1.0, 0.0, 0.0)
+--					gl_normal3d_external (-1, 0, 0)
+--					gl_tex_coord2f_external (0, 0)
+--					gl_vertex3d_external (-1.0, 0.0, -1.0)
+--					gl_normal3d_external (-1, 0, 0)
+--					gl_tex_coord2f_external (0, 1)
+--					gl_vertex3d_external (-1.0, 1.0, -1.0)
+--					gl_normal3d_external (-1, 0, 0)
+--					gl_tex_coord2f_external (1, 1)
+--					gl_vertex3d_external (-1.0, 1.0, 0.0)
+--					gl_normal3d_external (-1, 0, 0)
+--					gl_tex_coord2f_external (1, 0)
+--					gl_vertex3d_external (-1.0, 0.0, 0.0)
 --	
 --					-- Left
---					gl_color3f(0, 1, 0) -- Green
---					gl_normal3d (0, 0, 1)
---					gl_tex_coord2f (0, 0)
---					gl_vertex3d (-1.0, 1.0, 0.0)
---					gl_normal3d (0, 0, 1)
---					gl_tex_coord2f (0, 1)
---					gl_vertex3d (-1.0, 0.0, 0.0)
---					gl_normal3d (0, 0, 1)
---					gl_tex_coord2f (1, 1)
---					gl_vertex3d (0.0, 0.0, 0.0)
---					gl_normal3d (0, 0, 1)
---					gl_tex_coord2f (1, 0)
---					gl_vertex3d (0.0, 1.0, 0.0)
+--					gl_color3d_external (0, 1, 0) -- Green
+--					gl_normal3d_external (0, 0, 1)
+--					gl_tex_coord2f_external (0, 0)
+--					gl_vertex3d_external (-1.0, 1.0, 0.0)
+--					gl_normal3d_external (0, 0, 1)
+--					gl_tex_coord2f_external (0, 1)
+--					gl_vertex3d_external (-1.0, 0.0, 0.0)
+--					gl_normal3d_external (0, 0, 1)
+--					gl_tex_coord2f_external (1, 1)
+--					gl_vertex3d_external (0.0, 0.0, 0.0)
+--					gl_normal3d_external (0, 0, 1)
+--					gl_tex_coord2f_external (1, 0)
+--					gl_vertex3d_external (0.0, 1.0, 0.0)
 --	
 --					-- Right
---					gl_color3f (1, 1, 0) -- Yellow
---					gl_normal3d (0, 0, -1)
---					gl_tex_coord2f (0, 0)
---					gl_vertex3d (0.0, 1.0, -1.0)
---					gl_normal3d (0, 0, -1)
---					gl_tex_coord2f (0, 1)
---					gl_vertex3d (0.0, 0.0, -1.0)
---					gl_normal3d (0, 0, -1)
---					gl_tex_coord2f (1, 1)
---					gl_vertex3d (-1.0, 0.0, -1.0)
---					gl_normal3d (0, 0, -1)
---					gl_tex_coord2f (1, 0)
---					gl_vertex3d (-1.0, 1.0, -1.0)
---				gl_end
+--					gl_color3d_external (1, 1, 0) -- Yellow
+--					gl_normal3d_external (0, 0, -1)
+--					gl_tex_coord2f_external (0, 0)
+--					gl_vertex3d_external (0.0, 1.0, -1.0)
+--					gl_normal3d_external (0, 0, -1)
+--					gl_tex_coord2f_external (0, 1)
+--					gl_vertex3d_external (0.0, 0.0, -1.0)
+--					gl_normal3d_external (0, 0, -1)
+--					gl_tex_coord2f_external (1, 1)
+--					gl_vertex3d_external (-1.0, 0.0, -1.0)
+--					gl_normal3d_external (0, 0, -1)
+--					gl_tex_coord2f_external (1, 0)
+--					gl_vertex3d_external (-1.0, 1.0, -1.0)
+--				gl_end_external
 --				
 --			elseif is_city_centre then
 --				
---				gl_matrix_mode (em_gl_modelview)
---				gl_push_matrix
---				gl_translated (-0.5, 0, -0.5)		
+--				gl_matrix_mode_external (em_gl_modelview)
+--				gl_push_matrix_external
+--				gl_translated_external (-0.5, 0, -0.5)		
 --				
---				gl_color3d (0.65, 0.65, 0.65) -- White
---				gl_matrix_mode (Em_gl_modelview)
---				gl_push_matrix
---				gl_translated (0, 1, 0)
---				glu_sphere (glu_new_quadric, 0.5, 72, 72)
---				gl_pop_matrix
+--				gl_color3d_external (0.65, 0.65, 0.65) -- White
+--				gl_matrix_mode_external (Em_gl_modelview)
+--				gl_push_matrix_external
+--				gl_translated_external (0, 1, 0)
+--				glu_sphere_external (glu_new_quadric, 0.5, 72, 72)
+--				gl_pop_matrix_external
 --				
---				gl_color3f (0, 0.15, 0.8) -- Blue
---				gl_matrix_mode (Em_gl_modelview)
---				gl_push_matrix
---				gl_rotated (90, 1, 0, 0)
---				glu_disk (glu_new_quadric, 0, 0.5, 72, 72)
---				gl_pop_matrix
+--				gl_color3d_external (0, 0.15, 0.8) -- Blue
+--				gl_matrix_mode_external (Em_gl_modelview)
+--				gl_push_matrix_external
+--				gl_rotated_external (90, 1, 0, 0)
+--				glu_disk_external (glu_new_quadric, 0, 0.5, 72, 72)
+--				gl_pop_matrix_external
 --				
---				gl_push_matrix
---				gl_translated (0,1,0)
---				gl_rotated (90, 1, 0,0)
---				glu_cylinder (glu_new_quadric, 0.5, 0.5, 1, 72, 72)
---				gl_end
---				gl_pop_matrix
---				gl_pop_matrix
---				gl_flush
+--				gl_push_matrix_external
+--				gl_translated_external (0,1,0)
+--				gl_rotated_external (90, 1, 0,0)
+--				glu_cylinder_external (glu_new_quadric, 0.5, 0.5, 1, 72, 72)
+--				gl_end_external
+--				gl_pop_matrix_external
+--				gl_pop_matrix_external
+--				gl_flush_external
 --			else
-				gl_disable (Em_gl_texture_2d)
+				gl_disable_external (Em_gl_texture_2d)
 				-- Front
---				gl_enable (Em_gl_texture_2d)
-				gl_begin (em_gl_quads)
+--				gl_enable_external (Em_gl_texture_2d)
+				gl_begin_external (em_gl_quads)
 --					gl_bind_texture (Em_gl_texture_2d, texture)
-					gl_color3f (0, 0.15, 0.8) -- Blue
-					gl_normal3d (1, 0, 0)
-					gl_tex_coord2f (0, 0)
-					gl_vertex3d (0.0, 1.0, 0.0)
-					gl_normal3d (1, 0, 0)
-					gl_tex_coord2f (1, 1)
-					gl_vertex3d (0.0, 0.0, 0.0)
-					gl_normal3d (1, 0, 0)
-					gl_tex_coord2f (0, 1)
-					gl_vertex3d (0.0, 0.0, -1.0)
-					gl_normal3d (1, 0, 0)
-					gl_tex_coord2f (1, 0)
-					gl_vertex3d (0.0, 1.0, -1.0)
-				gl_end
-				gl_disable (Em_gl_texture_2d)
+					gl_color3d_external (0, 0.15, 0.8) -- Blue
+					gl_normal3d_external (1, 0, 0)
+					gl_tex_coord2f_external (0, 0)
+					gl_vertex3d_external (0.0, 1.0, 0.0)
+					gl_normal3d_external (1, 0, 0)
+					gl_tex_coord2f_external (1, 1)
+					gl_vertex3d_external (0.0, 0.0, 0.0)
+					gl_normal3d_external (1, 0, 0)
+					gl_tex_coord2f_external (0, 1)
+					gl_vertex3d_external (0.0, 0.0, -1.0)
+					gl_normal3d_external (1, 0, 0)
+					gl_tex_coord2f_external (1, 0)
+					gl_vertex3d_external (0.0, 1.0, -1.0)
+				gl_end_external
+				gl_disable_external (Em_gl_texture_2d)
 				
-				gl_begin(em_gl_quads)
+				gl_begin_external(em_gl_quads)
 					-- Back
-					gl_color3f(1, 0, 0) -- Red
-					gl_normal3d (-1, 0, 0)
-					gl_vertex3d (-1.0, 0.0, -1.0)
-					gl_normal3d (-1, 0, 0)
-					gl_vertex3d (-1.0, 1.0, -1.0)
-					gl_normal3d (-1, 0, 0)
-					gl_vertex3d (-1.0, 1.0, 0.0)
-					gl_normal3d (-1, 0, 0)
-					gl_vertex3d (-1.0, 0.0, 0.0)
+					gl_color3d_external (1, 0, 0) -- Red
+					gl_normal3d_external (-1, 0, 0)
+					gl_vertex3d_external (-1.0, 0.0, -1.0)
+					gl_normal3d_external (-1, 0, 0)
+					gl_vertex3d_external (-1.0, 1.0, -1.0)
+					gl_normal3d_external (-1, 0, 0)
+					gl_vertex3d_external (-1.0, 1.0, 0.0)
+					gl_normal3d_external (-1, 0, 0)
+					gl_vertex3d_external (-1.0, 0.0, 0.0)
 					
 					-- Left
-					gl_color3f(0, 1, 0) -- Green
-					gl_normal3d (0, 0, 1)
-					gl_vertex3d (-1.0, 1.0, 0.0)
-					gl_normal3d (0, 0, 1)
-					gl_vertex3d (-1.0, 0.0, 0.0)
-					gl_normal3d (0, 0, 1)
-					gl_vertex3d (0.0, 0.0, 0.0)
-					gl_normal3d (0, 0, 1)
-					gl_vertex3d (0.0, 1.0, 0.0)
+					gl_color3d_external (0, 1, 0) -- Green
+					gl_normal3d_external (0, 0, 1)
+					gl_vertex3d_external (-1.0, 1.0, 0.0)
+					gl_normal3d_external (0, 0, 1)
+					gl_vertex3d_external (-1.0, 0.0, 0.0)
+					gl_normal3d_external (0, 0, 1)
+					gl_vertex3d_external (0.0, 0.0, 0.0)
+					gl_normal3d_external (0, 0, 1)
+					gl_vertex3d_external (0.0, 1.0, 0.0)
 					
 					-- Right
-					gl_color3f (1, 1, 0) -- Yellow
-					gl_normal3d (0, 0, -1)
-					gl_vertex3d (0.0, 1.0, -1.0)
-					gl_normal3d (0, 0, -1)
-					gl_vertex3d (0.0, 0.0, -1.0)
-					gl_normal3d (0, 0, -1)
-					gl_vertex3d (-1.0, 0.0, -1.0)
-					gl_normal3d (0, 0, -1)
-					gl_vertex3d (-1.0, 1.0, -1.0)
+					gl_color3d_external (1, 1, 0) -- Yellow
+					gl_normal3d_external (0, 0, -1)
+					gl_vertex3d_external (0.0, 1.0, -1.0)
+					gl_normal3d_external (0, 0, -1)
+					gl_vertex3d_external (0.0, 0.0, -1.0)
+					gl_normal3d_external (0, 0, -1)
+					gl_vertex3d_external (-1.0, 0.0, -1.0)
+					gl_normal3d_external (0, 0, -1)
+					gl_vertex3d_external (-1.0, 1.0, -1.0)
 					
 					-- Top
-					gl_color3d (1,1,1) -- White
-					gl_normal3d (0, 1, 0)
-					gl_vertex3d (-1.0, 1.0, -1.0)
-					gl_normal3d (0, 1, 0)
-					gl_vertex3d (-1.0, 1.0, 0.0)
-					gl_normal3d (0, 1, 0)
-					gl_vertex3d (0.0, 1.0, 0.0)
-					gl_normal3d (0, 1, 0)
-					gl_vertex3d (0.0, 1.0, -1.0)
-				gl_end
+					gl_color3d_external (1,1,1) -- White
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3d_external (-1.0, 1.0, -1.0)
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3d_external (-1.0, 1.0, 0.0)
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3d_external (0.0, 1.0, 0.0)
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3d_external (0.0, 1.0, -1.0)
+				gl_end_external
 --			end
 		end
 

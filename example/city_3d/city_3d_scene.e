@@ -43,7 +43,7 @@ feature -- Interface
 			create shortest_path_checkbox.make_from_text ("Shortest path")
 			
 			create zoom_slider.make_from_range_horizontal (1,30)
-			create zoom_label.make_empty
+			create zoom_label.make_from_text ("1")
 			
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -74,7 +74,7 @@ feature -- Interface
 			combo_box.set_to_optimal_dimension
 			combo_box.set_background_color (create {EM_COLOR}.make_white)
 			combo_box.set_selected_index (1)
-			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
+			combo_box.selection_changed_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
 			
 --			-- Zoom out Button

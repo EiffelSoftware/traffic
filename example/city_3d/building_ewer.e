@@ -13,12 +13,6 @@ inherit
 		
 	DOUBLE_MATH
 		export {NONE} all end
-		
-	GL_FUNCTIONS
-		export {NONE} all end
-	
-	EM_CONSTANTS
-		export {NONE} all end
 
 create
 	make
@@ -28,8 +22,8 @@ feature -- Initialization
 	make (x, z: DOUBLE; no_buildings: INTEGER; map: TRAFFIC_MAP) is
 			-- Create a new object.
 		require
-			values_valid: x /= void and then z /= void and then map /= void
-			buildings_valid: no_buildings /= void and then no_buildings >= 0
+			map_exists: map /= void
+			buildings_valid: no_buildings >= 0
 		do
 			create centre.make_xyz (x+plane_size/2, 0, z+plane_size/2)
 			create_metro_lines_polygons (map)
@@ -46,7 +40,7 @@ feature {MAP} -- Interface
 	set_building_number (n: INTEGER) is
 			-- Set the number of buildings that are shown.
 		require
-			n_valid: n /= void and then n >= 0
+			n_valid: n >= 0
 		do
 			if n > buildings.count then
 				add_buildings (n - buildings.count)
@@ -76,6 +70,7 @@ feature {NONE} -- Collision detection
 
 	has_collision (poly_a: EM_COLLIDABLE): BOOLEAN is
 			-- Is there a collision?
+		require poly_a /= void
 		do
 			from
 				traffic_lines_polygons.start
@@ -97,7 +92,7 @@ feature {NONE} -- Implementation
 	
 	add_buildings (n: INTEGER) is
 			-- adds buildings to list
-		require n_exists_and_is_not_negative: n /= void and then n >= 0
+		require n_not_negative: n >= 0
 		local
 			x_coord, z_coord, max_distance, distance: DOUBLE
 			i, j, sign: INTEGER

@@ -61,16 +61,16 @@ feature {NONE} -- Drawing
 			rgb /= Void
 			r > 0
 		do
-			gl_matrix_mode (Em_gl_modelview)
-			gl_push_matrix
-			gl_color3dv(rgb.pointer)
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(rgb.pointer)
 			-- a little bit higher than the line
-			gl_translated (p.x, h, p.z)
-			gl_rotated (90, 1, 0, 0)
-			gl_disable (em_gl_lighting)
-			glu_disk (glu_new_quadric, 0, r, 72, 1)
-			gl_pop_matrix
-			gl_flush
+			gl_translated_external (p.x, h, p.z)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+			glu_disk_external (glu_new_quadric, 0, r, 72, 1)
+			gl_pop_matrix_external
+			gl_flush_external
 		end
 		
 	draw_line (p, q: GL_VECTOR_3D[DOUBLE]) is
@@ -88,7 +88,7 @@ feature {NONE} -- Drawing
 			norm := sqrt (delta_x*delta_x + delta_z*delta_z)
 			
 			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x-delta_z*line_width/norm, p.y, p.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x+delta_z*line_width/norm, p.y, p.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x+delta_z*line_width/norm, q.y, q.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x-delta_z*line_width/norm, q.y, q.z+delta_x*line_width/norm))
-			gl_flush
+			gl_flush_external
 		end
 		
 	draw_plane (p1, p2, p3, p4: GL_VECTOR_3D[DOUBLE]) is
@@ -100,16 +100,16 @@ feature {NONE} -- Drawing
 			p4 /= Void
 		do
 			-- Normals all parallel to y axis
-			gl_begin (em_gl_quads)
-				gl_color3dv (line_color.pointer)
-				gl_normal3d (0,1,0)
-				gl_vertex3d (p1.x, p1.y, p1.z)
-				gl_normal3d (0,1,0)
-				gl_vertex3d (p2.x, p2.y, p2.z)
-				gl_normal3d (0,1,0)
-				gl_vertex3d (p3.x, p3.y, p3.z)
-				gl_normal3d (0,1,0)
-				gl_vertex3d (p4.x, p4.y, p4.z)
+			gl_begin_external (em_gl_quads)
+				gl_color3dv_external (line_color.pointer)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p1.x, p1.y, p1.z)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p2.x, p2.y, p2.z)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p3.x, p3.y, p3.z)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p4.x, p4.y, p4.z)
 			gl_end
 		end
 		
