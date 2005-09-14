@@ -22,6 +22,7 @@ feature -- Interface
 			-- Creation procedure
 		do
 			make_component_scene
+			set_frame_counter_visibility (true)
 			create bg_color.make_with_rgb (150,255,150)
 			create highlighting_checkbox.make_from_text ("Highlight lines")
 			create buildings_checkbox.make_from_text ("Show buildings")
@@ -40,6 +41,9 @@ feature -- Interface
 			create marked_destination_title.make_from_text ("")
 			create marked_destination_label.make_from_text ("")
 			create shortest_path_checkbox.make_from_text ("Shortest path")
+			
+			create zoom_slider.make_from_range_horizontal (1,30)
+			create zoom_label.make_empty
 			
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -73,18 +77,36 @@ feature -- Interface
 			combo_box.selection_change_event.subscribe (agent combo_selection_changed(?))
 			toolbar_panel.add_widget (combo_box)
 			
-			-- Zoom out Button
-			zoom_out_button.set_position (180-zoom_out_button.width, 170)
-			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
-			zoom_out_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
-			toolbar_panel.add_widget (zoom_out_button)
-			
-			-- Zoom in Button
-			zoom_in_button.set_position (20, 170)
-			zoom_in_button.set_dimension (zoom_out_button.width, zoom_out_button.height)
-			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
-			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
-			toolbar_panel.add_widget (zoom_in_button)
+--			-- Zoom out Button
+--			zoom_out_button.set_position (180-zoom_out_button.width, 170)
+--			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
+--			zoom_out_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+--			toolbar_panel.add_widget (zoom_out_button)
+--			
+--			-- Zoom in Button
+--			zoom_in_button.set_position (20, 170)
+--			zoom_in_button.set_dimension (zoom_out_button.width, zoom_out_button.height)
+--			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
+--			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+--			toolbar_panel.add_widget (zoom_in_button)
+
+--			-- Zoom label
+			zoom_label.set_position (140, 170)
+			zoom_label.set_optimal_dimension (50, 20)
+			zoom_label.set_to_optimal_dimension
+			zoom_label.set_background_color (bg_color)
+			zoom_label.set_tooltip ("Zoom factor")
+			toolbar_panel.add_widget (zoom_label)
+
+			-- Zoom slider
+			zoom_slider.set_position (10, 170)
+			zoom_slider.set_optimal_dimension (120, 20)
+			zoom_slider.set_to_optimal_dimension
+			zoom_slider.set_background_color (bg_color)
+			zoom_slider.set_tooltip ("Zoom")
+			zoom_slider.position_changed_event.subscribe (agent zoom_changed (zoom_label, ?))
+			toolbar_panel.add_widget (zoom_slider)
+
 			
 			-- Transparent buildings  Checkbox
 			buildings_transparent_checkbox.set_position (10, 250)
@@ -196,6 +218,14 @@ feature -- Interface
 		end
 		
 feature -- Event handling
+
+	zoom_changed (label: EM_LABEL ;number: INTEGER) is
+			-- Change the text on `label'.
+		do
+			label.set_text (number.out)
+			map.set_zoom (number)
+		end
+		
 
 	handle_mouse_click (origin_label, destination_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
 			-- Adapt the text on `origin_label' and `destination_label'.
@@ -362,6 +392,8 @@ feature -- Widgets
 	load_button: EM_BUTTON
 	zoom_in_button: EM_BUTTON
 	zoom_out_button: EM_BUTTON
+	zoom_slider: EM_SLIDER
+	zoom_label: EM_LABEL
 	
 	buildings_slider: EM_SLIDER
 	buildings_label: EM_LABEL

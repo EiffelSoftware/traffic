@@ -292,6 +292,7 @@ feature -- Traffic map loading
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
 			is_map_loaded := true
+			number_of_buildings := 0
 			create ewer.make(-plane_size/2, -plane_size/2, number_of_buildings, map)
 			create_metro_line_representation
 			marked_destination := void
@@ -333,6 +334,15 @@ feature -- Options
 		do
 			wheel_down
 		end
+		
+	set_zoom(n: INTEGER) is
+			-- Set the focus
+		require n /= void and then n > 0
+		do
+			focus := n
+		ensure focus = n
+		end
+		
 
 	set_coordinates_shown (b: BOOLEAN) is
 			-- Set `coordinates_shown'.
@@ -779,32 +789,23 @@ feature {NONE} -- Shared objects
 feature {NONE} -- Attributes
 
 	sun_angle: DOUBLE
-			-- Angle of sun rotation
-			
+			-- Angle of sun rotation	
 	focus: DOUBLE
 			-- Used to zoom in or out.
-			
 	x_coord: DOUBLE
-			-- X coordinate of the viewer
-			
+			-- X coordinate of the viewer	
 	y_coord: DOUBLE
-			-- Y coordinate of the viewer
-			
+			-- Y coordinate of the viewer		
 	z_coord: DOUBLE
-			-- Z coordinate of the viewer
-			
+			-- Z coordinate of the viewer	
 	x_rotation: DOUBLE
-			-- Rotation around the x axis
-			
+			-- Rotation around the x axis		
 	y_rotation: DOUBLE
-			-- Rotation around the y axis
-			
+			-- Rotation around the y axis	
 	x_translation: DOUBLE
-			-- Translation of the map's origin in x direction
-			
+			-- Translation of the map's origin in x direction	
 	y_translation: DOUBLE
 			-- Translation of the map's origin in y direction
-			
 	highlighting_delta: DOUBLE
 			-- Height difference between highlighted and normal line representation
 	

@@ -17,7 +17,7 @@ feature -- Constants
 	Plane_size: DOUBLE is 50.0
 			-- Length, resp. width, of plane
 
-	Window_width: INTEGER is 800 --1024
+	Window_width: INTEGER is 800  --1024
 			-- Window width
 			
 	Window_height: INTEGER is 600 --768

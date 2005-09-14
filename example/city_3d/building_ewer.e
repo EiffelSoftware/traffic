@@ -13,6 +13,12 @@ inherit
 		
 	DOUBLE_MATH
 		export {NONE} all end
+		
+	GL_FUNCTIONS
+		export {NONE} all end
+	
+	EM_CONSTANTS
+		export {NONE} all end
 
 create
 	make
@@ -52,7 +58,7 @@ feature {MAP} -- Interface
 			number_of_buildings = n
 			buildings.count >= number_of_buildings
 		end
-	
+		
 	draw is
 			-- Draw all buildings.
 		local
@@ -222,14 +228,15 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Attributes
 
+	buildings: ARRAY[EM_3D_OBJECT]
+			-- Array of all buildings
 	randomizer: RANDOM
 			-- Random number generator for the building distribution
 	building_factory: BUILDING_FACTORY
 			-- Factory for the buildings
 	number_of_buildings: INTEGER
 			-- Number of buildings that should be shown
-	buildings: ARRAY[EM_3D_OBJECT]
-			-- Array of all buildings
+	
 	centre: GL_VECTOR_3D[DOUBLE]
 			-- Centre of the city
 		
