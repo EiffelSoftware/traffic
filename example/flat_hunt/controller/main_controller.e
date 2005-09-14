@@ -2,9 +2,7 @@ indexing
 	description: "[
 					Controller that steers the application's behavior 
 					and mediates between visual input/output and changes of the map model.
-					After creation you are supposed to call 
-					`initialize_with_game_and_scene (a_game: GAME; a_game_scene: GAME_SCENE)'.
-					After that, the game can be started with `start_game'.
+					After creation the game can be started with `start_game'.
 				]"
 	date: "$Date$"
 	revision: "$Revision$"
