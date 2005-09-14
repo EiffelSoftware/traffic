@@ -1,8 +1,7 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Base class for all TOUCH widgets"
+	date: "2005/08/31"
+	revision: "1.0"
 
 class
 	TOUCH_UI_WIDGET
@@ -57,10 +56,13 @@ feature -- Initialization
 	end
 	
 feature {NONE} -- Text Function
-
 	text_max_length (a_text: STRING; a_font: EM_FONT; max_width: INTEGER): INTEGER is
-			--calculate the maximal substring, that if printed with 
-			--a_font still fits into max_width
+			-- calculate the maximal substring, that if printed with 
+			-- a_font still fits into max_width
+		require
+			a_text_not_void: a_text /= Void
+			a_font_not_void: a_font /= Void
+			max_width_not_negative: max_width >= 0
 		local 
 			summed_width: INTEGER
 			char_width: INTEGER
@@ -85,8 +87,11 @@ feature {NONE} -- Text Function
 			end
 			
 			Result := string_pos
+		ensure
+			result_not_negative: Result >= 0
 		end
 
 feature {NONE} -- Implementation
 	hash_code: INTEGER	
-end
+	
+end -- class TOUCH_UI_WIDGET

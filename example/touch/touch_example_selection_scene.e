@@ -2,8 +2,7 @@ indexing
 	description: "[
 				The main scene of TOUCH
 				]"
-	author: "Roger Kueng"
-	date: "2005/07/12"
+	date: "2005/08/31"
 	revision: "1.0"
 
 class
@@ -43,6 +42,8 @@ feature -- Initialization
 		
 
 feature {NONE} --Implementation
+	-- Is set to true in 'initialize_scene'
+	initialized: BOOLEAN	
 	
 	-- Contains the run and exit buttons
 	settings_container: EM_ZOOMABLE_CONTAINER
@@ -71,10 +72,10 @@ feature -- Widgets
 	
 	background: TOUCH_BITMAP_STATIC
 	
-	chapters_container_widget: TOUCH_SCROLLABLE_WIDGET 
-	exercises_container_widget: TOUCH_SCROLLABLE_WIDGET
+	chapters_container_scroller: TOUCH_SCROLLABLE_WIDGET 
+	exercises_container_scroller: TOUCH_SCROLLABLE_WIDGET
 	
-	-- Points to 'chapters_container_widget' or 'exercises_container_widget'
+	-- Points to 'chapters_container_scroller' or 'exercises_container_scroller'
 	-- Used to store which drawable is visible and to scroll the correct widget
 	selected_scrollable: TOUCH_SCROLLABLE_WIDGET
 	
@@ -84,8 +85,7 @@ feature -- Widgets
 	-- The container for the pictures from the examples
 	pictures_container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 	
-feature -- Scene Initialization
-		
+feature -- Example Initialization	
 	fill_chapter_examples is
 			-- Fill in the examples
 		local
@@ -109,16 +109,14 @@ feature -- Scene Initialization
 		
 	fill_exercises is
 			-- Fill in your exercises
-		local
-			example_1: TOUCH_EXAMPLE
 		do
-			example_1 := create {TOUCH_CITY_CHANGE_EXAMPLE}
-			
 			create exercises.make
 			
-			exercises.subscribe (example_1)
+			exercises.subscribe (create {TOUCH_CITY_CHANGE_EXAMPLE})
+			exercises.subscribe (create {SIMPLE_EXAMPLE})
 		end
 		
+feature -- Scene Initialization			
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
 		local
@@ -139,6 +137,9 @@ feature -- Scene Initialization
 
 			fancy_white, fancy_red: EM_COLOR_TTF_FONT
 			directory: STRING
+			
+			chapter_examples_container: TOUCH_EXAMPLE_CONTAINER_WIDGET
+			exercises_container: TOUCH_EXAMPLE_CONTAINER_WIDGET
 		do
 			width := 1024
 			height := 768
@@ -250,29 +251,35 @@ feature -- Scene Initialization
 				create console.make_with_width_and_height (500, 200)
 				console.set_x_y (width - border*2 - console.width, 400);
 				
-				-- Create Chapters_Container_widget
-				create chapters_container_widget.make (400 - 2*border, 600 - 3*border)
-				chapters_container_widget.set_x_y (border, title_offset + border + border)
+				-- Create Chapters_container_scroller
+				create chapters_container_scroller.make (400 - 2*border, 600 - 3*border)
+				chapters_container_scroller.set_x_y (border, title_offset + border + border)
 
-				-- Create Exercises_Container_widget
-				create exercises_container_widget.make (400 - 2*border, 600 - 3*border)
-				exercises_container_widget.set_x_y (border, title_offset + border + border)
+				-- Create Exercises_container_scroller
+				create exercises_container_scroller.make (400 - 2*border, 600 - 3*border)
+				exercises_container_scroller.set_x_y (border, title_offset + border + border)
 				
 				-- Build The Visual Chapter Tree
-				chapters_container_widget.set_horizontal_scroll (false)
-				build_chapter_examples_drawables (chapters_container_widget)
-
-				chapters_container_widget.calculate_object_area
+				chapters_container_scroller.set_horizontal_scroll (false)
+--				build_chapter_examples_drawables (chapters_container_scroller)
+				create chapter_examples_container.make_with_chapter_examples (chapter_examples)
+				chapter_examples_container.example_selected_event.subscribe (agent process_selected_example)
+				chapters_container_scroller.extend (chapter_examples_container)
+				chapters_container_scroller.calculate_object_area
 				
 				-- Build The exercises drawables
 				create exercises_background.make_from_position_and_size (0, 0, left_foreground.width-1, left_foreground.height-1)
 				exercises_background.set_fill_color (create {EM_COLOR}.make_with_rgb (240, 240, 240))
-				exercises_container_widget.extend (exercises_background)
-				
-				exercises_container_widget.set_horizontal_scroll (false)
-				build_exercises_drawables (exercises_container_widget)
+				exercises_container_scroller.extend (exercises_background)
+				exercises_container_scroller.set_horizontal_scroll (false)
 
-				exercises_container_widget.calculate_object_area
+--				build_exercises_drawables (exercises_container_scroller)
+				create exercises_container.make_with_exercises (exercises)
+				exercises_container.example_selected_event.subscribe (agent process_selected_example)
+
+				exercises_container_scroller.extend (exercises_container)
+
+				exercises_container_scroller.calculate_object_area
 				
 				
 				-- Put Drawables to main_container
@@ -290,273 +297,114 @@ feature -- Scene Initialization
 				main_container.extend (pictures_container)
 				main_container.extend (console)
 			
-				main_container.extend (chapters_container_widget)
---				main_container.extend (exercises_container_widget)
+				main_container.extend (chapters_container_scroller)
+--				main_container.extend (exercises_container_scroller)
 
 				main_container.extend (left_foreground)
 
-				selected_scrollable := chapters_container_widget
+				selected_scrollable := chapters_container_scroller
 			end
 
-		end
-		
-	
-feature {NONE} -- Implementation
-
-	initialized: BOOLEAN
-
-	build_exercises_drawables (container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]) is
-			-- Build the buttons for the exercises
-		require
-			container_not_void: container /= Void			
-		local 
-			i,j: INTEGER
-			x,y: INTEGER
-			exercise_button: TOUCH_TEXT_BUTTON
-			border: INTEGER
-			exercise_height, exercise_width: INTEGER
-		do	
-			if hash_from_button_to_example = Void then
-				create hash_from_button_to_example.make (100)			
-			end
-			
-			exercise_height := 30
-			exercise_width := 330 --left_foreground.width.rounded - 2*border
-			border := 10
-			x := border + border // 2
-			y := border	
-			
-			from
-				j := 1		
-			until
-				j > exercises.count
-			loop
-				exercise_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height (exercises.i_th (j).name, exercise_width, exercise_height)
-				exercise_button.set_x_y(x+border,y)
-				exercise_button.subscribe_for_click (agent process_clicked_example_button)
-				container.extend (exercise_button)
-				
-				hash_from_button_to_example.force (exercises.i_th (j), exercise_button)
-				y := y + exercise_height + border
-				j := j + 1
-			end
-			i := i + 1
-		end
-		
-	build_chapter_examples_drawables (container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]) is
-			-- Build the drawables for the chapters and examples
-		require
-			container_not_void: container /= Void
-		local 
-			i,j: INTEGER
-			x,y: INTEGER
-			chapter_static: TOUCH_BITMAP_STATIC
-			number_static: TOUCH_BITMAP_STATIC
-			examples: TOUCH_EXAMPLE_CONTAINER
-			example_button: TOUCH_TEXT_BUTTON
-			border: INTEGER
-			chapter_height: INTEGER
-			example_height: INTEGER
-			fancy_grey : EM_COLOR_TTF_FONT
-			fancy_blue: EM_COLOR_TTF_FONT
-			title: TOUCH_TEXT_STATIC
-			title_2: TOUCH_TEXT_STATIC
-			
-			number: TOUCH_TEXT_STATIC
-			number_2: TOUCH_TEXT_STATIC
-			
-			number_string: STRING
-		do	
-			if hash_from_button_to_example = Void then
-				create hash_from_button_to_example.make (100)			
-			end
-			
-			-- Set some default values
-			example_height := 30
-			chapter_height := 50
-			border := 10
-			x := border + border // 2
-			y := border
-			
-			-- Iterate over every Chapter
-			from
-				i := 1
-			until
-				i > chapter_examples.count
-			loop				
-				-- Create the chapter background
-				chapter_static := create {TOUCH_BITMAP_STATIC}.make_with_image_file_and_width_and_height ("./images/chapter_background.png", 250, chapter_height)
-				chapter_static.set_x_y (x, y)
-
-				-- Create the number background
-				number_static := create {TOUCH_BITMAP_STATIC}.make_with_image_file_and_width_and_height ("./images/number_background.png", chapter_height, chapter_height)
-				number_static.set_x_y (x + 250 + border, y)
-				
-				-- Create The chapter text drawable
-				title := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("", chapter_static.width, chapter_static.height)
-				title_2 := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("", chapter_static.width, chapter_static.height)
-				
-				create fancy_grey.make_from_ttf_font (standard_ttf_fonts.custom_font ("fancy"))
-				fancy_grey.set_color ( create {EM_COLOR}.make_with_rgb (200,200,200))
-				title.set_title ("CHAPTER",fancy_grey)
-				
-				create fancy_blue.make_from_ttf_font (standard_ttf_fonts.custom_font ("fancy"))
-				fancy_blue.set_color ( create {EM_COLOR}.make_with_rgb (125,125,255))
-				title_2.set_title ("CHAPTER", fancy_blue)
-				
-				title.set_x_y (x, y)
-				title_2.set_x_y (x+1,y+1)
-
-				
-				-- Create number text drawable
-				create number_string.make_empty
-				number_string.append_integer (i)
-				number := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("", number_static.width, number_static.height)
-				number_2 := create{TOUCH_TEXT_STATIC}.make_with_title_and_width_and_height ("", number_static.width, number_static.height)
-
-				number.set_title (number_string, fancy_grey)
-				number_2.set_title (number_string, fancy_blue)
-
-				number.set_x_y (number_static.x, number_static.y)
-				number_2.set_x_y (number_static.x+1, number_static.y+1)
-
-				
-				-- Put the drawables into the container
-				container.extend (chapter_static)
-				container.extend (number_static)
-				
-				container.extend (title_2)
-				container.extend (title)
-
-				container.extend (number_2)
-				container.extend (number)
-				
-				-- Increase y value
-				y := y + chapter_height + border
-
-				-- Iterate over all examples from the current chapter
-				examples := chapter_examples.i_th (i)				
-				from
-					j := 1		
-				until
-					j > examples.count
-				loop
-					-- Create the button for the example
-					example_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height (examples.i_th (j).name, 350, example_height)
-					example_button.set_x_y(x+border,y)
-					example_button.subscribe_for_click (agent process_clicked_example_button)
-					container.extend (example_button)
-					
-					-- Link the example and the button
-					hash_from_button_to_example.force (examples.i_th (j), example_button)
-					-- Increase y
-					y := y + example_height + border
-					-- Increase iteration variable value
-					j := j + 1
-				end
-				-- Increase iteration variable value				
-				i := i + 1
-			end
 		end
 		
 feature {NONE} -- Agents, GUI events		
-
 	handle_outside_event is
 			-- Used to scroll
 		do
 			if scroll_down.is_down then
-				chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, +16))			
+				chapters_container_scroller.scroll (create {EM_VECTOR_2D}.make (0, +16))			
 			end
 			
 			if scroll_up.is_down then
-				chapters_container_widget.scroll (create {EM_VECTOR_2D}.make (0, -16))			
+				chapters_container_scroller.scroll (create {EM_VECTOR_2D}.make (0, -16))			
 			end
 			
 		end
 		
-	process_clicked_example_button (a_button: TOUCH_BUTTON) is
-			-- Find example for the button and display information about it
+	process_selected_example (an_example: TOUCH_EXAMPLE) is
+			-- Display information about the example
+		require
+			an_example_not_void: an_example /= Void
 		local
-			an_example: TOUCH_EXAMPLE
 			a_bitmap: EM_BITMAP
 			x, y: INTEGER
 		do
-			-- Search example
-			an_example := hash_from_button_to_example.item (a_button)
-			if an_example /= Void then
-				-- Set the current example
-				current_example := an_example
+			-- Set the current example
+			current_example := an_example
 
-				-- Reset information widgets
-				pictures_container.wipe_out
-				console.wipe_out_text
-				
-				-- Refill new information:
-				
-				-- Set description
-				console.put_text (an_example.description)
+			-- Reset information widgets
+			pictures_container.wipe_out
+			console.wipe_out_text
+			
+			-- Refill new information:
+			
+			-- Set description
+			console.put_text (an_example.description)
 
-				-- Add pictures
-				x := 10
-				y := 10
-				from
-					current_example.pictures.start
-				until
-					current_example.pictures.off
-				loop
-					a_bitmap := current_example.pictures.item_for_iteration
-					a_bitmap.set_x_y (x, y)
-					x := x + a_bitmap.width + 10
-					pictures_container.extend (a_bitmap)
-					current_example.pictures.forth
-				end
-			end			
-		end
-		
+			-- Add pictures
+			x := 10
+			y := 10
+			from
+				current_example.pictures.start
+			until
+				current_example.pictures.off
+			loop
+				a_bitmap := current_example.pictures.item_for_iteration
+				a_bitmap.set_x_y (x, y)
+				x := x + a_bitmap.width + 10
+				pictures_container.extend (a_bitmap)
+				current_example.pictures.forth
+			end
+		end			
+
 	process_clicked_examples (a_button: TOUCH_BUTTON) is
 			-- Change 'selected_scrollable', show it and hide the old
 		do
-			if selected_scrollable = exercises_container_widget then
+			if selected_scrollable = exercises_container_scroller then
 				main_container.start
-				main_container.search_forth (exercises_container_widget)
-				main_container.put_left (chapters_container_widget)
-				main_container.remove_at--delete (exercises_container_widget)
-				selected_scrollable := chapters_container_widget
+				main_container.search_forth (exercises_container_scroller)
+				main_container.put_left (chapters_container_scroller)
+				main_container.remove_at--delete (exercises_container_scroller)
+				selected_scrollable := chapters_container_scroller
 			end
 		end
 
 	process_clicked_exercises (a_button: TOUCH_BUTTON) is
 			-- Change 'selected_scrollable', show it and hide the old
 		do
-			if selected_scrollable = chapters_container_widget then
+			if selected_scrollable = chapters_container_scroller then
 				main_container.start
-				main_container.search_forth (chapters_container_widget)
-				main_container.put_left (exercises_container_widget)
-				main_container.remove_at--(chapters_container_widget)
-				selected_scrollable := exercises_container_widget
+				main_container.search_forth (chapters_container_scroller)
+				main_container.put_left (exercises_container_scroller)
+				main_container.remove_at--(chapters_container_scroller)
+				selected_scrollable := exercises_container_scroller
 			end
 		end
 		
 	process_clicked_run_button (a_button: TOUCH_BUTTON) is
 			-- User clicked the run example button
 		local
+			scene_with_paris: TOUCH_SIMPLE_TRAFFIC_SCENE
 			example_scene: EM_SCENE
 			example: TOUCH_EXAMPLE
 		do
 			example := current_example
 
-			--If example not Void then run it
+			-- If example not Void then run it
 			if example /= Void then
 
-				--Does not work (yet) with Current				
+				-- Does not work (yet) with Current				
 				example_scene := example.run_with_scene (create {TOUCH_EXAMPLE_SELECTION_SCENE}.make_scene)
 				
-				if example_scene /= Void then		
-					next_scene := example_scene
-					event_loop.stop
-				else
-
+				-- If no scene is specified then load paris
+				if example_scene = Void then
+					create scene_with_paris.make_with_paris (example)
+					scene_with_paris.set_next_scene (create {TOUCH_EXAMPLE_SELECTION_SCENE}.make_scene)
+					example_scene := scene_with_paris
 				end
+				-- Set the scene for the example and exit this scene
+				next_scene := example_scene
+				event_loop.stop
 			end			
 		end
 		
@@ -588,6 +436,6 @@ feature {NONE} -- Agents, GUI events
 		end
 		
 invariant
-	invariant_clause: True -- Your invariant here
+	-- no invariants because most of the stuff is set up in the 'initialize' feature
 
 end -- class TOUCH_EXAMPLE_SELECTION_SCENE

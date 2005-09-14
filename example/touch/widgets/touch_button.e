@@ -1,7 +1,6 @@
 indexing
-	description: "A Button Control"
-	author: "Roger Kueng"
-	date: "2005/06/20"
+	description: "A simple Button widget"
+	date: "2005/08/31"
 	revision: "1.0"
 
 class
@@ -23,13 +22,13 @@ feature -- Initialization
 
 		create clicked_event
 
+		-- Subscribe to the mouse events
 		Current.mouse_button_down_event.subscribe (agent process_mouse_down)
 		Current.mouse_button_up_event.subscribe (agent process_mouse_up)
 		Current.mouse_motion_event.subscribe (agent process_mouse_motion)		
 	end
 	
 feature -- Queries
-
 	is_down: BOOLEAN is
 		do
 			Result := down
@@ -70,7 +69,7 @@ feature -- Basic operations
 			end				
 		end
 		
-feature {NONE} --implementation
+feature {NONE} -- Implementation
 	down: BOOLEAN
 
 	clicked_event: EM_EVENT_TYPE [TUPLE [TOUCH_BUTTON]]
@@ -85,9 +84,8 @@ feature {NONE} --implementation
 			-- 
 		do
 		end
-
 		
 invariant
-	invariant_clause: True -- Your invariant here
+	clicked_event_not_void: clicked_event /= void
 
 end -- class TOUCH_BUTTON

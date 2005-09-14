@@ -1,8 +1,7 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "A simple scroller widget which can enable horizontal and/or vertical scrolling separatly"
+	date: "2005/08/31"
+	revision: "1.0"
 class
 	TOUCH_SCROLLABLE_WIDGET
 	
@@ -23,7 +22,7 @@ feature -- Queries
 feature -- Status Setting
 
 	set_horizontal_scroll (bool: BOOLEAN) is
-			-- 
+			-- set false if you don't want to allow horizontal scrolling
 		do
 			allow_horizontal_scroll := bool
 		ensure
@@ -31,7 +30,7 @@ feature -- Status Setting
 		end
 
 	set_vertical_scroll (bool: BOOLEAN) is
-			-- 
+			-- set false if you don't want to allow vertical scrolling
 		do
 			allow_vertical_scroll := bool
 		ensure
@@ -39,7 +38,6 @@ feature -- Status Setting
 		end
 		
 feature {NONE} -- Initialization
-
 	make (a_width, a_height: INTEGER) is
 			-- Make empty container with size `a_width' and `a_height'.		
 		do
@@ -68,11 +66,9 @@ feature {NONE} -- Implementation
 					motion.set_y (0)
 				end
 				scroll_proportional (motion)	
-				
+				-- should be caught, but it errors when caught
 --				a_event.set_caught (true)
 			end
 		end	
 
-feature {NONE} -- Implementation
-		
 end -- class EM_ZOOMABLE_WIDGET

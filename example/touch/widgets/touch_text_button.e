@@ -1,8 +1,7 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "A simple Button with Text"
+	date: "2005/08/31"
+	revision: "1.0"
 
 class
 	TOUCH_TEXT_BUTTON
@@ -19,13 +18,13 @@ create
 	
 feature -- Initialization
 	make_with_title_and_width_and_height (a_text: STRING; a_width, a_height: INTEGER) is
-			-- 
+			-- Creation
 		do
 			make
 			set_title_width_height (a_text, a_width, a_height)
 		end
 		
-feature {NONE} -- implementation		
+feature {NONE} -- Implementation		
 	set_title_width_height (a_text: STRING; a_width, a_height: INTEGER) is
 		require
 			a_title_not_void: a_text /= Void
@@ -36,9 +35,8 @@ feature {NONE} -- implementation
 			zoomable_container: EM_ZOOMABLE_CONTAINER
 			text_length: INTEGER
 		do
-			
-			
 			create color_gray.make_with_rgb (180, 180, 180)
+			
 			-- Build Background.
 			create background.make_from_coordinates (0, 0, a_width, a_height)
 			background.set_fill_color (color_gray)
@@ -66,12 +64,10 @@ feature {NONE} -- implementation
 			border.set_line_width (3)
 			border.set_filled (false)
 			Current.extend (border)
-			
 
 		end
 
 feature {NONE} -- Button State Change
-
 	on_button_down (me: EM_MOUSE_EVENT) is
 		do
 			title.set_x_y (title.x + 3, title.y + 3)				
@@ -85,12 +81,10 @@ feature {NONE} -- Button State Change
 		end
 
 feature {NONE} -- Implementation
-	
 	title: EM_STRING
+	
 	border: EM_RECTANGLE
+	
 	background: EM_RECTANGLE
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class TOUCH_TEXT_BUTTON

@@ -1,7 +1,6 @@
 indexing
 	description: "The Interface for a Console"
-	author: "Roger Kueng"
-	date: "$Date$"
+	date: "2005/08/31"
 	revision: "1.0"
 
 deferred class
@@ -29,7 +28,4 @@ feature -- Basic operations
 		deferred
 		end
 		
-invariant
-	invariant_clause: True -- Your invariant here
-
 end -- class TOUCH_CONSOLE

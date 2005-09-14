@@ -1,9 +1,8 @@
 indexing
-		description: "[
-						The Touch-Application: A Framework for examples and exercises
-					]"
-	author: "Roger Kueng"
-	date: "2005/05/31"
+	description: "[
+					The Touch-Application: A Framework for examples and exercises
+				]"
+	date: "2005/08/31"
 	revision: "1.0"
 
 class
@@ -21,7 +20,6 @@ create
 	make_and_launch
 	
 feature -- Initialization
-	
 	make_and_launch is
 			-- Create and execute the application.
 		local
@@ -31,8 +29,8 @@ feature -- Initialization
 			initialize_screen
 			set_application_name ("Eiffelmedia Touch")
 						
-			-- Setup font directory.
-			standard_bmp_fonts.set_font_dirname ("font")
+			-- Setup font directory. (does not work anymore)
+			--standard_ttf_fonts.set_font_dirname ("font")
 			
 			-- Create first scene.
 			first_scene := create {TOUCH_EXAMPLE_SELECTION_SCENE}.make_scene
@@ -42,7 +40,4 @@ feature -- Initialization
 			launch
 			video_subsystem.disable
 		end
-
-feature -- Example Access
-
 end

@@ -1,7 +1,6 @@
 indexing
-	description: "A Textlist Control (Console-Out)"
-	author: "Roger Kueng"
-	date: "2005/06/20"
+	description: "A Textlist Widget with Console style"
+	date: "2005/08/31"
 	revision: "1.0"
 
 class
@@ -35,20 +34,21 @@ class
 		make_with_width_and_height
 		
 feature -- Access
-	
 	line_height: INTEGER is 
 			-- This is an estimate, and works only with fixed size characters
 		do 
---			Result := standard_bmp_fonts.small_font.height ('A') + 3;
+
 			Result := font.height ('A') + 3;
 		end
 
 	max_length: INTEGER is
+			-- How many character fit in one line
 		do
 			Result := (background.width - 2 * space) // character_width
 			
 		end
 	max_lines: INTEGER is
+			-- How many lines can we display
 		do
 			Result := (background.height - 2 * space) // line_height			
 		end
@@ -56,7 +56,6 @@ feature -- Access
 	character_width: INTEGER is
 			-- This is an estimate, and works only with fixed length characters
 		do 
---			Result :=  standard_bmp_fonts.small_font.width ('A')
 			Result := font.width ('A');
 
 		end
@@ -64,7 +63,7 @@ feature -- Access
 	
 feature -- Initialisation
 	make_with_width_and_height (a_width: INTEGER; a_height: INTEGER) is
-			-- 
+			-- Create the textlist
 		local
 			color_gray: EM_COLOR
 		do
@@ -91,14 +90,10 @@ feature -- Initialisation
 			border_not_void: border /= Void
 			line_drawables_not_void: line_drawables /= Void			
 		end
-		
-feature -- Measurement
-
-feature -- Status report
 
 feature -- Status setting
 	set_width_height (a_width: INTEGER; a_height: INTEGER) is
-			--
+			-- Set the width and height
 		do
 			background.set_size (a_width, a_height)
 			border.set_size (a_width, a_height)
@@ -132,41 +127,17 @@ feature -- Basic operations
 			end		
 		
 			--create new em_string and insert it in front
-			if a_text.count > max_length then	
+			if a_text.count > max_length then
 				text_substring := a_text.substring (1, max_length)
 				create new_string.make (text_substring, font)
-			else		
+			else
 				create new_string.make (a_text, font)
-
 			end
 
 			new_string.set_x_y (space, space)
 			line_drawables.force_last (new_string)
 			
 			Current.extend (new_string)
-		end
-	
-	put_text_old (a_text: STRING) is
-			-- Put more than one line
-		local
-			i, begin: INTEGER
-		do
-			from
-				i := a_text.count
-				begin := i - (a_text.count \\ max_length)
-				if begin = i then --a_text.count \\ max_length = 0
-					begin := i - max_length
-				end
-			until
-				i = 0
-			loop
-				if begin <= 0 then
-					begin := 0
-				end
-				put_line (a_text.substring (begin+1, i))
-				i := begin
-				begin := i - max_length		
-			end
 		end
 			
 	put_text (a_text: STRING) is
@@ -238,13 +209,8 @@ feature -- Basic operations
 			extend (background)
 			extend (border)
 		end
-		
-feature -- Obsolete
-
-feature -- Inapplicable
 
 feature {NONE} -- Implementation
-
 	font: EM_TTF_FONT is
 			--
 		local
@@ -271,9 +237,6 @@ feature {NONE} -- Implementation
 	
 	line_drawables: DS_LINKED_LIST [EM_STRING]
 	
-	space: INTEGER is once Result := 5; end
-
-invariant
-	invariant_clause: True -- Your invariant here
+	space: INTEGER is once Result := 5 end
 
 end -- class TOUCH_TEXTLIST
