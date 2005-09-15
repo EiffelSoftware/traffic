@@ -104,7 +104,7 @@ feature -- Interface
 			zoom_slider.set_to_optimal_dimension
 			zoom_slider.set_background_color (bg_color)
 			zoom_slider.set_tooltip ("Zoom")
-			zoom_slider.position_changed_event.subscribe (agent zoom_changed (zoom_label, ?))
+			zoom_slider.position_changed_event.subscribe (agent zoom_changed(zoom_label, ?))
 			toolbar_panel.add_widget (zoom_slider)
 
 			

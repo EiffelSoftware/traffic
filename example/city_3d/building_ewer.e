@@ -95,7 +95,7 @@ feature {NONE} -- Implementation
 		require n_not_negative: n >= 0
 		local
 			x_coord, z_coord, max_distance, distance: DOUBLE
-			i, j, sign: INTEGER
+			i, j: INTEGER
 			building: EM_3D_OBJECT
 			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
@@ -103,6 +103,7 @@ feature {NONE} -- Implementation
 		do
 			old_number := buildings.count
 			max_distance := sqrt((plane_size^2)*2)
+			building_factory.set_max_distance (max_distance)
 			from
 				i := buildings.count + 1
 				j := 1
@@ -122,28 +123,34 @@ feature {NONE} -- Implementation
 	
 				if not has_collision(collision_poly) then					
 					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord, 0, z_coord))
-					if distance < 5 then
-						building_factory.set_city_centre
-						building := building_factory.create_object
-						building.set_scale (building_width, calculate_building_height (max_distance, distance)-0.2, building_width)
-					elseif distance < 10 then
-						building_factory.set_central
-						building := building_factory.create_object
-						building.set_scale (building_width, calculate_building_height (max_distance, distance)-0.2, building_width)
-					elseif distance < 20 then
-						if sign > 0 then
-							building_factory.set_central
-						else
-							building_factory.set_outlying
-						end
-						building := building_factory.create_object
-						building.set_scale (building_width, calculate_building_height (max_distance, distance)-0.2, building_width)
-						sign := sign * (-1)
-					else
-						building_factory.set_outlying
-						building := building_factory.create_object
-						building.set_scale (building_width, calculate_building_height (max_distance, distance), building_width)
-					end
+					
+					building_factory.set_distance (distance)
+					building := building_factory.create_object
+					building.set_scale (building_width, calculate_building_height (max_distance, distance) , building_width)
+
+--					calculate_building_height (max_distance, distance)-0.2
+--					if distance < 5 then
+--						building_factory.set_city_centre
+--						building := building_factory.create_object
+--						building.set_scale (building_width, calculate_building_height (max_distance, distance)-0.2, building_width)
+--					elseif distance < 10 then
+--						building_factory.set_central
+--						building := building_factory.create_object
+--						building.set_scale (building_width, calculate_building_height (max_distance, distance)-0.2, building_width)
+--					elseif distance < 20 then
+--						if sign > 0 then
+--							building_factory.set_central
+--						else
+--							building_factory.set_outlying
+--						end
+--						building := building_factory.create_object
+--						building.set_scale (building_width, calculate_building_height (max_distance, distance)-0.2, building_width)
+--						sign := sign * (-1)
+--					else
+--						building_factory.set_outlying
+--						building := building_factory.create_object
+--						building.set_scale (building_width, calculate_building_height (max_distance, distance), building_width)
+--					end
 					building.set_origin (x_coord, 0, z_coord)
 					buildings.force (building,i)
 					i := i + 1

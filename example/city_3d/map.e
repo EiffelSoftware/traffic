@@ -55,13 +55,6 @@ feature -- Initialization
 			create sun_light.make (em_gl_light0)
 			create constant_light.make (em_gl_light1)
 			
-			-- Set target and position
-			create target
---			target.set (-5, 0, -5)
-			target.set (0, 0, 0)
-			create position
-			position.set (0, 0, 0)
-			
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
 			mouse_wheel_down_event.subscribe (agent wheel_down)
@@ -78,9 +71,6 @@ feature -- Drawing
 	
 	prepare_drawing is
 			-- Prepare for drawing.
-		local
-			direction: EM_VECTOR_2D
-			t, p: EM_VECTOR_2D
 		do
 			if Video_subsystem.video_surface.gl_2d_mode then
 				Video_subsystem.video_surface.gl_leave_2d
@@ -135,21 +125,7 @@ feature -- Drawing
 			constant_light.specular.set_xyzt (0, 0, 0, 1)
 			constant_light.diffuse.set_xyzt (1, 1, 1, 1) -- White
 			constant_light.position.set_xyz (0, 1, 0)
-			constant_light.apply_values
-			
-			-- Traffic line rides
-			if marked_destination /= Void and then marked_origin /= Void and then speed < 1 then
-				p := map_to_gl_coords (marked_origin.position)
-				t := map_to_gl_coords (marked_destination.position)
-				
-				direction := p - t
-				
-				gl_translated (direction.x*speed, 0, direction.y*speed)
-				speed := speed + 0.01
-			elseif speed >= 1 then
-				speed := 0
-			end
-			
+			constant_light.apply_values			
 		end
 		
 	draw is
@@ -303,14 +279,6 @@ feature -- Shortest path
 				marked_station_changed := false
 			end
 		end
-		
-feature -- Traffic line rides
-
-	target: EM_3D_VECT
-	
-	position: EM_3D_VECT
-	
-	speed: DOUBLE
 		
 feature -- Traffic map loading
 
