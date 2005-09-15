@@ -71,6 +71,11 @@ feature -- Drawing
 	
 	prepare_drawing is
 			-- Prepare for drawing.
+		local
+			direction: EM_VECTOR_2D
+			f, t: EM_VECTOR_2D
+			x_transl, y_transl, z_transl: DOUBLE
+			y_rot: DOUBLE
 		do
 			if Video_subsystem.video_surface.gl_2d_mode then
 				Video_subsystem.video_surface.gl_leave_2d
@@ -104,10 +109,51 @@ feature -- Drawing
 			-- Do viewing transformations
 			gl_matrix_mode (em_gl_modelview_matrix)
 			gl_load_identity
-			gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
-			gl_translated_external (x_translation, -y_translation, 0)
-			gl_rotatef (x_rotation, 1, 0, 0)
-			gl_rotatef (y_rotation, 0, 1, 0)
+--			gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
+--			gl_translated_external (x_translation, -y_translation, 0)
+			x_transl := x_coord*focus+x_translation
+			y_transl := y_coord-y_translation
+			z_transl := z_coord*focus
+			y_rot := y_rotation
+			
+			-- Traffic line rides
+			if show_shortest_path and then shortest_path_line /= Void and then traffic_line_ride and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
+				f := map_to_gl_coords (shortest_path_line.item.polypoints.first)
+				t := map_to_gl_coords (shortest_path_line.item.polypoints.last)
+				
+				direction := t - f
+				
+				segment_position := segment_position + (direction / direction.length) * speed
+--				x_transl := x_transl + position.x + segment_position.x
+--				z_transl := z_transl + (position.y + segment_position.y)
+				y_rot := 180/Pi*arc_tangent (direction.y / direction.x) + 270
+				io.put_new_line
+				io.put_double (y_rot)
+				
+				if (segment_position-direction).length < speed and then not shortest_path_line.after then
+					io.put_new_line
+					io.put_string (shortest_path_line.item.origin.name)
+					shortest_path_line.forth
+					position := position + direction
+					segment_position.set_x (0)
+					segment_position.set_y (0)
+				end
+				
+				-- Translation
+				gl_translated_external (x_transl + position.x, y_transl, z_transl + position.y)
+				
+				-- Rotation
+				gl_rotatef (x_rotation, 1, 0, 0)
+				gl_rotatef (y_rot, 0, 1, 0)
+				
+			else
+				-- Translation
+				gl_translated_external (x_transl, y_transl, z_transl)
+				
+				-- Rotation
+				gl_rotatef (x_rotation, 1, 0, 0)
+				gl_rotatef (y_rot, 0, 1, 0)
+			end
 			
 			-- Light settings
 			gl_enable (em_gl_lighting)
@@ -125,7 +171,7 @@ feature -- Drawing
 			constant_light.specular.set_xyzt (0, 0, 0, 1)
 			constant_light.diffuse.set_xyzt (1, 1, 1, 1) -- White
 			constant_light.position.set_xyz (0, 1, 0)
-			constant_light.apply_values			
+			constant_light.apply_values
 		end
 		
 	draw is
@@ -221,8 +267,11 @@ feature -- Drawing
 		
 feature -- Shortest path
 
-	shortest_path_line: EM_3D_OBJECT
+	shortest_path_line: TRAFFIC_LINE
 			-- Artificial traffic line for the shortest path
+	
+	shortest_path_line_representation: EM_3D_OBJECT
+			-- Graphical representation of `shortest_path_line'
 	
 	marked_station_changed: BOOLEAN
 			-- Has the marked station changed?
@@ -272,13 +321,21 @@ feature -- Shortest path
 					i := i + 1
 				end
 				line.append (new_segments)
+				shortest_path_line := line
+				
 				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1))
 				traffic_line_factory.set_line (line)
-				shortest_path_line := traffic_line_factory.create_object
-				shortest_path_line.set_origin (0, line_height+0.2, 0)
+				shortest_path_line_representation := traffic_line_factory.create_object
+				shortest_path_line_representation.set_origin (0, line_height+0.2, 0)
 				marked_station_changed := false
 			end
 		end
+		
+feature {NONE} -- Traffic line rides
+
+	position: EM_VECTOR_2D
+	
+	segment_position: EM_VECTOR_2D
 		
 feature -- Traffic map loading
 
@@ -298,6 +355,7 @@ feature -- Traffic map loading
 			marked_destination := void
 			marked_origin := void
 			shortest_path_line := void
+			shortest_path_line_representation := void
 			marked_station_changed := true
 		ensure
 			map /= void
@@ -409,26 +467,41 @@ feature -- Options
 		do
 			if show_shortest_path then
 				shortest_path_line := void
+				shortest_path_line_representation := void
 			end
 			show_shortest_path := b
 			marked_station_changed := true
 		ensure show_shortest_path = b
 		end
-		
+	
+	take_traffic_line_ride is
+			-- Take a traffic line ride.
+		do
+			traffic_line_ride := True
+			shortest_path_line.start
+			create position.make (0, 0)
+			create segment_position.make (0, 0)
+		ensure
+			traffic_line_ride
+		end
+	
 	sun_shown: BOOLEAN
-		-- Should sun be displayed?
+			-- Should sun be displayed?
 		
 	coordinates_shown: BOOLEAN
-		-- Should the coordinate system be displayed?
+			-- Should the coordinate system be displayed?
 		
 	buildings_shown: BOOLEAN
-		-- Should the buildings be displayed?
+			-- Should the buildings be displayed?
 		
 	buildings_transparent: BOOLEAN
-		-- Should the buildings be transparent?
+			-- Should the buildings be transparent?
 		
 	show_shortest_path: BOOLEAN
-		-- Should the shortest path be displayed?
+			-- Should the shortest path be displayed?
+		
+	traffic_line_ride: BOOLEAN
+			-- Are you just taking a traffic line ride?
 		
 feature {NONE} -- Event handling
 
@@ -514,6 +587,7 @@ feature {NONE} -- Event handling
 						marked_origin := Void
 						marked_destination := Void
 						shortest_path_line := void
+						shortest_path_line_representation := void
 						marked_station_changed := true
 					end
 				end
@@ -564,6 +638,7 @@ feature {NONE} -- Event handling
 						marked_destination := Void
 						marked_origin := Void
 						shortest_path_line := void
+						shortest_path_line_representation := void
 						marked_station_changed := true
 					end
 				end
@@ -644,8 +719,8 @@ feature {NONE} -- Auxiliary drawing features
 				traffic_line_objects.item(i).draw
 				i := i + 1
 			end
-			if shortest_path_line /= void then
-				shortest_path_line.draw
+			if shortest_path_line_representation /= void then
+				shortest_path_line_representation.draw
 			end
 		end
 
