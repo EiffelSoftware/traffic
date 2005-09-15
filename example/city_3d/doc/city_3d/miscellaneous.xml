@@ -36,7 +36,7 @@
     	<indexlink url="#dependencies">Dependencies</indexlink>
     </para></listitem>
     <listitem><para>
-    	<indexlink url="#reuseability">Reuseability</indexlink>
+    	<indexlink url="#reuseability">Reutilisation and extension</indexlink>
     </para></listitem>
     <listitem><para>
     	<indexlink url="#future_perspective">Future perspective</indexlink>
@@ -57,11 +57,11 @@
     2) in <classname>SHARED_CONSTANTS</classname>:
         <itemizedlist>
             <listitem><para>
-                <featurename>Plane_size</featurename> is a constant that is chosen with our example maps in mind. This works for them 
-		but it might not work perfectly for other map files. So this might have to be changed or somehow made independent of the map file.
+                <featurename>Plane_size</featurename> is a constant that is chosen with the example maps in mind. This works for them 
+		but it might not work perfectly for other map files.
             </para></listitem>
             <listitem><para>
-                <featurename>map_to_gl_coords</featurename> is also optimized for our example maps. It use the range of the coordinates from 
+                <featurename>map_to_gl_coords</featurename> is also optimized for our example maps. It uses the range of the coordinates from 
 		the map xml file and centers the Zurich main station on the screen. This might not be intended for other examples.
             </para></listitem>
         </itemizedlist>
@@ -73,32 +73,26 @@
 
 <section id="reuseability">
 	<para/>
-	<title>Reuseability</title>
+	<title>Reutilisation and extension</title>
 	<para>
 		This section discusses some scenarios of how one could reuse this work.
 	</para>
+    <para/>
+	1) Replacing the GUI:
+         <para/>
+	One could replace the GUI with another one or integrate the 'map part' (i.e. <classname>MAP</classname> and the factories) of the project into another application. This could be done by creating an instance of <classname>MAP</classname> in the new application and setting the features from the option section with the widgets of the new GUI simillary to how this is done in <classname>CITY_3D_SCENE</classname> or even add new features to <classname>MAP</classname>.
+	<para/>
+	2) Extending displayed objects
+         <para/>
+	 One could add new factories to the project or use existing ones to display more and different buildings, metro lines or anything else desired. The easiest way to create a new factory would be to inherit from <classname>EM_3D_OBJECT_FACTORY</classname> as this is done with the two implemented factories.
+	With <classname>BUILDING_FACTORY</classname> reuse comes naturally as it is able to draw any building of choice (how this is done is explained in the corresponding section in <ulink url="structure.html">classes</ulink>). 
+	If changing the displaying of metro lines would be desired, one could change <featurename>specify_object</featurename> in <classname>TRAFFIC_LINE_FACTORY</classname>.
+	<para/>
+	3) Extending functionality
+         <para/>
+            To provide additonal options and functionallity, one would have to add the new features in <classname>MAP</classname> in the section options and make them accessible by adding corresponding widgets to <classname>CITY_3D_SCENE</classname> or any other GUI. Then one would have to add the new option to <featurename>draw</featurename> like this is done with all the other options.
     <para>
-		 1) Minor changes like the representation of the traffic lines or buildings:
-         <para>
-            One could directly change the related classes; e.g. <classname>TRAFFIC_LINE_FACTORY</classname> or
-	    <classname>BUILDING_FACTORY</classname>. This could for example be done by changing the OpenGL statements in 
-	    <featurename>specify_object</featurename> and should have immediate consequences on their graphical representation.
-         </para>
-	</para>
-	<para>
-		 2) Keep the representation and add some new features like the ones on the toolbar:
-         <para>
-            One would have to add the new features in <classname>MAP</classname> in the section options and make them accessible by adding 
-	    corresponding control options (e.g. widgets) to the GUI by changing <classname>CITY_3D_SCENE</classname>. Then one could add a boolean query to the feature <featurename>draw</featurename> like this is done with all the other options.
-         </para>
-	</para>
-    <para>
-		 3) Keep the MAP class and replace the GUI:
-         <para>
-            One could also replace the GUI with another one or just integrate the 'map part' (basically <classname>MAP</classname> and the factories) of the application into another application.
-	    This could easily be done by creating an instance of <classname>MAP</classname> in the application. Then one could use the features from the option section like this is done in <classname>CITY_3D_SCENE</classname>
-	    or even add new features to <classname>MAP</classname>.
-         </para>
+		 
 	</para>
 <toplink/>
 </section>
@@ -110,7 +104,7 @@
 		This section lists some things one could do in the future to inprove or enhance what we have done so far.
 	</para>
 	<para>
-    1) new features:
+    1) New features:
         <itemizedlist>
             <listitem><para>
                 First-person traveling: would make it possible to choose a origin and destination and travel through the city alongside the route. 
@@ -124,7 +118,7 @@
         </itemizedlist>
     </para>
     <para>
-    2) extensions:
+    2) Extensions:
         <itemizedlist>
             <listitem><para>
                 Text console or other GUI extensions like they're used in the already existing TRAFFIC applications. But as mentioned above, 
@@ -139,7 +133,7 @@
         </itemizedlist>
     </para>
     <para>
-    3) improvements:
+    3) Improvements:
         <itemizedlist>
             <listitem><para>
 	Faster parsing of the XML file as this is one of the main bottlenecks of the project. If the parsing would go faster, more information 

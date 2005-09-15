@@ -5,7 +5,7 @@
 
 		"Traffic 3D front end documentation"
 
-	copyright: "Copyright (c) 2005, Till Bay and others"
+	copyright: ""
 	license: "Eiffel Forum License v2 (see forum.txt)"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -23,7 +23,6 @@
     <author>
 		<firstname>Valentin</firstname><surname>Wüstholz</surname>
 	</author>
-	<!--<email>bay@inf.ethz.ch</email>-->
 	<date>12. September 2005</date>
 </chapterinfo>
 
@@ -44,7 +43,7 @@ This document is structured as follows:
 			<ulink url="introduction.html">Introduction</ulink>
 		</term>
 		<listitem><para>
-			Presents the overall structure of projects and it's intends.
+			Presents the overall structure of the project and it's intends.
 		</para></listitem>
 	</varlistentry>
 
@@ -53,7 +52,7 @@ This document is structured as follows:
 			<ulink url="structure.html">Classes</ulink>
 		</term>
 		<listitem><para>
-			Presents the basic classes of the project.
+			Explanation of classes.
 		</para></listitem>
 	</varlistentry>
 	<varlistentry>
@@ -61,7 +60,7 @@ This document is structured as follows:
 			<ulink url="miscellaneous.html">Miscellaneous</ulink>
 		</term>
 		<listitem><para>
-			Dependencies, reuseability, future perspective
+			Dicusses dependencies, reutilisation and future perspective
 		</para></listitem>
 	</varlistentry>
 </variablelist>
