@@ -47,7 +47,7 @@ feature -- Interface
 			
 			-- Slider and label for zoom
 			create zoom_title.make_from_text ("Zoom factor & No buildings")
-			create zoom_slider.make_from_range_horizontal (1,30)
+			create zoom_slider.make_from_range_horizontal (0,20)
 			create zoom_label.make_from_text ("8")
 			
 			-- Labels for origin and destination
@@ -230,9 +230,8 @@ feature -- Event handling
 			-- Change the text on `label'.
 		do
 			label.set_text (number.out)
-			map.set_zoom (number)
+			map.set_zoom (number+0.01)
 		end
-		
 
 	handle_mouse_click (origin_label, destination_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
 			-- Adapt the text on `origin_label' and `destination_label'.

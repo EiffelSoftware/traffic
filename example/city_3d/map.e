@@ -393,7 +393,7 @@ feature -- Options
 			wheel_down
 		end
 		
-	set_zoom(n: INTEGER) is
+	set_zoom(n: DOUBLE) is
 			-- Set the focus
 		require n /= void and then n > 0
 		do
