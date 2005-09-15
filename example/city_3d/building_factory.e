@@ -1,5 +1,5 @@
 indexing
-	description: "Factory for building"
+	description: "Factory for buildings"
 	date: "$Date$"
 	revision: "$Revision$"
 
