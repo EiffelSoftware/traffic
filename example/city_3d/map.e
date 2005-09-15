@@ -393,7 +393,7 @@ feature -- Options
 			wheel_down
 		end
 		
-	set_zoom(n: DOUBLE) is
+	set_zoom (n: INTEGER) is
 			-- Set the focus
 		require n /= void and then n > 0
 		do
@@ -401,7 +401,6 @@ feature -- Options
 		ensure focus = n
 		end
 		
-
 	set_coordinates_shown (b: BOOLEAN) is
 			-- Set `coordinates_shown'.
 		require variable_exists: b /= void
