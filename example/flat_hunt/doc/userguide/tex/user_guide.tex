@@ -13,29 +13,6 @@
 \title{\textbf{Flat Hunt User Guide}}
 \author{Ursina Caluori\\ \href{mailto: ucaluori@student.ethz.ch}{ucaluori@student.ethz.ch}}
 \pagestyle{headings}
-
-\makeatletter
-	\newcommand\HL{%
-   \gdef\lst@alloverstyle##1{%
-     \fboxrule=0pt
-     \fboxsep=0pt
-     \colorbox{hlcolor}{\strut##1}%
-   }%
-	}
-	\newcommand\HLoff{%
-   \xdef\lst@alloverstyle##1{##1}%
-	}
-%
-\lst@Key{highlightcolor}{}{\def\lst@hlcolor{#1}}
-\newcommand*\lststarthighlight{%
-  \let\lst@bkgcolor\lst@hlcolor
-  \lst@frameMakeBoxV\lst@framebox{\ht\strutbox}{\dp\strutbox}}%
-
-	\makeatother
-
-	\lstset{language=oosc2eiffel,highlightcolor=\color{hlcolor},
-  moredelim=**[is][\lststarthighlight]{(*@}{@*)}, escapechar=\%}
-
 \usepackage{hyperref}
 \hypersetup{
 pdfauthor   = {Ursina Caluori <ucaluori@student.ethz.ch>},%

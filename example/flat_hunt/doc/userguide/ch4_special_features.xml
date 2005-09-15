@@ -20,7 +20,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>13 September 2005</date>
+        <date>15 September 2005</date>
     </chapterinfo>
     <title>Chapter 4: Special Features</title>
     <para> This chapter is structured as follows: </para>
@@ -68,10 +68,12 @@
                         <strong>middle click + move mouse down</strong>: zoom out</term>
                 </varlistentry>
             </variablelist>
-        </blockquote> When you <strong>left click + move mouse</strong> in the little map, a red
-        rectangle is drawn between the point where your left mouse button is pressed down and the
-        point when its released. As soon as you release the mouse button, the map segment that is
-        inside this rectangle gets displayed on the big map. </section>
+        </blockquote>
+        <para>When you <strong>left click + move mouse</strong> in the little map, a red rectangle
+            is drawn between the point where your left mouse button is pressed down and the point
+            when its released. As soon as you release the mouse button, the map segment that is
+            inside this rectangle gets displayed on the big map. </para>
+    </section>
     <section id="music_player">
         <title>Music Player</title>
         <para>
@@ -86,7 +88,9 @@
             Shortcuts</indexlink>. </para>
     </section>
     <section id="shortcuts">
-        <title>Keyboard Shortcuts</title> During the game, the following shortcuts are available: <blockquote>
+        <title>Keyboard Shortcuts</title> 
+        <para>During the game, the following shortcuts are available: </para>
+        <blockquote>
             <variablelist>
                 <varlistentry>
                     <term>
