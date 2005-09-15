@@ -121,16 +121,16 @@ feature -- Basic operations
 			-- and sample solution:
 			from
 				-- Fill
-				-- count := 0
+--				count := 0
 			until
 				-- Replace `True' and fill.
-				-- count = 5
+--				count = 5
 				True				
 			loop
 				-- Fill
-				-- circle.set_radius (circle.radius + 5)
-				-- circle.draw (a_surface)
-				-- count := count + 1
+--				circle.set_radius (circle.radius + 5)
+--				circle.draw (a_surface)
+--				count := count + 1
 			end
 		end
 
