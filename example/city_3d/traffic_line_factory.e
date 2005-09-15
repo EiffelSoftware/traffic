@@ -37,7 +37,7 @@ feature -- Initialization
 			-- Create a new object.
 		require
 			l /= Void
-			l.count > 0
+			l.count >= 0
 		do
 			line := l
 			unchanged := False
