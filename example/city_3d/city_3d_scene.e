@@ -246,12 +246,9 @@ feature -- Event handling
 	traffic_line_rides_unchecked is
 			-- Checkbox has been unchecked.
 		do
-			
 		end
 	
-
-
-	zoom_changed (label: EM_LABEL ;number: INTEGER) is
+	zoom_changed (label: EM_LABEL; number: INTEGER) is
 			-- Change the text on `label'.
 		do
 			label.set_text (number.out)

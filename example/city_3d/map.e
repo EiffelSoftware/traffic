@@ -74,8 +74,6 @@ feature -- Drawing
 		local
 			direction: EM_VECTOR_2D
 			f, t: EM_VECTOR_2D
-			x_transl, y_transl, z_transl: DOUBLE
-			y_rot: DOUBLE
 		do
 			if Video_subsystem.video_surface.gl_2d_mode then
 				Video_subsystem.video_surface.gl_leave_2d
@@ -96,7 +94,8 @@ feature -- Drawing
 			-- Setup the projection matrix
 			gl_matrix_mode (Em_gl_projection)
 			gl_load_identity
-			glu_perspective (field_of_view, width/height, focus*min_view_distance, focus*max_view_distance)
+--			glu_perspective (field_of_view, width/height, focus*min_view_distance, focus*max_view_distance)
+			glu_perspective (field_of_view, width/height, 0.1, focus*max_view_distance)
 			
 			-- Setup the model view matrix
 			gl_matrix_mode (Em_gl_modelview)
@@ -111,10 +110,6 @@ feature -- Drawing
 			gl_load_identity
 --			gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
 --			gl_translated_external (x_translation, -y_translation, 0)
-			x_transl := x_coord*focus+x_translation
-			y_transl := y_coord-y_translation
-			z_transl := z_coord*focus
-			y_rot := y_rotation
 			
 			-- Traffic line rides
 			if show_shortest_path and then shortest_path_line /= Void and then traffic_line_ride and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
@@ -124,35 +119,34 @@ feature -- Drawing
 				direction := t - f
 				
 				segment_position := segment_position + (direction / direction.length) * speed
---				x_transl := x_transl + position.x + segment_position.x
---				z_transl := z_transl + (position.y + segment_position.y)
-				y_rot := 180/Pi*arc_tangent (direction.y / direction.x) + 270
-				io.put_new_line
-				io.put_double (y_rot)
+--				y_rot := 180/Pi*arc_tangent (direction.y / direction.x) + 270
+				
+				glu_look_at_external
+				(	segment_position.x - (segment_position.x/segment_position.length),
+					1,
+					segment_position.y - (segment_position.y/segment_position.length),
+					segment_position.x + 3*(segment_position.x/segment_position.length),
+					0,
+					segment_position.y + 3*(segment_position.y/segment_position.length),
+					0, 1, 0
+				)
+				
+				gl_translated_external (-f.x, 0, -f.y)
 				
 				if (segment_position-direction).length < speed and then not shortest_path_line.after then
-					io.put_new_line
-					io.put_string (shortest_path_line.item.origin.name)
 					shortest_path_line.forth
 					position := position + direction
 					segment_position.set_x (0)
 					segment_position.set_y (0)
 				end
-				
-				-- Translation
-				gl_translated_external (x_transl + position.x, y_transl, z_transl + position.y)
-				
-				-- Rotation
-				gl_rotatef (x_rotation, 1, 0, 0)
-				gl_rotatef (y_rot, 0, 1, 0)
-				
 			else
 				-- Translation
-				gl_translated_external (x_transl, y_transl, z_transl)
+				gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
+				gl_translated_external (x_translation, -y_translation, 0)
 				
 				-- Rotation
 				gl_rotatef (x_rotation, 1, 0, 0)
-				gl_rotatef (y_rot, 0, 1, 0)
+				gl_rotatef (y_rotation, 0, 1, 0)
 			end
 			
 			-- Light settings
@@ -393,12 +387,12 @@ feature -- Options
 			wheel_down
 		end
 		
-	set_zoom (n: DOUBLE) is
-			-- Set the focus
-		require n /= void and then n > 0
+	set_zoom (d: DOUBLE) is
+			-- Set the focus.
+		require d > 0
 		do
-			focus := n
-		ensure focus = n
+			focus := d
+		ensure focus = d
 		end
 		
 	set_coordinates_shown (b: BOOLEAN) is
@@ -475,6 +469,8 @@ feature -- Options
 	
 	take_traffic_line_ride is
 			-- Take a traffic line ride.
+		require
+			shortest_path_line /= Void
 		do
 			traffic_line_ride := True
 			shortest_path_line.start
@@ -482,6 +478,8 @@ feature -- Options
 			create segment_position.make (0, 0)
 		ensure
 			traffic_line_ride
+			position /= Void
+			segment_position /= Void
 		end
 	
 	sun_shown: BOOLEAN
