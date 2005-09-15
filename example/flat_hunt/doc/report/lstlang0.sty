@@ -1,0 +1,45 @@
+%% The following is an Eiffel style for the latex package listings.
+%% It provides syntax highliting for Eiffel source code in latex documents.
+%% Note that the listings package already has an Eiffel style defined.
+%% However, the style in this file is more inline with the style guidelines from
+%% OOSC2
+
+%% Usage:
+%% Rename this file to lstlang0.sty and put it in your latex project directory.
+%% 
+%% \usepackage{listings}
+%% ...
+%% \begin{lstlisting}[style=MyEiffel]
+%% sqrt (x: REAL): REAL is
+%%   require
+%%     x >= 0
+%%   do
+%%     -- Implementation
+%%   ensure
+%%     abs(Result*Result - x) <= epsilon
+%%  end
+%%  \end{lstlisting}
+
+\lst@definelanguage{OOSC2Eiffel}%
+  {
+  basicstyle=\itshape,
+  keywordstyle=\normalfont\bfseries,
+  morekeywords= {alias,all,and,as,check,class,%
+      creation,create,debug,deferred,do,else,elseif,end,%
+      ensure,expanded,export,external,false,feature,from,frozen,if,%
+      implies,indexing,infix,inherit,inspect,invariant,is,%
+      like,local,loop,not,obsolete,old,once,or,prefix,%
+      redefine,rename,require,rescue,retry,select,%
+      separate,strip,then,true,undefine,unique,until,variant,%
+      when,xor, Result, Current},%
+   sensitive,%
+   morecomment=[l][\normalfont]--,%
+   morestring=[d]",%
+   columns=flexible,%
+   tabsize=4,%
+  frame=ltrb,
+  framexleftmargin=10pt,
+  framexrightmargin=10pt,
+  frameround=tttt
+    }[keywords,comments,strings]%
+

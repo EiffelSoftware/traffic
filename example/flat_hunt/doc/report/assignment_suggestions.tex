@@ -1,0 +1,106 @@
+\paragraph{}
+I tried to maintain most of the old exercises as well as give my own suggestions, which was quite difficult. But I hope some of them are usable nonetheless.
+
+\subsection{Feature calls}
+In class \texttt{START} there is a feature \textit{start} in which the students can place calls to make game settings and start the game.
+
+\begin{lstlisting}
+start is
+		-- Adjust the game settings and start the game.
+	do
+--		POSSIBLE ASSIGNMENT (sample solution):
+--		set_map ("./map/zurich_little.xml")
+--		set_game_mode (Hunt)
+--		set_number_of_hunters (3)
+		-- If `start_game' is left out, you will be stuck on the 
+		-- start menu scene, because no game will be started, 
+		-- even if you hit enter on "start game".
+		start_game
+	end
+\end{lstlisting}
+
+\subsection{Conditional Statements}
+Give the students the class \texttt{PLAYER} but with
+
+\begin{lstlisting}
+enough_tickets (a_type: TRAFFIC_TYPE): BOOLEAN is
+		-- Check if player has tickets to drive 
+		-- with the transportation type `a_type'.
+	require 
+		a_type_valid: a_type /= Void and then is_valid_type (a_type)
+	do
+		if a_type.name @ (1) = 'b' then
+			if bus_tickets > 0 then
+				Result := True
+			end
+		elseif a_type.name @ (1) = 'r' then
+			if rail_tickets > 0 then
+				Result := True
+			end	
+		elseif a_type.name @ (1) = 't' then
+			if tram_tickets > 0 then
+				Result := True
+			end		
+		else
+			Result := False
+		end
+	end
+\end{lstlisting}
+instead of the current \textit{enough\_tickets} and tell them to make this procedure a bit more readable and maybe hint at the inspect-when construct. Their goal would be to achieve the current \textit{enough\_tickets} routine (naturally this class should be changed before the students get it, otherwise it will be just a copy-paste exercise for them).
+
+\subsection{Contracts}
+Remove all contracts from some given class, and let the students fill them in.
+
+\subsection{Loops}
+In class \texttt{PLAYER\_DISPLAYER} you'll find the feature \textit{mark\_defeat} with an empty loop that the students get to fill (similar to the old exercise, but without animation, because an animation would indeed have been easily realizable with an \texttt{EM\_ANIMATABLE} but that would have eliminated the need for a loop and hence make the whole procedure pointless for this exercise).
+
+\begin{lstlisting}
+mark_defeat (a_surface: EM_SURFACE) is  
+		-- Mark the defeat of the player.
+	require
+		a_surface_exists: a_surface /= Void
+	local
+		circle: EM_CIRCLE
+		position: EM_VECTOR_2D
+		count: INTEGER
+	do
+		-- Build `circle' at `position'.
+		create position.make (player.location.position.x, player.location.position.y)
+		create circle.make_inside_box (picture.bounding_box)
+		circle.set_line_color (white)
+		circle.set_filled (False)
+		circle.set_line_width (2)
+		circle.draw (a_surface)
+
+		-- POSSIBLE ASSIGNMENT
+		-- With instructions for the students
+		-- and sample solution:
+		from
+			-- Fill
+--			count := 0
+		until
+			-- Replace `True' and fill.
+--			count = 5
+			True				
+		loop
+			-- Fill
+--			circle.set_radius (circle.radius + 5)
+--			circle.draw (a_surface)
+--			count := count + 1
+		end
+	end  
+\end{lstlisting}
+
+\subsection{Inheritance}
+A few suggestions:
+
+\begin{itemize}
+  \item Inherit from class \texttt{BRAIN}, redefine \textit{choose\_move} and implement an own artificial intelligence (for example a \texttt{DRUNKARD} like in last year's exercise). 
+  \item Inherit from class \texttt{ESTATE\_AGENT\_DISPLAYER}, redefine \textit{draw} and for example implement an agent that shows himself in random rounds.
+  \item Inherit from class \texttt{MENU}, effect \textit{set\_entry\_position} to customize the menu layout and redefine \textit{handle\_key\_down\_event} to change the menu's behavior.
+\end{itemize}
+The first option is the most suitable in my opinion (it was also used in last year's exercise), but I wanted to throw my other ideas in anyway..
+
+\subsection{Events}
+Let the students study the class \texttt{BUTTON} or have them make class \texttt{TEXT\_BOX} clickable.
+
