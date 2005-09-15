@@ -1,7 +1,17 @@
 \emph{What happens when you start \emph{Flat Hunt}? In this last chapter we will go step-by-step through a typical \emph{Flat Hunt} game. However, because there are lots of details involved, we concentrate on the more important steps\ldots}
 
 \begin{enumerate}
-  \item start game blabla
-  \item do something
-  \item end game blabla
+  \item At the very beginning, the application has to be launched. By calling\\ \textit{make\_and\_launch} of the root class \texttt{FLAT\_HUNT} exactly that is achieved. This feature sets the application name, resolution and several other options and then launches the first scene to be displayed, which is of type \texttt{START} and is an heir of \texttt{START\_MENU\_SCENE}.
+  \item When ``start game'' is selected in this scene, \textit{start\_callback} is called and creates a game with the proper settings and a game scene, whose job it is to visualize the game. \textit{start\_callback} also creates the \texttt{MAIN\_CONTROLLER} and calls \textit{main\_controller.start\_game}.
+  \item \textit{start\_game} in class \texttt{MAIN\_CONTROLLER} calls \textit{create\_players} as well as \textit{start\_game} of class \texttt{GAME}. Those create the players using class\\ \texttt{PLAYER\_FACTORY} and set the game state to \texttt{Prepare\_state}.
+  \item In class \texttt{PLAYER\_FACTORY}, for example the estate agent is created using \textit{estate\_agent.make} in feature \textit{build\_players}.
+  \item This creates a \texttt{HUMAN}, \texttt{FLAT\_HUNTER\_BOT} or \texttt{ESTATE\_AGENT\_BOT} brain depending on the value of \texttt{flat\_hunters\_bot} or\\ \texttt{estate\_agent\_bot} respectively, which are boolean values to indicate if a human or the computer is going to play the corresponding player(s).
+  \item Back to class \texttt{MAIN\_CONTROLLER}: Feature \textit{idle\_action} gets called whenever nothing is going on, i.e. now. \textit{idle\_action} checks whether the game is in one of the three game loop states, and calls the corresponding feature in class \texttt{MAIN\_CONTROLLER}. In the first run, this is \textit{prepare}\ldots
+  \item \ldots which centers the city map on \texttt{game.current\_player} and then calls \textit{game.prepare}.
+  \item \textit{prepare} of class \texttt{GAME} first calculates the estate agent's possible moves. If there are no possible moves (i.e. \texttt{current\_player.possible\_moves.\\is\_empty}) then it's either the next player's turn or the state is set to \texttt{Agent\_stuck}. Otherwise the game state is set to \texttt{Play\_state}.
+  \item With that, the call to \textit{prepare} (Step 6) comes to an end and control goes back to feature \textit{idle\_action} of class \texttt{MAIN\_CONTROLLER}. According to the present game state, \textit{idle\_action} will now call \textit{play} which then calls \textit{game.play}.
+  \item This calls \textit{current\_player.play (selected\_place)}, where \texttt{selected\_place} is the last place the user clicked on. \texttt{selected\_place} is then passed on to class \texttt{BRAIN}.
+  \item \textit{choose\_move} in class \texttt{PLAYER} is deferred, which means that \textit{choose\_move} of class \texttt{ESTATE\_AGENT} or \texttt{FLAT\_HUNTER} gets called, depending on whether the current player is a hunter or an agent.
+  \item This calls \textit{brain.choose\_move}, where brain is either a\\ \texttt{FLAT\_HUNTER\_BRAIN}, \texttt{ESTATE\_AGENT\_BRAIN} or \texttt{HUMAN}.
+  \item The next move is now chosen, and thus the player moves. Control goes back to \textit{idle\_action} and we are back at step 6.
 \end{enumerate}

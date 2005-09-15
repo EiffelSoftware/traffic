@@ -9,3 +9,24 @@ For each player in each round in \emph{Flat Hunt}, the game goes through the fol
   \item[Move] In this state, the move selected in state \texttt{Play} is performed. After the move, the game checks if the player hits the place of the estate agent. If that is the case, the game goes into state \texttt{Agent\_caught}. If the agent did not get caught, and the round number is greater than 23, then the estate agent is the winner and the game goes into state \texttt{Agent\_escaped}. If none of the above is the case, then it's the next player's turn and the game loop starts again in state \texttt{Prepare}.
 
 \end{description}
+
+In the classes \texttt{MAIN\_CONTROLLER}, \texttt{GAME} and \texttt{PLAYER}, you can find the features \textit{prepare}, \textit{play} and \textit{move} that deal with these game states. As an example, let's have a look at feature \textit{move} in class \texttt{GAME}:\\
+
+\begin{lstlisting}
+move is
+		-- Make the chosen move.
+	do
+		if current_player = estate_agent then
+			update_agent_visibility
+		end
+		current_player.move
+		if current_player.location = estate_agent.location 
+		and current_player /= estate_agent then
+			state := Agent_caught
+			update_agent_visibility
+		else
+			state := Prepare_state			
+		next_turn
+	end    
+end             
+\end{lstlisting}
