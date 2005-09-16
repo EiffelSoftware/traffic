@@ -35,7 +35,6 @@ feature -- Interface
 			create sun_checkbox.make_from_text ("Show sun")
 			create coordinates_checkbox.make_from_text ("Show coordinates")
 			create buildings_transparent_checkbox.make_from_text ("Transparent buildings")
-			create traffic_line_rides_checkbox.make_from_text ("Traffic line rides")
 			
 			-- Box and button for xml files
 			create combo_title.make_from_text ("Choose your map:")
@@ -46,10 +45,9 @@ feature -- Interface
 			create buildings_label.make_from_text ("0")
 			create buildings_slider.make_from_range_horizontal (0, 100)
 			
-			-- Slider and label for zoom
-			create zoom_title.make_from_text ("Zoom factor & No buildings")
-			create zoom_slider.make_from_range_horizontal (0,20)
-			create zoom_label.make_from_text ("8")
+			-- 'Zoom in' and 'Zoom out' buttons
+			create zoom_in_button.make_from_text ("Zoom in")
+			create zoom_out_button.make_from_text ("Zoom out")
 			
 			-- Labels for origin and destination
 			create marked_origin_title.make_from_text ("Marked station:")
@@ -57,7 +55,10 @@ feature -- Interface
 			create marked_destination_title.make_from_text ("")
 			create marked_destination_label.make_from_text ("")
 			create shortest_path_checkbox.make_from_text ("Shortest path")
-
+			
+			-- 'Take traffic line ride' button 
+			create traffic_line_ride_button.make_from_text ("Take traffic line ride")
+			
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
@@ -72,7 +73,6 @@ feature -- Interface
 			toolbar_panel.set_background_color (bg_color)
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
 			add_component (toolbar_panel)
-			
 
 			-- Combobox title
 			combo_title.set_position (10,50)
@@ -93,7 +93,6 @@ feature -- Interface
 			load_button.clicked_event.subscribe (agent load_button_clicked)
 			load_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (load_button)
-
 
 			-- Transparent buildings  Checkbox
 			buildings_transparent_checkbox.set_position (10, 170)
@@ -150,40 +149,19 @@ feature -- Interface
 			shortest_path_checkbox.checked_event.subscribe (agent shortest_path_checked)
 			shortest_path_checkbox.unchecked_event.subscribe (agent shortest_path_unchecked)
 			toolbar_panel.add_widget (shortest_path_checkbox)
-
-			-- 'Traffic line rides' Checkbox
-			traffic_line_rides_checkbox.set_position (10, 290)
-			traffic_line_rides_checkbox.set_background_color (bg_color)
-			traffic_line_rides_checkbox.set_optimal_dimension (120, 20)
-			traffic_line_rides_checkbox.set_to_optimal_dimension
-			traffic_line_rides_checkbox.checked_event.subscribe (agent traffic_line_rides_checked)
-			traffic_line_rides_checkbox.unchecked_event.subscribe (agent traffic_line_rides_unchecked)
-			toolbar_panel.add_widget (traffic_line_rides_checkbox)
-
-
-
-			-- Zoom title
-			zoom_title.set_position (10,340)
-			zoom_title.set_background_color (bg_color)
-			toolbar_panel.add_widget (zoom_title)
 			
-			-- Zoom slider
-			zoom_slider.set_position (10, 370)
-			zoom_slider.set_current_value (8)
-			zoom_slider.set_optimal_dimension (120, 20)
-			zoom_slider.set_to_optimal_dimension
-			zoom_slider.set_background_color (bg_color)
-			zoom_slider.set_tooltip ("Zoom")
-			zoom_slider.position_changed_event.subscribe (agent zoom_changed(zoom_label, ?))
-			toolbar_panel.add_widget (zoom_slider)
-
-			-- Zoom label
-			zoom_label.set_position (140, 370)
-			zoom_label.set_optimal_dimension (50, 20)
-			zoom_label.set_to_optimal_dimension
-			zoom_label.set_background_color (bg_color)
-			zoom_label.set_tooltip ("Zoom factor")
-			toolbar_panel.add_widget (zoom_label)
+			-- Zoom out Button
+			zoom_out_button.set_position (180-zoom_out_button.width, 350)
+			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
+			zoom_out_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+			toolbar_panel.add_widget (zoom_out_button)
+			
+			-- Zoom in Button
+			zoom_in_button.set_position (20, 350)
+			zoom_in_button.set_dimension (zoom_out_button.width, zoom_out_button.height)
+			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
+			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+			toolbar_panel.add_widget (zoom_in_button)
 
 			-- Buildings label
 			buildings_label.set_position (140, 410)
@@ -201,8 +179,7 @@ feature -- Interface
 			buildings_slider.set_tooltip ("Number of buildings")
 			buildings_slider.position_changed_event.subscribe (agent number_of_buildings_changed (buildings_label, ?))
 			toolbar_panel.add_widget (buildings_slider)
-
-
+			
 			-- Marked origin title
 			marked_origin_title.set_position (10, 460)
 			marked_origin_title.set_optimal_dimension (180, 20)
@@ -232,7 +209,14 @@ feature -- Interface
 			marked_destination_label.set_to_optimal_dimension
 			marked_destination_label.set_background_color (bg_color)
 			marked_destination_label.set_tooltip ("Marked Station")
-			toolbar_panel.add_widget (marked_destination_label)			
+			toolbar_panel.add_widget (marked_destination_label)
+			
+			-- 'Take traffic line ride' button
+			traffic_line_ride_button.set_position ((200-traffic_line_ride_button.width) // 2, 550)
+			traffic_line_ride_button.clicked_event.subscribe (agent traffic_line_ride_button_clicked)
+			traffic_line_ride_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+			toolbar_panel.add_widget (traffic_line_ride_button)
+			traffic_line_ride_button.hide
 		end
 		
 feature -- Event handling
@@ -247,12 +231,32 @@ feature -- Event handling
 			-- Checkbox has been unchecked.
 		do
 		end
-	
-	zoom_changed (label: EM_LABEL; number: INTEGER) is
-			-- Change the text on `label'.
+
+	zoom_in_button_clicked is
+			-- "Zoom in" button has been clicked.
+		require
+			zoom_in_button /= Void
 		do
-			label.set_text (number.out)
-			map.set_zoom (number+0.01)
+			zoom_in_button.set_pressed (false)
+			map.zoom_in
+		end
+		
+	zoom_out_button_clicked is
+			-- "Zoom out" button has been clicked.
+		require
+			zoom_out_button /= Void
+		do
+			zoom_out_button.set_pressed (false)
+			map.zoom_out
+		end
+	
+	traffic_line_ride_button_clicked is
+			-- "Zoom out" button has been clicked.
+		require
+			traffic_line_ride_button /= Void
+		do
+			traffic_line_ride_button.set_pressed (false)
+			map.take_traffic_line_ride
 		end
 
 	handle_mouse_click (origin_label, destination_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
@@ -306,6 +310,7 @@ feature -- Event handling
 			if map.marked_origin /= Void then
 				marked_origin_label.set_text (map.marked_origin.name)
 			end
+			traffic_line_ride_button.show
 		end
 		
 	shortest_path_unchecked is
@@ -315,6 +320,7 @@ feature -- Event handling
 			marked_destination_title.set_text ("")
 			marked_destination_label.set_text ("")
 			marked_origin_title.set_text ("Marked station:")
+			traffic_line_ride_button.hide
 		end
 		
 	buildings_checked is
@@ -389,50 +395,50 @@ feature -- Event handling
 feature -- Widgets
 
 	toolbar_panel: EM_PANEL
-		-- Panel, in which all option widgets are displayed.
+			-- Panel, in which all option widgets are displayed.
 		
 	buildings_transparent_checkbox: EM_CHECKBOX
-		-- Checkbox for transparent buildings.
+			-- Checkbox for transparent buildings
 	sun_checkbox: EM_CHECKBOX
-		-- Checkbox for different light
+			-- Checkbox for different light
 	coordinates_checkbox: EM_CHECKBOX
-		-- Checkbox for (visible) coordinate axis.
+			-- Checkbox for (visible) coordinate axis
 	highlighting_checkbox: EM_CHECKBOX
-		-- Checkbox for highlighting metro lines.
+			-- Checkbox for highlighting metro lines
 	buildings_checkbox: EM_CHECKBOX
-		-- Checkbox for visibility of buildings.
+			-- Checkbox for visibility of buildings
 	shortest_path_checkbox: EM_CHECKBOX
-		-- Checkbox for shortest path calculation.
+			-- Checkbox for shortest path calculation
 	
 	combo_title: EM_LABEL
-		-- Title for combo box.
+			-- Title for combo box
 	combo_box: EM_COMBOBOX[STRING]
-		-- Box to choose xml file from.	
+			-- Box to choose the xml file from
 	load_button: EM_BUTTON
-		-- Button to load xml file.
+			-- Button to load the xml file
 	
-	zoom_title: EM_LABEL
-		-- Title for zoom slider.
-	zoom_slider: EM_SLIDER
-		-- Slider to zoom in or out.
-	zoom_label: EM_LABEL
-		-- Label to display zoom factor.
+	zoom_in_button: EM_BUTTON
+			-- Botton to zoom in
+		
+	zoom_out_button: EM_BUTTON
+			-- Botton to zoom out
 
 	buildings_slider: EM_SLIDER
-		-- Slider to change number of houses displayed.
+			-- Slider to change number of houses displayed
 	buildings_label: EM_LABEL
-		-- Label to show number of houses.
+			-- Label to show number of houses
 	
 	marked_origin_label: EM_LABEL
-		-- Label for origin.
+			-- Label for origin
 	marked_origin_title: EM_LABEL
-		-- Name of (origin) station.
+			-- Name of (origin) station
 	marked_destination_label: EM_LABEL
-		-- Label for destination.
+			-- Label for destination
 	marked_destination_title: EM_LABEL
-		-- Name of (destination) station
+			-- Name of (destination) station
 	
-	traffic_line_rides_checkbox: EM_CHECKBOX
+	traffic_line_ride_button: EM_BUTTON
+			-- Botton to take a traffic line ride
 		
 feature {NONE} -- Implementation
 
