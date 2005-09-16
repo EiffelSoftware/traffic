@@ -41,57 +41,69 @@ feature -- Interface
 
 feature -- Decision process
 
-	add_gauger(procedure: FUNCTION [ANY, TUPLE, STRING]; key: STRING) is
-			-- Add a gauger to list
-		require procedure_valid: procedure /= void 
-				key_valid: key /= void and then not key.is_empty
+	add_gauger (procedure: FUNCTION [ANY, TUPLE, STRING]; key: STRING) is
+			-- Add a gauger to `gaugers'.
+		require
+			procedure_valid: procedure /= void 
+			key_valid: key /= void and then not key.is_empty
 		do
 			gaugers.force (procedure, key)
-		ensure procedure = gaugers.item (key)
+		ensure
+			procedure = gaugers.item (key)
 		end
 		
-	remove_gauger(key: STRING) is
-			-- Remove a gauger from the list
-		require key_valid: key /= void and then not key.is_empty
+	remove_gauger (key: STRING) is
+			-- Remove a gauger from `gaugers'.
+		require
+			key_valid: key /= void and then not key.is_empty
 		do
 			gaugers.remove (key)
-		ensure gaugers.removed
+		ensure
+			gaugers.removed
 		end
 
-	add_building_type(procedure:PROCEDURE[ANY,TUPLE] ;key: STRING) is
-			-- Add a type of building to list
-		require procedure_valid: procedure /= void 
-				key_valid: key /= void and then not key.is_empty
+	add_building_type (procedure:PROCEDURE[ANY,TUPLE] ;key: STRING) is
+			-- Add a type of building to `building_templates'.
+		require
+			procedure_valid: procedure /= void 
+			key_valid: key /= void and then not key.is_empty
 		do
 			building_templates.force (procedure, key)
-		ensure building_templates.item (key) = procedure
+		ensure
+			building_templates.item (key) = procedure
 		end
 		
 	remove_building_type (key: STRING) is
-			-- Remove a type of building from the list
-		require key_valid: key /= void and then not key.is_empty
+			-- Remove a type of building from `building_templates'.
+		require
+			key_valid: key /= void and then not key.is_empty
 		do
 				building_templates.remove (key)
-		ensure building_templates.removed	
+		ensure
+			building_templates.removed	
 		end
 
-	take_decision(gauger: STRING; args: TUPLE) is
-					-- Let `gauger' decide
-		require gauger_valid: gauger /= void and then not gauger.is_empty
-				args_valid: args /= void
+	take_decision (gauger: STRING; args: TUPLE) is
+			-- Let `gauger' decide.
+		require
+			gauger_valid: gauger /= void and then not gauger.is_empty
+			args_valid: args /= void
 		do
 			decision := gaugers.item(gauger).item (args)
 			unchanged := False
 		end
-			
+		
 feature {NONE} -- Implementation
 			
 	decision: STRING
-		-- The decision the gauger has taken.
+			-- The decision the gauger has taken
+		
 	gaugers: HASH_TABLE[FUNCTION [ANY, TUPLE, STRING], STRING]
-		-- Decides the kind of building to draw.
+			-- Helps to decide the kind of building to draw.
+			
 	building_templates: HASH_TABLE[PROCEDURE[ANY,TUPLE], STRING]
 			-- Containter of all types of buildings.
+			
 	texture: INTEGER
 			-- Texture of the buildings
 			
