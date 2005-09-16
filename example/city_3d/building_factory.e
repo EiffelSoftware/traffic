@@ -81,7 +81,7 @@ feature -- Decision process
 				args_valid: args /= void
 		do
 			decision := gaugers.item(gauger).item (args)
-			unchanged := false
+			unchanged := False
 		end
 			
 feature {NONE} -- Implementation

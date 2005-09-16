@@ -39,7 +39,7 @@ feature -- Initialization
 			create randomizer.set_seed (42)
 			create building_factory.make
 			
-			-- Could be extended, if desired
+			-- Could be extended, if desired.
 			building_factory.add_building_type (agent create_city_central, "city_centre")
 			building_factory.add_building_type (agent create_central_building, "central")
 			building_factory.add_building_type (agent create_outlying, "outlying")	
@@ -91,12 +91,12 @@ feature {NONE} -- Collision detection
 		do
 			from
 				traffic_lines_polygons.start
-				Result := false
+				Result := False
 			until
 				traffic_lines_polygons.after or Result
 			loop
 				if poly_a.collides_with (traffic_lines_polygons.item) then
-					Result := true
+					Result := True
 				end
 				traffic_lines_polygons.forth
 			end
@@ -108,7 +108,7 @@ feature {NONE} -- Collision detection
 feature {NONE} -- Implementation
 	
 	add_buildings (n: INTEGER) is
-			-- adds buildings to list
+			-- Add buildings to the list of buildings.
 		require n_not_negative: n >= 0
 		local
 			x_coord, z_coord, max_distance, distance: DOUBLE
@@ -224,10 +224,13 @@ feature {NONE} -- Attributes
 
 	buildings: ARRAY[EM_3D_OBJECT]
 			-- Array of all buildings
+			
 	randomizer: RANDOM
 			-- Random number generator for the building distribution
+			
 	building_factory: BUILDING_FACTORY
 			-- Factory for the buildings
+			
 	number_of_buildings: INTEGER
 			-- Number of buildings that should be shown
 	
@@ -236,7 +239,7 @@ feature {NONE} -- Attributes
 			
 feature -- Decision procedures
 
-	choose_building_type (max_distance,distance: DOUBLE): STRING is
+	choose_building_type (max_distance, distance: DOUBLE): STRING is
 			-- Choose which type of builing is chosen
 		do
 			if distance < max_distance*0.1 then
@@ -247,9 +250,9 @@ feature -- Decision procedures
 				Result := "outlying"
 			end
 		end
-
+		
 	create_central_building is
-			-- create a central building
+			-- Create a central building.
 		do
 			-- Pyramid
 			-- Front
@@ -354,12 +357,12 @@ feature -- Decision procedures
 		end
 		
 	create_city_central is 
-			-- create a building in the city centre
+			-- Create a building in the city centre.
 		do
 			gl_matrix_mode_external (em_gl_modelview)
---				gl_push_matrix_external
---				gl_translated_external (-0.5, 0, -0.5)		
---				
+--			gl_push_matrix_external
+--			gl_translated_external (-0.5, 0, -0.5)		
+			
 			gl_color3d_external (0.65, 0.65, 0.65) -- White
 			gl_matrix_mode_external (Em_gl_modelview)
 			gl_push_matrix_external
@@ -377,76 +380,75 @@ feature -- Decision procedures
 			gl_flush_external
 		end
 		
-		
-		create_outlying is
-				-- create a outlying building
-			do
-				gl_disable_external (Em_gl_texture_2d)
-				-- Front
---				gl_enable_external (Em_gl_texture_2d)
-				gl_begin_external (em_gl_quads)
---					gl_bind_texture (Em_gl_texture_2d, texture)
-					gl_color3d_external (0, 0.15, 0.8) -- Blue
-					gl_normal3d_external (1, 0, 0)
-					gl_tex_coord2f_external (0, 0)
-					gl_vertex3d_external (0.0, 1.5, 0.0)
-					gl_normal3d_external (1, 0, 0)
-					gl_tex_coord2f_external (1, 1)
-					gl_vertex3d_external (0.0, 0.0, 0.0)
-					gl_normal3d_external (1, 0, 0)
-					gl_tex_coord2f_external (0, 1)
-					gl_vertex3d_external (0.0, 0.0, -1.0)
-					gl_normal3d_external (1, 0, 0)
-					gl_tex_coord2f_external (1, 0)
-					gl_vertex3d_external (0.0, 1.5, -1.0)
-				gl_end_external
-				gl_disable_external (Em_gl_texture_2d)
+	create_outlying is
+			-- Create a outlying building.
+		do
+			gl_disable_external (Em_gl_texture_2d)
+			-- Front
+--			gl_enable_external (Em_gl_texture_2d)
+			gl_begin_external (em_gl_quads)
+--				gl_bind_texture (Em_gl_texture_2d, texture)
+				gl_color3d_external (0, 0.15, 0.8) -- Blue
+				gl_normal3d_external (1, 0, 0)
+				gl_tex_coord2f_external (0, 0)
+				gl_vertex3d_external (0.0, 1.5, 0.0)
+				gl_normal3d_external (1, 0, 0)
+				gl_tex_coord2f_external (1, 1)
+				gl_vertex3d_external (0.0, 0.0, 0.0)
+				gl_normal3d_external (1, 0, 0)
+				gl_tex_coord2f_external (0, 1)
+				gl_vertex3d_external (0.0, 0.0, -1.0)
+				gl_normal3d_external (1, 0, 0)
+				gl_tex_coord2f_external (1, 0)
+				gl_vertex3d_external (0.0, 1.5, -1.0)
+			gl_end_external
+			gl_disable_external (Em_gl_texture_2d)
+			
+			gl_begin_external(em_gl_quads)
+				-- Back
+				gl_color3d_external (1, 0, 0) -- Red
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (-1.0, 0.0, -1.0)
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (-1.0, 1.5, -1.0)
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (-1.0, 1.5, 0.0)
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (-1.0, 0.0, 0.0)
 				
-				gl_begin_external(em_gl_quads)
-					-- Back
-					gl_color3d_external (1, 0, 0) -- Red
-					gl_normal3d_external (-1, 0, 0)
-					gl_vertex3d_external (-1.0, 0.0, -1.0)
-					gl_normal3d_external (-1, 0, 0)
-					gl_vertex3d_external (-1.0, 1.5, -1.0)
-					gl_normal3d_external (-1, 0, 0)
-					gl_vertex3d_external (-1.0, 1.5, 0.0)
-					gl_normal3d_external (-1, 0, 0)
-					gl_vertex3d_external (-1.0, 0.0, 0.0)
-					
-					-- Left
-					gl_color3d_external (0, 1, 0) -- Green
-					gl_normal3d_external (0, 0, 1)
-					gl_vertex3d_external (-1.0, 1.5, 0.0)
-					gl_normal3d_external (0, 0, 1)
-					gl_vertex3d_external (-1.0, 0.0, 0.0)
-					gl_normal3d_external (0, 0, 1)
-					gl_vertex3d_external (0.0, 0.0, 0.0)
-					gl_normal3d_external (0, 0, 1)
-					gl_vertex3d_external (0.0, 1.5, 0.0)
-					
-					-- Right
-					gl_color3d_external (1, 1, 0) -- Yellow
-					gl_normal3d_external (0, 0, -1)
-					gl_vertex3d_external (0.0, 1.5, -1.0)
-					gl_normal3d_external (0, 0, -1)
-					gl_vertex3d_external (0.0, 0.0, -1.0)
-					gl_normal3d_external (0, 0, -1)
-					gl_vertex3d_external (-1.0, 0.0, -1.0)
-					gl_normal3d_external (0, 0, -1)
-					gl_vertex3d_external (-1.0, 1.5, -1.0)
-					
-					-- Top
-					gl_color3d_external (1,1,1) -- White
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3d_external (-1.0, 1.5, -1.0)
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3d_external (-1.0, 1.5, 0.0)
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3d_external (0.0, 1.5, 0.0)
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3d_external (0.0, 1.5, -1.0)
-				gl_end_external	
-			end	
+				-- Left
+				gl_color3d_external (0, 1, 0) -- Green
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (-1.0, 1.5, 0.0)
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (-1.0, 0.0, 0.0)
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (0.0, 0.0, 0.0)
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (0.0, 1.5, 0.0)
+				
+				-- Right
+				gl_color3d_external (1, 1, 0) -- Yellow
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (0.0, 1.5, -1.0)
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (0.0, 0.0, -1.0)
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (-1.0, 0.0, -1.0)
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (-1.0, 1.5, -1.0)
+				
+				-- Top
+				gl_color3d_external (1,1,1) -- White
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (-1.0, 1.5, -1.0)
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (-1.0, 1.5, 0.0)
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (0.0, 1.5, 0.0)
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (0.0, 1.5, -1.0)
+			gl_end_external	
+		end
 		
 end -- class BUILDING_EWER

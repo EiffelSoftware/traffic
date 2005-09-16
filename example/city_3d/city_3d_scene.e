@@ -23,7 +23,7 @@ feature -- Interface
 		do
 			make_component_scene
 			
-			set_frame_counter_visibility (true)
+			set_frame_counter_visibility (True)
 			
 			create bg_color.make_with_rgb (150,255,150)
 			-- Toolbar
@@ -37,7 +37,7 @@ feature -- Interface
 			create buildings_transparent_checkbox.make_from_text ("Transparent buildings")
 			
 			-- Box and button for xml files
-			create combo_title.make_from_text ("Choose your map:")
+			create combo_title.make_from_text ("Choose a map:")
 			create combo_box.make_from_list (search_for_xml)
 			create load_button.make_from_text ("Load map")
 			
@@ -57,7 +57,7 @@ feature -- Interface
 			create shortest_path_checkbox.make_from_text ("Shortest path")
 			
 			-- 'Take traffic line ride' button 
-			create traffic_line_ride_button.make_from_text ("Take traffic line ride")
+			create traffic_line_ride_button.make_from_text ("Take a traffic line ride")
 			
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -211,7 +211,7 @@ feature -- Interface
 			marked_destination_label.set_tooltip ("Marked Station")
 			toolbar_panel.add_widget (marked_destination_label)
 			
-			-- 'Take traffic line ride' button
+			-- 'Take a traffic line ride' button
 			traffic_line_ride_button.set_position ((200-traffic_line_ride_button.width) // 2, 530)
 			traffic_line_ride_button.clicked_event.subscribe (agent traffic_line_ride_button_clicked)
 			traffic_line_ride_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
@@ -237,7 +237,7 @@ feature -- Event handling
 		require
 			zoom_in_button /= Void
 		do
-			zoom_in_button.set_pressed (false)
+			zoom_in_button.set_pressed (False)
 			map.zoom_in
 		end
 		
@@ -246,7 +246,7 @@ feature -- Event handling
 		require
 			zoom_out_button /= Void
 		do
-			zoom_out_button.set_pressed (false)
+			zoom_out_button.set_pressed (False)
 			map.zoom_out
 		end
 	
@@ -255,7 +255,7 @@ feature -- Event handling
 		require
 			traffic_line_ride_button /= Void
 		do
-			traffic_line_ride_button.set_pressed (false)
+			traffic_line_ride_button.set_pressed (False)
 			map.take_traffic_line_ride
 		end
 
@@ -377,7 +377,7 @@ feature -- Event handling
 		require
 			load_button /= Void
 		do
-			load_button.set_pressed (false)
+			load_button.set_pressed (False)
 			map.load_map (map_file_name)
 			buildings_slider.set_current_value (buildings_slider.left_value)
 		end

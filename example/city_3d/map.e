@@ -140,6 +140,7 @@ feature -- Drawing
 					segment_position.set_y (0)
 				end
 			else
+				traffic_line_ride := False
 				-- Translation
 				gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
 				gl_translated_external (x_translation, -y_translation, 0)
@@ -321,7 +322,7 @@ feature -- Shortest path
 				traffic_line_factory.set_line (line)
 				shortest_path_line_representation := traffic_line_factory.create_object
 				shortest_path_line_representation.set_origin (0, line_height+0.2, 0)
-				marked_station_changed := false
+				marked_station_changed := False
 			end
 		end
 		
@@ -342,7 +343,7 @@ feature -- Traffic map loading
 		do
 			create map_file.make_from_file (filename)
 			map := map_file.traffic_map
-			is_map_loaded := true
+			is_map_loaded := True
 			number_of_buildings := 0
 			create ewer.make(-plane_size/2, -plane_size/2, number_of_buildings, map)
 			create_metro_line_representation
@@ -350,10 +351,10 @@ feature -- Traffic map loading
 			marked_origin := void
 			shortest_path_line := void
 			shortest_path_line_representation := void
-			marked_station_changed := true
+			marked_station_changed := True
 		ensure
 			map /= void
-			is_map_loaded = true
+			is_map_loaded = True
 			ewer /= void
 			traffic_line_objects /= void
 		end
@@ -463,7 +464,7 @@ feature -- Options
 				shortest_path_line_representation := void
 			end
 			show_shortest_path := b
-			marked_station_changed := true
+			marked_station_changed := True
 		ensure show_shortest_path = b
 		end
 	
@@ -562,7 +563,7 @@ feature {NONE} -- Event handling
 							if delta < station_radius then
 								create marked_origin.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
 								is_found := True
-								marked_station_changed := true
+								marked_station_changed := True
 							end
 							
 							-- Checking destination of section
@@ -574,7 +575,7 @@ feature {NONE} -- Event handling
 							if delta < station_radius then
 								create marked_origin.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
 								is_found := True
-								marked_station_changed := true
+								marked_station_changed := True
 							end
 							line.forth
 						end
@@ -585,7 +586,7 @@ feature {NONE} -- Event handling
 						marked_destination := Void
 						shortest_path_line := void
 						shortest_path_line_representation := void
-						marked_station_changed := true
+						marked_station_changed := True
 					end
 				end
 				
@@ -613,7 +614,7 @@ feature {NONE} -- Event handling
 							if delta < station_radius then
 								create marked_destination.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
 								is_found := True
-								marked_station_changed := true
+								marked_station_changed := True
 							end
 							
 							-- Checking destination of section
@@ -625,7 +626,7 @@ feature {NONE} -- Event handling
 							if delta < station_radius then
 								create marked_destination.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
 								is_found := True
-								marked_station_changed := true
+								marked_station_changed := True
 							end
 							line.forth
 						end
@@ -636,7 +637,7 @@ feature {NONE} -- Event handling
 						marked_origin := Void
 						shortest_path_line := void
 						shortest_path_line_representation := void
-						marked_station_changed := true
+						marked_station_changed := True
 					end
 				end
 			end
