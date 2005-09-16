@@ -284,13 +284,19 @@ feature -- Shortest path
 			-- Calculate the shortest path.
 		local
 			line: TRAFFIC_LINE
-			i: INTEGER
 			origin, destination: TRAFFIC_PLACE
-			new_segments: LINKED_LIST[TRAFFIC_LINE_SECTION]
+			section: TRAFFIC_LINE_SECTION
 		do
 			if marked_station_changed then
 				map.find_shortest_path (map.places.item (marked_origin.name), map.places.item (marked_destination.name))
 				create line.make ("Shortest path", create {TRAFFIC_TYPE_WALKING}.make)
+				
+				if not map.shortest_path.is_empty and then not map.shortest_path.first.label.polypoints.first.is_equal (marked_origin.position) then
+					create origin.make_with_position (marked_origin.name, marked_origin.position.x.rounded, marked_origin.position.y.rounded)
+					create destination.make_with_position (map.shortest_path.first.label.origin.name, map.shortest_path.first.label.polypoints.first.x.rounded, map.shortest_path.first.label.polypoints.first.y.rounded)
+					line.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
+				end
+				
 				from
 					map.shortest_path.start
 				until
@@ -298,33 +304,20 @@ feature -- Shortest path
 				loop
 					line.force (map.shortest_path.item.label)
 					map.shortest_path.forth
+					if not map.shortest_path.after and then not line.last.polypoints.last.is_equal (map.shortest_path.item.label.polypoints.first) then
+						create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
+						create destination.make_with_position (map.shortest_path.item.label.origin.name, map.shortest_path.item.label.polypoints.first.x.rounded, map.shortest_path.item.label.polypoints.first.y.rounded)
+						create section.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void)
+						line.force (section)
+					end
 				end
 				
-				create new_segments.make
-				
-				if not line.is_empty and then not line.first.polypoints.first.is_equal(marked_origin.position) then
-					create origin.make_with_position (marked_origin.name, marked_origin.position.x.rounded, marked_origin.position.y.rounded)
-					create destination.make_with_position (line.first.origin.name, line.first.polypoints.first.x.rounded, line.first.polypoints.first.y.rounded)
-					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
-				end
-				
-				if not line.is_empty and then not line.last.polypoints.last.is_equal(marked_destination.position) then
+				if not line.is_empty and then not line.last.polypoints.last.is_equal (marked_destination.position) then
 					create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
 					create destination.make_with_position (marked_destination.name, marked_destination.position.x.rounded, marked_destination.position.y.rounded)
-					new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
+					line.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
 				end
 				
-				from i := 1; line.start
-				until i >= line.count
-				loop
-					if not line.i_th (i).polypoints.last.is_equal(line.i_th(i+1).polypoints.first) then
-						create origin.make_with_position (line.i_th (i).destination.name, line.i_th (i).polypoints.last.x.rounded, line.i_th (i).polypoints.last.y.rounded)
-						create destination.make_with_position (line.i_th (i+1).origin.name, line.i_th (i+1).polypoints.first.x.rounded, line.i_th (i+1).polypoints.first.y.rounded)
-						new_segments.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
-					end
-					i := i + 1
-				end
-				line.append (new_segments)
 				shortest_path_line := line
 				
 				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1))
