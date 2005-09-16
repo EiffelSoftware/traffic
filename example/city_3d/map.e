@@ -122,10 +122,10 @@ feature -- Drawing
 				
 				glu_look_at_external
 				(	position.x - (position.x/position.length),
-					1,
+					.5,
 					position.y - (position.y/position.length),
 					position.x + 3*(position.x/position.length),
-					0.9,
+					0.4,
 					position.y + 3*(position.y/position.length),
 					0, 1, 0
 				)
@@ -665,11 +665,11 @@ feature {NONE} -- Event handling
 		do
 			if event.button_state_right then				
 				y_rotation := y_rotation + event.x_motion
-				if y_rotation <= 90 then
-					y_rotation := 90
-				elseif y_rotation >= 270 then
-					y_rotation := 270
-				end
+--				if y_rotation <= 90 then
+--					y_rotation := 90
+--				elseif y_rotation >= 270 then
+--					y_rotation := 270
+--				end
 				x_rotation := x_rotation + event.y_motion
 				if x_rotation <= 15 then
 					x_rotation := 15
