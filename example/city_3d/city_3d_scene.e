@@ -89,13 +89,13 @@ feature -- Interface
 			toolbar_panel.add_widget (combo_box)
 			
 			-- Load Button
-			load_button.set_position (50, 110)
+			load_button.set_position ((200-load_button.width) // 2, 110)
 			load_button.clicked_event.subscribe (agent load_button_clicked)
 			load_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (load_button)
 
-			-- Transparent buildings  Checkbox
-			buildings_transparent_checkbox.set_position (10, 170)
+			-- Transparent buildings Checkbox
+			buildings_transparent_checkbox.set_position (10, 290)
 			buildings_transparent_checkbox.set_background_color (bg_color)
 			buildings_transparent_checkbox.set_optimal_dimension (180, 20)
 			buildings_transparent_checkbox.set_to_optimal_dimension
@@ -104,7 +104,7 @@ feature -- Interface
 			toolbar_panel.add_widget (buildings_transparent_checkbox)
 			
 			-- Sun Checkbox
-			sun_checkbox.set_position (10, 190)
+			sun_checkbox.set_position (10, 310)
 			sun_checkbox.set_background_color (bg_color)
 			sun_checkbox.set_optimal_dimension (110, 20)
 			sun_checkbox.set_to_optimal_dimension
@@ -114,7 +114,7 @@ feature -- Interface
 			toolbar_panel.add_widget (sun_checkbox)
 			
 			-- Coordinates Checkbox
-			coordinates_checkbox.set_position (10, 210)
+			coordinates_checkbox.set_position (10, 330)
 			coordinates_checkbox.set_background_color (bg_color)
 			sun_checkbox.set_optimal_dimension (110, 20)
 			sun_checkbox.set_to_optimal_dimension
@@ -124,7 +124,7 @@ feature -- Interface
 			toolbar_panel.add_widget (coordinates_checkbox)
 			
 			-- Highlighting Checkbox
-			highlighting_checkbox.set_position (10, 230)
+			highlighting_checkbox.set_position (10, 350)
 			highlighting_checkbox.set_background_color (bg_color)
 			highlighting_checkbox.set_optimal_dimension (110, 20)
 			highlighting_checkbox.set_to_optimal_dimension
@@ -133,7 +133,7 @@ feature -- Interface
 			toolbar_panel.add_widget (highlighting_checkbox)
 			
 			-- Buildings Checkbox
-			buildings_checkbox.set_position (10, 250)
+			buildings_checkbox.set_position (10, 370)
 			buildings_checkbox.set_background_color (bg_color)
 			buildings_checkbox.set_optimal_dimension (120, 20)
 			buildings_checkbox.set_to_optimal_dimension
@@ -142,7 +142,7 @@ feature -- Interface
 			toolbar_panel.add_widget (buildings_checkbox)
 			
 			-- Shortest Path Checkbox
-			shortest_path_checkbox.set_position (10, 270)
+			shortest_path_checkbox.set_position (10, 390)
 			shortest_path_checkbox.set_background_color (bg_color)
 			shortest_path_checkbox.set_optimal_dimension (120, 20)
 			shortest_path_checkbox.set_to_optimal_dimension
@@ -151,20 +151,20 @@ feature -- Interface
 			toolbar_panel.add_widget (shortest_path_checkbox)
 			
 			-- Zoom out Button
-			zoom_out_button.set_position (180-zoom_out_button.width, 350)
+			zoom_out_button.set_position (180-zoom_out_button.width, 170)
 			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
 			zoom_out_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (zoom_out_button)
 			
 			-- Zoom in Button
-			zoom_in_button.set_position (20, 350)
+			zoom_in_button.set_position (20, 170)
 			zoom_in_button.set_dimension (zoom_out_button.width, zoom_out_button.height)
 			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
 			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (zoom_in_button)
 
 			-- Buildings label
-			buildings_label.set_position (140, 410)
+			buildings_label.set_position (140, 230)
 			buildings_label.set_optimal_dimension (50, 20)
 			buildings_label.set_to_optimal_dimension
 			buildings_label.set_background_color (bg_color)
@@ -172,7 +172,7 @@ feature -- Interface
 			toolbar_panel.add_widget (buildings_label)
 			
 			-- Buildings slider
-			buildings_slider.set_position (10, 410)
+			buildings_slider.set_position (10, 230)
 			buildings_slider.set_optimal_dimension (120, 20)
 			buildings_slider.set_to_optimal_dimension
 			buildings_slider.set_background_color (bg_color)
@@ -181,21 +181,21 @@ feature -- Interface
 			toolbar_panel.add_widget (buildings_slider)
 			
 			-- Marked origin title
-			marked_origin_title.set_position (10, 460)
+			marked_origin_title.set_position (10, 430)
 			marked_origin_title.set_optimal_dimension (180, 20)
 			marked_origin_title.set_to_optimal_dimension
 			marked_origin_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (marked_origin_title)
 			
 			-- Marked destination title
-			marked_destination_title.set_position (10, 500)
+			marked_destination_title.set_position (10, 470)
 			marked_destination_title.set_optimal_dimension (180, 20)
 			marked_destination_title.set_to_optimal_dimension
 			marked_destination_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (marked_destination_title)
 			
 			-- Marked origin label
-			marked_origin_label.set_position (15, 480)
+			marked_origin_label.set_position (15, 450)
 			marked_origin_label.set_optimal_dimension (180, 20)
 			marked_origin_label.set_to_optimal_dimension
 			marked_origin_label.set_background_color (bg_color)
@@ -204,7 +204,7 @@ feature -- Interface
 			toolbar_panel.add_widget (marked_origin_label)
 			
 			-- Marked destination label
-			marked_destination_label.set_position (15, 520)
+			marked_destination_label.set_position (15, 490)
 			marked_destination_label.set_optimal_dimension (180, 20)
 			marked_destination_label.set_to_optimal_dimension
 			marked_destination_label.set_background_color (bg_color)
@@ -212,7 +212,7 @@ feature -- Interface
 			toolbar_panel.add_widget (marked_destination_label)
 			
 			-- 'Take traffic line ride' button
-			traffic_line_ride_button.set_position ((200-traffic_line_ride_button.width) // 2, 550)
+			traffic_line_ride_button.set_position ((200-traffic_line_ride_button.width) // 2, 530)
 			traffic_line_ride_button.clicked_event.subscribe (agent traffic_line_ride_button_clicked)
 			traffic_line_ride_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (traffic_line_ride_button)
