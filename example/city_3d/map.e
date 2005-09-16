@@ -247,7 +247,7 @@ feature -- Drawing
 				gl_matrix_mode (Em_gl_modelview)
 				gl_push_matrix
 				gl_color3d (0, 1, 0)
-				gl_translated (map_to_gl_coords (marked_origin.position).x , line_height + 0.08, map_to_gl_coords (marked_origin.position).y)
+				gl_translated (map_to_gl_coords (marked_origin.position).x , line_height + 0.1, map_to_gl_coords (marked_origin.position).y)
 				gl_rotated (90, 1, 0, 0)
 				glu_disk (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
 				gl_pop_matrix
@@ -257,7 +257,7 @@ feature -- Drawing
 				gl_matrix_mode (Em_gl_modelview)
 				gl_push_matrix
 				gl_color3d (1, 0, 0)
-				gl_translated (map_to_gl_coords (marked_destination.position).x , line_height + 0.08, map_to_gl_coords (marked_destination.position).y)
+				gl_translated (map_to_gl_coords (marked_destination.position).x , line_height + 0.1, map_to_gl_coords (marked_destination.position).y)
 				gl_rotated (90, 1, 0, 0)
 				glu_disk (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
 				gl_pop_matrix
@@ -323,7 +323,7 @@ feature -- Shortest path
 				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1))
 				traffic_line_factory.set_line (line)
 				shortest_path_line_representation := traffic_line_factory.create_object
-				shortest_path_line_representation.set_origin (0, line_height+0.05, 0)
+				shortest_path_line_representation.set_origin (0, line_height+0.02, 0)
 				marked_station_changed := False
 			end
 		end
@@ -790,7 +790,7 @@ feature {NONE} -- Auxiliary drawing features
 			metro_line: EM_3D_OBJECT
 			i: INTEGER
 		do
-			create traffic_line_objects.make (1,1)
+			create traffic_line_objects.make (1, 1)
 			lines := map.lines
 			from
 				lines.start
@@ -798,10 +798,10 @@ feature {NONE} -- Auxiliary drawing features
 			until
 				lines.after
 			loop 
-				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255,lines.item_for_iteration.color.green/255,lines.item_for_iteration.color.blue/255))
+				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255, lines.item_for_iteration.color.green/255, lines.item_for_iteration.color.blue/255))
 				traffic_line_factory.set_line (lines.item_for_iteration)
 				metro_line := traffic_line_factory.create_object
-				traffic_line_objects.force (metro_line,i)
+				traffic_line_objects.force (metro_line, i)
 				i := i + 1
 				lines.forth
 			end

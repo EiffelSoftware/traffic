@@ -152,8 +152,8 @@ feature {NONE} -- Implementation
 			create dst.make_xyz (map_to_gl_coords (section.polypoints.last).x, line_height, map_to_gl_coords (section.polypoints.last).y)
 			create color.make_xyz (0, 0, 0)	-- Black
 
-			draw_circle (org, color, 2*line_width, line_height+0.02)
-			draw_circle (dst, color, 2*line_width, line_height+0.02)
+			draw_circle (org, color, 2*line_width, line_height+0.01)
+			draw_circle (dst, color, 2*line_width, line_height+0.01)
 
 			-- draw a connecting line
 			from
@@ -164,10 +164,10 @@ feature {NONE} -- Implementation
 				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i)).y)
 				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i+1)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i+1)).y)
 				draw_line (org, dst)
-				draw_circle (org, line_color, line_width, line_height+0.01)
+				draw_circle (org, line_color, line_width, line_height)
 				i := i + 1
 			end
-			draw_circle (dst, line_color, line_width, line_height+0.01)
+			draw_circle (dst, line_color, line_width, line_height)
 		end
 
 end -- class TRAFFIC_LINE_FACTORY
