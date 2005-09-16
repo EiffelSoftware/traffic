@@ -55,7 +55,7 @@ feature -- Constants
 			Result := (max_distance - 2*distance)*(max_building_height/max_distance)
 		end
 		
-	Speed: DOUBLE is 0.03
+	Speed: DOUBLE is 0.02
 			-- Speed of traffic line rides
 
 end -- class SHARED_CONSTANTS

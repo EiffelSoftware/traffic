@@ -44,8 +44,8 @@ feature -- Initialization
 			x_coord := 0
 			y_coord := -1
 			z_coord := -9
-			y_rotation := 180  -- -35
-			x_rotation := 40  -- -80
+			y_rotation := 180
+			x_rotation := 40
 			sun_angle := 0
 			
 			-- Various creations
@@ -122,11 +122,11 @@ feature -- Drawing
 				
 				glu_look_at_external
 				(	position.x - (position.x/position.length),
-					.5,
+					0.5,
 					position.y - (position.y/position.length),
-					position.x + 3*(position.x/position.length),
-					0.4,
-					position.y + 3*(position.y/position.length),
+					position.x + 0.1*(position.x/position.length),
+					0.5,
+					position.y + 0.1*(position.y/position.length),
 					0, 1, 0
 				)
 				
