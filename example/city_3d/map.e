@@ -62,7 +62,7 @@ feature -- Initialization
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
 		ensure
-			traffic_line_factory /= void 
+			traffic_line_factory /= void
 			sun_light /= void
 			constant_light /= void
 		end
@@ -112,32 +112,41 @@ feature -- Drawing
 --			gl_translated_external (x_translation, -y_translation, 0)
 			
 			-- Traffic line rides
-			if show_shortest_path and then shortest_path_line /= Void and then traffic_line_ride and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
-				f := map_to_gl_coords (shortest_path_line.item.polypoints.first)
-				t := map_to_gl_coords (shortest_path_line.item.polypoints.last)
+			if traffic_line_ride and then show_shortest_path and then shortest_path_line /= Void and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
+				f := last_polypoint
+				t := map_to_gl_coords (shortest_path_line.item.polypoints.item)
 				
 				direction := t - f
 				
-				segment_position := segment_position + (direction / direction.length) * speed
---				y_rot := 180/Pi*arc_tangent (direction.y / direction.x) + 270
+				position := position + (direction / direction.length) * speed
 				
 				glu_look_at_external
-				(	segment_position.x - (segment_position.x/segment_position.length),
+				(	position.x - (position.x/position.length),
 					1,
-					segment_position.y - (segment_position.y/segment_position.length),
-					segment_position.x + 3*(segment_position.x/segment_position.length),
+					position.y - (position.y/position.length),
+					position.x + 3*(position.x/position.length),
 					0,
-					segment_position.y + 3*(segment_position.y/segment_position.length),
+					position.y + 3*(position.y/position.length),
 					0, 1, 0
 				)
 				
 				gl_translated_external (-f.x, 0, -f.y)
 				
-				if (segment_position-direction).length < speed and then not shortest_path_line.after then
-					shortest_path_line.forth
-					position := position + direction
-					segment_position.set_x (0)
-					segment_position.set_y (0)
+				if (position-direction).length < speed then
+					last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.item)
+					shortest_path_line.item.polypoints.forth
+					
+					if shortest_path_line.item.polypoints.after and then not shortest_path_line.after then
+						shortest_path_line.forth
+						if not shortest_path_line.after then
+							shortest_path_line.item.polypoints.start
+							last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
+							shortest_path_line.item.polypoints.forth
+						end
+					end
+					
+					position.set_x (0)
+					position.set_y (0)
 				end
 			else
 				traffic_line_ride := False
@@ -328,9 +337,9 @@ feature -- Shortest path
 		
 feature {NONE} -- Traffic line rides
 
-	position: EM_VECTOR_2D
+	last_polypoint: EM_VECTOR_2D
 	
-	segment_position: EM_VECTOR_2D
+	position: EM_VECTOR_2D
 		
 feature -- Traffic map loading
 
@@ -474,13 +483,18 @@ feature -- Options
 			shortest_path_line /= Void
 		do
 			traffic_line_ride := True
+			create last_polypoint.make (0, 0)
 			shortest_path_line.start
+			if not shortest_path_line.after then
+				shortest_path_line.item.polypoints.start
+				last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
+				shortest_path_line.item.polypoints.forth
+			end
 			create position.make (0, 0)
-			create segment_position.make (0, 0)
 		ensure
 			traffic_line_ride
+			last_polypoint /= Void
 			position /= Void
-			segment_position /= Void
 		end
 	
 	sun_shown: BOOLEAN
