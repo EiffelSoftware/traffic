@@ -80,15 +80,15 @@
     <para/>
 	1) Replacing the GUI:
          <para/>
-	One could replace the GUI with another one or integrate the 'map part' (i.e. <classname>MAP</classname> and the factories) of the project into another application. This could be done by creating an instance of <classname>MAP</classname> in the new application and setting the features from the option section with the widgets of the new GUI simillary to how this is done in <classname>CITY_3D_SCENE</classname> or even add new features to <classname>MAP</classname>.
+	One could replace the GUI with another one or integrate the 'map part' (i.e. <classname>MAP</classname> and the factories) of the project into another application. This could be done by creating an instance of <classname>MAP</classname> in the new application and accessing the features from the option section with the widgets of the new GUI simillary to how this is done in <classname>CITY_3D_SCENE</classname> or even add new features to <classname>MAP</classname>.
 	<para/>
-	2) Extending displayed objects
+	2) Extending displayed objects:
          <para/>
-	 One could add new factories to the project or use existing ones to display more and different buildings, metro lines or anything else desired. The easiest way to create a new factory would be to inherit from <classname>EM_3D_OBJECT_FACTORY</classname> as this is done with the two implemented factories.
+	 One could add new factories to the project or use existing ones to display more and different buildings, traffic lines or anything else. The easiest way to create a new factory would be to inherit from <classname>EM_3D_OBJECT_FACTORY</classname> as this is done with the two implemented factories.
 	With <classname>BUILDING_FACTORY</classname> reuse comes naturally as it is able to draw any building of choice (how this is done is explained in the corresponding section in <ulink url="structure.html">classes</ulink>). 
-	If changing the displaying of metro lines would be desired, one could change <featurename>specify_object</featurename> in <classname>TRAFFIC_LINE_FACTORY</classname>.
+    If you would like to change the way traffic lines are displayed, you could change <featurename>specify_object</featurename> in <classname>TRAFFIC_LINE_FACTORY</classname>.
 	<para/>
-	3) Extending functionality
+	3) Extending functionality:
          <para/>
             To provide additonal options and functionallity, one would have to add the new features in <classname>MAP</classname> in the section options and make them accessible by adding corresponding widgets to <classname>CITY_3D_SCENE</classname> or any other GUI. Then one would have to add the new option to <featurename>draw</featurename> like this is done with all the other options.
     <para>

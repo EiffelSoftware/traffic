@@ -39,12 +39,12 @@
     </listitem>
     <listitem>
     <para>
-    	<indexlink url="#goal">Goals</indexlink>
+    	<indexlink url="#goals">Goals</indexlink>
     </para>
     </listitem>
      <listitem>
     <para>
-    	<indexlink url="#enviroment">Enviroment and used libraries</indexlink>
+    	<indexlink url="#environment">Environment and used libraries</indexlink>
     </para>
     </listitem>
     <listitem>
@@ -67,7 +67,7 @@
 <toplink/>
 </section>
 
-<section id="goal">
+<section id="goals">
 	<para/>
 	<title>Our goals</title>
 	<para>
@@ -82,7 +82,7 @@
 	</para>
 <toplink/>
 </section>
-<section id="enviroment">
+<section id="environment">
 	<para/>
 	<title>Environment and used libraries</title>
 	<para>

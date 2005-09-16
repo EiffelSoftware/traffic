@@ -52,7 +52,7 @@ This document is structured as follows:
 			<ulink url="structure.html">Classes</ulink>
 		</term>
 		<listitem><para>
-			Explanation of classes.
+			Presents the classes of the application.
 		</para></listitem>
 	</varlistentry>
 	<varlistentry>
@@ -60,7 +60,7 @@ This document is structured as follows:
 			<ulink url="miscellaneous.html">Miscellaneous</ulink>
 		</term>
 		<listitem><para>
-			Dicusses dependencies, reutilisation and future perspective
+			Discusses dependencies, reutilisation and future perspective.
 		</para></listitem>
 	</varlistentry>
 </variablelist>
