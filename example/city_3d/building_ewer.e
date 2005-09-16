@@ -126,25 +126,25 @@ feature {NONE} -- Implementation
 			until
 				i > (n + old_number)
 			loop
-				x_coord := centre.x - (plane_size/2) +  randomizer.double_i_th (j)*plane_size -- 1.7
+				x_coord := centre.x - (plane_size/2) + randomizer.double_i_th (j)*plane_size -- 1.7
 				z_coord := centre.z - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size -- -0.3
-
+				
 				-- ACHTUNG: Origin ist links unten! building_width ev. ändern!
 				create poly_points.make
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord),1)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord - building_width),2)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - building_width, z_coord - building_width),3)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - building_width, z_coord),4)
+				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord), 1)
+				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord - building_width), 2)
+				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - building_width, z_coord - building_width), 3)
+				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - building_width, z_coord), 4)
 				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-0.1, z_coord-0.1), poly_points)
-	
-				if not has_collision(collision_poly) then					
-					distance := distance_to_centre(create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord, 0, z_coord))
-
-					building_factory.take_decision ("by_distance",[max_distance,distance])
+				
+				if not has_collision (collision_poly) then					
+					distance := distance_to_centre (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (x_coord, 0, z_coord))
+					
+					building_factory.take_decision ("by_distance", [max_distance,distance])
 					building := building_factory.create_object
-					building.set_scale (building_width, calculate_building_height (max_distance, distance) , building_width)
+					building.set_scale (building_width, calculate_building_height (max_distance, distance), building_width)
 					building.set_origin (x_coord, 0, z_coord)
-					buildings.force (building,i)
+					buildings.force (building, i)
 					i := i + 1
 				end
 				j := j + 2
@@ -201,9 +201,9 @@ feature {NONE} -- Implementation
 						
 						create polygon_points.make
 						polygon_points.force ((a_point),1)
-						polygon_points.force (create {EM_VECTOR_2D}.make (start_point.x+delta_y*line_width/norm, start_point.y-delta_x*1.5*line_width/norm), 2)
+						polygon_points.force (create {EM_VECTOR_2D}.make (start_point.x+delta_y*1.5*line_width/norm, start_point.y-delta_x*1.5*line_width/norm), 2)
 						polygon_points.force ((c_point),3)
-						polygon_points.force (create {EM_VECTOR_2D}.make (end_point.x-delta_y*line_width/norm, end_point.y+delta_x*1.5*line_width/norm), 4)
+						polygon_points.force (create {EM_VECTOR_2D}.make (end_point.x-delta_y*1.5*line_width/norm, end_point.y+delta_x*1.5*line_width/norm), 4)
 						create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2), polygon_points)
 						traffic_lines_polygons.force (collidable)
 						i := i + 1
@@ -361,7 +361,7 @@ feature -- Decision procedures
 		do
 			gl_matrix_mode_external (em_gl_modelview)
 --			gl_push_matrix_external
---			gl_translated_external (-0.5, 0, -0.5)		
+			gl_translated_external (-0.5, 0, -0.5)
 			
 			gl_color3d_external (0.65, 0.65, 0.65) -- White
 			gl_matrix_mode_external (Em_gl_modelview)

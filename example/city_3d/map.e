@@ -125,7 +125,7 @@ feature -- Drawing
 					1,
 					position.y - (position.y/position.length),
 					position.x + 3*(position.x/position.length),
-					0,
+					0.9,
 					position.y + 3*(position.y/position.length),
 					0, 1, 0
 				)
@@ -330,7 +330,7 @@ feature -- Shortest path
 				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1))
 				traffic_line_factory.set_line (line)
 				shortest_path_line_representation := traffic_line_factory.create_object
-				shortest_path_line_representation.set_origin (0, line_height+0.2, 0)
+				shortest_path_line_representation.set_origin (0, line_height+0.05, 0)
 				marked_station_changed := False
 			end
 		end
