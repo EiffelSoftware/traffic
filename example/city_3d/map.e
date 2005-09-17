@@ -94,7 +94,6 @@ feature -- Drawing
 			-- Setup the projection matrix
 			gl_matrix_mode (Em_gl_projection)
 			gl_load_identity
---			glu_perspective (field_of_view, width/height, focus*min_view_distance, focus*max_view_distance)
 			glu_perspective (field_of_view, width/height, 0.1, focus*max_view_distance)
 			
 			-- Setup the model view matrix
@@ -108,8 +107,6 @@ feature -- Drawing
 			-- Do viewing transformations
 			gl_matrix_mode (em_gl_modelview_matrix)
 			gl_load_identity
---			gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
---			gl_translated_external (x_translation, -y_translation, 0)
 			
 			-- Traffic line rides
 			if traffic_line_ride and then show_shortest_path and then shortest_path_line /= Void and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
@@ -239,9 +236,9 @@ feature -- Drawing
 					gl_polygon_mode (em_gl_front_and_back, em_gl_fill)
 					gl_flush
 				end
-				draw_metro_lines
+				draw_traffic_lines
 			end
-
+			
 			-- Draw marked stations
 			if marked_origin /= Void then
 				gl_matrix_mode (Em_gl_modelview)
@@ -273,15 +270,17 @@ feature -- Shortest path
 
 	shortest_path_line: TRAFFIC_LINE
 			-- Artificial traffic line for the shortest path
-	
+			
 	shortest_path_line_representation: EM_3D_OBJECT
 			-- Graphical representation of `shortest_path_line'
-	
+			
 	marked_station_changed: BOOLEAN
 			-- Has the marked station changed?
-	
+			
 	calculate_shortest_path is
 			-- Calculate the shortest path.
+		require
+			map /= Void
 		local
 			line: TRAFFIC_LINE
 			origin, destination: TRAFFIC_PLACE
@@ -331,8 +330,10 @@ feature -- Shortest path
 feature {NONE} -- Traffic line rides
 
 	last_polypoint: EM_VECTOR_2D
+			-- The last polypoint visited
 	
 	position: EM_VECTOR_2D
+			-- The current position
 		
 feature -- Traffic map loading
 
@@ -348,7 +349,7 @@ feature -- Traffic map loading
 			is_map_loaded := True
 			number_of_buildings := 0
 			create ewer.make(-plane_size/2, -plane_size/2, number_of_buildings, map)
-			create_metro_line_representation
+			create_traffic_line_representation
 			marked_destination := void
 			marked_origin := void
 			shortest_path_line := void
@@ -392,34 +393,42 @@ feature -- Options
 		
 	set_zoom (d: DOUBLE) is
 			-- Set the focus.
-		require d > 0
+		require
+			d > 0
 		do
 			focus := d
-		ensure focus = d
+		ensure
+			focus = d
 		end
 		
 	set_coordinates_shown (b: BOOLEAN) is
 			-- Set `coordinates_shown'.
-		require variable_exists: b /= void
+		require
+			variable_exists: b /= void
 		do
 			coordinates_shown := b
-		ensure coordinates_shown = b
+		ensure
+			coordinates_shown = b
 		end
 
 	set_sun_shown (b: BOOLEAN) is
 			-- Set `sun_shown'.
-		require variable_exists: b /= void
+		require
+			variable_exists: b /= void
 		do
 			sun_shown := b
-		ensure sun_shown = b
+		ensure
+			sun_shown = b
 		end
 		
 	set_buildings_shown (b: BOOLEAN) is
 			-- Set `buildings_shown'.
-		require variable_exists: b /= void
+		require
+			variable_exists: b /= void
 		do
 			buildings_shown := b
-		ensure buildings_shown = b
+		ensure
+			buildings_shown = b
 		end
 	
 	set_number_of_buildings (n: INTEGER) is
@@ -437,19 +446,22 @@ feature -- Options
 		
 	set_buildings_transparent (b: BOOLEAN) is
 			-- Set `buildings_transparent'.
-		require variable_exists: b /= void
+		require
+			variable_exists: b /= void
 		do
 			buildings_transparent := b
-		ensure buildings_transparent = b
+		ensure
+			buildings_transparent = b
 		end
-
+		
 	set_lines_highlighted (b: BOOLEAN) is
 			-- If `b' then traffic lines are highlighted.
-		require variable_exist: b /= void
+		require
+			variable_exist: b /= void
 		do
 			if b then
 				highlighting_delta := 2
-			else 
+			else
 				highlighting_delta := 0
 			end
 		ensure
@@ -459,7 +471,8 @@ feature -- Options
 	
 	set_show_shortest_path (b: BOOLEAN) is
 			-- Set `show_shortest_path'.
-		require variable_exists: b /= void
+		require
+			variable_exists: b /= void
 		do
 			if show_shortest_path then
 				shortest_path_line := void
@@ -467,7 +480,8 @@ feature -- Options
 			end
 			show_shortest_path := b
 			marked_station_changed := True
-		ensure show_shortest_path = b
+		ensure
+			show_shortest_path = b
 		end
 	
 	take_traffic_line_ride is
@@ -492,22 +506,22 @@ feature -- Options
 	
 	sun_shown: BOOLEAN
 			-- Should sun be displayed?
-		
+			
 	coordinates_shown: BOOLEAN
 			-- Should the coordinate system be displayed?
-		
+			
 	buildings_shown: BOOLEAN
 			-- Should the buildings be displayed?
-		
+			
 	buildings_transparent: BOOLEAN
 			-- Should the buildings be transparent?
-		
+			
 	show_shortest_path: BOOLEAN
 			-- Should the shortest path be displayed?
-		
+			
 	traffic_line_ride: BOOLEAN
 			-- Are you just taking a traffic line ride?
-		
+			
 feature {NONE} -- Event handling
 
 	wheel_down is
@@ -533,9 +547,11 @@ feature {NONE} -- Event handling
 		ensure
 			focus_decremented: focus > 0.1 implies focus < old focus
 		end
-	
+		
 	mouse_click (event: EM_MOUSEBUTTON_EVENT) is
 			-- Handle mouse clicked event.
+		require
+			event /= Void
 		local
 			section: TRAFFIC_LINE_SECTION
 			line: TRAFFIC_LINE
@@ -548,6 +564,7 @@ feature {NONE} -- Event handling
 			if event.is_left_button then
 				result_vec := transform_coords(event.screen_x, event.screen_y)				
 				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
+				
 				if map /= Void then
 					
 					from lines := map.lines
@@ -652,6 +669,8 @@ feature {NONE} -- Event handling
 	
 	mouse_drag (event: EM_MOUSEMOTION_EVENT) is
 			-- Handle mouse movement event.
+		require
+			event /= Void
 		local
 			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
 			delta_x, delta_y, delta, mouse_delta: DOUBLE
@@ -669,6 +688,7 @@ feature {NONE} -- Event handling
 				elseif x_rotation >= 90 then
 					x_rotation := 90
 				end
+				
 			elseif event.button_state_left then
 				start_vec := transform_coords (event.x, event.y)
 				end_vec := transform_coords (event.x + event.x_motion, event.y + event.y_motion)
@@ -685,9 +705,11 @@ feature {NONE} -- Event handling
 				end
 			end
 		end
-	
+		
 	key_down (event: EM_KEYBOARD_EVENT) is
 			-- Handle key events.
+		require
+			event /= Void
 		do
 			if event.key = event.sdlk_up then
 				x_rotation := x_rotation + 10
@@ -708,9 +730,11 @@ feature {NONE} -- Event handling
 		
 feature {NONE} -- Auxiliary drawing features
 		
-	draw_metro_lines is
-			-- Draw representation of metro lines.
-		local 
+	draw_traffic_lines is
+			-- Draw representation of traffic lines.
+		require
+			traffic_line_objects /= Void
+		local
 			i: INTEGER
 		do
 			from i := traffic_line_objects.lower
@@ -730,7 +754,7 @@ feature {NONE} -- Auxiliary drawing features
 		end
 
 	create_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
-		-- OpenGL display list Nr. `1' for a plane.
+			-- OpenGL display list Nr. `1' for a plane.
 		require
 			p1 /= Void
 			p2 /= Void
@@ -781,13 +805,13 @@ feature {NONE} -- Auxiliary drawing features
 			gl_end_list
 		end
 		
-	create_metro_line_representation is
-			-- Create the objects necessary for displaying the metro lines.
+	create_traffic_line_representation is
+			-- Create the objects necessary for displaying the traffic lines.
 		require
 			traffic_line_factory /= Void
 		local
 			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
-			metro_line: EM_3D_OBJECT
+			traffic_line: EM_3D_OBJECT
 			i: INTEGER
 		do
 			create traffic_line_objects.make (1, 1)
@@ -800,8 +824,8 @@ feature {NONE} -- Auxiliary drawing features
 			loop 
 				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255, lines.item_for_iteration.color.green/255, lines.item_for_iteration.color.blue/255))
 				traffic_line_factory.set_line (lines.item_for_iteration)
-				metro_line := traffic_line_factory.create_object
-				traffic_line_objects.force (metro_line, i)
+				traffic_line := traffic_line_factory.create_object
+				traffic_line_objects.force (traffic_line, i)
 				i := i + 1
 				lines.forth
 			end
@@ -809,7 +833,7 @@ feature {NONE} -- Auxiliary drawing features
 			traffic_line_objects /= void
 		end
 		
-	transform_coords (screen_x,screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
+	transform_coords (screen_x, screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
 			-- Transform mouse coordinates with gl_un_project to 3D coordinates.
 			-- screen = event.screen_
 			-- rel = event.x
@@ -824,7 +848,7 @@ feature {NONE} -- Auxiliary drawing features
 			temp: ANY
 			window_z: REAL
 		do
-			-- Vorbereitung fuer beide Varianten
+			-- Vorbereitung für beide Varianten
 			if video_subsystem.video_surface.gl_2d_mode then
 				video_subsystem.video_surface.gl_leave_2d
 			end
@@ -848,9 +872,9 @@ feature {NONE} -- Auxiliary drawing features
 		ensure
 			Result /= void
 		end
-
+		
 feature {NONE} -- Shared objects
-	
+
 	ewer: BUILDING_EWER
 			-- Ewer for creation and distribution of buildings
 			
@@ -869,23 +893,32 @@ feature {NONE} -- Shared objects
 feature {NONE} -- Attributes
 
 	sun_angle: DOUBLE
-			-- Angle of sun rotation	
+			-- Angle of sun rotation
+			
 	focus: DOUBLE
 			-- Used to zoom in or out.
+			
 	x_coord: DOUBLE
-			-- X coordinate of the viewer	
+			-- X coordinate of the viewer
+			
 	y_coord: DOUBLE
-			-- Y coordinate of the viewer		
+			-- Y coordinate of the viewer
+			
 	z_coord: DOUBLE
-			-- Z coordinate of the viewer	
+			-- Z coordinate of the viewer
+			
 	x_rotation: DOUBLE
-			-- Rotation around the x axis		
+			-- Rotation around the x axis
+			
 	y_rotation: DOUBLE
-			-- Rotation around the y axis	
+			-- Rotation around the y axis
+			
 	x_translation: DOUBLE
-			-- Translation of the map's origin in x direction	
+			-- Translation of the map's origin in x direction
+			
 	y_translation: DOUBLE
 			-- Translation of the map's origin in y direction
+			
 	highlighting_delta: DOUBLE
 			-- Height difference between highlighted and normal line representation
 	

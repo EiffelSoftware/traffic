@@ -26,6 +26,7 @@ feature -- Interface
 			set_frame_counter_visibility (True)
 			
 			create bg_color.make_with_rgb (150,255,150)
+			
 			-- Toolbar
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded, window_height)
 			
@@ -73,7 +74,7 @@ feature -- Interface
 			toolbar_panel.set_background_color (bg_color)
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
 			add_component (toolbar_panel)
-
+			
 			-- Combobox title
 			combo_title.set_position (10,50)
 			combo_title.set_background_color (bg_color)
@@ -221,17 +222,6 @@ feature -- Interface
 		
 feature -- Event handling
 
-	traffic_line_rides_checked is
-			-- Checkbox has been checked.
-		do
-			map.take_traffic_line_ride
-		end
-		
-	traffic_line_rides_unchecked is
-			-- Checkbox has been unchecked.
-		do
-		end
-
 	zoom_in_button_clicked is
 			-- "Zoom in" button has been clicked.
 		require
@@ -256,11 +246,17 @@ feature -- Event handling
 			traffic_line_ride_button /= Void
 		do
 			traffic_line_ride_button.set_pressed (False)
-			map.take_traffic_line_ride
+			if map.shortest_path_line /= Void then
+				map.take_traffic_line_ride
+			end
 		end
 
 	handle_mouse_click (origin_label, destination_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
 			-- Adapt the text on `origin_label' and `destination_label'.
+		require
+			origin_label /= Void
+			destination_label /= Void
+			e /= Void
 		do
 			if map.marked_origin /= Void then
 				origin_label.set_text (map.marked_origin.name)
@@ -396,24 +392,31 @@ feature -- Widgets
 
 	toolbar_panel: EM_PANEL
 			-- Panel, in which all option widgets are displayed.
-		
+			
 	buildings_transparent_checkbox: EM_CHECKBOX
 			-- Checkbox for transparent buildings
+			
 	sun_checkbox: EM_CHECKBOX
 			-- Checkbox for different light
+			
 	coordinates_checkbox: EM_CHECKBOX
 			-- Checkbox for (visible) coordinate axis
+			
 	highlighting_checkbox: EM_CHECKBOX
-			-- Checkbox for highlighting metro lines
+			-- Checkbox for highlighting traffic lines
+			
 	buildings_checkbox: EM_CHECKBOX
 			-- Checkbox for visibility of buildings
+			
 	shortest_path_checkbox: EM_CHECKBOX
 			-- Checkbox for shortest path calculation
 	
 	combo_title: EM_LABEL
 			-- Title for combo box
+			
 	combo_box: EM_COMBOBOX[STRING]
 			-- Box to choose the xml file from
+			
 	load_button: EM_BUTTON
 			-- Button to load the xml file
 	
@@ -425,17 +428,21 @@ feature -- Widgets
 
 	buildings_slider: EM_SLIDER
 			-- Slider to change number of houses displayed
+			
 	buildings_label: EM_LABEL
 			-- Label to show number of houses
 	
 	marked_origin_label: EM_LABEL
-			-- Label for origin
+			-- Label for the origin
+			
 	marked_origin_title: EM_LABEL
-			-- Name of (origin) station
+			-- Name of the (origin) station
+			
 	marked_destination_label: EM_LABEL
-			-- Label for destination
+			-- Label for the destination
+			
 	marked_destination_title: EM_LABEL
-			-- Name of (destination) station
+			-- Name of the (destination) station
 	
 	traffic_line_ride_button: EM_BUTTON
 			-- Botton to take a traffic line ride

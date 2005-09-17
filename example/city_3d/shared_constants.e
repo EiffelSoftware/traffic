@@ -10,14 +10,14 @@ feature -- Constants
 
 	Building_width: DOUBLE is 0.2
 			-- Width of the quadratic (!) base of the building.
-
+			
 	Max_building_height: DOUBLE is 1.0
 			-- Maximum height of buildings
-
+			
 	Plane_size: DOUBLE is 50.0
 			-- Length, resp. width, of plane
-
-	Window_width: INTEGER is 800  --1024
+			
+	Window_width: INTEGER is 800 --1024
 			-- Window width
 			
 	Window_height: INTEGER is 600 --768
@@ -31,7 +31,7 @@ feature -- Constants
 			
 	Line_width: DOUBLE is 0.075
 			-- Width of the line
-	
+			
 	Line_height: DOUBLE is 0.05
 			-- Height of the line representation on the map
 			

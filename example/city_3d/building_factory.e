@@ -34,11 +34,13 @@ feature -- Interface
 			
 	object_width: DOUBLE is 2.0
 			-- The size of the bounding box in x direction of created objects
+			
 	object_height: DOUBLE is 2.0
 			-- The size of the bounding box in y direction of created objects
+			
 	object_depth: DOUBLE is 2.0
 			-- The size of the bounding box in z direction of created objects
-
+			
 feature -- Decision process
 
 	add_gauger (procedure: FUNCTION [ANY, TUPLE, STRING]; key: STRING) is
@@ -62,7 +64,7 @@ feature -- Decision process
 			gaugers.removed
 		end
 
-	add_building_type (procedure:PROCEDURE[ANY,TUPLE] ;key: STRING) is
+	add_building_type (procedure: PROCEDURE[ANY,TUPLE]; key: STRING) is
 			-- Add a type of building to `building_templates'.
 		require
 			procedure_valid: procedure /= void 
@@ -78,7 +80,7 @@ feature -- Decision process
 		require
 			key_valid: key /= void and then not key.is_empty
 		do
-				building_templates.remove (key)
+			building_templates.remove (key)
 		ensure
 			building_templates.removed	
 		end
@@ -97,7 +99,7 @@ feature {NONE} -- Implementation
 			
 	decision: STRING
 			-- The decision the gauger has taken
-		
+			
 	gaugers: HASH_TABLE[FUNCTION [ANY, TUPLE, STRING], STRING]
 			-- Helps to decide the kind of building to draw.
 			

@@ -35,7 +35,7 @@ feature -- Initialization
 			buildings_valid: no_buildings >= 0
 		do
 			create centre.make_xyz (x+plane_size/2, 0, z+plane_size/2)
-			create_metro_lines_polygons (map)
+			create_traffic_lines_polygons (map)
 			create randomizer.set_seed (42)
 			create building_factory.make
 			
@@ -43,9 +43,9 @@ feature -- Initialization
 			building_factory.add_building_type (agent create_city_central, "city_centre")
 			building_factory.add_building_type (agent create_central_building, "central")
 			building_factory.add_building_type (agent create_outlying, "outlying")	
-			building_factory.add_gauger (agent choose_building_type, "by_distance")
+			building_factory.add_gauger (agent decide_building_type, "by_distance")
 			
-			create buildings.make (1,no_buildings)
+			create buildings.make (1, no_buildings)
 			add_buildings (no_buildings)
 			
 		ensure 
@@ -87,7 +87,8 @@ feature {NONE} -- Collision detection
 
 	has_collision (poly_a: EM_COLLIDABLE): BOOLEAN is
 			-- Is there a collision?
-		require poly_a /= void
+		require
+			poly_a /= void
 		do
 			from
 				traffic_lines_polygons.start
@@ -109,7 +110,8 @@ feature {NONE} -- Implementation
 	
 	add_buildings (n: INTEGER) is
 			-- Add buildings to the list of buildings.
-		require n_not_negative: n >= 0
+		require
+			n_not_negative: n >= 0
 		local
 			x_coord, z_coord, max_distance, distance: DOUBLE
 			i, j: INTEGER
@@ -129,7 +131,7 @@ feature {NONE} -- Implementation
 				x_coord := centre.x - (plane_size/2) + randomizer.double_i_th (j)*plane_size -- 1.7
 				z_coord := centre.z - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size -- -0.3
 				
-				-- ACHTUNG: Origin ist links unten! building_width ev. ändern!
+				-- ACHTUNG: Origin ist links unten! building_width evtl. ändern!
 				create poly_points.make
 				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord), 1)
 				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord - building_width), 2)
@@ -153,8 +155,8 @@ feature {NONE} -- Implementation
 		ensure
 			number_of_buildings = n
 		end
-
-	create_metro_lines_polygons (map: TRAFFIC_MAP) is
+		
+	create_traffic_lines_polygons (map: TRAFFIC_MAP) is
 			-- Create a list of collidable pieces.
 		require
 			map_exists: map /= Void
@@ -178,7 +180,7 @@ feature {NONE} -- Implementation
 				from
 					line.start
 					j := 1
-				until j > line.count//2 -- line.after
+				until j > line.count//2
 				loop
 					section := line.i_th (j)
 					from i := 1; section.polypoints.start
@@ -208,7 +210,7 @@ feature {NONE} -- Implementation
 						traffic_lines_polygons.force (collidable)
 						i := i + 1
 					end
-					j := j + 1				
+					j := j + 1
 				end
 				lines.forth
 			end
@@ -216,6 +218,9 @@ feature {NONE} -- Implementation
 	
 	distance_to_centre (p: GL_VECTOR_3D[DOUBLE]): DOUBLE is
 			-- Calculates the distance to the centre.
+		require
+			p /= Void
+			centre /= Void
 		do
 			Result := (sqrt((p.x-centre.x)^2 + (p.z-centre.z)^2))
 		end
@@ -233,14 +238,14 @@ feature {NONE} -- Attributes
 			
 	number_of_buildings: INTEGER
 			-- Number of buildings that should be shown
-	
+			
 	centre: GL_VECTOR_3D[DOUBLE]
 			-- Centre of the city
 			
 feature -- Decision procedures
 
-	choose_building_type (max_distance, distance: DOUBLE): STRING is
-			-- Choose which type of builing is chosen
+	decide_building_type (max_distance, distance: DOUBLE): STRING is
+			-- Decide which type of builing is chosen.
 		do
 			if distance < max_distance*0.1 then
 				Result := "city_centre"

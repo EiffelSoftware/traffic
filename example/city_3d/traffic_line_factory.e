@@ -12,28 +12,28 @@ inherit
 
 	EM_SHARED_BITMAP_FACTORY
 		export {NONE} all end
-
+		
 	EM_CONSTANTS
 		export {NONE} all end
-
+		
 	GL_FUNCTIONS
 		export {NONE} all end
 		
 	GLU_FUNCTIONS
 		export {NONE} all end
-	
+		
 	MATH_CONST
 		export {NONE} all end
-	
+		
 	DOUBLE_MATH
 		export {NONE} all end
-	
+		
 	SHARED_CONSTANTS
 		export {NONE} all end
 
 feature -- Initialization
 
-	set_line (l : TRAFFIC_LINE) is
+	set_line (l: TRAFFIC_LINE) is
 			-- Create a new object.
 		require
 			l /= Void
@@ -117,16 +117,16 @@ feature {NONE} -- Attributes
 		
 	line: TRAFFIC_LINE
 			-- Traffic line provides information about points and segments.
-	
+			
 	line_color: GL_VECTOR_3D[DOUBLE]
-			-- Vector of RGB values for color.
-	
+			-- Vector of RGB values for the line color.
+			
 	object_width: DOUBLE is 2.0
 			-- The size of the bounding box in x direction of created objects.
-
+			
 	object_height: DOUBLE is 2.0
 			-- The size of the bounding box in y direction of created objects.
-
+			
 	object_depth: DOUBLE is 2.0
 			-- The size of the bounding box in z direction of created objects.
 			
@@ -151,7 +151,8 @@ feature {NONE} -- Implementation
 			create org.make_xyz (map_to_gl_coords (section.polypoints.first).x, line_height, map_to_gl_coords (section.polypoints.first).y)
 			create dst.make_xyz (map_to_gl_coords (section.polypoints.last).x, line_height, map_to_gl_coords (section.polypoints.last).y)
 			create color.make_xyz (0, 0, 0)	-- Black
-
+			
+			-- draw a circle a little bit higher than the line
 			draw_circle (org, color, 2*line_width, line_height+0.01)
 			draw_circle (dst, color, 2*line_width, line_height+0.01)
 
