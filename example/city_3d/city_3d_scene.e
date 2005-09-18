@@ -385,6 +385,9 @@ feature -- Event handling
 			load_button.set_pressed (False)
 			map.load_map (map_file_name)
 			buildings_slider.set_current_value (buildings_slider.left_value)
+			marked_origin_label.set_text ("")
+			marked_destination_label.set_text ("")
+			traffic_line_ride_button.hide
 		end
 		
 	combo_selection_changed (name: STRING) is
