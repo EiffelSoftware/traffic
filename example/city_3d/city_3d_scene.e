@@ -263,10 +263,17 @@ feature -- Event handling
 			else
 				origin_label.set_text ("")
 			end
-			if map.marked_destination /= void and then map.show_shortest_path then
+			
+			if map.marked_destination /= Void and then map.show_shortest_path then
 				destination_label.set_text (map.marked_destination.name)
 			else
 				destination_label.set_text ("")
+			end
+			
+			if map.marked_origin /= Void and then map.marked_destination /= void and then map.show_shortest_path then
+				traffic_line_ride_button.show
+			else
+				traffic_line_ride_button.hide
 			end
 		end
 	
@@ -306,7 +313,9 @@ feature -- Event handling
 			if map.marked_origin /= Void then
 				marked_origin_label.set_text (map.marked_origin.name)
 			end
-			traffic_line_ride_button.show
+			if map.marked_origin /= Void and then map.marked_destination /= Void then
+				traffic_line_ride_button.show
+			end
 		end
 		
 	shortest_path_unchecked is
