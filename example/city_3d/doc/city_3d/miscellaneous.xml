@@ -107,8 +107,7 @@
     1) New features:
         <itemizedlist>
             <listitem><para>
-                First-person traveling: would make it possible to choose a origin and destination and travel through the city alongside the route. 
-		This would be done by changing the viewpoint continuously according to the position in the city.
+                Promenade through the city: would make it possible to walk through the city with some character and to explore the city 'per pedes'.
             </para></listitem>
             <listitem><para>
                 Extra XML file: that would contain additional information like the position of special buildings, their textures, height, etc. 
@@ -141,8 +140,7 @@
 	with extending the xml file would make the whole application unreasonably slow.
             </para></listitem>
 	    <listitem><para>
-	An other way to bypass this would be to add multithreading, which isn't reliably supported by Eiffel until now. This would make it possible to 
-	do the parsing in the background while the user could still interact with the program or parts are even been displayed already.
+	An other way to bypass this would be to add multithreading. This would make it possible to do the parsing in the background while the user could still interact with the program or parts of the map could already be displayed.
             </para></listitem>
             <listitem><para>
                 more buildings etc. - would probably need an extra XML file
