@@ -334,7 +334,10 @@ feature {NONE} -- Traffic line rides
 	
 	position: EM_VECTOR_2D
 			-- The current position
-		
+			
+	Speed: DOUBLE is 0.02
+			-- Speed of the traffic line rides
+
 feature -- Traffic map loading
 
 	load_map (filename: STRING) is
