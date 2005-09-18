@@ -32,7 +32,7 @@ feature -- Constants
 	Line_width: DOUBLE is 0.075
 			-- Width of the line
 			
-	Line_height: DOUBLE is 0.05
+	Line_height: DOUBLE is 0.01
 			-- Height of the line representation on the map
 			
 	Station_radius: DOUBLE is
@@ -43,7 +43,8 @@ feature -- Constants
 		
 	map_to_gl_coords (vec: EM_VECTOR_2D): EM_VECTOR_2D is
 			-- Transform map coordinates to the ones used by OpenGL.
-		require vec /= void
+		require
+			vec /= void
 		do
 			-- (669,718) are the coordinates of the HB, where the centre is.
 			create Result.make ((1350 - vec.x - 669)/30,(vec.y - 718)/30)

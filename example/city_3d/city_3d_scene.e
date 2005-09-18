@@ -70,7 +70,7 @@ feature -- Interface
 			else
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
-
+			
 			-- Toolbar Panel
 			toolbar_panel.set_background_color (bg_color)
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
@@ -169,7 +169,7 @@ feature -- Interface
 			buildings_title.set_position (10,220)
 			buildings_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (buildings_title)
-
+			
 			-- Buildings label
 			buildings_label.set_position (140, 250)
 			buildings_label.set_optimal_dimension (50, 20)
@@ -269,7 +269,8 @@ feature -- Event handling
 			else
 				origin_label.set_text ("")
 			end
-			if map.marked_destination /= void and then map.show_shortest_path then
+			
+			if map.marked_destination /= Void and then map.show_shortest_path then
 				destination_label.set_text (map.marked_destination.name)
 			else
 				destination_label.set_text ("")
@@ -409,7 +410,7 @@ feature -- Widgets
 
 	toolbar_panel: EM_PANEL
 			-- Panel, in which all option widgets are displayed.
-	
+			
 	buildings_transparent_checkbox: EM_CHECKBOX
 			-- Checkbox for transparent buildings
 			
@@ -433,7 +434,7 @@ feature -- Widgets
 			
 	combo_box: EM_COMBOBOX[STRING]
 			-- Box to choose the xml file from
-
+			
 	load_button: EM_BUTTON
 			-- Button to load the xml file
 			
@@ -442,16 +443,16 @@ feature -- Widgets
 			
 	zoom_out_button: EM_BUTTON
 			-- Botton to zoom out
-
+			
 	buildings_title: EM_LABEL
-		-- Title for slider
-		
+			-- Title for slider
+			
 	buildings_label: EM_LABEL
 			-- Label to show number of houses
 			
 	buildings_slider: EM_SLIDER
 			-- Slider to change number of houses displayed
-
+			
 	marked_origin_label: EM_LABEL
 			-- Label for the origin
 			

@@ -104,7 +104,7 @@ feature {NONE} -- Collision detection
 		end
 		
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-			-- Collision polygons to check for collisions with traffic lines.
+			-- Collision polygons to check for collisions with traffic lines
 	
 feature {NONE} -- Implementation
 	

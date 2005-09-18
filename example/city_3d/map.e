@@ -107,7 +107,7 @@ feature -- Drawing
 			
 			-- Traffic line rides
 			if traffic_line_ride and then show_shortest_path and then shortest_path_line /= Void and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
-				draw_tram_ride
+				prepare_for_traffic_line_ride
 			else
 				traffic_line_ride := False
 				-- Translation
@@ -207,7 +207,7 @@ feature -- Drawing
 				gl_matrix_mode_external (Em_gl_modelview)
 				gl_push_matrix_external
 				gl_color3d_external (0, 1, 0)
-				gl_translated_external (map_to_gl_coords (marked_origin.position).x , line_height + 0.1, map_to_gl_coords (marked_origin.position).y)
+				gl_translated_external (map_to_gl_coords (marked_origin.position).x , line_height + 0.06, map_to_gl_coords (marked_origin.position).y)
 				gl_rotated_external (90, 1, 0, 0)
 				glu_disk_external (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
 				gl_pop_matrix_external
@@ -217,7 +217,7 @@ feature -- Drawing
 				gl_matrix_mode_external (Em_gl_modelview)
 				gl_push_matrix_external
 				gl_color3d_external (1, 0, 0)
-				gl_translated_external (map_to_gl_coords (marked_destination.position).x , line_height + 0.1, map_to_gl_coords (marked_destination.position).y)
+				gl_translated_external (map_to_gl_coords (marked_destination.position).x , line_height + 0.06, map_to_gl_coords (marked_destination.position).y)
 				gl_rotated_external (90, 1, 0, 0)
 				glu_disk_external (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
 				gl_pop_matrix_external
@@ -229,20 +229,21 @@ feature -- Drawing
 			end
 		end
 		
-feature -- Tram ride
+feature -- Traffic line rides
 
 	last_polypoint: EM_VECTOR_2D
 			-- The last polypoint visited
-	
+			
 	position: EM_VECTOR_2D
 			-- The current position
 			
 	Speed: DOUBLE is 0.02
 			-- Speed of the traffic line rides
-
-	draw_tram_ride is 
-		-- Draw a tram ride for `shortest_path'.
-		local start_point,end_point,direction: EM_VECTOR_2D
+			
+	prepare_for_traffic_line_ride is
+			-- Change the viewpoint in order to take a traffic line ride.
+		local
+			start_point, end_point, direction: EM_VECTOR_2D
 		do
 			start_point := last_polypoint
 			end_point := map_to_gl_coords (shortest_path_line.item.polypoints.item)
@@ -276,47 +277,9 @@ feature -- Tram ride
 				end
 				position.set_x (0)
 				position.set_y (0)
-			end	
---			
---			f := last_polypoint
---			t := map_to_gl_coords (shortest_path_line.item.polypoints.item)
---				
---				direction := t - f
---				
---				position := position + (direction / direction.length) * speed
---				
---				glu_look_at_external
---				(	position.x - (position.x/position.length),
---					0.5,
---					position.y - (position.y/position.length),
---					position.x + 0.1*(position.x/position.length),
---					0.5,
---					position.y + 0.1*(position.y/position.length),
---					0, 1, 0
---				)
---				
---				gl_translated_external (-f.x, 0, -f.y)
---				
---				if (position-direction).length < speed then
---					last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.item)
---					shortest_path_line.item.polypoints.forth
---					
---					if shortest_path_line.item.polypoints.after and then not shortest_path_line.after then
---						shortest_path_line.forth
---						if not shortest_path_line.after then
---							shortest_path_line.item.polypoints.start
---							last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
---							shortest_path_line.item.polypoints.forth
---						end
---					end
---					
---					position.set_x (0)
---					position.set_y (0)
---				end
-			
-			
+			end
 		end
-		
+
 feature -- Shortest path
 
 	shortest_path_line: TRAFFIC_LINE
@@ -377,7 +340,7 @@ feature -- Shortest path
 				marked_station_changed := False
 			end
 		end
-		
+
 feature -- Traffic map loading
 
 	load_map (filename: STRING) is
@@ -824,21 +787,21 @@ feature {NONE} -- Auxiliary drawing features
 					-- x axis
 					gl_color3d_external (1,0,0)
 					gl_vertex3d_external (0,0,0)
-					gl_vertex3d_external(1,0,0)
+					gl_vertex3d_external (1,0,0)
 				gl_end_external
 				
-				gl_begin_external(em_gl_lines)
+				gl_begin_external (em_gl_lines)
 					-- y axis
 					gl_color3d_external (0,1,0)
 					gl_vertex3d_external (0,0,0)
-					gl_vertex3d_external(0,1,0)
+					gl_vertex3d_external (0,1,0)
 				gl_end_external
 				
-				gl_begin_external(em_gl_lines)
+				gl_begin_external (em_gl_lines)
 					-- z axis
 					gl_color3d_external (0,0,1)
 					gl_vertex3d_external (0,0,0)
-					gl_vertex3d_external(0,0,1)
+					gl_vertex3d_external (0,0,1)
 				gl_end_external
 			gl_end_list_external
 		end
@@ -884,7 +847,6 @@ feature {NONE} -- Auxiliary drawing features
 			temp: ANY
 			window_z: REAL
 		do
-			-- Preperation for both possibilities
 			if video_subsystem.video_surface.gl_2d_mode then
 				video_subsystem.video_surface.gl_leave_2d
 			end

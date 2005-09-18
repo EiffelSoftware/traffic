@@ -147,16 +147,16 @@ feature {NONE} -- Implementation
 			org, dst: GL_VECTOR_3D[DOUBLE]
 			color: GL_VECTOR_3D[DOUBLE]
 		do
-			-- Draw circles at the origin and destination
+			-- draw circles at the origin and destination
 			create org.make_xyz (map_to_gl_coords (section.polypoints.first).x, line_height, map_to_gl_coords (section.polypoints.first).y)
 			create dst.make_xyz (map_to_gl_coords (section.polypoints.last).x, line_height, map_to_gl_coords (section.polypoints.last).y)
 			create color.make_xyz (0, 0, 0)	-- Black
 			
-			-- Draw a circle a little bit higher than the line
+			-- draw a circle a little bit higher than the line
 			draw_circle (org, color, 2*line_width, line_height+0.01)
 			draw_circle (dst, color, 2*line_width, line_height+0.01)
 
-			-- Draw a connecting line
+			-- draw a connecting line
 			from
 				i := 1
 			until
