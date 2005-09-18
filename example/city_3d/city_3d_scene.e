@@ -43,6 +43,7 @@ feature -- Interface
 			create load_button.make_from_text ("Load map")
 			
 			-- Slider and label for number of buildings
+			create buildings_title.make_from_text ("Number of buildings:")
 			create buildings_label.make_from_text ("0")
 			create buildings_slider.make_from_range_horizontal (0, 100)
 			
@@ -69,7 +70,7 @@ feature -- Interface
 			else
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
-			
+
 			-- Toolbar Panel
 			toolbar_panel.set_background_color (bg_color)
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
@@ -163,9 +164,14 @@ feature -- Interface
 			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
 			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (zoom_in_button)
+			
+			-- Buildings title
+			buildings_title.set_position (10,220)
+			buildings_title.set_background_color (bg_color)
+			toolbar_panel.add_widget (buildings_title)
 
 			-- Buildings label
-			buildings_label.set_position (140, 230)
+			buildings_label.set_position (140, 250)
 			buildings_label.set_optimal_dimension (50, 20)
 			buildings_label.set_to_optimal_dimension
 			buildings_label.set_background_color (bg_color)
@@ -173,7 +179,7 @@ feature -- Interface
 			toolbar_panel.add_widget (buildings_label)
 			
 			-- Buildings slider
-			buildings_slider.set_position (10, 230)
+			buildings_slider.set_position (10, 250)
 			buildings_slider.set_optimal_dimension (120, 20)
 			buildings_slider.set_to_optimal_dimension
 			buildings_slider.set_background_color (bg_color)
@@ -263,8 +269,7 @@ feature -- Event handling
 			else
 				origin_label.set_text ("")
 			end
-			
-			if map.marked_destination /= Void and then map.show_shortest_path then
+			if map.marked_destination /= void and then map.show_shortest_path then
 				destination_label.set_text (map.marked_destination.name)
 			else
 				destination_label.set_text ("")
@@ -404,7 +409,7 @@ feature -- Widgets
 
 	toolbar_panel: EM_PANEL
 			-- Panel, in which all option widgets are displayed.
-			
+	
 	buildings_transparent_checkbox: EM_CHECKBOX
 			-- Checkbox for transparent buildings
 			
@@ -428,22 +433,25 @@ feature -- Widgets
 			
 	combo_box: EM_COMBOBOX[STRING]
 			-- Box to choose the xml file from
-			
+
 	load_button: EM_BUTTON
 			-- Button to load the xml file
-	
+			
 	zoom_in_button: EM_BUTTON
 			-- Botton to zoom in
-		
+			
 	zoom_out_button: EM_BUTTON
 			-- Botton to zoom out
 
-	buildings_slider: EM_SLIDER
-			-- Slider to change number of houses displayed
-			
+	buildings_title: EM_LABEL
+		-- Title for slider
+		
 	buildings_label: EM_LABEL
 			-- Label to show number of houses
-	
+			
+	buildings_slider: EM_SLIDER
+			-- Slider to change number of houses displayed
+
 	marked_origin_label: EM_LABEL
 			-- Label for the origin
 			

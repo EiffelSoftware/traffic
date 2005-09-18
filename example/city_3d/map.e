@@ -52,7 +52,7 @@ feature -- Initialization
 			create traffic_line_factory
 			create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
 			create_coord_system
-			create sun_light.make (em_gl_light0)
+			create sun_light.make (em_gl_light0 )
 			create constant_light.make (em_gl_light1)
 			
 			-- User Interaction
@@ -71,80 +71,43 @@ feature -- Drawing
 	
 	prepare_drawing is
 			-- Prepare for drawing.
-		local
-			direction: EM_VECTOR_2D
-			f, t: EM_VECTOR_2D
 		do
 			if Video_subsystem.video_surface.gl_2d_mode then
 				Video_subsystem.video_surface.gl_leave_2d
 				gl_tex_envi (Em_gl_texture_env, Em_gl_texture_env_mode, Em_gl_modulate)
 			end
-			gl_viewport (x, Video_subsystem.video_surface.height - height - y, width, height)
+			gl_viewport_external (x, Video_subsystem.video_surface.height - height - y, width, height)
 			
 			-- Reset depth buffer
-			gl_clear (Em_gl_depth_buffer_bit)
+			gl_clear_external (Em_gl_depth_buffer_bit)
 			
 			-- Opengl settings
-			gl_enable (Em_gl_depth_test)
+			gl_enable_external (Em_gl_depth_test)
 			
 			-- Enable antialiasing
-			gl_enable (Em_gl_line_smooth)
-			gl_hint (Em_gl_line_smooth, Em_gl_nicest)
+			gl_enable_external (Em_gl_line_smooth)
+			gl_hint_external (Em_gl_line_smooth, Em_gl_nicest)
 			
 			-- Setup the projection matrix
-			gl_matrix_mode (Em_gl_projection)
-			gl_load_identity
-			glu_perspective (field_of_view, width/height, 0.1, focus*max_view_distance)
+			gl_matrix_mode_external (Em_gl_projection)
+			gl_load_identity_external
+			glu_perspective_external (field_of_view, width/height, 0.1, focus*max_view_distance)
 			
 			-- Setup the model view matrix
-			gl_matrix_mode (Em_gl_modelview)
-			gl_load_identity
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_load_identity_external
 			
 			-- Clearing background color to a nice blue
-			gl_clear_color (0.1, 0.4, 0.5,0)
-			gl_clear (em_gl_color_buffer_bit)
+			gl_clear_color_external (0.1, 0.4, 0.5,0)
+			gl_clear_external (em_gl_color_buffer_bit)
 			
 			-- Do viewing transformations
-			gl_matrix_mode (em_gl_modelview_matrix)
-			gl_load_identity
+			gl_matrix_mode_external (em_gl_modelview_matrix)
+			gl_load_identity_external
 			
 			-- Traffic line rides
 			if traffic_line_ride and then show_shortest_path and then shortest_path_line /= Void and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
-				f := last_polypoint
-				t := map_to_gl_coords (shortest_path_line.item.polypoints.item)
-				
-				direction := t - f
-				
-				position := position + (direction / direction.length) * speed
-				
-				glu_look_at_external
-				(	position.x - (position.x/position.length),
-					0.5,
-					position.y - (position.y/position.length),
-					position.x + 0.1*(position.x/position.length),
-					0.5,
-					position.y + 0.1*(position.y/position.length),
-					0, 1, 0
-				)
-				
-				gl_translated_external (-f.x, 0, -f.y)
-				
-				if (position-direction).length < speed then
-					last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.item)
-					shortest_path_line.item.polypoints.forth
-					
-					if shortest_path_line.item.polypoints.after and then not shortest_path_line.after then
-						shortest_path_line.forth
-						if not shortest_path_line.after then
-							shortest_path_line.item.polypoints.start
-							last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
-							shortest_path_line.item.polypoints.forth
-						end
-					end
-					
-					position.set_x (0)
-					position.set_y (0)
-				end
+				draw_tram_ride
 			else
 				traffic_line_ride := False
 				-- Translation
@@ -152,16 +115,16 @@ feature -- Drawing
 				gl_translated_external (x_translation, -y_translation, 0)
 				
 				-- Rotation
-				gl_rotatef (x_rotation, 1, 0, 0)
-				gl_rotatef (y_rotation, 0, 1, 0)
+				gl_rotated_external (x_rotation, 1, 0, 0)
+				gl_rotated_external (y_rotation, 0, 1, 0)
 			end
 			
 			-- Light settings
-			gl_enable (em_gl_lighting)
-			gl_enable (em_gl_color_material)
-			gl_color_material (Em_gl_front_and_back, Em_gl_ambient_and_diffuse)
-			gl_depth_func (em_gl_lequal)
-			gl_enable (em_gl_depth_test)
+			gl_enable_external (em_gl_lighting)
+			gl_enable_external (em_gl_color_material)
+			gl_color_material_external (Em_gl_front_and_back, Em_gl_ambient_and_diffuse)
+			gl_depth_func_external (em_gl_lequal)
+			gl_enable_external (em_gl_depth_test)
 			
 			sun_light.ambient.set_xyzt (0, 0, 0, 1)
 			sun_light.specular.set_xyzt (0, 0, 0, 1)
@@ -205,65 +168,153 @@ feature -- Drawing
 				constant_light.disable
 				
 				-- Draw "Sun"
-				gl_matrix_mode (em_gl_modelview_matrix)
-				gl_push_matrix
-				gl_color3d (1, 1, 0)
-				gl_translated (0, 8, 0)
-				gl_rotated (90, 1, 0, 0)
-				glu_sphere (glu_new_quadric, 1, 72, 100)
-				gl_pop_matrix
+				gl_matrix_mode_external (em_gl_modelview_matrix)
+				gl_push_matrix_external
+				gl_color3d_external (1, 1, 0)
+				gl_translated_external (0, 8, 0)
+				gl_rotated_external (90, 1, 0, 0)
+				glu_sphere_external (glu_new_quadric, 1, 72, 100)
+				gl_pop_matrix_external
 			else
 				sun_light.disable
 				constant_light.enable
 			end
 
 			-- Draw plane
-			gl_call_list (1)
+			gl_call_list_external (1)
 			
 			-- Show coordinate system
 			if coordinates_shown then
-				gl_call_list (2)
+				gl_call_list_external (2)
 			end
 			
 			-- Display buildings and lines
 			if is_map_loaded then
 				if buildings_shown then
 					if buildings_transparent then
-						gl_polygon_mode (em_gl_front_and_back, em_gl_line)
-						gl_flush
+						gl_polygon_mode_external (em_gl_front_and_back, em_gl_line)
+						gl_flush_external
 					end
 					ewer.draw
-					gl_polygon_mode (em_gl_front_and_back, em_gl_fill)
-					gl_flush
+					gl_polygon_mode_external (em_gl_front_and_back, em_gl_fill)
+					gl_flush_external
 				end
 				draw_traffic_lines
 			end
 			
 			-- Draw marked stations
 			if marked_origin /= Void then
-				gl_matrix_mode (Em_gl_modelview)
-				gl_push_matrix
-				gl_color3d (0, 1, 0)
-				gl_translated (map_to_gl_coords (marked_origin.position).x , line_height + 0.1, map_to_gl_coords (marked_origin.position).y)
-				gl_rotated (90, 1, 0, 0)
-				glu_disk (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
-				gl_pop_matrix
-				gl_flush
+				gl_matrix_mode_external (Em_gl_modelview)
+				gl_push_matrix_external
+				gl_color3d_external (0, 1, 0)
+				gl_translated_external (map_to_gl_coords (marked_origin.position).x , line_height + 0.1, map_to_gl_coords (marked_origin.position).y)
+				gl_rotated_external (90, 1, 0, 0)
+				glu_disk_external (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
+				gl_pop_matrix_external
+				gl_flush_external
 			end
 			if marked_destination /= Void then
-				gl_matrix_mode (Em_gl_modelview)
-				gl_push_matrix
-				gl_color3d (1, 0, 0)
-				gl_translated (map_to_gl_coords (marked_destination.position).x , line_height + 0.1, map_to_gl_coords (marked_destination.position).y)
-				gl_rotated (90, 1, 0, 0)
-				glu_disk (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
-				gl_pop_matrix
-				gl_flush
+				gl_matrix_mode_external (Em_gl_modelview)
+				gl_push_matrix_external
+				gl_color3d_external (1, 0, 0)
+				gl_translated_external (map_to_gl_coords (marked_destination.position).x , line_height + 0.1, map_to_gl_coords (marked_destination.position).y)
+				gl_rotated_external (90, 1, 0, 0)
+				glu_disk_external (glu_new_quadric, 0, station_radius + 0.06, 72, 1)
+				gl_pop_matrix_external
+				gl_flush_external
 			end
 			
 			if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
 				calculate_shortest_path
 			end
+		end
+		
+feature -- Tram ride
+
+	last_polypoint: EM_VECTOR_2D
+			-- The last polypoint visited
+	
+	position: EM_VECTOR_2D
+			-- The current position
+			
+	Speed: DOUBLE is 0.02
+			-- Speed of the traffic line rides
+
+	draw_tram_ride is 
+		-- Draw a tram ride for `shortest_path'.
+		local start_point,end_point,direction: EM_VECTOR_2D
+		do
+			start_point := last_polypoint
+			end_point := map_to_gl_coords (shortest_path_line.item.polypoints.item)
+			
+			direction := end_point - start_point
+			
+			position := position + (direction / direction.length) * speed
+			
+			glu_look_at_external
+			(	position.x - (position.x/position.length),
+				0.5,
+				position.y - (position.y/position.length),
+				position.x + 0.1*(position.x/position.length),
+				0.5,
+				position.y + 0.1*(position.y/position.length),
+				0, 1, 0
+			)
+			gl_translated_external (-start_point.x, 0, -start_point.y)
+			
+			if (position-direction).length < speed then
+				last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.item)
+				shortest_path_line.item.polypoints.forth
+				
+				if shortest_path_line.item.polypoints.after and then not shortest_path_line.after then
+					shortest_path_line.forth
+					if not shortest_path_line.after then
+						shortest_path_line.item.polypoints.start
+						last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
+						shortest_path_line.item.polypoints.forth
+					end
+				end
+				position.set_x (0)
+				position.set_y (0)
+			end	
+--			
+--			f := last_polypoint
+--			t := map_to_gl_coords (shortest_path_line.item.polypoints.item)
+--				
+--				direction := t - f
+--				
+--				position := position + (direction / direction.length) * speed
+--				
+--				glu_look_at_external
+--				(	position.x - (position.x/position.length),
+--					0.5,
+--					position.y - (position.y/position.length),
+--					position.x + 0.1*(position.x/position.length),
+--					0.5,
+--					position.y + 0.1*(position.y/position.length),
+--					0, 1, 0
+--				)
+--				
+--				gl_translated_external (-f.x, 0, -f.y)
+--				
+--				if (position-direction).length < speed then
+--					last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.item)
+--					shortest_path_line.item.polypoints.forth
+--					
+--					if shortest_path_line.item.polypoints.after and then not shortest_path_line.after then
+--						shortest_path_line.forth
+--						if not shortest_path_line.after then
+--							shortest_path_line.item.polypoints.start
+--							last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
+--							shortest_path_line.item.polypoints.forth
+--						end
+--					end
+--					
+--					position.set_x (0)
+--					position.set_y (0)
+--				end
+			
+			
 		end
 		
 feature -- Shortest path
@@ -327,17 +378,6 @@ feature -- Shortest path
 			end
 		end
 		
-feature {NONE} -- Traffic line rides
-
-	last_polypoint: EM_VECTOR_2D
-			-- The last polypoint visited
-	
-	position: EM_VECTOR_2D
-			-- The current position
-			
-	Speed: DOUBLE is 0.02
-			-- Speed of the traffic line rides
-
 feature -- Traffic map loading
 
 	load_map (filename: STRING) is
@@ -680,11 +720,6 @@ feature {NONE} -- Event handling
 		do
 			if event.button_state_right then				
 				y_rotation := y_rotation + event.x_motion
---				if y_rotation <= 90 then
---					y_rotation := 90
---				elseif y_rotation >= 270 then
---					y_rotation := 270
---				end
 				x_rotation := x_rotation + event.y_motion
 				if x_rotation <= 15 then
 					x_rotation := 15
@@ -765,47 +800,47 @@ feature {NONE} -- Auxiliary drawing features
 			p4 /= Void
 			rgb /= Void
 		do
-			gl_new_list (1, em_gl_compile)
-				gl_begin (em_gl_quads)
-					gl_color3dv (rgb.pointer)
-					gl_normal3d (0,1,0)
-					gl_vertex3dv (p1.pointer)
-					gl_normal3d (0,1,0)
-					gl_vertex3dv (p2.pointer)
-					gl_normal3d (0,1,0)
-					gl_vertex3dv (p3.pointer)
-					gl_normal3d (0,1,0)
-					gl_vertex3dv (p4.pointer)
-				gl_end
-			gl_end_list
+			gl_new_list_external (1, em_gl_compile)
+				gl_begin_external (em_gl_quads)
+					gl_color3dv_external (rgb.pointer)
+					gl_normal3d_external (0,1,0)
+					gl_vertex3dv_external (p1.pointer)
+					gl_normal3d_external (0,1,0)
+					gl_vertex3dv_external (p2.pointer)
+					gl_normal3d_external (0,1,0)
+					gl_vertex3dv_external (p3.pointer)
+					gl_normal3d_external (0,1,0)
+					gl_vertex3dv_external (p4.pointer)
+				gl_end_external
+			gl_end_list_external
 		end
 		
 	create_coord_system is
 			-- OpenGL display list Nr `2' for coordinate system.
 		do
-			gl_new_list (2, em_gl_compile)
-				gl_line_width (2)
-				gl_begin(em_gl_lines)
+			gl_new_list_external (2, em_gl_compile)
+				gl_line_width_external (2)
+				gl_begin_external (em_gl_lines)
 					-- x axis
-					gl_color3d (1,0,0)
-					gl_vertex3d (0,0,0)
-					gl_vertex3d(1,0,0)
-				gl_end
+					gl_color3d_external (1,0,0)
+					gl_vertex3d_external (0,0,0)
+					gl_vertex3d_external(1,0,0)
+				gl_end_external
 				
-				gl_begin(em_gl_lines)
+				gl_begin_external(em_gl_lines)
 					-- y axis
-					gl_color3d (0,1,0)
-					gl_vertex3d (0,0,0)
-					gl_vertex3d(0,1,0)
-				gl_end
+					gl_color3d_external (0,1,0)
+					gl_vertex3d_external (0,0,0)
+					gl_vertex3d_external(0,1,0)
+				gl_end_external
 				
-				gl_begin(em_gl_lines)
+				gl_begin_external(em_gl_lines)
 					-- z axis
-					gl_color3d (0,0,1)
-					gl_vertex3d (0,0,0)
-					gl_vertex3d(0,0,1)
-				gl_end
-			gl_end_list
+					gl_color3d_external (0,0,1)
+					gl_vertex3d_external (0,0,0)
+					gl_vertex3d_external(0,0,1)
+				gl_end_external
+			gl_end_list_external
 		end
 		
 	create_traffic_line_representation is
@@ -838,8 +873,6 @@ feature {NONE} -- Auxiliary drawing features
 		
 	transform_coords (screen_x, screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
 			-- Transform mouse coordinates with gl_un_project to 3D coordinates.
-			-- screen = event.screen_
-			-- rel = event.x
 		require
 			screen_x /= void and then screen_y /= void
 		local
@@ -851,7 +884,7 @@ feature {NONE} -- Auxiliary drawing features
 			temp: ANY
 			window_z: REAL
 		do
-			-- Vorbereitung für beide Varianten
+			-- Preperation for both possibilities
 			if video_subsystem.video_surface.gl_2d_mode then
 				video_subsystem.video_surface.gl_leave_2d
 			end
@@ -868,8 +901,8 @@ feature {NONE} -- Auxiliary drawing features
 			viewport.set_xyzt (x, y, width, height)
 			y_new := video_subsystem.video_surface.height - screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
 
-			gl_read_pixels (screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
-			temp := glu_un_project (screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+			gl_read_pixels_external (screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
+			temp := glu_un_project_external (screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
 			
 			create Result.make_xyz (result_x, result_y, result_z)
 		ensure
