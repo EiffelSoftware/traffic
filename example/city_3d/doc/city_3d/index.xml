@@ -15,18 +15,16 @@
 <chapterinfo>
 	<copyright>
 		<year>2005</year>
-		<holder>David Stefan, Valentin Wüstholz</holder>
+		<holder>Michela Pedroni</holder>
 	</copyright>
 	<author>
-		<firstname>David</firstname><surname>Stefan</surname>
+		<firstname>Michela</firstname><surname>Pedroni</surname>
 	</author>
-    <author>
-		<firstname>Valentin</firstname><surname>Wüstholz</surname>
-	</author>
+    <email>michela.pedroni@inf.ethz.ch</email>
 	<date>12. September 2005</date>
 </chapterinfo>
 
-<title>Traffic 3D front end</title>
+<title>City_3d</title>
 
 <para>
 The 'Traffic 3D front end' project implements a 3 dimensional

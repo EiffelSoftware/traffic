@@ -77,7 +77,7 @@
 		<argument name="a_file"/>
 		<argument name="a_next"/>
 
-		<xslt processor="${xslt_processor}" input="${a_file}.xml" output="${a_file}.html" stylesheet="${EM}/doc/misc/gobo2html2.xsl">
+		<xslt processor="${xslt_processor}" input="${a_file}.xml" output="${a_file}.html" stylesheet="${TRAFFIC}/example/city_3d/doc/city_3d/city_3d2html.xsl">
 			<parameter name="previous" value="&quot;'${a_previous}.html'&quot;"/>
 			<parameter name="next" value="&quot;'${a_next}.html'&quot;"/>
 			<parameter name="toc" value="&quot;'index.html'&quot;"/>

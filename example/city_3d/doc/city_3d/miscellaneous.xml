@@ -15,15 +15,12 @@
 <chapterinfo>
 	<copyright>
 		<year>2005</year>
-		<holder>David Stefan, Valentin Wüstholz</holder>
+		<holder>Michela Pedroni</holder>
 	</copyright>
 	<author>
-		<firstname>David</firstname><surname>Stefan</surname>
+		<firstname>Michela</firstname><surname>Pedroni</surname>
 	</author>
-    <author>
-		<firstname>Valentin</firstname><surname>Wüstholz</surname>
-	</author>
-	<!--<email>bay@inf.ethz.ch</email>-->
+    <email>michela.pedroni@inf.ethz.ch</email>
 	<date>12. September 2005</date>
 </chapterinfo>
 
@@ -54,20 +51,20 @@
         they must be both in the map subdirectory and in the main directory. This is a deficiency of the TRAFFIC map parser and should be fixed.
     </para>
     <para>
-    2) in <classname>SHARED_CONSTANTS</classname>:
+    2) in <classname cluster="city_3d">SHARED_CONSTANTS</classname>:
         <itemizedlist>
             <listitem><para>
-                <featurename>Plane_size</featurename> is a constant that is chosen with the example maps in mind. This works for them 
+                <featurename cluster="city_3d.shared_constants">Plane_size</featurename> is a constant that is chosen with the example maps in mind. This works for them 
 		but it might not work perfectly for other map files.
             </para></listitem>
             <listitem><para>
-                <featurename>map_to_gl_coords</featurename> is also optimized for our example maps. It uses the range of the coordinates from 
+                <featurename cluster="city_3d.shared_constants">map_to_gl_coords</featurename> is also optimized for our example maps. It uses the range of the coordinates from 
 		the map xml file and centers the Zurich main station on the screen. This might not be intended for other examples.
             </para></listitem>
         </itemizedlist>
         These issues could be solved by either extending the map file or using a separate xml file.
     </para>
-
+<para/>
 <toplink/>
 </section>
 
@@ -80,17 +77,17 @@
     <para/>
 	1) Replacing the GUI:
          <para/>
-	One could replace the GUI with another one or integrate the 'map part' (i.e. <classname>MAP</classname> and the factories) of the project into another application. This could be done by creating an instance of <classname>MAP</classname> in the new application and accessing the features from the option section with the widgets of the new GUI simillary to how this is done in <classname>CITY_3D_SCENE</classname> or even add new features to <classname>MAP</classname>.
+	One could replace the GUI with another one or integrate the 'map part' (i.e. <classname cluster="city_3d">MAP</classname> and the factories) of the project into another application. This could be done by creating an instance of <classname cluster="city_3d">MAP</classname> in the new application and accessing the features from the option section with the widgets of the new GUI simillary to how this is done in <classname cluster="city_3d">CITY_3D_SCENE</classname> or even add new features to <classname cluster="city_3d">MAP</classname>.
 	<para/>
 	2) Extending displayed objects:
          <para/>
-	 One could add new factories to the project or use existing ones to display more and different buildings, traffic lines or anything else. The easiest way to create a new factory would be to inherit from <classname>EM_3D_OBJECT_FACTORY</classname> as this is done with the two implemented factories.
-	With <classname>BUILDING_FACTORY</classname> reuse comes naturally as it is able to draw any building of choice (how this is done is explained in the corresponding section in <ulink url="structure.html">classes</ulink>). 
-    If you would like to change the way traffic lines are displayed, you could change <featurename>specify_object</featurename> in <classname>TRAFFIC_LINE_FACTORY</classname>.
+	 One could add new factories to the project or use existing ones to display more and different buildings, traffic lines or anything else. The easiest way to create a new factory would be to inherit from <classname cluster="em.video.object_factory">EM_3D_OBJECT_FACTORY</classname> as this is done with the two implemented factories.
+	With <classname cluster="city_3d">BUILDING_FACTORY</classname> reuse comes naturally as it is able to draw any building of choice (how this is done is explained in the corresponding section in <ulink url="structure.html">classes</ulink>). 
+    If you would like to change the way traffic lines are displayed, you could change <featurename cluster="city_3d.traffic_line_factory">specify_object</featurename> in <classname cluster="city_3d">TRAFFIC_LINE_FACTORY</classname>.
 	<para/>
 	3) Extending functionality:
          <para/>
-            To provide additonal options and functionallity, one would have to add the new features in <classname>MAP</classname> in the section options and make them accessible by adding corresponding widgets to <classname>CITY_3D_SCENE</classname> or any other GUI. Then one would have to add the new option to <featurename>draw</featurename> like this is done with all the other options.
+            To provide additonal options and functionallity, one would have to add the new features in <classname cluster="city_3d">MAP</classname> in the section options and make them accessible by adding corresponding widgets to <classname cluster="city_3d">CITY_3D_SCENE</classname> or any other GUI. Then one would have to add the new option to <featurename cluster="city_3d.map">draw</featurename> like this is done with all the other options.
     <para>
 		 
 	</para>
@@ -111,7 +108,7 @@
             </para></listitem>
             <listitem><para>
                 Extra XML file: that would contain additional information like the position of special buildings, their textures, height, etc. 
-		Moreover, things like the transformation that have to be done in <featurename>map_to_gl_coords</featurename> could be
+		Moreover, things like the transformation that have to be done in <featurename cluster="city_3d.shared_constants">map_to_gl_coords</featurename> could be
 		stored in this file.
             </para></listitem>
         </itemizedlist>
@@ -121,7 +118,7 @@
         <itemizedlist>
             <listitem><para>
                 Text console or other GUI extensions like they're used in the already existing TRAFFIC applications. But as mentioned above, 
-		abolishing <classname>CITY_3D_SCENE</classname> and taking the rest would probably be the more reasonable way.
+		abolishing <classname cluster="city_3d">CITY_3D_SCENE</classname> and taking the rest would probably be the more reasonable way.
             </para></listitem>
             <listitem><para>
                 Time tables for the means of transport: This would comprise automatic updating or requesting from the internet.
