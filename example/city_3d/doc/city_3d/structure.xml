@@ -176,16 +176,16 @@
 	<title>Building distribution</title>
 	<para>
 	First, the centre of the new building is calculated using the random number generator. 
-	Next, the collision polygon is created with these coordinates. Then the feature <featurename>has_collision</featurename>
+	Next, the collision polygon is created with these coordinates. Then the feature <featurename class="city_3d">has_collision</featurename>
 	checks for collisions with the polygons of the traffic lines that have been created earlier in the creation procedure. 
 	If there are any collisions, the coordinates are discarded and new ones calculated. If not, the distance to the centre is calculated and the building created using the factory and a gauger of your choice. Finally, the building is set to the right position and put into the container where it is stored. 
 	</para>
 	<title>Adding buildings</title>
 	<para>
-	If the slidebar is moved and additional buildings have to be displayed, <featurename>set_building_number</featurename>
-	calculates how many and calls <featurename>add_buildings</featurename>, which takes the random number generator and the 
+	If the slidebar is moved and additional buildings have to be displayed, <featurename class="city_3d">set_building_number</featurename>
+	calculates how many and calls <featurename class="city_3d">add_buildings</featurename>, which takes the random number generator and the 
 	container of the buildings that have already been created and adds the difference to it. Similarly, if less buildings should be displayed, 
-	i.e. the slidebar is moved left, the container stays the same and only the feature <featurename>draw</featurename>, 
+	i.e. the slidebar is moved left, the container stays the same and only the feature <featurename class="city_3d">draw</featurename>, 
 	which is essentially a loop over the container and a draw call to all the items, is changed by setting 
 	a new upper limit.
 	</para>
@@ -200,13 +200,13 @@
 	<title>Description</title>
 	<para>
 	The intention of this class is to collect information that would be spread over the whole project otherwise. 
-	This helps adjusting the project and makes minor changes easier, as a constant (like <featurename>line_width</featurename>) only has to be changed a single time to take effects on the whole project. 
+	This helps adjusting the project and makes minor changes easier, as a constant (like <featurename class="city_3d">line_width</featurename>) only has to be changed a single time to take effects on the whole project. 
 	All classes that want to use constants or procedures from <classname cluster="city_3d">SHARED_CONSTANTS</classname> inherit from this class, 
 	but do not export the inherited features so that they are not visible in the interface.
 	</para>
 	<title>Constants</title>
 	<para>
-	In addition to constants of minor importance, such as line-/window- height and width, the most important one is <featurename>plane_size</featurename> which is used 
+	In addition to constants of minor importance, such as line-/window- height and width, the most important one is <featurename class="city_3d">plane_size</featurename> which is used 
 	mostly in the classes <classname cluster="city_3d">MAP</classname> and <classname cluster="city_3d">BUILDING_EWER</classname> for calculations related to the 
 	distribution of buildings and other issues.
 	</para>
@@ -236,13 +236,13 @@
 	<title>Description</title>
 	<para>
 	This class is a factory for creating displayable representations of <classname cluster="traffic">TRAFFIC_LINE</classname> objects. 
-	It inherits from <classname cluster="em.video.object_factory">EM_3D_OBJECT_FACTORY</classname> which provides the necessary structures such as the feature <featurename>create_object</featurename> or <featurename>specify_object</featurename>. <featurename>specify_object</featurename> contains the (OpenGL) commands to create the object and has to be implemented. To actually create and draw an object, the feature <featurename>create_object</featurename> of the factory is called, which returns a <classname cluster="em.video">EM_3D_OBJECT</classname>. Then, the origin and scale of this object is set and the feature <featurename>draw</featurename> of the object is called.
+	It inherits from <classname cluster="em.video.object_factory">EM_3D_OBJECT_FACTORY</classname> which provides the necessary structures such as the feature <featurename class="city_3d">create_object</featurename> or <featurename class="city_3d">specify_object</featurename>. <featurename class="city_3d">specify_object</featurename> contains the (OpenGL) commands to create the object and has to be implemented. To actually create and draw an object, the feature <featurename class="city_3d">create_object</featurename> of the factory is called, which returns a <classname cluster="em.video">EM_3D_OBJECT</classname>. Then, the origin and scale of this object is set and the feature <featurename class="city_3d">draw</featurename> of the object is called.
 	</para>
 	<title>Building a line</title>
 	<para>
 	Each line segment is drawn independently, putting a circle at the beginning and the end to indicate that 
 	there are stations. Next, the 'polypoints' list is traversed and for each two points a rectangle of 
-	width <featurename>line_width</featurename> is created. These rectangles are connected with circles again, but smaller as the ones representing the stations.
+	width <featurename class="city_3d">line_width</featurename> is created. These rectangles are connected with circles again, but smaller as the ones representing the stations.
 	</para>
 	<toplink/>
 </section>
@@ -258,7 +258,7 @@
 	</para>
 	<title>Types of buildings and decision process</title>
 	<para>
-	Initially, <classname cluster="city_3d">TRAFFIC_LINE_FACTORY</classname> has no information about what kind of buildings there are and how to draw them. It has two containers, <featurename>building_templates</featurename> for drawing and <featurename>gaugers</featurename> for 'decision taking procedures'. Therefore, the object that wants to create buildings using an object of this class, can pass it his own drawing and 'decision taking procedures'. Then it may <featurename>take_decision</featurename>, giving it the name of the desired gauger and his parameters. Then this gauger decides by the means of his parameters which type of building to draw and stores his decision. That's how the factory knows what kind of building to draw if <featurename>create_object</featurename> is called later.
+	Initially, <classname cluster="city_3d">TRAFFIC_LINE_FACTORY</classname> has no information about what kind of buildings there are and how to draw them. It has two containers, <featurename class="city_3d">building_templates</featurename> for drawing and <featurename class="city_3d">gaugers</featurename> for 'decision taking procedures'. Therefore, the object that wants to create buildings using an object of this class, can pass it his own drawing and 'decision taking procedures'. Then it may <featurename class="city_3d">take_decision</featurename>, giving it the name of the desired gauger and his parameters. Then this gauger decides by the means of his parameters which type of building to draw and stores his decision. That's how the factory knows what kind of building to draw if <featurename class="city_3d">create_object</featurename> is called later.
 	This modus operandi garantees maximum flexibility.
 	</para>
 	<toplink/>
