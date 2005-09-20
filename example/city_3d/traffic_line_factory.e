@@ -85,7 +85,7 @@ feature {NONE} -- Drawing
 			gl_flush_external
 			
 			
-				gl_matrix_mode_external (Em_gl_modelview)
+			gl_matrix_mode_external (Em_gl_modelview)
 			gl_push_matrix_external
 			gl_color3dv_external(rgb.pointer)
 			-- a little bit higher than the line
@@ -138,10 +138,10 @@ feature {NONE} -- Drawing
 --			gl_end
 			
 			
-			-- Front
 			gl_begin_external (em_gl_quads)
 				gl_color3dv_external (line_color.pointer)
 				
+				-- Front
 				gl_normal3d_external (1, 0, 0)
 				gl_vertex3d_external (p1.x, p1.y, p1.z)
 				
@@ -195,26 +195,26 @@ feature {NONE} -- Drawing
 				
 				-- Top
 				gl_normal3d_external (0, 1, 0)
-				gl_vertex3dv_external (p3.pointer)
-				
-				gl_normal3d_external (0, 1, 0)
 				gl_vertex3dv_external (p1.pointer)
 				
 				gl_normal3d_external (0, 1, 0)
 				gl_vertex3dv_external (p2.pointer)
 				
 				gl_normal3d_external (0, 1, 0)
+				gl_vertex3dv_external (p3.pointer)
+				
+				gl_normal3d_external (0, 1, 0)
 				gl_vertex3dv_external (p4.pointer)
 				
 				-- Bottom
-				gl_normal3d_external (0, 1, 0)
-				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
-				
 				gl_normal3d_external (0, 1, 0)
 				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
 				
 				gl_normal3d_external (0, 1, 0)
 				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
 				
 				gl_normal3d_external (0, 1, 0)
 				gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
