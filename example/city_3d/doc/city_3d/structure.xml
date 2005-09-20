@@ -30,6 +30,9 @@
 <para>
 <itemizedlist>
     <listitem><para>
+    	<indexlink url="#bon">BON Diagram</indexlink>
+    </para></listitem>
+    <listitem><para>
     	<indexlink url="#scene">CITY_3D_SCENE</indexlink>
     </para></listitem>
     <listitem><para>
@@ -61,6 +64,15 @@
     </para></listitem>
 </itemizedlist>
 </para>
+</section>
+
+
+<section id="bon">
+    <title>BON Diagram</title>
+    <para>
+        <image src="BON.jpg"/>
+	</para>
+<toplink/>
 </section>
 
 <section id="scene">
