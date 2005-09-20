@@ -409,8 +409,8 @@ feature -- Options
 		
 	set_coordinates_shown (b: BOOLEAN) is
 			-- Set `coordinates_shown'.
-		require
-			variable_exists: b /= void
+--		require
+--			variable_exists: b /= void
 		do
 			coordinates_shown := b
 		ensure
@@ -419,8 +419,8 @@ feature -- Options
 
 	set_sun_shown (b: BOOLEAN) is
 			-- Set `sun_shown'.
-		require
-			variable_exists: b /= void
+--		require
+--			variable_exists: b /= void
 		do
 			sun_shown := b
 		ensure
@@ -429,8 +429,8 @@ feature -- Options
 		
 	set_buildings_shown (b: BOOLEAN) is
 			-- Set `buildings_shown'.
-		require
-			variable_exists: b /= void
+--		require
+--			variable_exists: b /= void
 		do
 			buildings_shown := b
 		ensure
@@ -452,8 +452,8 @@ feature -- Options
 		
 	set_buildings_transparent (b: BOOLEAN) is
 			-- Set `buildings_transparent'.
-		require
-			variable_exists: b /= void
+--		require
+--			variable_exists: b /= void
 		do
 			buildings_transparent := b
 		ensure
@@ -462,8 +462,8 @@ feature -- Options
 		
 	set_lines_highlighted (b: BOOLEAN) is
 			-- If `b' then traffic lines are highlighted.
-		require
-			variable_exist: b /= void
+--		require
+--			variable_exist: b /= void
 		do
 			if b then
 				highlighting_delta := 2
@@ -477,8 +477,8 @@ feature -- Options
 	
 	set_show_shortest_path (b: BOOLEAN) is
 			-- Set `show_shortest_path'.
-		require
-			variable_exists: b /= void
+--		require
+--			variable_exists: b /= void
 		do
 			if show_shortest_path then
 				shortest_path_line := void
@@ -836,8 +836,8 @@ feature {NONE} -- Auxiliary drawing features
 		
 	transform_coords (screen_x, screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
 			-- Transform mouse coordinates with gl_un_project to 3D coordinates.
-		require
-			screen_x /= void and then screen_y /= void
+--		require
+--			screen_x /= void and then screen_y /= void
 		local
 			model_matrix, projection_matrix: ARRAY [DOUBLE]
 			model_c, projection_c: ANY

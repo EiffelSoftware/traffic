@@ -35,6 +35,8 @@ feature -- Constants
 	Line_height: DOUBLE is 0.01
 			-- Height of the line representation on the map
 			
+	Line_depth: DOUBLE is 0.2
+			
 	Station_radius: DOUBLE is
 			-- Radius of a station on the map
 		do

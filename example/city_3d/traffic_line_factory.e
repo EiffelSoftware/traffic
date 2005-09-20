@@ -68,9 +68,34 @@ feature {NONE} -- Drawing
 			gl_translated_external (p.x, h, p.z)
 			gl_rotated_external (90, 1, 0, 0)
 			gl_disable_external (em_gl_lighting)
-			glu_disk_external (glu_new_quadric, 0, r, 72, 1)
+			glu_disk_external (glu_new_quadric, 0, r, 8, 1)
 			gl_pop_matrix_external
 			gl_flush_external
+			
+			
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(rgb.pointer)
+			-- a little bit higher than the line
+			gl_translated_external (p.x, h, p.z)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+			glu_cylinder_external (glu_new_quadric_external, r, r, line_depth, 8, 8)
+			gl_pop_matrix_external
+			gl_flush_external
+			
+			
+				gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(rgb.pointer)
+			-- a little bit higher than the line
+			gl_translated_external (p.x, h - line_depth, p.z)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+			glu_disk_external (glu_new_quadric, 0, r, 8, 1)
+			gl_pop_matrix_external
+			gl_flush_external
+			
 		end
 		
 	draw_line (p, q: GL_VECTOR_3D[DOUBLE]) is
@@ -100,17 +125,100 @@ feature {NONE} -- Drawing
 			p4 /= Void
 		do
 			-- Normals all parallel to y axis
+--			gl_begin_external (em_gl_quads)
+--				
+--				gl_normal3d_external (0,1,0)
+--				gl_vertex3d_external (p1.x, p1.y, p1.z)
+--				gl_normal3d_external (0,1,0)
+--				gl_vertex3d_external (p2.x, p2.y, p2.z)
+--				gl_normal3d_external (0,1,0)
+--				gl_vertex3d_external (p3.x, p3.y, p3.z)
+--				gl_normal3d_external (0,1,0)
+--				gl_vertex3d_external (p4.x, p4.y, p4.z)
+--			gl_end
+			
+			
+			-- Front
 			gl_begin_external (em_gl_quads)
 				gl_color3dv_external (line_color.pointer)
-				gl_normal3d_external (0,1,0)
+				
+				gl_normal3d_external (1, 0, 0)
 				gl_vertex3d_external (p1.x, p1.y, p1.z)
-				gl_normal3d_external (0,1,0)
+				
+				gl_normal3d_external (1, 0, 0)
+				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
+				
+				gl_normal3d_external (1, 0, 0)
+				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+
+				gl_normal3d_external (1, 0, 0)
 				gl_vertex3d_external (p2.x, p2.y, p2.z)
-				gl_normal3d_external (0,1,0)
+			
+				-- Back
+				gl_normal3d_external (-1, 0, 0)
 				gl_vertex3d_external (p3.x, p3.y, p3.z)
-				gl_normal3d_external (0,1,0)
+				
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
+				
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
+				
+				gl_normal3d_external (-1, 0, 0)
 				gl_vertex3d_external (p4.x, p4.y, p4.z)
-			gl_end
+				
+				-- Left
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (p3.x, p3.y, p3.z)
+				
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
+				
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
+				
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (p1.x, p1.y, p1.z)
+				
+				-- Right
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (p2.x, p2.y, p2.z)
+				
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+				
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (p4.x, p4.y - line_width, p4.z)
+				
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (p4.x, p4.y, p4.z)
+				
+				-- Top
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3dv_external (p3.pointer)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3dv_external (p1.pointer)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3dv_external (p2.pointer)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3dv_external (p4.pointer)
+				
+				-- Bottom
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
+			gl_end_external	
 		end
 		
 feature {NONE} -- Attributes
