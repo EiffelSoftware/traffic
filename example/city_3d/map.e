@@ -72,8 +72,8 @@ feature -- Drawing
 	prepare_drawing is
 			-- Prepare for drawing.
 		do
-			if Video_subsystem.video_surface.gl_2d_mode then
-				Video_subsystem.video_surface.gl_leave_2d
+			if Video_subsystem.video_surface.is_opengl_blitting_enabled then
+				Video_subsystem.video_surface.disable_opengl_blitting
 				gl_tex_envi (Em_gl_texture_env, Em_gl_texture_env_mode, Em_gl_modulate)
 			end
 			gl_viewport_external (x, Video_subsystem.video_surface.height - height - y, width, height)
@@ -833,8 +833,8 @@ feature {NONE} -- Auxiliary drawing features
 			temp: ANY
 			window_z: REAL
 		do
-			if video_subsystem.video_surface.gl_2d_mode then
-				video_subsystem.video_surface.gl_leave_2d
+			if video_subsystem.video_surface.is_opengl_blitting_enabled then
+				video_subsystem.video_surface.disable_opengl_blitting
 			end
 			
 			create model_matrix.make (0, 15)
