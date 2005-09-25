@@ -20,7 +20,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>14 September 2005</date>
+        <date>25 September 2005</date>
     </chapterinfo>
     <title>Chapter 3: The States of the Game</title>
     <para> This chapter is structured as follows: </para>
@@ -44,7 +44,7 @@
             Hunt</projectname> has six states in total; three playing states and three game over
             states (<emphasis>see Figure 7</emphasis>). These game states are defined in class
                 <classname>GAME_CONSTANTS</classname>:
-            <programlisting>Agent_stuck, Agent_stuck, Agent_caught, Agent_escapes, Prepare_state, Play_state, Move_state: <classname>INTEGER</classname> <keyword>is unique</keyword>
+            <programlisting>Agent_stuck, Agent_caught, Agent_escapes, Prepare_state, Play_state, Move_state: <classname>INTEGER</classname> <keyword>is unique</keyword>
                 <comment>Possible states of the game.</comment></programlisting>
         </para>
         <para>

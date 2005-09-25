@@ -20,7 +20,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>14 September 2005</date>
+        <date>25 September 2005</date>
     </chapterinfo>
     <title>Chapter 2: Design</title>
     <para>
@@ -154,7 +154,7 @@
     </section>
     <section id="view">
         <title>View cluster</title>
-        <para> This clusters job is to make sure that the user sees what is going on. It includes
+        <para> This cluster's job is to make sure that the user sees what is going on. It includes
             all scenes and menus, as well as displayers for the game players and status information. </para>
         <para>
             <itemizedlist>

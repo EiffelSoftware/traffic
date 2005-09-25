@@ -20,7 +20,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>14 September 2005</date>
+        <date>25 September 2005</date>
     </chapterinfo>
     <title>Chapter 4: Guided "Walk-Through"</title>
     <para> What happens when you start <projectname>Flat Hunt</projectname>? In this last chapter we
@@ -42,16 +42,17 @@
                     the proper settings and a game scene, whose job it is to visualize the game.
                         <featurename>start_callback</featurename> also creates the
                         <classname>MAIN_CONTROLLER</classname> and calls
-                    <featurename>main_controller.start_game</featurename>. </para>
+                        <featurename>main_controller.start_game</featurename>. </para>
             </listitem>
             <listitem>
                 <para>
                     <featurename>start_game</featurename> in class
                     <classname>MAIN_CONTROLLER</classname> calls
-                    <featurename>create_players</featurename> as well as
-                    <featurename>start_game</featurename> of class <classname>GAME</classname>.
-                    Those create the players using class <classname>PLAYER_FACTORY</classname> and
-                    set the game state to <keyword>Prepare_state</keyword>. </para>
+                    <featurename>create_players</featurename> of class <classname>GAME</classname>
+                    which creates the players using class <classname>PLAYER_FACTORY</classname>.
+                    Then it calls <featurename>start_game</featurename> of class
+                    <classname>GAME</classname> which sets the game state to
+                    <keyword>Prepare_state</keyword> and starts the game. </para>
             </listitem>
             <listitem>
                 <para> In class <classname>PLAYER_FACTORY</classname>, for example the estate agent
