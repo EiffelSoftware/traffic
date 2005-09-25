@@ -20,7 +20,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>13 September 2005</date>
+        <date>25 September 2005</date>
     </chapterinfo>
     <title>Chapter 2: The Story</title>
     <para>
@@ -38,8 +38,7 @@
         accessed all the time. </para>
     <para> Once in a while, the estate agent (<emphasis>Figure 2</emphasis>) calls his office to
         tell the secretary which flat he is currently visiting. So sometimes, the people there in
-        the office can tell "you" where to look for him… "You" meaning yourself and your friends
-            (<emphasis>Figure 3</emphasis>), the guys you want to share the flat with… </para>
+        the office can tell the flat hunters (<emphasis>Figure 3</emphasis>) where to look for him…</para>
     <para>
         <image src="pic/agent.png"/>
     </para>
@@ -50,6 +49,6 @@
         <image src="pic/flat_hunters.png"/>
     </para>
     <para>
-        <emphasis>Figure 3: You and friends</emphasis>
+        <emphasis>Figure 3: Flat hunters</emphasis>
     </para>
 </chapter>

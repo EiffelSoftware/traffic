@@ -20,7 +20,7 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>13 September 2005</date>
+        <date>25 September 2005</date>
     </chapterinfo>
     <title>Flat Hunt User Guide</title>
     <para>
@@ -47,12 +47,17 @@
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <link url="ch3_gameplay.html">Chapter 3: Gameplay</link>
+                        <link url="ch3_getting_started.html">Chapter 3: Getting Started</link>
                     </term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <link url="ch4_special_features.html">Chapter 4: Special Features</link>
+                        <link url="ch4_gameplay.html">Chapter 4: Gameplay</link>
+                    </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <link url="ch5_special_features.html">Chapter 5: Special Features</link>
                     </term>
                 </varlistentry>
                 <varlistentry>

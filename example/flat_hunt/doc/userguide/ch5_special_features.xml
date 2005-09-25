@@ -20,9 +20,9 @@
             <surname>Caluori</surname>
         </author>
         <email>ucaluori@student.ethz.ch</email>
-        <date>15 September 2005</date>
+        <date>25 September 2005</date>
     </chapterinfo>
-    <title>Chapter 4: Special Features</title>
+    <title>Chapter 5: Special Features</title>
     <para> This chapter is structured as follows: </para>
     <itemizedlist>
         <listitem>
@@ -56,16 +56,16 @@
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <strong>right click + move mouse</strong>: moves map in the direction of
+                        <strong>right button down + move mouse</strong>: moves map in the direction of
                         your mouse movement</term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <strong>middle click + move mouse up</strong>: zoom in</term>
+                        <strong>middle button down + move mouse up</strong>: zoom in</term>
                 </varlistentry>
                 <varlistentry>
                     <term>
-                        <strong>middle click + move mouse down</strong>: zoom out</term>
+                        <strong>middle button down + move mouse down</strong>: zoom out</term>
                 </varlistentry>
             </variablelist>
         </blockquote>

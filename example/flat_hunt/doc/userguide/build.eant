@@ -97,11 +97,12 @@
 			Call 'geant' with the same target ${target}
 			without subdirectories.
 		</description>
-
+		
 		<geant target="${target}" arguments="ch1_introduction"/>
 		<geant target="${target}" arguments="ch2_story"/>
-		<geant target="${target}" arguments="ch3_gameplay"/>
-		<geant target="${target}" arguments="ch4_special_features"/>
+		<geant target="${target}" arguments="ch3_getting_started"/>	
+		<geant target="${target}" arguments="ch4_gameplay"/>
+		<geant target="${target}" arguments="ch5_special_features"/>
 		<geant target="${target}" arguments="legal_and_thanks"/>
 		<geant target="${target}" arguments="references"/>
 		<geant target="${target}" arguments="index"/>
