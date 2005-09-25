@@ -21,17 +21,22 @@ create
 	
 feature -- Initialization
 
-	make (a_game_mode: like game_mode; a_hunter_count: like hunter_count; a_traffic_map: like traffic_map) is
+	make (a_game_mode: like game_mode; a_hunter_count: like hunter_count; a_map_name: like map_name; open_map: BOOLEAN) is
 			-- Create with given game settings.
 		require
 			a_game_mode_valid: a_game_mode >= 1 and a_game_mode <= 4			
 			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)
-			a_traffic_map_exists: a_traffic_map /= Void
+			a_map_name_exists: a_map_name /= Void
 		do
 			-- Settings.
 			game_mode := a_game_mode
 			hunter_count := a_hunter_count
-			traffic_map := a_traffic_map
+			map_name := a_map_name
+			
+			-- Create `traffic_map'.
+			if open_map then
+				create_map
+			end
 
 			-- Create `players'.
 			create players.make (hunter_count + 1)
@@ -42,14 +47,17 @@ feature -- Initialization
 		ensure
 			game_mode_set: game_mode = a_game_mode
 			hunter_count_set: hunter_count = a_hunter_count
-			traffic_map_set: traffic_map = a_traffic_map
+			map_name_set: map_name = a_map_name
 		end
 		
 feature -- Access
 
 	traffic_map: TRAFFIC_MAP
 			-- The game's map including all the places, line_sections etc.
-			
+	
+	map_name: STRING
+			-- Name of the map to be loaded for the game.
+				
 	estate_agent: ESTATE_AGENT
 			-- Estate agent, the guy who rents the flat.
 			
@@ -71,10 +79,74 @@ feature -- Access
 	hunter_count: INTEGER
 			-- Number of hunters.
 
+feature -- Status Setting
+
+	set_map (a_map_name: like map_name) is
+			-- Set `map_name' to `a_map_name'.
+		require
+			a_map_name_exists: a_map_name /= Void
+		do
+			map_name := a_map_name
+		ensure
+			map_name_set: map_name = a_map_name
+		end		
+
+	set_traffic_map (a_traffic_map: like traffic_map) is
+			-- Set `traffic_map' to `a_traffic_map'.
+		require
+			a_traffic_map_exists: a_traffic_map /= Void
+		do
+			traffic_map := a_traffic_map
+		ensure
+			traffic_map_set: traffic_map = a_traffic_map
+		end	
+		
+	set_game_mode (a_game_mode: like game_mode) is
+			-- Set `game_mode' to `a_game_mode'.
+		require
+			a_game_mode_valid: a_game_mode >= 1 and a_game_mode <= 4
+		do
+			game_mode := a_game_mode
+		ensure
+			game_mode_set: game_mode = a_game_mode
+		end
+		
+	set_number_of_hunters (a_hunter_count: like hunter_count) is
+			-- Set hunter count to `a_hunter_count'.
+		require
+			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)
+		do
+			hunter_count := a_hunter_count
+		ensure
+			hunter_count_set: hunter_count = a_hunter_count
+		end	
+		
+	set_selected_place (a_place: TRAFFIC_PLACE) is
+			-- Set place being passed to player.
+			-- Can have `Void' as an argument.
+		do
+			selected_place := a_place
+		ensure
+			selected_place_set: selected_place = a_place
+		end
+
 feature -- Basic Operations
+
+	create_map is
+			-- Open map with name `map_name'.
+		local
+			a_map_file: TRAFFIC_MAP_FILE			
+		do
+			create a_map_file.make_from_file (map_name)
+			traffic_map := a_map_file.traffic_map
+		ensure
+			traffic_map_exits: traffic_map /= Void
+		end	
 
 	create_players is
 			-- Create and prepare players.
+		require
+			traffic_map_exists: traffic_map /= Void
 		local
 			player_factory: PLAYER_FACTORY
 		do
@@ -207,17 +279,6 @@ feature {MAIN_CONTROLLER} -- Game operations
 				estate_agent.set_visibility (False)
 			end
 		end
-
-feature -- Status setting
-		
-	set_selected_place (a_place: TRAFFIC_PLACE) is
-			-- Set place being passed to player.
-			-- Can have `Void' as an argument.
-		do
-			selected_place := a_place
-		ensure
-			selected_place_set: selected_place = a_place
-		end
 		
 feature {NONE} -- Status report
 
@@ -262,6 +323,7 @@ feature {NONE} -- Implementation
 			-- Create list of possible moves for `a_player' (if enough tickets available).
 		require
 			a_player_exists: a_player /= Void
+			traffic_map_exists: traffic_map /= Void
 		local
 			tmp_line_section: TRAFFIC_LINE_SECTION
 			tmp_two_station_line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
@@ -307,6 +369,7 @@ feature {NONE} -- Implementation
 			-- Create line sections to all tram stops that are two segments away from `a_line_section.origin' going  through `a_line_section'.
 		require
 			a_line_section_exists: a_line_section /= Void
+			traffic_map_exists: traffic_map /= Void
 		local
 			destination: TRAFFIC_PLACE
 			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
@@ -331,7 +394,6 @@ invariant
 	checkpoints_exist: checkpoints /= Void
 	game_mode_valid: game_mode >= 1 and game_mode <= 4			
 	hunter_count_valid: (1 <= hunter_count) and (hunter_count <= 8)
-	traffic_map_exists: traffic_map /= Void			
 	players_exist: players /= Void
 	
 end

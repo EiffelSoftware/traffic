@@ -117,38 +117,6 @@ feature -- Initialization
 			option_menus_not_empty: not option_menus.is_empty
 		end
 
-feature -- Status Setting
-
-	set_map (a_map_name: like map_name) is
-			-- Set `map_name' to `a_map_name'.
-		require
-			a_map_name_exists: a_map_name /= Void
-		do
-			map_name := a_map_name
-		ensure
-			map_name_set: map_name = a_map_name
-		end		
-		
-	set_game_mode (a_mode: like mode) is
-			-- Set `game_mode' to `a_game_mode'.
-		require
-			a_mode_valid: a_mode >= 1 and a_mode <= 4
-		do
-			mode := a_mode
-		ensure
-			mode_set: mode = a_mode
-		end
-		
-	set_number_of_hunters (a_hunter_count: like hunter_count) is
-			-- Set hunter count to `a_hunter_count'.
-		require
-			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)
-		do
-			hunter_count := a_hunter_count
-		ensure
-			hunter_count_set: hunter_count = a_hunter_count
-		end	
-
 feature -- Event handling
 
 	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
@@ -205,26 +173,12 @@ feature {NONE} -- Implementation
 			
 	game_scene: GAME_SCENE
 			-- Visualization of the game.
-	
-	map_name: STRING
-			-- Name of the map to be loaded for the game.
-	
-	traffic_map: TRAFFIC_MAP
-			-- Traffic map to be used for the game.
-	
-	mode: INTEGER
-			-- Game mode in which the game will be started.
-			
-	hunter_count: INTEGER
-			-- Number of hunters that will play.
 
 	start_callback is
 			-- Callback for `start game' entry.
 		do
-			-- Settings from start menu.
-			set_game_mode (option_menus.item (1).selected_entry)				
-			set_number_of_hunters (option_menus.item (2).selected_entry)				
-			set_map ("./map/zurich_" + option_menus.item (3).item (option_menus.item (3).selected_entry).text.value + ".xml")
+			-- Create a `game' with the settings from the start menu.
+			create game.make (option_menus.item (1).selected_entry, option_menus.item (2).selected_entry, "./map/zurich_" + option_menus.item (3).item (option_menus.item (3).selected_entry).text.value + ".xml", False)
 			
 			-- Start the game.
 			start
@@ -242,12 +196,11 @@ feature {NONE} -- Implementation
 		local
 			main_controller: MAIN_CONTROLLER
 		do
-			-- Create game and make game settings.
-			open_map
-			create game.make (mode, hunter_count, traffic_map)
+			-- Since we didn't create the map at creation of `game', we need to do that now.
+			game.create_map
 			
 			-- Create scene that displays the game.
-			game_scene := create {GAME_SCENE}.make_scene (traffic_map, option_menus.item (2).selected_entry)
+			game_scene := create {GAME_SCENE}.make_scene (game.traffic_map, option_menus.item (2).selected_entry)
 
 			-- Load correct player pics according to settings.
 			Player_pic_directory.wipe_out
@@ -261,17 +214,6 @@ feature {NONE} -- Implementation
 			next_scene := game_scene
 			event_loop.stop			
 		end
-
-	open_map is
-			-- Open map with name `map_name'.
-		local
-			a_map_file: TRAFFIC_MAP_FILE			
-		do
-			create a_map_file.make_from_file (map_name)
-			traffic_map := a_map_file.traffic_map
-		ensure
-			traffic_map_exits: traffic_map /= Void
-		end	
 		
 	credits_callback is
 			-- Callback for `credits' entry.
