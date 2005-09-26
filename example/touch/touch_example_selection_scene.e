@@ -9,8 +9,9 @@ class
 	TOUCH_EXAMPLE_SELECTION_SCENE
 
 inherit
-	EM_SCENE
+	EM_DRAWABLE_SCENE
 		redefine
+			initialize_scene,
 			handle_outside_event,
 			make_scene
 		end
@@ -37,7 +38,7 @@ feature -- Initialization
 	make_scene is
 			-- 
 		do
-			Precursor {EM_SCENE}
+			Precursor {EM_DRAWABLE_SCENE}
 		end
 		
 
@@ -147,7 +148,6 @@ feature -- Scene Initialization
 			title_offset := 100
 			
 			if not initialized then
-				
 				initialized := true
 
 				fill_chapter_examples
@@ -290,6 +290,9 @@ feature -- Scene Initialization
 				
 				main_container.extend (upper_background)
 				main_container.extend (left_background)
+
+				main_container.extend (left_foreground)
+				
 				main_container.extend (settings_background)
 				main_container.extend (title_2)
 				main_container.extend (title)
@@ -300,7 +303,6 @@ feature -- Scene Initialization
 				main_container.extend (chapters_container_scroller)
 --				main_container.extend (exercises_container_scroller)
 
-				main_container.extend (left_foreground)
 
 				selected_scrollable := chapters_container_scroller
 			end
@@ -312,11 +314,11 @@ feature {NONE} -- Agents, GUI events
 			-- Used to scroll
 		do
 			if scroll_down.is_down then
-				chapters_container_scroller.scroll (create {EM_VECTOR_2D}.make (0, +16))			
+				selected_scrollable.scroll (create {EM_VECTOR_2D}.make (0, +16))			
 			end
 			
 			if scroll_up.is_down then
-				chapters_container_scroller.scroll (create {EM_VECTOR_2D}.make (0, -16))			
+				selected_scrollable.scroll (create {EM_VECTOR_2D}.make (0, -16))			
 			end
 			
 		end
@@ -413,15 +415,6 @@ feature {NONE} -- Agents, GUI events
 			event_loop.stop
 		end
 
-	process_clicked_last_chapter_button (a_button: TOUCH_BUTTON) is		
-		do
-			
-		end
-		
-	process_clicked_next_chapter_button (a_button: TOUCH_BUTTON) is		
-		do
-			
-		end
 
 	process_scroll_up (a_button: TOUCH_BUTTON) is
 			-- 
@@ -434,7 +427,7 @@ feature {NONE} -- Agents, GUI events
 		do
 			selected_scrollable.scroll (create {EM_VECTOR_2D}.make (0, +12))			
 		end
-		
+ 
 invariant
 	-- no invariants because most of the stuff is set up in the 'initialize' feature
 
