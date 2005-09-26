@@ -68,7 +68,7 @@ feature {NONE} -- Drawing
 			gl_translated_external (p.x, h, p.z)
 			gl_rotated_external (90, 1, 0, 0)
 			gl_disable_external (em_gl_lighting)
-			glu_disk_external (glu_new_quadric, 0, r, 8, 1)
+			glu_disk_external (glu_new_quadric, 0, r, 20, 1)
 			gl_pop_matrix_external
 			gl_flush_external
 			
@@ -80,7 +80,7 @@ feature {NONE} -- Drawing
 			gl_translated_external (p.x, h, p.z)
 			gl_rotated_external (90, 1, 0, 0)
 			gl_disable_external (em_gl_lighting)
-			glu_cylinder_external (glu_new_quadric_external, r, r, line_depth, 8, 8)
+			glu_cylinder_external (glu_new_quadric_external, r, r, line_depth, 10, 10)
 			gl_pop_matrix_external
 			gl_flush_external
 			
@@ -92,7 +92,7 @@ feature {NONE} -- Drawing
 			gl_translated_external (p.x, h - line_depth, p.z)
 			gl_rotated_external (90, 1, 0, 0)
 			gl_disable_external (em_gl_lighting)
-			glu_disk_external (glu_new_quadric, 0, r, 8, 1)
+			glu_disk_external (glu_new_quadric, 0, r, 20, 1)
 			gl_pop_matrix_external
 			gl_flush_external
 			
