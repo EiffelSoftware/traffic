@@ -1,15 +1,16 @@
 indexing
 	description: "A simple EM_SCENE which displays a map."
 	author: "Roger Kueng"
-	date: "2005/08/25"
+	date: "2005/09/27"
 	revision: "1.0"
 
 class
 	TOUCH_SIMPLE_TRAFFIC_SCENE
 
 inherit 
-	EM_SCENE
+	EM_DRAWABLE_SCENE
 		redefine
+			initialize_scene,
 			handle_outside_event
 		end
 	
@@ -149,7 +150,7 @@ feature -- Scene Initialization
 				main_container.extend (blue_box)
 				main_container.extend (console)
 				main_container.extend (end_button)
-				main_container.extend (foreground)
+--				main_container.extend (foreground)
 				
 				--Render map_widget
 				map_widget.render
@@ -288,7 +289,6 @@ feature {NONE} -- Agents, GUI events
 			console.put_line (a_place.name)
 		end
 		
-
 invariant
 	invariant_clause: True -- Your invariant here
 
