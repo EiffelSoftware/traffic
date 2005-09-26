@@ -178,11 +178,11 @@ feature -- Basic Operation
 			end			
 		end
 		
-	set_next_scene (a_scene: EM_SCENE) is
-			-- 
-		do
-			next_scene := a_scene
-		end
+--	set_next_scene (a_scene: EM_SCENE) is
+--			-- 
+--		do
+--			next_scene := a_scene
+--		end
 		
 	big_console is
 			-- make the console bigger

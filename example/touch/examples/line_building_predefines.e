@@ -71,8 +71,10 @@ feature -- Basic operations
 			map := a_runtime.map
 			runtime := a_runtime
 			Console := a_runtime.console
+			map_widget := a_runtime.map_widget
 
 			Paris := map
+			
 
 			-- Set new default place renderer	
 			a_runtime.map_widget.set_default_place_renderer (create {TOUCH_PLACE_RENDERER}.make_with_map (a_runtime.map))
@@ -101,7 +103,9 @@ feature {NONE} -- implementation
 
 feature -- Predefines
 	map: TRAFFIC_MAP
-
+	
+	map_widget: TRAFFIC_MAP_WIDGET
+	
 	runtime: TOUCH_EXAMPLE_RUNTIME
 
 	Paris: TRAFFIC_MAP

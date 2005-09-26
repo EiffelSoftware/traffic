@@ -11,6 +11,41 @@ inherit
 
 feature -- Basic operation
 	build_a_line is
+			-- Build an imaginary line and highlight it on the map
+		local
+			fancy_line: TRAFFIC_LINE
+			
+			fancy_graphical_line: TOUCH_GRAPHICAL_TRAFFIC_LINE
+			
+			stop1, stop2, stop3: SIMPLE_STOP
+		do
+			-- Paris.display
+			-- Create the stops and associate each to its station:
+			create stop1
+			stop1.set_place (Place_Montrouge)
+			
+			create stop2
+			stop2.set_place (Place_Issy)
+			
+			create stop3
+			stop3.set_place (Place_Balard)
+			
+			-- Link each applicable stop to the next:
+			stop1.link (stop2)
+			stop2.link (stop3)
+			
+			-- Build the line
+			fancy_line := stop1.build_line ("fancy line", "tram", map)
+
+			-- Create graphical line
+			create fancy_graphical_line.make_with_line_and_map_widget (fancy_line, map_widget)
+
+			-- Highlight the fancy line
+			fancy_graphical_line.highlight
+		end
+
+feature -- Additional demo features
+	build_a_line_basic is
 		-- Build a fancy new line
 		local
 			-- Note that our 'fancy_line' is of the type 'TRAFFIC_SIMPLE_LINE'
@@ -28,7 +63,7 @@ feature -- Basic operation
 			-- Add the fancy line to the map
 			Paris.add_line(fancy_line)
 		end
-	
+
 	build_a_line_with_factory is
 		-- Another way of building a fancy new line using the TRAFFIC_MAP_FACTORY class
 		local
@@ -85,8 +120,7 @@ feature -- Basic operation
 			
 			create fancy_line_section.make (Place_Issy, Place_Balard, fancy_line_type, Void)
 			Paris.add_line_section (fancy_line_section)			
-			fancy_line.extend (fancy_line_section)			
-			
+			fancy_line.extend (fancy_line_section)
 		end
 		
 end -- class LINE_BUILDING
