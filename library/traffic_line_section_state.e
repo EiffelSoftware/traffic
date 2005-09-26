@@ -23,7 +23,6 @@ feature {NONE} -- Inititalization
 		do
 			value := State_normal
 		ensure
-			value_set: value /= Void
 			value_valid: is_valid_state_value (value)
 		end
 		
@@ -53,7 +52,6 @@ feature -- Basic operation
 		end
 
 invariant
-	value_set: value /= Void -- State value exists.
 	value_valid: is_valid_state_value (value) -- Valid state value.
 
 end -- class TRAFFIC_LINE_SECTION_STATE

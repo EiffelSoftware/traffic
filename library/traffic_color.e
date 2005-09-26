@@ -82,8 +82,6 @@ feature -- Status report
 
 	is_valid_rgb_part (a_part: INTEGER): BOOLEAN is
 			-- Is `a_part' a valid part of rgb-color?
-		require
-			a_part_exists: a_part /= Void
 		do
 			Result := a_part >= 0 and a_part < 256
 		end
@@ -97,8 +95,8 @@ feature -- Basic operation.
 		end
 		
 invariant
-	red_valid: red /= Void and then is_valid_rgb_part (red)
-	green_valid: green /= Void and then is_valid_rgb_part (green)
-	blue_valid: blue /= Void and then is_valid_rgb_part (blue)
+	red_valid: is_valid_rgb_part (red)
+	green_valid: is_valid_rgb_part (green)
+	blue_valid: is_valid_rgb_part (blue)
 
 end -- class TRAFFIC_COLOR

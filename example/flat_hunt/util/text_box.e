@@ -198,8 +198,6 @@ feature -- Status setting
 
 	set_opacity (an_opacity: like opacity) is
 			-- Set `opacity' to `an_opacity'.
-		require
-			an_opacity_exists: an_opacity /= Void
 		do
 			opacity := an_opacity
 			update_color

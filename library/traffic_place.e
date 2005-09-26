@@ -36,8 +36,6 @@ feature {NONE} -- Initialize
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
-			a_x_exists: a_x /= Void
-			a_y_exists: a_y /= Void
 		do
 			name := a_name
 			create position.make (a_x, a_y)

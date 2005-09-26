@@ -104,8 +104,6 @@ feature -- Traffic place building
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
-			a_x_exists: a_x /= Void
-			a_y_exists: a_y /= Void
 			map_exists: has_map
 			unique_name: not a_map.has_place (a_name)
 		do

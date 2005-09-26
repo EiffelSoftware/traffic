@@ -16,8 +16,6 @@ feature -- Status report
 
 	is_valid_state_value (a_state_value: INTEGER): BOOLEAN is
 			-- Is `a_state_value' a state constants?
-		require
-			a_state_value_set: a_state_value /= Void
 		do
 			Result := False
 			
@@ -35,7 +33,6 @@ feature -- Basic operation
 	value_to_string (a_state_value: INTEGER): STRING is
 			-- String representation of state `a_state_value'
 		require
-			a_state_value_exists: a_state_value /= Void
 			a_state_value_valid: is_valid_state_value (a_state_value)
 		do
 			inspect
