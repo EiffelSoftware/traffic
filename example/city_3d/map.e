@@ -335,6 +335,7 @@ feature -- Shortest path
 				
 				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1))
 				traffic_line_factory.set_line (line)
+				traffic_line_factory.set_highlighted (False)
 				shortest_path_line_representation := traffic_line_factory.create_object
 				shortest_path_line_representation.set_origin (0, line_height+0.02, 0)
 				marked_station_changed := False
@@ -726,17 +727,24 @@ feature {NONE} -- Auxiliary drawing features
 		local
 			i: INTEGER
 		do
-			from i := traffic_line_objects.lower
-			until i > traffic_line_objects.upper
-			loop
-				if highlighting_delta > 0 then
-					traffic_line_objects.item(i).set_origin (0, line_height + highlighting_delta + 0.4*i, 0)
-				else
-					traffic_line_objects.item(i).set_origin (0, line_height, 0)
+			if highlighting_delta > 0 then
+				from i := highlighted_traffic_line_objects.lower
+				until i > highlighted_traffic_line_objects.upper
+				loop
+					highlighted_traffic_line_objects.item(i).set_origin (0, line_height + highlighting_delta + 0.4*i, 0)	
+					highlighted_traffic_line_objects.item(i).draw
+					i := i + 1
 				end
-				traffic_line_objects.item(i).draw
-				i := i + 1
+			else
+				from i := traffic_line_objects.lower
+				until i > traffic_line_objects.upper
+				loop
+					traffic_line_objects.item(i).set_origin (0, line_height, 0)
+					traffic_line_objects.item(i).draw
+					i := i + 1
+				end
 			end
+			
 			if shortest_path_line_representation /= void then
 				shortest_path_line_representation.draw
 			end
@@ -804,6 +812,8 @@ feature {NONE} -- Auxiliary drawing features
 			i: INTEGER
 		do
 			create traffic_line_objects.make (1, 1)
+			create highlighted_traffic_line_objects.make (1, 1)
+			
 			lines := map.lines
 			from
 				lines.start
@@ -813,8 +823,15 @@ feature {NONE} -- Auxiliary drawing features
 			loop 
 				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255, lines.item_for_iteration.color.green/255, lines.item_for_iteration.color.blue/255))
 				traffic_line_factory.set_line (lines.item_for_iteration)
+				traffic_line_factory.set_highlighted (false)
 				traffic_line := traffic_line_factory.create_object
 				traffic_line_objects.force (traffic_line, i)
+				
+				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (lines.item_for_iteration.color.red/255, lines.item_for_iteration.color.green/255, lines.item_for_iteration.color.blue/255))
+				traffic_line_factory.set_line (lines.item_for_iteration)
+				traffic_line_factory.set_highlighted (true)
+				traffic_line := traffic_line_factory.create_object
+				highlighted_traffic_line_objects.force (traffic_line, i)
 				i := i + 1
 				lines.forth
 			end
@@ -867,6 +884,9 @@ feature {NONE} -- Shared objects
 			
 	traffic_line_objects: ARRAY[EM_3D_OBJECT]
 			-- Container for objects created with traffic line factory
+			
+	highlighted_traffic_line_objects: ARRAY[EM_3D_OBJECT]
+			-- Container for highlighted traffic lines
 			
 	sun_light: GL_LIGHT
 			-- Light that imitates the sun

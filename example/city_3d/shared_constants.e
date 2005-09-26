@@ -30,12 +30,13 @@ feature -- Constants
 			-- Fullscreen?
 			
 	Line_width: DOUBLE is 0.075
-			-- Width of the line
+			-- Width of the line representation on the map
 			
 	Line_height: DOUBLE is 0.01
 			-- Height of the line representation on the map
 			
 	Line_depth: DOUBLE is 0.2
+			-- Depth of the line representation on the map
 			
 	Station_radius: DOUBLE is
 			-- Radius of a station on the map

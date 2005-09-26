@@ -52,6 +52,18 @@ feature -- Initialization
 			unchanged := False
 		end
 		
+	set_highlighted (b: BOOLEAN) is
+			-- Set `is_highlighted'
+		do
+			is_highlighted := b
+			unchanged := False
+		ensure
+			is_highlighted = b
+		end
+		
+	is_highlighted: BOOLEAN
+			-- Should the traffic line have a depth?
+		
 feature {NONE} -- Drawing
 		
 	draw_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r, h: DOUBLE) is
@@ -61,41 +73,51 @@ feature {NONE} -- Drawing
 			rgb /= Void
 			r > 0
 		do
-			gl_matrix_mode_external (Em_gl_modelview)
-			gl_push_matrix_external
-			gl_color3dv_external(rgb.pointer)
-			-- a little bit higher than the line
-			gl_translated_external (p.x, h, p.z)
-			gl_rotated_external (90, 1, 0, 0)
-			gl_disable_external (em_gl_lighting)
-			glu_disk_external (glu_new_quadric, 0, r, 20, 1)
-			gl_pop_matrix_external
-			gl_flush_external
-			
-			
-			gl_matrix_mode_external (Em_gl_modelview)
-			gl_push_matrix_external
-			gl_color3dv_external(rgb.pointer)
-			-- a little bit higher than the line
-			gl_translated_external (p.x, h, p.z)
-			gl_rotated_external (90, 1, 0, 0)
-			gl_disable_external (em_gl_lighting)
-			glu_cylinder_external (glu_new_quadric_external, r, r, line_depth, 10, 10)
-			gl_pop_matrix_external
-			gl_flush_external
-			
-			
-			gl_matrix_mode_external (Em_gl_modelview)
-			gl_push_matrix_external
-			gl_color3dv_external(rgb.pointer)
-			-- a little bit higher than the line
-			gl_translated_external (p.x, h - line_depth, p.z)
-			gl_rotated_external (90, 1, 0, 0)
-			gl_disable_external (em_gl_lighting)
-			glu_disk_external (glu_new_quadric, 0, r, 20, 1)
-			gl_pop_matrix_external
-			gl_flush_external
-			
+			if is_highlighted then
+				gl_matrix_mode_external (Em_gl_modelview)
+				gl_push_matrix_external
+				gl_color3dv_external(rgb.pointer)
+				-- a little bit higher than the line
+				gl_translated_external (p.x, h, p.z)
+				gl_rotated_external (90, 1, 0, 0)
+				gl_disable_external (em_gl_lighting)
+				glu_disk_external (glu_new_quadric, 0, r, 8, 1)
+				gl_pop_matrix_external
+				gl_flush_external
+
+				gl_matrix_mode_external (Em_gl_modelview)
+				gl_push_matrix_external
+				gl_color3dv_external(rgb.pointer)
+				-- a little bit higher than the line
+				gl_translated_external (p.x, h, p.z)
+				gl_rotated_external (90, 1, 0, 0)
+				gl_disable_external (em_gl_lighting)
+				glu_cylinder_external (glu_new_quadric_external, r, r, line_depth, 8, 8)
+				gl_pop_matrix_external
+				gl_flush_external
+
+				gl_matrix_mode_external (Em_gl_modelview)
+				gl_push_matrix_external
+				gl_color3dv_external(rgb.pointer)
+				-- a little bit higher than the line
+				gl_translated_external (p.x, h - line_depth, p.z)
+				gl_rotated_external (90, 1, 0, 0)
+				gl_disable_external (em_gl_lighting)
+				glu_disk_external (glu_new_quadric, 0, r, 8, 1)
+				gl_pop_matrix_external
+				gl_flush_external
+			else
+				gl_matrix_mode_external (Em_gl_modelview)
+				gl_push_matrix_external
+				gl_color3dv_external(rgb.pointer)
+				-- a little bit higher than the line
+				gl_translated_external (p.x, h, p.z)
+				gl_rotated_external (90, 1, 0, 0)
+				gl_disable_external (em_gl_lighting)
+				glu_disk_external (glu_new_quadric, 0, r, 72, 1)
+				gl_pop_matrix_external
+				gl_flush_external
+			end
 		end
 		
 	draw_line (p, q: GL_VECTOR_3D[DOUBLE]) is
@@ -124,101 +146,102 @@ feature {NONE} -- Drawing
 			p3 /= Void
 			p4 /= Void
 		do
-			-- Normals all parallel to y axis
---			gl_begin_external (em_gl_quads)
---				
---				gl_normal3d_external (0,1,0)
---				gl_vertex3d_external (p1.x, p1.y, p1.z)
---				gl_normal3d_external (0,1,0)
---				gl_vertex3d_external (p2.x, p2.y, p2.z)
---				gl_normal3d_external (0,1,0)
---				gl_vertex3d_external (p3.x, p3.y, p3.z)
---				gl_normal3d_external (0,1,0)
---				gl_vertex3d_external (p4.x, p4.y, p4.z)
---			gl_end
-			
-			
-			gl_begin_external (em_gl_quads)
-				gl_color3dv_external (line_color.pointer)
+			if is_highlighted then
+				gl_begin_external (em_gl_quads)
+					gl_color3dv_external (line_color.pointer)
+					
+					-- Front
+					gl_normal3d_external (1, 0, 0)
+					gl_vertex3d_external (p1.x, p1.y, p1.z)
+					
+					gl_normal3d_external (1, 0, 0)
+					gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
+					
+					gl_normal3d_external (1, 0, 0)
+					gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+	
+					gl_normal3d_external (1, 0, 0)
+					gl_vertex3d_external (p2.x, p2.y, p2.z)
 				
-				-- Front
-				gl_normal3d_external (1, 0, 0)
-				gl_vertex3d_external (p1.x, p1.y, p1.z)
-				
-				gl_normal3d_external (1, 0, 0)
-				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
-				
-				gl_normal3d_external (1, 0, 0)
-				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
-
-				gl_normal3d_external (1, 0, 0)
-				gl_vertex3d_external (p2.x, p2.y, p2.z)
-			
-				-- Back
-				gl_normal3d_external (-1, 0, 0)
-				gl_vertex3d_external (p3.x, p3.y, p3.z)
-				
-				gl_normal3d_external (-1, 0, 0)
-				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
-				
-				gl_normal3d_external (-1, 0, 0)
-				gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
-				
-				gl_normal3d_external (-1, 0, 0)
-				gl_vertex3d_external (p4.x, p4.y, p4.z)
-				
-				-- Left
-				gl_normal3d_external (0, 0, 1)
-				gl_vertex3d_external (p3.x, p3.y, p3.z)
-				
-				gl_normal3d_external (0, 0, 1)
-				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
-				
-				gl_normal3d_external (0, 0, 1)
-				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
-				
-				gl_normal3d_external (0, 0, 1)
-				gl_vertex3d_external (p1.x, p1.y, p1.z)
-				
-				-- Right
-				gl_normal3d_external (0, 0, -1)
-				gl_vertex3d_external (p2.x, p2.y, p2.z)
-				
-				gl_normal3d_external (0, 0, -1)
-				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
-				
-				gl_normal3d_external (0, 0, -1)
-				gl_vertex3d_external (p4.x, p4.y - line_width, p4.z)
-				
-				gl_normal3d_external (0, 0, -1)
-				gl_vertex3d_external (p4.x, p4.y, p4.z)
-				
-				-- Top
-				gl_normal3d_external (0, 1, 0)
-				gl_vertex3dv_external (p1.pointer)
-				
-				gl_normal3d_external (0, 1, 0)
-				gl_vertex3dv_external (p2.pointer)
-				
-				gl_normal3d_external (0, 1, 0)
-				gl_vertex3dv_external (p3.pointer)
-				
-				gl_normal3d_external (0, 1, 0)
-				gl_vertex3dv_external (p4.pointer)
-				
-				-- Bottom
-				gl_normal3d_external (0, 1, 0)
-				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
-				
-				gl_normal3d_external (0, 1, 0)
-				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
-				
-				gl_normal3d_external (0, 1, 0)
-				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
-				
-				gl_normal3d_external (0, 1, 0)
-				gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
-			gl_end_external	
+					-- Back
+					gl_normal3d_external (-1, 0, 0)
+					gl_vertex3d_external (p3.x, p3.y, p3.z)
+					
+					gl_normal3d_external (-1, 0, 0)
+					gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
+					
+					gl_normal3d_external (-1, 0, 0)
+					gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
+					
+					gl_normal3d_external (-1, 0, 0)
+					gl_vertex3d_external (p4.x, p4.y, p4.z)
+					
+					-- Left
+					gl_normal3d_external (0, 0, 1)
+					gl_vertex3d_external (p3.x, p3.y, p3.z)
+					
+					gl_normal3d_external (0, 0, 1)
+					gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
+					
+					gl_normal3d_external (0, 0, 1)
+					gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
+					
+					gl_normal3d_external (0, 0, 1)
+					gl_vertex3d_external (p1.x, p1.y, p1.z)
+					
+					-- Right
+					gl_normal3d_external (0, 0, -1)
+					gl_vertex3d_external (p2.x, p2.y, p2.z)
+					
+					gl_normal3d_external (0, 0, -1)
+					gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+					
+					gl_normal3d_external (0, 0, -1)
+					gl_vertex3d_external (p4.x, p4.y - line_width, p4.z)
+					
+					gl_normal3d_external (0, 0, -1)
+					gl_vertex3d_external (p4.x, p4.y, p4.z)
+					
+					-- Top
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3dv_external (p1.pointer)
+					
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3dv_external (p2.pointer)
+					
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3dv_external (p3.pointer)
+					
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3dv_external (p4.pointer)
+					
+					-- Bottom
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
+					
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+					
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
+					
+					gl_normal3d_external (0, 1, 0)
+					gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
+				gl_end_external
+			else
+				-- Normals all parallel to y axis
+				gl_begin_external (em_gl_quads)
+					gl_color3dv_external (line_color.pointer)
+					gl_normal3d_external (0,1,0)
+					gl_vertex3d_external (p1.x, p1.y, p1.z)
+					gl_normal3d_external (0,1,0)
+					gl_vertex3d_external (p2.x, p2.y, p2.z)
+					gl_normal3d_external (0,1,0)
+					gl_vertex3d_external (p3.x, p3.y, p3.z)
+					gl_normal3d_external (0,1,0)
+					gl_vertex3d_external (p4.x, p4.y, p4.z)
+				gl_end
+			end
 		end
 		
 feature {NONE} -- Attributes
@@ -227,7 +250,7 @@ feature {NONE} -- Attributes
 			-- Traffic line provides information about points and segments.
 			
 	line_color: GL_VECTOR_3D[DOUBLE]
-			-- Vector of RGB values for the line color.
+			-- Vector of RGB values for the line color
 			
 	object_width: DOUBLE is 2.0
 			-- The size of the bounding box in x direction of created objects.
@@ -242,8 +265,8 @@ feature {NONE} -- Implementation
 	
 	specify_object is
 			-- Defines the object.
-		do
-			line.do_all (agent draw_line_section (?))
+		do	
+			line.do_all (agent draw_line_section (?))	
 		end
 		
 	draw_line_section (section: TRAFFIC_LINE_SECTION) is
