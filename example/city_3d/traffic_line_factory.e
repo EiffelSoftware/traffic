@@ -34,7 +34,7 @@ inherit
 feature -- Initialization
 
 	set_line (l: TRAFFIC_LINE) is
-			-- Create a new object.
+			-- Set `line'.
 		require
 			l /= Void
 			l.count >= 0
@@ -53,7 +53,7 @@ feature -- Initialization
 		end
 		
 	set_highlighted (b: BOOLEAN) is
-			-- Set `is_highlighted'
+			-- Set `is_highlighted'.
 		do
 			is_highlighted := b
 			unchanged := False
@@ -63,7 +63,7 @@ feature -- Initialization
 		
 	is_highlighted: BOOLEAN
 			-- Should the traffic line have a depth?
-		
+
 feature {NONE} -- Drawing
 		
 	draw_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r, h: DOUBLE) is
