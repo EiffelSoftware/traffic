@@ -67,7 +67,7 @@ feature -- Initialization
 			-- Build player status box.
 			create player_status_box.make_from_position_and_size (Margin, Margin + Map_area_height - 150, Map_area_width, 150, " ")
 			player_status_box.set_font (Status_font)
-			player_status_box.set_title_font (Small_credits_font)
+			player_status_box.set_title_font (Big_status_font)
 			player_status_box.set_color (Status_color)
 			player_status_box.set_opacity (80)
 			player_status_box.set_padding (-3)
@@ -503,23 +503,6 @@ feature {NONE} -- Implementation
 			-- Extend scene with little map widget.
 			main_container.extend (container)
 		end	
-
-	initialize_player_status_box (a_status_box: TEXT_BOX; a_title: STRING) is
-			-- Initialize a status box
-		require
-			a_status_box_exists: a_status_box /= Void
-			a_title_exists: a_title /= Void
-		do			
-			a_status_box.set_position_and_size (big_map_widget.x, big_map_widget.y + big_map_widget.height - 50, big_map_widget.width, 100)		
-			a_status_box.set_title_font (Big_credits_font)
-			a_status_box.set_font (Status_font)
-			a_status_box.set_color (Status_color)
-			a_status_box.set_opacity (70)
-			a_status_box.set_visibility (False)
-			main_container.extend (a_status_box)
-		ensure
-			a_status_box_added: main_container.has (a_status_box)
-		end
 
 invariant
 	traffic_map_exists: traffic_map /= Void

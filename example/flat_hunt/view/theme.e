@@ -48,7 +48,7 @@ feature -- Colors
 	
 	Game_widget_color: EM_COLOR is
 		once
-			Result := dark_blue
+			Result := light_blue
 		ensure
 			color_exists: Result /= Void
 		end
@@ -63,7 +63,7 @@ feature -- Colors
 	Status_color : EM_COLOR is
 			-- Color of the status boxes.
 		once
-			Result := light_violet
+			Result := light_gray
 		ensure
 			color_exists: Result /= Void
 		end
@@ -192,6 +192,14 @@ feature -- Fonts
 			Result := create_font (Status_font_name, 12, black)
 		ensure
 			font_exists: Result/= Void
+		end
+
+   	Big_status_font: EM_COLOR_TTF_FONT is
+			-- Standard font for status box titles.
+		once
+			Result := create_font (Default_font_name, 40, Status_color)
+		ensure
+			font_exists: Result /= Void
 		end
 	
 	Place_label_font: EM_COLOR_TTF_FONT is

@@ -16,16 +16,16 @@ inherit
 		
 feature -- Colors
 
-	Dark_blue: EM_COLOR is
+	Light_blue: EM_COLOR is
 		once
-			Result := create {EM_COLOR}.make_with_rgb (0, 0, 200)
+			Result := create {EM_COLOR}.make_with_rgb (100, 90, 255)
 		ensure
 			color_exists: Result /= Void
 		end
 
 	Light_violet: EM_COLOR is
 		once
-			Result := create {EM_COLOR}.make_with_rgb (150, 0, 190)
+			Result := create {EM_COLOR}.make_with_rgb (200, 110, 210)
 		ensure
 			color_exists: Result /= Void
 		end
