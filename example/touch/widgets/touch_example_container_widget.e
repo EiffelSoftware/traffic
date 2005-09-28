@@ -11,7 +11,7 @@ class
 
 inherit
 	EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
-		end
+
 	EM_SHARED_STANDARD_FONTS
 		export
 			{NONE} all
