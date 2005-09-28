@@ -11,7 +11,7 @@ inherit
 		rename 
 			make_scene as make_scene_default
 		redefine
-			handle_key_down_event
+			handle_key_down_event, initialize_scene
 		end
 
 create

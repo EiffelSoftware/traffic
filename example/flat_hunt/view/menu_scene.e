@@ -13,7 +13,7 @@ deferred class
 inherit
 	FLAT_HUNT_SCENE
 		redefine
-			make_scene, handle_key_down_event
+			make_scene, handle_key_down_event, initialize_scene
 		end
 
 feature -- Initialization		

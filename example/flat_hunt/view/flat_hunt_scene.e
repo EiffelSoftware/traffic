@@ -10,7 +10,7 @@ deferred class
 	FLAT_HUNT_SCENE
 
 inherit
-	EM_SCENE
+	EM_DRAWABLE_SCENE
 		redefine
 			handle_key_down_event, handle_outside_event
 		end
