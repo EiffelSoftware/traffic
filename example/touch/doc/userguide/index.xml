@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"User guide for Touch"
+
+	copyright: "Copyright (c) 2005, Roger Kueng"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="user_guide/index">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Roger Kueng</holder>
+        </copyright>
+        <author>
+            <firstname>Roger</firstname>
+            <surname>Kueng</surname>
+        </author>
+        <email>rkueng@student.ethz.ch</email>
+        <date>14 September 2005</date>
+    </chapterinfo>
+    <title>Touch User Guide</title>
+    <para>
+        <projectname>Touch</projectname> is the application that comes with the textbook 
+        <emphasis>A Touch of Class</emphasis>. It is the framework for the examples and exercises
+        that you find in the book. <emphasis>A Touch of Class</emphasis> is used to teach programming to
+        students in the first semester. The examples are based on <libraryname>TRAFFIC</libraryname>
+        [<link url="references.html">sa05</link>] a library that models a city and its
+        transportation connections. The visual presentation is done using <libraryname>EiffelMedia</libraryname> 
+        (which is further development of <libraryname>ESDL</libraryname> [<link url="references.html">tgb03</link>])
+    </para>
+    <para> This document describes how to use <projectname>Touch</projectname> and is structured
+        as follows: <blockquote>
+            <variablelist>
+                <varlistentry>
+                    <term>
+                        <link url="userguide_main.html"> Touch Userguide</link>
+                        <link url="references.html"> References</link>
+                    </term>
+                </varlistentry>
+            </variablelist>
+        </blockquote>
+    </para>
+</chapter>

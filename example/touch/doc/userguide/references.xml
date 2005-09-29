@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"User guide for Touch"
+
+	copyright: "Copyright (c) 2005, Roger Kueng"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="user_guide/references">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Roger Kueng</holder>
+        </copyright>
+        <author>
+            <firstname>Roger</firstname>
+            <surname>Kueng</surname>
+        </author>
+        <email>rkueng@student.ethz.ch</email>
+        <date>14 September 2005</date>
+    </chapterinfo>
+    <title>References</title>
+    <para>
+        <blockquote>
+            <variablelist>
+                <varlistentry>
+                    <term>[uc05] Ursina Caluori. <emphasis>Flat Hunt User Guide</emphasis>. ETH Zurich,
+                        2005. </term>
+                    <listitem>
+                        <link url="http://se.inf.ethz.ch/projects/ursina_caluori"
+                            >http://se.inf.ethz.ch/projects/ursina_caluori</link>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>[sa05] Sibylle Aregger. <emphasis>Redesign of the
+                            <libraryname>TRAFFIC</libraryname> library</emphasis>. ETH Zurich, 2005. </term>
+                    <listitem>
+                        <link url="http://se.inf.ethz.ch/projects/sibylle_aregger"
+                            >http://se.inf.ethz.ch/projects/sibylle_aregger</link>
+                    </listitem>
+                </varlistentry>
+    						<varlistentry>
+                    <term>[rb05] Rolf Bruderer. <emphasis>Object-Oriented Framework for Teaching
+                            Introductory Programming</emphasis>. ETH Zurich, 2005. </term>
+                    <listitem>
+                        <ulink url="http://se.inf.ethz.ch/projects/rolf_bruderer"
+                            >http://se.inf.ethz.ch/projects/rolf_bruderer</ulink>
+                    </listitem>
+                </varlistentry>                
+                <varlistentry>
+                    <term>[tgb03] Till G. Bay. <emphasis>Eiffel SDL Multimedia Library
+                        (ESDL)</emphasis>. ETH Zurich, 2003. </term>
+                    <listitem>
+                        <link url="http://se.inf.ethz.ch/projects/till_bay"
+                            >http://se.inf.ethz.ch/projects/till_bay</link>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </blockquote>
+    </para>
+</chapter>
