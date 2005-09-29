@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"Developer Guide for Touch"
+
+	copyright: "Copyright (c) 2005, Roger Kueng"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer_guide/clusters">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Roger Kueng</holder>
+        </copyright>
+        <author>
+            <firstname>Roger</firstname>
+            <surname>Kueng</surname>
+        </author>
+        <email>rkueng@student.ethz.ch</email>
+        <date>29 September 2005</date>
+    </chapterinfo>
+    
+    
+<title>Touch Clusters</title>
+<para>
+This part describes the design and structure of the classes that build up <projectname>TOUCH</projectname>. This first chapter gives a short overview of the whole system. The next chapter describes each cluster and its most important classes. <emphasis>Figure 1</emphasis> shows the clusters as they are displayed in EiffelStudio. The clusters that are important for you to work with TOUCH are found in top-level cluster Touch. This cluster has itself four subclusters called examples, utils, visualization and widgets. These cluster are described in the next section.
+</para>
+    <para>
+        <image src="../images/clusters.png"/>
+    </para>
+    <para>
+        <emphasis>Figure 1: Touch Clusters</emphasis>
+    </para>
+
+<section>
+<title>Clusters in detail</title>
+<para>
+Cluster Touch contains only a few classes. But one of them is probably the most important: <classname>TOUCH_EXAMPLE_SELECTION_SCENE</classname>. It is the main scene for TOUCH. The example registration and example selection is coded within this class. The mechanism of inserting new examples and exercises is explained in Chapter <link url="dev_build_example.html">Build a new Example</link>.
+</para>
+      <para>
+      	<itemizedlist>
+        <listitem>
+ 	           <para>
+ 	           <strong>Cluster Examples</strong>   This Cluster contains the classes used to build an example: The deferred class <classname>TOUCH_EXAMPLE</classname> and <classname>TOUCH_SIMPLE_TRAFFIC_SCENE</classname>. It also contains the class <classname>TOUCH_EXAMPLE_RUNTIME</classname> that provides the running example with access to the map etc. The implemented examples that come with the application can also be found here.
+	            </para>
+	        </listitem>
+	        <listitem>
+	            <para>
+	           	<strong>Cluster Utils</strong>   In this cluster there are only three simple helper classes used for basic timing and for getting an unique id.
+	            </para>
+	        </listitem>
+	        <listitem>
+	            <para>
+	            <strong>Cluster Visualization</strong>   Several classes that have to do with the graphical representation are contained in this cluster.
+	            </para>
+	        </listitem>
+	        <listitem>
+	            <para>	        
+	            <strong>Cluster Widgets</strong>   Since the main part of this application was written before <libraryname>EiffelMedia</libraryname> was created, <projectname>TOUCH</projectname> comes with its own GUI-Widgets.
+	            </para>
+	        </listitem>	        
+      	</itemizedlist>
+	    </para>				 
+</section>
+<toplink/>
+</chapter>
