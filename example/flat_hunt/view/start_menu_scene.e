@@ -225,6 +225,8 @@ feature {NONE} -- Implementation
 	quit_callback is
 			-- Callback for `quit' entry.
 		do
+			music_player.dispose
+			next_scene := Void
 			event_loop.stop
 		end
 

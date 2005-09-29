@@ -11,6 +11,8 @@ class
 	MUSIC_PLAYER
 
 inherit
+	EM_SHARED_SUBSYSTEMS
+	
 	EM_SHARED_AUDIO_FACTORY
 	
 	EM_AUDIO_CONSTANTS
@@ -18,6 +20,11 @@ inherit
 	EM_TIME_SINGLETON
 	
 	THEME
+
+	MEMORY
+		redefine 
+			dispose 
+		end
 
 create
 	make
@@ -31,6 +38,10 @@ feature -- Initialization
 			sound_dir: DIRECTORY
 			i: INTEGER
 		do
+			-- Initialize autio subsystem.
+			audio_subsystem.enable
+			audio_subsystem.mixer.open (Em_default_frequency, Em_audio_format_s16sys, Em_stereo, Em_default_chunk_size)			
+
 			directory := Sound_directory
 			create sound_dir.make (directory)
 			create available_songs.make (0)
@@ -184,6 +195,7 @@ feature -- Basic Operations
 			end
 			
 			set_volume (volume)
+			stop_current_song
 			available_songs.i_th (next_song).play (1)
 			current_song := next_song
 		end
@@ -210,9 +222,17 @@ feature -- Basic Operations
 			end	
 			
 			set_volume (volume)
+			stop_current_song
 			available_songs.i_th (previous_song).play (1)
 			current_song := previous_song
 		end		
+
+	stop_current_song is
+			-- Stop current song.
+		do
+			available_songs.i_th (current_song).stop
+		end
+		
 
 	increase_volume is
 			-- Increase volume by `Increase_step'.
@@ -243,6 +263,20 @@ feature -- Basic Operations
 			
 			set_volume (tmp_volume)
 		end	
+		
+	dispose is
+			-- Disable audio system.
+		require else
+			subsystem_enabled: audio_subsystem.is_enabled
+		do
+			stop_current_song
+			audio_subsystem.disable	
+			Precursor {MEMORY}
+		ensure then
+			mixer_is_closed: not audio_subsystem.mixer.is_open
+			subsystem_disabled: not audio_subsystem.is_enabled			
+		end
+		
 
 feature {NONE} -- Constants
 

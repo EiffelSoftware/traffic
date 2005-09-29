@@ -57,10 +57,10 @@ feature {NONE} -- Event Handling
 	handle_outside_event is
 			-- Handle outside events.
 		do
-			if not music_player.is_music_playing then
-				music_player.play_next_song
-			end
-			full_collect
+--			if not music_player.is_music_playing then
+--				music_player.play_next_song
+--			end
+--			full_collect
 		end
 		
 end
