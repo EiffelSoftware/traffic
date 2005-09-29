@@ -38,7 +38,7 @@ feature -- Initialization
 			sound_dir: DIRECTORY
 			i: INTEGER
 		do
-			-- Initialize autio subsystem.
+			-- Initialize audio subsystem.
 			audio_subsystem.enable
 			audio_subsystem.mixer.open (Em_default_frequency, Em_audio_format_s16sys, Em_stereo, Em_default_chunk_size)			
 
