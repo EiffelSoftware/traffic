@@ -20,7 +20,7 @@
             <surname>Kueng</surname>
         </author>
         <email>rkueng@student.ethz.ch</email>
-        <date>14 September 2005</date>
+        <date>29 September 2005</date>
     </chapterinfo>
     <title>Touch User Guide</title>
     <para>
@@ -33,15 +33,23 @@
         (which is further development of <libraryname>ESDL</libraryname> [<link url="references.html">tgb03</link>])
     </para>
     <para> This document describes how to use <projectname>Touch</projectname> and is structured
-        as follows: <blockquote>
+        as follows: 
+        <blockquote>
             <variablelist>
                 <varlistentry>
                     <term>
                         <link url="userguide_main.html"> Touch Userguide</link>
+                    </term>
+                </varlistentry>
+                        
+                <varlistentry>
+                    <term>                        
                         <link url="references.html"> References</link>
                     </term>
                 </varlistentry>
             </variablelist>
         </blockquote>
+        
+        
     </para>
 </chapter>
