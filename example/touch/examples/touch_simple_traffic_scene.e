@@ -90,7 +90,10 @@ feature -- Widgets
 	blue_box: TOUCH_BITMAP_STATIC
 			-- The Box where the end button is in
 	foreground: TOUCH_BITMAP_STATIC
-			-- the foreground for the map
+			-- the foreground for the map (does not work anymore)
+	map_border: EM_RECTANGLE
+			-- Replacement for the foreground
+	
 	background : EM_RECTANGLE
 			-- the grey background for the map
 			
@@ -144,13 +147,18 @@ feature -- Scene Initialization
 				console.set_x_y (border, (0.7*height+border).rounded)
 
 				--Build Map foreground
-				create foreground.make_with_image_file_and_width_and_height ("./images/map.png",width-2*border+2, (0.7*height-2*border).rounded+4)
-				foreground.set_x_y (border, border)
+--				create foreground.make_with_image_file_and_width_and_height ("./images/map.png", width-2*border+2, (0.7*height-2*border).rounded+4)
+--				foreground.set_x_y (border, border)
+				create map_border.make_from_position_and_size (border, border, width-2*border+2, (0.7*height-2*border).rounded+4)
+				map_border.set_line_color (white)
+				map_border.set_line_width (3)
+				map_border.set_filled (false)			
 				
 				main_container.extend (blue_box)
 				main_container.extend (console)
 				main_container.extend (end_button)
 --				main_container.extend (foreground)
+				main_container.extend (map_border)
 				
 				--Render map_widget
 				map_widget.render
@@ -206,12 +214,14 @@ feature -- Basic Operation
 			background.set_size (zoomable_widget.width, zoomable_widget.height)
 			
 			-- Re-Build Map foreground
-			main_container.delete (foreground)
+--			main_container.delete (foreground)
+	
+--			create foreground.make_with_image_file_and_width_and_height ("./images/map.png", background.width+2, background.height+2)
+--			foreground.set_x_y (background.x, background.y)
 			
-			create foreground.make_with_image_file_and_width_and_height ("./images/map.png", background.width+2, background.height+2)
-			foreground.set_x_y (background.x, background.y)
-			
-			main_container.extend (foreground)
+--			main_container.extend (foreground)
+			map_border.set_x_y (background.x, background.y)
+			map_border.set_size (background.width, background.height)
 			
 			blue_box.set_x_y ( zoomable_widget.x + zoomable_widget.width - end_button.width - 4*border, 680-2*border)
 			end_button.set_x_y ( zoomable_widget.x + zoomable_widget.width - end_button.width-2*border, 680)
