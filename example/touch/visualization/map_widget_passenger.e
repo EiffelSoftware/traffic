@@ -20,11 +20,15 @@ feature -- Iniitialization
 	make_on_map_place (a_map: TRAFFIC_MAP; a_place: TRAFFIC_PLACE) is
 			-- Initialize passenger standing on `a_place' in `a_map'.
 		require
+			a_map_not_void: a_map /= Void
 			a_place_in_map: a_map.has_place (a_place.name)
 		do
 			place := a_place
 			map := a_map
 			create position.make (place.position.x, place.position.y)
+		ensure
+			map_set: map = a_map
+			place_set: place = a_place
 		end	
 
 feature -- Status report
@@ -145,5 +149,5 @@ feature -- Status report
 
 invariant
 	is_on_a_place: place /= Void
-
+	map_set: map /= Void
 end

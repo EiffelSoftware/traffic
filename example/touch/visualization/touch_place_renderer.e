@@ -28,7 +28,7 @@ create
 
 feature -- Basic operations
 	render (a_place: TRAFFIC_PLACE): EM_DRAWABLE is
-			-- Render place as rectangle and add a picture if it has any
+			-- Render place as rectangle and add a picture if the place has any
 		local
 			bitmap: EM_BITMAP
 			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]

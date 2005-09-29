@@ -23,7 +23,6 @@ feature -- Initialization
 			-- 
 		do
 			passenger := a_passenger
-			-- TODO: default picture ??
 		end		
 
 feature -- Access
