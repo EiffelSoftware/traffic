@@ -34,7 +34,11 @@ feature -- Initialization
 			video_subsystem.set_video_surface_width (Window_width)			
 			video_subsystem.set_video_surface_height (Window_height)
 		
-			-- Initialize the screen. 
+			-- Audio subsystem settings.
+--			audio_subsystem.enable
+--			audio_subsystem.mixer.open (Em_default_frequency, Em_audio_format_s16sys, Em_stereo, Em_default_chunk_size)
+
+			-- Initialize the screen.
 			initialize_screen
 			set_application_icon ("icon.png")
 			set_application_name ("Flat Hunt v2")
@@ -46,7 +50,6 @@ feature -- Initialization
 			create start_menu_scene.make_scene
 			set_scene (start_menu_scene)	
 			launch
---			audio_subsystem.disable
 			video_subsystem.disable
 		end
 

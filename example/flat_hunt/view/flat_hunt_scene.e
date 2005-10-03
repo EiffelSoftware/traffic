@@ -37,13 +37,13 @@ feature {NONE} -- Event Handling
 		do
 			-- Music player control			
 			if a_keyboard_event.key = Sdlk_pageup then
-				music_player.play_next_song
+				music_player.forth
 			end
 			if a_keyboard_event.key = Sdlk_pagedown then
-				music_player.play_previous_song
+				music_player.back
 			end
 			if a_keyboard_event.key = Sdlk_s then
-				music_player.toggle_shuffle
+				music_player.set_shuffle (not music_player.shuffle)
 			end			
 			if a_keyboard_event.key = Sdlk_v then
 				if a_keyboard_event.is_shift_pressed then
@@ -57,10 +57,10 @@ feature {NONE} -- Event Handling
 	handle_outside_event is
 			-- Handle outside events.
 		do
---			if not music_player.is_music_playing then
---				music_player.play_next_song
---			end
---			full_collect
+			if not music_player.is_playing then
+				music_player.forth
+			end
+			full_collect
 		end
 		
 end
