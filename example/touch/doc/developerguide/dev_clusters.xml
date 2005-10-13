@@ -24,7 +24,7 @@
     
 <title>Touch Clusters</title>
 <para>
-This part describes the design and structure of the classes that build up <projectname>TOUCH</projectname>. This first chapter gives a short overview of the whole system. The next chapter describes each cluster and its most important classes. <emphasis>Figure 1</emphasis> shows the clusters as they are displayed in EiffelStudio. The clusters that are important for you to work with TOUCH are found in top-level cluster Touch. This cluster has itself four subclusters called examples, utils, visualization and widgets. These cluster are described in the next section.
+This part describes the design and structure of the classes that build up <projectname>TOUCH</projectname>. This first chapter gives a short overview of the whole system. The next chapter describes each cluster and its most important classes. <emphasis>Figure 1</emphasis> shows the clusters as they are displayed in EiffelStudio. The clusters that are important for you to work with TOUCH are found in top-level cluster Touch. This cluster has itself four subclusters called examples, utils, visualization and widgets. These clusters are described in the next section.
 </para>
     <para>
         <image src="../images/clusters.png"/>
@@ -36,7 +36,7 @@ This part describes the design and structure of the classes that build up <proje
 <section>
 <title>Clusters in detail</title>
 <para>
-Cluster Touch contains only a few classes. But one of them is probably the most important: <classname>TOUCH_EXAMPLE_SELECTION_SCENE</classname>. It is the main scene for TOUCH. The example registration and example selection is coded within this class. The mechanism of inserting new examples and exercises is explained in Chapter <link url="dev_build_example.html">Build a new Example</link>.
+Cluster Touch contains only a few classes. But one of them is probably the most important: <classname>TOUCH_EXAMPLE_SELECTION_SCENE</classname>. It is the main scene for TOUCH. The example registration and example selection is implemented within this class. The mechanism of inserting new examples and exercises is explained in Chapter <link url="dev_build_example.html">Build a new Example</link>.
 </para>
       <para>
       	<itemizedlist>
@@ -47,12 +47,12 @@ Cluster Touch contains only a few classes. But one of them is probably the most 
 	        </listitem>
 	        <listitem>
 	            <para>
-	           	<strong>Cluster Utils</strong>   In this cluster there are only three simple helper classes used for basic timing and for getting an unique id.
+	           	<strong>Cluster Utils</strong>   In this cluster there are only three simple helper classes used for basic timing and for getting unique ids.
 	            </para>
 	        </listitem>
 	        <listitem>
 	            <para>
-	            <strong>Cluster Visualization</strong>   Several classes that have to do with the graphical representation are contained in this cluster.
+	            <strong>Cluster Visualization</strong>   Several classes that deal with the graphical representation are contained in this cluster.
 	            </para>
 	        </listitem>
 	        <listitem>
