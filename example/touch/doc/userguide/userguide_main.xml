@@ -39,7 +39,7 @@
     
 		<section id="application">
 			<title>
-				How does this Application work?
+				How does this application work?
 			</title>
 			<para>
 				On the left side you can see the chapters and their examples. To change 
@@ -57,7 +57,7 @@
 	        <emphasis>Figure 2: Example Scene </emphasis>
 	    </para>
 	    <para>
-				 You can navigate on the map by pressing the mouse buttons. 
+				 You navigate on the map by pressing the mouse buttons. 
 			</para>
       <para>
       	<itemizedlist>
