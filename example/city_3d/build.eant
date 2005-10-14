@@ -21,7 +21,7 @@
 
   <target name="init_system">
     <set name="system" value="city_3d"/>
-    <set name="system_dir" value="${TRAFFIC}/example/city_3d"/>
+    <set name="system_dir" value="."/>
   </target>
 
 </project>

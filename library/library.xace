@@ -4,13 +4,13 @@
 
   <description>
     description: "Xace file for Traffic Library"
-    copyright: "Copyright (c) 2004, Benno Baumgartner, Till G. Bay and others"
+    copyright: "Copyright (c) 2005, Michela Pedroni and others"
     license: "Eiffel Forum License v2 (see forum.txt)"
     date: "$Date$"
     revision: "$Revision$"
   </description>
 
-  <cluster name="traffic" location="${TRAFFIC}/library" prefix="tr_">
+  <cluster name="traffic" location="../../library" prefix="tr_">
     <cluster name="util">
     	<cluster name="base_extension">
 				<cluster name="dispenser"/>       

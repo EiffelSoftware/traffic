@@ -22,7 +22,7 @@
     <option name="console_application" value="false"/>
   </option>
 
-  <cluster name="city_3d" location="${TRAFFIC}/example/city_3d">
+  <cluster name="city_3d" location=".">
 	  <cluster name="tools"/>
   </cluster>
   
@@ -31,6 +31,6 @@
   <mount location="${GOBO}/library/library.xace"/>
   <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
   <mount location="${EM}/library/library.xace"/>
-  <mount location="${TRAFFIC}/library/library.xace"/> 
+  <mount location="../../library/library.xace"/> 
 
 </system>

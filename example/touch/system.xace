@@ -22,17 +22,17 @@
     <option name="console_application" value="false"/>
   </option>
 
-  <cluster name="touch" location="${TRAFFIC}/example/touch">
-		<cluster name="touch_utils" location="${TRAFFIC}/example/touch/utils"/>
-		<cluster name="touch_examples" location ="${TRAFFIC}/example/touch/examples"/>
-		<cluster name="touch_widgets" location="${TRAFFIC}/example/touch/widgets"/>
-		<cluster name="touch_visualization" location="${TRAFFIC}/example/touch/visualization"/>
+  <cluster name="touch" location=".">
+		<cluster name="touch_utils" location="utils"/>
+		<cluster name="touch_examples" location ="examples"/>
+		<cluster name="touch_widgets" location="widgets"/>
+		<cluster name="touch_visualization" location="visualization"/>
 	</cluster>
 	
   <mount location="${GOBO}/library/kernel.xace"/>
   <mount location="${GOBO}/library/library.xace"/>
   <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
   <mount location="${EM}/library/library.xace"/>
-  <mount location="${TRAFFIC}/library/library.xace"/>  
+  <mount location="../../library/library.xace"/>  
 
 </system>
