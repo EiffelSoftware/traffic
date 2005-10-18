@@ -130,8 +130,6 @@ feature -- Scene Initialization
 	
 				-- Build map widget.
 				build_map_widget (border, border, width-2*border, (0.7*height-2*border).rounded)
-	--			map_widget.subscribe_to_clicked_place_event (agent process_clicked_place)
-	
 
 				--Build end button				
 				end_button := create {TOUCH_TEXT_BUTTON}.make_with_title_and_width_and_height ("End Example", 250, 30)
@@ -146,10 +144,11 @@ feature -- Scene Initialization
 				create console.make_with_width_and_height ((0.7*width-2*border).rounded, (0.3*height-2*border).rounded)
 				console.set_x_y (border, (0.7*height+border).rounded)
 
-				--Build Map foreground
+				--Build Map foreground (but neither foreground nor map_border works with the current EM Release
+				--The Problem is that the map does not receive the Mouse Actions
 --				create foreground.make_with_image_file_and_width_and_height ("./images/map.png", width-2*border+2, (0.7*height-2*border).rounded+4)
 --				foreground.set_x_y (border, border)
-				create map_border.make_from_position_and_size (border, border, width-2*border+2, (0.7*height-2*border).rounded+4)
+				create map_border.make_from_position_and_size (border, border, width-2*border, (0.7*height-2*border).rounded+3)
 				map_border.set_line_color (white)
 				map_border.set_line_width (3)
 				map_border.set_filled (false)			
@@ -158,7 +157,7 @@ feature -- Scene Initialization
 				main_container.extend (console)
 				main_container.extend (end_button)
 --				main_container.extend (foreground)
-				main_container.extend (map_border)
+--				main_container.extend (map_border)
 				
 				--Render map_widget
 				map_widget.render
