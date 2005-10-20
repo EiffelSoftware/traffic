@@ -108,7 +108,6 @@ feature {NONE} -- Implementation
 			Result.put (create {TRAFFIC_LINES_NODE_PROCESSOR}.make, "lines")
 			Result.put (create {TRAFFIC_LINE_NODE_PROCESSOR}.make, "line")
 			Result.put (create {TRAFFIC_POINT_NODE_PROCESSOR}.make, "point")
---			Result.put (create {TRAFFIC_STATION_NODE_PROCESSOR}.make, "station")			
 			Result.put (create {TRAFFIC_LINE_SECTION_NODE_PROCESSOR}.make, "line_section")	
 			Result.put (create {TRAFFIC_DESCRIPTION_NODE_PROCESSOR}.make, "description")
 			Result.put (create {TRAFFIC_FILE_NODE_PROCESSOR}.make, "file")

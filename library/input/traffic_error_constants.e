@@ -20,6 +20,9 @@ feature  -- Access
 	file_name: STRING
 			-- Name of file where error occurred.
 			
+	directory_name: STRING
+			-- Directory where file is located. 
+			
 	error_description: STRING is
 			-- Textual description of error.
 		require

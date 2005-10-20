@@ -97,21 +97,12 @@ feature -- Status setting
 			file_name_valid:  File_system.is_file_readable (a_name)
 			file_exists: File_system.file_exists (a_name)
 		do
-			create file_name.make_from_string (a_name)
+			directory_name := file_system.absolute_parent_directory (a_name)
+			file_name := file_system.basename (a_name)
 			is_parsed := False
 		ensure
 			file_name_set: has_file_name
 			not_parsed: not is_parsed
-		end
-
-	set_working_directory is
-			-- Set the current working directory to the place where the filename 
-			-- comes from (needs to be done if dtd-files with relative paths should be accepted).
-		require
-			file_name_set: has_file_name
-		do
-			-- FIXME (create {EXECUTION_ENVIRONMENT}).change_working_directory (File_system.absolute_parent_directory (file_name))
-			(create {EXECUTION_ENVIRONMENT}).change_working_directory ("map")
 		end
 
 feature -- Basic operations
@@ -122,10 +113,15 @@ feature -- Basic operations
 			file_name_set: has_file_name
 		local
 			file: KL_TEXT_INPUT_FILE
+			execution_environment: EXECUTION_ENVIRONMENT
+			my_dir: STRING
 		do
+			create execution_environment
+			old_working_directory := execution_environment.current_working_directory			
+			execution_environment.change_working_directory (directory_name)
+			my_dir := execution_environment.current_working_directory
 			set_error (0, << >>)
 			create file.make (file_name)
-			io.put_string ((create {EXECUTION_ENVIRONMENT}).current_working_directory)
 			file.open_read
 			if file.is_open_read then
 				xml_parser.parse_from_stream (file)
@@ -136,6 +132,7 @@ feature -- Basic operations
 			else
 				set_error (File_not_readable, << File_system.basename (file_name) >>)
 			end
+			execution_environment.change_working_directory (old_working_directory)
 		ensure
 			parsed_if_no_error: not has_error implies is_parsed
 		end
@@ -167,6 +164,9 @@ feature {NONE} -- Implementation
 				create {XM_EIFFEL_PARSER} Result.make
 			end
 		end
+		
+	old_working_directory: STRING
+			-- Old working directory
 		
 invariant
 

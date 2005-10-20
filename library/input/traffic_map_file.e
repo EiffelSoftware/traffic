@@ -34,19 +34,11 @@ feature {NONE} -- Initialization
 		local
 			factory: TRAFFIC_MAP_FACTORY
 			map_parser: TRAFFIC_MAP_PARSER
-			adaptor: TRAFFIC_XML_ADAPTOR
-			execution_environment: EXECUTION_ENVIRONMENT
-			old_working_directory: STRING
 		do
-			filename := a_filename
+			filename := a_filename			
 			create factory.make
 			create map_parser.make_with_factory (factory)
-			create adaptor
-			adaptor.adapt_xml_registry (map_parser)
 			map_parser.set_file_name (a_filename)
-			create execution_environment
-			old_working_directory := execution_environment.current_working_directory			
-			map_parser.set_working_directory
 			map_parser.parse
 			if map_parser.can_process then
 				map_parser.process
@@ -56,13 +48,6 @@ feature {NONE} -- Initialization
 			else
 				traffic_map := factory.map				
 			end
-
-			-- Restore working directory.
-			execution_environment.change_working_directory (old_working_directory)	
-			
-			-- Adopt old traffic map format. (TODO: Do it once for the old map files and remove this quickfix - hack)
-			--adopt_old_traffic_position_informations
-			
 		ensure
 			traffic_map_loaded: traffic_map /= Void
 		end
@@ -71,47 +56,13 @@ feature -- Access
 	
 	filename: STRING
 			-- Filename
-	
+			
 	traffic_map: TRAFFIC_MAP
 			-- Map in `Current'.		
 
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change	
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
--- TODO:
---	save_to_file (a_filename: STRING) is
---			-- 
---		do
---			
---		end		
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
 feature {NONE} -- Implementation
 
+	-- TODO remove
 	adopt_old_traffic_position_informations is
 			-- Quick fix for wrong old Map Files,
 			-- negates all y coordinates and ensures 

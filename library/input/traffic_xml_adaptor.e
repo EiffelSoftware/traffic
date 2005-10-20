@@ -18,20 +18,13 @@ feature -- Basic operations
 			a_map_parser.register_processor (create {TRAFFIC_PLACE_NODE_PROCESSOR}.make)
 			a_map_parser.register_processor (create {TRAFFIC_POINT_NODE_PROCESSOR}.make)
 			a_map_parser.register_processor (create {TRAFFIC_COLOR_NODE_PROCESSOR}.make)
---			a_map_parser.register_processor (create {POLYGON_NODE_PROCESSOR}.make)
---			a_map_parser.register_processor (create {BACKGROUND_NODE_PROCESSOR}.make)
 			a_map_parser.register_processor (create {TRAFFIC_FILE_NODE_PROCESSOR}.make)
 			a_map_parser.register_processor (create {TRAFFIC_DESCRIPTION_NODE_PROCESSOR}.make)
---			a_map_parser.register_processor (create {LINE_DISPLAYER_NODE_PROCESSOR}.make)
 			a_map_parser.register_allowed_subnode ("map", "description")
 			a_map_parser.register_allowed_subnode ("place", "file")
 			a_map_parser.register_allowed_subnode ("place", "description")
 			a_map_parser.register_allowed_subnode ("line", "color")
 			a_map_parser.register_allowed_subnode ("line", "line_section")
---			a_map_parser.register_allowed_subnode ("background", "file")
---			a_map_parser.register_allowed_subnode ("background", "polygon")
---			a_map_parser.register_allowed_subnode ("polygon", "color") 
---			a_map_parser.register_allowed_subnode ("polygon", "point")
 		end
 
 end
