@@ -73,10 +73,11 @@ feature -- Basic operation
 
 			-- Add some simple sprite containing an animation and animate it.
 			create animation.make_from_file ("./pics/alien.anim")
-			create sprite.make (animation)
-			example_scene.start_animating (sprite)
+			create sprite.make_from_animation (animation, 20000, 100)
+			sprite.set_do_loop (True)
+			sprite.start
+--			example_scene.start_animating (sprite)
 			passenger_drawable.set_picture (sprite)
-
 			example_scene.start_animating (passenger_drawable)
 			
 			a_runtime.map_widget.extend (passenger_drawable)
@@ -107,9 +108,9 @@ feature {NONE} -- Implementation
 	example_scene: TOUCH_SIMPLE_TRAFFIC_SCENE
 	passenger_drawable: MAP_WIDGET_PASSENGER_DRAWABLE
 
-	animation: EM_ANIMATION
 	image: EM_BITMAP
 	sprite: EM_SPRITE
+	animation: EM_ANIMATION
 
 feature -- Predefines
 	Louvre: TOUCH_GRAPHICAL_TRAFFIC_PLACE
