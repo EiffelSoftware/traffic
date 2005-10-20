@@ -16,7 +16,8 @@ inherit
 create 
 	make_with_scene_and_map_widget
 	
-feature -- Initialization		
+feature -- Initialization
+		
 	make_with_scene_and_map_widget (a_scene: EM_SCENE; a_map_widget: TRAFFIC_MAP_WIDGET) is
 			-- 
 		do
@@ -32,11 +33,13 @@ feature -- Initialization
 		end
 		
 feature -- Access
+
 	scene: EM_SCENE
 
 	map_widget: TRAFFIC_MAP_WIDGET
 
 feature -- Status setting
+
 	set_scene (a_scene: EM_SCENE) is
 			-- 
 		do
@@ -54,6 +57,7 @@ feature -- Status setting
 		end
 
 feature -- Basic operations	
+
 	animate is
 			--animate the route with a passenger
 		require
@@ -70,7 +74,7 @@ feature -- Basic operations
 			
 			create shared_bitmap_factory
 
-			shared_bitmap_factory.bitmap_factory.create_bitmap_from_image ("images/star.png")
+			shared_bitmap_factory.bitmap_factory.create_bitmap_from_image ("images/tram.png")
 			drawable.set_picture (shared_bitmap_factory.bitmap_factory.last_bitmap)
 
 			map_widget.extend (drawable)
