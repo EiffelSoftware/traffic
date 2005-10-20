@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE city SYSTEM "map_new.dtd"> 
+<!DOCTYPE city SYSTEM "map.dtd"> 
 <map name="Paris"> 
 
 <places>
@@ -67,75 +67,75 @@
 	<place name="place Pere Lachaise"/>
 	<place name="Tour Eiffel">
 	  <description text="The tower was built by Gustave Eiffel in 1899 for the world exposition, being at that time the tallest construction in the world. It dominates the 'Champs de Mars', a garden that has been used frequently for popular gatherings. At the top of the tower there are the Hertzian Television emitter for Paris and a revolving spotlight that can be seen everywhere in the city."/>
-	  <file name="images\eiffel.png"/>
+	  <file name="images/eiffel.png"/>
 	</place>
 	<place name="Notre Dame">
 	  <description text="A gothic cathedral from the 12th century, that hosted the crowning of Mary Stuart and the wedding of Henri the 4th. On the Parvis is the zero point from which all road distances in France are measured."/>
-	  <file name="images\notredame.png"/>
+	  <file name="images/notredame.png"/>
 	</place>
 	<place name="Champs Elysee - Etoile">
 	  <description text="The largest avenue in Paris, created by the Baron Haussmann on the order of Napolean the third in late 19th century. On the avenue many luxury shops for fashion items, cosmetics and perfume can be found. The large 'Place de L'Etoile', at its west end, is dominated by the 'Arc de Triomphe'."/>
-	  <file name="images\triomphe.png"/>
+	  <file name="images/triomphe.png"/>
 	</place>
 	<place name="Place de la Nation">
 	  <description text="Here Louis the 14th received allegiance from the city of Paris in 1660; since then it was called 'La place du Trone'. In 1794 the guillotine was erected. It took it present name in 1880."/>
-	  <file name="images\placedelanation.png"/>
+	  <file name="images/placedelanation.png"/>
 	</place>
 	<place name="Palais des Congres">
 	  <description text="One of the biggest site in Paris for conferences, musical shows, and other events such as political rallies. Its main amphitheater is suitable for about 4000 people. Currently the musical called 'Les demoiselles de Rochefort' is performed."/>
-	  <file name="images\congres.png"/>
+	  <file name="images/congres.png"/>
 	</place>
 	<place name="Palais de Chaillot">
 	  <description text="This palace was built in 1937 at the occasion of the world and colonial expositions in Paris. It now hosts a cinema museum, the museum of mankind, the museum of music and the 'National theatre de Chaillot'."/>
-	  <file name="images\chaillot.png"/>
+	  <file name="images/chaillot.png"/>
 	</place>
 	<place name="Maison de la Radio">
 	  <description text="Used as studios by Radio France since 1975. It also contains a famous concert hall, where the Radio France Orchestra plays frequently."/>
-	  <file name="images\maisondelaradio.png"/>
+	  <file name="images/maisondelaradio.png"/>
 	</place>
 	<place name="Invalides">
 	  <description text="The 'Hotel des Invalides' takes its name from the fact that old or invalid soldiers were put to rest in barracks situated there before Louis XIV's reign. The present building dates back to 16th century. It hosts the tomb of Napoleon the first."/>
-	  <file name="images\invalides.png"/>
+	  <file name="images/invalides.png"/>
 	</place>
 	<place name="Madeleine">
 	  <description text="The impressive church, of Corinthian inspiration on the outside, hosted Chopin's funeral in 1849. Situated nearby the Rue Royale, its ambience has very often been chosen for religous services by the high-end society of Paris, since its consecration in 1842."/>
-	  <file name="images\madeleine.png"/>
+	  <file name="images/madeleine.png"/>
 	</place>
 	<place name="Opera">
 	  <description text="The former opera house (it has been succeeded by the 'Opera Bastille') was built in 1820 on plans by Charles Garnier. You can find a model detailing its extraordinary interior at the 'Musee d'Orsay'."/>
-	  <file name="images\opera.png"/>
+	  <file name="images/opera.png"/>
 	</place>
 	<place name="Musee du Louvre">
 	  <description text="At one time the royal residence, the palace grew over the centuries, and is now the largest museum in the world. Only 5% of its collections are available for public viewing. Among them is 'La Joconde' from Leonardo da Vinci. The construction of a controversial glass pyramid, situated in the central courtyard of the palace, ended in 1988."/>
-	  <file name="images\louvre.png"/>
+	  <file name="images/louvre.png"/>
 	</place>
 	<place name="Sacre Coeur">
 	  <description text="The Basilica of the Sacred Heart was built between 1876 and 1914, atop of Montmartre, in reaction to the revolutionary movement called 'la commune de Paris', that took place nearby in 1871. The exterior is of Byzatine inspiration, while the interior is decorated with stained-glass and mosaics."/>
-	  <file name="images\sacrecoeur.png"/>
+	  <file name="images/sacrecoeur.png"/>
 	</place>
 	<place name="St. Germain des Pres">
 	  <description text="The neighborhood around the St. Germain Church near Montparnasse was the gathering point for the French existentialists after the second world war. Sartre, Breton, Picasso used to have a drink at 'La Closerie des Lilas', the 'Cafe de Flore', or 'Les Deux Magots', and often went listening to Jazz music at the 'Petit Journal'."/>
-	  <file name="images\saintgermaindespres.png"/>
+	  <file name="images/saintgermaindespres.png"/>
 	</place>
 	<place name="Observatoire">
 	  <description text="From this observatorium the planet Neptune was discovered by Le Verrier in 1846. It was built in the 17th century so as to be traversed by the Paris meridian; it is now enclosed in a beautiful garden."/>
-	  <file name="images\observatoire.png"/>
+	  <file name="images/observatoire.png"/>
 	</place>
 	<place name="Tour Montparnasse">
 	  <description text="The tour was inaugurated in 1967, over the old railway place (that still exists). In its vicinity a plethora of theaters and shopping places can be found. You can go for a walk in the cemetery nearby, or have dinner in the rather expensive restaurant at the top of the tower."/>
-	  <file name="images\montparnasse.png"/>
+	  <file name="images/montparnasse.png"/>
 	</place>
 	<place name="Cite Universitaire">
 	  <description text="It is the place where foreign students can find an affordable place to stay for few months. Besides the main building, in which the 'Theatre de la Cite' can be found, many countries, including Switzerland, Germany, Argentina, and Mexico, have a separate building where their respective citizens can stay. In front of the Cite is the very nice 'Montsouris' garden."/>
-	  <file name="images\citeuniversitaire.png"/>
+	  <file name="images/citeuniversitaire.png"/>
 	</place>
 	<place name="Hotel de Ville">
 	  <description text="It is Paris' majestuous official reception and city government building. Its construction was order by Francois the first in the 16th century, following the Renaissance style. During winter, an ice-skating rink is installed in front of it."/>
-	  <file name="images\hoteldeville.png"/>
+	  <file name="images/hoteldeville.png"/>
 	</place>
 	<place name="Pere Lachaise">
 	  <description text="This large and very beautiful cemetery situated in popular neighborhood within the walls of Paris. The last partisans of the 'commune de Paris' were killed there, in front of the 'murs des federes'. Moliere, Balzac, Apollinaire and Proust are buried here."/>
-	  <file name="images\lachaise.png"/>
+	  <file name="images/lachaise.png"/>
 	</place>
 </places>
 

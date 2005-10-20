@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE city SYSTEM "map_new.dtd"> 
-<map name="Zurich (big)"> 
+<!DOCTYPE city SYSTEM "map.dtd"> 
+<map name="Zurich"> 
 
 <description text="grosse zurich city map." />
 
