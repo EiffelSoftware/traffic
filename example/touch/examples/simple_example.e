@@ -20,7 +20,7 @@ feature -- Basic operations
 			example_scene: TOUCH_SIMPLE_TRAFFIC_SCENE
 		do
 			-- Create the scene we want our example to run
-			create example_scene.make_with_zurich_little (Current)
+			create example_scene.make_with_zurich (Current)
 			-- Set the exit_scene
 			example_scene.set_next_scene (exit_scene)
 			-- Return scene
