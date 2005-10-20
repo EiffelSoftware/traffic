@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+
+<project name="traffic_doc_function" default="help">
+
+	<description>
+		description: "Traffic documentation"
+		date: "$Date$"
+		revision: "$Revision$"
+	</description>
+
+	<target name="help">
+		<echo message="usage:"/>
+		<echo message="   geant install : generate part of documentation"/>
+		<echo message="   geant clobber : delete generated *.html files"/>
+	</target>
+
+	<target name="install">
+		<description>
+			Install the Traffic documentation.
+		</description>
+		<geant target="init"/>
+		<set name="xslt_processor" value="gexslt" unless="$GOBO_XSLT_PROCESSOR"/>
+		<set name="xslt_processor" value="${GOBO_XSLT_PROCESSOR}" if="$GOBO_XSLT_PROCESSOR"/>
+
+		<set name="previous" value="index"/>
+		<set name="current" value="index"/>
+
+		<set name="target" value="xslt_and_shift"/>
+		<geant target="do_all_with_msg" arguments="successfully installed:, ${doc_section}"/>
+	</target>
+	
+	<target name="clobber">
+		<description>
+			Remove all generated files.
+		</description>
+
+          <geant target="init"/>
+		<set name="target" value="delete_file"/>
+		<geant target="do_all_with_msg" arguments="successfully clobbered:, ${doc_section}"/>
+	</target>
+
+
+<!-- Implementation -->
+
+	<target name="do_all">
+		<!--
+			List all files like:
+				...
+				<geant target="${target}" arguments="test"/>
+				<geant target="${target}" arguments="test2"/>
+				<geant target="${target}" arguments="index"/>
+		-->
+	</target>
+
+	<target name="init">
+		<!--
+			Values to be defined:
+				. ${doc_section} : name of the system
+				. ${root_path} : relative path to traffic_v2/doc
+		-->
+	</target>
+	
+	<target name="do_all_with_msg">
+		<argument name="text1"/>
+		<argument name="text2"/>
+		<geant target="do_all"/>
+		<echo message="   ${text1} ${text2}"/>
+	</target>
+
+	<target name="delete_file" export="NONE">
+		<description>
+			Delete file with name ${argument}.html in current directory
+		</description>
+
+		<argument name="a_file"/>
+		<delete file="${a_file}.html"/>
+	</target>
+
+	<target name="xslt_and_shift" export="em_doc">
+		<description>
+			Call `xslt' and shift variables `previous' and `current' one chapter forward.
+		</description>
+
+		<argument name="a_next"/>
+		<geant target="xslt" arguments="${previous},${current},${a_next}"/>
+			<!-- Shift parameters -->
+		<set name="previous" value="${current}"/>
+		<set name="current" value="${a_next}"/>
+	</target>
+
+	<target name="xslt" export="{NONE}">
+		<description>
+			Execute XSL Transformation for argument ${a_file}, ${a_previous}
+			and ${a_next} using processor ${xslt_processor}.
+		</description>
+
+		<argument name="a_previous"/>
+		<argument name="a_file"/>
+		<argument name="a_next"/>
+
+		<xslt processor="${xslt_processor}" input="${a_file}.xml" output="${a_file}.html" stylesheet="../../misc/traffic2html.xsl">
+			<parameter name="previous" value="&quot;'${a_previous}.html'&quot;"/>
+			<parameter name="next" value="&quot;'${a_next}.html'&quot;"/>
+			<parameter name="current_file" value="&quot;'${a_file}'&quot;"/>
+			<parameter name="root_path" value="&quot;${root_path}&quot;"/>
+			<parameter name="doc_section" value="&quot;${doc_section}&quot;"/>
+		</xslt>
+	</target>
+
+</project>

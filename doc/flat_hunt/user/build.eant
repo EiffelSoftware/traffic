@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<project name="user_guide" default="help">
+
+	<description>
+		description: "User documentation for Flathunt"
+		date: "$Date$"
+		revision: "$Revision$"
+	</description>
+
+	<inherit>
+		<parent location="../../misc/build_function.eant">
+			<redefine target="init"/>
+			<redefine target="do_all"/>
+		</parent>
+	</inherit>
+
+	<target name="init" export="NONE">
+		<description>
+			Init all needed Projectvariables
+		</description>
+		<set name="root_path" value="../../"/>
+		<set name="doc_section" value="flathunt user"/>
+	</target>
+
+	<target name="do_all" export="NONE">
+		<description>
+			Call 'geant' with the same target ${target}
+			without subdirectories.
+		</description>
+		
+		<geant target="${target}" arguments="introduction"/>
+		<geant target="${target}" arguments="story"/>
+		<geant target="${target}" arguments="getting_started"/>	
+		<geant target="${target}" arguments="gameplay"/>
+		<geant target="${target}" arguments="special_features"/>
+		<geant target="${target}" arguments="index"/>
+	</target>
+
+
+</project>

@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+
+<!--
+	description:
+
+		"Traffic Documentation"
+
+	date: "$Date$"
+	revision: "$Revision$"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/widget/index">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>30 Oktober 2005</date>
+</chapterinfo>
+
+<title>Traffic</title>
+
+<section>
+	<title>Introduction</title>
+    <para>
+        <libraryname>TRAFFIC</libraryname> [<link url="references.html">sa05</link>],
+            <projectname>Touch</projectname> [<link url="references.html">rk05</link>] and
+            <projectname>Flat Hunt</projectname> is software that hopefully makes learning to
+        program more fun and more interesting for you. <libraryname>TRAFFIC</libraryname> is a
+        library that supports the reading and display of public transportation systems. A library is
+        a piece of software whose functionality can be used by other software. <projectname>Flat
+            Hunt</projectname> is an application that uses the <libraryname>TRAFFIC</libraryname>
+        library to model a city map. For the visualization the
+        <libraryname>EiffelMedia</libraryname> Library (formerly known as
+        <libraryname>ESDL</libraryname> [<link url="references.html">tgb03, bb04</link>]) is used.
+            <projectname>Flat Hunt</projectname> is a strategy game, similar to Scotland Yard, but
+        with a different background story (for more information about the story and gameplay of
+            <projectname>Flat Hunt</projectname>, see <link url="../userguide/index.html">Flat Hunt
+            User Guide</link>). <projectname>Touch</projectname> is also an application that uses
+        the <libraryname>TRAFFIC</libraryname> library. For more information on
+        <libraryname>TRAFFIC</libraryname> and <projectname>Touch</projectname>: see [<link
+            url="references.html">sa05</link>] and [<link url="references.html">rk05</link>] or
+        visit this website: <link url="http://se.inf.ethz.ch/traffic">http://se.inf.ethz.ch/traffic</link>. 
+    </para>
+	<para>
+		<libraryname>Traffic</libraryname> is a software system used for teaching introductory programming. It consists of a library - the Traffic library -
+		and three example applications that use the Traffic library: Flathunt, Touch and City3d. The goal of Traffic is to make learning to program exciting,
+		interesting and realistic.
+	</para>
+</section>
+
+<section>
+	<title>Installation</title>
+	<itemizedlist>
+		<listitem>
+			<link url="general/installation/index.html">Installation</link>
+			<para>
+				Getting started with <libraryname>Traffic</libraryname>
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
+<section id="city_3d">
+	<title>City3D Documentation</title>
+	<itemizedlist>
+		<listitem>
+			<link url="city_3d/user/index.html">User Documentation</link>
+			<para>
+				User documentation of the City3D application
+			</para>
+		</listitem>
+		<listitem>
+			<link url="city_3d/developer/index.html">Developer Documentation</link>
+			<para>
+				Developer documentation of the City3D application
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
+
+<section id="flat_hunt">
+	<title>Flathunt Documentation</title>
+	<itemizedlist>
+		<listitem>
+			<link url="flat_hunt/user/index.html">User Documentation</link>
+			<para>
+				User documentation of the Flathunt application
+			</para>
+		</listitem>
+		<listitem>
+			<link url="flat_hunt/developer/index.html">Developer Documentation</link>
+			<para>
+				Developer documentation of the Flathunt application
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
+
+<section id="touch">
+	<title>Touch Documentation</title>
+	<itemizedlist>
+		<listitem>
+			<link url="touch/user/index.html">User Documentation</link>
+			<para>
+				User documentation of the Touch application
+			</para>
+		</listitem>
+		<listitem>
+			<link url="touch/developer/index.html">Developer Documentation</link>
+			<para>
+				Developer documentation of the Touch application
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
+<section id="references">
+	<title>References</title>
+	<itemizedlist>
+		<listitem>
+			<link url="general/references/index.html">References</link>
+			<para>
+				References to other documents such as thesis reports, papers, and webpages
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
+</chapter>

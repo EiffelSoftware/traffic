@@ -1,0 +1,69 @@
+﻿<?xml version="1.0"?>
+
+<!--
+	description:
+
+		"Traffic 3D front end documentation"
+
+	copyright: ""
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date$"
+	revision: "$Revision$"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+	<author>
+		<firstname>Michela</firstname><surname>Pedroni</surname>
+	</author>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>19. October 2005</date>
+</chapterinfo>
+
+<title>City_3d</title>
+
+<para>
+The 'Traffic 3D front end' project implements a 3 dimensional
+visualization of a TRAFFIC map file and adds some additional functionaliy.
+</para>
+
+<para>
+This document is structured as follows:
+
+<blockquote>
+<variablelist>
+	<varlistentry>
+		<term>
+			<ulink url="introduction.html">Introduction</ulink>
+		</term>
+		<listitem><para>
+			Presents the overall structure of the project and it's intends.
+		</para></listitem>
+	</varlistentry>
+
+	<varlistentry>
+		<term>
+			<ulink url="structure.html">Classes</ulink>
+		</term>
+		<listitem><para>
+			Presents the classes of the application.
+		</para></listitem>
+	</varlistentry>
+	<varlistentry>
+		<term>
+			<ulink url="miscellaneous.html">Miscellaneous</ulink>
+		</term>
+		<listitem><para>
+			Discusses dependencies, reutilisation and future perspective.
+		</para></listitem>
+	</varlistentry>
+</variablelist>
+</blockquote>
+
+</para>
+
+</chapter>

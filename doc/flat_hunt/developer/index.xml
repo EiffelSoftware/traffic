@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"Developer guide for Flathunt"
+
+	copyright: "Copyright (c) 2005, Ursina Caluori"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer_guide/index">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Ursina Caluori</holder>
+        </copyright>
+        <author>
+            <firstname>Ursina</firstname>
+            <surname>Caluori</surname>
+        </author>
+        <email>ucaluori@student.ethz.ch</email>
+        <date>25 September 2005</date>
+    </chapterinfo>
+    
+    <title>Flathunt Developer Guide</title>
+    <para> This document describes how <projectname>Flathunt</projectname> is built, what classes
+        are important and highlights some of their features. It is structured as follows: 
+        
+	<itemizedlist>
+		<listitem>
+			<link url="getting_started.html">Getting started</link>
+			<para>
+				TODO
+			</para>
+		</listitem>
+		<listitem>
+			<link url="design.html">Design</link>
+			<para>
+				TODO
+			</para>
+		</listitem>
+		<listitem>
+            <link url="states.html">The States of the Game</link>
+			<para>
+				TODO
+			</para>
+		</listitem>
+		<listitem>
+            <link url="walkthrough.html">Guided "Walk-Through"</link>
+			<para>
+				TODO
+			</para>
+		</listitem>
+	</itemizedlist>
+  </para>
+</chapter>

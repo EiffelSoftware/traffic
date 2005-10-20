@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+	description:
+
+		"Developer guide for Flathunt"
+
+	copyright: "Copyright (c) 2005, Michela Pedroni and others"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="flat_hunt_developer/getting_started">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+	<author>
+		<firstname>Michela</firstname><surname>Pedroni</surname>
+	</author>
+	<email>michela.pedroni@inf.ethz.ch</email>
+	<date>19. October 2005</date>
+</chapterinfo>
+
+    <title>Getting Started</title>
+    <para>
+        <emphasis>What you need for running <projectname>Flathunt</projectname>...</emphasis>
+    </para>
+    <para> Please refer to the <link url="../../general/introduction/index.html">Introduction</link> for
+        detailed instructions on how to get <projectname>Flathunt</projectname> to run. 
+    </para>
+</chapter>
