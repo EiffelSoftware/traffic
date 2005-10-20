@@ -16,6 +16,7 @@ create
 	make_on_map_place
 
 feature -- Basic operations	
+	
 	move_route (a_route: TRAFFIC_ROUTE) is
 			-- move a given route, which starts at the place, where the passenger is on.
 		require
