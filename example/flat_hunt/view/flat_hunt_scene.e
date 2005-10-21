@@ -60,7 +60,7 @@ feature {NONE} -- Event Handling
 			if not music_player.is_playing then
 				music_player.forth
 			end
-			full_collect
+--			full_collect
 		end
 		
 end
