@@ -37,25 +37,15 @@ inherit
 
 create
 	make_with_map_file,
- 	make_with_zurich_little,
- 	make_with_zurich_big,
+ 	make_with_zurich,
  	make_with_paris
  		
 feature -- Initialization
-	make_with_zurich_little (an_example: TOUCH_EXAMPLE) is
+	make_with_zurich (an_example: TOUCH_EXAMPLE) is
 			-- 
 		do
 			make_scene
-			make_with_map_file (an_example, "./map/zurich_little.xml")
-		ensure
-			traffic_map_not_void: traffic_map /= Void
-		end
-		
-	make_with_zurich_big (an_example: TOUCH_EXAMPLE) is
-			-- 
-		do
-			make_scene			
-			make_with_map_file (an_example, "./map/zurich_big.xml")
+			make_with_map_file (an_example, "./map/zurich.xml")
 		ensure
 			traffic_map_not_void: traffic_map /= Void
 		end
