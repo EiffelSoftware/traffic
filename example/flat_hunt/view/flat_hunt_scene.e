@@ -12,7 +12,7 @@ deferred class
 inherit
 	EM_DRAWABLE_SCENE
 		redefine
-			handle_key_down_event, handle_outside_event
+			handle_key_down_event
 		end
 		
 	EM_KEY_CONSTANTS
@@ -54,13 +54,15 @@ feature {NONE} -- Event Handling
 			end
 		end
 
-	handle_outside_event is
-			-- Handle outside events.
-		do
-			if not music_player.is_playing then
-				music_player.forth
-			end
---			full_collect
-		end
+--	handle_outside_event is
+--			-- Handle outside events.
+--		do
+--			if not music_player.is_playing then
+--				music_player.forth
+--			end
+----			full_collect
+--		end
+		
+--	music_player: MUSIC_PLAYER
 		
 end

@@ -9,7 +9,7 @@ class
 inherit
 	START_MENU_SCENE
 		redefine
-			start
+			show_options_and_play_music
 		end
 			
 	GAME_CONSTANTS
@@ -19,16 +19,14 @@ create
 	
 feature -- Initialization
 
-		start is
-			-- Adjust the game settings and start the game.
+	show_options_and_play_music is
+			-- Show the option panel and play music
 		do
---			POSSIBLE ASSIGNMENT (sample solution):
---			game.set_map ("./map/zurich_little.xml")
---			game.set_game_mode (Versus)
---			game.set_number_of_hunters (3)
-			-- If `start_game' is left out, you will be stuck on the start menu scene, because no 
-			-- game will be started, even if you hit enter on "start game".
-			start_game
+--			-- Show the option panel
+--			option_panel.show
+--
+--			-- Begin playing the game music.
+--			music_player.play_game_music
 		end
 		
 end

@@ -43,7 +43,7 @@ feature -- Initialization
 			inner_boxes.extend (create {TEXT_BOX}.make_at_position (background_box.x + 380, background_box.y + 130, "Graphics"))
 			inner_boxes.last.set_text ("Ursina Caluori")
 			inner_boxes.extend (create {TEXT_BOX}.make_at_position (background_box.x + 620, background_box.y + 230, "Sound"))
-			inner_boxes.last.set_text ("under construction")
+			inner_boxes.last.set_text ("Marc Ammann")
 			inner_boxes.extend (create {TEXT_BOX}.make_at_position (background_box.x + 200, background_box.height - 110, "Created with"))
 			inner_boxes.last.set_text ("TRAFFIC by Michela Pedroni and others%NEiffelMedia by Till G. Bay and others%NEiffel by Bertrand Meyer%NPhotoshop")
 			inner_boxes.extend (create {TEXT_BOX}.make_at_position (background_box.x + 150, background_box.y + 270, "Assistant"))

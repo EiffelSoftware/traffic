@@ -15,6 +15,14 @@ inherit
 	
 	THEME
 
+	KL_SHARED_FILE_SYSTEM
+		export {NONE} all
+		undefine default_create end
+
+	KL_SHARED_EXECUTION_ENVIRONMENT
+		export {NONE} all
+		undefine default_create end
+
 create
 	make
 	
@@ -23,14 +31,11 @@ feature -- Initialization
 	make is
 			-- Creation procedure.
 		local
-			available_songs_names: ARRAYED_LIST [STRING]
 			extensions: DS_LINKED_LIST [STRING]
-			sound_dir: DIRECTORY
-			i: INTEGER
 		do
 			create extensions.make
 			extensions.put_first (".ogg")
-			make_with_path (Sound_directory, extensions, False, True)
+			make_with_path (Sound_directory, extensions, True, True)
 			
 			-- Set defaults.
 			set_shuffle (False)
@@ -46,20 +51,22 @@ feature -- Basic Operations
 			found: BOOLEAN
 			i: INTEGER
 		do
-			from 
-				i := 1
-			until
-				i > playlist.count or found
-			loop
-				if playlist.get_i_th (i).has_substring (background_music) then
-					play_i_th (i)
-					found := True
-				else
-					i := i + 1
+			if not is_playing then
+				from 
+					i := 1
+				until
+					i > playlist.count or found
+				loop
+					if playlist.get_i_th (i).has_substring (background_music) then
+						play_i_th (i)
+						found := True
+					else
+						i := i + 1
+					end
 				end
-			end
-			if not found then
-				play_i_th (1)
+				if not found then
+					play_i_th (1)
+				end
 			end
 		end
 		

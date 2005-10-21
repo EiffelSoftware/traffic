@@ -43,9 +43,6 @@ feature -- Initialization
 			set_application_icon ("icon.png")
 			set_application_name ("Flat Hunt v2")
 			
-			-- Begin playing the game music.
-			music_player.play_game_music
-
 			-- Set and launch the first scene.
 			create start_menu_scene.make_scene
 			set_scene (start_menu_scene)	
