@@ -50,6 +50,7 @@ feature -- Initialization
 			create start_menu_scene.make_scene
 			set_scene (start_menu_scene)	
 			launch
+			music_player.dispose
 			video_subsystem.disable
 		end
 
