@@ -84,7 +84,7 @@ feature -- Interface
 			-- Combobox for XML selection
 			combo_box.set_position (10, 75)
 			combo_box.set_optimal_dimension (150, 20)
-			combo_box.set_to_optimal_dimension
+			combo_box.resize_to_optimal_dimension
 			combo_box.set_background_color (create {EM_COLOR}.make_white)
 			combo_box.set_selected_index (1)
 			combo_box.selection_changed_event.subscribe (agent combo_selection_changed(?))
@@ -100,7 +100,7 @@ feature -- Interface
 			buildings_transparent_checkbox.set_position (10, 290)
 			buildings_transparent_checkbox.set_background_color (bg_color)
 			buildings_transparent_checkbox.set_optimal_dimension (180, 20)
-			buildings_transparent_checkbox.set_to_optimal_dimension
+			buildings_transparent_checkbox.resize_to_optimal_dimension
 			buildings_transparent_checkbox.checked_event.subscribe (agent transparency_checked)
 			buildings_transparent_checkbox.unchecked_event.subscribe (agent transparency_unchecked)
 			toolbar_panel.add_widget (buildings_transparent_checkbox)
@@ -109,7 +109,7 @@ feature -- Interface
 			sun_checkbox.set_position (10, 310)
 			sun_checkbox.set_background_color (bg_color)
 			sun_checkbox.set_optimal_dimension (110, 20)
-			sun_checkbox.set_to_optimal_dimension
+			sun_checkbox.resize_to_optimal_dimension
 			sun_checkbox.set_background_color (bg_color)
 			sun_checkbox.checked_event.subscribe (agent sun_checked)
 			sun_checkbox.unchecked_event.subscribe (agent sun_unchecked)
@@ -119,7 +119,7 @@ feature -- Interface
 			coordinates_checkbox.set_position (10, 330)
 			coordinates_checkbox.set_background_color (bg_color)
 			sun_checkbox.set_optimal_dimension (110, 20)
-			sun_checkbox.set_to_optimal_dimension
+			sun_checkbox.resize_to_optimal_dimension
 			sun_checkbox.set_background_color (bg_color)
 			coordinates_checkbox.checked_event.subscribe (agent coordinates_checked)
 			coordinates_checkbox.unchecked_event.subscribe (agent coordinates_unchecked)
@@ -129,7 +129,7 @@ feature -- Interface
 			highlighting_checkbox.set_position (10, 350)
 			highlighting_checkbox.set_background_color (bg_color)
 			highlighting_checkbox.set_optimal_dimension (110, 20)
-			highlighting_checkbox.set_to_optimal_dimension
+			highlighting_checkbox.resize_to_optimal_dimension
 			highlighting_checkbox.checked_event.subscribe (agent highlighting_checked)
 			highlighting_checkbox.unchecked_event.subscribe (agent highlighting_unchecked)
 			toolbar_panel.add_widget (highlighting_checkbox)
@@ -138,7 +138,7 @@ feature -- Interface
 			buildings_checkbox.set_position (10, 370)
 			buildings_checkbox.set_background_color (bg_color)
 			buildings_checkbox.set_optimal_dimension (120, 20)
-			buildings_checkbox.set_to_optimal_dimension
+			buildings_checkbox.resize_to_optimal_dimension
 			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
 			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
 			toolbar_panel.add_widget (buildings_checkbox)
@@ -147,7 +147,7 @@ feature -- Interface
 			shortest_path_checkbox.set_position (10, 390)
 			shortest_path_checkbox.set_background_color (bg_color)
 			shortest_path_checkbox.set_optimal_dimension (120, 20)
-			shortest_path_checkbox.set_to_optimal_dimension
+			shortest_path_checkbox.resize_to_optimal_dimension
 			shortest_path_checkbox.checked_event.subscribe (agent shortest_path_checked)
 			shortest_path_checkbox.unchecked_event.subscribe (agent shortest_path_unchecked)
 			toolbar_panel.add_widget (shortest_path_checkbox)
@@ -173,7 +173,7 @@ feature -- Interface
 			-- Buildings label
 			buildings_label.set_position (140, 250)
 			buildings_label.set_optimal_dimension (50, 20)
-			buildings_label.set_to_optimal_dimension
+			buildings_label.resize_to_optimal_dimension
 			buildings_label.set_background_color (bg_color)
 			buildings_label.set_tooltip ("Number of buildings")
 			toolbar_panel.add_widget (buildings_label)
@@ -181,7 +181,7 @@ feature -- Interface
 			-- Buildings slider
 			buildings_slider.set_position (10, 250)
 			buildings_slider.set_optimal_dimension (120, 20)
-			buildings_slider.set_to_optimal_dimension
+			buildings_slider.resize_to_optimal_dimension
 			buildings_slider.set_background_color (bg_color)
 			buildings_slider.set_tooltip ("Number of buildings")
 			buildings_slider.position_changed_event.subscribe (agent number_of_buildings_changed (buildings_label, ?))
@@ -190,21 +190,21 @@ feature -- Interface
 			-- Marked origin title
 			marked_origin_title.set_position (10, 430)
 			marked_origin_title.set_optimal_dimension (180, 20)
-			marked_origin_title.set_to_optimal_dimension
+			marked_origin_title.resize_to_optimal_dimension
 			marked_origin_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (marked_origin_title)
 			
 			-- Marked destination title
 			marked_destination_title.set_position (10, 470)
 			marked_destination_title.set_optimal_dimension (180, 20)
-			marked_destination_title.set_to_optimal_dimension
+			marked_destination_title.resize_to_optimal_dimension
 			marked_destination_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (marked_destination_title)
 			
 			-- Marked origin label
 			marked_origin_label.set_position (15, 450)
 			marked_origin_label.set_optimal_dimension (180, 20)
-			marked_origin_label.set_to_optimal_dimension
+			marked_origin_label.resize_to_optimal_dimension
 			marked_origin_label.set_background_color (bg_color)
 			marked_origin_label.set_tooltip ("Marked Station")
 			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_origin_label, marked_destination_label, ?))
@@ -213,7 +213,7 @@ feature -- Interface
 			-- Marked destination label
 			marked_destination_label.set_position (15, 490)
 			marked_destination_label.set_optimal_dimension (180, 20)
-			marked_destination_label.set_to_optimal_dimension
+			marked_destination_label.resize_to_optimal_dimension
 			marked_destination_label.set_background_color (bg_color)
 			marked_destination_label.set_tooltip ("Marked Station")
 			toolbar_panel.add_widget (marked_destination_label)
@@ -498,7 +498,7 @@ feature {NONE} -- Implementation
 					directory.lastentry = void
 				loop
 					if directory.lastentry.has_substring (".xml") then
-						Result.force_last (directory.lastentry)
+						Result.force_last ("map/" + directory.lastentry)
 					end
 					directory.readentry
 				end
