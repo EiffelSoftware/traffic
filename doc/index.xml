@@ -62,6 +62,18 @@
 	</itemizedlist>
 </section>
 
+<section id="traffic library">
+	<title>Traffic library Documentation</title>
+	<itemizedlist>
+		<listitem>
+			<link url="traffic/developer/index.html">Developer Documentation</link>
+			<para>
+				Developer documentation for the Traffic library
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
 <section id="city_3d">
 	<title>City3D Documentation</title>
 	<itemizedlist>

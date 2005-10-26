@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"User guide for Flathunt"
+
+	copyright: "Copyright (c) 2005, Ursina Caluori"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="flat_hunt_developer/special_features">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+	<author>
+		<firstname>Michela</firstname><surname>Pedroni</surname>
+	</author>
+	<email>michela.pedroni@inf.ethz.ch</email>
+	<date>19. October 2005</date>
+</chapterinfo>
+    <title>Special Features</title>
+    <para> This chapter is structured as follows: </para>
+    <itemizedlist>
+        <listitem>
+            <para>
+                <indexlink url="#map_control">Map Control</indexlink>
+            </para>
+        </listitem>
+        <listitem>
+            <para>
+                <indexlink url="#music_player">Music Player</indexlink>
+            </para>
+        </listitem>
+        <listitem>
+            <para>
+                <indexlink url="#shortcuts">Keyboard Shortcuts</indexlink>
+            </para>
+        </listitem>
+    </itemizedlist>
+    <section id="map_control">
+        <title>Map Control</title>
+        <para> Map control is fairly simple: you got two maps in a game scene, one of which only is
+            a smaller version of the other one. The big map is on the left and that's where the
+            action takes place, the little map on the right is meerely a navigation tool. To control
+            the big map, use your mouse as follows:</para>
+        <blockquote>
+            <variablelist>
+                <varlistentry>
+                    <term>
+                        <strong>left click</strong>: only has an impact if clicked on a highlighted
+                        place </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <strong>right button down + move mouse</strong>: moves map in the direction of
+                        your mouse movement</term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <strong>middle button down + move mouse up</strong>: zoom in</term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <strong>middle button down + move mouse down</strong>: zoom out</term>
+                </varlistentry>
+            </variablelist>
+        </blockquote>
+        <para>When you <strong>left click + move mouse</strong> in the little map, a red rectangle
+            is drawn between the point where your left mouse button is pressed down and the point
+            when its released. As soon as you release the mouse button, the map segment that is
+            inside this rectangle gets displayed on the big map. </para>
+    </section>
+    <section id="music_player">
+        <title>Music Player</title>
+        <para>
+            <projectname>Flathunt</projectname> comes with an integrated music player and some
+            default background music. Since not everyone likes the same sound, there is also the
+            possibility to play your own. Just put your <filename>.ogg</filename> -files in the
+            directory <filename>${FLAT_HUNT}/resources/sound</filename> before you start the
+                <projectname>Flathunt</projectname> application. <projectname>Flathunt</projectname> 
+                will then automatically load all the <filename>.ogg</filename> -files
+            from this directory and play them in alphabetical order (unless you enable shuffle,
+            obviously). Music player control: see <indexlink url="#shortcuts">Keyboard
+            Shortcuts</indexlink>. </para>
+    </section>
+    <section id="shortcuts">
+        <title>Keyboard Shortcuts</title> 
+        <para>During the game, the following shortcuts are available: </para>
+        <blockquote>
+            <variablelist>
+                <varlistentry>
+                    <term>
+                        <strong>p</strong>: pause the game and show pause menu. </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <strong>s</strong>: music player toggle shuffle </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <strong>v</strong>: music player decrease volume </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <strong>shift + v</strong>: music player increase volume (at startup volume
+                        is already at maximum)</term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <strong>page up</strong>: music player next song </term>
+                </varlistentry>
+                <varlistentry>
+                    <term>
+                        <strong>page down</strong>: music player previous song </term>
+                </varlistentry>
+            </variablelist>
+        </blockquote>
+    </section>
+</chapter>
