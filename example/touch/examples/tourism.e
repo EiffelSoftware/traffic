@@ -21,7 +21,7 @@ inherit
 			is_equal,
 			default_create
 		end
-
+		
 feature -- Initialization
 	default_create is
 			-- 
@@ -68,11 +68,11 @@ feature -- Basic operation
 			Paris.hide
 			
 			-- Create Passenger
-			create Passenger.make_on_map_place (a_runtime.map, a_runtime.map.place ("Notre Dame"))
+			create Passenger.make_on_map_place (a_runtime.map, a_runtime.map.place ("place Madeleine"))
 			create passenger_drawable.make_from_passenger (Passenger)
 
 			-- Add some simple sprite containing an animation and animate it.
-			create animation.make_from_file ("./pics/alien.anim")
+			create animation.make_from_file ("./pics/person.anim")
 			create sprite.make_from_animation (animation, 20000, 100)
 			sprite.set_do_loop (True)
 			sprite.start
@@ -91,7 +91,8 @@ feature -- Basic operation
 
 			-- Create Route2
 			create Route2.make_with_scene_and_map_widget (example_scene, a_runtime.map_widget)			
-			Route2.extend (a_runtime.map.place ("Notre Dame"))
+			Route2.extend (a_runtime.map.place ("place Madeleine"))
+			Route2.extend (a_runtime.map.place ("Musee du Louvre"))
 			Route2.extend (a_runtime.map.place ("Tour Eiffel"))
 			Route2.calculate_shortest_path
 			
