@@ -29,7 +29,8 @@ feature -- Initialization
 		do
 			-- Initialize the screen.
 			initialize_screen
-			set_application_name ("EM TRAFFIC example")
+			set_window_title ("EM TRAFFIC example")
+			set_application_id ("em_traffic_example")
 						
 			-- Setup font directory.
 			standard_bmp_fonts.set_font_dirname ("./font")

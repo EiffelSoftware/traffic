@@ -27,7 +27,7 @@ feature -- Initialization
 		do
 			-- Initialize the screen.
 			initialize_screen
-			set_application_name ("Eiffelmedia Touch")
+			set_window_title ("Eiffelmedia Touch")
 						
 			-- Setup font directory. (does not work anymore)
 			--standard_ttf_fonts.set_font_dirname ("font")

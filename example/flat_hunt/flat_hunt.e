@@ -40,8 +40,9 @@ feature -- Initialization
 
 			-- Initialize the screen.
 			initialize_screen
-			set_application_icon ("icon.png")
-			set_application_name ("Flat Hunt v2")
+			set_window_icon ("icon.png")
+			set_window_title ("Flat Hunt v2")
+			set_application_id ("flat_hunt_v2")
 			
 			-- Set and launch the first scene.
 			create start_menu_scene.make_scene

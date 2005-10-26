@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 			video_subsystem.set_video_bpp (resolution)
 			video_subsystem.set_opengl (true)
 			initialize_screen
-			set_application_name ("EiffelMedia City 3D")
+			set_window_title ("EiffelMedia City 3D")
 			
 			-- Create first scene.
 			if

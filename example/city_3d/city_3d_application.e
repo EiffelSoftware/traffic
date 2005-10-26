@@ -41,8 +41,9 @@ feature -- Initialization
 			keyboard.enable_unicode_characters
 			keyboard.enable_repeating_key_down_events (200, 100)
 			
---			set_application_icon ("images/icon.png")
-			set_application_name ("City 3D")
+--			set_window_icon ("images/icon.png")
+			set_window_title ("City 3D")
+			set_application_id ("city_3d")
 			
 			-- Set widget theme and options
 			widget_options.disable_transparency_refresh
