@@ -45,7 +45,7 @@ feature -- Access
 		do
 			pos := passenger.position
 			x := (pos.x - (picture.width / 2)).floor
-			y := (pos.y - (picture.height / 2)).floor
+			y := (pos.y - picture.height).floor
 			picture.set_x_y (x, y)			
 		end		
 	
