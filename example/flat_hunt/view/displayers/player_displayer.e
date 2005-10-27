@@ -47,6 +47,9 @@ feature -- Initialization
 			possible_moves_unmarked := True
 
 			update_position
+			
+			-- Subscribe to event
+			player.marked_changed_event.subscribe (agent toggle_possible_moves (?))
 		ensure
 			player_set: player = a_player
 			picture_set: picture = a_pic
@@ -180,6 +183,17 @@ feature {NONE} -- Implementation
 			picture_positioned: picture.x = x and picture.y = y
 			marking_circle_positioned: marking_circle.x = x and marking_circle.y = y
 		end	
+		
+	toggle_possible_moves (a_value: BOOLEAN) is
+			-- Toggle between marked and unmarked possible moves
+		do
+			if a_value = True then
+				mark_possible_moves
+			else
+				unmark_possible_moves
+			end
+		end
+		
 
 	mark_possible_moves is
 			-- Mark all possible places that the player can move to.
@@ -199,11 +213,12 @@ feature {NONE} -- Implementation
 					player.possible_moves.after
 				loop
 					map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
+					map_widget.rerender_place (player.possible_moves.item.destination)				
 					player.possible_moves.forth
 				end
 
-				-- Re-render the scene for the effects to be visible.				
-				map_widget.render
+				-- Re-render the scene for the effects to be visible.
+--				map_widget.render
 			end
 			possible_moves_unmarked := False
 		ensure
@@ -213,7 +228,7 @@ feature {NONE} -- Implementation
 	unmark_possible_moves is
 			-- Remove marking of possible moves.	
 		local
-			place_renderer: FLAT_HUNT_PLACE_RENDERER
+			place_renderer: TRAFFIC_PLACE_RENDERER
 		do
 			if player.possible_moves /= Void then
 
@@ -228,11 +243,12 @@ feature {NONE} -- Implementation
 					player.possible_moves.after
 				loop
 					map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
+					map_widget.rerender_place (player.possible_moves.item.destination)				
 					player.possible_moves.forth					
 				end
 
 				-- Re-render the scene for the effects to be visible.				
-				map_widget.render
+--				map_widget.render
 			end
 			possible_moves_unmarked := True
 		ensure
@@ -248,11 +264,11 @@ feature {NONE} -- Implementation
 			end
 			-- If it's this player's turn mark him with the marking circle and 
 			-- highlight his possible moves.
-			if player.is_marked then
+			if player.is_marked and marking_circle /= Void then
 				surface.draw_object (marking_circle)
-				mark_possible_moves
-			elseif not possible_moves_unmarked then
-				unmark_possible_moves
+--				mark_possible_moves
+--			elseif not possible_moves_unmarked then
+--				unmark_possible_moves
 			end
 			-- If the player is defeate, mark his defeat.
 			if player.is_defeated then

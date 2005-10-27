@@ -146,9 +146,6 @@ feature -- Access
 		do
 			if status_box /= Void then
 				status_box.set_text (status)
-				if screen /= Void then
-					redraw
-				end				
 			end
 		end
 
@@ -259,7 +256,6 @@ feature {NONE} -- Event Handling
 				player_status_box.set_title ("Status of " + tmp_player_displayer.out)
 				player_status_box.set_text (tmp_player_displayer.statistics)
 			end
-			redraw
 		ensure
 			last_clicked_button_set: a_button /= old last_clicked_button implies last_clicked_button = a_button
 		end
@@ -426,7 +422,7 @@ feature {NONE} -- Implementation
 			traffic_map_not_void: traffic_map /= Void
 		local
 			background_box: EM_RECTANGLE
-			tmp_place_renderer: FLAT_HUNT_PLACE_RENDERER
+			tmp_place_renderer: TRAFFIC_PLACE_RENDERER
 		do			
 			-- Create container to put background and widgets into.
 			create big_container.make

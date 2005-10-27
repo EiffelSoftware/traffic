@@ -116,9 +116,9 @@ feature {NONE} -- Implementation
 	draw (surface: EM_SURFACE) is
 			-- Draw `Current' onto `surface'.
 		do
-			if not possible_moves_unmarked then
-				unmark_possible_moves
-			end
+--			if not possible_moves_unmarked then
+--				unmark_possible_moves
+--			end
 			-- Only draw the estate agent if he is currently visible.
 			if player.is_visible then
 				update_position
@@ -128,7 +128,7 @@ feature {NONE} -- Implementation
 					-- highlight his possible moves.
 					if player.is_marked then
 						surface.draw_object (marking_circle)
-						mark_possible_moves
+--						mark_possible_moves
 					-- If the estate agent is defeated mark his defeat.
 					elseif player.is_defeated then
 						marking_circle.set_line_width (4)

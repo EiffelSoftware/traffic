@@ -167,7 +167,8 @@ feature -- Event handling
 				game.set_selected_place (a_place)
 				
 				--Re-Render the scene for the effects to be visible
-				game_scene.big_map_widget.render
+				game_scene.big_map_widget.rerender_place (a_place)
+				game_scene.redraw
 			end			
 		end	
 
@@ -179,11 +180,6 @@ feature {NONE} -- Game loop implementation
 			no_pause_taken: not paused
 			game_state_prepare: game.state = game.Prepare_state
 		do
-			-- Prepare current player.
-			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
-				game_scene.center_on_player (game.current_player)
-				game.current_player.set_marked
-			end
 			
 			-- Update status boxes.
 			if game.current_player = game.estate_agent then
@@ -194,7 +190,13 @@ feature {NONE} -- Game loop implementation
 				
 			-- Prepare game and redraw scene.
 			game.prepare
-			game_scene.redraw
+			
+			-- Prepare current player.
+			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
+				game_scene.center_on_player (game.current_player)
+				game.current_player.set_marked
+			end
+			
 		ensure
 			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck
 		end		
@@ -209,7 +211,6 @@ feature {NONE} -- Game loop implementation
 				play_called_once := True
 			end
 			game.play
-			game_scene.redraw
 			move_called_once := False
 		ensure
 			correct_game_state: game.state = game.Play_state or game.state = game.Move_state

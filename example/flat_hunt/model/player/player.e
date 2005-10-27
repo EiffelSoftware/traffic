@@ -27,6 +27,7 @@ feature -- Initialization
 			
 			-- Set defaults.
 			set_defeated (False)
+			create marked_changed_event
 		ensure
 			map_set: map = a_map
 			location_set: location = a_location
@@ -125,12 +126,14 @@ feature -- Status setting
 			-- Mark the player with a red circle (used for visualizing the current player).
 		do
 			marked := True
+			marked_changed_event.publish ([True])
 		end
 		
 	set_unmarked is
 			-- Remove red marking circle.
 		do
 			marked := False
+			marked_changed_event.publish ([False])
 		end		
 		
 	set_defeated (b: like defeated) is
@@ -167,7 +170,12 @@ feature -- Basic operations
 			-- Choose the next move.
 		deferred
 		end
-			
+
+feature -- Event handler
+
+	marked_changed_event: EM_EVENT_TYPE [TUPLE [BOOLEAN]]
+			-- Player was marked or unmarked
+						
 feature {NONE} -- Constants
 
 	Default_bus_tickets: INTEGER is 6

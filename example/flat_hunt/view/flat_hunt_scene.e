@@ -53,16 +53,5 @@ feature {NONE} -- Event Handling
 				end
 			end
 		end
-
---	handle_outside_event is
---			-- Handle outside events.
---		do
---			if not music_player.is_playing then
---				music_player.forth
---			end
-----			full_collect
---		end
-		
---	music_player: MUSIC_PLAYER
 		
 end

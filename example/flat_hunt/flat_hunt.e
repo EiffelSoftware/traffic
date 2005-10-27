@@ -34,10 +34,6 @@ feature -- Initialization
 			video_subsystem.set_video_surface_width (Window_width)			
 			video_subsystem.set_video_surface_height (Window_height)
 		
-			-- Audio subsystem settings.
---			audio_subsystem.enable
---			audio_subsystem.mixer.open (Em_default_frequency, Em_audio_format_s16sys, Em_stereo, Em_default_chunk_size)
-
 			-- Initialize the screen.
 			initialize_screen
 			set_window_icon ("icon.png")
