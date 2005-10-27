@@ -96,7 +96,7 @@ feature -- Status - Places
 		do
 			place_drawables.reset_renderer_for_item (a_place)
 		end
-
+		
 feature -- Status - Line_Sections
 	set_default_line_section_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]) is
 			-- set new default renderer for the line_sections
@@ -170,6 +170,15 @@ feature -- Basic Operation
 			line_section_drawables.render
 			place_drawables.render
 		end
+		
+	rerender_place (a_place: TRAFFIC_PLACE) is
+			-- Rerender `a_place'.
+			-- `a_place' must already have a view to take effect.
+		do
+			place_drawables.rerender_element (a_place)
+		end
+			
+		
 
 	hide is
 			-- remove all drawables from the container

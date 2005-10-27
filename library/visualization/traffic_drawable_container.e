@@ -129,6 +129,21 @@ feature -- Commands
 			end			
 		end
 		
+	rerender_element (an_item: ELEMENT) is
+			-- Rerender `an_item' that already has a view. 
+		do
+			-- Render the item
+			if item_view (an_item) /= Void then
+				views_array.start
+				views_array.search (item_view (an_item))
+				if not views_array.after then
+					render_item (views_array.index)
+				end
+			end
+			
+		end
+		
+		
 feature -- Mouse Events
 
 	publish_mouse_event (a_mouse_event: EM_MOUSE_EVENT) is
@@ -238,7 +253,7 @@ feature {NONE} -- Update Mechanism
 			i_is_valid_index: 1 <= i and then i <= map.count
 		do
 			-- TODO: Rerender i-th item and replace it in `Current'.
-			render			
+			render_item (i)			
 		end
 			
 	process_inserted_item (i: INTEGER) is
