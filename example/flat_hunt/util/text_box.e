@@ -9,7 +9,7 @@ class
 inherit
 	EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 		redefine
-			draw, height, width
+			draw, height, width, publish_mouse_event
 		end
 		
 	THEME
@@ -295,7 +295,17 @@ feature {NONE} -- Constants
 	Horizontal_margin: INTEGER is 18
 			-- Distance between left border <-> text, right border <-> text.
 		
-feature {NONE} -- Implementation		
+feature {NONE} -- Implementation
+
+	publish_mouse_event (a_mouse_event: EM_MOUSE_EVENT) is
+			-- Publish mouse events to children
+			-- We don't publish mouse events if the widget is not visible.
+		do
+			if visible then
+				Precursor (a_mouse_event)				
+			end
+		end
+		
 
 	lines: LIST [STRING]
 			-- `text' divided into lines.
