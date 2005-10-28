@@ -47,6 +47,20 @@ feature -- Event handling
 				update
 			end
 		end
+		
+feature -- Access
+
+	title: STRING 
+			-- Title of this option menu
+			
+feature -- Status change
+
+	set_title (a_string: STRING) is
+			-- Set title to `a_string'.
+		do
+			title := a_string
+		end
+		
 
 feature {NONE} -- Implementation
 

@@ -26,8 +26,6 @@ feature -- Initialization
 			a_height_positive: a_height > 0
 			a_title_valid: a_title /= Void and then not a_title.is_empty
 			a_subnote_valid: a_subnote /= Void and then not a_subnote.is_empty
-		local
-			list: ARRAYED_LIST [STRING]
 		do
 			make
 			
@@ -65,21 +63,22 @@ feature -- Basic operations
 			background_box.extend (create {EM_STRING}.make (a_title, Small_menu_font))
 			background_box.last.set_x_y (options_position_x, options_position_y)
 
-			option_menus.extend (create {OPTION_MENU}.make_with_default_fonts, option_menus.count + 1)
+			option_menus.extend (create {OPTION_MENU}.make_with_default_fonts)
+			option_menus.i_th (option_menus.count).set_title (a_title)
 			from
 				i := 1
 			until
 				i > a_list.count
 			loop
-				option_menus.item (option_menus.count).add_entry (a_list.item (i), Void, False)
+				option_menus.i_th (option_menus.count).add_entry (a_list.item (i), Void, False)
 				i := i + 1
 			end
-			option_menus.item (option_menus.count).set_x_y (options_position_x + Offset, options_position_y )
-			option_menus.item (option_menus.count).deactivate
-			extend (option_menus.item (option_menus.count))
+			option_menus.i_th (option_menus.count).set_x_y (options_position_x + Offset, options_position_y )
+			option_menus.i_th (option_menus.count).deactivate
+			extend (option_menus.i_th (option_menus.count))
 			add_arrow_pics (option_menus.count)
 			
-			options_position_y := options_position_y + option_menus.item (option_menus.count).height - background_box.y
+			options_position_y := options_position_y + option_menus.i_th (option_menus.count).height - background_box.y
 		ensure
 			option_menu_added: option_menus.count = old option_menus.count + 1
 		end	
@@ -105,7 +104,7 @@ feature -- Access
 	background_box: TEXT_BOX
 			-- Transparent text box
 	
-	option_menus: HASH_TABLE [OPTION_MENU, INTEGER]
+	option_menus: ARRAYED_LIST [OPTION_MENU]
 			-- Hash table with all option menus
 
 	is_hidden: BOOLEAN
@@ -127,10 +126,10 @@ feature {NONE} -- Implementation
 			right_arrow_pic := bitmap_factory.last_bitmap				
 			
 			-- Calculate positions for arrow pics.
-			left_x := option_menus.item (i).x - 2 * left_arrow_pic.width
-			right_x := option_menus.item (i).x + option_menus.item (i).max_entry_width + right_arrow_pic.width
-			left_y := option_menus.item (i).y + (option_menus.item (i).height - left_arrow_pic.height) // 2
-			right_y := option_menus.item (i).y + (option_menus.item (i).height - right_arrow_pic.height) // 2
+			left_x := option_menus.i_th (i).x - 2 * left_arrow_pic.width
+			right_x := option_menus.i_th (i).x + option_menus.i_th (i).max_entry_width + right_arrow_pic.width
+			left_y := option_menus.i_th (i).y + (option_menus.i_th (i).height - left_arrow_pic.height) // 2
+			right_y := option_menus.i_th (i).y + (option_menus.i_th (i).height - right_arrow_pic.height) // 2
 			
 			-- Set positions of arrow pics.
 			left_arrow_pic.set_x_y (left_x, left_y)

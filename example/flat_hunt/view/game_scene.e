@@ -337,7 +337,8 @@ feature {NONE} -- Menu Handling
 	quit_callback is
 			-- What happens when "Quit" is selected in a menu.
 		do
-			music_player.dispose
+-- Music playing causes problems!		
+--			music_player.dispose
 			next_scene := Void
 			event_loop.stop
 		end		

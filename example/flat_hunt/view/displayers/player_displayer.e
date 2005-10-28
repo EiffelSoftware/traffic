@@ -124,22 +124,18 @@ feature -- Basic operations
 			-- and sample solution:
 			from
 				-- Fill
-				count := 0
 			until
 				-- Replace `True' and fill.
-				count = 5
---				True				
+				True				
 			loop
 				-- Fill
-				circle.set_radius (circle.radius + 5)
-				circle.draw (a_surface)
-				count := count + 1
 			end
 		end
 
 feature -- Event handling
 
 	publish_mouse_event (a_mouse_event: EM_MOUSE_EVENT) is
+			-- Publish mouse events.
 		do
 			if bounding_box.has (a_mouse_event.proportional_position) then
 				dispatch_mouse_event (a_mouse_event)								
@@ -217,8 +213,6 @@ feature {NONE} -- Implementation
 					player.possible_moves.forth
 				end
 
-				-- Re-render the scene for the effects to be visible.
---				map_widget.render
 			end
 			possible_moves_unmarked := False
 		ensure
@@ -247,8 +241,6 @@ feature {NONE} -- Implementation
 					player.possible_moves.forth					
 				end
 
-				-- Re-render the scene for the effects to be visible.				
---				map_widget.render
 			end
 			possible_moves_unmarked := True
 		ensure
@@ -262,13 +254,9 @@ feature {NONE} -- Implementation
 			if picture /= Void then
 				surface.draw_object (picture)
 			end
-			-- If it's this player's turn mark him with the marking circle and 
-			-- highlight his possible moves.
+			-- If it's this player's turn mark him with the marking circle.
 			if player.is_marked and marking_circle /= Void then
 				surface.draw_object (marking_circle)
---				mark_possible_moves
---			elseif not possible_moves_unmarked then
---				unmark_possible_moves
 			end
 			-- If the player is defeate, mark his defeat.
 			if player.is_defeated then

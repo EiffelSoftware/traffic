@@ -9,7 +9,7 @@ class
 inherit
 	START_MENU_SCENE
 		redefine
-			show_options_and_play_music
+			fill_options
 		end
 			
 	GAME_CONSTANTS
@@ -19,14 +19,14 @@ create
 	
 feature -- Initialization
 
-	show_options_and_play_music is
-			-- Show the option panel and play music
+	fill_options is
+			-- Fill the option panel
 		do
---			-- Show the option panel
---			option_panel.show
---
---			-- Begin playing the game music.
---			music_player.play_game_music
+			-- Show the option panel
+--			option_panel.add_option_menu (options_list_game_mode, option_title_game_mode)
+--			option_panel.add_option_menu (options_list_number_of_flathunters, option_title_number_of_flathunters)
+--			option_panel.add_option_menu (options_list_map_size, option_title_map_size)
+--			option_panel.add_option_menu (options_list_characters, option_title_characters)
 		end
 		
 end
