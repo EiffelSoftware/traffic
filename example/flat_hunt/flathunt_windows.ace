@@ -1,0 +1,169 @@
+system
+
+	flat_hunt
+
+root
+
+	FLAT_HUNT: make_and_launch
+
+default
+
+	address_expression (no)
+	array_optimization (no)
+	assertion (no)
+	check_vape (yes)
+	cls_compliant (yes)
+	console_application (no)
+	dead_code_removal (yes)
+	debug (no)
+	dotnet_naming_convention (no)
+	dynamic_runtime (no)
+	exception_trace (no)
+	il_verifiable (yes)
+	inlining (no)
+	inlining_size ("4")
+	line_generation (no)
+	msil_generation (no)
+	multithreaded (no)
+	profile (no)
+	msil_generation_type ("exe")
+	trace (no)
+
+cluster
+
+	all flat_hunt:		"."
+		exclude
+			"doc";"map";"resources";"EIFGEN"
+		default
+			assertion (all);
+		end
+
+
+	ise:		"${ISE_EIFFEL}/library"
+		default
+			assertion (no)
+			assertion (require)
+		end
+	
+	time (ise):	"$/time"
+		exclude
+			"french"; "german"; 
+		default
+			assertion (no)
+			assertion (require)
+		end
+
+	all base (ise):	"$/base"
+		exclude
+			"table_eiffel3"; "desc"; 
+		default
+			assertion (no)
+			assertion (require)
+		end
+
+	library traffic:		"../../library"
+		default 
+			assertion (all)
+		end
+	
+	
+	library gobo:		"$GOBO/library"
+		exclude
+			"other"; "ve"; "se"; "hact"; "expat"; 
+		default
+			assertion (no)
+			assertion (require)
+		end
+
+	ewg_runtime:		"${EWG}/library/runtime/eiffel"
+
+	ewg_spec (ewg_runtime):		"$/spec"
+
+	ewg_runtime_spec_ise (ewg_spec):		"$/ise"
+
+ 	em: "${EM}/library"
+	highscore (em): "$/highscore"
+	settings (em): "$/settings"
+	audio (em): "$/audio"
+	cdrom (em): "$/cdrom"
+	event (em): "$/event"
+	thread (em): "$/thread"
+	timer (em): "$/timer"
+	utility (em): "$/utility"
+	goof (em): "$/goof"
+	"object" (goof): "$/object"
+	xy ("object"): "$/xy"
+	xz ("object"): "$/xz"
+	force (goof): "$/force"
+	collision (goof): "$/collision"
+	loader (goof): "$/loader"
+	joystick (em): "$/joystick"
+	network (em): "$/network"
+	classic (network): "$/classic"
+	multiplayer (network): "$/multiplayer"
+	net_system_objects (multiplayer): "$/net_system_objects"
+	net_system_events (multiplayer): "$/net_system_events"
+	video (em): "$/video"
+	video_decoder (video): "$/video_decoder"
+	ev_widget (video): "$/ev_widget"
+	implementation (ev_widget): "$/implementation"
+	mswin (implementation): "$/mswin"
+	implementation_interface (implementation): "$/implementation_interface"
+	interface (ev_widget): "$/interface"
+	animation (video): "$/animation"
+	collision_detection (video): "$/collision_detection"
+	font (video): "$/font"
+	figure (video): "$/figure"
+	container (video): "$/container"
+	opengl (video): "$/opengl"
+	widget (em): "$/widget"
+	background (widget): "$/background"
+	border (widget): "$/border"
+	input (widget): "$/input"
+	widgets (widget): "$/widgets"
+	delegates (widget): "$/delegates"
+	basic_delegates (delegates): "$/basic_delegates"
+	eclipse_delegates (delegates): "$/eclipse_delegates"
+	generated_wrapper (em): "$/generated_wrapper"
+	eiffel (generated_wrapper): "$/eiffel"
+	sdl_external_external (eiffel): "$/external"
+	sdl_external_struct (sdl_external_external): "$/struct"
+	sdl_external_struct_spec (sdl_external_struct): "$/spec"
+	sdl_external_struct_ise (sdl_external_struct_spec): "$/ise"
+	sdl_external_enum (sdl_external_external): "$/enum"
+	sdl_external_enum_spec (sdl_external_enum): "$/spec"
+	sdl_external_enum_ise (sdl_external_enum_spec): "$/ise"
+	sdl_external_union (sdl_external_external): "$/union"
+	sdl_external_union_spec (sdl_external_union): "$/spec"
+	sdl_external_union_ise (sdl_external_union_spec): "$/ise"
+	sdl_external_function (sdl_external_external): "$/function"
+	sdl_external_function_spec (sdl_external_function): "$/spec"
+	sdl_external_function_ise (sdl_external_function_spec): "$/ise"
+	sdl_abstraction_abstraction (eiffel): "$/abstraction"
+	sdl_abstraction_struct (sdl_abstraction_abstraction): "$/struct"
+	sdl_abstraction_function (sdl_abstraction_abstraction): "$/function"
+	sdl_abstraction_callback (sdl_abstraction_abstraction): "$/callback"
+	sdl_abstraction_union (sdl_abstraction_abstraction): "$/union"
+
+external
+
+	include_path:
+		"$(EM)/library/generated_wrapper/c/include",
+		"$(EM)/library/generated_wrapper/c/include/spec/ise",
+		"$(SDL_HEADER)";
+
+	object:
+		"$(SDL)\lib\SDL_mixer.lib",
+		"OpenGL32.Lib",
+		"GlU32.Lib",
+		"$(SDL)\lib\sdlgfx.lib",
+		"$(SDL)\lib\SDL_ttf.lib",
+		"$(SDL)\lib\SDL.lib",
+		"$(SDL)\lib\SDL_image.lib",
+		"$(SDL)\lib\SDL_net.lib",
+		"$(SDL)\lib\SDL_mixer.lib",
+		"$(EM)\library\em_c_eiffel_glue_library_ise_bcb.lib",
+		"$(EM)\library\net2.o",
+		"$(EM)\library\fastevents.o";
+
+end
