@@ -267,7 +267,7 @@ feature -- Player Images
  
  	Estate_agent_button_pic: EM_DRAWABLE is
 			-- Creates picture for estate agent button.
-		once
+		do
 			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "agent_medium.png")
 			Result := bitmap_factory.last_bitmap		
 		ensure
@@ -276,7 +276,7 @@ feature -- Player Images
     
 	Estate_agent_pic: EM_DRAWABLE is
 			-- Creates picture for the estate agent.
-		once
+		do
 			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "agent_small.png")
 			Result := bitmap_factory.last_bitmap		
 		ensure
@@ -285,7 +285,7 @@ feature -- Player Images
 
 	Estate_agent_lvl_pic: EM_DRAWABLE is
 			-- Creates picture for the estate agent at last visible location.
-		once
+		do
 			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "agent_lvl.png")
 			Result := bitmap_factory.last_bitmap		
 		ensure
@@ -297,7 +297,7 @@ feature -- Player Images
 		local
 			i: INTEGER
 			size: STRING
-		once
+		do
 			create Result.make (8)
 			size := "medium"
 			from
@@ -318,7 +318,7 @@ feature -- Player Images
 		local
 			i: INTEGER
 			size: STRING
-		once
+		do
 			create Result.make (8)
 			size := "small"
 			from
