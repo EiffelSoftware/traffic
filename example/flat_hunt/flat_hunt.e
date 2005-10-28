@@ -25,8 +25,6 @@ feature -- Initialization
 
 	make_and_launch is
 			-- Create and execute the application.
-		local
-			start_menu_scene: START
 		do
 			-- Video subsystem settings.
 			video_subsystem.enable
@@ -41,8 +39,8 @@ feature -- Initialization
 			set_application_id ("flat_hunt_v2")
 			
 			-- Set and launch the first scene.
-			create start_menu_scene.make_scene
-			set_scene (start_menu_scene)	
+			
+			set_scene (create {START}.make_scene)	
 			launch
 			music_player.dispose
 			video_subsystem.disable
