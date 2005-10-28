@@ -16,7 +16,8 @@ inherit
 			default_create
 		end
 	
-	SHARED_MUSIC_PLAYER
+-- Music playing causes problems!		
+--	SHARED_MUSIC_PLAYER
 		
 create
 	make_and_launch
@@ -42,7 +43,8 @@ feature -- Initialization
 			
 			set_scene (create {START}.make_scene)	
 			launch
-			music_player.dispose
+-- Music playing causes problems!		
+--			music_player.dispose
 			video_subsystem.disable
 		end
 
