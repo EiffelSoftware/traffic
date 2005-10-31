@@ -194,9 +194,7 @@ feature {MAIN_CONTROLLER} -- Game operations
 		require
 			prepare_state: state = Prepare_state
 		do
-			if current_player = estate_agent then
-				update_agent_visibility
-			end
+
 			calculate_possible_moves (current_player)
 			if current_player.possible_moves.is_empty then
 				if current_player = estate_agent then

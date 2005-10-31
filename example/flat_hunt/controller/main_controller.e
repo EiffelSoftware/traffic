@@ -198,7 +198,7 @@ feature {NONE} -- Game loop implementation
 			end
 			
 		ensure
-			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck
+			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck or game.state = Agent_escapes
 		end		
 
 	play is
