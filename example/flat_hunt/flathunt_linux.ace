@@ -62,7 +62,7 @@ cluster
 
 	library gobo:		"$GOBO/library"
 		exclude
-			"other"; "ve"; "se"; "hact"; "expat"; 
+			"other"; "ve"; "se"; "hact"; "expat"; "free_elks"; "ge"
 		default
 			assertion (no)
 			assertion (require)
