@@ -1,197 +1,38 @@
-                            ESDL - Eiffel Simple DirectMedia Layer
-                            Version 0.6.0
-                            http://sf.net/projects/eiffelsdl/
+                            Traffic
+                            Version 2.0
+                            http://se.inf.ethz.ch/traffic
 
 1. Requirements
 2. Build environment
 3. Directory layout
-4. Release mechanism
-5. Style Guides
+4. Style Guides
 
 1. Requirements
 ____________________________________________________________
 
-1.1 ESDL depends on:
+1.1 Traffic relies on
 
-- SDL 1.2.8, SDL_gfx 2.0.13 and SDL_image 1.2.4 
-	You can get all libraries on www.libsdl.org or using the search on
-	www.libsdl.org. Note that you will also need the development libraries 
-	targeted for the compiler you are using, so you have the C header files that
-	you can then wrap with EWG.
-- EWG (ewg.sf.net)
-	For EWG you will need the CVS-Head version. Check it out from sourceforge's
-	cvs and then follow the instructions to build EWG.
-- GOBO (www.gobosoft.com)
-	For GOBO you will need the CVS-Head version. Check it out from sourceforge's
-	cvs and then follow the instructions to build the GOBO tools.
-- OpenGL - get it somewhere
-
-Once you have setup EWG and GOBO correctly, you will need to set the 
-environment variables that are shown in the files:
-
-$ESDL/release/tools/vars_bcb.bat		on win32 with the borland compiler
-$ESDL/release/tools/vars_msc.bat		on win32 with the microsoft compiler
-$ESDL/release/tools/vars_gcc.sh			on linux and mac with gcc
-
-The variables are commented there it should be clear from these scripts where a
-variable should point.
-
-NOTE:
-- Of course you will also need to adapt the paths in these files.
-- On Windows, after executing one of the batch files you will need to restart 
-  the command window or the entire computer in order for the variables to be
-  registered.
-- If you installed a debian package of gobo you will need to adapt the paths in 
-  ./release/tools/vars_gcc.sh even more. The debian package puts the gobo 
-  binaries in /usr/bin and therefore the respective paths should look like
-  GOBO=/usr/lib/gobo and PATH=$ESDL/bin:$EWG/:$PATH these two in that case.
-  
-
-1.2 SDL, SDL_image and SDL_gfx installation notes for windows:
-
-Since SDL needs to do things differently for the borland compiler or the 
-microsoft compiler you need different sources for the two compilers. In the
-following I am going to describe what you have to do for setting the SDL 
-sources up for either one.
-
-general:
-
-	- You need to copy the file SDL.dll, SDL_image.dll, jpeg.dll, libpng1.dll 
-	  sdl_gfx.dll and zlib.dll in to the system32 folder, that is located in 
-	  your Windows installation directory.
-
-borland:
-	- download the latest SDL 'Source Code' compressed however you wish
-	  e.g. http://www.libsdl.org/release/SDL-1.2.8.zip
-	- unpack it and have your $SDL environment variable point to it.
-	- unpack the file $SDL/Borland.zip to the directory $SDL/Borland
-	- copy the directory $SDL/Borland/lib to $SDL - now you should have a
-	  directory $SDL/lib that contains the borland compatible lib's
-	- These libs were created for SDL 1.2.4 - to get borland compatible libs 
-	  that are up to date read the document 
-	  $ESDL\resource\dependency\borland_and_microsoft_dll.pdf
-	  and then generate a compatible SDL.lib file for your current SDL.dll with 
-	  the following commands:
-	  impdef SDL.def SDL.dll
-	  implib SDL.lib SDL.def
-	  Note: The tools needed are shipped with the free borland compiler and 
-	  the format changes that you have to do manually are described in the 
-  	  $ESDL\resource\dependency\sdl_borland\borland_and_microsoft_dll.pdf
-  	  document!
-	- download the latest SDL_image 'Source Code' compressed however 
-	  you wish e.g. 
-	  http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.4.zip
-	- unpack it and copy SDL_image.h to $SDL/include or $SDL_HEADER this
-	  should be the same directory, you can now delete the unpacked 
-	  SDL_image source, if you want to
-	- Do the same for SDL_gfx
-
-microsoft:
-	- for msc it is easier: download the latest SDL 'Development Libraries' for
-	  Win32 - Visual C++ 5, 6, 7
-	  e.g. http://www.libsdl.org/release/SDL-devel-1.2.8-VC7.zip
-	- unpack it and have your $SDL environment variable point to it.
-	- download the latest SDL_image 'Binary' for Win32
-	  libsdl.org/projects/SDL_image/release/SDL_image-devel-1.2.4-VC6.zip
-	- unpack it and copy SDL_image.h to $SDL/include or $SDL_HEADER this
-	  should be the same directory
-	- copy 'SDL_image.lib' to $SDL/lib
-	- you can now delete the unpacked SDL_image source, if you want to
-
-NOTE: If any of this doesn't work or you have a better idea how to hadle 
-these setup problems - don't hesitate to contact me.  However I didn't find
-any faster or easier way to do that setup yet - especially not if the idea is to
-be able to quickly support new releases of any of the libraries we depend 
-on.
+EiffelMedia 0.7.0 that in turn needs GOBO, EWG and SDL. See http://eiffelmedia.origo.ethz.ch 
+for further instructions.
 
 2. Build environment
 ____________________________________________________________
 
-ESDL relies on the GOBO tools for its entire build process. Call 'geant' in any
-directory mentionned here and you should see all available geant targets.
-In the following I am going to describe which 'build.eant' file contains what
-targets and what they are used for. I am assuming that you have ESDL
-installed under $ESDL.
-
-$ESDL/build.eant
-	install
-		wraps SDL to $ESDL/library/generated_wrapper, generates 
-		$ESDL/library/esdl_cpp.h, generates an 'ise.ace' file within every 
-		example
-	clobber
-		deletes all generated files 
-	clean
-		deletes intermediary generatecd files
-	compile
-		compiles the glue code, compiles all demos
-	release_<relase_target>
-		compile and generate the relase for the <relase_target>
-	
-Typically you would call:
-
-$ESDL >geant install
-$ESDL >geant compile
-$ESDL >geant clean
-
-or simply
-
-$ESDL >geant release_gcc
-
-to get it all compiled and the intermediary files removed so what you have
-at the end is all demos compiled and running (hopefully :-) ) under
-$ESDL/example 
+Traffic relies on the GOBO tools for its build process. However, the example
+applications all come with ace-files for windows and linux.
 
 3. Directory layout
 ____________________________________________________________
 
-doc				: Contains ESDL's API documantation
-example			: The demos
-library			: ESDL library the you can use in your application
-misc			: Contains a generic geant file for all esdl applications
-release			: Developer utilities for building and releasing
-resource		: Collected SDL resources 
+doc				: Contains Traffic's User and developer documantation
+example			: The applications
+library			: Traffic library the you can use in your application
 build.eant		: The main build file
 developer.txt	: This file
-todo.txt		: Todo's
-history.txt		: Release history
 forum.txt		: The Eiffel Forum License II
 readme.txt		: Installation instructions for users
 
-4. Release mechanism
-____________________________________________________________
-
-ESDL has four releases for three platforms and three compilers. 
-
-ESDL tries to encurage beginner programmers to use ESDL to hack together 
-simple games. Therefore the releases for the windows platform include all 
-required libraries for the two windows compilers.
-
-ESDL runs only on the ISE eiffel compiler at the moment, we are looking into
-supporting other Eiffel compilers in the furture.
-
-Note that the gcc release comes without the dependent libraries, because 
-the libraries are installed differently for every distribution and we want to 
-leave that to the user.
-
-compiler		|	win32	|		linux	|	osx		| source
----------------------------------------------------------------
-msc				|		x	|		-		|	-		|	-
-bcb				|		x	|		-		|	-		|	-
-gcc				|		-	|		x		|	x		|	-
-other eiffel	|		p	|		p		|	p		|	-
-neutral			|		-	|		-		|	-		|	s
-
-x:	relase
-s: source release
-p:	planned
--: none
-
-Building and testing the releases is a boring and difficult task: You will need
-to use the instrumentation provided by the 'release' targets of the main
-'build.eant' file and the utilities in the $ESDL/release/tools directory. 
-For further information see $ESDL/release/tools/release_todo.txt
-  
-5. Style Guides
+4. Style Guides
 ____________________________________________________________
 
 - Until an autmatic style checker is available we try to adhere the following
