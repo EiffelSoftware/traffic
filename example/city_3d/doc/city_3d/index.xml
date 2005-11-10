@@ -27,7 +27,7 @@
 <title>City_3d</title>
 
 <para>
-The 'Traffic 3D front end' project implements a 3 dimensional
+The <projectname>City3D</projectname> project implements a 3 dimensional
 visualization of a TRAFFIC map file and adds some additional functionaliy.
 </para>
 
