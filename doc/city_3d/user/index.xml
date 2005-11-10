@@ -24,11 +24,11 @@
 	<date>19. October 2005</date>
 </chapterinfo>
 
-<title>City3d User Guide</title>
+<title>City3D User Guide</title>
 
 <para>
-The 'Traffic 3D front end' project implements a 3 dimensional
-visualization of a TRAFFIC map file and adds some additional functionaliy.
+The <projectname>City3D</projectname> project implements a 3 dimensional
+visualization of a <projectname>Traffic</projectname> map file and adds some additional functionaliy.
 </para>
 
 <para>
@@ -37,13 +37,13 @@ This document is structured as follows:
 		<listitem>
 			<link url="introduction.html">Introduction</link>
 			<para>
-				Welcome to City3D!
+				Welcome to <projectname>City3D</projectname>!
 			</para>
 		</listitem>
 		<listitem>
 			<link url="mouse_controls.html">Mouse controls</link>
 			<para>
-				Shows the usage of city3d application.
+				Shows the usage of <projectname>City3D</projectname> application.
 			</para>
 		</listitem>
 	</itemizedlist>

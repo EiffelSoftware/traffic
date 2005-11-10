@@ -95,7 +95,7 @@
     2) Extensions:
         <itemizedlist>
             <listitem><para>
-                Text console or other GUI extensions like they're used in the already existing TRAFFIC applications. But as mentioned above, 
+                Text console or other GUI extensions like they're used in the already existing <projectname>Traffic</projectname> applications. But as mentioned above, 
 		abolishing <classname cluster="city_3d">CITY_3D_SCENE</classname> and taking the rest would probably be the more reasonable way.
             </para></listitem>
             <listitem><para>

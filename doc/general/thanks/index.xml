@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	description:
+
+		"References"
+
+	copyright: "Copyright (c) 2005, Ursina Caluori"
+	license: "Eiffel Forum License v2 (see forum.txt)"
+	date: "$Date $"
+	revision: "$Revision $"
+-->
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="references">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Michela Pedroni</holder>
+        </copyright>
+        <author>
+            <firstname>Michela</firstname>
+            <surname>Pedroni</surname>
+        </author>
+        <email>michela.pedroni@inf.ethz.ch</email>
+        <date>17. October 2005</date>
+    </chapterinfo>
+	<section id="team">
+		<title>Developers</title>
+		<para>
+			Thanks to all the students who worked on <projectname>Traffic</projectname> as a semester/master project:
+		</para>
+		<blockquote>
+			<variablelist>
+				<varlistentry>
+					<term>
+						Roger Küng 
+					</term>
+                </varlistentry>
+				<varlistentry>
+					<term>
+						Ursina Caluori 
+					</term>
+                </varlistentry>
+				<varlistentry>
+					<term>
+						Stefan Daniel 
+					</term>
+                </varlistentry>
+				<varlistentry>
+					<term>
+						Valentin Wüstholz
+					</term>
+                </varlistentry>
+				<varlistentry>
+					<term>
+						Sibylle Aregger
+					</term>
+                </varlistentry>
+				<varlistentry>
+					<term>
+						Rolf Bruderer
+					</term>
+                </varlistentry>
+				<varlistentry>
+					<term>
+						Marcel Kessler
+					</term>
+                </varlistentry>
+				<varlistentry>
+					<term>
+						Patrick Schönbach
+					</term>
+                </varlistentry>
+            </variablelist>
+        </blockquote>
+        <para>
+        	and the other developers
+        </para>
+		<blockquote>
+			<variablelist>
+				<varlistentry>
+					<term>
+						Patrick Schönbach
+					</term>
+                </varlistentry>
+            </variablelist>
+        </blockquote>
+    </section>
+    <section id="lead">
+    <title>Project lead</title>
+		<blockquote>
+			<variablelist>
+				<varlistentry>
+					<term>
+						Michela Pedroni
+					</term>
+				</varlistentry>
+				<varlistentry>
+					<term>
+						Bertrand Meyer
+					</term>
+				</varlistentry>
+			</variablelist>
+		</blockquote>
+    </section>
+    <section id="thanks">
+    <title>Thanks</title>
+    	Thanks to all the assistants of the Chair of Software Engineering, to all the students of
+    	Introduction to Programming and all the external people that gave feedback and support.
+   </section>
+</chapter>

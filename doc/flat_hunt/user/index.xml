@@ -28,7 +28,7 @@
         programming<!--Toinclude, along with another application named <projectname>Touch</projectname>-->. 
         <projectname>Flathunt</projectname> is a "Scotland
         Yard"-like game that will mainly appear in the assignments for the Introduction to
-        Programming course. It is based on <libraryname>TRAFFIC</libraryname> for modeling the city 
+        Programming course. It is based on the <projectname>Traffic library</projectname> for modeling the city 
         where the game takes place and on <libraryname>EiffelMedia</libraryname> 
         (formerly known as <libraryname>ESDL</libraryname>) for visualization. 
     </para>
@@ -38,7 +38,7 @@
 		<listitem>
 			<link url="introduction.html">Introduction</link>
 			<para>
-				Welcome to Flathunt!
+				Welcome to <projectname>Flathunt</projectname>!
 			</para>
 		</listitem>
 		<listitem>

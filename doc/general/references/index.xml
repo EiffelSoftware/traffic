@@ -22,98 +22,106 @@
         <email>michela.pedroni@inf.ethz.ch</email>
         <date>17. October 2005</date>
     </chapterinfo>
-    <title>References</title>
-    <para>
-        <blockquote>
-            <variablelist>
-                <varlistentry>
-                    <term>[rk05] Roger Küng. <emphasis>Touch User Guide</emphasis>. ETH Zurich,
-                        2005. </term>
-                    <listitem>
-                        <link url="http://se.inf.ethz.ch/projects/roger_kueng"
-                            >http://se.inf.ethz.ch/projects/roger_kueng</link>
-                    </listitem>
+	<section id="traffic_projects">
+		<title>Student projects on <projectname>Traffic</projectname></title>
+		<blockquote>
+			<variablelist>
+				<varlistentry>
+					<term>
+						Roger Küng. <emphasis>Redesign of Touch</emphasis>. ETH Zurich, 2005. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/roger_kueng">
+						http://se.inf.ethz.ch/projects/roger_kueng</link>
+					</listitem>
                 </varlistentry>
-                <varlistentry>
-                    <term>[sa05] Sibylle Aregger. <emphasis>Redesign of the
-                            <libraryname>TRAFFIC</libraryname> library</emphasis>. ETH Zurich, 2005. </term>
-                    <listitem>
-                        <link url="http://se.inf.ethz.ch/projects/sibylle_aregger">http://se.inf.ethz.ch/projects/sibylle_aregger</link>
-                    </listitem>
+				<varlistentry>
+					<term>
+						Ursina Caluori. <emphasis>FLAT_HUNT redesign and ESDL extensions</emphasis>. 
+						ETH Zurich, 2005. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/ursina_caluori"
+						>http://se.inf.ethz.ch/projects/ursina_caluori</link>
+					</listitem>
                 </varlistentry>
-                <varlistentry>
-                    <term>[tgb03] Till G. Bay. <emphasis>Eiffel SDL Multimedia Library
-                        (ESDL)</emphasis>. ETH Zurich, 2003. </term>
-                    <listitem>
-                        <link url="http://se.inf.ethz.ch/projects/till_bay"
-                            >http://se.inf.ethz.ch/projects/till_bay</link>
-                    </listitem>
+				<varlistentry>
+					<term>
+						Stefan Daniel, Valentin Wüstholz. <emphasis>City3D - A frontend for Traffic</emphasis>. 
+						ETH Zurich, 2005. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/daniel_wuestholz"
+						>http://se.inf.ethz.ch/projects/daniel_wuestholz</link>
+					</listitem>
                 </varlistentry>
-                <varlistentry>
-                    <term>[uc05] Ursina Caluori. <emphasis>Flat Hunt User Guide</emphasis>. ETH Zurich,
-                        2005. </term>
-                    <listitem>
-                        <link url="http://se.inf.ethz.ch/projects/ursina_caluori"
-                            >http://se.inf.ethz.ch/projects/ursina_caluori</link>
-                    </listitem>
+				<varlistentry>
+					<term>
+						Sibylle Aregger. <emphasis>Redesign of the Traffic library</emphasis>. 
+						ETH Zurich, 2004/2005. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/sibylle_aregger"
+						>http://se.inf.ethz.ch/projects/sibylle_aregger</link>
+					</listitem>
                 </varlistentry>
-                <varlistentry>
-                    <term>[sa05] Sibylle Aregger. <emphasis>Redesign of the
-                            <libraryname>TRAFFIC</libraryname> library</emphasis>. ETH Zurich, 2005. </term>
-                    <listitem>
-                        <link url="http://se.inf.ethz.ch/projects/sibylle_aregger"
-                            >http://se.inf.ethz.ch/projects/sibylle_aregger</link>
-                    </listitem>
+				<varlistentry>
+					<term>
+						Rolf Bruderer. <emphasis> Object-Oriented Framework for Teaching Introductory Programming</emphasis>. 
+						ETH Zurich, 2004/2005. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/rolf_bruderer"
+						>http://se.inf.ethz.ch/projects/rolf_bruderer</link>
+					</listitem>
                 </varlistentry>
-    						<varlistentry>
-                    <term>[rb05] Rolf Bruderer. <emphasis>Object-Oriented Framework for Teaching
-                            Introductory Programming</emphasis>. ETH Zurich, 2005. </term>
-                    <listitem>
-                        <ulink url="http://se.inf.ethz.ch/projects/rolf_bruderer"
-                            >http://se.inf.ethz.ch/projects/rolf_bruderer</ulink>
-                    </listitem>
-                </varlistentry>                
-                <varlistentry>
-                    <term>[tgb03] Till G. Bay. <emphasis>Eiffel SDL Multimedia Library
-                        (ESDL)</emphasis>. ETH Zurich, 2003. </term>
-                    <listitem>
-                        <link url="http://se.inf.ethz.ch/projects/till_bay"
-                            >http://se.inf.ethz.ch/projects/till_bay</link>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>[uc05] Ursina Caluori. <emphasis>Flat Hunt User Guide</emphasis>. ETH Zurich,
-                        2005. </term>
-                    <listitem>
-                        <link url="http://se.inf.ethz.ch/projects/ursina_caluori"
-                            >http://se.inf.ethz.ch/projects/ursina_caluori</link>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term>[sa05] Sibylle Aregger. <emphasis>Redesign of the
-                            <libraryname>TRAFFIC</libraryname> library</emphasis>. ETH Zurich, 2005. </term>
-                    <listitem>
-                        <link url="http://se.inf.ethz.ch/projects/sibylle_aregger"
-                            >http://se.inf.ethz.ch/projects/sibylle_aregger</link>
-                    </listitem>
-                </varlistentry>
-    						<varlistentry>
-                    <term>[rb05] Rolf Bruderer. <emphasis>Object-Oriented Framework for Teaching
-                            Introductory Programming</emphasis>. ETH Zurich, 2005. </term>
-                    <listitem>
-                        <ulink url="http://se.inf.ethz.ch/projects/rolf_bruderer"
-                            >http://se.inf.ethz.ch/projects/rolf_bruderer</ulink>
-                    </listitem>
-                </varlistentry>                
-                <varlistentry>
-                    <term>[tgb03] Till G. Bay. <emphasis>Eiffel SDL Multimedia Library
-                        (ESDL)</emphasis>. ETH Zurich, 2003. </term>
-                    <listitem>
-                        <link url="http://se.inf.ethz.ch/projects/till_bay"
-                            >http://se.inf.ethz.ch/projects/till_bay</link>
-                    </listitem>
+				<varlistentry>
+					<term>
+						Marcel Kessler. <emphasis> Exercise Design for Introductory Programming - "Learn-by-doing" basic OO-concepts using Inverted Curriculum</emphasis>. 
+						ETH Zurich, 2004. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/marcel_kessler"
+						>http://se.inf.ethz.ch/projects/marcel_kessler</link>
+					</listitem>
                 </varlistentry>
             </variablelist>
         </blockquote>
-    </para>
+    </section>
+    <section id="webpages">
+    <title>Webpages</title>
+		<blockquote>
+			<variablelist>
+				<varlistentry>
+					<term>
+						Webpage on the Inverted Curriculum with papers, mailing list, and draft 
+						versions of the textbook <emphasis>Touch of class: Learning to program
+						well with object technology and design by contract</emphasis>.
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/touch"
+						>http://se.inf.ethz.ch/touch</link>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>
+						Download page for <projectname>Traffic</projectname>.
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/traffic"
+						>http://se.inf.ethz.ch/traffic</link>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>
+						Download page for <projectname>EiffelMedia</projectname>.
+					</term>
+					<listitem>
+						<link url="http://eiffelmedia.origo.ethz.ch"
+						>http://eiffelmedia.origo.ethz.ch</link>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+		</blockquote>
+    </section>
 </chapter>

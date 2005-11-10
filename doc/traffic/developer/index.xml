@@ -2,14 +2,14 @@
 <!--
 	description:
 
-		"User guide for Flathunt"
+		"Developer guide for Traffic"
 
 	copyright: "Copyright (c) 2005, Ursina Caluori"
 	license: "Eiffel Forum License v2 (see forum.txt)"
 	date: "$Date $"
 	revision: "$Revision $"
 -->
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer/index">
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic_developer/index">
     <chapterinfo>
         <copyright>
             <year>2005</year>
@@ -25,20 +25,20 @@
     <title>Traffic Library Developer Guide</title>
     <para>
 This section consists of a description of the intention and use of the 
-TRAFFIC library with a description of each class and its simplified interface. 
+<projectname>Traffic library</projectname> with a description of each class and its simplified interface. 
 The class overviews are sorted in alphabetic ascending order to be able to find a class description faster when knowing the name of it. For each class a short example of use will be added to show how it can be used. These examples can be found in the cluster test example.</para> 
-    <para> This document describes how the library <projectname>Traffic</projectname> is structured and consists of the following parts: 
+    <para> This document describes how the <projectname>Traffic library</projectname> is structured and consists of the following parts: 
 	<itemizedlist>
 		<listitem>
 			<link url="overview.html">Overview</link>
 			<para>
-				TODO
+				Gives an overview of the classes that are involved in the <projectname>Traffic library</projectname>
 			</para>
 		</listitem>
 		<listitem>
 	        <link url="classes.html">Classes</link>
 			<para>
-				TODO
+				Describes each class of the <projectname>Traffic library</projectname> 
 			</para>
 		</listitem>
 	</itemizedlist>

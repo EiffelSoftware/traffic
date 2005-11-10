@@ -62,7 +62,7 @@
         <title>Overview</title>
         <para> When opening <projectname>Flathunt</projectname> in EiffelStudio, the cluster view
             in the bottom left corner of EiffelStudio shows many clusters. For you only the
-            top-level clusters <keyword>Traffic</keyword> and <keyword>Flathunt</keyword> are
+            top-level clusters <keyword>traffic</keyword> and <keyword>flat_hunt</keyword> are
             important.</para>
         <para> To remove complexity, <projectname>Flathunt</projectname> is structured in four
             top-level clusters (<emphasis>see Figure 3</emphasis>): <keyword>Model</keyword>,
@@ -93,7 +93,7 @@
                         <strong>MAIN_CONTROLLER</strong>: The <classname>MAIN_CONTROLLER</classname>
                         is (as the name suggests) responsible for many things. It provides access to
                         the <classname>GAME_SCENE</classname>, to class <classname>GAME</classname>
-                        and to the whole <libraryname>TRAFFIC</libraryname> library, which is
+                        and to the whole <projectname>Traffic</projectname> library, which is
                         responsible for the visualization of the map. </para>
                 </listitem>
                 <listitem>
@@ -126,7 +126,8 @@
                 <listitem>
                     <para>
                         <strong>PLAYER</strong>: Class <classname>PLAYER</classname> knows the basic
-                        things one needs to know about a player of Flathunt, like how many tickets
+                        things one needs to know about a player of <projectname>Flathunt</projectname>,
+                        like how many tickets
                         he got left. It features the commands <featurename>play</featurename> and
                             <featurename>move</featurename> and has either a
                         <classname>HUMAN</classname> or a <classname>BOT</classname> brain.</para>

@@ -28,7 +28,7 @@
 <xsl:param name="images" select="concat($root_path,'misc/image/')"/>
 <xsl:param name="srcdoc" select="concat($root_path,'src/')"/>
 <xsl:param name="toc" select="'index.html'"/>
-<xsl:param name="web" select="'http://wiki.se.ethz.ch/traffic'"/>
+<xsl:param name="web" select="'http://wiki.se.inf.ethz.ch/traffic/index.php/Main_Page'"/>
 
 <xsl:output
 	method="xhtml"
