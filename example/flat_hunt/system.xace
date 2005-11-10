@@ -10,31 +10,75 @@
   </description>
   <root class="FLAT_HUNT" creation="make_and_launch"/>
   <option unless="${DEBUG}">
-    <option name="assertion" value="none"/>
-    <option name="garbage_collector" value="none"/>
-    <option name="finalize" value="true"/>
-    <option name="console_application" value="false"/>
+    	<option name="assertion" value="none"/>
+    	<option name="garbage_collector" value="none"/>
+    	<option name="finalize" value="true"/>
+    	<option name="console_application" value="false"/>
   </option>
   <option if="${DEBUG}">
-    <option name="assertion" value="all"/>
-    <option name="garbage_collector" value="none"/>
-    <option name="finalize" value="false"/>
-    <option name="console_application" value="false"/>
+  	<option unless="${STUDI}">
+	    <option name="assertion" value="all"/>
+	    <option name="garbage_collector" value="none"/>
+	    <option name="finalize" value="false"/>
+	    <option name="console_application" value="false"/>
+	  </option>
+	  <option if="${STUDI}">
+	  	<option name="assertion" value="require"/>
+	    <option name="garbage_collector" value="none"/>
+	    <option name="finalize" value="false"/>
+	    <option name="console_application" value="false"/>
+		</option>  	
   </option>
 
   <cluster name="flat_hunt" location=".">
-    <cluster name="controller" />
+    <option if="${STUDI}">
+    	<option name="assertion" value="all"/>
+    </option>
+		<cluster name="controller">
+	    <option if="${STUDI}">
+	    	<option name="assertion" value="all"/>
+	    </option>
+	  </cluster>
     <cluster name="model">
-	<cluster name="brain" />
-	<cluster name="player" />
+	    <option if="${STUDI}">
+	    	<option name="assertion" value="all"/>
+	    </option>
+			<cluster name="brain" >
+	    	<option if="${STUDI}">
+	    		<option name="assertion" value="all"/>
+	    	</option>
+	    </cluster>
+			<cluster name="player" >
+	    	<option if="${STUDI}">
+	    		<option name="assertion" value="all"/>
+	    	</option>
+			</cluster>
     </cluster>
     <cluster name="view">
-	<cluster name="displayers" />
+	    <option if="${STUDI}">
+	    	<option name="assertion" value="all"/>
+	    </option>
+			<cluster name="displayers" >
+	    	<option if="${STUDI}">
+	    		<option name="assertion" value="all"/>
+	    	</option>
+			</cluster>
     </cluster>
     <cluster name="util">
-	<cluster name="menu" />
-	<cluster name="musicplayer" />
-    </cluster>	    
+	    <option if="${STUDI}">
+	    	<option name="assertion" value="all"/>
+	    </option>
+			<cluster name="menu" >
+	    	<option if="${STUDI}">
+	    		<option name="assertion" value="all"/>
+	    	</option>
+			</cluster>
+			<cluster name="musicplayer" >
+	    	<option if="${STUDI}">
+	    		<option name="assertion" value="all"/>
+	    	</option>
+			</cluster>			
+    </cluster>
   </cluster>  
 
   <option unless="${GOBO_OS}=windows">
