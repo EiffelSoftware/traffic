@@ -1,27 +1,12 @@
 ﻿<?xml version="1.0"?>
-
-<!--
-	description:
-
-		"Structure of the Traffic 3D front end documentation"
-
-	copyright: ""
-	license: ""
-	date: "$Date:"
-	revision: "$Revision:"
--->
-
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/developer/utilities">
 <chapterinfo>
 	<copyright>
 		<year>2005</year>
 		<holder>Michela Pedroni</holder>
 	</copyright>
-	<author>
-		<firstname>Michela</firstname><surname>Pedroni</surname>
-	</author>
     <email>michela.pedroni@inf.ethz.ch</email>
-	<date>12. September 2005</date>
+	<date>$Date$</date>
 </chapterinfo>
 
 <title>Utilities</title>

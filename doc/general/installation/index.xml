@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-	description:
-
-		"Installation guide for Traffic"
-
-	copyright: "Copyright (c) 2005, Ursina Caluori"
-	license: "Eiffel Forum License v2 (see forum.txt)"
-	date: "$Date $"
-	revision: "$Revision $"
--->
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="installation">
-    <chapterinfo>
-        <copyright>
-            <year>2005</year>
-            <holder>Michela Pedroni</holder>
-        </copyright>
-        <author>
-            <firstname>Michela</firstname>
-            <surname>Pedroni</surname>
-        </author>
-        <email>michela.pedroni@inf.ethz.ch</email>
-        <date>17. October 2005</date>
-    </chapterinfo>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="general/installation/index">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
     <title>Installation</title>
     <section id="req">
         <title>Requirements</title>

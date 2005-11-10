@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-	description:
-
-		"Developer guide for the Traffic library"
-
-	copyright: "Copyright (c) 2005, Ursina Caluori"
-	license: "Eiffel Forum License v2 (see forum.txt)"
-	date: "$Date $"
-	revision: "$Revision $"
--->
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic_developer/classes">
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/classes">
 <chapterinfo>
 	<copyright>
 		<year>2005</year>
 		<holder>Michela Pedroni</holder>
 	</copyright>
-	<author>
-		<firstname>Michela</firstname><surname>Pedroni</surname>
-	</author>
-	<email>michela.pedroni@inf.ethz.ch</email>
-	<date>19. October 2005</date>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
 </chapterinfo>
     <title>Classes</title>
 	<section id="top_of_page">

@@ -1,15 +1,5 @@
 <?xml version="1.0"?>
-
-<!--
-	description:
-
-		"Traffic Documentation"
-
-	date: "$Date$"
-	revision: "$Revision$"
--->
-
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/widget/index">
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="index">
 <chapterinfo>
 	<copyright>
 		<year>2005</year>
