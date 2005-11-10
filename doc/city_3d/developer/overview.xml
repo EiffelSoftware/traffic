@@ -1,0 +1,34 @@
+﻿<?xml version="1.0"?>
+
+<!--
+	description:
+
+		"Structure of the Traffic 3D front end documentation"
+
+	copyright: ""
+	license: ""
+	date: "$Date:"
+	revision: "$Revision:"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+	<author>
+		<firstname>Michela</firstname><surname>Pedroni</surname>
+	</author>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>12. September 2005</date>
+</chapterinfo>
+
+<title>Overview</title>
+<section id="bon">
+<title>Bon diagram of all classes</title>
+    <para>
+        <image src="image/BON.jpg"/>
+	</para>
+</section>
+</chapter>

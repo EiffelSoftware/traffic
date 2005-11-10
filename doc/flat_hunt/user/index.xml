@@ -25,44 +25,38 @@
     <title>Flathunt User Guide</title>
     <para>
         <projectname>Flathunt</projectname> is an application that is used to teach you
-        programming, along with another application named <projectname>Touch</projectname> [<link
-            url="references.html">rk05</link>]. <projectname>Flathunt</projectname> is a "Scotland
+        programming<!--Toinclude, along with another application named <projectname>Touch</projectname>-->. 
+        <projectname>Flathunt</projectname> is a "Scotland
         Yard"-like game that will mainly appear in the assignments for the Introduction to
-        Programming course. It is based on <libraryname>TRAFFIC</libraryname> [<link
-            url="references.html">sa05</link>] for modeling the city where the game takes place and
-        on <libraryname>EiffelMedia</libraryname> (formerly known as <libraryname>ESDL</libraryname>
-            [<link url="references.html">tgb03</link>]) for visualization. </para>
+        Programming course. It is based on <libraryname>TRAFFIC</libraryname> for modeling the city 
+        where the game takes place and on <libraryname>EiffelMedia</libraryname> 
+        (formerly known as <libraryname>ESDL</libraryname>) for visualization. 
+    </para>
     <para> This document describes how to use <projectname>Flathunt</projectname> and is structured
         as follows: 
 	<itemizedlist>
 		<listitem>
 			<link url="introduction.html">Introduction</link>
 			<para>
-				TODO
+				Welcome to Flathunt!
 			</para>
 		</listitem>
 		<listitem>
 			<link url="story.html">The Story</link>
 			<para>
-				TODO
-			</para>
-		</listitem>
-		<listitem>
-            <link url="getting_started.html">Getting Started</link>
-			<para>
-				TODO
+				The story to the game <projectname>Flathunt</projectname>
 			</para>
 		</listitem>
 		<listitem>
             <link url="gameplay.html">Gameplay</link>
 			<para>
-				TODO
+				Description of the general rules and game modes 
 			</para>
 		</listitem>
 		<listitem>
-            <link url="special_features.html">Special Features</link>
+            <link url="keyboard_controls.html">Keyboard controls</link>
 			<para>
-				TODO
+				Description of keyboard controls
 			</para>
 		</listitem>
 	</itemizedlist>

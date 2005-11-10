@@ -22,32 +22,6 @@
 	<date>19. October 2005</date>
 </chapterinfo>
     <title>Gameplay</title>
-    <para>
-        <emphasis>Playing <projectname>Flathunt</projectname> is not very difficult, especially for
-            those that know the game "Scotland Yard"…</emphasis>
-    </para>
-    <para> This chapter is structured in three sections. The first section describes the general
-        rules of the game. Then the different modes are explained more precisely. The last section
-        is about other stuff like how to start a new game. </para>
-    <para>
-        <itemizedlist>
-            <listitem>
-                <para>
-                    <indexlink url="#general_rules">General Rules</indexlink>
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    <indexlink url="#game_modes">Game Modes</indexlink>
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    <indexlink url="#other">Other</indexlink>
-                </para>
-            </listitem>
-        </itemizedlist>
-    </para>
     <section id="general_rules">
         <title>General Rules</title>
         <para> The game lasts for at most 23 rounds. In these 23 rounds, the flat hunters try to
@@ -150,28 +124,5 @@
             "interactive", but is about as entertaining as watching fish in an aquarium. The
             computer is playing against himself, trying to catch the agent as fast as possible.
         </para>
-    </section>
-    <section id="other">
-        <title>Other</title>
-        <para> When you run <projectname>Flathunt</projectname>, the first you'll see is a menu
-                (<emphasis>see Figure 6</emphasis>). You can either let the default options in place
-            and just select <keyword>start game</keyword> or you can adjust the settings to your
-            needs. <keyword>Game mode</keyword> is explained in the <indexlink url="#game_modes"
-                >previous section</indexlink>, <keyword>number of hunters</keyword> and <keyword>map
-                size</keyword> should be self-explanatory and <keyword>characters</keyword>
-            specifies which pictures to use for the players. To toggle between the settings menu and
-            the normal menu press <strong>tab</strong>.</para>
-        <para>
-            <image src="image/settings_screenshot.png"/>
-        </para>
-        <para>
-            <emphasis>Figure 6: Screenshot of the start menu</emphasis>
-        </para>
-        <para>During the game when you press <strong>p</strong>, the pause menu is shown.
-                <keyword>Continue</keyword> makes the pause menu disappear and lets you resume the
-            game, <keyword>new game</keyword> takes you to the start menu and
-            <keyword>quit</keyword> quits the application.</para>
-        <para>The game over menu is similar to the pause menu, only there is no
-            <keyword>continue</keyword> in this one.</para>
     </section>
 </chapter>

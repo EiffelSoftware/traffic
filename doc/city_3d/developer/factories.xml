@@ -1,0 +1,65 @@
+﻿<?xml version="1.0"?>
+
+<!--
+	description:
+
+		"Structure of the Traffic 3D front end documentation"
+
+	copyright: ""
+	license: ""
+	date: "$Date:"
+	revision: "$Revision:"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+	<author>
+		<firstname>Michela</firstname><surname>Pedroni</surname>
+	</author>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>12. September 2005</date>
+</chapterinfo>
+
+<title>Factories</title>
+<section id="traffic_line_factory">
+	<para>
+	</para>
+	<title>TRAFFIC_LINE_FACTORY</title>
+	<para>
+	</para>
+	<title>Description</title>
+	<para>
+	This class is a factory for creating displayable representations of <classname cluster="traffic">TRAFFIC_LINE</classname> objects. 
+	It inherits from <classname cluster="em.video.object_factory">EM_3D_OBJECT_FACTORY</classname> which provides the necessary structures such as the feature <featurename class="em.video.object_factory.em_3d_object_factory">create_object</featurename> or <featurename class="em.video.object_factory.em_3d_object_factory">specify_object</featurename>. <featurename class="city_3d.traffic_line_factory">specify_object</featurename> contains the (OpenGL) commands to create the object and has to be implemented. To actually create and draw an object, the feature <featurename class="city_3d.traffic_line_factory">create_object</featurename> of the factory is called, which returns a <classname cluster="em.video">EM_3D_OBJECT</classname>. Then, the origin and scale of this object is set and the feature <featurename class="em.video.em_3d_object">draw</featurename> of the object is called.
+	</para>
+	<title>Building a line</title>
+	<para>
+	Each line segment is drawn independently, putting a circle at the beginning and the end to indicate that 
+	there are stations. Next, the 'polypoints' list is traversed and for each two points a rectangle of 
+	width <featurename class="city_3d.shared_constants">line_width</featurename> is created. These rectangles are connected with circles again, but smaller as the ones representing the stations.
+	</para>
+	<toplink/>
+</section>
+
+<section id="building_factory">
+	<para/>
+	<title>BUILDING_FACTORY</title>
+	<para>
+	</para>
+	<title>Description</title>
+	<para>
+	Similarly to <classname cluster="city_3d">TRAFFIC_LINE_FACTORY</classname>, this class is responsible for creating new buildings. You can add to <classname cluster="city_3d">BUILDING_FACTORY</classname> object new kinds of buildings and procedures that decide about the kind of building that should be created.
+	</para>
+	<title>Types of buildings and decision process</title>
+	<para>
+	Initially, <classname cluster="city_3d">TRAFFIC_LINE_FACTORY</classname> has no information about what kind of buildings there are and how to draw them. It has two containers, <featurename class="city_3d.building_factory">building_templates</featurename> for drawing and <featurename class="city_3d.building_factory">gaugers</featurename> for 'decision taking procedures'. Therefore, the object that wants to create buildings using an object of this class, can pass it his own drawing and 'decision taking procedures'. Then it may <featurename class="city_3d.building_factory">take_decision</featurename>, giving it the name of the desired gauger and his parameters. Then this gauger decides by the means of his parameters which type of building to draw and stores his decision. That's how the factory knows what kind of building to draw if <featurename class="city_3d.building_factory">create_object</featurename> is called later.
+	This modus operandi garantees maximum flexibility.
+	</para>
+	<toplink/>
+</section>
+
+</chapter>

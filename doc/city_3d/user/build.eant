@@ -29,10 +29,9 @@
 			without subdirectories.
 		</description>
 		
-		<geant target="${target}" arguments="miscellaneous"/>
 		<geant target="${target}" arguments="introduction"/>
-		<geant target="${target}" arguments="structure"/>
-                <geant target="${target}" arguments="index"/>
+		<geant target="${target}" arguments="mouse_controls"/>
+        <geant target="${target}" arguments="index"/>
 	</target>
 
 

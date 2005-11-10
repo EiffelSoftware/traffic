@@ -30,7 +30,8 @@
 		</description>
 		
 		<geant target="${target}" arguments="overview"/>
-		<geant target="${target}" arguments="classes"/>	
+		<geant target="${target}" arguments="classes"/>
+		<geant target="${target}" arguments="index"/>	
 	</target>
 
 

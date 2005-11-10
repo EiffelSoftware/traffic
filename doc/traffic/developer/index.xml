@@ -30,19 +30,13 @@ The class overviews are sorted in alphabetic ascending order to be able to find 
     <para> This document describes how the library <projectname>Traffic</projectname> is structured and consists of the following parts: 
 	<itemizedlist>
 		<listitem>
-			<link url="introduction.html">Introduction</link>
-			<para>
-				TODO
-			</para>
-		</listitem>
-		<listitem>
 			<link url="overview.html">Overview</link>
 			<para>
 				TODO
 			</para>
 		</listitem>
 		<listitem>
-	                <link url="classes.html">Classes</link>
+	        <link url="classes.html">Classes</link>
 			<para>
 				TODO
 			</para>

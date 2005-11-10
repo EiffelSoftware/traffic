@@ -29,10 +29,14 @@
 			without subdirectories.
 		</description>
 		
-		<geant target="${target}" arguments="miscellaneous"/>
-		<geant target="${target}" arguments="introduction"/>
-		<geant target="${target}" arguments="structure"/>
-                <geant target="${target}" arguments="index"/>
+		<geant target="${target}" arguments="overview"/>
+		<geant target="${target}" arguments="constants"/>
+		<geant target="${target}" arguments="widgets"/>
+		<geant target="${target}" arguments="buildings"/>
+		<geant target="${target}" arguments="factories"/>
+ 		<geant target="${target}" arguments="utilities"/>
+ 		<geant target="${target}" arguments="notes"/> 		
+        <geant target="${target}" arguments="index"/>
 	</target>
 
 

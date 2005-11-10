@@ -22,33 +22,260 @@
 	<date>19. October 2005</date>
 </chapterinfo>
 
-    <title>The Story</title>
+    <title>Classes</title>
     <para>
-        <emphasis>As the title suggests (and the introduction mentions), it is all about finding a
-            flat in Zurich…</emphasis>
+		In the following sections the classes will be described. The layout for each class is: 
+		Requirements, Description, Class overview, Class interface, and usually an Example. In 
+		the Requirements the name of classes you need to know in order to understand the class 
+		described is given. Description is a short description of what the class does. It is more 
+		detailed than just the class description that you find in the class header. The class 
+		overview provides you with a class diagram and a rough description thereof. In the section 
+		about the class interface you find the interfaces of the most important features of a 
+		class and their more precise description. Finally a short example is delivered in the 
+		Example section.
+	<itemizedlist>
+		<listitem>
+			<link url="#traffic_color">TRAFFIC_COLOR</link>
+			<para>
+				TODO
+			</para>
+		</listitem>
+	</itemizedlist>
     </para>
-    <para> However, this is not so easy… There is this guy, the estate agent, who is renting flats.
-        The problem is that he is always busy showing flats to other customers, and even in his
-        office they don’t really always know where exactly he is. The only thing they know is what
-        kind of transport he is moving around with. This is because the estate agent is taking part
-        in a new VBZ-project called “Customer tracking”. </para>
-    <para> In collaboration with ETH, they equipped some volunteers with transponders. These
-        transponders gather information like current position and type of transport, and send it in
-        real-time to the office. However, for privacy reasons, only the type of transport can be
-        accessed all the time. </para>
-    <para> Once in a while, the estate agent (<emphasis>Figure 2</emphasis>) calls his office to
-        tell the secretary which flat he is currently visiting. So sometimes, the people there in
-        the office can tell the flat hunters (<emphasis>Figure 3</emphasis>) where to look for him…</para>
-    <para>
-        <image src="image/agent.png"/>
-    </para>
-    <para>
-        <emphasis>Figure 2: Estate agent </emphasis>
-    </para>
-    <para>
-        <image src="image/flat_hunters.png"/>
-    </para>
-    <para>
-        <emphasis>Figure 3: Flat hunters</emphasis>
-    </para>
+    <section id="traffic_color">
+    	<title>TRAFFIC_COLOR</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+    		The class TRAFFIC_COLOR represents a RGB-Color. A RGB-Color is a color composed of the
+    		three additive components: red, green, blue. The three color parts can be accessed 
+    		through the three features: <featurename>red</featurename>, <featurename>green</featurename>, 
+    		<featurename>blue</featurename>. An important feature is <featurename>is_valid_color_part
+    		</featurename> which makes sure only valid integer values for the rgb-parts are used.
+    		The object is created through the <featurename>make</featurename> feature call which sets 
+    		the color parts to the passed values. The individual color parts can be changed through 
+    		the <featurename>set_color</featurename> commands. Make sure the value you want to 
+    		change the color to is valid. For this the <featurename>is_valid_color_part</featurename>
+    		query can be used.
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_color.png"/>
+    	</para>
+    		As can be seen from the class overview the color class is a simple class implementing the 
+    		most important features needed to describe and change a color.
+    	</para>
+    	<title>Example</title>
+    	<para>
+	run is
+			-- Run example demonstration.
+	local
+		b: BOOLEAN
+ 	do 		
+ 		-- create blue color
+		create color.make (0, 0, 255)
+ 	
+		-- display color
+		text := text + "initial color: " + color.out
+		
+		-- test if an integer is a valid  part of a color
+		b := color.is_valid_rgb_part (300)
+		text := text + "%N300 is a " + b.out + " part of a color!"
+
+		-- create new composition of color resulting in green color
+		color.set_red (0)
+		color.set_green (255)
+		color.set_blue (0)
+		
+		-- display new color
+		text := text + "%Nnewly created color: " + color.out
+	end
+    	</para>
+    </section>
+    <section id="traffic_line">
+    	<title>TRAFFIC_LINE</title>
+   		<title>Requirements:</title>
+    	<para>
+    		<link url="#traffic_color">TRAFFIC_COLOR</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
+    		<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>, <link url="#traffic_type">
+    		TRAFFIC_TYPE</link>
+    	</para>
+    	<title>Description</title>
+    	<para>
+    		The class <classname>TRAFFIC_LINE</classname> models a line of a public transportation system. 
+    		Each line has a type, e.g. <classname>TRAFFIC_TYPE_BUS</classname> for a bus line, <classname>
+    		TRAFFIC_TYPE_RAIL</classname> for a rail line and so on. This type can be accessed through the 
+    		feature <featurename>type</featurename>. In addition a line can have up to two directions. 
+    		A line which only has one direction is also valid. Each direction has a terminal place. 
+    	</para>
+    	<para>	
+			A new line is created through the feature <featurename>make</featurename>. It takes as input
+			the name of your new line and a traffic type. The features <featurename>name</featurename>, 
+    		<featurename>color</featurename>, <featurename>type</featurename>, <featurename>terminal_1
+    		</featurename>, <featurename>terminal_2</featurename> can directly be called. 
+    	</para>
+    	<para>
+    		If you want to get the starting place of a direction of your line use the feature <featurename>
+    		start_to_terminal</featurename>. It takes as input either the place in <featurename>terminal_1
+    		</featurename> or <featurename>terminal_2</featurename>. If you use just a place, make sure 
+    		it is a terminal in a direction of the line. To make sure that a place is a terminal the 
+    		<featurename>is_terminal</featurename> query can be used. The features <featurename>
+    		one_direction_exists</featurename> and <featurename>other_direction_exists</featurename> return 
+    		true if one or other direction (depending on the feature you call) exists. Only if a direction 
+    		exists there exists a terminal and a starting place. 
+    	</para>
+    	<para>
+    		The query <featurename>is_valid_for_insertion </featurename> tells you if a line section, as it 
+    		is, can be inserted into the line. The query <featurename>is_valid_insertion</featurename> tells
+    		you if it is possible for a line section of the correct type from a origin place to a destination 
+    		place is a possible extension of the line in any direction. So the argument in the second query 
+    		(<featurename>is_valid_insertion</featurename>)	is only the origin and destination of a fictionary
+    		or real line section. <featurename>Extend</featurename> adds a line section to the line where
+    		it fits. So directions can be extended at both their beginning and their end.
+    	</para>
+    	<para>
+    		The color of a line can be changed or removed through the features <featurename>set_color
+    		</featurename> and <featurename>remove_color</featurename>. 
+        </para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_line.png"/>
+    	</para>
+    	</para>
+    	<title>Example</title>
+    	<para>
+    	</para>
+    </section>
+    <section id="traffic_line_section">
+    	<title>TRAFFIC_LINE_SECTION</title>
+   		<title>Requirements:</title>
+    	<para>
+    		<link url="#traffic_place">TRAFFIC_PLACE</link>, <link url="#traffic_line_section">
+    		TRAFFIC_LINE_SECTION</link>, <link url="#traffic_line_state">TRAFFIC_LINE_STATE</link>
+	   	</para>
+    	<title>Description</title>
+    	<para>
+			The class <classname>TRAFFIC_LINE_SECTION</classname> represents a connection of a line 
+			from one place to another. Those places are called origin and destination. A line section 
+			is of some traffic type, e.g. <classname>TRAFFIC_BUS_TYPE</classname>. A line section can 
+			be added to a line, forming the lines connection. It can belong to at most one line. 
+			Additionally a line section can have different states.
+    	</para>
+    	<para>
+			To create a new line section an origin place, a destination place and a traffic type have 
+			to be defined. Such a line section will not belong to any line, its state will be set to
+			some normal state and the polypoints are empty.    	
+		</para>
+		<para>
+			The feature <featurename>length</featurename> returns a calculated length of the line section.
+			To calculate the length the polypoints are used, and if no polypoints exists, the position 
+			of the origin and destination place are used to calculate a length. This length becomes 
+			especially important when starting to calculate routes on lines and even a whole map of lines.
+		</para>
+		<para>
+			The changement of the attached line can only be carried out by a line. This is due to the fact, 
+			that when a line section has a line attached it should be in this line. Therefore the line 
+			is responsible to update line sections that are added to or removed from it.
+		</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_line_section.png"/>
+    	</para>
+     	</para>
+    	<title>Example</title>
+    	<para>
+    	</para>
+    </section>
+    <section id="traffic_line_section_state">
+    	<title>TRAFFIC_LINE_SECTION_STATE</title>
+   		<title>Requirements:</title>
+    	<para>
+    		<link url="#traffic_line_section_state_constants">TRAFFIC_LINE_SECTION_STATE_CONSTANTS</link>
+	   	</para>
+    	<title>Description</title>
+    	<para>
+			The class <classname>TRAFFIC_LINE_SECTION_STATE</classname> provides the interface to define 
+			states and attach them to line sections. The available states are defined from the 
+			<classname>TRAFFIC_LINE_SECTION_STATE_CONSTANTS</classname> class.    	
+		</para>
+    	<para>
+			 A new state is simply created by calling its creation feature. The feature <featurename>make
+			 </featurename> always creates a normal state. To change it, call the feature <featurename>
+			 set_state</featurename> with one of the values defined in <classname>
+			 TRAFFIC_LINE_SECTION_STATE_CONSTANTS</classname>.    	
+		</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_line_section_state.png"/>
+    	</para>
+     	</para>
+    	<title>Example</title>
+    	<para>
+    	</para>
+    </section>
+    <section id="traffic_line_section_state_constants">
+    	<title>TRAFFIC_LINE_SECTION_STATE_CONSTANTS</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+	   	</para>
+    	<title>Description</title>
+    	<para>
+			The class <classname>TRAFFIC_LINE_SECTION_STATE_CONSTANTS</classname> defines all line 
+			section states and has the feature <featurename>is_valid_state_value</featurename> that 
+			tests any integer value to the states value and the feature <featurename>value_to_string
+			</featurename> that returns a string representation of the state value.    	
+		</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_line_section_state_constants.png"/>
+    	</para>
+     	</para>
+    	<title>Example</title>
+    	<para>
+    	</para>
+    </section>
+    <section id="traffic_map">
+    	<title>TRAFFIC_MAP</title>
+   		<title>Requirements:</title>
+    	<para>
+   			<link url="#traffic_line">TRAFFIC_LINE</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
+    		<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>
+ 	   	</para>
+    	<title>Description</title>
+    	<para>
+			The <classname>TRAFFIC_MAP</classname> is the collection of all lines, line sections and places.
+			All elements are administrated by the map. Through the name of a place or a line you can 
+			retrieve it, you can search for line sections and even search shortest paths from one place
+			to another. A map has a name and can additionally have a description that gives more 
+			information on the purpose of the map.   	
+		</para>
+		<para>
+			The name and the description can be accessed through the features <featurename>name
+			</featurename> and <featurename>description</featurename>. Additionally a place of 
+			a given name can be accessed through the feature <featurename>place</featurename>.
+			For all the elements of the map there exist features to find out whether there is 
+			such an element (<featurename>has_place</featurename>, <featurename>has_line</featurename>
+			and <featurename>has_line_section</featurename>). To add new elements to the map use the
+			features <featurename>add_place</featurename>, <featurename>add_line</featurename> or
+			<featurename>add_line_section</featurename>.
+		</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_map.png"/>
+    	</para>
+     	</para>
+    	<title>Example</title>
+    	<para>
+    	</para>
+    </section>
 </chapter>

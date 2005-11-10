@@ -1,0 +1,103 @@
+﻿<?xml version="1.0"?>
+
+<!--
+	description:
+
+		"Structure of the Traffic 3D front end documentation"
+
+	copyright: ""
+	license: ""
+	date: "$Date:"
+	revision: "$Revision:"
+-->
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="sample/with_code">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+	<author>
+		<firstname>Michela</firstname><surname>Pedroni</surname>
+	</author>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>12. September 2005</date>
+</chapterinfo>
+
+<title>Mouse and keyboard controls</title>
+<section id="Mouse controls">
+	<title>Mouse controls</title>
+	<para>
+	 i) Mouse wheel:
+	Controls the zooming factor, whereas the position stays invariant. 
+	There are two different zooming speeds depending on the distance to the plane.
+	</para>
+	<para>
+	 ii) Mouse click:
+	Is used to mark stations on the map. The origin can be marked with the 
+	left mouse button, the destination with the right one. If the user clicks 
+	on an empty spot, the marked stations are revoked.
+	</para>
+	<para>
+	 iii) Mouse dragging:
+        <itemizedlist>
+            <listitem><para>
+                Left mouse button: By dragging the mouse while pressing the left 
+                button one is able to translate the position of the map in the 
+                window, i.e. move the plane.
+            </para></listitem>
+            <listitem><para>
+                Right mouse button: By dragging the mouse while pressing the right 
+                button one is able to rotate the map around the the origin.
+            </para></listitem>
+        </itemizedlist>
+	</para>
+	<para>
+	 iv) Keyboard:
+        <itemizedlist>
+            <listitem><para>
+                By pressing the up-/down- or left-/right- arrow keys the map will be rotated around the x- or y-axis respectively.
+            </para></listitem>
+            <listitem><para>
+                By pressing the enter key the translation will be reset to its initial value. However, zoom as well as rotation aren't affected.
+            </para></listitem>
+        </itemizedlist>
+	</para>
+	<title>Options</title>
+    <para>
+        <image src="image/options.png"/>
+    </para>
+	
+	<para>
+		<para>
+	 		i) Change the number of buildings to be displayed on the map: The number of buildings can be varied from 150 up to 15000. 
+	 		The buildings are randomly distributed.
+	 	</para>
+	 	<para>
+			ii) Make the buildings transparent in order to achieve a better overview.
+		</para>
+		<para>
+			iii) Change lighting of the map: Initially, the scene is lit by a constant light coming down the y axis. 
+			However, this can be changed to a variable light that tries to imitate the effect of the sun.
+		</para>
+		<para>
+			iv) Show a coordinate system: This shows a coordinate system at the origin for better orientation.
+		</para>
+		<para>
+			v) Highlight the traffic lines by drawing them with different height on the map, in order to achieve a better overview.
+		</para>
+		<para>
+			vi) The buildings can be hidden or shown by enabling/disabling the "show buildings" option.
+		</para>
+		<para>	
+			vii) Show the shortest path between two marked stations and display it as a white line. The origin for the route 
+			is marked by clicking on the place with the left mouse button and the destination with the right mouse button.
+		</para>
+		<para>
+			viii) When two stations are selected, a new button appears. If you press it, you can take a traffic 
+			line ride in a first-person perspective between the two marked stations.
+	 	</para>
+	</para>
+<toplink/>
+</section>
+</chapter>

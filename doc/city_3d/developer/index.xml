@@ -24,7 +24,7 @@
 	<date>12. September 2005</date>
 </chapterinfo>
 
-<title>City_3d</title>
+<title>City3d Developer Guide</title>
 
 <para>
 The 'Traffic 3D front end' project implements a 3 dimensional
@@ -33,37 +33,49 @@ visualization of a TRAFFIC map file and adds some additional functionaliy.
 
 <para>
 This document is structured as follows:
-
-<blockquote>
-<variablelist>
-	<varlistentry>
-		<term>
-			<ulink url="introduction.html">Introduction</ulink>
-		</term>
-		<listitem><para>
-			Presents the overall structure of the project and it's intends.
-		</para></listitem>
-	</varlistentry>
-
-	<varlistentry>
-		<term>
-			<ulink url="structure.html">Classes</ulink>
-		</term>
-		<listitem><para>
-			Presents the classes of the application.
-		</para></listitem>
-	</varlistentry>
-	<varlistentry>
-		<term>
-			<ulink url="miscellaneous.html">Miscellaneous</ulink>
-		</term>
-		<listitem><para>
-			Discusses dependencies, reutilisation and future perspective.
-		</para></listitem>
-	</varlistentry>
-</variablelist>
-</blockquote>
-
+	<itemizedlist>
+		<listitem>
+			<link url="overview.html">Overview</link>
+			<para>
+				BON-Diagram to get an overview.
+			</para>
+		</listitem>
+		<listitem>
+			<link url="constants.html">Shared constants</link>
+			<para>
+				Description of class <classname>SHARED_CONSTANTS</classname>.
+			</para>
+		</listitem>
+		<listitem>
+			<link url="widgets.html">Widgets</link>
+			<para>
+				Description of the classes that are responsible for the user interface.
+			</para>
+		</listitem>
+		<listitem>
+			<link url="buildings.html">Buildings</link>
+			<para>
+				How are the buildings created?
+			</para>
+		</listitem>
+		<listitem>
+			<link url="factories.html">Factories</link>
+			<para>
+				Explanation of the buildings factory and the line factory. 
+			</para>
+		</listitem>
+		<listitem>
+			<link url="utilities.html">Utilities</link>
+			<para>
+				Utilities for drawing 3D objects.
+			</para>
+		</listitem>
+		<listitem>
+			<link url="notes.html">Notes</link>
+			<para>
+				Notes from the developers of City3D.
+			</para>
+		</listitem>
+	</itemizedlist>
 </para>
-
 </chapter>

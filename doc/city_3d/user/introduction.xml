@@ -24,106 +24,18 @@
 	<date>12. September 2005</date>
 </chapterinfo>
 
-<title>Introduction</title>
-<section id="page_index">
-<title>Page Index</title>
-<para>
-<itemizedlist>
-    <listitem>
-    <para>
-    	<indexlink url="#purpose">Purpose of this work</indexlink>
-    </para>
-    </listitem>
-    <listitem>
-    <para>
-    	<indexlink url="#goals">Goals</indexlink>
-    </para>
-    </listitem>
-     <listitem>
-    <para>
-    	<indexlink url="#environment">Environment and used libraries</indexlink>
-    </para>
-    </listitem>
-    <listitem>
-    <para>
-    	<indexlink url="#structure">Structure of the documentation</indexlink>
-    </para>
-    </listitem>
-</itemizedlist>
-</para>
-</section>
-<section id="purpose">
-	<para/>
-	<title>Purpose of this work</title>
+<title>City 3D User Guide</title>
+<section id="introduction">
+    <para> Welcome to <projectname>City3D</projectname>! </para>
 	<para>
-	The purpose of this work was to provide a 3
-	dimensional visualization of a map from an XML file. 
-	This map contains information about places and traffic
-	lines of a city which should be displayed in an appropriate way. 
+	The <projectname>City3D</projectname> application displays traffic lines as
+	colored polygons on a plane, adds buildings on this plane randomly and provides 
+	mouse and keyboard support such that changing the viewpoint (zooming, rotation, 
+	different centres) is possible (easily). Moreover it provides different light settings
+	and visualizes shortest paths in the city.
 	</para>
-<toplink/>
-</section>
-
-<section id="goals">
-	<para/>
-	<title>Our goals</title>
-	<para>
-	Our goal was to implement a program that parses this
-	map file, generates the data structures, displays traffic lines as
-	colored polygons on a plane, adds buildings on this plane
-	randomly but checks for 'collisions' with traffic lines and provides useful mouse and keyboard support such that changing
-	the viewpoint (zooming, rotation, different centres) should be
-	possible (easily). Moreover different light settings should be
-	implemented and existing features such as the shortest path
-	algorithm integrateted and visualized.
-	</para>
-<toplink/>
-</section>
-<section id="environment">
-	<para/>
-	<title>Environment and used libraries</title>
-	<para>
-    <itemizedlist>
-    <listitem><para>
-    	EiffelStudio 5.5
-    </para></listitem>
-    <listitem><para>
-    	GOBO
-    </para></listitem>
-    <listitem><para>
-    	EWG
-    </para></listitem>
-    <listitem><para>
-    	EiffelMedia Library: Provides the Components for
-	doing the whole graphics such as the access to the SDL
-	commands or the widgets that were used for the GUI.
-    </para></listitem>
-    <listitem><para>
-    	TRAFFIC  Library: Provides the whole map parsing,
-	data structures and things like the calculation of the
-	shortest path.
-    </para></listitem>
-    </itemizedlist>
-	</para>
-<toplink/>
-</section>
-
-<section id="structure">
-	<para/>
-	<title>Structure of the documentation</title>
-	<para>
     <para>
-	<ulink url="structure.html">The next part</ulink> explaines the overall structure and all the used classes and factories with their most important features. 
+        <image src="image/city3d.png"/>
     </para>
-    <para>
-	<ulink url="miscellaneous.html">Part three</ulink> explaines which
-	parts are depending on the information in the XML files and
-	which features would have to be changed using different ones. Moreover it discusses some possible reuse scenarios of our work. It explains how control options
-	are added to the GUI and what would have to be done if one would like to change more than just the GUI. Finally, it presents some ideas of what could be implemented in
-	the future and how to embed it into the project.
-    </para>
-	</para>
-<toplink/>
 </section>
-
 </chapter>

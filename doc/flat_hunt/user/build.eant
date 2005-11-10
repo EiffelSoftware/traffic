@@ -31,9 +31,8 @@
 		
 		<geant target="${target}" arguments="introduction"/>
 		<geant target="${target}" arguments="story"/>
-		<geant target="${target}" arguments="getting_started"/>	
 		<geant target="${target}" arguments="gameplay"/>
-		<geant target="${target}" arguments="special_features"/>
+		<geant target="${target}" arguments="keyboard_controls"/>
 		<geant target="${target}" arguments="index"/>
 	</target>
 
