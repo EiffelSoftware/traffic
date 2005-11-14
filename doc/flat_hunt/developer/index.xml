@@ -15,27 +15,21 @@
         
 	<itemizedlist>
 		<listitem>
-			<link url="getting_started.html">Getting started</link>
-			<para>
-				TODO
-			</para>
-		</listitem>
-		<listitem>
 			<link url="design.html">Design</link>
 			<para>
-				TODO
+				Overview of all the clusters and classes
 			</para>
 		</listitem>
 		<listitem>
             <link url="states.html">The States of the Game</link>
 			<para>
-				TODO
+				Explanation of the game states and the game loop
 			</para>
 		</listitem>
 		<listitem>
             <link url="walkthrough.html">Guided "Walk-Through"</link>
 			<para>
-				TODO
+				What happens when you start <projectname>Flathunt</projectname>
 			</para>
 		</listitem>
 	</itemizedlist>

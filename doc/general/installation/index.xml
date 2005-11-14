@@ -56,31 +56,38 @@
         </para>
         <para>
             <orderedlist>
-            	<listitem>
-            		<para> 
-            			Open a shell. On windows you do this by going to Start -&gt;Run... and 
-	            		typing "cmd".
-	            	</para>
-            	</listitem>
-            	<listitem>
-            		<para> 
-            			Go to the directory of the application you want to compile, for example 
-            			<filename>traffic/example/flat_hunt</filename>. On windows you can do this
-            			by typing for example "cd C:\MyProjects\traffic\example\flat_hunt" and 
-            			pressing enter.
-            		</para>
-            	</listitem>
-            	<listitem>
-            		<para> 
-            			Type "geant install_develop" and press enter. This command will generate a
-            			file for you that is known as the ace-file. It is called <filename>developer.ace
-            			</filename> and you can find it in the folder where the application you want to 
-            			compile is located.	The generated ace-file contains all the needed data
-            			for compiling and running the application on your specific system.
-            		</para>
-            	</listitem>
+				<listitem>
+					<para>
+						Only for <projectname>Traffic</projectname> 2.1:
+					</para>
+					<itemizedlist>
+						<listitem>
+		            		<para> 
+		            			Open a shell. On windows you do this by going to Start -&gt;Run... and 
+			            		typing "cmd".
+			            	</para>
+		            	</listitem>
+		            	<listitem>
+		            		<para> 
+		            			Go to the directory of the application you want to compile, for example 
+		            			<filename>traffic/example/flat_hunt</filename>. On windows you can do this
+		            			by typing for example "cd C:\MyProjects\traffic\example\flat_hunt" and 
+		            			pressing enter.
+		            		</para>
+		            	</listitem>
+		            	<listitem>
+		            		<para> 
+		            			Type "geant install_develop" and press enter. This command will generate a
+		            			file for you that is known as the ace-file. It is called <filename>developer.ace
+		            			</filename> and you can find it in the folder where the application you want to 
+		            			compile is located.	The generated ace-file contains all the needed data
+		            			for compiling and running the application on your specific system.
+		            		</para>
+		            	</listitem>
+			        </itemizedlist>
+	            </listitem>
                 <listitem>
-                    <para> Start EiffelStudio </para>
+                    <para> Start EiffelStudio. </para>
                 </listitem>
                 <listitem>
                     <para> Click on "File -&gt;New Project...". Choose "Open existing Ace
@@ -94,14 +101,39 @@
                         <emphasis>Figure 1: New Project Dialog</emphasis>
                     </para>
                 </listitem>
-                <listitem>
-                    <para> 
-                    	This will open a file dialog that lets you choose the Ace file. Browse to
+				<listitem>
+                    <para>
+						This will open a file dialog that lets you choose the Ace file. Browse to
                         the directory where the application is located 
-                        (e.g. <filename>traffic/example/flat_hunt</filename>).
-                        Choose <filename>developer.ace</filename> and click on "Open". 
+                        (e.g. <filename>traffic/example/flat_hunt</filename>).					
                     </para>
-                </listitem>
+                    <para>
+						<itemizedlist>
+							<listitem>
+								<para>
+									<emphasis>With Traffic 2.0:</emphasis>
+								</para>
+			                    <para>                     	
+			                        Depending on your operating system and compiler choose one of the provided ace files: 
+			                        <filename>flathunt_xxx.ace</filename> ('flathunt_windows_bcb.ace' for Borland on Windows, 
+			                        'flathunt_windows_msc.ace' for Microsoft Compiler on Windows, or 'flathunt_linux.ace' for 
+			                        Unix systems). 
+			                    </para>
+							</listitem>
+							<listitem>
+								<para>
+									<emphasis>With Traffic 2.1:</emphasis>
+								</para>
+			                    <para>                     	
+ 			                        Choose <filename>developer.ace</filename>. 
+			                    </para>
+							</listitem>
+						</itemizedlist>
+					</para>
+					<para>
+						Click on "Open".
+					</para>						
+	            </listitem>
                 <listitem>
                     <para> The dialog shown in <emphasis>Figure 2</emphasis> lets you choose the
                         project directory. In most cases you can leave both paths (Ace file and
