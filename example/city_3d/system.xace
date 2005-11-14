@@ -2,7 +2,7 @@
 
 <system name="city_3d">
   <description>
-    system: "EiffelMedia 'city_3d' application"
+    system: "'City3D' application"
     copyright: "Copyright (c) 2005"
     license: "Eiffel Forum License v2 (see forum.txt)"
     date: "$Date$"
