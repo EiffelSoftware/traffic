@@ -16,13 +16,13 @@
     	<option name="console_application" value="false"/>
   </option>
   <option if="${DEBUG}">
-  	<option unless="${STUDI}">
+  	<option unless="${DEVELOP}">
 	    <option name="assertion" value="all"/>
 	    <option name="garbage_collector" value="none"/>
 	    <option name="finalize" value="false"/>
 	    <option name="console_application" value="false"/>
 	  </option>
-	  <option if="${STUDI}">
+	  <option if="${DEVELOP}">
 	  	<option name="assertion" value="require"/>
 	    <option name="garbage_collector" value="none"/>
 	    <option name="finalize" value="false"/>
@@ -31,50 +31,50 @@
   </option>
 
   <cluster name="flat_hunt" location=".">
-    <option if="${STUDI}">
+    <option if="${DEVELOP}">
     	<option name="assertion" value="all"/>
     </option>
 		<cluster name="controller">
-	    <option if="${STUDI}">
+	    <option if="${DEVELOP}">
 	    	<option name="assertion" value="all"/>
 	    </option>
 	  </cluster>
     <cluster name="model">
-	    <option if="${STUDI}">
+	    <option if="${DEVELOP}">
 	    	<option name="assertion" value="all"/>
 	    </option>
 			<cluster name="brain" >
-	    	<option if="${STUDI}">
+	    	<option if="${DEVELOP}">
 	    		<option name="assertion" value="all"/>
 	    	</option>
 	    </cluster>
 			<cluster name="player" >
-	    	<option if="${STUDI}">
+	    	<option if="${DEVELOP}">
 	    		<option name="assertion" value="all"/>
 	    	</option>
 			</cluster>
     </cluster>
     <cluster name="view">
-	    <option if="${STUDI}">
+	    <option if="${DEVELOP}">
 	    	<option name="assertion" value="all"/>
 	    </option>
 			<cluster name="displayers" >
-	    	<option if="${STUDI}">
+	    	<option if="${DEVELOP}">
 	    		<option name="assertion" value="all"/>
 	    	</option>
 			</cluster>
     </cluster>
     <cluster name="util">
-	    <option if="${STUDI}">
+	    <option if="${DEVELOP}">
 	    	<option name="assertion" value="all"/>
 	    </option>
 			<cluster name="menu" >
-	    	<option if="${STUDI}">
+	    	<option if="${DEVELOP}">
 	    		<option name="assertion" value="all"/>
 	    	</option>
 			</cluster>
 			<cluster name="musicplayer" >
-	    	<option if="${STUDI}">
+	    	<option if="${DEVELOP}">
 	    		<option name="assertion" value="all"/>
 	    	</option>
 			</cluster>			

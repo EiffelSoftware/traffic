@@ -15,6 +15,7 @@
 		<echo message="   geant clean"/>
 		<echo message="   geant clobber"/>
 		<echo message="   geant install"/>
+		<echo message="   geant install_develop"/>
 		<echo message="   geant compile"/>
 	</target>
 
@@ -38,6 +39,11 @@
 
 	<target name="install" depend="init">
 		<set name="target" value="install"/>
+		<geant target="do_all"/>
+	</target>
+
+	<target name="install_develop" depend="init">
+		<set name="target" value="install_develop"/>
 		<geant target="do_all"/>
 	</target>
 
@@ -67,7 +73,7 @@
 	<target name="do_all">
 		<geant file="build.eant" target="${target}" dir="flat_hunt"/>
 		<geant file="build.eant" target="${target}" dir="city_3d"/>
-		<geant file="build.eant" target="${target}" dir="touch"/>
+		<!--geant file="build.eant" target="${target}" dir="touch"/-->
 	</target>
 
 </project>

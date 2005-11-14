@@ -10,20 +10,35 @@
   </description>
   <root class="CITY_3D_APPLICATION" creation="make"/>
   <option unless="${DEBUG}">
-    <option name="assertion" value="none"/>
-    <option name="garbage_collector" value="none"/>
-    <option name="finalize" value="true"/>
-    <option name="console_application" value="false"/>
+    	<option name="assertion" value="none"/>
+    	<option name="garbage_collector" value="none"/>
+    	<option name="finalize" value="true"/>
+    	<option name="console_application" value="false"/>
   </option>
   <option if="${DEBUG}">
-    <option name="assertion" value="all"/>
-    <option name="garbage_collector" value="none"/>
-    <option name="finalize" value="false"/>
-    <option name="console_application" value="false"/>
+  	<option unless="${DEVELOP}">
+	    <option name="assertion" value="all"/>
+	    <option name="garbage_collector" value="none"/>
+	    <option name="finalize" value="false"/>
+	    <option name="console_application" value="false"/>
+	  </option>
+	  <option if="${DEVELOP}">
+	  	<option name="assertion" value="require"/>
+	    <option name="garbage_collector" value="none"/>
+	    <option name="finalize" value="false"/>
+	    <option name="console_application" value="false"/>
+		</option>  	
   </option>
 
   <cluster name="city_3d" location=".">
-	  <cluster name="tools"/>
+  	<option if="${DEVELOP}">
+  		<option name="assertion" value="all"/>
+   	</option>
+   	<cluster name="tools">
+	 	<option if="${DEVELOP}">
+			<option name="assertion" value="all"/>
+	  	</option>
+	</cluster>
   </cluster>
   
 

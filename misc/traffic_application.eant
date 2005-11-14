@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+
+<project name="traffic_application" default="help">
+
+  <description>
+    description: "Common targets for traffic applications"
+    copyright: "Copyright (c) 2004, Michela Pedroni and others"
+    license: "Eiffel Forum License v2 (see forum.txt)"
+    date: "$Date$"
+    revision: "$Revision$"
+  </description>
+
+  <inherit>
+    <parent location="${EM}/misc/em_application.eant">
+      <redefine target="xace"/>
+      <redefine target="other_clean"/>
+      <redefine target="help"/>
+    </parent>
+  </inherit>
+  
+  <!-- Implementation -->
+
+	<target name="help">
+		<echo message="usage:"/>
+		<echo message="   geant install"/>
+		<echo message="   geant install_develop"/>
+		<echo message="   geant clobber"/>
+		<echo message="   geant clean"/>
+		<echo message="   geant compile"/>
+		<echo message="   geant compile_debug"/>
+	</target>
+
+  <target name="install_develop" depend="init">
+		<echo message="   generate ace file for ${system}"/>
+		<description>
+			Install developer version of '${system}'.
+		</description>
+
+  		<set name="develop" value="true"/>
+  		<set name="debug" value="false"/>
+		<set name="gexace_output" value="developer.ace"/>
+		<set name="gexace_system" value="ise"/>
+		<geant target="xace"/>
+  </target>
+
+	<target name="other_clean" depend="init">
+	    <description>
+			Remove other intermediary generated files.
+		</description>
+		<delete>
+			<fileset dir="." include="@(**/*.epr)"/>
+		</delete>
+		<delete>
+			<fileset dir="." include="@(**/*.rc)"/>
+		</delete>
+		<delete file="developer.ace"/>
+	</target>
+	
+	<target name="xace" depend="init">
+		<description>
+			Build Ace file or ESD file for Eiffel compiler ${gexace_system}
+			if specifed, ${eiffel} otherwise.
+			Generate file in ${gexace_output} if specified.
+			Pass $DEBUG option to 'gexace' if ${debug} is defined.
+			Pass $BOOTSTRAP option to 'gexace' if ${bootstrap} is defined.
+			Pass $GOBO_EIFFEL value to 'gexace'.
+			Pass $GOBO_OS value to 'gexace'.
+			Pass $GOBO_CC value to 'gexace' if defined.
+			Pass $GOBO_XML_EXPAT option to 'gexace' if defined.
+			Pass $GOBO_DOTNET option to 'gexace' if defined.
+			Pass $SE_1_0 option to 'gexace' if defined.
+			To be redefined in descendant if additional options are
+			necessary.
+		</description>
+
+		<set name="l_gexace_output" value="" unless="${gexace_output}"/>
+		<set name="l_gexace_output" value="${gexace_output}" if="${gexace_output}"/>
+		<set name="l_gexace_system" value="${eiffel}" unless="${gexace_system}"/>
+		<set name="l_gexace_system" value="${gexace_system}" if="${gexace_system}"/>
+		<gexace system="${l_gexace_system}" output="${l_gexace_output}" xace="${system_dir}/system.xace">
+			<define name="DEBUG" value="${debug}" if="${debug}"/>
+			<define name="DEVELOP" value="${develop}" if="${develop}"/>
+			<define name="BOOTSTRAP" value="${bootstrap}" if="${bootstrap}"/>
+			<define name="GOBO_EIFFEL" value="${eiffel}"/>
+			<define name="GOBO_OS" value="${GOBO_OS}"/>
+			<define name="GOBO_CC" value="${GOBO_CC}" if="${GOBO_CC}"/>
+			<define name="GOBO_XML_EXPAT" value="true" if="${GOBO_XML_EXPAT}"/>
+			<define name="GOBO_DOTNET" value="true" if="${GOBO_DOTNET}"/>
+			<define name="SE_1_0" value="true" if="${SE_1_0}"/>
+		</gexace>
+	</target>
+</project>
