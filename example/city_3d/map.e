@@ -350,9 +350,24 @@ feature -- Traffic map loading
 			name_valid: filename /= void and then not filename.is_empty
 		local
 			map_file: TRAFFIC_MAP_FILE
+			directory: DIRECTORY
+			dump_name: STRING
 		do
-			create map_file.make_from_file (filename)
-			map := map_file.traffic_map
+			dump_name := filename.split('.')[1] + ".map"
+			create directory.make_open_read ("./")
+			if directory.has_entry (dump_name) then
+				io.putstring("reading from dump-file")
+				create map.make ("temp")
+				map ?= map.retrieve_by_name (dump_name)
+			else
+				create map_file.make_from_file (filename)
+				map := map_file.traffic_map
+				io.putstring ("creating dump file")
+				io.new_line
+				map.store_by_name (dump_name)
+				io.putstring("creation ended")
+				io.new_line
+			end
 			is_map_loaded := True
 			number_of_buildings := 0
 			create ewer.make(-plane_size/2, -plane_size/2, number_of_buildings, map)
