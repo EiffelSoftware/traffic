@@ -1,5 +1,5 @@
 indexing
-	description: "3 dimensional map of a city"
+	description: "3 dimensional map of a city with many event handlers"
 	date: "$Date$"
 	revision: "$Revision$"
 
