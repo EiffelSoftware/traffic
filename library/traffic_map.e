@@ -1,13 +1,18 @@
 indexing
 	description: "Map representing a traffic system of a region."
 	author: "Sibylle Aregger, ETH Zurich"
-	date: "$Date: 2005/06/13 08:24:26 $"
-	revision: "$Revision: 1.2 $"
+	date: "$Date: 2005/07/26 17:42:17 $"
+	revision: "$Revision: 1.3 $"
 
 class
 	TRAFFIC_MAP 
 
 inherit
+	STORABLE
+		undefine
+			out
+		end
+	
 	LINKED_WEIGHTED_GRAPH [TRAFFIC_PLACE, TRAFFIC_LINE_SECTION]
 		rename
 			item as graph_item
