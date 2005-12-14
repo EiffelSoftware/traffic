@@ -17,6 +17,9 @@ inherit
 	
 	KL_SHARED_FILE_SYSTEM
 	
+	
+	
+	
 feature {NONE} -- Initialization
 
 	make is

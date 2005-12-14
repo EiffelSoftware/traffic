@@ -96,7 +96,7 @@ feature -- Basic operations
 							create color.make (c.red, c.green, c.blue)
 						end
 					else
-						set_error (p.error_code, << >>)
+						set_error (p.error_code, p.slots)
 					end
 				end
 				subnodes.forth

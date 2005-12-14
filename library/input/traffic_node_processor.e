@@ -311,7 +311,7 @@ feature {TRAFFIC_NODE_PROCESSOR} -- Status setting
 			p: like parent
 		do
 			Precursor (a_code, an_error_string_array)
-			if has_parent then
+			if has_parent and a_code/=0 then
 				from
 					p := parent
 				until
@@ -322,6 +322,7 @@ feature {TRAFFIC_NODE_PROCESSOR} -- Status setting
 				end
 			end
 		end
+			
 
 feature -- Basic operations
 

@@ -89,7 +89,7 @@ feature -- Basic operations
 						end
 						description ?= data
 					else
-						set_error (p.error_code, << >>)
+						set_error (p.error_code, p.slots)
 					end
 				end
 				subnodes.forth

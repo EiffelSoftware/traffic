@@ -197,7 +197,7 @@ feature -- Basic operations
 							polypoints.extend (position)
 						end
 					else
-						set_error (p.error_code, << >>)
+						set_error (p.error_code, p.slots)
 					end
 				end
 				subnodes.forth
