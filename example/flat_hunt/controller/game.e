@@ -15,6 +15,8 @@ inherit
 		undefine
 			default_create
 		end
+		
+	SHARED_KNOWLEDGE
 
 create 
 	make
@@ -43,7 +45,8 @@ feature -- Initialization
 			
 			-- Build checkpoints.
 			create checkpoints.make
-			checkpoints.fill (<< 3, 8, 13, 18, 23 >>)			
+			checkpoints.fill (<< 3, 8, 13, 18, 23 >>)
+			
 		ensure
 			game_mode_set: game_mode = a_game_mode
 			hunter_count_set: hunter_count = a_hunter_count
@@ -139,8 +142,11 @@ feature -- Basic Operations
 		do
 			create a_map_file.make_from_file (map_name)
 			traffic_map := a_map_file.traffic_map
+			-- Build knowledge
+			knowledge.set_map (traffic_map)			
 		ensure
 			traffic_map_exits: traffic_map /= Void
+			knowledge_knows_map: knowledge.map = traffic_map
 		end	
 
 	create_players is
@@ -194,7 +200,7 @@ feature {MAIN_CONTROLLER} -- Game operations
 		require
 			prepare_state: state = Prepare_state
 		do
-
+			update_knowledge
 			calculate_possible_moves (current_player)
 			if current_player.possible_moves.is_empty then
 				if current_player = estate_agent then
@@ -388,6 +394,22 @@ feature {NONE} -- Implementation
 			end
 		end
 
+	update_knowledge is
+			-- Update what current_player should know about the other players.
+		do		
+			knowledge.flathunter_positions.wipe_out
+			from	
+				players.start 
+				-- Skip first player (estate_agent)
+				players.forth
+			until
+				players.off
+			loop
+				knowledge.flathunter_positions.extend (players.item.location)
+				players.forth
+			end
+		end
+		
 invariant
 	checkpoints_exist: checkpoints /= Void
 	game_mode_valid: game_mode >= 1 and game_mode <= 4			
