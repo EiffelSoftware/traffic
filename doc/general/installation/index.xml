@@ -47,7 +47,7 @@
             <projectname>Traffic</projectname> does not need to be installed, just download the zip-file and
             unzip it to a directory of your choice. The applications such as <keyword>Flat Hunt</keyword> 
             <!--Toinclude, <keyword>Touch</keyword>,--> and <keyword>City3D</keyword> are located in the
-            respecitve directory under <filename>traffic/example</filename> (e.g. 
+            respective directory under <filename>traffic/example</filename> (e.g. 
             <filename>traffic/example/flat_hunt</filename>). To get it to run, however,
             you'll have to compile it first. 
         </para>
