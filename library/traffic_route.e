@@ -164,7 +164,9 @@ feature -- Basic operation
 							places_on_route.extend (current_line_section.origin)
 							shortest_path.forth
 						end		
-							places_on_route.extend (current_line_section.destination)
+						if shortest_path.count > 0 then
+							places_on_route.extend (current_line_section.destination)							
+						end
 					end
 				end
 			end
