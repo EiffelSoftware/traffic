@@ -14,6 +14,8 @@ inherit
 			{ANY} generating_type
 		end	
 		
+	SHARED_KNOWLEDGE
+		
 feature -- Access
 
 	chosen_move: TRAFFIC_LINE_SECTION
