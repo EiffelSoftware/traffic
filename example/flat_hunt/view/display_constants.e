@@ -18,7 +18,7 @@ feature -- Colors
 
 	Light_blue: EM_COLOR is
 		once
-			Result := create {EM_COLOR}.make_with_rgb (100, 90, 255)
+			Result := create {EM_COLOR}.make_with_rgb (100, 146, 255)
 		ensure
 			color_exists: Result /= Void
 		end
@@ -53,14 +53,14 @@ feature -- Colors
 	
 	Dark_red: EM_COLOR is
 		once
-			Result := create {EM_COLOR}.make_with_rgb (200, 0, 0)
+			Result := create {EM_COLOR}.make_with_rgb (255, 60, 0)
 		ensure
 			color_exists: Result /= Void
 		end
 		
 	Orange: EM_COLOR is
 		once
-			Result := create {EM_COLOR}.make_with_rgb (200, 100, 0)
+			Result := create {EM_COLOR}.make_with_rgb (255, 150, 0)
 		ensure
 			color_exists: Result /= Void
 		end		
