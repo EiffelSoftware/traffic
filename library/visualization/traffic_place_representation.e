@@ -1,5 +1,5 @@
 indexing
-	description: "Ewer for places, contains them and puts them on the map"
+	description: "Representation for places, contains them and puts them on the map"
 	author: "Florian Geldmacher"
 	date: "15.12.2005"
 	revision: "0.1"
@@ -48,7 +48,11 @@ feature -- Initialization
 			destination_index := 0
 			
 			create places.make(1,1)
-			add_places(map)		
+			add_places(map)
+--			collision_polygons.make (1)	
+		ensure
+			place_factory_created: place_factory /= Void
+			places_created: places /= Void
 		end
 		
 feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
@@ -68,8 +72,8 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			end
 		end
 
-	highlighte_place(place: TRAFFIC_PLACE; highlighte_type: INTEGER) is
-			-- highlighte the marked place
+	highlight_place(place: TRAFFIC_PLACE; highlight_type: INTEGER) is
+			-- highlight the marked place, highlight_type = 0 means origin, otherwise destination
 			require
 				place_valid: place /= Void
 			local
@@ -80,19 +84,20 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 				until
 					i > places.upper
 				loop
+					-- search for the place which should be shown
 					if map_to_gl_coords(place.position).x = places.item (i).origin.x then
 						if
 							map_to_gl_coords(place.position).y = places.item (i).origin.z
 						then						
-							if highlighte_type = 0 then
-								color.set_xyz (255,0,0)
+							if highlight_type = 0 then
+								color.set_xyz (0,255,0)
 								place_factory.take_decision (decision_type)
 								origin_place := place_factory.create_object
 								origin_place.set_origin(places.item (i).origin.x, places.item (i).origin.y, places.item (i).origin.z)
 								origin_index := i	
 								origin_place.draw					
 							else
-								color.set_xyz (0,0,255)
+								color.set_xyz (255,0,0)
 								place_factory.take_decision (decision_type)
 								destination_place := place_factory.create_object
 								destination_place.set_origin(places.item (i).origin.x, places.item (i).origin.y, places.item (i).origin.z)
@@ -107,9 +112,10 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			
 feature -- Collision detection
 
-	-- TODO: implement has_collision
+	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+		-- Collision polygons to check for collisions with traffic lines
 	
-feature -- Implemenation
+feature{NONE} -- Implemenation
 
 	add_places(map: TRAFFIC_MAP) is
 			-- add all places from the map to the places array
@@ -155,8 +161,7 @@ feature -- Implemenation
 		
 
 
-feature -- Decision procedures
-	
+feature{NONE} -- Decision procedures
 
 	decide_place_type: STRING is
 			-- decide which type of place is chosen.
@@ -208,13 +213,13 @@ feature -- Decision procedures
 			gl_flush_external
 		end
 		
-feature -- Decision attributes
+feature{NONE} -- Decision attributes
 	
 	tram_type: STRING is "tram_place"
 	 
 	decision_type: STRING is "highlighted"
 		
-feature -- Attributes
+feature{NONE} -- Attributes
 
 	places: ARRAY[EM_3D_OBJECT]
 		-- Container for all places
@@ -240,4 +245,8 @@ feature -- Attributes
 	centre: GL_VECTOR_3D[DOUBLE]
 		-- Centre of the city
 	
+invariant
+	origin_index_valid: origin_index >= places.lower and origin_index <= places.upper
+	destination_index_valid: destination_index >= places.lower and destination_index <= places.upper
+
 end -- class TRAFFIC_PLACE_REPRESENTATION

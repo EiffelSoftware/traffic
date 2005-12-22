@@ -1,16 +1,13 @@
 indexing
 	description: "[
 					map widget to display the map in 3D.
-					The main idea is to change the old map_widget into a 3D compatible. 
-					Therefore the main parts of the model should be the same, to say TRAFFIC_MAP
-					and so on are reused. The render objects have to be reimplemented, so that they
-					deal with EM_3D_COMPONENT instead of EM_DRAWABLE
+					Inherit from this class and add events to handle the map
 					]"
 	author: "Florian Geldmacher"
 	date: "8.12.2005"
 	revision: "0.1"
 
-deferred class
+class
 	TRAFFIC_3D_MAP_WIDGET
 
 inherit
@@ -28,14 +25,12 @@ inherit
 	DOUBLE_MATH
 		export {NONE} all end
 
---create
---	make_with_map
+create
+	make
 	
 feature -- Initialisation
-	make_with_map(a_map: TRAFFIC_MAP) is
-			-- create the map
-			require
-				a_map_not_void: a_map /= Void	
+	make is
+			-- create the map	
 			do
 				make_3d_component			
 				
@@ -61,13 +56,10 @@ feature -- Initialisation
 				
 				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
 				create_coord_system
-				
-				-- User Interaction
---				mouse_dragged_event.subscribe (agent mouse_drag (?))
---				mouse_wheel_down_event.subscribe (agent wheel_down)
---				mouse_wheel_up_event.subscribe (agent wheel_up)
---				key_down_event.subscribe (agent key_down (?))
---				mouse_clicked_event.subscribe (agent mouse_click)
+
+			ensure
+				sun_created: sun_light /= Void
+				constant_light_created: constant_light /= Void
 			end
 			
 feature -- Drawing
@@ -203,15 +195,17 @@ feature -- Drawing
 					gl_flush_external
 				end
 				traffic_lines.draw
+				-- here could also be traffic_places.draw, which would show all places in black
 			end
 			
 			-- Draw marked stations
 			if marked_origin /= Void then
-				traffic_places.highlighte_place (marked_origin,0)			
+				traffic_places.highlight_place (marked_origin,0)
+				-- 0 for origin			
 			end
 			if marked_destination /= Void then
-				traffic_places.highlighte_place (marked_destination,1)
-			
+				traffic_places.highlight_place (marked_destination,1)
+				-- 1 for destination
 			if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
 				calculate_shortest_path
 				traffic_lines.draw_shortest_path
@@ -219,7 +213,20 @@ feature -- Drawing
 		end
 	end
 
-feature	-- Auxiliary drawing
+feature{EM_3D_OBJECT} -- Collision
+	
+	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE] is
+			-- return all the collidables 
+			local
+				all_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+			do
+				create all_polygons.make_from_array (traffic_lines_polygons)
+--				all_polygons.append (traffic_places_polygons)
+				Result := all_polygons
+			end
+		
+
+feature{NONE}	-- Auxiliary drawing
 
 	create_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
 			-- OpenGL display list Nr. `1' for a plane.
@@ -337,16 +344,20 @@ feature -- Traffic map loading
 			is_map_loaded := True
 			number_of_buildings := 0
 			create traffic_places.make (map)
+--			traffic_places_polygons := traffic_places.collision_polygons
 			create traffic_lines.make (map)
+			traffic_lines_polygons := traffic_lines.collision_polygons
 			create traffic_buildings.make(number_of_buildings, map)
-			marked_destination := void
-			marked_origin := void
---			shortest_path_line := void
---			shortest_path_line_representation := void
+			traffic_buildings.set_collision_polygons(collision_polygons)
+			marked_destination := Void
+			marked_origin := Void
 			marked_station_changed := True
 		ensure
-			map /= void
+			map /= Void
 			is_map_loaded = True
+			place_representation_startet: traffic_places /= Void
+			line_representation_started: traffic_lines /= Void
+			buildings_ewer_created: traffic_buildings /= Void
 		end
 		
 	is_map_loaded: BOOLEAN
@@ -464,32 +475,15 @@ feature -- Shortest path
 				end
 				
 				shortest_path_line := line
-								
---				traffic_line_factory.set_line_color (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1))
---				traffic_line_factory.set_line (line)
---				traffic_line_factory.set_highlighted (False)
---				shortest_path_line_representation := traffic_line_factory.create_object
---				shortest_path_line_representation.set_origin (0, line_height+0.02, 0)
+
 				traffic_lines.add_shortest_line(line)
---				traffic_lines.draw_shortest_path
+				-- add the line to the representation
 				marked_station_changed := False
 			end
 		end
 	
 feature -- Options
 
---	zoom_in is
---			-- Zoom in.
---		do
---			wheel_up
---		end
---	
---	zoom_out is
---			-- Zoom in.
---		do
---			wheel_down
---		end
-		
 	set_zoom (d: DOUBLE) is
 			-- Set the focus.
 		require
@@ -555,11 +549,6 @@ feature -- Options
 	set_show_shortest_path (b: BOOLEAN) is
 			-- Set `show_shortest_path'.
 		do
-			if show_shortest_path then
-				shortest_path_line := void
---				traffic_lines.remove_shortest_path
---				shortest_path_line_representation := void
-			end
 			show_shortest_path := b
 			marked_station_changed := True
 		ensure
@@ -604,39 +593,6 @@ feature -- Options
 	traffic_line_ride: BOOLEAN
 			-- Are you just taking a traffic line ride?
 
-feature {NONE} -- Event handling
-
-	wheel_down is
-			-- Handle mouse wheel down event.
-		deferred
-		end
-		
-	wheel_up is
-			-- Handle mouse wheel up event.
-		deferred
-		end
-		
-	mouse_click (event: EM_MOUSEBUTTON_EVENT) is
-			-- Handle mouse clicked event.
-		require
-			event /= Void
-		deferred
-		end
-	
-	mouse_drag (event: EM_MOUSEMOTION_EVENT) is
-			-- Handle mouse movement event.
-		require
-			event /= Void
-		deferred
-		end
-		
-	key_down (event: EM_KEYBOARD_EVENT) is
-			-- Handle key events.
-		require
-			event /= Void
-		deferred
-		end
-
 feature {NONE} -- Attributes
 
 	sun_angle: DOUBLE
@@ -673,6 +629,12 @@ feature {NONE} -- Implementation
 	traffic_lines: TRAFFIC_LINE_REPRESENTATION
 		-- container for the lines
 		
+	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+		-- Collision polygons to check for collisions with traffic lines
+
+	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+		-- Collision polygons to check for collisions with traffic places
+		
 	traffic_places: TRAFFIC_PLACE_REPRESENTATION
 		-- container for the places
 		
@@ -687,5 +649,6 @@ feature {NONE} -- Implementation
 
 invariant
 	map_not_void: map /= Void
+	number_of_buildings_valid: number_of_buildings >= 0
 
 end -- class TRAFFIC_3D_MAP_WIDGET

@@ -35,7 +35,7 @@ feature -- Initialization
 			buildings_valid: no_buildings >= 0
 		do
 			create centre.make_xyz (0, 0,0)
-			create_traffic_lines_polygons (map)
+--			create_traffic_lines_polygons (map)
 			create randomizer.set_seed (42)
 			create building_factory.make
 			
@@ -79,7 +79,16 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 				i := i + 1
 			end
 		end
-		
+feature -- Collsion setting		
+			
+	set_collision_polygons(some_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]) is
+			-- set the collision_polygons
+			do
+				traffic_lines_polygons := some_polygons
+			ensure
+				traffic_lines_polygons = some_polygons
+			end
+
 feature {NONE} -- Collision detection
 
 	has_collision (poly_a: EM_COLLIDABLE): BOOLEAN is
@@ -99,7 +108,10 @@ feature {NONE} -- Collision detection
 				traffic_lines_polygons.forth
 			end
 		end
+
 		
+	
+	
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 			-- Collision polygons to check for collisions with traffic lines
 	
@@ -153,65 +165,65 @@ feature {NONE} -- Implementation
 			number_of_buildings = n
 		end
 		
-	create_traffic_lines_polygons (map: TRAFFIC_MAP) is
-			-- Create a list of collidable pieces.
-		require
-			map_exists: map /= Void
-		local
-			lines: ARRAYED_LIST[TRAFFIC_LINE]
-			line: TRAFFIC_LINE
-			section: TRAFFIC_LINE_SECTION
-			collidable: EM_POLYGON_CONVEX_COLLIDABLE
-			i, j: INTEGER
-			delta_x, delta_y, norm: DOUBLE
-			start_point, end_point, a_point, c_point: EM_VECTOR_2D 
-			polygon_points: DS_LINKED_LIST [EM_VECTOR_2D]
-		do
-			lines := map.lines.linear_representation
-			create traffic_lines_polygons.make (4)
-			
-			from lines.start
-			until lines.after
-			loop
-				line := lines.item
-				from
-					line.start
-					j := 1
-				until j > line.count//2
-				loop
-					section := line.i_th (j)
-					from i := 1; section.polypoints.start
-					until i >= section.polypoints.count
-					loop
-						create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
-						create end_point.make (section.polypoints.i_th (i+1).x, section.polypoints.i_th (i+1).y)
-						
-						-- Transformation
-						start_point := map_to_gl_coords (start_point)
-						end_point := map_to_gl_coords (end_point)
-						
-						delta_x := end_point.x - start_point.x
-						delta_y := end_point.y - start_point.y
-						
-						norm := sqrt (delta_x*delta_x + delta_y*delta_y)
-						
-						create a_point.make (start_point.x-delta_y*1.5*line_width/norm, start_point.y+delta_x*1.5*line_width/norm)
-						create c_point.make (end_point.x+delta_y*1.5*line_width/norm, end_point.y-delta_x*1.5*line_width/norm) 
-						
-						create polygon_points.make
-						polygon_points.force ((a_point),1)
-						polygon_points.force (create {EM_VECTOR_2D}.make (start_point.x+delta_y*1.5*line_width/norm, start_point.y-delta_x*1.5*line_width/norm), 2)
-						polygon_points.force ((c_point),3)
-						polygon_points.force (create {EM_VECTOR_2D}.make (end_point.x-delta_y*1.5*line_width/norm, end_point.y+delta_x*1.5*line_width/norm), 4)
-						create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2), polygon_points)
-						traffic_lines_polygons.force (collidable)
-						i := i + 1
-					end
-					j := j + 1
-				end
-				lines.forth
-			end
-		end
+--	create_traffic_lines_polygons (map: TRAFFIC_MAP) is
+--			-- Create a list of collidable pieces.
+--		require
+--			map_exists: map /= Void
+--		local
+--			lines: ARRAYED_LIST[TRAFFIC_LINE]
+--			line: TRAFFIC_LINE
+--			section: TRAFFIC_LINE_SECTION
+--			collidable: EM_POLYGON_CONVEX_COLLIDABLE
+--			i, j: INTEGER
+--			delta_x, delta_y, norm: DOUBLE
+--			start_point, end_point, a_point, c_point: EM_VECTOR_2D 
+--			polygon_points: DS_LINKED_LIST [EM_VECTOR_2D]
+--		do
+--			lines := map.lines.linear_representation
+--			create traffic_lines_polygons.make (4)
+--			
+--			from lines.start
+--			until lines.after
+--			loop
+--				line := lines.item
+--				from
+--					line.start
+--					j := 1
+--				until j > line.count//2
+--				loop
+--					section := line.i_th (j)
+--					from i := 1; section.polypoints.start
+--					until i >= section.polypoints.count
+--					loop
+--						create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
+--						create end_point.make (section.polypoints.i_th (i+1).x, section.polypoints.i_th (i+1).y)
+--						
+--						-- Transformation
+--						start_point := map_to_gl_coords (start_point)
+--						end_point := map_to_gl_coords (end_point)
+--						
+--						delta_x := end_point.x - start_point.x
+--						delta_y := end_point.y - start_point.y
+--						
+--						norm := sqrt (delta_x*delta_x + delta_y*delta_y)
+--						
+--						create a_point.make (start_point.x-delta_y*1.5*line_width/norm, start_point.y+delta_x*1.5*line_width/norm)
+--						create c_point.make (end_point.x+delta_y*1.5*line_width/norm, end_point.y-delta_x*1.5*line_width/norm) 
+--						
+--						create polygon_points.make
+--						polygon_points.force ((a_point),1)
+--						polygon_points.force (create {EM_VECTOR_2D}.make (start_point.x+delta_y*1.5*line_width/norm, start_point.y-delta_x*1.5*line_width/norm), 2)
+--						polygon_points.force ((c_point),3)
+--						polygon_points.force (create {EM_VECTOR_2D}.make (end_point.x-delta_y*1.5*line_width/norm, end_point.y+delta_x*1.5*line_width/norm), 4)
+--						create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2), polygon_points)
+--						traffic_lines_polygons.force (collidable)
+--						i := i + 1
+--					end
+--					j := j + 1
+--				end
+--				lines.forth
+--			end
+--		end
 	
 	distance_to_centre (p: GL_VECTOR_3D[DOUBLE]): DOUBLE is
 			-- Calculates the distance to the centre.

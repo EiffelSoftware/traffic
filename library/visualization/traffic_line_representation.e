@@ -45,7 +45,14 @@ feature -- Initialization
 			create em_lines.make(1,1)
 			create shortest_line.make (1)
 			create em_highlighted_lines.make(1,1)
-			add_lines(map)		
+			add_lines(map)	
+			create_collision_polygons(map)
+		ensure	
+			line_factory_created: line_factory /= Void
+			lines_created: lines /= Void
+			em_lines_created: em_lines /= Void
+			shortest_line_created: shortest_line /= Void
+			em_highlighted_lines_created: em_highlighted_lines /= Void
 		end
 		
 feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
@@ -314,11 +321,72 @@ feature {NONE} -- Drawing
 			draw_circle (dst, line_color, line_width, line_height)
 		end
 
-feature -- Collision detection
+feature{TRAFFIC_3D_MAP_WIDGET} -- Collision detection
 
-	-- TODO: implement has_collision
-	
-feature{TRAFFIC_3D_MAP_WIDGET} -- Implementation
+		create_collision_polygons(map: TRAFFIC_MAP) is
+			-- Create a list of collidable pieces.
+		require
+			map_not_void : map /= Void
+		local
+			all_lines: ARRAYED_LIST[TRAFFIC_LINE]
+			line: TRAFFIC_LINE
+			section: TRAFFIC_LINE_SECTION
+			collidable: EM_POLYGON_CONVEX_COLLIDABLE
+			i, j: INTEGER
+			delta_x, delta_y, norm: DOUBLE
+			start_point, end_point, a_point, c_point: EM_VECTOR_2D 
+			polygon_points: DS_LINKED_LIST [EM_VECTOR_2D]
+		do
+			all_lines := map.lines.linear_representation
+			create collision_polygons.make (4)
+			
+			from all_lines.start
+			until all_lines.after
+			loop
+				line := all_lines.item
+				from
+					line.start
+					j := 1
+				until j > line.count//2
+				loop
+					section := line.i_th (j)
+					from i := 1; section.polypoints.start
+					until i >= section.polypoints.count
+					loop
+						create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
+						create end_point.make (section.polypoints.i_th (i+1).x, section.polypoints.i_th (i+1).y)
+						
+						-- Transformation
+						start_point := map_to_gl_coords (start_point)
+						end_point := map_to_gl_coords (end_point)
+						
+						delta_x := end_point.x - start_point.x
+						delta_y := end_point.y - start_point.y
+						
+						norm := sqrt (delta_x*delta_x + delta_y*delta_y)
+						
+						create a_point.make (start_point.x-delta_y*1.5*line_width/norm, start_point.y+delta_x*1.5*line_width/norm)
+						create c_point.make (end_point.x+delta_y*1.5*line_width/norm, end_point.y-delta_x*1.5*line_width/norm) 
+						
+						create polygon_points.make
+						polygon_points.force ((a_point),1)
+						polygon_points.force (create {EM_VECTOR_2D}.make (start_point.x+delta_y*1.5*line_width/norm, start_point.y-delta_x*1.5*line_width/norm), 2)
+						polygon_points.force ((c_point),3)
+						polygon_points.force (create {EM_VECTOR_2D}.make (end_point.x-delta_y*1.5*line_width/norm, end_point.y+delta_x*1.5*line_width/norm), 4)
+						create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2), polygon_points)
+						collision_polygons.force (collidable)
+						i := i + 1
+					end
+					j := j + 1
+				end
+				all_lines.forth
+			end
+		end
+		
+		collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+			-- Collision polygons to check for collisions with traffic lines
+			
+feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 
 	add_lines(map: TRAFFIC_MAP) is
 			-- add all lines from the map to the lines array
@@ -390,7 +458,6 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Implementation
 			a_line_section: EM_3D_OBJECT
 		do
 			shortest_line.wipe_out
---			remove_shortest_path
 			line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1,1,1)
 			set_highlighted (true)		
 					from
