@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+
+<project name="example" default="help">
+
+	<description>
+		description: "Eiffel Ant file for traffic applications"
+		copyright: "Copyright (c) 2001, Michela Pedroni, Ursina Caluori and others"
+		license: "Eiffel Forum License v2 (see forum.txt)"
+		date: "$Date$"
+		revision: "$Revision$"
+	</description>
+
+	<target name="help">
+		<echo message="usage:"/>
+		<echo message="   geant clean"/>
+		<echo message="   geant clobber"/>
+		<echo message="   geant install"/>
+		<echo message="   geant install_develop"/>
+		<echo message="   geant compile"/>
+	</target>
+
+	<target name="clean" depend="init">
+		<description>
+			Remove intermediary generated files.
+		</description>
+
+		<set name="target" value="clean"/>
+		<geant target="do_all"/>
+	</target>
+
+	<target name="clobber" depend="init">
+		<description>
+			Remove all generated files.
+		</description>
+
+		<set name="target" value="clobber"/>
+		<geant target="do_all"/>
+	</target>
+
+	<target name="install" depend="init">
+		<set name="target" value="install"/>
+		<geant target="do_all"/>
+	</target>
+
+	<target name="install_develop" depend="init">
+		<set name="target" value="install_develop"/>
+		<geant target="do_all"/>
+	</target>
+
+	<target name="compile" depend="init">
+		<description>
+			Compile examples.
+		</description>
+
+		<set name="target" value="compile"/>
+		<geant target="do_all"/>
+	</target>
+	
+	<target name="compile_debug" depend="init">
+		<description>
+			Compile examples.
+		</description>
+
+		<set name="target" value="compile_debug"/>
+		<geant target="do_all"/>
+	</target>
+
+<!-- Implementation -->
+
+	<target name="init">
+	</target>
+
+	<target name="do_all">
+		<geant file="build.eant" target="${target}" dir="simple"/>
+		<!--geant file="build.eant" target="${target}" dir="preview"/-->
+		<!--geant file="build.eant" target="${target}" dir="touch"/-->
+	</target>
+
+</project>
