@@ -276,8 +276,8 @@ feature {NONE} -- Implementation
 					end
 				end
 				if game.is_game_over then
-					take_a_pause (True)
 					end_game
+					take_a_pause (True)
 				end
 			end
 		end
