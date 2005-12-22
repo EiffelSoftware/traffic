@@ -65,6 +65,9 @@ feature -- Interface
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
 				create map.make
+--				create map_widget.make
+--				map_widget.set_position(0,0)
+--				add_component (map_widget)
 				map.set_position (0, 0)
 				add_component (map)
 			else
@@ -389,6 +392,7 @@ feature -- Event handling
 			load_button /= Void
 		do
 			load_button.set_pressed (False)
+--			map_widget.load_map (map_file_name)
 			map.load_map (map_file_name)
 			buildings_slider.set_current_value (buildings_slider.left_value)
 			marked_origin_label.set_text ("")
@@ -478,6 +482,8 @@ feature {NONE} -- Implementation
 		
 	map: MAP
 			-- The 3 dimensional representation of the map
+			
+--	map_widget: TRAFFIC_3D_MAP_WIDGET
 	
 	number_of_buildings: INTEGER
 			-- Number of buildings on the map

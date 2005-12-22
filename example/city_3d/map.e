@@ -7,8 +7,10 @@ class
 	MAP
 
 inherit
-
 	TRAFFIC_3D_MAP_WIDGET
+	redefine
+		make
+	end
 		
 creation
 	
@@ -19,20 +21,17 @@ feature -- Initialization
 	make is
 			-- Creation procedure
 		do
-			make_with_map(map)
+			Precursor
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
 			mouse_wheel_down_event.subscribe (agent wheel_down)
 			mouse_wheel_up_event.subscribe (agent wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
-		ensure
-			sun_light /= void
-			constant_light /= void
 		end
+			
 
-feature -- Options
-
+feature -- Zoom options
 	zoom_in is
 			-- Zoom in.
 		do
@@ -44,122 +43,8 @@ feature -- Options
 		do
 			wheel_down
 		end
---		
---	set_zoom (d: DOUBLE) is
---			-- Set the focus.
---		require
---			d > 0
---		do
---			focus := d
---		ensure
---			focus = d
---		end
---		
---	set_coordinates_shown (b: BOOLEAN) is
---			-- Set `coordinates_shown'.
---		do
---			coordinates_shown := b
---		ensure
---			coordinates_shown = b
---		end
---
---	set_sun_shown (b: BOOLEAN) is
---			-- Set `sun_shown'.
---		do
---			sun_shown := b
---		ensure
---			sun_shown = b
---		end
---		
---	set_buildings_shown (b: BOOLEAN) is
---			-- Set `buildings_shown'.
---		do
---			buildings_shown := b
---		ensure
---			buildings_shown = b
---		end
---	
---	set_number_of_buildings (n: INTEGER) is
---			-- Set `number_of_buildings'.
---		require
---			n >= 0
---		do
---			number_of_buildings := n
---			if is_map_loaded then
---				ewer.set_building_number (number_of_buildings)
---			end
---		ensure 
---			number_of_buildings = n
---		end
---		
---	set_buildings_transparent (b: BOOLEAN) is
---			-- Set `buildings_transparent'.
---		do
---			buildings_transparent := b
---		ensure
---			buildings_transparent = b
---		end
---		
---	set_lines_highlighted (b: BOOLEAN) is
---			-- If `b' then traffic lines are highlighted.
---		do
---			traffic_lines.set_highlighted (b)
---
---		end
---	
---	set_show_shortest_path (b: BOOLEAN) is
---			-- Set `show_shortest_path'.
---		do
---			if show_shortest_path then
---				shortest_path_line := void
---				shortest_path_line_representation := void
---			end
---			show_shortest_path := b
---			marked_station_changed := True
---		ensure
---			show_shortest_path = b
---		end
---	
---	take_traffic_line_ride is
---			-- Take a traffic line ride.
---		require
---			shortest_path_line /= Void
---		do
---			traffic_line_ride := True
---			create last_polypoint.make (0, 0)
---			shortest_path_line.start
---			if not shortest_path_line.after then
---				shortest_path_line.item.polypoints.start
---				last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
---				shortest_path_line.item.polypoints.forth
---			end
---			create position.make (0, 0)
---		ensure
---			traffic_line_ride
---			last_polypoint /= Void
---			position /= Void
---		end
---	
---	sun_shown: BOOLEAN
---			-- Should sun be displayed?
---			
---	coordinates_shown: BOOLEAN
---			-- Should the coordinate system be displayed?
---			
---	buildings_shown: BOOLEAN
---			-- Should the buildings be displayed?
---			
---	buildings_transparent: BOOLEAN
---			-- Should the buildings be transparent?
---			
---	show_shortest_path: BOOLEAN
---			-- Should the shortest path be displayed?
---			
---	traffic_line_ride: BOOLEAN
---			-- Are you just taking a traffic line ride?
-			
-feature {NONE} -- Event handling
 
+feature {NONE} -- Event handling
 	wheel_down is
 			-- Handle mouse wheel down event.
 		do
@@ -219,7 +104,7 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								traffic_places.highlighte_place(section.origin, 0)
+								traffic_places.highlight_place(section.origin, 0)
 								create marked_origin.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
 								is_found := True
 								marked_station_changed := True
@@ -232,7 +117,7 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								traffic_places.highlighte_place(section.destination,0)
+								traffic_places.highlight_place(section.destination,0)
 								create marked_origin.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
 								is_found := True
 								marked_station_changed := True
@@ -272,7 +157,7 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								traffic_places.highlighte_place(section.origin, 0)
+								traffic_places.highlight_place(section.origin, 0)
 								create marked_destination.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
 								is_found := True
 								marked_station_changed := True
@@ -285,7 +170,7 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								traffic_places.highlighte_place(section.destination, 1)
+								traffic_places.highlight_place(section.destination, 1)
 								create marked_destination.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
 								is_found := True
 								marked_station_changed := True
@@ -298,7 +183,6 @@ feature {NONE} -- Event handling
 						marked_destination := Void
 						marked_origin := Void
 						shortest_path_line := void
---						traffic_lines.remove_shortest_path
 						marked_station_changed := True
 					end
 				end
