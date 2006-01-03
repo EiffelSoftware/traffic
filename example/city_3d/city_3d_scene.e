@@ -13,6 +13,9 @@ inherit
 	SHARED_CONSTANTS
 		export {NONE} all end
 	
+	EXCEPTIONS
+		export {NONE} all end
+	
 creation
 	make
 
@@ -227,6 +230,11 @@ feature -- Interface
 			traffic_line_ride_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (traffic_line_ride_button)
 			traffic_line_ride_button.hide
+			
+			-- adding zurich_big.xml as default
+			map.load_map ("map/zurich_big.xml")
+			loaded_file_name := "map/zurich_big.xml"
+			
 		end
 		
 feature -- Event handling
@@ -398,6 +406,12 @@ feature -- Event handling
 			marked_origin_label.set_text ("")
 			marked_destination_label.set_text ("")
 			traffic_line_ride_button.hide
+		rescue
+			catch(24)
+			catch(8)
+			map_file_name := loaded_file_name
+			add_component(create {EM_MESSAGE_DIALOG}.make_from_error(original_tag_name))
+			retry
 		end
 		
 	combo_selection_changed (name: STRING) is
@@ -479,6 +493,9 @@ feature {NONE} -- Implementation
 
 	map_file_name: STRING
 			-- Name of the map file to be loaded
+		
+	loaded_file_name: STRING
+			-- Name of the currently loaded map file
 		
 	map: MAP
 			-- The 3 dimensional representation of the map
