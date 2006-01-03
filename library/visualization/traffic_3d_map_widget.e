@@ -315,31 +315,25 @@ feature{NONE}	-- Auxiliary drawing
 			Result /= void
 		end
 
-feature -- Traffic map loading
+feature
 
-	load_map (filename: STRING) is
+		load_map (filename: STRING) is
 			-- Load the map.
 		require
 			name_valid: filename /= void and then not filename.is_empty
 		local
 			map_file: TRAFFIC_MAP_FILE
-			directory: DIRECTORY
-			dump_name: STRING
+			dump: MAP_DUMP
 		do
-			dump_name := filename.split('.')[1] + ".map"
-			create directory.make_open_read ("./")
-			if directory.has_entry (dump_name) then
-				io.putstring("reading from dump-file")
-				create map.make ("temp")
-				map ?= map.retrieve_by_name(dump_name)
-			else
+			
+			create dump.make_with_name (filename)
+			map := dump.get_map
+						
+			if map=void or not dump.is_up_to_date then
+				-- loading from dump file was not successful or no actual dump file available
 				create map_file.make_from_file (filename)
 				map := map_file.traffic_map
-				io.putstring ("creating dump file")
-				io.new_line
-				map.store_by_name (dump_name)
-				io.putstring("creation ended")
-				io.new_line
+				dump.create_dump (map)
 			end
 			is_map_loaded := True
 			number_of_buildings := 0
