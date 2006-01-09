@@ -1,8 +1,8 @@
 indexing
 	description: "Map representing a traffic system of a region."
 	author: "Sibylle Aregger, ETH Zurich"
-	date: "$Date: 2005/07/26 17:42:17 $"
-	revision: "$Revision: 1.3 $"
+	date: "$Date: 2005/12/14 16:59:19 $"
+	revision: "$Revision: 1.4 $"
 
 class
 	TRAFFIC_MAP 
@@ -209,7 +209,7 @@ feature -- Access
 	places: HASH_TABLE [TRAFFIC_PLACE, STRING] is
 			-- All places in map.
 		do
-			Result := clone (internal_places)
+			Result := internal_places.twin
 		end
 		
 	line (a_name: STRING): TRAFFIC_LINE is
@@ -224,13 +224,13 @@ feature -- Access
 	line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION] is
 			-- All line sections in map.
 		do
-			Result := clone (internal_line_sections)
+			Result := internal_line_sections.twin 
 		end
 		
 	lines: HASH_TABLE [TRAFFIC_LINE, STRING] is
 			-- All lines in map.
 		do
-			Result := clone (internal_lines)
+			Result := internal_lines.twin
 		end
 		
 		

@@ -73,11 +73,26 @@
 		    	</option>
         </cluster>
     	</cluster>
+		<cluster name="tr_gl_tools">
+				<option if="${DEVELOP}">
+		    		<option name="assertion" value="all"/>
+		    	</option>
+		</cluster>
 	  </cluster>
     <cluster name="visualization">
     	<option if="${DEVELOP}">
     		<option name="assertion" value="all"/>
     	</option>
+		<cluster name="tr_2d_visualization">
+    		<option if="${DEVELOP}">
+    			<option name="assertion" value="all"/>
+    		</option>
+		</cluster>
+		<cluster name="tr_3d_visualization">
+    		<option if="${DEVELOP}">
+    			<option name="assertion" value="all"/>
+    		</option>
+		</cluster>
     </cluster>
     <cluster name="type">
     	<option if="${DEVELOP}">

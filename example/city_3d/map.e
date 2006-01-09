@@ -9,7 +9,7 @@ class
 inherit
 	TRAFFIC_3D_MAP_WIDGET
 	redefine
-		make
+		make, prepare_drawing, draw
 	end
 		
 creation
@@ -43,6 +43,107 @@ feature -- Zoom options
 		do
 			wheel_down
 		end
+
+feature -- Drawing
+
+	draw is
+			-- 
+			do
+				Precursor
+							-- Draw marked stations
+				if marked_origin /= Void then
+						traffic_places.highlight_place (marked_origin,0)
+					-- 0 for origin			
+				end
+				if marked_destination /= Void then
+					traffic_places.highlight_place (marked_destination,1)
+					-- 1 for destination
+					if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
+						calculate_shortest_path
+						traffic_lines.draw_shortest_path
+					end
+				end
+			end
+		
+	
+	prepare_drawing is
+			-- 
+			do
+				Precursor
+				-- Traffic line rides
+			if traffic_line_ride and then show_shortest_path and then shortest_path_line /= Void and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
+				prepare_for_traffic_line_ride
+			else
+				traffic_line_ride := False
+				-- Translation
+				gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
+				gl_translated_external (x_translation, -y_translation, 0)
+				
+				-- Rotation
+				gl_rotated_external (x_rotation, 1, 0, 0)
+				gl_rotated_external (y_rotation, 0, 1, 0)
+			end
+			
+			end
+
+feature -- Shortest path
+			
+	marked_origin: TRAFFIC_PLACE
+			-- Currently marked origin
+			
+	marked_destination: TRAFFIC_PLACE
+			-- Currently marked destination
+
+	shortest_path_line: TRAFFIC_LINE
+			-- Artificial traffic line for the shortest path
+			
+	calculate_shortest_path is
+			-- Calculate the shortest path.
+		require
+			map /= Void
+		local
+			line: TRAFFIC_LINE
+			origin, destination: TRAFFIC_PLACE
+			section: TRAFFIC_LINE_SECTION
+		do
+			if marked_station_changed then
+				map.find_shortest_path (map.places.item (marked_origin.name), map.places.item (marked_destination.name))
+				create line.make ("Shortest path", create {TRAFFIC_TYPE_WALKING}.make)
+				
+				if not map.shortest_path.is_empty and then not map.shortest_path.first.label.polypoints.first.is_equal (marked_origin.position) then
+					create origin.make_with_position (marked_origin.name, marked_origin.position.x.rounded, marked_origin.position.y.rounded)
+					create destination.make_with_position (map.shortest_path.first.label.origin.name, map.shortest_path.first.label.polypoints.first.x.rounded, map.shortest_path.first.label.polypoints.first.y.rounded)
+					line.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
+				end
+				
+				from
+					map.shortest_path.start
+				until
+					map.shortest_path.after
+				loop
+					line.force (map.shortest_path.item.label)
+					map.shortest_path.forth
+					if not map.shortest_path.after and then not line.last.polypoints.last.is_equal (map.shortest_path.item.label.polypoints.first) then
+						create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
+						create destination.make_with_position (map.shortest_path.item.label.origin.name, map.shortest_path.item.label.polypoints.first.x.rounded, map.shortest_path.item.label.polypoints.first.y.rounded)
+						create section.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void)
+						line.force (section)
+					end
+				end
+				
+				if not line.is_empty and then not line.last.polypoints.last.is_equal (marked_destination.position) then
+					create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
+					create destination.make_with_position (marked_destination.name, marked_destination.position.x.rounded, marked_destination.position.y.rounded)
+					line.force (create {TRAFFIC_LINE_SECTION}.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void))
+				end
+				
+				shortest_path_line := line
+
+				traffic_lines.add_shortest_line(line)
+				-- add the line to the representation
+				marked_station_changed := False
+			end
+		end		
 
 feature {NONE} -- Event handling
 	wheel_down is
@@ -240,6 +341,79 @@ feature {NONE} -- Event handling
 				y_translation := 0
 			end
 		end
+		
+feature -- options
+	take_traffic_line_ride is
+			-- Take a traffic line ride.
+		require
+			shortest_path_line /= Void
+		do
+			traffic_line_ride := True
+			create last_polypoint.make (0, 0)
+			shortest_path_line.start
+			if not shortest_path_line.after then
+				shortest_path_line.item.polypoints.start
+				last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
+				shortest_path_line.item.polypoints.forth
+			end
+			create position.make (0, 0)
+		ensure
+			traffic_line_ride
+			last_polypoint /= Void
+			position /= Void
+		end
+
+feature{NONE} -- Traffic line rides
+
+	last_polypoint: EM_VECTOR_2D
+			-- The last polypoint visited
+			
+	position: EM_VECTOR_2D
+			-- The current position
+			
+	Speed: DOUBLE is 0.05
+			-- Speed of the traffic line rides
+			
+	prepare_for_traffic_line_ride is
+			-- Change the viewpoint in order to take a traffic line ride.
+		local
+			start_point, end_point, direction: EM_VECTOR_2D
+		do
+			start_point := last_polypoint
+			end_point := map_to_gl_coords (shortest_path_line.item.polypoints.item)
+			
+			direction := end_point - start_point
+			
+			position := position + (direction / direction.length) * speed
+			
+			glu_look_at_external
+			(	position.x - (position.x/position.length),
+				0.5,
+				position.y - (position.y/position.length),
+				position.x + 0.1*(position.x/position.length),
+				0.5,
+				position.y + 0.1*(position.y/position.length),
+				0, 1, 0
+			)
+			gl_translated_external (-start_point.x, 0, -start_point.y)
+			
+			if (position-direction).length < speed then
+				last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.item)
+				shortest_path_line.item.polypoints.forth
+				
+				if shortest_path_line.item.polypoints.after and then not shortest_path_line.after then
+					shortest_path_line.forth
+					if not shortest_path_line.after then
+						shortest_path_line.item.polypoints.start
+						last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
+						shortest_path_line.item.polypoints.forth
+					end
+				end
+				position.set_x (0)
+				position.set_y (0)
+			end
+		end
+		
 	
 invariant
 	focus_greater_than_0: focus > 0

@@ -34,11 +34,6 @@
   	<option if="${DEVELOP}">
   		<option name="assertion" value="all"/>
    	</option>
-   	<cluster name="tools">
-	 	<option if="${DEVELOP}">
-			<option name="assertion" value="all"/>
-	  	</option>
-	</cluster>
   </cluster>
   
 

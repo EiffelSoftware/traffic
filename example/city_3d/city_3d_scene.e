@@ -10,7 +10,7 @@ inherit
 	
 	EM_COMPONENT_SCENE
 	
-	SHARED_CONSTANTS
+	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
 	
 	EXCEPTIONS
@@ -495,9 +495,9 @@ feature {NONE} -- Implementation
 			-- Name of the map file to be loaded
 		
 	loaded_file_name: STRING
-			-- Name of the currently loaded map file
-		
-	map: MAP
+			-- Name of the currently loaded 
+
+	map: CITY_3D_MAP
 			-- The 3 dimensional representation of the map
 			
 --	map_widget: TRAFFIC_3D_MAP_WIDGET
