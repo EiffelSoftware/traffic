@@ -18,237 +18,296 @@ inherit
 			default_create
 		end
 
-	EM_KEY_CONSTANTS
-		undefine
-			default_create
-		end
-		
 feature -- Colors
 
+	Player_status_color : EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+
+	Background_color : EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+		
 	Credits_color : EM_COLOR is
-		once
-			Result := light_violet
+		deferred
 		ensure
 			color_exists: Result /= Void
 		end		
 
 	Menu_color: EM_COLOR is
-		once
-			Result := dark_red
+		deferred
 		ensure
 			color_exists: Result /= Void
 		end
 		
+	Menu_box_color: EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+		
+		
 	Menu_selected_color: EM_COLOR is
-		once
-			Result := orange
+		deferred
 		ensure
 			color_exists: Result /= Void
 		end		
 	
-	Game_widget_color: EM_COLOR is
-		once
-			Result := light_blue
+	Game_widget_line_color: EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+
+	Game_widget_fill_color: EM_COLOR is
+		deferred
 		ensure
 			color_exists: Result /= Void
 		end
 		
+	Game_widget_font_color: EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+
+		
 	Status_font_color: EM_COLOR is
-		once
-			Result := white
+		deferred
 		ensure
 			color_exists: Result /= Void
 		end
 		
 	Status_color : EM_COLOR is
-			-- Color of the status boxes.
-		once
-			Result := light_gray
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+		
+	Navigation_color : EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+
+	Highlighted_navigation_color : EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+		
+	Default_place_color : EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+
+	Highlight_place_color : EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+
+	Selected_place_color : EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+
+	Rail_color: EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+
+	Tram_color: EM_COLOR is
+		deferred
 		ensure
 			color_exists: Result /= Void
 		end
 		
 feature -- Fonts
 
-	Menu_font_name: STRING is "herbert"
-			-- Name of font that will be used for menus.
+	Menu_font_name: STRING is 
+		deferred
+		ensure
+			font_exists: Result /= Void
+		end
 	
-	Credits_font_name: STRING is "herbert"
-			-- Name of font that will be used for displaying credits.
+	Credits_font_name: STRING is
+		deferred
+		ensure
+			font_exists: Result /= Void
+		end
 	
-	Default_font_name: STRING is "herbert"
-			-- Name of default font.
+	Default_font_name: STRING is 
+		deferred
+		ensure
+			font_exists: Result /= Void
+		end
 			
-	Status_font_name: STRING is "arial"
-			-- Name of status font.
+	Status_font_name: STRING is
+		deferred
+		ensure
+			font_exists: Result /= Void
+		end
 
    	Small_default_font: EM_COLOR_TTF_FONT is
-			-- Standard default font.
-		once
-			Result := create_font (Default_font_name, 30, white)
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 		
    	Medium_default_font: EM_COLOR_TTF_FONT is
 			-- Standard default font.
-		once
-			Result := create_font (Default_font_name, 50, white)
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 		
    	Big_default_font: EM_COLOR_TTF_FONT is
 			-- Standard default font.
-		once
-			Result := create_font (Default_font_name, 72, white)
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 		
    	Menu_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu.
-		once
-			Result := create_font (Menu_font_name, 72, Menu_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 
    	Small_menu_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu.
-		once
-			Result := create_font (Menu_font_name, 50, Menu_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 
 	Menu_selected_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu.
-		once
-			Result := create_font (Menu_font_name, 72, Menu_selected_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
-		end		
+		end
 
 	Small_menu_selected_font: EM_COLOR_TTF_FONT is
 			-- Standard font for menu.
-		once
-			Result := create_font (Menu_font_name, 50, Menu_selected_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
-		end	
+		end
 
    	Big_credits_font: EM_COLOR_TTF_FONT is
 			-- Standard font for credits.
-		once
-			Result := create_font (Credits_font_name, 40, Credits_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 
    	Small_credits_font: EM_COLOR_TTF_FONT is
 			-- Standard font for credits.
-		once
-			Result := create_font (Credits_font_name, 30, Credits_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 		
 	Big_game_widget_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in game widgets.
-		once
-			Result := create_font (Default_font_name, 50, Game_widget_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
-		end	
+		end
 		
 	Medium_game_widget_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in game widgets.
-		once
-			Result := create_font (Default_font_name, 40, Game_widget_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
-		end 
+		end
 
 	Small_game_widget_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in game widgets.
-		once
-			Result := create_font (Default_font_name, 30, Game_widget_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
-		end 
+		end
 	
 	Status_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in status boxes for players.
-		once
-			Result := create_font (Status_font_name, 12, Status_font_color)
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 		
 	Black_status_font: EM_COLOR_TTF_FONT is
 			-- Standard font for use in light-colored status boxes.
-		once
-			Result := create_font (Status_font_name, 12, black)
+		deferred
 		ensure
-			font_exists: Result/= Void
+			font_exists: Result /= Void
 		end
 
    	Big_status_font: EM_COLOR_TTF_FONT is
 			-- Standard font for status box titles.
-		once
-			Result := create_font (Default_font_name, 40, Status_color)
+		deferred
+		ensure
+			font_exists: Result /= Void
+		end
+
+   	Big_player_status_font: EM_COLOR_TTF_FONT is
+			-- Standard font for status box titles.
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 	
 	Place_label_font: EM_COLOR_TTF_FONT is
 			-- Standard font used for labeling places on the map.
-		once
-			Result := create_font (Status_font_name, 14, white)
+		deferred
 		ensure
 			font_exists: Result /= Void
 		end
 
 feature -- Images
 
-	Image_directory: STRING is "./resources/pic/"
+	Image_directory: STRING is 
 			-- Path to the image directory.
+		deferred
+		end
+
 		
 	Flathunt_logo: EM_DRAWABLE is
 			-- Creates the logo which is to be displayed on several scenes.
-		once
-			bitmap_factory.create_bitmap_from_image (Image_directory + "flat_hunt_logo.png")
-			Result := bitmap_factory.last_bitmap
-			Result.set_x_y ((Window_width - Result.width) //2, 0)
+		deferred
 		ensure
 			pic_exists: Result /= Void
 			pic_positioned: Result.x = (Window_width - Result.width) // 2 and Result.y = 0
-		end	
+		end
 	
 	Background_picture: EM_DRAWABLE is
 			-- Creates the background which is to be displayed on several scenes.
-		once
-			bitmap_factory.create_bitmap_from_image (Image_directory + "background.png")
-			Result := bitmap_factory.last_bitmap
-			Result.set_x_y (0, 0)		
+		deferred
 		ensure
 			pic_exists: Result /= Void
 			pic_positioned: Result.x = 0 and Result.y = 0
-		end		
+		end
 		
 	Left_arrow: STRING is 
 			-- Left arrow for option menus.
-		once
-			Result := Image_directory + "left_arrow.png"
+		deferred
 		ensure
 			string_exists: Result /= Void
 		end
 
 	Right_arrow: STRING is 
 			-- Right arrow for option menus.
-		once
-			Result := Image_directory + "right_arrow.png"
+		deferred
 		ensure
 			string_exists: Result /= Void
 		end
@@ -259,89 +318,56 @@ feature -- Player Images
 			-- Default directory where to find the player pictures.
 			-- If player-set changed in the game settings, this directory
 			-- should also be changed.
-		once
-			Result := Image_directory + "player/glass/"
+		deferred
 		ensure
 			string_exists: Result /= Void
 		end
  
  	Estate_agent_button_pic: EM_DRAWABLE is
 			-- Creates picture for estate agent button.
-		do
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "agent_medium.png")
-			Result := bitmap_factory.last_bitmap		
+		deferred
 		ensure
 			pic_exists: Result /= Void
 		end
     
 	Estate_agent_pic: EM_DRAWABLE is
 			-- Creates picture for the estate agent.
-		do
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "agent_small.png")
-			Result := bitmap_factory.last_bitmap		
+		deferred
 		ensure
 			pic_exists: Result /= Void
 		end
 
 	Estate_agent_lvl_pic: EM_DRAWABLE is
 			-- Creates picture for the estate agent at last visible location.
-		do
-			bitmap_factory.create_bitmap_from_image (Player_pic_directory + "agent_lvl.png")
-			Result := bitmap_factory.last_bitmap		
+		deferred
 		ensure
 			pic_exists: Result /= Void
-		end		
+		end
 
 	Flat_hunter_button_pics: HASH_TABLE [EM_DRAWABLE, INTEGER] is
 			-- Creates pictures for flat hunter buttons.
-		local
-			i: INTEGER
-			size: STRING
-		do
-			create Result.make (8)
-			size := "medium"
-			from
-				i := 1
-			until
-				i > 8
-			loop
-				bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter" + i.out + "_" + size + ".png")
-				Result.put (bitmap_factory.last_bitmap, i)	
-				i := i + 1
-			end
+		deferred
 		ensure
-			pics_exist: Result /= Void
-		end	
+			pic_exists: Result /= Void
+		end
 
 	Flat_hunter_pics: HASH_TABLE [EM_DRAWABLE, INTEGER] is
 			-- Creates pictures for the flat hunters.
-		local
-			i: INTEGER
-			size: STRING
-		do
-			create Result.make (8)
-			size := "small"
-			from
-				i := 1
-			until
-				i > 8
-			loop
-				bitmap_factory.create_bitmap_from_image (Player_pic_directory + "hunter" + i.out + "_" + size + ".png")
-				Result.put (bitmap_factory.last_bitmap, i)
-				i := i + 1
-			end
+		deferred
 		ensure
-			pics_exist: Result /= Void
-		end	
+			pic_exists: Result /= Void
+		end
 	
 feature -- Sound
 
-	Sound_directory: STRING is "./resources/sound"
+	Sound_directory: STRING is
 			-- Path to the sound directory.
+		deferred
+		end
 
 	Background_music: STRING is 
 			-- Default background music.
-		once
-			Result := "far_away.ogg"
+		deferred
 		end
+
 end

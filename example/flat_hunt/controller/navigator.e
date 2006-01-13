@@ -6,6 +6,9 @@ indexing
 class
 	NAVIGATOR
 	
+inherit
+	SHARED_THEME
+	
 create
 	make
 	
@@ -16,8 +19,6 @@ feature	-- Initialization
 		require
 			a_navigation_container_exists: a_navigation_container /= Void
 			a_view_container_exists: a_view_container /= Void
-		local
-			navigation_color: EM_COLOR		
 		do
 			navigation_container := a_navigation_container
 			view_container := a_view_container
@@ -29,17 +30,15 @@ feature	-- Initialization
 			view_container.visible_area_changed_event.subscribe (agent process_view_area_changed)
 
 			-- Create and display new navigation rectangle.
-			create navigation_color.make_with_rgb (255, 0, 0)
 			create new_navigation_rectangle.make_from_coordinates (0, 0, 0, 0)
-			new_navigation_rectangle.set_line_color (navigation_color)
+			new_navigation_rectangle.set_line_color (theme.highlighted_navigation_color)
 			new_navigation_rectangle.set_filled (False)
 			new_navigation_rectangle.set_line_width (0.01)
 			navigation_container.extend (new_navigation_rectangle)
 			
 			-- Create and display current navigation rectangle.
-			create navigation_color.make_with_rgb (0, 255, 0)
 			create navigation_rectangle.make_from_rectangle (view_container.visible_area)
-			navigation_rectangle.set_line_color (navigation_color)
+			navigation_rectangle.set_line_color (theme.navigation_color)
 			navigation_rectangle.set_filled (False)
 			navigation_rectangle.set_line_width (0.01)
 			navigation_container.extend (navigation_rectangle)

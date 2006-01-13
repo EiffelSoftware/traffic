@@ -12,7 +12,7 @@ inherit
 			render
 		end
 	
-	THEME
+	SHARED_THEME
 	
 	EM_SHARED_SCENE
 
@@ -29,7 +29,7 @@ feature -- Basic operations
 			place_label: EM_STRING			
 		do
 			rectangle ?= Precursor {TRAFFIC_PLACE_RENDERER}(a_place)
-			create place_label.make (a_place.name, place_label_font)
+			create place_label.make (a_place.name, theme.place_label_font)
 			place_label.set_x_y (a_place.position.x.floor, a_place.position.y.floor)
 			create container.make_with_content (rectangle, place_label)
 			

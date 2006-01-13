@@ -20,7 +20,7 @@ feature -- Initialization
 	make_with_default_fonts is
 			-- Create menu with default fonts.
 		do
-			make_with_custom_fonts (Small_menu_font, Small_menu_selected_font)
+			make_with_custom_fonts (theme.Small_menu_font, theme.Small_menu_selected_font)
 		end
 		
 feature -- Event handling
@@ -73,18 +73,18 @@ feature {NONE} -- Implementation
 			item (i).set_y (0)
 			
 			-- Calculate and set x position of entry based on `alignment'.
-			if alignment = Left then
+			if alignment = theme.Left then
 				item (i).set_x (0)
-			elseif alignment = Right then
+			elseif alignment = theme.Right then
 				item (i).set_x (max_entry_width - item (i).width)
 			else -- alignment = Centered.
 				item (i).set_x ((max_entry_width - item (i).width) // 2)
 			end	
 		ensure then
 			item_y_set: item (i).y = 0
-			item_x_set:	alignment = Left implies item (i).x = 0
-						alignment = Right implies item (i).x = max_entry_width - item (i).width
-						not ((alignment = Left) or (alignment = Right)) implies item (i).x = (max_entry_width - item (i).width) // 2			
+			item_x_set:	alignment = theme.Left implies item (i).x = 0
+						alignment = theme.Right implies item (i).x = max_entry_width - item (i).width
+						not ((alignment = theme.Left) or (alignment = theme.Right)) implies item (i).x = (max_entry_width - item (i).width) // 2			
 		end
 		
 	draw (a_surface: EM_SURFACE) is

@@ -28,10 +28,10 @@ feature -- Initialization
 	initialize_scene is
 			-- Initialize scene.
 		do
-			main_container.extend (Background_picture)
-			main_container.extend (Flathunt_logo)
+			main_container.extend (theme.Background_picture)
+			main_container.extend (theme.Flathunt_logo)
 		ensure then
-			extended: main_container.has (Background_picture) and main_container.has (Flathunt_logo)
+			extended: main_container.has (theme.Background_picture) and main_container.has (theme.Flathunt_logo)
 		end
 
 feature -- Access

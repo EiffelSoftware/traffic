@@ -13,7 +13,7 @@ class
 inherit
 	GAME_CONSTANTS
 	
-	THEME
+	SHARED_THEME
 	
 create
 	make
@@ -162,7 +162,7 @@ feature -- Event handling
 			if a_mouse_event.is_left_button and then game.current_player.possible_moves.there_exists (agent has_place (?, a_place)) then
 				--Color place red
 				create place_renderer.make_with_map (game.traffic_map)
-				place_renderer.set_place_color (red)
+				place_renderer.set_place_color (theme.selected_place_color)
 				game_scene.big_map_widget.set_place_special_renderer (place_renderer, a_place)
 				game.set_selected_place (a_place)
 				

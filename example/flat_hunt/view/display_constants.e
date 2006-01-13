@@ -53,7 +53,7 @@ feature -- Colors
 	
 	Dark_red: EM_COLOR is
 		once
-			Result := create {EM_COLOR}.make_with_rgb (255, 60, 0)
+			Result := create {EM_COLOR}.make_with_rgb (200, 0, 0)
 		ensure
 			color_exists: Result /= Void
 		end
@@ -106,16 +106,16 @@ feature -- Constants (Numbers)
 	Left, Right, Centered: INTEGER is unique
 			-- Alignment constants.
 
-	Window_width: INTEGER is 1024
+	Window_width: INTEGER is 800
 			-- Initial width for this window.
 
-	Window_height: INTEGER is 768
+	Window_height: INTEGER is 600
 			-- Initial height for this window.
 
-	Map_area_width: INTEGER is  650
+	Map_area_width: INTEGER is  500
 			-- Width of the area where the map gets displayed.
 		
-	Map_area_height: INTEGER is 580
+	Map_area_height: INTEGER is 400
 			-- Height of the area where the map gets displayed.
 			
 	Margin: INTEGER is 30

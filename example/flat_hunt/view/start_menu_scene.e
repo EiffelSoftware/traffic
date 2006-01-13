@@ -40,8 +40,8 @@ feature -- Initialization
 			main_container.extend (menu)
 
 			-- Build option panel.
-			create option_panel.make_at_position (Window_width - 2* Margin, 345, "options", "use tab to toggle between main menu and option settings")
-			option_panel.set_x_y (Margin, 95)
+			create option_panel.make_at_position (Window_width - 2* Margin, 220, "", "use tab to toggle between main menu and option settings")
+			option_panel.set_x_y (Margin, 120)
 
 			-- Fill the option panel
 			fill_options
@@ -177,8 +177,8 @@ feature {NONE} -- Implementation
 			game_scene := create {GAME_SCENE}.make_scene (game.traffic_map, flathunt_hunter_number)
 
 			-- Load correct player pics according to settings.
-			Player_pic_directory.wipe_out
-			Player_pic_directory.append_string (Image_directory + "player/" + flathunt_theme + "/")
+			theme.Player_pic_directory.wipe_out
+			theme.Player_pic_directory.append_string (theme.Image_directory + "player/" + flathunt_theme + "/")
 
 			-- Initialize `main_controller' and start a new game.
 			create main_controller.make (game, game_scene)

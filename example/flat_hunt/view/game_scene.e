@@ -14,6 +14,8 @@ inherit
 			handle_key_down_event, initialize_scene
 		end
 
+	DISPLAY_CONSTANTS
+
 create
 	make_scene
 
@@ -44,7 +46,7 @@ feature -- Initialization
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
 		do			
-			background_color.make_black
+			set_background_color (theme.background_color)
 
 			-- Build map widgets.
 			main_container.extend (big_container)
@@ -56,9 +58,10 @@ feature -- Initialization
 			
 			-- Build status box.
 			create status_box.make_from_coordinates (Map_area_width + 2 * Margin, Window_width - Map_area_width - 2 * Margin, Window_width - Margin, Map_area_height, "Status")
-			status_box.set_font (Status_font)
-			status_box.set_title_font (Medium_game_widget_font)
-			status_box.set_color (Game_widget_color)
+			status_box.set_font (theme.Status_font)
+			status_box.set_title_font (theme.Medium_game_widget_font)
+			status_box.set_fill_color (theme.Status_color)
+			status_box.set_line_color (theme.Status_color)
 			status_box.set_opacity (70)
 			status_box.set_padding (-3)
 			main_container.extend (status_box)
@@ -66,12 +69,13 @@ feature -- Initialization
 
 			-- Build player status box.
 			create player_status_box.make_from_position_and_size (Margin, Margin + Map_area_height - 150, Map_area_width, 150, " ")
-			player_status_box.set_font (Status_font)
-			player_status_box.set_title_font (Big_status_font)
-			player_status_box.set_color (Status_color)
+			player_status_box.set_font (theme.Status_font)
+			player_status_box.set_title_font (theme.Big_player_status_font)
+			player_status_box.set_line_color (theme.player_status_color)
+			player_status_box.set_fill_color (theme.player_status_color)
 			player_status_box.set_opacity (80)
 			player_status_box.set_padding (-3)
-			player_status_box.set_visibility (False)
+			player_status_box.set_visible (False)
 			main_container.extend (player_status_box)
 			
 			-- Build the menus.
@@ -79,8 +83,8 @@ feature -- Initialization
 			build_game_over_menu
 			
 			-- Build the overlay for when the game is `paused'
-			bitmap_factory.create_bitmap_from_image (Image_directory + "scanlines.png")
-			overlay := bitmap_factory.last_bitmap
+			theme.bitmap_factory.create_bitmap_from_image (theme.Image_directory + "scanlines.png")
+			overlay := theme.bitmap_factory.last_bitmap
 
 			last_clicked_button := Void
 			display_players
@@ -105,20 +109,20 @@ feature -- Initialization
 			tmp_player_displayer: PLAYER_DISPLAYER
 		do
 			cur_button_x := Margin
-			cur_button_y := Window_height - Margin - Estate_agent_button_pic.height
+			cur_button_y := Window_height - Margin - theme.Estate_agent_button_pic.height
 			from
 				i := 1
 			until
 				i > a_player_list.count
 			loop
 				if i <= 1 then
-					tmp_button := create {BUTTON}.make_with_picture (Estate_agent_button_pic)
-					create tmp_agent_displayer.make_from_player (a_player_list.first, Estate_agent_pic, traffic_map, big_map_widget)
-					tmp_agent_displayer.set_last_visible_location_picture (Estate_agent_lvl_pic)
+					tmp_button := create {BUTTON}.make_with_picture (theme.Estate_agent_button_pic)
+					create tmp_agent_displayer.make_from_player (a_player_list.first, theme.Estate_agent_pic, traffic_map, big_map_widget)
+					tmp_agent_displayer.set_last_visible_location_picture (theme.Estate_agent_lvl_pic)
 					tmp_player_displayer := tmp_agent_displayer
 				else
-					tmp_button := create {BUTTON}.make_with_picture (Flat_hunter_button_pics.item (i-1))
-					tmp_player_displayer := create {FLAT_HUNTER_DISPLAYER}.make_from_player (a_player_list.i_th (i), Flat_hunter_pics.item (i-1), traffic_map, big_map_widget)
+					tmp_button := create {BUTTON}.make_with_picture (theme.Flat_hunter_button_pics.item (i-1))
+					tmp_player_displayer := create {FLAT_HUNTER_DISPLAYER}.make_from_player (a_player_list.i_th (i), theme.Flat_hunter_pics.item (i-1), traffic_map, big_map_widget)
 				end
 				tmp_button.subscribe_for_click (agent process_clicked_player_button)
 				tmp_button.set_x_y (cur_button_x, cur_button_y)
@@ -252,7 +256,7 @@ feature {NONE} -- Event Handling
 				player_status_box.toggle_visibility
 			else
 				last_clicked_button := a_button
-				player_status_box.set_visibility (True)
+				player_status_box.set_visible (True)
 				player_status_box.set_title ("Status of " + tmp_player_displayer.out)
 				player_status_box.set_text (tmp_player_displayer.statistics)
 			end
@@ -280,16 +284,17 @@ feature {NONE} -- Menu Handling
 	build_pause_menu is
 			-- Build `pause_menu'.
 		do	
-			create pause_menu.make_with_custom_fonts (Small_menu_font, Small_menu_selected_font)
+			create pause_menu.make_with_custom_fonts (theme.Small_menu_font, theme.Small_menu_selected_font)
 			pause_menu.add_entry ("continue", agent continue_callback, True)
 			pause_menu.add_entry ("new game", agent newgame_callback, False)
 			pause_menu.add_entry ("quit", agent quit_callback, False)
-			pause_menu.set_alignment (Centered)
+			pause_menu.set_alignment (theme.Centered)
 			pause_menu.set_x_y (20, 90)
 
 			create pause_menu_container.make_from_position_and_size ((Window_width - pause_menu.width) // 2 - 25, (Window_height - pause_menu.height) // 2 - 10, pause_menu.width + 50, pause_menu.height + 20, " ")
-			pause_menu_container.set_font (Black_status_font)
-			pause_menu_container.set_color (white)
+			pause_menu_container.set_font (theme.Black_status_font)
+			pause_menu_container.set_line_color (theme.white)
+			pause_menu_container.set_fill_color (theme.white)
 			pause_menu_container.set_opacity (200)
 			pause_menu_container.set_auto_resize (False)
 			pause_menu_container.set_text ("The game is paused.")
@@ -299,15 +304,16 @@ feature {NONE} -- Menu Handling
 	build_game_over_menu is
 			-- Build `game_over_menu'.
 		do
-			create game_over_menu.make_with_custom_fonts (small_menu_font, small_menu_selected_font)
+			create game_over_menu.make_with_custom_fonts (theme.small_menu_font, theme.small_menu_selected_font)
 			game_over_menu.add_entry ("new game", agent newgame_callback, False)
 			game_over_menu.add_entry ("quit", agent quit_callback, False)
-			game_over_menu.set_alignment (Centered)
+			game_over_menu.set_alignment (theme.Centered)
 			game_over_menu.set_x_y (20, 90)
 
 			create game_over_menu_container.make_from_position_and_size ((window_width - game_over_menu.width) // 2 - 25, (window_height - game_over_menu.height) // 2 - 10, game_over_menu.width + 50, game_over_menu.height + 20, " ")
-			game_over_menu_container.set_font (black_status_font)
-			game_over_menu_container.set_color (white)
+			game_over_menu_container.set_font (theme.black_status_font)
+			game_over_menu_container.set_line_color (theme.white)
+			game_over_menu_container.set_fill_color (theme.white)
 			game_over_menu_container.set_opacity (200)
 			game_over_menu_container.set_auto_resize (False)
 			game_over_menu_container.set_text ("G A M E   O V E R")
@@ -396,12 +402,6 @@ feature {NONE} -- Implementation
 	pause_callback: PROCEDURE [ANY, TUPLE [BOOLEAN]]
 			-- Gets called when game paused
 			
-	Rail_color: EM_COLOR is
-			-- Color used for rail lines.
-		once
-			create Result.make_with_rgb (255, 160, 0)
-		end	
-		
 	display_players is
 			-- Visualize players on the scene.
 		do
@@ -433,18 +433,19 @@ feature {NONE} -- Implementation
 			create background_box.make_from_coordinates (0, 0, Map_area_width, Map_area_height)
 			background_box.set_rounded_corner_radius (10)
 			background_box.set_line_width (1)
-			background_box.set_line_color (Game_widget_color)
-			background_box.set_fill_color (Game_widget_color)
-			background_box.fill_color.set_alpha (70)
+			background_box.set_line_color (theme.Game_widget_line_color)
+			background_box.set_fill_color (theme.Game_widget_fill_color)
 			big_container.extend (background_box)
 			
 			-- Create and customize big map widget to visualize `traffic_map'
 			create big_map_widget.make_with_map (traffic_map)			
 			create tmp_place_renderer.make_with_map (traffic_map)
+			tmp_place_renderer.set_place_color (theme.default_place_color)
 			big_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
-			big_map_widget.line_section_renderer.traffic_type_colors.put (Rail_color, "rail")
+			big_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
 			big_map_widget.line_section_renderer.traffic_type_line_widths.put (2, "bus")
 			big_map_widget.set_default_place_renderer (tmp_place_renderer)
+--			big_map_widget.place_renderer.set_place_color (dark_gray)
 			big_map_widget.render
 			
 			-- Create zoomable widget to make map zoomable
@@ -468,6 +469,7 @@ feature {NONE} -- Implementation
 			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 			background_box: EM_RECTANGLE
 			map_box: EM_ORTHOGONAL_RECTANGLE
+			tmp_place_renderer: TRAFFIC_PLACE_RENDERER
 		do	
 			-- Create container to put background and widgets into.
 			create container.make
@@ -477,9 +479,8 @@ feature {NONE} -- Implementation
 			create background_box.make_from_coordinates (0, 0, Window_width - Map_area_width - 3 * Margin , Window_width - Map_area_width - 3 * Margin)
 			background_box.set_rounded_corner_radius (10)
 			background_box.set_line_width (1)
-			background_box.set_line_color (Game_widget_color)
-			background_box.set_fill_color (Game_widget_color)
-			background_box.fill_color.set_alpha (70)
+			background_box.set_line_color (theme.Game_widget_line_color)
+			background_box.set_fill_color (theme.Game_widget_fill_color)
 			container.extend (background_box)
 			
 			-- Build little map widget to visualize `traffic_map'.
@@ -487,8 +488,11 @@ feature {NONE} -- Implementation
 
 			-- Customize map widget and render (to affect changes)
 			little_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
-			little_map_widget.line_section_renderer.traffic_type_colors.put (Rail_color, "rail")
-			little_map_widget.line_section_renderer.traffic_type_colors.put (yellow, "tram")
+			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
+			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Tram_color, "tram")
+			create tmp_place_renderer.make_with_map (traffic_map)
+			tmp_place_renderer.set_place_color (theme.default_place_color)
+			little_map_widget.set_default_place_renderer (tmp_place_renderer)
 			little_map_widget.render
 
 			-- Build zoomable container to show little map widget in.
@@ -498,6 +502,7 @@ feature {NONE} -- Implementation
 			map_box.zoom (1.05)
 			little_zoomable_container.scroll_and_zoom_to_rectangle (map_box)
 			container.extend (little_zoomable_container)
+--			container.extend (little_map_widget)
 			
 			-- Extend scene with little map widget.
 			main_container.extend (container)

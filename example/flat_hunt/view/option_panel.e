@@ -11,7 +11,10 @@ inherit
 	EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 		redefine draw end
 	
-	THEME
+	SHARED_THEME
+		undefine copy, is_equal end
+
+	DISPLAY_CONSTANTS
 		undefine copy, is_equal end
 
 create
@@ -24,16 +27,17 @@ feature -- Initialization
 		require
 			a_width_positive: a_width > 0
 			a_height_positive: a_height > 0
-			a_title_valid: a_title /= Void and then not a_title.is_empty
-			a_subnote_valid: a_subnote /= Void and then not a_subnote.is_empty
+			a_title_valid: a_title /= Void
+			a_subnote_valid: a_subnote /= Void
 		do
 			make
 			
 			-- Build background_box
 			create background_box.make_from_coordinates (0, 0, a_width, a_height, a_title)
-			background_box.set_color (Menu_color)
-			background_box.set_title_font (Menu_font)
-			background_box.set_font (Small_menu_font)
+			background_box.set_fill_color (theme.Menu_box_color)
+			background_box.set_line_color (theme.Menu_box_color)
+			background_box.set_title_font (theme.Menu_font)
+			background_box.set_font (theme.Small_menu_font)
 			background_box.set_opacity (70)
 			background_box.set_auto_resize (False)
 			extend (background_box)
@@ -45,7 +49,7 @@ feature -- Initialization
 			create option_menus.make (0)
 			
 			-- Set the subnote
-			extend (create {EM_STRING}.make ("use tab to toggle between main menu and option settings", small_credits_font))
+			extend (create {EM_STRING}.make ("use tab to toggle between main menu and option settings", theme.small_credits_font))
 			last.set_x_y (Margin, background_box.height)
 			
 		end
@@ -60,11 +64,12 @@ feature -- Basic operations
 		local
 			i: INTEGER
 		do
-			background_box.extend (create {EM_STRING}.make (a_title, Small_menu_font))
+			background_box.extend (create {EM_STRING}.make (a_title, theme.Small_menu_font))
 			background_box.last.set_x_y (options_position_x, options_position_y)
 
 			option_menus.extend (create {OPTION_MENU}.make_with_default_fonts)
 			option_menus.i_th (option_menus.count).set_title (a_title)
+			option_menus.i_th (option_menus.count).set_alignment (left)
 			from
 				i := 1
 			until
@@ -120,14 +125,14 @@ feature {NONE} -- Implementation
 			left_x, right_x, left_y, right_y: INTEGER
 		do
 			-- Create arrow pics.
-			bitmap_factory.create_bitmap_from_image (Left_arrow)
+			bitmap_factory.create_bitmap_from_image (theme.Left_arrow)
 			left_arrow_pic := bitmap_factory.last_bitmap
-			bitmap_factory.create_bitmap_from_image (Right_arrow)
+			bitmap_factory.create_bitmap_from_image (theme.Right_arrow)
 			right_arrow_pic := bitmap_factory.last_bitmap				
 			
 			-- Calculate positions for arrow pics.
 			left_x := option_menus.i_th (i).x - 2 * left_arrow_pic.width
-			right_x := option_menus.i_th (i).x + option_menus.i_th (i).max_entry_width + right_arrow_pic.width
+			right_x := option_menus.i_th (i).x + 80--option_menus.i_th (i).max_entry_width + right_arrow_pic.width
 			left_y := option_menus.i_th (i).y + (option_menus.i_th (i).height - left_arrow_pic.height) // 2
 			right_y := option_menus.i_th (i).y + (option_menus.i_th (i).height - right_arrow_pic.height) // 2
 			
@@ -158,10 +163,10 @@ feature {NONE} -- Implementation
 	
 feature {NONE} -- Constants
 	
-	Left_margin: INTEGER is 150
+	Left_margin: INTEGER is 120
 			-- Margin on left of `background_box'
 	
-	Top_margin: INTEGER is 80
+	Top_margin: INTEGER is 50
 			-- Margin on top of `background_box'
 	
 	Offset: INTEGER is 400

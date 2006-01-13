@@ -23,10 +23,10 @@ feature -- Initialization
 			-- Fill the option panel
 		do
 			-- Show the option panel
---			option_panel.add_option_menu (options_list_game_mode, option_title_game_mode)
---			option_panel.add_option_menu (options_list_number_of_flathunters, option_title_number_of_flathunters)
---			option_panel.add_option_menu (options_list_map_size, option_title_map_size)
---			option_panel.add_option_menu (options_list_characters, option_title_characters)
+			option_panel.add_option_menu (options_list_game_mode, option_title_game_mode)
+			option_panel.add_option_menu (options_list_number_of_flathunters, option_title_number_of_flathunters)
+			option_panel.add_option_menu (options_list_map_size, option_title_map_size)
+			option_panel.add_option_menu (options_list_characters, option_title_characters)
 		end
 		
 end

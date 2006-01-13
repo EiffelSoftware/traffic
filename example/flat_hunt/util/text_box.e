@@ -12,7 +12,12 @@ inherit
 			draw, height, width, publish_mouse_event
 		end
 		
-	THEME
+	SHARED_THEME
+		undefine
+			default_create, copy, is_equal
+		end
+
+	DISPLAY_CONSTANTS
 		undefine
 			default_create, copy, is_equal
 		end
@@ -78,32 +83,34 @@ feature {NONE} -- Initialization Implementation
 	set_default_values is
 			-- Set default values for all attributes.
 		do
-			opacity := 100			
-			color := Status_color
-			alignment := Left
-			font := Small_default_font
-			title_font := Big_default_font
+			opacity := 255		
+			fill_color := theme.Status_color
+			line_color := theme.Status_color
+			alignment := theme.Left
+			font := theme.Small_default_font
+			title_font := theme.Big_default_font
 			max_line_width := 0
 			text_height := 0
 			padding := 0
 			auto_resize := False
-			visible := True
 		ensure
-			color_set: color = Status_color
-			font_set: font = Small_default_font
-			title_font_set: title_font = Big_default_font		
+			fill_color_set: fill_color /= Void
+			line_color_set: line_color /= Void
+			font_set: font /= Void
+			title_font_set: title_font /= Void
 		end
 		
 	initialize_box is
 			-- Initialize box with default values.
 		require
-			color_exists: color /= Void
+			line_color_exists: line_color /= Void
+			fill_color_exists: fill_color /= Void
 		do
 			box.set_rounded_corner_radius (10)
 			box.set_line_width (1)			
-			box.set_line_color (color)
+			box.set_line_color (line_color)
 			box.line_color.set_alpha (255)
-			box.set_fill_color (color)
+			box.set_fill_color (fill_color)
 			box.fill_color.set_alpha (opacity)
 			extend (box)
 		ensure
@@ -168,11 +175,6 @@ feature -- Access
 			
 feature -- Status Report
 
-	is_visible: BOOLEAN is
-			-- Is this status box currently visible?
-		do
-			Result := visible
-		end
 
 feature -- Status setting
 
@@ -205,15 +207,26 @@ feature -- Status setting
 			opacity_set: opacity = an_opacity
 		end
 		
-	set_color (a_color: like color) is
-			-- Set `color' to `a_color'.
+	set_fill_color (a_color: like fill_color) is
+			-- Set `fill_color' to `a_color'.
 		require
 			a_color_exists: a_color /= Void
 		do
-			color := a_color
+			fill_color := a_color
 			update_color
 		ensure
-			color_set: color = a_color
+			color_set: fill_color = a_color
+		end
+		
+	set_line_color (a_color: like line_color) is
+			-- Set `line_color' to `a_color'.
+		require
+			a_color_exists: a_color /= Void
+		do
+			line_color := a_color
+			update_color
+		ensure
+			color_set: line_color = a_color
 		end
 		
 	set_alignment (an_alignment: like alignment) is
@@ -264,17 +277,11 @@ feature -- Status setting
 			auto_resize := b
 			update_lines
 		end
-		
-	set_visibility (b: like visible) is
-			-- Set visibility of status box to `b'.
-		do
-			visible := b
-		end
-		
+				
 	toggle_visibility is
 			-- Toggle visibility of status box.
 		do
-			set_visibility (not visible)
+			set_visible (not is_visible)
 		end
 
 	set_position_and_size (an_x: INTEGER; a_y: INTEGER; a_width: INTEGER; a_height: INTEGER) is
@@ -301,7 +308,7 @@ feature {NONE} -- Implementation
 			-- Publish mouse events to children
 			-- We don't publish mouse events if the widget is not visible.
 		do
-			if visible then
+			if is_visible then
 				Precursor (a_mouse_event)				
 			end
 		end
@@ -310,16 +317,16 @@ feature {NONE} -- Implementation
 	lines: LIST [STRING]
 			-- `text' divided into lines.
 
-	visible: BOOLEAN
-			-- Is this status box visible?
-	
 	alignment: INTEGER
 			-- Alignment of the lines.
 
 	opacity: INTEGER
 			-- Opacity of the background box.
 	
-	color: EM_COLOR
+	fill_color: EM_COLOR
+			-- Color of the background box.
+
+	line_color: EM_COLOR
 			-- Color of the background box.
 
 	box: EM_RECTANGLE
@@ -346,9 +353,9 @@ feature {NONE} -- Implementation
 	update_color is
 			-- Update color of the background box and its stroke.
 		do
+			box.set_fill_color (fill_color)
+			box.set_line_color (line_color)
 			box.fill_color.set_alpha (opacity)
-			box.set_fill_color (color)
-			box.set_line_color (color)
 		end
 
 	update_lines is
@@ -461,6 +468,7 @@ feature {NONE} -- Implementation
 			translation: EM_VECTOR_2D
 			old_clipping_area, clipping_area: EM_ORTHOGONAL_RECTANGLE
 		do
+			if is_visible then
 			-- Translate coordinate system for drawing all contained objects.
 			create translation.make (x, y)
 			a_surface.translate_coordinates (translation)
@@ -472,7 +480,7 @@ feature {NONE} -- Implementation
 			a_surface.clip_coordinates (clipping_area)			
 			
 			-- Draw all contained objects if visible.
-			if visible then
+				if is_visible then
 				cursor := new_cursor
 				from
 					cursor.start
@@ -492,6 +500,7 @@ feature {NONE} -- Implementation
 			-- Reset coordinate system.
 			a_surface.clip_coordinates (old_clipping_area)
 			a_surface.translate_coordinates (- translation)
+		end
 		end
 		
 		draw_text (a_surface: EM_SURFACE) is

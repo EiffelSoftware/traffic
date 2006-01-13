@@ -10,17 +10,22 @@ deferred class
 inherit	
 	EM_DRAWABLE_CONTAINER [MENU_ENTRY]
 	
-	THEME
+	SHARED_THEME
 		undefine
 			default_create, copy, is_equal
 		end
 
+	EM_KEY_CONSTANTS
+		undefine
+			default_create, copy, is_equal
+		end
+		
 feature -- Initialization
 		
 	make_with_default_fonts is
 			-- Create menu with default fonts.
 		do
-			make_with_custom_fonts (Menu_font, Menu_selected_font)
+			make_with_custom_fonts (theme.Menu_font, theme.Menu_selected_font)
 		end		
 		
 	make_with_custom_fonts (a_font: like font; a_selected_font: like selected_font) is
@@ -31,7 +36,7 @@ feature -- Initialization
 		do
 			-- Set defaults.
 			active := True
-			alignment := Centered
+			alignment := theme.Centered
 			max_entry_width := 0
 			selected_entry := 1
 			
@@ -207,5 +212,5 @@ feature {NONE} -- Implementation
 invariant
 	font_exists: font /= Void
 	selected_font_exists: selected_font /= Void
-	alignment_valid: alignment >= Left and alignment <= Centered
+	alignment_valid: alignment >= theme.Left and alignment <= theme.Centered
 end

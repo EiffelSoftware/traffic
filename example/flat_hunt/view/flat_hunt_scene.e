@@ -26,10 +26,12 @@ inherit
 --			default_create
 --		end
 		
-	THEME
+	SHARED_THEME
 		undefine
 			default_create
 		end
+		
+	DISPLAY_CONSTANTS
 		
 feature {NONE} -- Event Handling
 

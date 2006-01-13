@@ -11,7 +11,7 @@ inherit
 	EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
 		redefine draw end
 
-	THEME
+	SHARED_THEME
 		undefine copy, is_equal end
 
 create

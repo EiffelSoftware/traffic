@@ -11,10 +11,12 @@ inherit
 	
 	EM_AUDIO_CONSTANTS
 	
-	THEME
+	SHARED_THEME
 		undefine
 			default_create
 		end
+	
+	DISPLAY_CONSTANTS
 	
 -- Music playing causes problems!		
 --	SHARED_MUSIC_PLAYER
@@ -28,10 +30,10 @@ feature -- Initialization
 			-- Create and execute the application.
 		do
 			-- Video subsystem settings.
-			video_subsystem.enable
 			video_subsystem.set_doublebuffered (True)			
 			video_subsystem.set_video_surface_width (Window_width)			
 			video_subsystem.set_video_surface_height (Window_height)
+			video_subsystem.enable
 		
 			-- Initialize the screen.
 			initialize_screen

@@ -28,9 +28,9 @@ feature {NONE} -- Implementation
 			item (i).set_y (next_y)
 			
 			-- Calculate and set x position of entry based on `alignment'.
-			if alignment = Left then
+			if alignment = theme.Left then
 				item (i).set_x (0)
-			elseif alignment = Right then
+			elseif alignment = theme.Right then
 				item (i).set_x (max_entry_width - item (i).width)
 			else -- alignment = Centered.
 				item (i).set_x ((max_entry_width - item (i).width) // 2)
@@ -38,9 +38,9 @@ feature {NONE} -- Implementation
 		ensure then
 			item_y_set: i = 1 implies item (i).y = 0
 						i /= 1 implies item (i).y = item (i - 1).y + item (i).height // 2
-			item_x_set:	alignment = Left implies item (i).x = 0
-						alignment = Right implies item (i).x = max_entry_width - item (i).width
-						not ((alignment = Left) or (alignment = Right)) implies item (i).x = (max_entry_width - item (i).width) // 2
+			item_x_set:	alignment = theme.Left implies item (i).x = 0
+						alignment = theme.Right implies item (i).x = max_entry_width - item (i).width
+						not ((alignment = theme.Left) or (alignment = theme.Right)) implies item (i).x = (max_entry_width - item (i).width) // 2
 		end
 		
 end

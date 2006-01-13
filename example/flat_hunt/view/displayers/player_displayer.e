@@ -17,7 +17,12 @@ inherit
 			default_create, copy, is_equal, out
 		end
 		
-	THEME
+	SHARED_THEME
+		undefine
+			out
+		end
+
+	DISPLAY_CONSTANTS
 		undefine
 			out
 		end
@@ -40,7 +45,7 @@ feature -- Initialization
 			-- Build marking circle.
 			create marking_circle.make_inside_box (picture.bounding_box)
 			marking_circle.set_line_width (1)
-			marking_circle.set_line_color (red)
+			marking_circle.set_line_color (theme.red)
 			marking_circle.set_filled (False)
 
 			-- Set defaults.
@@ -200,7 +205,7 @@ feature {NONE} -- Implementation
 
 				-- Set place color for possible moves to yellow.
 				create place_renderer.make_with_map (traffic_map)
-				place_renderer.set_place_color (Yellow)
+				place_renderer.set_place_color (theme.highlight_place_color)
 
 				-- Set special renderer for possible moves.
 				from
@@ -228,7 +233,7 @@ feature {NONE} -- Implementation
 
 				-- Reset place color.
 				create place_renderer.make_with_map (traffic_map)
-				place_renderer.set_place_color (Blue)
+				place_renderer.set_place_color (theme.default_place_color)
 
 				-- Reset place renderer for possible moves.
 				from

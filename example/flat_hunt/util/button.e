@@ -17,7 +17,7 @@ inherit
 			default_create, copy, is_equal
 		end
 	
-	THEME
+	SHARED_THEME
 		undefine
 			copy, is_equal
 		end
@@ -58,7 +58,7 @@ feature -- Initialization
 			a_text_exists: a_text /= Void
 		do
 			make
-			create text.make (a_text, Small_default_font)
+			create text.make (a_text, theme.Small_default_font)
 			extend (text)
 		ensure
 			text_exists: text /= Void
