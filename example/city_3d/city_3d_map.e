@@ -181,6 +181,8 @@ feature {NONE} -- Event handling
 			is_found: BOOLEAN
 			result_vec: GL_VECTOR_3D[DOUBLE]
 			clicked_point: GL_VECTOR_3D[DOUBLE]
+			buildings: LINKED_LIST[TRAFFIC_BUILDING]
+
 		do
 			if event.is_left_button then
 				result_vec := transform_coords(event.screen_x, event.screen_y)				
@@ -237,6 +239,20 @@ feature {NONE} -- Event handling
 					end
 				end
 				
+				-- check whether a building is clicked 
+				buildings:= map.buildings
+					from 
+						buildings.start
+					until 
+						buildings.after
+					loop
+						if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
+							traffic_buildings.highlight_building (buildings.item)
+						end
+						buildings.forth
+					end
+
+				
 			elseif event.is_right_button then
 				result_vec := transform_coords(event.screen_x, event.screen_y)				
 				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
@@ -287,6 +303,20 @@ feature {NONE} -- Event handling
 						shortest_path_line := void
 						marked_station_changed := True
 					end
+					
+					-- check whether a building is clicked
+					buildings:= map.buildings
+					from 
+						buildings.start
+					until 
+						buildings.after
+					loop
+						if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
+							traffic_buildings.un_highlight_building (buildings.item)
+						end
+						buildings.forth
+					end
+
 				end
 			end
 		end

@@ -232,8 +232,8 @@ feature -- Interface
 			traffic_line_ride_button.hide
 			
 			-- adding zurich_big.xml as default
-			map.load_map ("map/zurich_big.xml")
-			loaded_file_name := "map/zurich_big.xml"
+			map.load_map ("map/zurich_tiny.xml")
+			loaded_file_name := "map/zurich_tiny.xml"
 			
 		end
 		
@@ -299,7 +299,7 @@ feature -- Event handling
 		require
 			label /= Void
 		do
-			number_of_buildings := 150*number
+			number_of_buildings := 10*number
 			label.set_text (number_of_buildings.out)
 			if map /= Void and then map.is_map_loaded then
 				map.set_number_of_buildings (number_of_buildings)
@@ -349,7 +349,7 @@ feature -- Event handling
 			-- Checkbox has been checked.
 		do
 			map.set_buildings_shown (True)
-			map.set_number_of_buildings (number_of_buildings)
+			--map.set_number_of_buildings (number_of_buildings)
 		end
 		
 	buildings_unchecked is

@@ -63,8 +63,8 @@ feature -- Access
 			loop
 				log_file.read_word
 				name := log_file.last_string
-				log_file.read_character
 				if not name.is_equal ("") then
+					log_file.read_character
 					log_file.read_integer
 					stamp := log_file.last_integer
 				end	
