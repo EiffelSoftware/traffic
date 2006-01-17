@@ -64,7 +64,7 @@ feature -- Basic operations
 			end
 			set_map_factory (p.map_factory)
 		end
-		
+				
 invariant
 
 	can_process_definition: can_process = (is_parsed and 

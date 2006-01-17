@@ -19,6 +19,8 @@ inherit
 			{NONE} all
 		end	
 		
+	EM_COMPONENT_SCENE
+
 create
 	make_from_file
 
@@ -44,7 +46,7 @@ feature {NONE} -- Initialization
 				map_parser.process
 			end			
 			if map_parser.has_error then
-				raise ("Error while parsing " + a_filename + ": " + map_parser.error_description)				
+				raise ("Error while parsing " + a_filename + ": " + map_parser.error_description)	
 			else
 				traffic_map := factory.map
 			end
@@ -58,8 +60,7 @@ feature -- Access
 			-- Filename
 			
 	traffic_map: TRAFFIC_MAP
-			-- Map in `Current'.		
-
+			-- Map in `Current'.
 		
 invariant
 	filename_not_empty: filename /= Void and then not filename.is_empty

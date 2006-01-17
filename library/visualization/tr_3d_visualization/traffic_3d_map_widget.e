@@ -118,6 +118,9 @@ feature -- Drawing
 			constant_light.diffuse.set_xyzt (1, 1, 1, 1) -- White
 			constant_light.position.set_xyz (0, 1, 0)
 			constant_light.apply_values
+			
+			gl_enable_external(Em_gl_normalize)
+			
 		end			
 		
 	draw is
@@ -296,23 +299,14 @@ feature -- Traffic map loading
 			name_valid: filename /= void and then not filename.is_empty
 		local
 			map_file: TRAFFIC_MAP_FILE
-			directory: DIRECTORY
-			dump_name: STRING
+			dump: MAP_DUMP
 		do
-			dump_name := filename.split('.')[1] + ".map"
-			create directory.make_open_read ("./")
-			if directory.has_entry (dump_name) then
-				io.putstring("reading from dump-file")
-				create map.make ("temp")
-				map ?= map.retrieve_by_name(dump_name)
-			else
+			create dump.make_with_name (filename)
+			map := dump.get_map
+			if not dump.is_up_to_date or map = void then
 				create map_file.make_from_file (filename)
 				map := map_file.traffic_map
-				io.putstring ("creating dump file")
-				io.new_line
-				map.store_by_name (dump_name)
-				io.putstring("creation ended")
-				io.new_line
+				dump.create_dump (map)
 			end
 			is_map_loaded := True
 			number_of_buildings := 0
@@ -320,7 +314,7 @@ feature -- Traffic map loading
 --			traffic_places_polygons := traffic_places.collision_polygons
 			create traffic_lines.make (map)
 			traffic_lines_polygons := traffic_lines.collision_polygons
-			create traffic_buildings.make(number_of_buildings, map)
+			create traffic_buildings.make (map)
 			traffic_buildings.set_collision_polygons(collision_polygons)
 			marked_station_changed := True
 		ensure
@@ -415,6 +409,13 @@ feature -- Options
 		ensure
 			show_shortest_path = b
 		end
+		
+	add_buildings(n: INTEGER) is
+			-- adds n buildings to map
+		do
+			traffic_buildings.add_randomly (n)
+		end
+		
 	
 	
 	sun_shown: BOOLEAN
@@ -480,7 +481,7 @@ feature {NONE} -- Implementation
 	traffic_places: TRAFFIC_PLACE_REPRESENTATION
 		-- container for the places
 		
-	traffic_buildings: TRAFFIC_BUILDING_EWER
+	traffic_buildings: TRAFFIC_BUILDING_REPRESENTATION
 		-- container for the buildings
 			
 	sun_light: GL_LIGHT
