@@ -8,7 +8,7 @@ class
 	TRAFFIC_BUILDING
 
 inherit
-	SHARED_CONSTANTS	
+	TRAFFIC_3D_CONSTANTS	
 
 create
 	make
