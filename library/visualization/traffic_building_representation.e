@@ -21,21 +21,18 @@ creation
 	make
 
 feature
-	make (a_map: TRAFFIC_MAP) is
+	make is
 			-- Create a new object
-		require
-			map_exists: a_map /= void
 		do
 			create centre.make_xyz (0,0,0)
 			create building_factory.make(agent representation)
 			create buildings.make (1)
 			create wall_color.make_xyz (0.5,0.5,0.5)
 			create roof_color.make_xyz (1.0,0,0)
-			map:= a_map
 			create randomizer.set_seed (42)
 		end
 		
-feature
+feature	
 
 	draw is
 			-- draw all buildings
@@ -86,6 +83,14 @@ feature
 			temp.set_origin (a_building.x1,0,a_building.y2)
 			temp.set_scale (0.25,0.25,0.25)
 			buildings.force (temp)
+		end
+	
+	set_map (a_map: TRAFFIC_MAP) is
+			-- set map to `a_map'
+		require 
+			map_exists: a_map /= Void
+		do
+			map:= a_map
 		end
 		
 		

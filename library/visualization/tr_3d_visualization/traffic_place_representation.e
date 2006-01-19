@@ -90,7 +90,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 								color.set_xyz (0,255,0)
 								place_factory.take_decision (decision_type)
 								origin_place := place_factory.create_object
-								origin_place.set_origin(places.item (i).origin.x, places.item (i).origin.y, places.item (i).origin.z)	
+								origin_place.set_origin(places.item (i).origin.x, places.item (i).origin.y, places.item (i).origin.z)
 								origin_place.draw					
 							else
 								color.set_xyz (255,0,0)

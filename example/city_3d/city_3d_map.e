@@ -29,6 +29,9 @@ feature -- Initialization
 			mouse_wheel_up_event.subscribe (agent wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
+			building_left_clicked_event.subscribe (agent traffic_buildings.highlight_building(?))
+			building_left_clicked_event.subscribe (agent traffic_buildings.highlight_building(?))
+--			building_right_clicked_event.subscribe (agent test_click(?))
 		end
 			
 
@@ -240,17 +243,17 @@ feature {NONE} -- Event handling
 				end
 				
 				-- check whether a building is clicked 
-				buildings:= map.buildings
-					from 
-						buildings.start
-					until 
-						buildings.after
-					loop
-						if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
-							traffic_buildings.highlight_building (buildings.item)
-						end
-						buildings.forth
-					end
+--				buildings:= map.buildings
+--					from 
+--						buildings.start
+--					until 
+--						buildings.after
+--					loop
+--						if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
+--							traffic_buildings.highlight_building (buildings.item)
+--						end
+--						buildings.forth
+--					end
 
 				
 			elseif event.is_right_button then
@@ -305,17 +308,17 @@ feature {NONE} -- Event handling
 					end
 					
 					-- check whether a building is clicked
-					buildings:= map.buildings
-					from 
-						buildings.start
-					until 
-						buildings.after
-					loop
-						if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
-							traffic_buildings.un_highlight_building (buildings.item)
-						end
-						buildings.forth
-					end
+--					buildings:= map.buildings
+--					from 
+--						buildings.start
+--					until 
+--						buildings.after
+--					loop
+--						if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
+--							traffic_buildings.un_highlight_building (buildings.item)
+--						end
+--						buildings.forth
+--					end
 
 				end
 			end
@@ -443,6 +446,14 @@ feature{NONE} -- Traffic line rides
 				position.set_x (0)
 				position.set_y (0)
 			end
+		end
+		
+	test_click (a_building: TRAFFIC_BUILDING) is
+			-- a test function
+		require
+			building_valid: a_building /= void
+		do
+			io.putstring (a_building.name)
 		end
 		
 	

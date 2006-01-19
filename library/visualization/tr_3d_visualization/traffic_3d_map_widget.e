@@ -56,6 +56,12 @@ feature -- Initialisation
 				
 				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
 				create_coord_system
+				
+				mouse_clicked_event.subscribe (agent publish_mouse_event (?))
+				create building_left_clicked_event.default_create
+				create building_right_clicked_event.default_create
+				create building_middle_clicked_event.default_create
+				create traffic_buildings.make
 
 			ensure
 				sun_created: sun_light /= Void
@@ -314,7 +320,7 @@ feature -- Traffic map loading
 --			traffic_places_polygons := traffic_places.collision_polygons
 			create traffic_lines.make (map)
 			traffic_lines_polygons := traffic_lines.collision_polygons
-			create traffic_buildings.make (map)
+			traffic_buildings.set_map(map)
 			traffic_buildings.set_collision_polygons(collision_polygons)
 			marked_station_changed := True
 		ensure
@@ -435,6 +441,50 @@ feature -- Options
 			
 	traffic_line_ride: BOOLEAN
 			-- Are you just taking a traffic line ride?
+			
+feature -- Mousevents
+
+	publish_mouse_event (event: EM_MOUSEBUTTON_EVENT) is
+			-- 	
+		local
+			result_vec: GL_VECTOR_3D[DOUBLE]
+			clicked_point: GL_VECTOR_3D[DOUBLE]
+			buildings: LINKED_LIST[TRAFFIC_BUILDING]
+		
+		do
+			result_vec := transform_coords(event.screen_x, event.screen_y)				
+			create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z) 
+			buildings:= map.buildings
+			
+			from 
+				buildings.start
+			until 
+				buildings.after
+			loop
+				if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
+					if event.is_left_button then
+						building_left_clicked_event.publish([buildings.item])
+					elseif event.is_right_button then
+							building_right_clicked_event.publish([buildings.item])
+					elseif event.is_middle_button then
+						building_middle_clicked_event.publish([buildings.item])
+					end
+				
+				end
+			buildings.forth
+			end
+		end
+	
+	building_left_clicked_event: EM_EVENT_TYPE [TUPLE [TRAFFIC_BUILDING]]
+			-- event for left click on building
+	
+	building_right_clicked_event: EM_EVENT_TYPE [TUPLE [TRAFFIC_BUILDING]]
+			-- event for right click on building
+	
+	building_middle_clicked_event: EM_EVENT_TYPE [TUPLE [TRAFFIC_BUILDING]]
+			-- event for middle click on building
+
+	
 
 feature {NONE} -- Attributes
 
@@ -467,6 +517,7 @@ feature {NONE} -- Attributes
 			
 	highlighting_delta: DOUBLE
 			-- Height difference between highlighted and normal line representation
+			
 			
 feature {NONE} -- Implementation
 	traffic_lines: TRAFFIC_LINE_REPRESENTATION
