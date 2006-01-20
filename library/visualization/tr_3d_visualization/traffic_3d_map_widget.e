@@ -317,7 +317,7 @@ feature -- Traffic map loading
 			is_map_loaded := True
 			number_of_buildings := 0
 			create traffic_places.make (map)
---			traffic_places_polygons := traffic_places.collision_polygons
+			traffic_places_polygons := traffic_places.collision_polygons
 			create traffic_lines.make (map)
 			traffic_lines_polygons := traffic_lines.collision_polygons
 			traffic_buildings.set_map(map)
