@@ -39,14 +39,14 @@ feature -- Initialization
 				-- default color black
 				
 			create place_factory.make
-	
+			create collision_polygons.make (1)	
 				-- Could be extended, if desired.
 			place_factory.add_place_type (agent create_tram_place, tram_type)
 			place_factory.add_gauger(agent decide_place_type, decision_type)
 			
 			create places.make(1,1)
 			add_places(map)
---			collision_polygons.make (1)	
+			
 		ensure
 			place_factory_created: place_factory /= Void
 			places_created: places /= Void
@@ -90,7 +90,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 								color.set_xyz (0,255,0)
 								place_factory.take_decision (decision_type)
 								origin_place := place_factory.create_object
-								origin_place.set_origin(places.item (i).origin.x, places.item (i).origin.y, places.item (i).origin.z)
+								origin_place.set_origin(places.item (i).origin.x, places.item (i).origin.y, places.item (i).origin.z)	
 								origin_place.draw					
 							else
 								color.set_xyz (255,0,0)
@@ -141,7 +141,8 @@ feature{NONE} -- Implemenation
 					poly_points.force (create {EM_VECTOR_2D}.make (x_coord-place_width, z_coord-place_width), 3) -- right upper corner
 					poly_points.force (create {EM_VECTOR_2D}.make (x_coord-place_width, z_coord), 4) -- right bottom corner
 				
-					create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-0.1,z_coord-0.1), poly_points)
+					create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-(place_width/2),z_coord-(place_width/2)), poly_points)
+					collision_polygons.force (collision_poly)
 					
 					-- place creation
 					place_factory.take_decision (decision_type)
