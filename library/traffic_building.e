@@ -1,20 +1,21 @@
 indexing
-	description: "Objects that ..."
+	description: "Buildings for the traffic library"
 	author: "Fabian Wüest"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "22.01.2006"
+	revision: "0.1"
 
 class
 	TRAFFIC_BUILDING
 
 inherit
-	TRAFFIC_3D_CONSTANTS	
+	TRAFFIC_3D_CONSTANTS
+		export {NONE} all end	
 
 create
 	make
 
 feature
-	make (a_x1,a_x2,a_y1,a_y2: DOUBLE; a_name: STRING) is
+	make (a_x1,a_x2,a_y1,a_y2: DOUBLE;a_id: INTEGER; a_name: STRING) is
 			-- Initialize
 		do
 			x1:=a_x1
@@ -22,6 +23,7 @@ feature
 			y1:=a_y1
 			y2:=a_y2
 			name:= a_name
+			id:= a_id
 		end
 		
 	contains_point(a_x: DOUBLE; a_y: DOUBLE): BOOLEAN is
@@ -35,6 +37,9 @@ feature
 	
 feature
 
+	id: INTEGER
+			-- The absolut number of the building, starting from 1
+	
 	name: STRING
 			-- Name of place.
 		

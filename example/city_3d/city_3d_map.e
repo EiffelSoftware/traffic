@@ -30,7 +30,7 @@ feature -- Initialization
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
 			building_left_clicked_event.subscribe (agent traffic_buildings.highlight_building(?))
-			building_left_clicked_event.subscribe (agent traffic_buildings.highlight_building(?))
+			building_right_clicked_event.subscribe (agent traffic_buildings.un_highlight_building(?))
 --			building_right_clicked_event.subscribe (agent test_click(?))
 		end
 			

@@ -56,12 +56,12 @@ feature -- Initialisation
 				
 				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
 				create_coord_system
-				
+
 				mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 				create building_left_clicked_event.default_create
 				create building_right_clicked_event.default_create
 				create building_middle_clicked_event.default_create
-				create traffic_buildings.make
+				create traffic_buildings.make				
 
 			ensure
 				sun_created: sun_light /= Void
@@ -305,8 +305,8 @@ feature -- Traffic map loading
 			name_valid: filename /= void and then not filename.is_empty
 		local
 			map_file: TRAFFIC_MAP_FILE
-			dump: MAP_DUMP
-		do
+			dump: TRAFFIC_MAP_DUMP
+		do	
 			create dump.make_with_name (filename)
 			map := dump.get_map
 			if not dump.is_up_to_date or map = void then
@@ -316,10 +316,12 @@ feature -- Traffic map loading
 			end
 			is_map_loaded := True
 			number_of_buildings := 0
+			traffic_buildings.delete_buildings
 			create traffic_places.make (map)
 			traffic_places_polygons := traffic_places.collision_polygons
 			create traffic_lines.make (map)
 			traffic_lines_polygons := traffic_lines.collision_polygons
+			
 			traffic_buildings.set_map(map)
 			traffic_buildings.set_collision_polygons(collision_polygons)
 			marked_station_changed := True

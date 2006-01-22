@@ -1,8 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Objects that store information about buildings"
+	author: "Fabian Wüest"
+	date: "22.01.2006"
+	revision: "0.6"
 
 class
 	TRAFFIC_BUILDING_INFORMATION

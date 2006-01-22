@@ -9,9 +9,13 @@ class
 
 inherit
 	STORABLE
+		export
+			
+			{TRAFFIC_MAP_DUMP} all 
 		undefine
 			out
 		end
+		
 	
 	LINKED_WEIGHTED_GRAPH [TRAFFIC_PLACE, TRAFFIC_LINE_SECTION]
 		rename

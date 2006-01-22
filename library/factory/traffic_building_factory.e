@@ -1,8 +1,8 @@
 indexing
-	description: "Objects that ..."
+	description: "Factory for TRAFFIC_BUILDINGS"
 	author: "Fabian Wüest"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "22.01.2006"
+	revision: "0.1"
 
 class
 	TRAFFIC_BUILDING_FACTORY

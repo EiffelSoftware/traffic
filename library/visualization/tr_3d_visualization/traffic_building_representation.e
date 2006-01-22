@@ -9,12 +9,16 @@ class
 
 inherit
 	EM_CONSTANTS
+		 export {NONE} all end
 	
 	GL_FUNCTIONS
-	
+		export {NONE} all end	
+		
 	GLU_FUNCTIONS
+		export {NONE} all end
 	
 	TRAFFIC_3D_CONSTANTS
+		export {NONE} all end
 	
 
 creation
@@ -36,17 +40,21 @@ feature
 
 	draw is
 			-- draw all buildings
-						
+		local				
+			i:INTEGER
 		do
 			
-			if not (buildings = void) then
+			if not (buildings = void and number_of_buildings <= 0) then
 				from
-					buildings.start
+					--buildings.start
+					i:= 1
 				until
-					buildings.after
+					--buildings.after
+					i > number_of_buildings
 				loop
-					buildings.item.draw
-					buildings.forth
+					buildings.i_th(i).draw
+					--buildings.forth
+					i:=i+1
 				end
 			end
 		end
@@ -65,7 +73,11 @@ feature
 			temp:= building_factory.create_object
 			temp.set_origin (a_building.x1,0,a_building.y2)
 			temp.set_scale (0.25,0.25,0.25)
-			buildings.force (temp)
+			buildings.go_i_th (a_building.id)
+			buildings.replace (temp)
+			wall_color.set_xyz (0.5,0.5,0.5)
+			roof_color.set_xyz (1.0,0,0)
+			building_factory.changed
 		end
 		
 		
@@ -76,13 +88,11 @@ feature
 		local
 			temp: EM_3D_OBJECT
 		do
-			wall_color.set_xyz (0.5,0.5,0.5)
-			roof_color.set_xyz (1.0,0,0)
-			building_factory.changed
 			temp:= building_factory.create_object
 			temp.set_origin (a_building.x1,0,a_building.y2)
 			temp.set_scale (0.25,0.25,0.25)
-			buildings.force (temp)
+			buildings.go_i_th (a_building.id)
+			buildings.replace (temp)
 		end
 	
 	set_map (a_map: TRAFFIC_MAP) is
@@ -176,7 +186,7 @@ feature
 				temp.set_origin (i-25,0,i-25)
 				temp.set_scale (0.25,0.25,0.25)
 				buildings.force (temp)
-				create building.make(i-25,i-25+0.25,i-25-0.25,i-25,"name" + i.out)
+				create building.make(i-25,i-25+0.25,i-25-0.25,i-25,i,"name" + i.out)
 				map.add_building (building)
 				i:= i + 1
 			end
@@ -218,7 +228,7 @@ feature
 					building.set_scale (0.25,0.25,0.25)
 					building.set_origin (x_coord, 0, z_coord)
 					buildings.force (building)
-					create traffic_building.make(x_coord,x_coord+0.25,z_coord-0.25,z_coord,"name" + i.out)
+					create traffic_building.make(x_coord,x_coord+0.25,z_coord-0.25,z_coord,i,"name" + i.out)
 					map.add_building (traffic_building)
 					i := i + 1
 				end
@@ -226,6 +236,15 @@ feature
 			end
 			
 		end
+		
+	delete_buildings is
+			-- Delete buildings from representation.
+		do
+			buildings.wipe_out
+			number_of_buildings:= 0
+		--	map.buildings:= void
+		end
+		
 		
 	
 	has_collision (poly_a: EM_COLLIDABLE): BOOLEAN is
@@ -250,16 +269,15 @@ feature
 		require
 			n_valid: n >= 0
 		do
-			add_randomly (1000-buildings.count)	
---			if n > buildings.count then
---				add_randomy (n - buildings.count)
---				number_of_buildings := n
---			else
---				number_of_buildings := n
---			end
---		ensure
---			number_of_buildings = n
---			buildings.count >= number_of_buildings
+		if n > buildings.count then
+			add_randomly (n - buildings.count)
+			number_of_buildings := n
+		else
+			number_of_buildings := n
+		end
+		ensure
+			number_of_buildings = n
+			buildings.count >= number_of_buildings
 		end
 		
 	feature -- Collsion setting		

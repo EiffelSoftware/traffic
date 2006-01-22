@@ -1,11 +1,11 @@
 indexing
-	description: ""
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Class for creatin a dump file of a traffic map"
+	author: "Fabian Wüest"
+	date: "22.01.2006"
+	revision: "0.1"
 
 class
-	MAP_DUMP
+	TRAFFIC_MAP_DUMP
 	
 creation
 	make_with_name

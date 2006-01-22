@@ -349,7 +349,6 @@ feature -- Event handling
 			-- Checkbox has been checked.
 		do
 			map.set_buildings_shown (True)
-			--map.set_number_of_buildings (number_of_buildings)
 		end
 		
 	buildings_unchecked is
