@@ -11,17 +11,46 @@ inherit
 	EM_TIME_SINGLETON
 	
 create
-	make_day
+	make_day, make
 	
 feature -- Creation
+
+	make is
+			-- create a new object without setting the time
+		do
+			callback_delay := 0
+			create all_procedures.make
+			
+			actual_hour := 0
+			actual_minute := 0
+			actual_second := 0
+			
+			add_callback_procedure (agent time_count)		
+
+--			time.add_timed_callback (callback_delay, agent call_procedure (?))
+		end
+		
 
 	make_day(simulated_day_minutes: INTEGER) is
 			-- the day lasts for 'simulated_day_minutes'
 	require
 		simulated_day_minutes >= 1
 	do		
-		call_back_delay := ((simulated_day_minutes/minutes_per_day)*seconds_per_minute*milliseconds_per_second).rounded
-		time.set_are_timed_procedures_paused (True)
+		callback_delay := ((simulated_day_minutes/minutes_per_day)*seconds_per_minute*milliseconds_per_second).rounded
+		create all_procedures.make
+
+		
+		actual_hour := 0
+		actual_minute := 0
+		actual_second := 0
+		
+		add_callback_procedure (agent time_count)
+		
+		actual_hour := 0
+		actual_minute := 0
+		actual_second := 0
+	
+--		time.add_timed_callback (callback_delay, agent call_procedure (?))
 	end
 
 feature{NONE} -- Time facts
@@ -38,7 +67,8 @@ feature{NONE} -- Time facts
 	
 	Milliseconds_per_second: INTEGER is 1000
 	
-	call_back_delay: INTEGER
+	callback_delay: INTEGER
+		
 
 feature  --Time Attributes
 	
@@ -50,94 +80,106 @@ feature  --Time Attributes
 	
 	actual_second: INTEGER
 		-- simluated second, not useful yet 
+		
+	change_simulated_time(simulated_day_minutes: INTEGER) is
+			-- the day lasts for 'simulated_day_minutes'
+		require
+			simulated_day_minutes >= 1
+		do		
+			callback_delay := ((simulated_day_minutes/minutes_per_day)*seconds_per_minute*milliseconds_per_second).rounded
+		end
+	
 	
 feature -- Handling
 
-	start_time is	
+	time_count is	
 			-- start the time
 			require
-				call_back_delay > 0
 				actual_second >= 0
 				actual_minute >= 0
-				actual hour >= 0
-				not is_time_running
+				actual_hour >= 0
 			do
-				if actual_minute < 60 then
-						actual minute := actual_minute+1
+				if actual_minute < minutes_per_hour-1 then
+					actual_minute := actual_minute+1
+				else
+					if actual_hour < hours_per_day-1 then
+						actual_hour := actual_hour+1
 					else
-						if actual_hour < 24 then
-							actual_hour := actual_hour+1
-						else
-							actual_hour := 0
-						end
-						actual_minute := 0
+						actual_hour := 0
 					end
---				from
---					is_time_running := True
---				until
---					is_time_running = False
---				loop
---					-- not yet used
-----					if second < 60 then
-----						second := second + 1
-----					else
-----						second := 0
-----					end
---					if actual_minute < 60 then
---						actual minute := actual_minute+1
---					else
---						if actual_hour < 24 then
---							actual_hour := actual_hour+1
---						else
---							actual_hour := 0
---						end
---						actual_minute := 0
---					end
---					
---				end
-			end
-		
-	stop_time is
-			-- stop the time
-			require
-				actual_hour > 0 
-				actual_minute > 0
-				is_time_running
-			do
-				is_time_running := False
-			ensure
-				is_time_running = False
-			end
-		
-	reset_time is
-			-- reset the time
-			do
-				if is_time_running then
-					stop_time	
+					actual_minute := 0
 				end
-				actual_hour := 0
-				actual_minute := 0
-				actual_second := 0
-			ensure
-				actual_hour = 0
-				actual_minute = 0
-				actual_second = 0
-				not is_time_running 
+
 			end
 		
 		
 	
-	is_time_running: BOOLEAN
+	is_time_running: BOOLEAN		
 			-- is time startet
 		
-
+feature -- time
+	start_time is
+			-- start to count the time
+			require
+				not is_time_running
+			do
+				is_time_running := True
+				time.add_timed_callback (callback_delay, agent call_procedure (?))
+--				time.add_timed_procedure (agent time_count, callback_delay)
+--				add_callback_function (time_count)
+			ensure
+				is_time_running
+			end
+			
+	pause_time is
+			-- pause the time count
+			require
+				is_time_running
+			do
+--				time.quit
+				is_time_running := False
+			ensure
+				not is_time_running
+			end
+		
+	resume_time is
+			-- resume the paused time
+			require
+				not is_time_running
+			do
+				start_time
+			ensure
+				is_time_running
+			end
+		
 feature -- Procedures
 
-add_callback_funtion( a_procedure: PROCEDURE[ANY,TUPLE]) is
-		-- 
-	do
-		time.add_timed_procedure (a_procedure, call_back_delay)
-	end
+	all_procedures: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
+	
+	add_callback_procedure(a_procedure: PROCEDURE[ANY, TUPLE]) is
+			-- add a procedure
+		do
+			all_procedures.force(a_procedure)
+		end
 
+	call_procedure(an_interval: INTEGER): INTEGER is
+			-- call all procedures all 'an_interval' milliseconds
+			do
+				from
+					all_procedures.start
+				until
+					all_procedures.after
+				loop
+					all_procedures.item.call ([Void])
+					all_procedures.forth
+				end
+				if is_time_running then
+					Result := an_interval	
+				else
+					Result := 0
+				end
+				
+			end
+		
 
 end

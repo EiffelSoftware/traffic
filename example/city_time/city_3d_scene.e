@@ -29,7 +29,7 @@ feature -- Interface
 			set_frame_counter_visibility (True)
 			
 			create bg_color.make_with_rgb (150,255,150)
-			
+						
 			-- Toolbar
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded, window_height)
 				
@@ -57,6 +57,10 @@ feature -- Interface
 			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (zoom_in_button)
 
+			-- time
+			simulated_time := 1
+			create traffic_time.make_day (simulated_time)
+			traffic_time.add_callback_procedure (agent time_count)
 
 			-- time button
 			time_button.set_position (20 ,200)
@@ -64,6 +68,30 @@ feature -- Interface
 			time_button.clicked_event.subscribe (agent time_button_clicked)
 			time_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget(time_button)
+			
+			
+			-- time labels
+			create time_label.make_from_text("hour: minute:")
+			create simulated_time_label.make_from_text (simulated_time.out)
+			
+			-- label init
+			simulated_time_label.set_position (140, 250)
+			simulated_time_label.set_optimal_dimension (50, 20)
+			simulated_time_label.resize_to_optimal_dimension
+			simulated_time_label.set_background_color (bg_color)
+			simulated_time_label.set_tooltip ("simulated time")
+			toolbar_panel.add_widget (simulated_time_label)
+
+			-- simulated time
+			create time_slider.make_from_range_horizontal (1, 60)
+			time_slider.set_position (20, 250)
+			time_slider.set_optimal_dimension (120, 20)
+			time_slider.resize_to_optimal_dimension
+			time_slider.set_background_color (bg_color)
+			time_slider.set_tooltip ("Day simulation minutes")
+			time_slider.position_changed_event.subscribe (agent number_of_minutes_changed (simulated_time_label, ?))
+			toolbar_panel.add_widget (time_slider)
+			
 			
 			-- Labels for origin and destination
 			create marked_origin_title.make_from_text ("Marked station:")
@@ -138,6 +166,13 @@ feature -- Interface
 			marked_destination_label.set_tooltip ("Marked Station")
 			toolbar_panel.add_widget (marked_destination_label)
 			
+			
+			time_label.set_position(15, 550)
+			time_label.set_optimal_dimension(180,20)
+			time_label.resize_to_optimal_dimension
+			time_label.set_background_color (bg_color)
+			toolbar_panel.add_widget (time_label)
+			
 			-- adding zurich_mini.xml as default
 			map.load_map ("map/zurich_mini.xml")
 			loaded_file_name := "map/zurich_mini.xml"
@@ -169,11 +204,14 @@ feature -- Event handling
 		require
 			time_button /= Void
 		do
+			traffic_time.change_simulated_time (simulated_time)
 			time_button.set_pressed(False)
 			if is_time_enabled then
+				traffic_time.pause_time
 				time_button.set_text ("continue time")
 				set_time_enabled(false)
 			else		
+				traffic_time.resume_time
 				time_button.set_text("pause time")
 				set_time_enabled(true)
 			end
@@ -234,7 +272,25 @@ feature -- Event handling
 		ensure 
 			map_file_name = name
 		end
+	
+	number_of_minutes_changed (label: EM_LABEL; number: INTEGER) is
+			-- the slider was used
+		require
+			label /= Void
+		do
+			simulated_time := number
+			label.set_text (simulated_time.out)
+		end
 		
+feature	 -- time counting
+	time_count is
+			-- update the time label
+			do
+				time_label.set_text ("hour: "+traffic_time.actual_hour.out+" minute: "+traffic_time.actual_minute.out)
+			end
+		
+	
+	
 feature -- Widgets
 
 	toolbar_panel: EM_PANEL
@@ -261,6 +317,15 @@ feature -- Widgets
 	marked_origin_title: EM_LABEL
 			-- Name of the (origin) station
 			
+	time_slider: EM_SCROLLBAR
+			-- Scrollbar for the time		
+	
+	time_label: EM_LABEL
+			-- Label for time display
+			
+	simulated_time_label: EM_LABEL
+			-- label for simulated time
+			
 	marked_destination_label: EM_LABEL
 			-- Label for the destination
 			
@@ -271,6 +336,8 @@ feature -- Widgets
 			-- is the time running
 			
 feature {NONE} -- Implementation
+
+	traffic_time: TRAFFIC_TIME
 
 	set_time_enabled(a_boolean: BOOLEAN) is
 			-- set the is_time_enabled option
@@ -291,6 +358,9 @@ feature {NONE} -- Implementation
 
 	map: CITY_3D_MAP
 			-- The 3 dimensional representation of the map
+	
+	simulated_time: INTEGER
+			-- Number of minutes a day will last
 	
 	search_for_xml: DS_LINKED_LIST[STRING] is
 			-- Search for xml files.
