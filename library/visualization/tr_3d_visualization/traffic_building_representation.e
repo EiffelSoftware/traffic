@@ -228,7 +228,7 @@ feature
 					building.set_scale (0.25,0.25,0.25)
 					building.set_origin (x_coord, 0, z_coord)
 					buildings.force (building)
-					create traffic_building.make(x_coord,x_coord+0.25,z_coord-0.25,z_coord,i,"name" + i.out)
+					create traffic_building.make(x_coord,x_coord+0.25,z_coord-0.25,z_coord,i,"building " + i.out)
 					map.add_building (traffic_building)
 					i := i + 1
 				end
@@ -242,7 +242,6 @@ feature
 		do
 			buildings.wipe_out
 			number_of_buildings:= 0
-		--	map.buildings:= void
 		end
 		
 		

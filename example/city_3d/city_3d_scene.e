@@ -26,12 +26,13 @@ feature -- Interface
 		do
 			make_component_scene
 			
-			set_frame_counter_visibility (True)
+			set_frame_counter_visibility (False)
 			
 			create bg_color.make_with_rgb (150,255,150)
 			
 			-- Toolbar
-			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded, window_height)
+			create toolbar_panel.make_from_dimension (200, window_height)
+			create toolbar_panel_left.make_from_dimension (200, window_height)
 			
 			-- Checkboxes
 			create highlighting_checkbox.make_from_text ("Highlight lines")
@@ -71,16 +72,33 @@ feature -- Interface
 --				create map_widget.make
 --				map_widget.set_position(0,0)
 --				add_component (map_widget)
-				map.set_position (0, 0)
+				map.set_position (200, 0)
 				add_component (map)
 			else
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
+			map.building_left_clicked_event.subscribe (agent show_building_information)
+			
+			create traffic_building_name.make_from_text("")
+			create traffic_building_label.make_from_text("Name of marked building:")
 			
 			-- Toolbar Panel
 			toolbar_panel.set_background_color (bg_color)
-			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
+--			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
+			toolbar_panel.set_position (window_width-200, 0)
 			add_component (toolbar_panel)
+			
+			-- Toolbar Panel left hand side
+			toolbar_panel_left.set_background_color (bg_color)
+			toolbar_panel_left.set_position (0,0)
+			add_component (toolbar_panel_left)
+			
+			traffic_building_label.set_position(10,40)
+			toolbar_panel_left.add_widget (traffic_building_label)
+			traffic_building_name.set_position(10,60)
+			traffic_building_name.set_dimension (150,20)
+			toolbar_panel_left.add_widget (traffic_building_name)
+			
 			
 			-- Combobox title
 			combo_title.set_position (10,50)
@@ -299,7 +317,7 @@ feature -- Event handling
 		require
 			label /= Void
 		do
-			number_of_buildings := 10*number
+			number_of_buildings := 49*number
 			label.set_text (number_of_buildings.out)
 			if map /= Void and then map.is_map_loaded then
 				map.set_number_of_buildings (number_of_buildings)
@@ -423,10 +441,21 @@ feature -- Event handling
 			map_file_name = name
 		end
 		
+	show_building_information (a_building: TRAFFIC_BUILDING) is
+			-- a test function
+		require
+			building_valid: a_building /= void
+		do
+			traffic_building_name.set_text (a_building.name)
+		end	
+	
 feature -- Widgets
 
 	toolbar_panel: EM_PANEL
 			-- Panel, in which all option widgets are displayed.
+			
+	toolbar_panel_left: EM_PANEL
+			-- Panel on the left hand side
 			
 	buildings_transparent_checkbox: EM_CHECKBOX
 			-- Checkbox for transparent buildings
@@ -484,6 +513,9 @@ feature -- Widgets
 	
 	traffic_line_ride_button: EM_BUTTON
 			-- Botton to take a traffic line ride
+			
+	traffic_building_name: EM_LABEL
+	traffic_building_label: EM_LABEL
 		
 feature {NONE} -- Implementation
 
