@@ -81,6 +81,7 @@ feature -- Interface
 			
 			create traffic_building_name.make_from_text("")
 			create traffic_building_label.make_from_text("Name of marked building:")
+			create load_buildings_button.make_from_text("Load buildings")
 			
 			-- Toolbar Panel
 			toolbar_panel.set_background_color (bg_color)
@@ -98,6 +99,10 @@ feature -- Interface
 			traffic_building_name.set_position(10,60)
 			traffic_building_name.set_dimension (150,20)
 			toolbar_panel_left.add_widget (traffic_building_name)
+			
+			load_buildings_button.set_position (10, 100)
+			load_buildings_button.clicked_event.subscribe (agent load_buildings_clicked)
+			toolbar_panel_left.add_widget (load_buildings_button)
 			
 			
 			-- Combobox title
@@ -448,6 +453,25 @@ feature -- Event handling
 		do
 			traffic_building_name.set_text (a_building.name)
 		end	
+		
+	load_buildings_clicked is
+			-- 
+		local
+			parser: TRAFFIC_BUILDING_PARSER
+		do
+			create parser.make_with_map(map)
+			parser.set_file_name ("buildings/test.xml")
+			parser.parse
+			if parser.has_error then
+				io.putstring ("Error while parsing buildings ")
+				io.putstring (parser.error_description)
+			end
+			parser.process
+			if parser.has_error then
+				io.putstring ("Error while processing" + parser.error_description)
+			end
+		end
+		
 	
 feature -- Widgets
 
@@ -516,6 +540,8 @@ feature -- Widgets
 			
 	traffic_building_name: EM_LABEL
 	traffic_building_label: EM_LABEL
+	
+	load_buildings_button: EM_BUTTON
 		
 feature {NONE} -- Implementation
 

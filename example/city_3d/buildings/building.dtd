@@ -1,0 +1,11 @@
+<!ELEMENT buildings (building*)>
+
+<!ELEMENT building EMPTY>
+<!ATTLIST building
+	name CDATA #REQUIRED
+	x1 CDATA #REQUIRED
+	x2 CDATA #REQUIRED
+	y1 CDATA #REQUIRED
+	y2 CDATA #REQUIRED
+	height CDATA #REQUIRED
+  >

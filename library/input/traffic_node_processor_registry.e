@@ -48,6 +48,20 @@ feature -- Status setting
 		do
 			Result := Processor_registry.has_item (a_processor)
 		end
+	
+	set_map (a_map: TRAFFIC_3D_MAP_WIDGET) is
+			-- Set buildings reference.
+		require
+			map_exists: a_map /= Void
+		do
+			internal_map:= a_map
+		ensure
+			internal_map_set: internal_map = a_map
+		end
+		
+	internal_map: TRAFFIC_3D_MAP_WIDGET
+			-- Reference to internal map 
+		
 		
 feature -- Basic operations
 
@@ -112,6 +126,8 @@ feature {NONE} -- Implementation
 			Result.put (create {TRAFFIC_DESCRIPTION_NODE_PROCESSOR}.make, "description")
 			Result.put (create {TRAFFIC_FILE_NODE_PROCESSOR}.make, "file")
 			Result.put (create {TRAFFIC_COLOR_NODE_PROCESSOR}.make, "color")
+			Result.put (create {TRAFFIC_BUILDINGS_NODE_PROCESSOR}.make, "buildings")
+			Result.put (create {TRAFFIC_BUILDING_NODE_PROCESSOR}.make, "building")
 		ensure
 			Result_exists: Result /= Void
 			Result_not_empty: not Result.is_empty
@@ -161,6 +177,14 @@ feature {NONE} -- Implementation
 			a := <<  >>
 			a.compare_objects
 			Result.put (a, "color")
+--			buildings
+			a := << "building" >>
+			a.compare_objects
+			Result.put (a, "buildings")
+--			building
+			a := << >>
+			a.compare_objects
+			Result.put (a, "building")
 		end
 		
 end

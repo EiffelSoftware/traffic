@@ -419,9 +419,15 @@ feature -- Options
 		end
 		
 	add_buildings(n: INTEGER) is
-			-- adds n buildings to map
+			-- adds n buildings to map.
 		do
 			traffic_buildings.add_randomly (n)
+		end
+	
+	add_building(a_building: TRAFFIC_BUILDING) is
+			-- add `a_building' to map.
+		do
+			traffic_buildings.add (a_building)
 		end
 		
 	

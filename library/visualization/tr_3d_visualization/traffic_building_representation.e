@@ -34,6 +34,7 @@ feature
 			create wall_color.make_xyz (0.5,0.5,0.5)
 			create roof_color.make_xyz (1.0,0,0)
 			create randomizer.set_seed (42)
+			id_counter := 1
 		end
 		
 feature	
@@ -72,7 +73,7 @@ feature
 			building_factory.changed
 			temp:= building_factory.create_object
 			temp.set_origin (a_building.x1,0,a_building.y2)
-			temp.set_scale (0.25,0.25,0.25)
+			temp.set_scale (a_building.x2-a_building.x1,a_building.height/4,a_building.y2-a_building.y1)
 			buildings.go_i_th (a_building.id)
 			buildings.replace (temp)
 			wall_color.set_xyz (0.5,0.5,0.5)
@@ -90,7 +91,7 @@ feature
 		do
 			temp:= building_factory.create_object
 			temp.set_origin (a_building.x1,0,a_building.y2)
-			temp.set_scale (0.25,0.25,0.25)
+			temp.set_scale (a_building.x2-a_building.x1,a_building.height/4,a_building.y2-a_building.y1)
 			buildings.go_i_th (a_building.id)
 			buildings.replace (temp)
 		end
@@ -170,26 +171,22 @@ feature
 		
 
 
-	add (a_number: INTEGER) is
-			-- add `a_number' of buildings
+	add (a_building: TRAFFIC_BUILDING) is
+			-- add `a_building' to representation
+		require
+			building_valid: a_building /= Void
 		local
-			i: INTEGER
-			temp: EM_3D_OBJECT
-			building: TRAFFIC_BUILDING
+			building: EM_3D_OBJECT
+			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 		do
-			from
-				i:= 0
-			until
-				i = a_number
-			loop
-				temp:= building_factory.create_object
-				temp.set_origin (i-25,0,i-25)
-				temp.set_scale (0.25,0.25,0.25)
-				buildings.force (temp)
-				create building.make(i-25,i-25+0.25,i-25-0.25,i-25,i,"name" + i.out)
-				map.add_building (building)
-				i:= i + 1
-			end
+			building:= building_factory.create_object
+			building.set_scale (a_building.x2-a_building.x1,a_building.height/4,a_building.y2-a_building.y1)
+			building.set_origin (a_building.x1, 0, a_building.y2)
+			a_building.set_id(id_counter)
+			id_counter := id_counter + 1
+			buildings.force (building)
+			map.add_building (a_building)
+			number_of_buildings:= number_of_buildings + 1
 		end
 		
 	add_randomly (n: INTEGER) is
@@ -203,6 +200,7 @@ feature
 			traffic_building: TRAFFIC_BUILDING
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 			old_number: INTEGER
+			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
 		do
 			old_number := buildings.count
 			from
@@ -228,7 +226,10 @@ feature
 					building.set_scale (0.25,0.25,0.25)
 					building.set_origin (x_coord, 0, z_coord)
 					buildings.force (building)
-					create traffic_building.make(x_coord,x_coord+0.25,z_coord-0.25,z_coord,i,"building " + i.out)
+					create traffic_building.make(x_coord,x_coord+0.25,z_coord-0.25,z_coord,"building " + i.out)
+					traffic_building.set_height (1)
+					traffic_building.set_id (id_counter)
+					id_counter := id_counter + 1
 					map.add_building (traffic_building)
 					i := i + 1
 				end
@@ -290,11 +291,9 @@ feature
 			end
 	
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-		
 	
 feature
-	collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-	
+
 	number_of_buildings: INTEGER
 	
 	randomizer: RANDOM
@@ -313,6 +312,10 @@ feature
 		-- Centre of the city
 	
 	map: TRAFFIC_MAP
+	
+feature {NONE}
+
+	id_counter: INTEGER
 
 		
 end
