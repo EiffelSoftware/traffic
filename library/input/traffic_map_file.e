@@ -18,8 +18,6 @@ inherit
 		export
 			{NONE} all
 		end	
-		
-	EM_COMPONENT_SCENE
 
 create
 	make_from_file
