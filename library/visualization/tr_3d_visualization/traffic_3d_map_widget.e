@@ -309,7 +309,7 @@ feature -- Traffic map loading
 		do	
 			create dump.make_with_name (filename)
 			map := dump.get_map
-			if not dump.is_up_to_date or map = void then
+			if  map = void or else not dump.is_up_to_date then
 				create map_file.make_from_file (filename)
 				map := map_file.traffic_map
 				dump.create_dump (map)
