@@ -83,9 +83,8 @@ feature {NONE} -- Initialization Implementation
 	set_default_values is
 			-- Set default values for all attributes.
 		do
-			opacity := 255		
-			fill_color := theme.Status_color
-			line_color := theme.Status_color
+--			opacity := 255		
+			color := theme.Status_color
 			alignment := theme.Left
 			font := theme.Small_default_font
 			title_font := theme.Big_default_font
@@ -94,8 +93,7 @@ feature {NONE} -- Initialization Implementation
 			padding := 0
 			auto_resize := False
 		ensure
-			fill_color_set: fill_color /= Void
-			line_color_set: line_color /= Void
+			color_set: color /= Void
 			font_set: font /= Void
 			title_font_set: title_font /= Void
 		end
@@ -103,15 +101,14 @@ feature {NONE} -- Initialization Implementation
 	initialize_box is
 			-- Initialize box with default values.
 		require
-			line_color_exists: line_color /= Void
-			fill_color_exists: fill_color /= Void
+			color_exists: color /= Void
 		do
 			box.set_rounded_corner_radius (10)
 			box.set_line_width (1)			
-			box.set_line_color (line_color)
-			box.line_color.set_alpha (255)
-			box.set_fill_color (fill_color)
-			box.fill_color.set_alpha (opacity)
+			box.set_line_color (color)
+--			box.line_color.set_alpha (255)
+			box.set_fill_color (color)
+--			box.fill_color.set_alpha (opacity)
 			extend (box)
 		ensure
 			box_added: has (box)		
@@ -198,37 +195,48 @@ feature -- Status setting
 			padding_set: padding = a_padding
 		end
 
-	set_opacity (an_opacity: like opacity) is
-			-- Set `opacity' to `an_opacity'.
-		do
-			opacity := an_opacity
-			update_color
-		ensure
-			opacity_set: opacity = an_opacity
-		end
-		
-	set_fill_color (a_color: like fill_color) is
-			-- Set `fill_color' to `a_color'.
+--	set_opacity (an_opacity: like opacity) is
+--			-- Set `opacity' to `an_opacity'.
+--		do
+--			opacity := an_opacity
+--			update_color
+--		ensure
+--			opacity_set: opacity = an_opacity
+--		end
+--		
+--	set_fill_color (a_color: like fill_color) is
+--			-- Set `fill_color' to `a_color'.
+--		require
+--			a_color_exists: a_color /= Void
+--		do
+--			fill_color := a_color
+--			update_color
+--		ensure
+--			color_set: fill_color = a_color
+--		end
+--		
+--	set_line_color (a_color: like line_color) is
+--			-- Set `line_color' to `a_color'.
+--		require
+--			a_color_exists: a_color /= Void
+--		do
+--			line_color := a_color
+--			update_color
+--		ensure
+--			color_set: line_color = a_color
+--		end
+	
+	set_color (a_color: like color) is
+			-- Set `color' to `a_color'.
 		require
 			a_color_exists: a_color /= Void
 		do
-			fill_color := a_color
+			color := a_color
 			update_color
 		ensure
-			color_set: fill_color = a_color
+			color_set: color = a_color
 		end
-		
-	set_line_color (a_color: like line_color) is
-			-- Set `line_color' to `a_color'.
-		require
-			a_color_exists: a_color /= Void
-		do
-			line_color := a_color
-			update_color
-		ensure
-			color_set: line_color = a_color
-		end
-		
+	
 	set_alignment (an_alignment: like alignment) is
 			-- Set `alignment' of the lines to `an_alignment'.
 		require
@@ -320,14 +328,16 @@ feature {NONE} -- Implementation
 	alignment: INTEGER
 			-- Alignment of the lines.
 
-	opacity: INTEGER
+--	opacity: INTEGER
 			-- Opacity of the background box.
 	
-	fill_color: EM_COLOR
-			-- Color of the background box.
+--	fill_color: EM_COLOR
+--			-- Color of the background box.
+--
+--	line_color: EM_COLOR
+--			-- Color of the background box.
 
-	line_color: EM_COLOR
-			-- Color of the background box.
+	color: EM_COLOR
 
 	box: EM_RECTANGLE
 			-- Box in the background.
@@ -352,10 +362,13 @@ feature {NONE} -- Implementation
 			
 	update_color is
 			-- Update color of the background box and its stroke.
+		local
+			a_color: EM_COLOR
 		do
-			box.set_fill_color (fill_color)
-			box.set_line_color (line_color)
-			box.fill_color.set_alpha (opacity)
+			box.set_fill_color (color)
+			create a_color.make_with_rgb (color.red, color.green, color.blue)
+			a_color.set_alpha (255)
+			box.set_line_color (a_color)
 		end
 
 	update_lines is

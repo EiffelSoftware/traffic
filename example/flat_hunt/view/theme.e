@@ -20,6 +20,12 @@ inherit
 
 feature -- Colors
 
+	Dialog_color : EM_COLOR is
+		deferred
+		ensure
+			color_exists: Result /= Void
+		end
+
 	Player_status_color : EM_COLOR is
 		deferred
 		ensure
@@ -74,7 +80,6 @@ feature -- Colors
 		ensure
 			color_exists: Result /= Void
 		end
-
 		
 	Status_font_color: EM_COLOR is
 		deferred

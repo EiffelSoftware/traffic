@@ -34,11 +34,9 @@ feature -- Initialization
 			
 			-- Build background_box
 			create background_box.make_from_coordinates (0, 0, a_width, a_height, a_title)
-			background_box.set_fill_color (theme.Menu_box_color)
-			background_box.set_line_color (theme.Menu_box_color)
+			background_box.set_color (theme.Menu_box_color)
 			background_box.set_title_font (theme.Menu_font)
 			background_box.set_font (theme.Small_menu_font)
-			background_box.set_opacity (70)
 			background_box.set_auto_resize (False)
 			extend (background_box)
 			

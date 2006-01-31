@@ -12,29 +12,39 @@ inherit
 
 feature -- Colors
 
+	Dialog_color : EM_COLOR is
+			once
+				create Result.make_with_rgb (white.red, white.green, white.blue)
+				Result.set_alpha (200)
+			end	
+
 	Player_status_color : EM_COLOR is
-			do
+			once
 				create Result.make_with_rgb (light_gray.red, light_gray.green, light_gray.blue)
+				Result.set_alpha (150)
 			end	
 
 	Background_color : EM_COLOR is
 		once
-			Result := gray
+			Result := gray.twin
 		end		
 
 	Credits_color : EM_COLOR is
 		once
-			Result := dark_gray
+			Result := dark_gray.twin
+			Result.set_alpha (50)
 		end		
 
 	Menu_color: EM_COLOR is
 		once
-			Result := dark_gray
+			Result := dark_gray.twin
+			Result.set_alpha (70)
 		end
 		
 	Menu_box_color: EM_COLOR is
 		once
-			Result := light_gray
+			Result := light_gray.twin
+			Result.set_alpha (70)
 		end
 		
 		
@@ -66,7 +76,8 @@ feature -- Colors
 	Status_color : EM_COLOR is
 			-- Color of the status boxes.
 		once
-			Result := light_gray
+			create Result.make_with_rgb (light_gray.red, light_gray.green, light_gray.blue)
+			Result.set_alpha (70)
 		end
 
 	Navigation_color : EM_COLOR is

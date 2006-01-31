@@ -32,9 +32,7 @@ feature -- Initialization
 			-- Build big background box.
 			create background_box.make_from_coordinates (Margin, 120, Window_width - Margin, Window_height - 120, "credits")
 			background_box.set_title_font (theme.Menu_font)
-			background_box.set_line_color (theme.Menu_color)
-			background_box.set_fill_color (theme.Menu_color)
-			background_box.set_opacity (70)
+			background_box.set_color (theme.Menu_color)
 			main_container.extend (background_box)			
 
 			-- Build inner status boxes.
@@ -59,9 +57,7 @@ feature -- Initialization
 				inner_boxes.item.set_auto_resize (True)
 				inner_boxes.item.set_font (theme.Small_credits_font)
 				inner_boxes.item.set_title_font (theme.Small_menu_font)
-				inner_boxes.item.set_line_color (theme.Credits_color)
-				inner_boxes.item.set_fill_color (theme.Credits_color)
-				inner_boxes.item.set_opacity (50)
+				inner_boxes.item.set_color (theme.Credits_color)
 				inner_boxes.item.set_alignment (theme.Centered)
 				inner_boxes.item.set_padding (-20)				
 				
