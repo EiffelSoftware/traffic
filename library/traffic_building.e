@@ -34,7 +34,7 @@ feature
 	set_id(an_id: INTEGER) is
 			-- set id to `an_id'.
 		require
-			valid_id: id > 0
+			valid_id: an_id > 0
 		do
 			id := an_id
 		end
