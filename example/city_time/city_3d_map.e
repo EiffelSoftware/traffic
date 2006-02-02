@@ -10,7 +10,7 @@ class
 inherit
 	TRAFFIC_3D_MAP_WIDGET
 	redefine
-		make, prepare_drawing, draw
+		make, prepare_drawing, draw, load_map
 	end
 		
 creation
@@ -23,6 +23,9 @@ feature -- Initialization
 			-- Creation procedure
 		do
 			Precursor
+	
+			create traffic_time.make_day (1)
+			
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
 			mouse_wheel_down_event.subscribe (agent wheel_down)
@@ -48,8 +51,22 @@ feature -- Drawing
 
 	draw is
 			-- 
+			local
+				i: INTEGER
 			do
 				Precursor
+				
+				
+				traffic_traveler.draw
+				from
+					i := traffic_traveler.travelers.lower
+				until
+					i > traffic_traveler.travelers.upper
+				loop
+--					traffic_time.add_callback_procedure (agent (traffic_traveler.travelers.item(i)).take_tour)
+--					traffic_time.time.add_timed_procedure (agent (traffic_traveler.travelers.item(i)).take_tour, 5000)
+					i := i+1
+				end
 							-- Draw marked stations
 				if marked_origin /= Void then
 						traffic_places.highlight_place (marked_origin,0)
@@ -83,6 +100,17 @@ feature -- places
 	marked_destination: TRAFFIC_PLACE
 			-- Currently marked destination
 
+feature -- time
+	simulated_time: INTEGER is
+			-- get the time from traffic time
+			require
+				traffic_time /= Void
+			do
+				Result := traffic_time.simulated_minutes
+			end
+		
+		
+	traffic_time: TRAFFIC_TIME
 
 feature {NONE} -- Event handling
 
@@ -277,5 +305,24 @@ feature {NONE} -- Event handling
 				y_translation := 0
 			end
 		end
+
+
+feature	-- Travelere objects
+	
+	traffic_traveler: TRAFFIC_TRAVELER_REPRESENTATION
+	
+feature
+	
+	load_map (filename: STRING) is
+			-- 
+			do
+				Precursor (filename)
+				create traffic_traveler.make (map, traffic_time)
+			ensure then
+				traffic_traveler /= Void
+			end
 		
+invariant
+	traffic_time /= Void
+	
 end -- class CITY_3D_MAP

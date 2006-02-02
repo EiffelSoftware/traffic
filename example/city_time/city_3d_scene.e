@@ -59,8 +59,7 @@ feature -- Interface
 
 			-- time
 			simulated_time := 1
-			create traffic_time.make_day (simulated_time)
-			traffic_time.add_callback_procedure (agent time_count)
+
 
 			-- time button
 			time_button.set_position (20 ,200)
@@ -109,6 +108,10 @@ feature -- Interface
 			else
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
+			
+			-- get time from map
+			traffic_time := map.traffic_time
+			traffic_time.add_callback_procedure (agent time_count)
 			
 			-- Toolbar Panel
 			toolbar_panel.set_background_color (bg_color)
@@ -288,8 +291,8 @@ feature	 -- time counting
 			do
 				time_label.set_text ("hour: "+traffic_time.actual_hour.out+" minute: "+traffic_time.actual_minute.out)
 			end
-		
 	
+		
 	
 feature -- Widgets
 
@@ -334,10 +337,12 @@ feature -- Widgets
 			
 	is_time_enabled: BOOLEAN
 			-- is the time running
+
+	traffic_time: TRAFFIC_TIME
+
 			
 feature {NONE} -- Implementation
 
-	traffic_time: TRAFFIC_TIME
 
 	set_time_enabled(a_boolean: BOOLEAN) is
 			-- set the is_time_enabled option

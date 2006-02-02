@@ -26,8 +26,6 @@ feature -- Creation
 			actual_second := 0
 			
 			add_callback_procedure (agent time_count)		
-
---			time.add_timed_callback (callback_delay, agent call_procedure (?))
 		end
 		
 
@@ -36,6 +34,7 @@ feature -- Creation
 	require
 		simulated_day_minutes >= 1
 	do		
+		simulated_minutes := simulated_day_minutes
 		callback_delay := ((simulated_day_minutes/minutes_per_day)*seconds_per_minute*milliseconds_per_second).rounded
 		create all_procedures.make
 
@@ -51,6 +50,8 @@ feature -- Creation
 		actual_second := 0
 	
 --		time.add_timed_callback (callback_delay, agent call_procedure (?))
+		ensure
+			simulated_minutes = simulated_day_minutes
 	end
 
 feature{NONE} -- Time facts
@@ -72,6 +73,8 @@ feature{NONE} -- Time facts
 
 feature  --Time Attributes
 	
+	simulated_minutes: INTEGER
+	
 	actual_hour: INTEGER
 		-- actual hour, returns the simulated hour at this day
 	
@@ -86,7 +89,10 @@ feature  --Time Attributes
 		require
 			simulated_day_minutes >= 1
 		do		
+			simulated_minutes := simulated_day_minutes
 			callback_delay := ((simulated_day_minutes/minutes_per_day)*seconds_per_minute*milliseconds_per_second).rounded
+		ensure
+			simulated_minutes = simulated_day_minutes
 		end
 	
 	
@@ -181,5 +187,11 @@ feature -- Procedures
 				
 			end
 		
+invariant
+	actual_hour >= 0
+	actual_minute >= 0
+	simulated_minutes >= 1
+	
+
 
 end
