@@ -37,7 +37,7 @@ feature -- Initialization
 			traffic_time := a_time
 			map := a_map
 			create centre.make_xyz(0,0,0)
-			create color.make_xyz(0,0,0)
+			create color.make_xyz(0,0,255)
 				-- default color black
 				
 			create traveler_factory.make
@@ -47,36 +47,47 @@ feature -- Initialization
 			traveler_factory.add_traveler_type (agent create_passenger, "passenger")
 --			traveler_factory.add_gauger(agent decide_traveler_type(?), "by path")
 --			traveler_factory.add_gauger(agent decide_traveler_type(?), "by type")
-			traveler_factory.add_gauger(agent decide_traveler_type, "by type")
+			traveler_factory.add_gauger(agent decide_traveler_type, "by_type")
 			
-			create trams.make(1,1)
-			create passengers.make(1,1)
+			create trams.make
+			create passengers.make
+			create travelers.make (1,1)
 			number_of_passengers := 0
 			number_of_trams := 0
-			add_random_passenger
-			add_random_passenger
+--			add_random_passenger(100, 20)
+--			add_random_passenger(50, 60)
+			add_trams(map)
 		ensure
 			traveler_factory_created: traveler_factory /= Void
 			travelers_created: travelers /= Void
 			traffic_time = a_time
+			map /= Void
 		end
 		
 feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 	
 	draw is
 			-- draw all places
-		local
-			i: INTEGER
 		do
 			from
-				i := travelers.lower
+				trams.start
 			until
-				i > travelers.upper
+				trams.after
 			loop
-				if not (travelers.item(i) = Void) then
-					travelers.item(i).draw	
+				if not (trams.item = Void) then
+					trams.item.draw	
 				end
-				i := i+1
+				trams.forth
+			end
+			from
+				passengers.start
+			until
+				passengers.after
+			loop
+				if not (passengers.item = Void) then
+					passengers.item.draw	
+				end
+				passengers.forth
 			end
 		end
 			
@@ -130,44 +141,63 @@ feature -- Implemenation
 --				
 --			end
 		
-		add_random_passenger is
-				-- add a traveler with random walk to the map at start position 'start_x' and 'start_y'
-			local
-				random: RANDOM
-				start_x, start_y: DOUBLE
-				passenger: TRAFFIC_PASSENGER
-				collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-				poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
-			do
-				create random.set_seed (traffic_time.time.ticks)
-				start_x := random.double_item
-				random.forth
-				start_y := random.double_item
-				traveler_factory.take_decision ("by type")
-				passenger ?= traveler_factory.create_object("passenger")
-				passenger.set_origin(start_x*100, 0.2 ,start_y*100)
-				traffic_time.add_callback_procedure (agent passenger.take_tour)
-				if passengers.is_empty then
-					passengers.force (passenger, 1)
-				else
-					passengers.force(passenger, travelers.upper+1)
+		add_directed_passenger (origin: EM_VECTOR_2D; destination: EM_VECTOR_2D; speed: DOUBLE) is
+				-- a passenger walks from origin to destination with 'speed'
+				require
+					origin /= Void
+					destination /= Void
+					speed >= 0 and speed <= 1
+				local
+					passenger: TRAFFIC_PASSENGER
+				do
+					traveler_factory.take_decision ("by_type", [1])
+					passenger ?= traveler_factory.create_object ("passenger")
+					passenger.initialize_directed (origin, destination, speed)
+					traffic_time.add_callback_procedure (agent passenger.take_tour)
+					passengers.force (passenger)					
 				end
+			
+		
+		add_random_passenger (origin: EM_VECTOR_2D) is
+				-- add a traveler with random walk to the map at 'origin'
+			require
+				origin /= Void
+			local
+				passenger: TRAFFIC_PASSENGER
+			do
+				traveler_factory.take_decision ("by_type", [1])
+				passenger ?= traveler_factory.create_object ("passenger")
+				passenger.initialize_random (origin, traffic_time.time.ticks)
+				traffic_time.add_callback_procedure (agent passenger.take_tour)
+				passengers.force (passenger)
 			end
 		
-		add_trams is	
+		add_trams(a_map: TRAFFIC_MAP) is	
 				-- add trams onto the map
 			local
 				tram: TRAFFIC_TRAM
-				collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-				poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
+--				collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
+--				poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
+				a_line: TRAFFIC_LINE
+				all_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 			do
---				from
---					
---				until
---					
---				loop
---					
---				end
+				all_lines := a_map.lines
+				from
+					all_lines.start	
+				until
+					all_lines.after
+				loop
+					a_line := all_lines.item_for_iteration
+					traveler_factory.take_decision ("by_type", [2])
+					tram ?= traveler_factory.create_object("tram")
+					-- here should other trams be entered
+--					tram.prepare_for_tour (a_line)
+--					tram.set_origin (a_line.terminal_1.position.x, 1, a_line.terminal_1.position.y)
+--					tram.set_origin (a_line.item.origin.position.x, 1, a_line.item.origin.position.y)
+					traffic_time.add_callback_procedure (agent tram.take_tour(a_line))
+					trams.force (tram)
+					all_lines.forth
+				end
 			end
 			
 
@@ -185,10 +215,18 @@ feature{NONE} -- Decision procedures
 --		end
 
 
-	decide_traveler_type: STRING is
+	decide_traveler_type(i: INTEGER): STRING is
 			-- decide which type of place is chosen.
+		require
+			i > 0
+			i < 2
+			-- 1 for passenger, 2 for tram
 		do
-			Result := "passenger"
+			if i = 1 then
+				Result := "passenger"
+			else
+				Result := "tram"
+			end
 		end
 
 	create_passenger is
@@ -237,79 +275,123 @@ feature{NONE} -- Decision procedures
 		
 	create_tram is
 			-- create a tram representation
-		require
+--		require
+--			color /= Void
+--		local
+--			tram_length: DOUBLE
+--				-- tram length
+--			tram_width: DOUBLE
+--				-- tram width
+--		do
+--			tram_length := 1
+--			tram_width := 0.3
+--			gl_begin_external (em_gl_quads)
+--				-- Front
+--				gl_bind_texture (Em_gl_texture_2d, 1)
+--				gl_color3d_external (0, 0.15, 0.8) -- Blue
+--				gl_normal3d_external (1, 0, 0)
+--				gl_tex_coord2f_external (0, 0)
+--				gl_vertex3d_external (0.0, 1.0, 0.0)
+--				gl_normal3d_external (1, 0, 0)
+--				gl_tex_coord2f_external (0, 1)
+--				gl_vertex3d_external (0.0, 0.0, 0.0)
+--				gl_normal3d_external (1, 0, 0)
+--				gl_tex_coord2f_external (1, 1)
+--				gl_vertex3d_external (0.0, 0.0, -1.0)
+--				gl_normal3d_external (1, 0, 0)
+--				gl_tex_coord2f_external (1, 0)
+--				gl_vertex3d_external (0.0, 1.0, -1.0)
+--
+--				-- Back
+--				gl_color3d_external (0, 0.15, 0.8) -- Blue
+--				gl_normal3d_external (-1, 0, 0)
+--				gl_tex_coord2f_external (0, 0)
+--				gl_vertex3d_external (-1.0, 0.0, -1.0)
+--				gl_normal3d_external (-1, 0, 0)
+--				gl_tex_coord2f_external (0, 1)
+--				gl_vertex3d_external (-1.0, 1.0, -1.0)
+--				gl_normal3d_external (-1, 0, 0)
+--				gl_tex_coord2f_external (1, 1)
+--				gl_vertex3d_external (-1.0, 1.0, 0.0)
+--				gl_normal3d_external (-1, 0, 0)
+--				gl_tex_coord2f_external (1, 0)
+--				gl_vertex3d_external (-1.0, 0.0, 0.0)
+--
+--				-- Left
+--				gl_color3d_external (1, 0, 0) -- Red
+--				gl_normal3d_external (0, 0, 1)
+--				gl_tex_coord2f_external (0, 0)
+--				gl_vertex3d_external (-1.0, 1.0, 0.0)
+--				gl_normal3d_external (0, 0, 1)
+--				gl_tex_coord2f_external (0, 1)
+--				gl_vertex3d_external (-1.0, 0.0, 0.0)
+--				gl_normal3d_external (0, 0, 1)
+--				gl_tex_coord2f_external (1, 1)
+--				gl_vertex3d_external (0.0, 0.0, 0.0)
+--				gl_normal3d_external (0, 0, 1)
+--				gl_tex_coord2f_external (1, 0)
+--				gl_vertex3d_external (0.0, 1.0, 0.0)
+--
+--				-- Right
+--				gl_color3d_external (1, 0, 0) -- Red
+--				gl_normal3d_external (0, 0, -1)
+--				gl_tex_coord2f_external (0, 0)
+--				gl_vertex3d_external (0.0, 1.0, -1.0)
+--				gl_normal3d_external (0, 0, -1)
+--				gl_tex_coord2f_external (0, 1)
+--				gl_vertex3d_external (0.0, 0.0, -1.0)
+--				gl_normal3d_external (0, 0, -1)
+--				gl_tex_coord2f_external (1, 1)
+--				gl_vertex3d_external (-1.0, 0.0, -1.0)
+--				gl_normal3d_external (0, 0, -1)
+--				gl_tex_coord2f_external (1, 0)
+--				gl_vertex3d_external (-1.0, 1.0, -1.0)
+--			gl_end_external
+				require
 			color /= Void
 		local
-			tram_length: DOUBLE
-				-- tram length
-			tram_width: DOUBLE
-				-- tram width
+			traveler_radius: DOUBLE
+				-- radius of a tram place
 		do
-			tram_length := 1
-			tram_width := 0.3
-					gl_begin_external (em_gl_quads)
-				-- Front
---				gl_bind_texture (Em_gl_texture_2d, texture)
-				gl_color3d_external (0, 0.15, 0.8) -- Blue
-				gl_normal3d_external (1, 0, 0)
-				gl_tex_coord2f_external (0, 0)
-				gl_vertex3d_external (0.0, 1.0, 0.0)
-				gl_normal3d_external (1, 0, 0)
-				gl_tex_coord2f_external (0, 1)
-				gl_vertex3d_external (0.0, 0.0, 0.0)
-				gl_normal3d_external (1, 0, 0)
-				gl_tex_coord2f_external (1, 1)
-				gl_vertex3d_external (0.0, 0.0, -1.0)
-				gl_normal3d_external (1, 0, 0)
-				gl_tex_coord2f_external (1, 0)
-				gl_vertex3d_external (0.0, 1.0, -1.0)
-
-				-- Back
-				gl_color3d_external (0, 0.15, 0.8) -- Blue
-				gl_normal3d_external (-1, 0, 0)
-				gl_tex_coord2f_external (0, 0)
-				gl_vertex3d_external (-1.0, 0.0, -1.0)
-				gl_normal3d_external (-1, 0, 0)
-				gl_tex_coord2f_external (0, 1)
-				gl_vertex3d_external (-1.0, 1.0, -1.0)
-				gl_normal3d_external (-1, 0, 0)
-				gl_tex_coord2f_external (1, 1)
-				gl_vertex3d_external (-1.0, 1.0, 0.0)
-				gl_normal3d_external (-1, 0, 0)
-				gl_tex_coord2f_external (1, 0)
-				gl_vertex3d_external (-1.0, 0.0, 0.0)
-
-				-- Left
-				gl_color3d_external (1, 0, 0) -- Red
-				gl_normal3d_external (0, 0, 1)
-				gl_tex_coord2f_external (0, 0)
-				gl_vertex3d_external (-1.0, 1.0, 0.0)
-				gl_normal3d_external (0, 0, 1)
-				gl_tex_coord2f_external (0, 1)
-				gl_vertex3d_external (-1.0, 0.0, 0.0)
-				gl_normal3d_external (0, 0, 1)
-				gl_tex_coord2f_external (1, 1)
-				gl_vertex3d_external (0.0, 0.0, 0.0)
-				gl_normal3d_external (0, 0, 1)
-				gl_tex_coord2f_external (1, 0)
-				gl_vertex3d_external (0.0, 1.0, 0.0)
-
-				-- Right
-				gl_color3d_external (1, 0, 0) -- Red
-				gl_normal3d_external (0, 0, -1)
-				gl_tex_coord2f_external (0, 0)
-				gl_vertex3d_external (0.0, 1.0, -1.0)
-				gl_normal3d_external (0, 0, -1)
-				gl_tex_coord2f_external (0, 1)
-				gl_vertex3d_external (0.0, 0.0, -1.0)
-				gl_normal3d_external (0, 0, -1)
-				gl_tex_coord2f_external (1, 1)
-				gl_vertex3d_external (-1.0, 0.0, -1.0)
-				gl_normal3d_external (0, 0, -1)
-				gl_tex_coord2f_external (1, 0)
-				gl_vertex3d_external (-1.0, 1.0, -1.0)
-			gl_end_external
+			traveler_radius := 0.2
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(color.pointer)
+			-- a little bit higher than the line
+			gl_translated_external (0, place_height, 0)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+--			glu_quadric_normals_external (glu_new_quadric, 0)
+			glu_disk_external (glu_new_quadric, 0, traveler_radius, 72, 1)
+			gl_pop_matrix_external
+			gl_flush_external
+			
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(color.pointer)
+			-- a little bit higher than the plane
+			gl_translated_external (0 , place_height, 0)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+--			glu_q
+			glu_cylinder_external (glu_new_quadric_external, traveler_radius, traveler_radius, line_depth, 8, 8)
+			gl_pop_matrix_external
+			gl_flush_external
+			
+			traveler_radius := 0.2
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(color.pointer)
+			-- on plane height
+			gl_translated_external (0, 0, 0)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+			glu_disk_external (glu_new_quadric, 0, traveler_radius, 72, 1)
+			gl_pop_matrix_external
+			gl_flush_external
 		end	
+		
+		
 feature{NONE} -- Decision attributes
 	
 	fixed_path: STRING is "fixed_path"
@@ -324,19 +406,19 @@ feature{NONE} -- Decision attributes
 	
 feature{TRAFFIC_3D_MAP_WIDGET}
 
-	travelers: ARRAY[TRAFFIC_TRAVELER_OBJECT] is		
+	travelers: ARRAY[TRAFFIC_TRAVELER_OBJECT]		
 		-- Container for all traveler
-		local
-			container: ARRAY[TRAFFIC_TRAVELER_OBJECT]
-		do
-			create container.make_from_array (trams)
-			container.fill (passengers)
-			Result := container
-		end
+--		local
+--			container: ARRAY[TRAFFIC_TRAVELER_OBJECT]
+--		do
+--			create container.make_from_array (trams)
+--			container.fill (passengers)
+--			Result := container
+--		end
 		
-	passengers: ARRAY[TRAFFIC_PASSENGER]
+	passengers: LINKED_LIST[TRAFFIC_PASSENGER]
 	
-	trams: ARRAY[TRAFFIC_TRAM]
+	trams: LINKED_LIST[TRAFFIC_TRAM]
 		
 	number_of_trams: INTEGER
 		-- number of the tram in the system	

@@ -82,12 +82,12 @@ feature -- Decision process
 			traveler_templates.removed	
 		end
 
-	take_decision (gauger: STRING) is
+	take_decision (gauger: STRING; args: TUPLE) is
 			-- Let `gauger' decide.
 		require
 			gauger_valid: gauger /= void and then not gauger.is_empty
 		do
-			decision := gaugers.item(gauger).item([1])
+			decision := gaugers.item(gauger).item(args)
 			unchanged := False
 		end
 	
@@ -111,7 +111,6 @@ feature -- Decision process
 			else
 				Result := create {TRAFFIC_TRAM}.make (displaylist, object_width, object_height, object_depth)
 			end
---			result := new_object
 		end
 		
 feature {NONE} -- Implementation
@@ -120,10 +119,10 @@ feature {NONE} -- Implementation
 			-- The decision the gauger has taken
 			
 	gaugers: HASH_TABLE[FUNCTION [ANY, TUPLE, STRING], STRING]
-			-- Helps to decide the kind of place to draw.		
+			-- Helps to decide the kind of traveler to draw.		
 			
 	traveler_templates: HASH_TABLE[PROCEDURE[ANY,TUPLE], STRING]
-			-- Containter of all types of places.
+			-- Containter of all types of travelers.
 			
 feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessible from the outside
 
