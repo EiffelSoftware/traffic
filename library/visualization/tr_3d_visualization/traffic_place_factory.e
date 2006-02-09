@@ -12,24 +12,6 @@ inherit
 	
 	EM_SHARED_BITMAP_FACTORY
 		export {NONE} all end
---		
---	EM_CONSTANTS
---		export {NONE} all end
---		
---	GL_FUNCTIONS
---		export {NONE} all end
---		
---	GLU_FUNCTIONS
---		export {NONE} all end
---		
---	MATH_CONST
---		export {NONE} all end
---		
---	DOUBLE_MATH
---		export {NONE} all end
---		
---	SHARED_CONSTANTS
---		export {NONE} all end
 
 create
 	make
