@@ -6,12 +6,9 @@ indexing
 
 class
 	TRAFFIC_TRAVELER_FACTORY
-inherit
+inherit	
 	EM_3D_OBJECT_FACTORY
-	rename
-		create_object as create_em_object
-	end
-	
+
 	EM_SHARED_BITMAP_FACTORY
 		export {NONE} all end
 
@@ -89,28 +86,6 @@ feature -- Decision process
 		do
 			decision := gaugers.item(gauger).item(args)
 			unchanged := False
-		end
-	
-		
-	create_object(a_type: STRING): EM_3D_OBJECT is
-			-- create an object
-		require else
-			what_type_valid: a_type.is_equal("passenger") or a_type.is_equal ("tram")
---		local
---			passenger_object: TRAFFIC_PASSENGER
---			tram_object: TRAFFIC_TRAM
-		do
-			if
-				not unchanged
-			then
-				compile
-				unchanged := true
-			end
-			if a_type.is_equal("passenger") then
-				Result := create {TRAFFIC_PASSENGER}.make (displaylist, object_width, object_height, object_depth)
-			else
-				Result := create {TRAFFIC_TRAM}.make (displaylist, object_width, object_height, object_depth)
-			end
 		end
 		
 feature {NONE} -- Implementation

@@ -23,7 +23,7 @@ feature -- Initialization
 			-- Creation procedure
 		do
 			Precursor
-	
+
 			create traffic_time.make_day (1)
 			
 			-- User Interaction
@@ -50,23 +50,12 @@ feature -- Zoom options
 feature -- Drawing
 
 	draw is
-			-- 
-			local
-				i: INTEGER
+			-- draw the scene
 			do
 				Precursor
 				
 				
 				traffic_traveler.draw
-				from
-					i := traffic_traveler.travelers.lower
-				until
-					i > traffic_traveler.travelers.upper
-				loop
---					traffic_time.add_callback_procedure (agent (traffic_traveler.travelers.item(i)).take_tour)
---					traffic_time.time.add_timed_procedure (agent (traffic_traveler.travelers.item(i)).take_tour, 5000)
-					i := i+1
-				end
 							-- Draw marked stations
 				if marked_origin /= Void then
 						traffic_places.highlight_place (marked_origin,0)
@@ -83,6 +72,15 @@ feature -- Drawing
 			-- prepare the drawing
 			do
 				Precursor
+				
+				from
+					traffic_traveler.travelers.start
+				until
+					traffic_traveler.travelers.after
+				loop
+					traffic_traveler.travelers.item_for_iteration.draw
+					traffic_traveler.travelers.forth
+				end
 				-- Translation
 				gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
 				gl_translated_external (x_translation, -y_translation, 0)
@@ -311,13 +309,34 @@ feature	-- Travelere objects
 	
 	traffic_traveler: TRAFFIC_TRAVELER_REPRESENTATION
 	
+	traveler_index: INTEGER
+	
 feature
 	
 	load_map (filename: STRING) is
 			-- 
+			local
+				traveler: TRAFFIC_TRAVELER
 			do
 				Precursor (filename)
+				
 				create traffic_traveler.make (map, traffic_time)
+				
+				create traveler.make_directed (create {EM_VECTOR_2D}.make(0, 0), create {EM_VECTOR_2D}.make(60, 40), "tram", 0.2)
+				traveler_index := 1
+				traveler.set_index(traveler_index)
+			
+				map.add_traveler (traveler)
+				traffic_traveler.add_traveler (traveler)
+				traveler_index := traveler_index + 1
+				
+				create traveler.make_directed (create {EM_VECTOR_2D}.make(20, 10), create {EM_VECTOR_2D}.make(20, 30), "passenger", 0.2)
+				traveler.set_index(traveler_index)
+			
+				map.add_traveler (traveler)
+				traffic_traveler.add_traveler (traveler)
+				traveler_index := traveler_index + 1
+				
 			ensure then
 				traffic_traveler /= Void
 			end

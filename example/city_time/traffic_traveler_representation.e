@@ -49,14 +49,7 @@ feature -- Initialization
 --			traveler_factory.add_gauger(agent decide_traveler_type(?), "by type")
 			traveler_factory.add_gauger(agent decide_traveler_type, "by_type")
 			
-			create trams.make
-			create passengers.make
-			create travelers.make (1,1)
-			number_of_passengers := 0
-			number_of_trams := 0
---			add_random_passenger(100, 20)
---			add_random_passenger(50, 60)
-			add_trams(map)
+			create travelers.make (1) 
 		ensure
 			traveler_factory_created: traveler_factory /= Void
 			travelers_created: travelers /= Void
@@ -68,26 +61,22 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 	
 	draw is
 			-- draw all places
+		local
+			a_traveler: TRAFFIC_TRAVELER
+			i : INTEGER
 		do
 			from
-				trams.start
+				travelers.start
 			until
-				trams.after
+				travelers.after
 			loop
-				if not (trams.item = Void) then
-					trams.item.draw	
+				if not (travelers.item_for_iteration = Void) then
+					i := travelers.key_for_iteration
+					a_traveler := map.travelers.item (i)
+					travelers.item_for_iteration.set_origin(a_traveler.position.x, traveler_offset, a_traveler.position.y)
+					travelers.item_for_iteration.draw	
 				end
-				trams.forth
-			end
-			from
-				passengers.start
-			until
-				passengers.after
-			loop
-				if not (passengers.item = Void) then
-					passengers.item.draw	
-				end
-				passengers.forth
+				travelers.forth
 			end
 		end
 			
@@ -97,129 +86,32 @@ feature -- Collision detection
 		-- Collision polygons to check for collisions with traffic lines
 	
 feature -- Implemenation
-
---	add_traveler(map: TRAFFIC_MAP) is
---			-- add all places from the map to the places array
---			require
---				map_valid: map /= Void
---			local
---				x_coord, z_coord: DOUBLE
---				i: INTEGER
---				all_places: ARRAYED_LIST [TRAFFIC_LINE_SECTION] -- places are at beginning and end of linesections
---				place: EM_3D_OBJECT
---				collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
---				poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
---			do
---				all_places := map.line_sections
---				from
---					all_places.start
---					i := 0
---				until
---					all_places.after
---				loop
---					x_coord := centre.x + map_to_gl_coords(all_places.item.polypoints.first).x
---					z_coord := centre.z + map_to_gl_coords(all_places.item.polypoints.first).y
---					
---					-- polypoints for the place
---					create poly_points.make
---					poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord), 1)	-- left bottom corner
---					poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord-place_width), 2) -- left upper corner
---					poly_points.force (create {EM_VECTOR_2D}.make (x_coord-place_width, z_coord-place_width), 3) -- right upper corner
---					poly_points.force (create {EM_VECTOR_2D}.make (x_coord-place_width, z_coord), 4) -- right bottom corner
---				
---					create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-(place_width/2),z_coord-(place_width/2)), poly_points)
---					collision_polygons.force (collision_poly)
---					
---					-- place creation
---					place_factory.take_decision (decision_type)
---					place := place_factory.create_object
---					place.set_origin(x_coord, 0.1 ,z_coord)
---					places.force(place, i)
---					i := i+1
---					all_places.forth
---				end
---				
---			end
 		
-		add_directed_passenger (origin: EM_VECTOR_2D; destination: EM_VECTOR_2D; speed: DOUBLE) is
+		add_traveler (a_traveler: TRAFFIC_TRAVELER) is
 				-- a passenger walks from origin to destination with 'speed'
-				require
-					origin /= Void
-					destination /= Void
-					speed >= 0 and speed <= 1
 				local
-					passenger: TRAFFIC_PASSENGER
+					traveler: EM_3D_OBJECT
 				do
-					traveler_factory.take_decision ("by_type", [1])
-					passenger ?= traveler_factory.create_object ("passenger")
-					passenger.initialize_directed (origin, destination, speed)
-					traffic_time.add_callback_procedure (agent passenger.take_tour)
-					passengers.force (passenger)					
+					if a_traveler.traffic_info.is_equal ("passenger") then
+						traveler_factory.take_decision ("by_type", [1])	
+					elseif a_traveler.traffic_info.is_equal ("tram") then
+						traveler_factory.take_decision ("by_type", [2])
+					end		
+					traveler := traveler_factory.create_object
+					traveler.set_origin (a_traveler.position.x, traveler_offset, a_traveler.position.y)
+					traffic_time.add_callback_procedure (agent a_traveler.take_tour)
+					travelers.force (traveler, a_traveler.index)					
 				end
-			
-		
-		add_random_passenger (origin: EM_VECTOR_2D) is
-				-- add a traveler with random walk to the map at 'origin'
-			require
-				origin /= Void
-			local
-				passenger: TRAFFIC_PASSENGER
-			do
-				traveler_factory.take_decision ("by_type", [1])
-				passenger ?= traveler_factory.create_object ("passenger")
-				passenger.initialize_random (origin, traffic_time.time.ticks)
-				traffic_time.add_callback_procedure (agent passenger.take_tour)
-				passengers.force (passenger)
-			end
-		
-		add_trams(a_map: TRAFFIC_MAP) is	
-				-- add trams onto the map
-			local
-				tram: TRAFFIC_TRAM
---				collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
---				poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
-				a_line: TRAFFIC_LINE
-				all_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
-			do
-				all_lines := a_map.lines
-				from
-					all_lines.start	
-				until
-					all_lines.after
-				loop
-					a_line := all_lines.item_for_iteration
-					traveler_factory.take_decision ("by_type", [2])
-					tram ?= traveler_factory.create_object("tram")
-					-- here should other trams be entered
---					tram.prepare_for_tour (a_line)
---					tram.set_origin (a_line.terminal_1.position.x, 1, a_line.terminal_1.position.y)
---					tram.set_origin (a_line.item.origin.position.x, 1, a_line.item.origin.position.y)
-					traffic_time.add_callback_procedure (agent tram.take_tour(a_line))
-					trams.force (tram)
-					all_lines.forth
-				end
-			end
 			
 
 
 feature{NONE} -- Decision procedures
 
---	decide_traveler_type (decision_type: STRING): STRING is
---			-- decide which type of place is chosen.
---		do
---			if decision_type.is_equal ("by path") then
---				Result := "tram"
---			elseif decision_type.is_equal ("by type") then
---				Result := "passenger"
---			end
---		end
-
-
 	decide_traveler_type(i: INTEGER): STRING is
 			-- decide which type of place is chosen.
 		require
 			i > 0
-			i < 2
+			i <= 2
 			-- 1 for passenger, 2 for tram
 		do
 			if i = 1 then
@@ -393,39 +285,16 @@ feature{NONE} -- Decision procedures
 		
 		
 feature{NONE} -- Decision attributes
-	
-	fixed_path: STRING is "fixed_path"
-	 	-- the traveler has a fixed path
-	 
-	random_path: STRING is "random_path"
-		-- the traveler has a random path
 		
 	tram_type: STRING is "tram"
 	
 	passenger_type: STRING is "passenger"
 	
+	
 feature{TRAFFIC_3D_MAP_WIDGET}
 
-	travelers: ARRAY[TRAFFIC_TRAVELER_OBJECT]		
+	travelers: HASH_TABLE [EM_3D_OBJECT, INTEGER]		
 		-- Container for all traveler
---		local
---			container: ARRAY[TRAFFIC_TRAVELER_OBJECT]
---		do
---			create container.make_from_array (trams)
---			container.fill (passengers)
---			Result := container
---		end
-		
-	passengers: LINKED_LIST[TRAFFIC_PASSENGER]
-	
-	trams: LINKED_LIST[TRAFFIC_TRAM]
-		
-	number_of_trams: INTEGER
-		-- number of the tram in the system	
-	
-	number_of_passengers: INTEGER	
-		-- number of passengers in the system
-
 		
 feature{NONE} -- Attributes
 
@@ -443,6 +312,9 @@ feature{NONE} -- Attributes
 		
 	map: TRAFFIC_MAP
 		-- city map
+
+	traveler_offset: DOUBLE is 0.2
+		-- offset of the traveler objects over map.
 
 invariant
 	centre /= Void
