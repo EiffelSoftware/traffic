@@ -49,6 +49,8 @@ feature {NONE} -- Initialization
 			create internal_lines.make (default_size)
 			create internal_line_sections.make (default_size)
 			create internal_place_array.make (200)
+			create internal_travelers.make (1)
+			traveler_index := 1
 			internal_line_sections.compare_objects -- use equal for object comparision
 			create internal_buildings.make
 		ensure
@@ -182,6 +184,15 @@ feature -- Element change
 			internal_buildings.extend (a_building)
 		end
 		
+	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
+			-- Add traveler 'a_traveler' to map.
+			require
+				a_traveler_exists: a_traveler /= Void
+			do
+				internal_travelers.force (a_traveler, a_traveler.index)
+			end
+		
+	
 
 
 	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
@@ -200,8 +211,21 @@ feature -- Element change
 				-- we can assume, that the line_section was only once inserted
 				line_section_removed: not line_sections.has (a_line_section)
 			end
+	
+	increment_index is
+			-- increment the traveler index
+			do
+				traveler_index := traveler_index+1
+			ensure
+				traveler_index = old traveler_index + 1
+			end
+		
+	
 		
 feature -- Access
+	
+	traveler_index: INTEGER
+		-- index of travelers.
 			
 	name: STRING
 			-- Name of region this map represents.
@@ -252,6 +276,13 @@ feature -- Access
 		do
 			Result := internal_buildings.twin
 		end
+		
+	travelers: HASH_TABLE [TRAFFIC_TRAVELER, INTEGER] is
+			-- All travelers on the map
+		do
+			Result := internal_travelers.twin
+		end
+		
 		
 		
 		
@@ -307,6 +338,9 @@ feature {NONE} -- Implementation
 			
 	internal_buildings: LINKED_LIST [TRAFFIC_BUILDING]
 			-- Buildings on map.
+			
+	internal_travelers: HASH_TABLE [TRAFFIC_TRAVELER, INTEGER]
+			-- Travelers on map.
 			
 	place_position (a_name: STRING): INTEGER is
 			-- Position of place `a_name' in places.
@@ -414,6 +448,7 @@ invariant
 	name_not_empty: not name.is_empty -- Map name not empty.
 	places_not_void: internal_places /= Void -- Places exist.
 	lines_not_void: internal_lines /= Void -- Lines exist.
-	line_sections_not_void: internal_line_sections /= Void -- Line sections exist.
+	line_sections_not_void: internal_line_sections /= Void -- Line sections exist
+	travelers_not_void: internal_travelers /= Void -- Travelers exist
 
 end -- class TRAFFIC_MAP

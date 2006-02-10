@@ -92,7 +92,7 @@ feature -- Access
 		
 		
 
-feature {NONE}-- atributes
+feature {NONE}-- attributes
 	xml_name: STRING	
 	
 	dump_name: STRING
