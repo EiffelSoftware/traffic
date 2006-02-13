@@ -69,11 +69,24 @@
 
 	<target name="init">
 	</target>
+	
+	<target name="do_one" export="NONE">
+		<description>
+			Call 'geant' with the same target ${target}
+			and put out message.
+		</description>
+		<argument name="a_directory"/>
+		<set name="a_dir" value="${a_directory}"/>
+		<geant file="build.eant" target="${target}" dir="${a_dir}"/>
+			<echo message="   successfully ${target}ed: application  $a_dir"/>
+	</target>
 
 	<target name="do_all">
-		<geant file="build.eant" target="${target}" dir="flat_hunt"/>
-		<geant file="build.eant" target="${target}" dir="city_3d"/>
-		<!--geant file="build.eant" target="${target}" dir="touch"/-->
+		<geant target="do_one" arguments="flat_hunt"/>
+		<geant target="do_one" arguments="city_3d"/>
+		<geant target="do_one" arguments="city_time"/>
+		<geant target="do_one" arguments="touch_examples"/>
+		<!--geant target="do_one" arguments="touch"/-->
 	</target>
 
 </project>
