@@ -13,7 +13,10 @@ feature
 		do
 --			Paris.display
 --			Louvre.spotlight
-			Line9.set_highlighted
+
+--			Line9.set_highlighted
+
+--			Line8.highlight
 --			Route1.animate
 --			Passenger.move_route (Route2)
 		end
