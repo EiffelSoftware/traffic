@@ -34,6 +34,7 @@ feature
 			create wall_color.make_xyz (0.5,0.5,0.5)
 			create roof_color.make_xyz (1.0,0,0)
 			create randomizer.set_seed (42)
+			create angle_randomizer.set_seed(45)
 			id_counter := 1
 		end
 		
@@ -72,11 +73,11 @@ feature
 			roof_color.set_xyz (0,1.0,1.0)
 			building_factory.changed
 			temp:= building_factory.create_object
-			temp.set_origin (a_building.x1,0,a_building.y2)
-			temp.set_scale (a_building.x2-a_building.x1,a_building.height/4,a_building.y2-a_building.y1)
+			temp.set_origin ((a_building.x1+a_building.x2)/2,0,(a_building.y1+a_building.y2)/2)
+			temp.set_scale ((a_building.x2-a_building.x1),a_building.height/4,(a_building.y2-a_building.y1))
 			buildings.go_i_th (a_building.id)
 			buildings.replace (temp)
-			wall_color.set_xyz (0.5,0.5,0.5)
+			wall_color.set_xyz (0.25,0.25,0.25)
 			roof_color.set_xyz (1.0,0,0)
 			building_factory.changed
 		end
@@ -90,8 +91,8 @@ feature
 			temp: EM_3D_OBJECT
 		do
 			temp:= building_factory.create_object
-			temp.set_origin (a_building.x1,0,a_building.y2)
-			temp.set_scale (a_building.x2-a_building.x1,a_building.height/4,a_building.y2-a_building.y1)
+			temp.set_origin ((a_building.x1+a_building.x2)/2,0,(a_building.y1+a_building.y2)/2)
+			temp.set_scale ((a_building.x2-a_building.x1),a_building.height/4,(a_building.y2-a_building.y1))
 			buildings.go_i_th (a_building.id)
 			buildings.replace (temp)
 		end
@@ -108,63 +109,121 @@ feature
 	representation is
 			-- 
 		do
-			
+
+		
+						
 			gl_begin(Em_gl_polygon)
 			
 				--Front
 				gl_color3dv(wall_color.pointer)
 				gl_normal3b(0,0,1)
-				gl_vertex3d(0,0,0)
-				gl_vertex3d(1,0,0)
-				gl_vertex3d(1,1,0)
-				gl_vertex3d(0.5,1.25,0)
-				gl_vertex3d(0,1,0)
+				gl_vertex3d(0.5,0,-0.5)
+				gl_vertex3d(-0.5,0,-0.5)
+				gl_vertex3d(-0.5,1,-0.5)
+				gl_vertex3d(0,1.25,-0.5)
+				gl_vertex3d(0.5,1,-0.5)
 			gl_end
 			
 				
 			gl_begin(Em_gl_polygon)
 				--Back
 				gl_normal3b(0,0,-1)
-				gl_vertex3d(0,0,-1)				
-				gl_vertex3d(1,0,-1)
-				gl_vertex3d(1,1,-1)
-				gl_vertex3d(0.5,1.25,-1)				
-				gl_vertex3d(0,1,-1)
+				gl_vertex3d(0.5,0,0.5)
+				gl_vertex3d(-0.5,0,0.5)
+				gl_vertex3d(-0.5,1,0.5)
+				gl_vertex3d(0,1.25,0.5)
+				gl_vertex3d(0.5,1,0.5)
 			gl_end
 				
 			gl_begin(Em_gl_quads)	
 				--Left
-				gl_normal3b(-1,0,0)
-				gl_vertex3d(0,0,0)				
-				gl_vertex3d(0,1,0)
-				gl_vertex3d(0,1,-1)				
-				gl_vertex3d(0,0,-1)
+				gl_normal3b(1,0,0)
+				gl_vertex3d(0.5,0,-0.5)				
+				gl_vertex3d(0.5,1,-0.5)
+				gl_vertex3d(0.5,1,0.5)				
+				gl_vertex3d(0.5,0,0.5)
 
 				--Right
-				gl_normal3b(1,0,0)
-				gl_vertex3d(1,0,0)	
-				gl_vertex3d(1,0,-1)
-				gl_vertex3d(1,1,-1)
-				gl_vertex3d(1,1,0)
+				gl_normal3b(-1,0,0)
+				gl_vertex3d(-0.5,0,-0.5)				
+				gl_vertex3d(-0.5,1,-0.5)
+				gl_vertex3d(-0.5,1,0.5)				
+				gl_vertex3d(-0.5,0,0.5)
 				
 				--Roof
 				--Right
 				gl_color3dv(roof_color.pointer)
-				gl_normal3d(0.5,1,0)
-				gl_vertex3d(1,1,0)	
-				gl_vertex3d(1,1,-1)
-				gl_vertex3d(0.5,1.25,-1)
-				gl_vertex3d(0.5,1.25,0)
+				gl_normal3d(-0.5,1,0)
+				gl_vertex3d(-0.5,1,-0.5)	
+				gl_vertex3d(-0.5,1,0.5)
+				gl_vertex3d(0,1.25,0.5)
+				gl_vertex3d(0,1.25,-0.5)
 				
 				--Left
-				gl_normal3d(-0.5,1,0)
-				gl_vertex3d(0,1,0)	
-				gl_vertex3d(0.5,1.25,0)
-				gl_vertex3d(0.5,1.25,-1)
-				gl_vertex3d(0,1,-1)
+				gl_normal3d(0.5,1,0)
+				gl_vertex3d(0.5,1,-0.5)	
+				gl_vertex3d(0,1.25,-0.5)
+				gl_vertex3d(0,1.25,0.5)
+				gl_vertex3d(0.5,1,0.5)
 				
-			gl_end
-
+			gl_end		
+			
+--			gl_begin(Em_gl_polygon)
+--			
+--				--Front
+--				gl_color3dv(wall_color.pointer)
+--				gl_normal3b(0,0,1)
+--				gl_vertex3d(1,0,-1)
+--				gl_vertex3d(-1,0,-1)
+--				gl_vertex3d(-1,2,-1)
+--				gl_vertex3d(0,2.5,-1)
+--				gl_vertex3d(1,2,-1)
+--			gl_end
+--			
+--				
+--			gl_begin(Em_gl_polygon)
+--				--Back
+--				gl_normal3b(0,0,-1)
+--				gl_vertex3d(1,0,1)
+--				gl_vertex3d(-1,0,1)
+--				gl_vertex3d(-1,2,1)
+--				gl_vertex3d(0,2.5,1)
+--				gl_vertex3d(1,2,1)
+--			gl_end
+--				
+--			gl_begin(Em_gl_quads)	
+--				--Left
+--				gl_normal3b(1,0,0)
+--				gl_vertex3d(1,0,-1)				
+--				gl_vertex3d(1,2,-1)
+--				gl_vertex3d(1,2,1)				
+--				gl_vertex3d(1,0,1)
+--
+--				--Right
+--				gl_normal3b(-1,0,0)
+--				gl_vertex3d(-1,0,-1)				
+--				gl_vertex3d(-1,2,-1)
+--				gl_vertex3d(-1,2,1)				
+--				gl_vertex3d(-1,0,1)
+--				
+--				--Roof
+--				--Right
+--				gl_color3dv(roof_color.pointer)
+--				gl_normal3d(-0.5,1,0)
+--				gl_vertex3d(-1,2,-1)	
+--				gl_vertex3d(-1,2,1)
+--				gl_vertex3d(0,2.5,1)
+--				gl_vertex3d(0,2.5,-1)
+--				
+--				--Left
+--				gl_normal3d(0.5,1,0)
+--				gl_vertex3d(1,2,-1)	
+--				gl_vertex3d(0,2.5,-1)
+--				gl_vertex3d(0,2.5,1)
+--				gl_vertex3d(1,2,1)
+--				
+--			gl_end
+			
 		end
 		
 		
@@ -181,7 +240,7 @@ feature
 		do
 			building:= building_factory.create_object
 			building.set_scale (a_building.x2-a_building.x1,a_building.height/4,a_building.y2-a_building.y1)
-			building.set_origin (a_building.x1, 0, a_building.y2)
+			building.set_origin ((a_building.x1+a_building.x2)/2, 0, (a_building.y1+a_building.y2)/2)
 			a_building.set_id(id_counter)
 			id_counter := id_counter + 1
 			buildings.force (building)
@@ -196,6 +255,7 @@ feature
 		local
 			x_coord, z_coord: DOUBLE
 			i, j: INTEGER
+			angle: DOUBLE --random number between 0,360
 			building: EM_3D_OBJECT
 			traffic_building: TRAFFIC_BUILDING
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
@@ -209,24 +269,41 @@ feature
 			until
 				i > (n + old_number)
 			loop
-				x_coord := centre.x - (plane_size/2) + randomizer.double_i_th (j)*plane_size -- 1.7
-				z_coord := centre.z - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size -- -0.3
+				x_coord := centre.x - (plane_size/2) + randomizer.double_i_th (j)*plane_size
+				z_coord := centre.z - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size
+				angle := angle_randomizer.double_i_th(j)*360;
 				
-				-- ACHTUNG: Origin ist links unten! building_width evtl. ändern!
 				create poly_points.make
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord-0.25), 1)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord + 0.25, z_coord-0.25), 2)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord + 0.25, z_coord), 3)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord), 4)
+				poly_points.force (create {EM_VECTOR_2D}.make (x_coord + 0.125, z_coord + 0.125), 1)
+				poly_points.force (create {EM_VECTOR_2D}.make (x_coord + 0.125, z_coord - 0.125), 2)
+				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - 0.125, z_coord - 0.125), 3)
+				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - 0.125, z_coord + 0.125), 4)
 				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-0.1, z_coord-0.1), poly_points)
 				
 				if not has_collision (collision_poly) then					
 					
 					building := building_factory.create_object
+--					if i\\4=0 then
+--						building.set_scale (0.5,0.25,0.25)
+--						building.set_rotation (0,0,0)	
+--					elseif i\\4=1 then
+--						building.set_scale (0.5,0.25,0.25)
+--						building.set_rotation (0,45,0)
+--					elseif i\\4=2 then
+--						building.set_scale (0.25,0.25,0.5)
+--						building.set_rotation (0,0,0)
+--					else	
+--						building.set_scale (0.25,0.25,0.5)
+--						building.set_rotation (0,45,0)
+--					end
+
+					
 					building.set_scale (0.25,0.25,0.25)
+					building.set_rotation (0,0,0)
+					
 					building.set_origin (x_coord, 0, z_coord)
 					buildings.force (building)
-					create traffic_building.make(x_coord,x_coord+0.25,z_coord-0.25,z_coord,"building " + i.out)
+					create traffic_building.make(x_coord-0.125,x_coord+0.125,z_coord-0.125,z_coord+0.125,"building " + i.out)
 					traffic_building.set_height (1)
 					traffic_building.set_id (id_counter)
 					id_counter := id_counter + 1
@@ -297,6 +374,8 @@ feature
 	number_of_buildings: INTEGER
 	
 	randomizer: RANDOM
+	
+	angle_randomizer: RANDOM
 
 	buildings: ARRAYED_LIST [EM_3D_OBJECT]
 	

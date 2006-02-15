@@ -28,7 +28,7 @@ feature -- Interface
 			
 			set_frame_counter_visibility (False)
 			
-			create bg_color.make_with_rgb (150,255,150)
+			create bg_color.make_with_rgb (0,136,108)
 			
 			-- Toolbar
 			create toolbar_panel.make_from_dimension (200, window_height)
