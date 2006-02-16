@@ -10,7 +10,7 @@
     revision: "$Revision$"
   </description>
 
-  <cluster name="traffic" location="../../../" relative="true" prefix="tr_">
+  <cluster name="traffic" location="../../../library" relative="true" prefix="tr_">
   	<option if="${DEVELOP}">
   		<option name="assertion" value="all"/>
    	</option>
