@@ -20,6 +20,8 @@ inherit
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
 	
+	MATH_CONST
+		export {NONE} all end
 
 creation
 	make
@@ -72,12 +74,18 @@ feature
 			wall_color.set_xyz (1.0,1.0,0)
 			roof_color.set_xyz (0,1.0,1.0)
 			building_factory.changed
+			
 			temp:= building_factory.create_object
-			temp.set_origin ((a_building.x1+a_building.x2)/2,0,(a_building.y1+a_building.y2)/2)
-			temp.set_scale ((a_building.x2-a_building.x1),a_building.height/4,(a_building.y2-a_building.y1))
+			temp.set_scale (a_building.width,a_building.height,a_building.breadth)
+			temp.set_rotation (0,-1*a_building.angle,0)
+			temp.set_origin (a_building.center.x, 0, a_building.center.y)
+			
+--			temp:= building_factory.create_object
+--			temp.set_origin ((a_building.x1+a_building.x2)/2,0,(a_building.y1+a_building.y2)/2)
+--			temp.set_scale ((a_building.x2-a_building.x1),a_building.height/4,(a_building.y2-a_building.y1))
 			buildings.go_i_th (a_building.id)
 			buildings.replace (temp)
-			wall_color.set_xyz (0.25,0.25,0.25)
+			wall_color.set_xyz (0.5,0.5,0.5)
 			roof_color.set_xyz (1.0,0,0)
 			building_factory.changed
 		end
@@ -91,8 +99,12 @@ feature
 			temp: EM_3D_OBJECT
 		do
 			temp:= building_factory.create_object
-			temp.set_origin ((a_building.x1+a_building.x2)/2,0,(a_building.y1+a_building.y2)/2)
-			temp.set_scale ((a_building.x2-a_building.x1),a_building.height/4,(a_building.y2-a_building.y1))
+			temp.set_scale (a_building.width,a_building.height,a_building.breadth)
+			temp.set_rotation (0,-1*a_building.angle,0)
+			temp.set_origin (a_building.center.x, 0, a_building.center.y)
+--			temp:= building_factory.create_object
+--			temp.set_origin ((a_building.x1+a_building.x2)/2,0,(a_building.y1+a_building.y2)/2)
+--			temp.set_scale ((a_building.x2-a_building.x1),a_building.height/4,(a_building.y2-a_building.y1))
 			buildings.go_i_th (a_building.id)
 			buildings.replace (temp)
 		end
@@ -168,62 +180,6 @@ feature
 				
 			gl_end		
 			
---			gl_begin(Em_gl_polygon)
---			
---				--Front
---				gl_color3dv(wall_color.pointer)
---				gl_normal3b(0,0,1)
---				gl_vertex3d(1,0,-1)
---				gl_vertex3d(-1,0,-1)
---				gl_vertex3d(-1,2,-1)
---				gl_vertex3d(0,2.5,-1)
---				gl_vertex3d(1,2,-1)
---			gl_end
---			
---				
---			gl_begin(Em_gl_polygon)
---				--Back
---				gl_normal3b(0,0,-1)
---				gl_vertex3d(1,0,1)
---				gl_vertex3d(-1,0,1)
---				gl_vertex3d(-1,2,1)
---				gl_vertex3d(0,2.5,1)
---				gl_vertex3d(1,2,1)
---			gl_end
---				
---			gl_begin(Em_gl_quads)	
---				--Left
---				gl_normal3b(1,0,0)
---				gl_vertex3d(1,0,-1)				
---				gl_vertex3d(1,2,-1)
---				gl_vertex3d(1,2,1)				
---				gl_vertex3d(1,0,1)
---
---				--Right
---				gl_normal3b(-1,0,0)
---				gl_vertex3d(-1,0,-1)				
---				gl_vertex3d(-1,2,-1)
---				gl_vertex3d(-1,2,1)				
---				gl_vertex3d(-1,0,1)
---				
---				--Roof
---				--Right
---				gl_color3dv(roof_color.pointer)
---				gl_normal3d(-0.5,1,0)
---				gl_vertex3d(-1,2,-1)	
---				gl_vertex3d(-1,2,1)
---				gl_vertex3d(0,2.5,1)
---				gl_vertex3d(0,2.5,-1)
---				
---				--Left
---				gl_normal3d(0.5,1,0)
---				gl_vertex3d(1,2,-1)	
---				gl_vertex3d(0,2.5,-1)
---				gl_vertex3d(0,2.5,1)
---				gl_vertex3d(1,2,1)
---				
---			gl_end
-			
 		end
 		
 		
@@ -238,9 +194,12 @@ feature
 			building: EM_3D_OBJECT
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 		do
-			building:= building_factory.create_object
-			building.set_scale (a_building.x2-a_building.x1,a_building.height/4,a_building.y2-a_building.y1)
-			building.set_origin ((a_building.x1+a_building.x2)/2, 0, (a_building.y1+a_building.y2)/2)
+			
+			building := building_factory.create_object
+			building.set_scale (a_building.width,a_building.height,a_building.breadth)
+			building.set_rotation (0,a_building.angle,0)
+			building.set_origin (a_building.center.x, 0, a_building.center.y)
+			
 			a_building.set_id(id_counter)
 			id_counter := id_counter + 1
 			buildings.force (building)
@@ -253,16 +212,21 @@ feature
 		require
 			n_not_negative: n >= 0
 		local
-			x_coord, z_coord: DOUBLE
+			x_coord, y_coord: DOUBLE
 			i, j: INTEGER
 			angle: DOUBLE --random number between 0,360
+			stretch_factor_x, stretch_factor_y: DOUBLE
 			building: EM_3D_OBJECT
 			traffic_building: TRAFFIC_BUILDING
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 			old_number: INTEGER
 			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
+			p1,p2,p3,p4: EM_VECTOR_2D
+			center: EM_VECTOR_2D
 		do
 			old_number := buildings.count
+			stretch_factor_x := 0.25
+			stretch_factor_y := 0.25
 			from
 				i := buildings.count + 1
 				j := 1
@@ -270,44 +234,48 @@ feature
 				i > (n + old_number)
 			loop
 				x_coord := centre.x - (plane_size/2) + randomizer.double_i_th (j)*plane_size
-				z_coord := centre.z - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size
-				angle := angle_randomizer.double_i_th(j)*360;
+				y_coord := centre.z - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size
+				angle := angle_randomizer.double_i_th(j)*45
 				
+--				angle:= 0
+
+				create center.make (x_coord, y_coord)
+				create p1.make (x_coord-0.5*stretch_factor_x, y_coord+0.5*stretch_factor_y)
+				create p2.make (x_coord-0.5*stretch_factor_x, y_coord-0.5*stretch_factor_y)
+				create p3.make (x_coord+0.5*stretch_factor_x, y_coord-0.5*stretch_factor_y)
+				create p4.make (x_coord+0.5*stretch_factor_x, y_coord+0.5*stretch_factor_y)
+
+				p1:=p1.rotation (center,angle*pi/180)
+				p2:=p2.rotation (center,angle*pi/180)
+				p3:=p3.rotation (center,angle*pi/180)
+				p4:=p4.rotation (center,angle*pi/180)
+
 				create poly_points.make
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord + 0.125, z_coord + 0.125), 1)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord + 0.125, z_coord - 0.125), 2)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - 0.125, z_coord - 0.125), 3)
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord - 0.125, z_coord + 0.125), 4)
-				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-0.1, z_coord-0.1), poly_points)
+				poly_points.force (p1, 1)
+				poly_points.force (p2, 2)
+				poly_points.force (p3, 3)
+				poly_points.force (p4, 4)
+				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord, y_coord), poly_points)
 				
 				if not has_collision (collision_poly) then					
 					
-					building := building_factory.create_object
---					if i\\4=0 then
---						building.set_scale (0.5,0.25,0.25)
---						building.set_rotation (0,0,0)	
---					elseif i\\4=1 then
---						building.set_scale (0.5,0.25,0.25)
---						building.set_rotation (0,45,0)
---					elseif i\\4=2 then
---						building.set_scale (0.25,0.25,0.5)
---						building.set_rotation (0,0,0)
---					else	
---						building.set_scale (0.25,0.25,0.5)
---						building.set_rotation (0,45,0)
---					end
-
 					
-					building.set_scale (0.25,0.25,0.25)
-					building.set_rotation (0,0,0)
-					
-					building.set_origin (x_coord, 0, z_coord)
-					buildings.force (building)
-					create traffic_building.make(x_coord-0.125,x_coord+0.125,z_coord-0.125,z_coord+0.125,"building " + i.out)
+					-- create traffic building and add it to map
+					create traffic_building.make(p1,p2,p3,p4,"building " + id_counter.out)
 					traffic_building.set_height (1)
 					traffic_building.set_id (id_counter)
-					id_counter := id_counter + 1
+					traffic_building.set_height (0.25)
+					traffic_building.set_angle (angle)
 					map.add_building (traffic_building)
+					id_counter := id_counter + 1
+					
+					--create representation
+					building := building_factory.create_object
+					building.set_origin (traffic_building.center.x, 0, traffic_building.center.y)
+					building.set_scale (traffic_building.width,traffic_building.height,traffic_building.breadth)
+					building.set_rotation (0,-1*traffic_building.angle,0)
+					buildings.force (building)
+					
 					i := i + 1
 				end
 				j := j + 2
@@ -320,6 +288,7 @@ feature
 		do
 			buildings.wipe_out
 			number_of_buildings:= 0
+			--id_counter:=0
 		end
 		
 		

@@ -6,6 +6,9 @@ indexing
 
 class
 	TRAFFIC_MAP_DUMP
+
+inherit
+	KL_SHARED_FILE_SYSTEM
 	
 creation
 	make_with_name
@@ -20,14 +23,15 @@ feature -- Initialization
 			directory: DIRECTORY
 			dump_file: RAW_FILE
 		do
-			xml_name := name
-			dump_name := name.split('.')[1] + ".dump"
-			create directory.make_open_read ("./")
-			if not directory.has_entry ("map/dump.log") then
-				create dump_file.make_create_read_write ("map/dump.log")				
+--			xml_name := name
+--			dump_name := name.split('.')[1] + ".dump"
+			directory_name := file_system.absolute_parent_directory (name) + "\"
+			xml_name := file_system.basename (name)
+			dump_name := xml_name.split('.')[1] + ".dump"
+			create directory.make_open_read (directory_name)
+			if not directory.has_entry ("dump.log") then
+				create dump_file.make_create_read_write (directory_name + "dump.log")				
 			end
-		ensure
-			xml_name=name
 		end
 		
 feature -- Access
@@ -37,9 +41,9 @@ feature -- Access
 		local
 			directory: DIRECTORY
 		do 
-			create directory.make_open_read ("./")
+			create directory.make_open_read (directory_name)
 			if directory.has_entry (dump_name) then
-				Result ?= (create {TRAFFIC_MAP}.make("temp")).retrieve_by_name (dump_name)
+				Result ?= (create {TRAFFIC_MAP}.make("temp")).retrieve_by_name (directory_name + dump_name)
 			else
 				Result := void
 			end
@@ -53,8 +57,8 @@ feature -- Access
 			stamp: INTEGER
 			name: STRING
 		do
-			create log_file.make_open_read ("map/dump.log")
-			create xml_file.make (xml_name)
+			create log_file.make_open_read (directory_name + "dump.log")
+			create xml_file.make (directory_name + xml_name)
 			Result := False
 			from
 				log_file.start
@@ -81,13 +85,13 @@ feature -- Access
 			log_file: RAW_FILE
 			xml_file: RAW_FILE
 		do
-			map.store_by_name (dump_name)
-			create log_file.make_open_append ("map/dump.log")
-			create xml_file.make(xml_name)
+			map.store_by_name (directory_name + dump_name)
+			create log_file.make_open_append (directory_name + "dump.log")
+			create xml_file.make(directory_name + xml_name)
 			log_file.finish
 			log_file.putstring (xml_name + " ")
 			log_file.putint (xml_file.date)
-			log_file.close	
+			log_file.close
 		end
 		
 		
@@ -96,5 +100,7 @@ feature {NONE}-- attributes
 	xml_name: STRING	
 	
 	dump_name: STRING
+	
+	directory_name: STRING
 
 end

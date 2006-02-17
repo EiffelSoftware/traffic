@@ -31,7 +31,7 @@ feature -- Initialization
 			mouse_clicked_event.subscribe (agent mouse_click)
 			building_left_clicked_event.subscribe (agent traffic_buildings.highlight_building(?))
 			building_right_clicked_event.subscribe (agent traffic_buildings.un_highlight_building(?))
---			building_right_clicked_event.subscribe (agent test_click(?))
+--			building_left_clicked_event.subscribe (agent test_click(?))
 		end
 			
 
@@ -454,6 +454,7 @@ feature{NONE} -- Traffic line rides
 			building_valid: a_building /= void
 		do
 			io.putstring (a_building.name)
+			io.new_line
 		end
 		
 	
