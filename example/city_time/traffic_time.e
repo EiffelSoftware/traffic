@@ -10,6 +10,9 @@ class
 inherit	
 	EM_TIME_SINGLETON
 	
+	TRAFFIC_3D_CONSTANTS
+		export {NONE} all end
+	
 create
 	make_day, make
 	
@@ -18,7 +21,7 @@ feature -- Creation
 	make is
 			-- create a new object without setting the time
 		do
-			callback_delay := 0
+			callback_delay := 10
 			create all_procedures.make
 			
 			actual_hour := 0
@@ -32,10 +35,10 @@ feature -- Creation
 	make_day(simulated_day_minutes: INTEGER) is
 			-- the day lasts for 'simulated_day_minutes'
 	require
-		simulated_day_minutes >= 1
+		simulated_day_minutes >= 5
 	do		
 		simulated_minutes := simulated_day_minutes
-		callback_delay := ((simulated_day_minutes/minutes_per_day)*seconds_per_minute*milliseconds_per_second).rounded
+		change_simulated_time (simulated_minutes)
 		create all_procedures.make
 
 		
@@ -48,25 +51,12 @@ feature -- Creation
 		actual_hour := 0
 		actual_minute := 0
 		actual_second := 0
-	
---		time.add_timed_callback (callback_delay, agent call_procedure (?))
+		
 		ensure
 			simulated_minutes = simulated_day_minutes
 	end
 
 feature{NONE} -- Time facts
-	
-	Hours_per_day: INTEGER is 24
-
-	Minutes_per_hour: INTEGER is 60
-
-	minutes_per_day: INTEGER is
-		do
-			Result := Hours_per_day * Minutes_per_hour
-		end
-	Seconds_per_minute: INTEGER is 60
-	
-	Milliseconds_per_second: INTEGER is 1000
 	
 	callback_delay: INTEGER
 		
@@ -87,10 +77,19 @@ feature  --Time Attributes
 	change_simulated_time(simulated_day_minutes: INTEGER) is
 			-- the day lasts for 'simulated_day_minutes'
 		require
-			simulated_day_minutes >= 1
+			simulated_day_minutes >= 5
+		local
+			temp_delay : INTEGER
 		do		
 			simulated_minutes := simulated_day_minutes
-			callback_delay := ((simulated_day_minutes/minutes_per_day)*seconds_per_minute*milliseconds_per_second).rounded
+			temp_delay := ((simulated_minutes/minutes_per_day)*seconds_per_minute*milliseconds_per_second).rounded
+			io.putint (temp_delay)
+			if temp_delay < 10 then
+				callback_delay := 10
+			else	
+				callback_delay := temp_delay
+			end
+			
 		ensure
 			simulated_minutes = simulated_day_minutes
 		end
@@ -105,17 +104,21 @@ feature -- Handling
 				actual_minute >= 0
 				actual_hour >= 0
 			do
-				if actual_minute < minutes_per_hour-1 then
-					actual_minute := actual_minute+1
-				else
-					if actual_hour < hours_per_day-1 then
-						actual_hour := actual_hour+1
+--				if actual_second < seconds_per_minute - 1 then
+--					actual_second := actual_second + 5
+--				else
+					if actual_minute < minutes_per_hour - 1 then
+						actual_minute := actual_minute + 1
 					else
-						actual_hour := 0
+						if actual_hour < hours_per_day - 1 then
+							actual_hour := actual_hour + 1
+						else
+							actual_hour := 0
+						end
+						actual_minute := 0
 					end
-					actual_minute := 0
-				end
-
+--					actual_second := 0
+--				end
 			end
 		
 		
@@ -130,9 +133,8 @@ feature -- time
 				not is_time_running
 			do
 				is_time_running := True
-				time.add_timed_callback (callback_delay, agent call_procedure (?))
+				time.add_timed_callback (callback_delay, agent call_procedure)
 --				time.add_timed_procedure (agent time_count, callback_delay)
---				add_callback_function (time_count)
 			ensure
 				is_time_running
 			end
@@ -191,7 +193,7 @@ invariant
 	actual_hour >= 0
 	actual_minute >= 0
 	simulated_minutes >= 1
-	
+	callback_delay_regular: callback_delay >= 10 or callback_delay = 0
 
 
 end

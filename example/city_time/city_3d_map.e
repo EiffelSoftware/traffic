@@ -24,7 +24,8 @@ feature -- Initialization
 		do
 			Precursor
 
-			create traffic_time.make_day (1)
+			create traffic_time.make_day (10)
+			
 			
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
@@ -73,14 +74,6 @@ feature -- Drawing
 			do
 				Precursor
 				
-				from
-					traffic_traveler.travelers.start
-				until
-					traffic_traveler.travelers.after
-				loop
-					traffic_traveler.travelers.item_for_iteration.draw
-					traffic_traveler.travelers.forth
-				end
 				-- Translation
 				gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
 				gl_translated_external (x_translation, -y_translation, 0)
@@ -317,25 +310,38 @@ feature
 			-- 
 			local
 				traveler: TRAFFIC_TRAVELER
+				temp_list: LINKED_LIST [EM_VECTOR_2D]
 			do
 				Precursor (filename)
 				
 				create traffic_traveler.make (map, traffic_time)
+
+				create temp_list.make
+--				temp_list.force (create {EM_VECTOR_2D}.make (-10, -10))
+--				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+--				
+--
+--				create traveler.make_directed (temp_list, "passenger", 0.2)
+--				traffic_traveler.add_traveler (traveler, map)
+--
+--				temp_list.wipe_out
+
+				temp_list.force (create {EM_VECTOR_2D}.make (-0, -0))
+				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+
+				create traveler.make_directed (temp_list, "passenger", 0.5)
+				traveler.set_reiterate (True)
+				traffic_traveler.add_traveler (traveler, map)
 				
-				create traveler.make_directed (create {EM_VECTOR_2D}.make(0, 0), create {EM_VECTOR_2D}.make(60, 40), "tram", 0.2)
-				traveler_index := 1
-				traveler.set_index(traveler_index)
-			
-				map.add_traveler (traveler)
-				traffic_traveler.add_traveler (traveler)
-				traveler_index := traveler_index + 1
+--				temp_list.wipe_out
+--				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+--				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+--
+--				create traveler.make_directed (temp_list, "passenger", 0.5)
+--				traffic_traveler.add_traveler (traveler, map)
 				
-				create traveler.make_directed (create {EM_VECTOR_2D}.make(20, 10), create {EM_VECTOR_2D}.make(20, 30), "passenger", 0.2)
-				traveler.set_index(traveler_index)
-			
-				map.add_traveler (traveler)
-				traffic_traveler.add_traveler (traveler)
-				traveler_index := traveler_index + 1
+				
+				traffic_traveler.add_trams (map)
 				
 			ensure then
 				traffic_traveler /= Void

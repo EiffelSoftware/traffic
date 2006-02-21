@@ -36,8 +36,8 @@ feature -- Initialization
 		do
 			traffic_time := a_time
 			map := a_map
-			create centre.make_xyz(0,0,0)
-			create color.make_xyz(0,0,255)
+			create centre.make_xyz (0, 0, 0)
+			create color.make_xyz (0, 0, 0)
 				-- default color black
 				
 			create traveler_factory.make
@@ -45,11 +45,12 @@ feature -- Initialization
 				-- Could be extended, if desired.
 			traveler_factory.add_traveler_type (agent create_tram, "tram")
 			traveler_factory.add_traveler_type (agent create_passenger, "passenger")
---			traveler_factory.add_gauger(agent decide_traveler_type(?), "by path")
---			traveler_factory.add_gauger(agent decide_traveler_type(?), "by type")
-			traveler_factory.add_gauger(agent decide_traveler_type, "by_type")
+			traveler_factory.add_gauger (agent decide_traveler_type, "by_type")
 			
 			create travelers.make (1) 
+			traveler_key := 0
+			
+--			add_trams (a_map)
 		ensure
 			traveler_factory_created: traveler_factory /= Void
 			travelers_created: travelers /= Void
@@ -63,6 +64,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			-- draw all places
 		local
 			a_traveler: TRAFFIC_TRAVELER
+			a_position: EM_VECTOR_2D 
 			i : INTEGER
 		do
 			from
@@ -73,9 +75,12 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 				if not (travelers.item_for_iteration = Void) then
 					i := travelers.key_for_iteration
 					a_traveler := map.travelers.item (i)
+--					a_position := map_to_gl_coords (a_traveler.position)
 					travelers.item_for_iteration.set_origin(a_traveler.position.x, traveler_offset, a_traveler.position.y)
 					travelers.item_for_iteration.draw	
+					
 				end
+				i := i+1
 				travelers.forth
 			end
 		end
@@ -85,26 +90,90 @@ feature -- Collision detection
 	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic lines
 	
-feature -- Implemenation
+feature{CITY_3D_MAP} -- Implemenation
 		
-		add_traveler (a_traveler: TRAFFIC_TRAVELER) is
+		add_traveler (a_traveler: TRAFFIC_TRAVELER; a_map: TRAFFIC_MAP) is
 				-- a passenger walks from origin to destination with 'speed'
+				require
+					a_traveler /= Void
+					a_map /= Void
 				local
 					traveler: EM_3D_OBJECT
 				do
+	
+					a_traveler.set_index (traveler_key)
+					traveler_key := traveler_key + 1
+						-- set the key for the traveler here
+						
 					if a_traveler.traffic_info.is_equal ("passenger") then
 						traveler_factory.take_decision ("by_type", [1])	
 					elseif a_traveler.traffic_info.is_equal ("tram") then
 						traveler_factory.take_decision ("by_type", [2])
-					end		
+					end	
 					traveler := traveler_factory.create_object
 					traveler.set_origin (a_traveler.position.x, traveler_offset, a_traveler.position.y)
 					traffic_time.add_callback_procedure (agent a_traveler.take_tour)
-					travelers.force (traveler, a_traveler.index)					
+					travelers.force (traveler, a_traveler.index)
+					a_map.add_traveler (a_traveler)	
 				end
 			
-
-
+		add_trams(a_map: TRAFFIC_MAP) is
+				-- add trams to the scene.
+				require
+					a_map /= Void
+				local
+					line_section: TRAFFIC_LINE_SECTION
+					lines: HASH_TABLE[TRAFFIC_LINE, STRING]
+					a_traveler: TRAFFIC_LINE_TRAVELER
+					temp_point: EM_VECTOR_2D
+					traveling_points: LINKED_LIST [EM_VECTOR_2D]
+					i: INTEGER
+				do
+					lines := a_map.lines
+					create traveling_points.make
+					from
+						lines.start
+					until
+						lines.after
+					loop
+--						traveling_points.wipe_out
+--						from 
+--							lines.item_for_iteration.start
+--						until
+--							lines.item_for_iteration.after
+--						loop
+--							line_section := lines.item_for_iteration.item
+--							temp_point := line_section.destination.position
+--							traveling_points.force (line_section.origin.position)
+--							lines.item_for_iteration.forth
+--						end
+--						traveling_points.force (temp_point)
+--						
+--								
+--						create a_traveler.make_directed (traveling_points, "tram", 0.1)
+--						a_traveler.set_reiterate (True)
+		
+						create a_traveler.make_with_line (lines.item_for_iteration)
+						add_traveler (a_traveler, a_map)
+						
+						lines.forth
+						
+					end
+				end
+	
+		remove_traveler(a_traveler: TRAFFIC_TRAVELER; a_map: TRAFFIC_MAP) is
+				-- remove a traveler.
+				require
+					a_traveler /= Void
+					a_map /= void
+				do
+					a_map.remove_traveler(a_traveler.index)
+					travelers.remove (a_traveler.index)
+				ensure
+					not travelers.has (a_traveler.index)
+				end
+			
+	
 feature{NONE} -- Decision procedures
 
 	decide_traveler_type(i: INTEGER): STRING is
@@ -129,6 +198,7 @@ feature{NONE} -- Decision procedures
 			traveler_radius: DOUBLE
 				-- radius of a tram place
 		do
+			color.set_xyz (255, 0, 0)
 			traveler_radius := 0.2
 			gl_matrix_mode_external (Em_gl_modelview)
 			gl_push_matrix_external
@@ -245,6 +315,7 @@ feature{NONE} -- Decision procedures
 			traveler_radius: DOUBLE
 				-- radius of a tram place
 		do
+			color.set_xyz (0, 0, 255)
 			traveler_radius := 0.2
 			gl_matrix_mode_external (Em_gl_modelview)
 			gl_push_matrix_external
@@ -298,30 +369,33 @@ feature{TRAFFIC_3D_MAP_WIDGET}
 		
 feature{NONE} -- Attributes
 
+	traveler_key: INTEGER
+		-- key for travelers.
+
 	traveler_factory: TRAFFIC_TRAVELER_FACTORY
-		-- factory for places
+		-- factory for places.
 
 	color: GL_VECTOR_3D[DOUBLE]
-		-- color of the place	
+		-- color of the place.
 		
 	centre: GL_VECTOR_3D[DOUBLE]
-		-- Centre of the city
+		-- Centre of the city.
 		
 	traffic_time: TRAFFIC_TIME
-		-- time where to put the travelers
+		-- time where to put the travelers.
 		
 	map: TRAFFIC_MAP
-		-- city map
+		-- city map.
 
 	traveler_offset: DOUBLE is 0.2
 		-- offset of the traveler objects over map.
 
 invariant
-	centre /= Void
-	color /= Void			
-	traveler_factory /= Void
-	collision_polygons /= Void
-	travelers /= Void
+	TR_TR_REP_centre_set: centre /= Void
+	TR_TR_REP_color_set: color /= Void			
+	TR_TR_REP_traveler_factory_valid: traveler_factory /= Void
+	TR_TR_REP_collosion_polygons_valid: collision_polygons /= Void
+	TR_TR_REP_travelers_valid: travelers /= Void
 	
 
 end -- class TRAFFIC_TRAVELER_REPRESENTATION	

@@ -58,7 +58,7 @@ feature -- Interface
 			toolbar_panel.add_widget (zoom_in_button)
 
 			-- time
-			simulated_time := 1
+			simulated_time := 5
 
 
 			-- time button
@@ -82,7 +82,7 @@ feature -- Interface
 			toolbar_panel.add_widget (simulated_time_label)
 
 			-- simulated time
-			create time_slider.make_from_range_horizontal (1, 60)
+			create time_slider.make_from_range_horizontal (5, 60)
 			time_slider.set_position (20, 250)
 			time_slider.set_optimal_dimension (120, 20)
 			time_slider.resize_to_optimal_dimension
@@ -315,31 +315,31 @@ feature -- Widgets
 	time_button: EM_BUTTON
 			
 	marked_origin_label: EM_LABEL
-			-- Label for the origin
+			-- Label for the origin.
 			
 	marked_origin_title: EM_LABEL
-			-- Name of the (origin) station
+			-- Name of the (origin) station.
 			
-	time_slider: EM_SCROLLBAR
-			-- Scrollbar for the time		
+	time_slider: EM_SLIDER
+			-- Scrollbar for the time.	
 	
 	time_label: EM_LABEL
-			-- Label for time display
+			-- Label for time display.
 			
 	simulated_time_label: EM_LABEL
-			-- label for simulated time
+			-- label for simulated time.
 			
 	marked_destination_label: EM_LABEL
-			-- Label for the destination
+			-- Label for the destination.
 			
 	marked_destination_title: EM_LABEL
-			-- Name of the (destination) station
+			-- Name of the (destination) station.
 			
 	is_time_enabled: BOOLEAN
-			-- is the time running
+			-- is the time running?
 
 	traffic_time: TRAFFIC_TIME
-
+			-- time of the city time system.
 			
 feature {NONE} -- Implementation
 
