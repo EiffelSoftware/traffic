@@ -24,27 +24,32 @@ feature -- Initialization
 		do
 			set_traffic_info ("")
 			create position.make (0, 0)
+			create itinerary.make
 			create origin.make (0, 0)
 			create destination.make (0, 0)
 			set_speed (0)
 		end
 
-	make_directed (an_origin: EM_VECTOR_2D; a_destination: EM_VECTOR_2D; an_info: STRING; a_speed: DOUBLE) is
+	make_directed (an_itinerary: LINKED_LIST[EM_VECTOR_2D]; an_info: STRING; a_speed: DOUBLE) is
 			-- create an object with defined origin and destination
 			require
-				an_origin /= Void
-				a_destination /= Void
+				an_itinerary /= Void
 				an_info /= Void
 				a_speed >= 0
 			do
+				create itinerary.make
+				itinerary := an_itinerary
+				itinerary.start
+				
 				set_traffic_info (an_info)
-				origin := an_origin
-				position := an_origin
-				destination := a_destination
+				origin := itinerary.first
+				itinerary.forth
+				position := origin
+				destination := itinerary.item
 				set_speed (a_speed)
 			ensure
-				origin = an_origin
-				destination = a_destination
+				origin /= Void
+				destination /= Void
 				traffic_info.is_equal (an_info)
 			end
 	
@@ -55,11 +60,15 @@ feature -- Initialization
 			an_origin /= Void
 			a_seed >= 0
 		do
+			create itinerary.make
 			traffic_info := an_info
 			create random_direction.set_seed(a_seed)
 			origin := an_origin
 			position := an_origin
 			give_random_direction
+			itinerary.start
+			itinerary.force (origin)
+			itinerary.force (destination)
 			speed := random_direction.double_item
 			random_direction.forth
 		ensure	
@@ -85,13 +94,22 @@ feature -- Attributes
 		-- destination position on map.
 	
 	speed: DOUBLE
-		-- speed on the map.
+		-- speed on the map. TODO: speed := distance(take-tour) / time(from one point to another)
 		
 	index: INTEGER
 		-- index of the traveler
 		
 	time: DOUBLE
 		-- time for one minute.
+		
+	itinerary: LINKED_LIST[EM_VECTOR_2D]
+		-- list of points the traveler travels through.
+	
+	is_reiterating: BOOLEAN
+		-- if the destination is reached it turns around.
+		
+	is_traveling_back: BOOLEAN
+		-- is set when a traveler returns trough the list.
 
 feature -- Procedures
 	
@@ -103,9 +121,48 @@ feature -- Procedures
 				if not (position.x - destination.x < speed) or (position.y - destination.y < speed) then
 					direction := destination - origin
 					position := position + (direction / direction.length) * speed
-				end	
+				else
+					tour_helper
+				end
+
 				
 			end
+		
+		-- TODO: set the position the first time right
+			
+	tour_helper is
+			-- help during the tour to get the next destination if there is any
+			do
+				if not itinerary.after and not itinerary.before then
+					
+					if not is_traveling_back then
+						itinerary.forth
+						origin := destination
+						position := destination
+						destination := itinerary.item
+					elseif is_traveling_back then
+						itinerary.back
+						origin := destination
+						position := destination
+						destination := itinerary.item
+					end	
+						
+				elseif itinerary.after and is_reiterating then
+					is_traveling_back := True
+					itinerary.back
+					origin := destination
+					position := destination
+					
+				elseif itinerary.before and is_reiterating and is_traveling_back then
+					is_traveling_back := False
+					itinerary.forth
+					origin := destination
+					position := destination
+					destination := itinerary.item
+				end
+			end
+		
+		
 	
 	set_index (an_index: INTEGER) is
 			-- give the object an index
@@ -147,6 +204,14 @@ feature -- Procedures
 				time = a_time
 			end
 		
+	set_reiterate (a_boolean: BOOLEAN) is
+			-- set the traveler reiterating his itinerary
+			do
+				is_reiterating := a_boolean
+			ensure
+				is_reiterating = a_boolean
+			end
+		
 			
 feature{NONE} -- random
 
@@ -171,6 +236,7 @@ feature{NONE} -- random
 		-- make a direction out of this genererator	
 	
 invariant
+	itinerary /= Void
 	origin /= Void
 	destination /= Void
 	position /= Void

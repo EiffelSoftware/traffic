@@ -7,7 +7,25 @@ class
 	TRAFFIC_3D_CONSTANTS
 
 feature -- Constants
+	
+	Hours_per_day: INTEGER is 24
 
+
+	Minutes_per_hour: INTEGER is 60
+
+
+	minutes_per_day: INTEGER is
+		do
+			Result := Hours_per_day * Minutes_per_hour
+		end
+	
+	
+	Seconds_per_minute: INTEGER is 6
+	
+	
+	Milliseconds_per_second: INTEGER is 1000
+	
+	
 	Building_width: DOUBLE is 0.2
 			-- Width of the quadratic (!) base of the building.
 			

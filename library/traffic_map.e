@@ -212,6 +212,17 @@ feature -- Element change
 				line_section_removed: not line_sections.has (a_line_section)
 			end
 	
+	remove_traveler(index: INTEGER) is
+			-- -- Remove traveler at position index
+			require
+				index_valid: index >= 0
+			do
+				internal_travelers.remove (index)
+			ensure
+				not internal_travelers.has (index)
+			end
+		
+	
 	increment_index is
 			-- increment the traveler index
 			do
