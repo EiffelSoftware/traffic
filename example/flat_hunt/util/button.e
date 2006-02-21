@@ -137,7 +137,7 @@ feature {NONE} -- Implementation
 	down: BOOLEAN
 			-- Is button pressed down?
 
-	clicked_event: EM_EVENT_TYPE [TUPLE [BUTTON]]
+	clicked_event: EM_EVENT_CHANNEL [TUPLE [BUTTON]]
 			-- Button clicked event.
 		
 	on_button_down (me: EM_MOUSE_EVENT)	is

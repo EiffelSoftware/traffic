@@ -483,13 +483,13 @@ feature -- Mousevents
 			end
 		end
 	
-	building_left_clicked_event: EM_EVENT_TYPE [TUPLE [TRAFFIC_BUILDING]]
+	building_left_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING]]
 			-- event for left click on building
 	
-	building_right_clicked_event: EM_EVENT_TYPE [TUPLE [TRAFFIC_BUILDING]]
+	building_right_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING]]
 			-- event for right click on building
 	
-	building_middle_clicked_event: EM_EVENT_TYPE [TUPLE [TRAFFIC_BUILDING]]
+	building_middle_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING]]
 			-- event for middle click on building
 
 	

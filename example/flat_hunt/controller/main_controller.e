@@ -150,7 +150,7 @@ feature -- Event handling
 	subscribe_to_outside_event (a_procedure: PROCEDURE [ANY, TUPLE]) is
 			-- Subscribe `a_procedure' to `outside_event' of `game_scene'
 		do
-			game_scene.event_loop.outside_event.subscribe (a_procedure)
+			game_scene.event_loop.update_event.subscribe (a_procedure)
 		end
 
 	process_clicked_place (a_place: TRAFFIC_PLACE; a_mouse_event: EM_MOUSEBUTTON_EVENT) is

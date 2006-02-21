@@ -118,11 +118,14 @@ feature -- Procedures
 			local
 				direction: EM_VECTOR_2D
 			do
-				if not (position.x - destination.x < speed) or (position.y - destination.y < speed) then
-					direction := destination - origin
-					position := position + (direction / direction.length) * speed
-				else
+				direction := destination - origin
+				
+				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
 					tour_helper
+				else
+
+					position := position + (direction / direction.length) * speed
+					
 				end
 
 				

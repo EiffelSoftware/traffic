@@ -173,7 +173,7 @@ feature -- Basic operations
 
 feature -- Event handler
 
-	marked_changed_event: EM_EVENT_TYPE [TUPLE [BOOLEAN]]
+	marked_changed_event: EM_EVENT_CHANNEL [TUPLE [BOOLEAN]]
 			-- Player was marked or unmarked
 						
 feature {NONE} -- Constants

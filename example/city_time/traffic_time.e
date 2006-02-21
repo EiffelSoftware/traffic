@@ -82,7 +82,8 @@ feature  --Time Attributes
 			temp_delay : INTEGER
 		do		
 			simulated_minutes := simulated_day_minutes
-			temp_delay := ((simulated_minutes/minutes_per_day)*seconds_per_minute*milliseconds_per_second).rounded
+--			temp_delay := ((simulated_minutes/minutes_per_hour)*seconds_per_minute*milliseconds_per_second).rounded
+			temp_delay := ((simulated_minutes/minutes_per_hour)*milliseconds_per_second).rounded
 			io.putint (temp_delay)
 			if temp_delay < 10 then
 				callback_delay := 10
@@ -104,9 +105,9 @@ feature -- Handling
 				actual_minute >= 0
 				actual_hour >= 0
 			do
---				if actual_second < seconds_per_minute - 1 then
---					actual_second := actual_second + 5
---				else
+				if actual_second < seconds_per_minute - 1 then
+					actual_second := actual_second + 5
+				else
 					if actual_minute < minutes_per_hour - 1 then
 						actual_minute := actual_minute + 1
 					else
@@ -117,8 +118,8 @@ feature -- Handling
 						end
 						actual_minute := 0
 					end
---					actual_second := 0
---				end
+					actual_second := 0
+				end
 			end
 		
 		

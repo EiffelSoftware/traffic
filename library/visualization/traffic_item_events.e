@@ -61,22 +61,22 @@ feature -- Event publishing
 
 feature -- Events
 
-	changed_event: EM_EVENT_TYPE [TUPLE []]
+	changed_event: EM_EVENT_CHANNEL [TUPLE []]
 			-- Event to inform views of `Current'
 			-- when `Current' changed such that
 			-- views need to re-render
 	
-	item_changed_event: EM_EVENT_TYPE [TUPLE [INTEGER]]
+	item_changed_event: EM_EVENT_CHANNEL [TUPLE [INTEGER]]
 			-- Event to inform views of `Current' 
 			-- when item has been changed
 			-- at index passed as argument
 			
-	item_inserted_event: EM_EVENT_TYPE [TUPLE [INTEGER]]
+	item_inserted_event: EM_EVENT_CHANNEL [TUPLE [INTEGER]]
 			-- Event to inform views of `Current' 
 			-- when item has been inserted
 			-- at index passed as argument
 			
-	item_removed_event: EM_EVENT_TYPE [TUPLE [INTEGER, ELEM_TYPE]]
+	item_removed_event: EM_EVENT_CHANNEL [TUPLE [INTEGER, ELEM_TYPE]]
 			-- Event to inform views of `Current' 
 			-- when item has been removed 
 			-- at index passed as argument
