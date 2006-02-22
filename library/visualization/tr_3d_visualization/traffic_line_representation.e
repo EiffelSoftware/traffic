@@ -42,17 +42,15 @@ feature -- Initialization
 			line_factory.add_gauger(agent decide_line_type, decision_type)
 			
 			create lines.make(1)
-			create em_lines.make(1,1)
 			create shortest_line.make (1)
-			create em_highlighted_lines.make(1,1)
+			create line_objects.make(1)
 			add_lines(map)	
 			create_collision_polygons(map)
 		ensure	
 			line_factory_created: line_factory /= Void
 			lines_created: lines /= Void
-			em_lines_created: em_lines /= Void
 			shortest_line_created: shortest_line /= Void
-			em_highlighted_lines_created: em_highlighted_lines /= Void
+			line_objects_created: line_objects /= Void
 		end
 		
 feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
@@ -60,29 +58,35 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 	draw is
 			-- draw all lines
 			local
-				i: INTEGER
+				i, j: INTEGER
+				actual_line_objects: ARRAY[EM_3D_OBJECT]
 			do
-				if is_highlighted then
+				create actual_line_objects.make(1,1)
+
+				-- draw all the lines in the hashtable.  					
+				from 
+					i := 0
+					line_objects.start
+				until
+					line_objects.after
+				loop
+					j := 0
+					actual_line_objects := line_objects.item_for_iteration
 					from
-						i := em_highlighted_lines.lower
+						j := actual_line_objects.lower
 					until
-						i > em_highlighted_lines.upper
+						j > actual_line_objects.upper
 					loop
-						em_highlighted_lines.item (i).draw
-						i := i+1
-					end	
-				else
-					from
-						i := em_lines.lower
-					until
-						i > em_lines.upper
-					loop
-						em_lines.item (i).draw
-						i := i+1
+						actual_line_objects.item (j).draw
+						j := j+1
 					end
-				end	
+					i := i+1
+					line_objects.forth
+				end
 			end
-			
+
+		
+		
 	draw_shortest_path is
 			-- draw the shortest line if it exists
 			do
@@ -396,30 +400,35 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 				x_coord, z_coord: DOUBLE
 				i, j: INTEGER
 				all_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
-				all_sections: LINEAR [TRAFFIC_LINE_SECTION] -- lines are at beginning and end of linesections
+				all_sections_of_one_line: TRAFFIC_LINE -- lines are at beginning and end of linesections
 				a_line: EM_3D_OBJECT
 				collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-				poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
+				poly_points: DS_LINKED_LIST[EM_VECTOR_2D]				
+				actual_line: ARRAY[EM_3D_OBJECT]
 			do
 				all_lines := map.lines
 				from
-					i := 0
-					j := 0
+					i := 0		-- for the different lines
 					all_lines.start
 				until
 					all_lines.after
 				loop
-					all_sections := all_lines.item_for_iteration
+					-- iterate over all lines
+					j :=0		-- for the individual line segments
+					create actual_line.make(1,1)
+					all_sections_of_one_line := all_lines.item_for_iteration --###die linie 9... alle Segmente davon
 					line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (all_lines.item_for_iteration.color.red/255, all_lines.item_for_iteration.color.green/255, all_lines.item_for_iteration.color.blue/255)
 					from
-						all_sections.start
+						all_sections_of_one_line.start
 					until
-						all_sections.after
+						all_sections_of_one_line.after
 					loop
-						line_section := all_sections.item
+						-- iterate over all sections of one line
+							
+						line_section := all_sections_of_one_line.item
 
-						x_coord := map_to_gl_coords(all_sections.item.polypoints.first).x
-						z_coord := map_to_gl_coords(all_sections.item.polypoints.first).y
+						x_coord := map_to_gl_coords(all_sections_of_one_line.item.polypoints.first).x
+						z_coord := map_to_gl_coords(all_sections_of_one_line.item.polypoints.first).y
 						
 						-- polypoints for the line
 						create poly_points.make
@@ -434,21 +443,18 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 						
 						line_factory.take_decision (decision_type)
 						a_line := line_factory.create_object
-						em_lines.force(a_line, i)
-						line_factory.take_decision(decision_type)
-						set_highlighted(true)
-						a_line := line_factory.create_object
-						a_line.set_origin (0, line_height + 0.4*j + highlighting_delta, 0)
-						em_highlighted_lines.force(a_line, i)
-						set_highlighted(false)
-						i := i+1
-						all_sections.forth
+						
+						actual_line.force(a_line, j)
+						j := j+1
+						all_sections_of_one_line.forth
 					end
-					j := j+1
+					
+					line_objects.put(actual_line, all_sections_of_one_line)					
+					i := i+1
 					all_lines.forth
 				end
 			ensure
-				line_consistency: em_lines.count = em_highlighted_lines.count
+--
 			end
 
 	add_shortest_line(a_line: TRAFFIC_LINE) is
@@ -502,7 +508,91 @@ feature{NONE} -- Decision attributes
 	decision_type: STRING is "not_highlighted"
 	
 	
-feature{TRAFFIC_3D_MAP_WIDGET} -- Attributes Setting
+feature -- Attributes Setting
+
+	highlight_single_line(a_line: TRAFFIC_LINE) is	
+		-- Has the line as a key and the corresponding line segmants as em_3d_object 
+		
+		local 
+			actual_line_objects: ARRAY[EM_3D_OBJECT]
+			i, j: INTEGER
+		do 
+			if
+				line_objects.has (a_line)
+			then
+				create actual_line_objects.make(1,1)
+				actual_line_objects := line_objects.item (a_line)
+				highlighting_delta := 2
+				j := 0
+				i := 1
+				from 
+					j := actual_line_objects.lower
+				until
+					j > actual_line_objects.upper
+				loop
+					actual_line_objects.item (j).set_origin (0, line_height + 0.4*i + highlighting_delta, 0)
+					j := j+1
+				end				
+			end
+		end				
+			
+	highlight_all_lines(b: BOOLEAN) is 
+			-- highlight all the lines/set the is_highlighted variable
+			
+		local 
+			actual_line_objects: ARRAY[EM_3D_OBJECT]
+			i, j: INTEGER
+		do 
+			is_highlighted := b
+			if b then
+				highlighting_delta := 2
+
+				from 
+					i := 0
+					line_objects.start
+				until
+					line_objects.after
+				loop
+					j := 0
+					actual_line_objects := line_objects.item_for_iteration
+					from 
+						j := actual_line_objects.lower
+					until
+						j > actual_line_objects.upper
+					loop
+						actual_line_objects.item (j).set_origin (0, line_height + 0.4*i + highlighting_delta, 0)
+						j := j+1
+					end
+					i := i+1
+					line_objects.forth
+				end				
+				
+			else				
+				highlighting_delta := 0	
+				from 
+					i := 0
+					line_objects.start
+				until
+					line_objects.after
+				loop
+					actual_line_objects := line_objects.item_for_iteration
+					from 
+						j := actual_line_objects.lower
+					until
+						j > actual_line_objects.upper
+					loop
+						actual_line_objects.item (j).set_origin (0, line_height + 0.01, 0)
+						j := j+1
+					end
+					i := i+1
+					line_objects.forth
+				end	
+			end
+		ensure
+			is_highlighted = b
+			b implies highlighting_delta = 2
+			not b implies highlighting_delta = 0
+		 end		
 	
 	set_highlighted(b: BOOLEAN) is
 			-- set the is_highlighted variable
@@ -539,13 +629,10 @@ feature{NONE} -- Attributes - Implementation
 			
 	object_depth: DOUBLE is 2.0
 			-- The size of the bounding box in z direction of created objects.
-
-	em_lines: ARRAY[EM_3D_OBJECT]
-		-- Container for all lines.	
+				
+	line_objects: HASH_TABLE[ARRAY[EM_3D_OBJECT], TRAFFIC_LINE]
+		--  Container for all drawable lines, separated by line
 	
-	em_highlighted_lines: ARRAY[EM_3D_OBJECT]
-		-- Container for highlighted lines.
-		
 	shortest_line: ARRAYED_LIST[EM_3D_OBJECT]
 		-- Container for shortest path line
 	
