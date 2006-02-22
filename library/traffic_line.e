@@ -8,6 +8,16 @@ class
 	TRAFFIC_LINE 
 
 inherit
+	HASHABLE
+		undefine
+			copy,
+			is_equal
+		redefine 
+		 	out 
+		select 
+			out
+		end
+		
 	LINKED_LIST [TRAFFIC_LINE_SECTION]
 		rename 
 			make as make_linked_list,
@@ -91,6 +101,13 @@ feature -- Element change
 			color_set: equal(color, a_color)
 		end
 		
+--	highlight is
+--			-- to highlight the particular line
+--		do
+--			map.set_single_line_highlighted(name)
+--		end
+				
+		
 feature -- Removal
 
 	remove_color is
@@ -153,6 +170,14 @@ feature -- Status report
 		do
 			Result := is_valid_insertion_one_direction (a_origin, a_destination) or
 					is_valid_insertion_other_direction (a_origin, a_destination)
+		end
+
+feature -- Measurement
+
+	hash_code: INTEGER is
+			-- Hash code value.
+		do
+			Result := (name + type.name).hash_code
 		end
 
 feature -- Basic operations
