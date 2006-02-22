@@ -11,7 +11,7 @@ deferred class
 
 inherit
 	PREVIEW_3D_APPLICATION
---	--TOUCH_EXAMPLE
+	--TOUCH_EXAMPLE
 --		redefine
 --		--	run_with_scene,--
 --			default_create
@@ -28,23 +28,24 @@ feature -- Initialization
 --			-- 
 --		do
 --			-- default_create
---		--	Precursor {TOUCH_EXAMPLE}
---		--	Precursor {EM_SHARED_BITMAP_FACTORY}
+--			Precursor {TOUCH_EXAMPLE}
+--			Precursor {EM_SHARED_BITMAP_FACTORY}
 --			
---			-- Load example picture
+--			
+			-- Load example picture
 --			bitmap_factory.create_bitmap_from_image ("images/examples/example_preview.png")
 --			if bitmap_factory.last_bitmap /= Void then
---		--SK		pictures.force_last (bitmap_factory.last_bitmap) 
+--				pictures.force_last (bitmap_factory.last_bitmap) 
 --			end
 --		end
 		
---feature -- Access
---	description: STRING is
---			-- 
---		once
---			Result := "The First example of TOUCH"
---		end
---
+feature -- Access
+	description: STRING is
+			-- 
+		once
+			Result := "The First example of TOUCH"
+		end
+
 --feature -- Basic operation
 ----	run_with_scene (exit_scene: EM_SCENE): EM_SCENE is
 ----			-- 
@@ -65,21 +66,19 @@ feature -- Initialization
 
 	run (a_runtime: TRAFFIC_3D_MAP_WIDGET) is
 			-- 
-			do  
-				
-				create Line9.make("tram 8", create {TRAFFIC_TYPE_WALKING}.make)
+		local
+--			type_tram : TRAFFIC_TYPE_TRAM
+		do  
 			
-
-			--	Line9.set_highlighted(true);
-				
-				
-
-
-
-
+		
 --			-- Create the 'Line8' object
 --			create Line8.make_with_line_and_map_widget (a_runtime.map.line ("tram 8"), a_runtime.map_widget)
 --
+			
+--			create Line8.make ("tram 8", type_tram)
+--			a_runtime.set_single_line_highlighted (Line8)
+--			console_textarea.set_text ("highlight8.")
+--			
 --			Paris := a_runtime.map_widget
 --			Paris.hide
 --			
@@ -115,12 +114,12 @@ feature -- Initialization
 --			explore
 --			
 		end
---
---feature  -- Example main feature
---	explore is
---		deferred
---		end
---		
+
+feature  -- Example main feature
+	explore is
+		deferred
+		end
+		
 --feature {NONE} -- Implementation
 --	example_scene: TOUCH_SIMPLE_TRAFFIC_SCENE
 --	passenger_drawable: MAP_WIDGET_PASSENGER_DRAWABLE
@@ -134,9 +133,9 @@ feature -- Predefines
 	
 	Louvre_Label: EM_LABEL
 	
-	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
+--	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
 	
-	Line9: TRAFFIC_LINE
+	Line8: TRAFFIC_LINE
 	
 	Passenger: TOUCH_PASSENGER
 

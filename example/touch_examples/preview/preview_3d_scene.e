@@ -48,10 +48,20 @@ feature -- Interface
 			start_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (start_button)
 			
+			
+			map.load_map ("./map/paris.xml")  -- for testing
 			create preview
 		--	preview.run(map_widget)
 		
+		--	tourism := create{TOURISM}
+		--	create tourism
+		--	tourism.run(map_widget)
 		
+--			create type_tram.make
+--			create Line8.make ("tram 8", type_tram)
+			
+			--map.set_lines_highlighted (True)
+			--map.set_single_line_highlighted(Line8)
 		end
 		
 feature -- Event handling
@@ -64,10 +74,12 @@ feature -- Event handling
 		do
 			load_button.set_pressed (False)
 --			map_widget.load_map (map_file_name)
+--			map.load_map ("map/zurich_tiny.xml")
+--			map.load_map ("./map/paris.xml")
 
-	--		map.load_map ("map/zurich_tiny.xml")
-
-			map.load_map ("./map/paris.xml")
+		--	map.set_lines_highlighted (True)
+			map.set_single_line_highlighted (Line8)
+			console_textarea.set_text ("line 8 should be highlighted...")
 
 		rescue
 			catch(24)
@@ -88,6 +100,9 @@ feature -- Event handling
 			console_textarea.set_text ("Starting the preview example from chapter 2...")
 			-- invoking preview...
 --			preview.explore
+
+			map.set_lines_highlighted (False)
+			preview.explore
 		
 		rescue
 			catch(24)
@@ -101,11 +116,22 @@ feature -- Event handling
 feature -- Widgets
 
 	preview: PREVIEW
+	
+--	tourism: TOURISM
 
 	load_button: EM_BUTTON
 			-- Button to load the xml file
 			
 	start_button: EM_BUTTON
 			-- Button to start the preview exampe		
+			
+	type_tram : TRAFFIC_TYPE_TRAM
+	
+	Line8: TRAFFIC_LINE is
+			-- 
+		once
+			Result := map.map.line ("tram 8")
+		end
+		
 
 end -- class PREVIEW_3D_SCENE

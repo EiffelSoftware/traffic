@@ -18,17 +18,6 @@ feature
 	end
 
 
-feature
-	name: STRING is 
-		do 
-			Result := internal_line.name
-		end
-
-	highlight is 
-		do 
-			internal_rep.set_highlighted(true)
-		end
-
 feature {NONE}
 
 	internal_line: TRAFFIC_LINE
@@ -37,16 +26,17 @@ feature {NONE}
 
 
 feature -- Access
-
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
+	name: STRING is 
+		do 
+			Result := internal_line.name
+		end
 
 feature -- Element change
+
+	highlight is 
+		do 
+	--		internal_rep.highlight_single_line(a_line)
+		end
 
 feature -- Removal
 

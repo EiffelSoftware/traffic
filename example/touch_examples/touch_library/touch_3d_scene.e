@@ -96,9 +96,7 @@ feature -- Interface
 			console_textarea.set_dimension ((window_width*0.25).rounded - 16, (window_height*0.25).rounded - 20)
 			console_textarea.disable
 			
-			console_panel.add_widget(console_textarea)			
-		
-		
+			console_panel.add_widget(console_textarea)				
 		end
 		
 feature -- Event handling
@@ -189,14 +187,13 @@ feature -- Widgets
 			-- Name of the currently loaded 
 
 	map: TOUCH_3D_MAP
-			-- The 3 dimensional representation of the map
-		
+			-- The 3 dimensional representation of the map		
 			
 	map_widget: TRAFFIC_3D_MAP_WIDGET
 	
---	number_of_buildings: INTEGER
---			-- Number of buildings on the map
---	
+	number_of_buildings: INTEGER
+			-- Number of buildings on the map
+	
 	search_for_xml: DS_LINKED_LIST[STRING] is
 			-- Search for xml files.
 		local
