@@ -27,7 +27,7 @@ feature -- Initialization
 			create itinerary.make
 			create origin.make (0, 0)
 			create destination.make (0, 0)
-			set_speed (0)
+			virtual_speed := 0
 		end
 
 	make_directed (an_itinerary: LINKED_LIST[EM_VECTOR_2D]; an_info: STRING; a_speed: DOUBLE) is
@@ -46,7 +46,7 @@ feature -- Initialization
 				itinerary.forth
 				position := origin
 				destination := itinerary.item
-				set_speed (a_speed)
+				virtual_speed := a_speed
 			ensure
 				origin /= Void
 				destination /= Void
@@ -69,7 +69,7 @@ feature -- Initialization
 			itinerary.start
 			itinerary.force (origin)
 			itinerary.force (destination)
-			speed := random_direction.double_item
+			virtual_speed := random_direction.double_item
 			random_direction.forth
 		ensure	
 			position = an_origin	
@@ -110,9 +110,13 @@ feature -- Attributes
 		
 	is_traveling_back: BOOLEAN
 		-- is set when a traveler returns trough the list.
-		
+	
 	has_finished: BOOLEAN
-		-- has the traveler finished his journey.
+		-- has the traveler finished his journey.	
+
+	virtual_speed: DOUBLE
+		-- the virtual speed of the object oin the map.
+
 
 feature -- Procedures
 	
