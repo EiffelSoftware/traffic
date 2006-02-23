@@ -63,8 +63,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 	draw is
 			-- draw all places
 		local
-			a_traveler: TRAFFIC_TRAVELER
-			a_position: EM_VECTOR_2D 
+			a_traveler: TRAFFIC_TRAVELER 
 			i : INTEGER
 		do
 			from
@@ -112,7 +111,8 @@ feature{CITY_3D_MAP} -- Implemenation
 					end	
 					traveler := traveler_factory.create_object
 					traveler.set_origin (a_traveler.position.x, traveler_offset, a_traveler.position.y)
-					traffic_time.add_callback_procedure (agent a_traveler.take_tour)
+--					traffic_time.add_callback_procedure (agent a_traveler.take_tour)
+					traffic_time.add_callback_tour (agent a_traveler.take_tour)
 					travelers.force (traveler, a_traveler.index)
 					a_map.add_traveler (a_traveler)	
 				end
@@ -136,22 +136,6 @@ feature{CITY_3D_MAP} -- Implemenation
 					until
 						lines.after
 					loop
---						traveling_points.wipe_out
---						from 
---							lines.item_for_iteration.start
---						until
---							lines.item_for_iteration.after
---						loop
---							line_section := lines.item_for_iteration.item
---							temp_point := line_section.destination.position
---							traveling_points.force (line_section.origin.position)
---							lines.item_for_iteration.forth
---						end
---						traveling_points.force (temp_point)
---						
---								
---						create a_traveler.make_directed (traveling_points, "tram", 0.1)
---						a_traveler.set_reiterate (True)
 		
 						create a_traveler.make_with_line (lines.item_for_iteration)
 						add_traveler (a_traveler, a_map)
@@ -366,6 +350,8 @@ feature{TRAFFIC_3D_MAP_WIDGET}
 
 	travelers: HASH_TABLE [EM_3D_OBJECT, INTEGER]		
 		-- Container for all traveler
+		
+		
 		
 feature{NONE} -- Attributes
 

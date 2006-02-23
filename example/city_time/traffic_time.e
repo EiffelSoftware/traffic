@@ -23,6 +23,7 @@ feature -- Creation
 		do
 			callback_delay := 10
 			create all_procedures.make
+			create all_tours.make
 			
 			actual_hour := 0
 			actual_minute := 0
@@ -40,6 +41,7 @@ feature -- Creation
 		simulated_minutes := simulated_day_minutes
 		change_simulated_time (simulated_minutes)
 		create all_procedures.make
+		create all_tours.make
 
 		
 		actual_hour := 0
@@ -84,7 +86,7 @@ feature  --Time Attributes
 			simulated_minutes := simulated_day_minutes
 --			temp_delay := ((simulated_minutes/minutes_per_hour)*seconds_per_minute*milliseconds_per_second).rounded
 			temp_delay := ((simulated_minutes/minutes_per_hour)*milliseconds_per_second).rounded
-			io.putint (temp_delay)
+--			io.putint (temp_delay)
 			if temp_delay < 10 then
 				callback_delay := 10
 			else	
@@ -135,7 +137,7 @@ feature -- time
 			do
 				is_time_running := True
 				time.add_timed_callback (callback_delay, agent call_procedure)
---				time.add_timed_procedure (agent time_count, callback_delay)
+				time.add_timed_callback (70, agent call_tours)
 			ensure
 				is_time_running
 			end
@@ -145,7 +147,6 @@ feature -- time
 			require
 				is_time_running
 			do
---				time.quit
 				is_time_running := False
 			ensure
 				not is_time_running
@@ -160,16 +161,58 @@ feature -- time
 			ensure
 				is_time_running
 			end
+	
+	reset_time is
+			-- reset the time to 0,0,0.
+			do
+				actual_hour := 0
+				actual_minute := 0
+				actual_second := 0
+				is_time_running := False
+			ensure
+				is_time_running = False
+				actual_hour = 0
+				actual_minute = 0
+				actual_second = 0
+			end
+		
 		
 feature -- Procedures
 
 	all_procedures: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
 	
-	add_callback_procedure(a_procedure: PROCEDURE[ANY, TUPLE]) is
+	all_tours: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
+	
+	add_callback_procedure (a_procedure: PROCEDURE[ANY, TUPLE]) is
 			-- add a procedure
 		do
-			all_procedures.force(a_procedure)
+			all_procedures.force (a_procedure)
 		end
+		
+	add_callback_tour (a_tour_procedure: PROCEDURE[ANY, TUPLE]) is
+			-- add the tour algorithms here
+			do
+				all_tours.force (a_tour_procedure)
+			end
+
+	call_tours(an_interval: INTEGER): INTEGER is
+			-- call all procedures all 'an_interval' milliseconds
+			do
+				from
+					all_tours.start
+				until
+					all_tours.after
+				loop
+					all_tours.item.call ([Void])
+					all_tours.forth
+				end
+				if is_time_running then
+					Result := an_interval	
+				else
+					Result := 0
+				end
+				
+			end		
 
 	call_procedure(an_interval: INTEGER): INTEGER is
 			-- call all procedures all 'an_interval' milliseconds

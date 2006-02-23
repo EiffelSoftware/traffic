@@ -304,6 +304,13 @@ feature	-- Travelere objects
 	
 	traveler_index: INTEGER
 	
+	adjust_speed is
+			-- adjust the speed by a double
+			do
+				map.change_traveler_speed (traffic_time.simulated_minutes / 2)
+			end
+		
+	
 feature
 	
 	load_map (filename: STRING) is
@@ -329,7 +336,7 @@ feature
 				temp_list.force (create {EM_VECTOR_2D}.make (-0, -0))
 				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
 
-				create traveler.make_directed (temp_list, "passenger", 0.5)
+				create traveler.make_directed (temp_list, "passenger", 0.3)
 				traveler.set_reiterate (True)
 				traffic_traveler.add_traveler (traveler, map)
 				

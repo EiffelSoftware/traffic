@@ -209,6 +209,7 @@ feature -- Event handling
 		do
 			traffic_time.change_simulated_time (simulated_time)
 			time_button.set_pressed(False)
+			map.adjust_speed
 			if is_time_enabled then
 				traffic_time.pause_time
 				time_button.set_text ("continue time")
@@ -240,11 +241,6 @@ feature -- Event handling
 				destination_label.set_text ("")
 			end
 			
---			if map.marked_origin /= Void and then map.marked_destination /= void and then map.show_shortest_path then
---				traffic_line_ride_button.show
---			else
---				traffic_line_ride_button.hide
---			end
 		end
 			
 		
@@ -253,8 +249,9 @@ feature -- Event handling
 		require
 			load_button /= Void
 		do
+			time_button_clicked
+			traffic_time.reset_time
 			load_button.set_pressed (False)
---			map_widget.load_map (map_file_name)
 			map.load_map (map_file_name)
 			marked_origin_label.set_text ("")
 			marked_destination_label.set_text ("")

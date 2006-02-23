@@ -26,7 +26,10 @@ inherit
 		redefine
 			out
 		end
-
+	
+	DOUBLE_MATH
+		undefine out end
+	
 create
 	make
 
@@ -212,7 +215,7 @@ feature -- Element change
 				line_section_removed: not line_sections.has (a_line_section)
 			end
 	
-	remove_traveler(index: INTEGER) is
+	remove_traveler (index: INTEGER) is
 			-- -- Remove traveler at position index
 			require
 				index_valid: index >= 0
@@ -221,7 +224,26 @@ feature -- Element change
 			ensure
 				not internal_travelers.has (index)
 			end
-		
+	
+	change_traveler_speed (divisor: DOUBLE) is	
+			-- divise the speed of each traveler by divisor
+			require
+				divisor >= 2
+			local
+				a_traveler: TRAFFIC_TRAVELER
+			do
+				from
+					internal_travelers.start
+				until
+					internal_travelers.after
+				loop
+					a_traveler := internal_travelers.item_for_iteration
+--					if a_traveler /= Void then
+						a_traveler.set_speed (a_traveler.virtual_speed / divisor)					
+--					end
+					internal_travelers.forth
+				end
+			end
 	
 	increment_index is
 			-- increment the traveler index

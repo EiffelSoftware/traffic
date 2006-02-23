@@ -10,8 +10,7 @@ class
 inherit
 	TRAFFIC_TRAVELER 
 	redefine 
-		take_tour --, 
---		tour_helper
+		take_tour
 	end
 	
 	TRAFFIC_3D_CONSTANTS
@@ -36,11 +35,10 @@ feature -- Creation
 					polypoints.append (line.item.polypoints)
 					line.forth
 				end
---				set_coordinates (line.item)
 				polypoints.start
 				set_coordinates
 				set_traffic_info ("tram")
-				set_speed (0.05)
+				virtual_speed := 0.5
 			end
 		
 		
@@ -49,9 +47,9 @@ feature -- Journey
 
 	set_coordinates is
 			-- set the positions to the corresponding ones of the line section
-			require
-				not polypoints.after
-				not polypoints.before
+--			require
+--				not polypoints.after
+--				not polypoints.before
 			do
 				-- hopefully this will give a bit performance to the journey
 				-- otherwise just clear out the map_to_gl_coords
@@ -82,28 +80,6 @@ feature -- Journey
 				position /= Void
 				destination /= Void
 			end
---	
---	set_coordinates (a_line_section: TRAFFIC_LINE_SECTION) is
---			-- set the positions to the corresponding ones of the line section
---			require
---				a_line_section /= Void
---			do
---				-- hopefully this will give a bit performance to the journey
---				-- otherwise just clear out the map_to_gl_coords
---				if is_traveling_back then
---					origin :=  map_to_gl_coords (a_line_section.destination.position)
---					position := map_to_gl_coords (a_line_section.destination.position)
---					destination := map_to_gl_coords (a_line_section.origin.position)										
---				else
---					origin :=  map_to_gl_coords (a_line_section.origin.position)
---					position := map_to_gl_coords (a_line_section.origin.position)
---					destination := map_to_gl_coords (a_line_section.destination.position)				
---				end
---			ensure
---				origin /= Void
---				position /= Void
---				destination /= Void
---			end
 		
 
 	take_tour is
@@ -116,45 +92,20 @@ feature -- Journey
 				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
 					set_coordinates
 				else
---					tour_helper
+
 					position := position + (direction / direction.length) * speed
 					
 				end
 			end
 		
---	tour_helper is
---			-- helper to set the new origin and destination 
---		require else
---			no_before_and_traveling_back: not (is_traveling_back and line.before)
---			no_after_and_traveling_forth: not (not is_traveling_back and line.after)
---		do
---			if is_traveling_back then
---				line.back
---			else
---				line.forth
---			end
---			
---			if not line.after and not line.before then
---				set_coordinates (line.item)
---			elseif line.after then
---				check (is_traveling_back = False) end
---				is_traveling_back := True
---				tour_helper
---			else
---				check (is_traveling_back = True) end
---				is_traveling_back := False
---				tour_helper
---			end
---		end
---	
-feature -- Status
+feature {TRAFFIC_MAP} -- Status
 
 	line: TRAFFIC_LINE
-		-- line on which 'current' will travel.
+		-- line on which 'current' will travel.	
 		
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 		-- all points to be traveled through.
-	
+
 	
 invariant
 	TR_LINE_TR_line_set: line /= Void
