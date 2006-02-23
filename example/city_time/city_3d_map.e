@@ -324,19 +324,19 @@ feature
 				create traffic_traveler.make (map, traffic_time)
 
 				create temp_list.make
---				temp_list.force (create {EM_VECTOR_2D}.make (-10, -10))
---				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
---				
---
---				create traveler.make_directed (temp_list, "passenger", 0.2)
---				traffic_traveler.add_traveler (traveler, map)
---
---				temp_list.wipe_out
+				temp_list.force (create {EM_VECTOR_2D}.make (-10, -10))
+				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+				
+
+				create traveler.make_directed (temp_list, "passenger", 0.2)
+				traffic_traveler.add_traveler (traveler, map)
+
+				temp_list.wipe_out
 
 				temp_list.force (create {EM_VECTOR_2D}.make (-0, -0))
 				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
 
-				create traveler.make_directed (temp_list, "passenger", 0.3)
+				create traveler.make_directed (temp_list, "passenger", 0.5)
 				traveler.set_reiterate (True)
 				traffic_traveler.add_traveler (traveler, map)
 				

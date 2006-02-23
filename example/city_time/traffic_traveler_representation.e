@@ -75,8 +75,12 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 					i := travelers.key_for_iteration
 					a_traveler := map.travelers.item (i)
 --					a_position := map_to_gl_coords (a_traveler.position)
-					travelers.item_for_iteration.set_origin(a_traveler.position.x, traveler_offset, a_traveler.position.y)
-					travelers.item_for_iteration.draw	
+					if a_traveler.has_finished then
+						travelers.remove (i)
+					else
+						travelers.item_for_iteration.set_origin(a_traveler.position.x, traveler_offset, a_traveler.position.y)
+						travelers.item_for_iteration.draw		
+					end
 					
 				end
 				i := i+1
