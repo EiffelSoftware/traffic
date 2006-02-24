@@ -10,7 +10,7 @@ deferred class
 	TOURISM
 
 inherit
-	PREVIEW_3D_APPLICATION
+--	PREVIEW_3D_APPLICATION
 	--TOUCH_EXAMPLE
 --		redefine
 --		--	run_with_scene,--
@@ -18,9 +18,9 @@ inherit
 --		end
 	EM_SHARED_BITMAP_FACTORY
 		undefine
-			copy,
-			is_equal,
-			default_create
+		--	copy,
+		--	is_equal,
+		--	default_create
 		end
 		
 feature -- Initialization
@@ -66,15 +66,17 @@ feature -- Access
 
 	run (a_runtime: TRAFFIC_3D_MAP_WIDGET) is
 			-- 
-		local
---			type_tram : TRAFFIC_TYPE_TRAM
 		do  
+			-- Create the 'Line8' object
+		--	create Line_Eight.make_with_line_and_representation (Line8, a_runtime.map)
 			
-		
---			-- Create the 'Line8' object
+	--		Line8 := a_runtime.map.line ("tram 8")
+			
+			create Paris.make (a_runtime, "./map/paris.xml")
+
 --			create Line8.make_with_line_and_map_widget (a_runtime.map.line ("tram 8"), a_runtime.map_widget)
 --
-			
+--			create Line8.make (a_runtime.map.line ("tram 8"), a_rep)			
 --			create Line8.make ("tram 8", type_tram)
 --			a_runtime.set_single_line_highlighted (Line8)
 --			console_textarea.set_text ("highlight8.")
@@ -111,7 +113,7 @@ feature -- Access
 --			Route2.extend (a_runtime.map.place ("Tour Eiffel"))
 --			Route2.calculate_shortest_path
 --			
---			explore
+			explore
 --			
 		end
 
@@ -135,15 +137,24 @@ feature -- Predefines
 	
 --	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
 	
-	Line8: TRAFFIC_LINE
+	Line8: TOUCH_LINE is 
+		once
+		--	create Result.make_with_line_and_representation  
+		end
+	
+--	Line8: TRAFFIC_LINE 
 	
 	Passenger: TOUCH_PASSENGER
 
-	Paris: TRAFFIC_MAP_WIDGET
+--	Paris: TRAFFIC_MAP_WIDGET
+	
+	Paris: TOUCH_MAP
 
 	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
 	
 	Route2: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
+	
+	a_rep: TRAFFIC_LINE_REPRESENTATION
 		
 
 end -- class TOURISM

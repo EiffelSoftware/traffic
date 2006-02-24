@@ -17,7 +17,7 @@ feature
 
 --			map.set_single_line_highlighted(Line9)
 
---			Line8.highlight
+			Line8.highlight
 
 --			Line8.highlight
 --			Route1.animate

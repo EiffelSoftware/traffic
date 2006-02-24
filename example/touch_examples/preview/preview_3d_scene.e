@@ -50,7 +50,7 @@ feature -- Interface
 			
 			
 			map.load_map ("./map/paris.xml")  -- for testing
-			create preview
+		--	create preview
 		--	preview.run(map_widget)
 		
 		--	tourism := create{TOURISM}
@@ -79,7 +79,7 @@ feature -- Event handling
 
 		--	map.set_lines_highlighted (True)
 			map.set_single_line_highlighted (Line8)
-			console_textarea.set_text ("line 8 should be highlighted...")
+			console_textarea.set_text ("line 8 highlighted...")
 
 		rescue
 			catch(24)
@@ -102,7 +102,11 @@ feature -- Event handling
 --			preview.explore
 
 			map.set_lines_highlighted (False)
-			preview.explore
+			preview := create {PREVIEW}
+	--		create preview
+			preview.run(map_widget)
+	--		tourism.run (map_widget)
+	--		preview.explore
 		
 		rescue
 			catch(24)
@@ -117,7 +121,7 @@ feature -- Widgets
 
 	preview: PREVIEW
 	
---	tourism: TOURISM
+	tourism: TOURISM
 
 	load_button: EM_BUTTON
 			-- Button to load the xml file
