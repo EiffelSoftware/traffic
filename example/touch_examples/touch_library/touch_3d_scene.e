@@ -186,7 +186,7 @@ feature -- Widgets
 	loaded_file_name: STRING
 			-- Name of the currently loaded 
 
-	map: TOUCH_3D_MAP
+	map: TOUCH_3D_MAP_WIDGET
 			-- The 3 dimensional representation of the map		
 			
 	map_widget: TRAFFIC_3D_MAP_WIDGET
