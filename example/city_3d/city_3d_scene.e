@@ -459,17 +459,18 @@ feature -- Event handling
 		local
 			parser: TRAFFIC_BUILDING_PARSER
 		do
-			create parser.make_with_map(map)
-			parser.set_file_name ("buildings/test.xml")
-			parser.parse
-			if parser.has_error then
-				io.putstring ("Error while parsing buildings ")
-				io.putstring (parser.error_description)
-			end
-			parser.process
-			if parser.has_error then
-				io.putstring ("Error while processing" + parser.error_description)
-			end
+--			create parser.make_with_map(map)
+--			parser.set_file_name ("buildings/test.xml")
+--			parser.parse
+--			if parser.has_error then
+--				io.putstring ("Error while parsing buildings ")
+--				io.putstring (parser.error_description)
+--			end
+--			parser.process
+--			if parser.has_error then
+--				io.putstring ("Error while processing" + parser.error_description)
+--			end
+			map.add_buildings_along_lines
 		end
 		
 	

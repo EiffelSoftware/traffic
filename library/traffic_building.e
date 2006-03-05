@@ -34,7 +34,7 @@ feature
 			angle:= 0
 			breadth:= sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y))
 			width:= sqrt((p1.x-p4.x)*(p1.x-p4.x)+(p1.y-p4.y)*(p1.y-p4.y))
-			create center.make((p1.x+p4.x)/2,(p1.y+p2.y)/2)
+			create center.make((p2.x+p4.x)/2,(p1.y+p3.y)/2)
 		end
 		
 	contains_point(a_x: DOUBLE; a_y: DOUBLE): BOOLEAN is
@@ -44,14 +44,29 @@ feature
 			delta_x2: DOUBLE
 		do
 			
-			delta_x1:= dabs(tangent(angle*pi/180)*(p2.y-a_y))
-			delta_x2:= dabs(tangent(angle*pi/180)*(p4.y-a_y))
-			if (a_y >= p3.y - 0.2) and (a_y <= p1.y + 0.2) then
-				if (a_x >= p2.x+delta_x1-0.2) and (a_x <= p4.x-delta_x2 + 0.2) then
+			Result:=false
+--			if (a_x>p2.x-0.2) and (a_x<p4.x+0.2) then
+--				if (a_y>p3.y-0.2) and (a_y<p1.y+0.2) then
+--					Result:=true
+--				end	
+--			end
+			
+			Result:=false
+--			io.putstring (a_x.out + " " + a_y.out)
+--			io.new_line
+			if angle/=0 and angle/=90 then
+				delta_x1:= dabs((a_y-p2.y)/tangent(pi/2+angle*pi/180))
+				delta_x2:= dabs((p4.y-a_y)/tangent(pi/2+angle*pi/180))
+			else
+				delta_x1:=0
+				delta_x2:=0
+			end
+--			io.putstring ("delta1: "+delta_x1.out + " delta2: " + delta_x2.out)
+--			io.new_line
+			if (a_y >= p3.y - 0.1) and (a_y <= p1.y + 0.1) then
+				if (a_x <= p2.x-delta_x1+0.1) and (a_x >= p4.x+delta_x2 - 0.1) then
 					Result:= true
 				end
-			else
-				Result:= false
 			end
 			
 --			if (a_y >= p2.y - 0.2) and (a_y <= p4.y + 0.2) then
@@ -93,9 +108,18 @@ feature
 	set_angle(an_angle: DOUBLE) is
 			-- set angle to `a_angle'.
 		require
-			angle_valid: an_angle >= 0 and an_angle <=360
+			angle_valid: an_angle >= -45 and an_angle <=45
+		local
+			temp: EM_VECTOR_2D
 		do
 			angle := an_angle
+			if angle>0 then
+				temp:=p4
+				p4:=p3
+				p3:=p2
+				p2:=p1
+				p1:=temp
+			end
 		end
 		
 	

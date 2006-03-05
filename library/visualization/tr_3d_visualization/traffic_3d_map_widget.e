@@ -429,6 +429,14 @@ feature -- Options
 		do
 			traffic_buildings.add (a_building)
 		end
+	
+	add_buildings_along_lines is	
+			--  adds buildings along lines to map
+		do
+			traffic_buildings.add_along_lines
+		end
+		
+	
 		
 	
 	
