@@ -10,7 +10,7 @@ class
 inherit
 	TRAFFIC_TRAVELER 
 	redefine 
-		take_tour
+		set_coordinates
 	end
 	
 	TRAFFIC_3D_CONSTANTS
@@ -32,9 +32,17 @@ feature -- Creation
 				until
 					line.after
 				loop
+--					polypoints.force (line.item.polypoints.first)
+--					polypoints.force (line.item.polypoints.first)
+--					polypoints.force (line.item.polypoints.first)
+					-- this is that a tram stops for a short time at each place
 					polypoints.append (line.item.polypoints)
 					line.forth
 				end
+--				polypoints.force (polypoints.last)
+--				polypoints.force (polypoints.last)
+--				polypoints.force (polypoints.last)
+				-- same as in the loop
 				polypoints.start
 				set_coordinates
 				set_traffic_info ("tram")
@@ -42,14 +50,11 @@ feature -- Creation
 			end
 		
 		
-feature -- Journey
+feature {NONE} -- Journey
 
 
 	set_coordinates is
 			-- set the positions to the corresponding ones of the line section
---			require
---				not polypoints.after
---				not polypoints.before
 			do
 				-- hopefully this will give a bit performance to the journey
 				-- otherwise just clear out the map_to_gl_coords
@@ -75,36 +80,30 @@ feature -- Journey
 						destination := map_to_gl_coords (polypoints.item)										
 					end				
 				end
-			ensure
-				origin /= Void
-				position /= Void
-				destination /= Void
 			end
 		
 
-	take_tour is
-			-- take a tour on the map
-			local
-				direction: EM_VECTOR_2D
-			do
-				direction := destination - origin
-				
-				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
-					set_coordinates
-				else
-
-					position := position + (direction / direction.length) * speed
-					
-				end
-			end
+--	take_tour is
+--			-- take a tour on the map
+--			local
+--				direction: EM_VECTOR_2D
+--			do
+--				direction := destination - origin
+--				
+--				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
+--					set_coordinates
+--				else
+--
+--					position := position + (direction / direction.length) * speed
+--					
+--				end
+--			end
 		
 feature {TRAFFIC_MAP} -- Status
 
 	line: TRAFFIC_LINE
 		-- line on which 'current' will travel.	
-		
-	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
-		-- all points to be traveled through.
+
 
 	
 invariant

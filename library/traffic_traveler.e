@@ -14,6 +14,9 @@ inherit
 	DOUBLE_MATH
 		export {NONE} all end
 		
+	TRAFFIC_3D_CONSTANTS
+		export {NONE} all end
+		
 create
 	make, make_directed, make_random
 	
@@ -24,28 +27,24 @@ feature -- Initialization
 		do
 			set_traffic_info ("")
 			create position.make (0, 0)
-			create itinerary.make
+			create polypoints.make (1)
 			create origin.make (0, 0)
 			create destination.make (0, 0)
 			virtual_speed := 0
 		end
 
-	make_directed (an_itinerary: LINKED_LIST[EM_VECTOR_2D]; an_info: STRING; a_speed: DOUBLE) is
+	make_directed (an_itinerary: ARRAYED_LIST [EM_VECTOR_2D]; an_info: STRING; a_speed: DOUBLE) is
 			-- create an object with defined origin and destination
 			require
 				an_itinerary /= Void
 				an_info /= Void
 				a_speed >= 0
 			do
-				create itinerary.make
-				itinerary := an_itinerary
-				itinerary.start
-				
+				create polypoints.make (1)
+				polypoints := an_itinerary
+				polypoints.start
+				set_coordinates
 				set_traffic_info (an_info)
-				origin := itinerary.first
-				itinerary.forth
-				position := origin
-				destination := itinerary.item
 				virtual_speed := a_speed
 			ensure
 				origin /= Void
@@ -60,15 +59,14 @@ feature -- Initialization
 			an_origin /= Void
 			a_seed >= 0
 		do
-			create itinerary.make
+			create polypoints.make (1)
 			traffic_info := an_info
 			create random_direction.set_seed(a_seed)
-			origin := an_origin
-			position := an_origin
 			give_random_direction
-			itinerary.start
-			itinerary.force (origin)
-			itinerary.force (destination)
+			polypoints.force (origin)
+			polypoints.force (destination)
+			polypoints.start
+			set_coordinates
 			virtual_speed := random_direction.double_item
 			random_direction.forth
 		ensure	
@@ -101,9 +99,9 @@ feature -- Attributes
 		
 	time: DOUBLE
 		-- time for one minute.
-		
-	itinerary: LINKED_LIST[EM_VECTOR_2D]
-		-- list of points the traveler travels through.
+			
+	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
+		-- all points to be traveled through.
 	
 	is_reiterating: BOOLEAN
 		-- if the destination is reached it turns around.
@@ -128,54 +126,88 @@ feature -- Procedures
 				direction := destination - origin
 				
 				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
-					tour_helper
+					set_coordinates
 				else
-
 					position := position + (direction / direction.length) * speed
-					
 				end
 
 				
 			end
 		
-		-- TODO: set the position the first time right
+feature {NONE} -- helper for journey	
+	
+	set_coordinates is
+			-- set the positions to the corresponding ones of the line section
+			require
+				not polypoints.after
+				not polypoints.before
+			do
+				-- hopefully this will give a bit performance to the journey
+				-- otherwise just clear out the map_to_gl_coords
+				origin :=  map_to_gl_coords (polypoints.item)
+				position := map_to_gl_coords (polypoints.item)
+
+				if is_traveling_back then
+					polypoints.back
+					if polypoints.before then
+						is_traveling_back := False
+						polypoints.forth
+						set_coordinates
+					else
+						destination := map_to_gl_coords (polypoints.item)										
+					end
+				else
+					polypoints.forth
+					if polypoints.after then
+						is_traveling_back := True
+						polypoints.back
+						set_coordinates
+					else
+						destination := map_to_gl_coords (polypoints.item)										
+					end				
+				end
+			ensure
+				origin /= Void
+				position /= Void
+				destination /= Void
+			end	
 			
 	tour_helper is
 			-- help during the tour to get the next destination if there is any
 			do
-				if not itinerary.after and not itinerary.before then
+				if not polypoints.after and not polypoints.before then
 					
 					if not is_traveling_back then
-						itinerary.forth
+						polypoints.forth
 						origin := destination
 						position := destination
-						destination := itinerary.item
+						destination := polypoints.item
 					elseif is_traveling_back then
-						itinerary.back
+						polypoints.back
 						origin := destination
 						position := destination
-						destination := itinerary.item
+						destination := polypoints.item
 					end	
 						
-				elseif itinerary.after and is_reiterating then
+				elseif polypoints.after and is_reiterating then
 					is_traveling_back := True
-					itinerary.back
+					polypoints.back
 					origin := destination
 					position := destination
 					
-				elseif itinerary.before and is_reiterating and is_traveling_back then
+				elseif polypoints.before and is_reiterating and is_traveling_back then
 					is_traveling_back := False
-					itinerary.forth
+					polypoints.forth
 					origin := destination
 					position := destination
-					destination := itinerary.item
+					destination := polypoints.item
 				else
 					has_finished := True
 				end
 			end
 		
 		
-	
+feature -- Attributes settings	
 	set_index (an_index: INTEGER) is
 			-- give the object an index
 			do
@@ -225,17 +257,19 @@ feature -- Procedures
 			end
 		
 			
-feature{NONE} -- random
+feature {NONE} -- random
 
 	give_random_direction is
 			-- give a random destination
+			require
+				random_direction /= Void
 			local
 				temp_x, temp_y: DOUBLE
 			do
 				temp_x := random_direction.double_item
 				random_direction.forth
 				temp_y := random_direction.double_item
-				create destination.make (temp_x, temp_y)
+				create destination.make (100*temp_x, 100*temp_y)
 				random_direction.forth
 			ensure
 				destination.x < 1
@@ -248,7 +282,7 @@ feature{NONE} -- random
 		-- make a direction out of this genererator	
 	
 invariant
-	itinerary /= Void
+	polypoints /= Void
 	origin /= Void
 	destination /= Void
 	position /= Void

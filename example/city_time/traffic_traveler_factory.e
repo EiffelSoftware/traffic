@@ -11,6 +11,8 @@ inherit
 
 	EM_SHARED_BITMAP_FACTORY
 		export {NONE} all end
+		
+		-- EM_3D_OBJ_LOADER
 
 create
 	make

@@ -317,24 +317,26 @@ feature
 			-- 
 			local
 				traveler: TRAFFIC_TRAVELER
-				temp_list: LINKED_LIST [EM_VECTOR_2D]
+				temp_list: ARRAYED_LIST [EM_VECTOR_2D]
 			do
 				Precursor (filename)
 				
 				create traffic_traveler.make (map, traffic_time)
 
-				create temp_list.make
-				temp_list.force (create {EM_VECTOR_2D}.make (-10, -10))
-				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
-				
-
-				create traveler.make_directed (temp_list, "passenger", 0.2)
-				traffic_traveler.add_traveler (traveler, map)
-
-				temp_list.wipe_out
+				create temp_list.make(1)
+--				temp_list.force (create {EM_VECTOR_2D}.make (-10, -10))
+--				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+--				
+--
+--				create traveler.make_directed (temp_list, "passenger", 0.2)
+--				traffic_traveler.add_traveler (traveler, map)
+--
+--				temp_list.wipe_out
 
 				temp_list.force (create {EM_VECTOR_2D}.make (-0, -0))
 				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+				temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
+
 
 				create traveler.make_directed (temp_list, "passenger", 0.5)
 				traveler.set_reiterate (True)
