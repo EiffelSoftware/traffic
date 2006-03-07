@@ -11,15 +11,14 @@ feature
 		-- Note that the objects are not of the type you may think
 		-- See 'TOURSIM' for the predefined objects and classes
 		do
---			Paris.display
---			Louvre.spotlight
+			Paris.display
+			
+--			Louvre.spotlight			
 
+			Line8.highlight_for_5_seconds
 
---			map.set_single_line_highlighted(Line9)
+		--	Paris.display
 
-			Line8.highlight
-
---			Line8.highlight
 --			Route1.animate
 --			Passenger.move_route (Route2)
 		end

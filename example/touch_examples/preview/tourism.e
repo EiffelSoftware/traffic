@@ -64,26 +64,16 @@ feature -- Access
 --			-- Create the 'Louvre' object
 --			create Louvre.make_with_place_and_map_widget (a_runtime.map.place ("Musee du Louvre"), a_runtime.map_widget)
 
-	run (a_runtime: TRAFFIC_3D_MAP_WIDGET) is
+	run (a_runtime: TOUCH_3D_MAP_WIDGET) is
 			-- 
-		do  
-			-- Create the 'Line8' object
-		--	create Line_Eight.make_with_line_and_representation (Line8, a_runtime.map)
-			
-	--		Line8 := a_runtime.map.line ("tram 8")
-			
+		
+		do  		
+			-- Create Paris
 			create Paris.make (a_runtime, "./map/paris.xml")
 
---			create Line8.make_with_line_and_map_widget (a_runtime.map.line ("tram 8"), a_runtime.map_widget)
---
---			create Line8.make (a_runtime.map.line ("tram 8"), a_rep)			
---			create Line8.make ("tram 8", type_tram)
---			a_runtime.set_single_line_highlighted (Line8)
---			console_textarea.set_text ("highlight8.")
---			
---			Paris := a_runtime.map_widget
---			Paris.hide
---			
+			-- Creation of 'Line8' object as once 
+
+
 --			-- Create Passenger
 --			create Passenger.make_on_map_place (a_runtime.map, a_runtime.map.place ("place Madeleine"))
 --			create passenger_drawable.make_from_passenger (Passenger)
@@ -135,14 +125,10 @@ feature -- Predefines
 	
 	Louvre_Label: EM_LABEL
 	
---	Line8: TOUCH_GRAPHICAL_TRAFFIC_LINE
-	
 	Line8: TOUCH_LINE is 
 		once
-		--	create Result.make_with_line_and_representation  
+			Result := Paris.get_line("tram 8")  
 		end
-	
---	Line8: TRAFFIC_LINE 
 	
 	Passenger: TOUCH_PASSENGER
 
