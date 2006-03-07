@@ -22,9 +22,18 @@ feature -- Initialisation
 feature -- Access
 
 feature -- 
+
 	display is
 		do
-			internal_map_widget.load_map(internal_map_file_name)
+			internal_map_widget.load_map(internal_map_file_name)			
+		end
+		
+	get_line(a_line: STRING):TOUCH_LINE is
+		require
+			a_line /= Void
+--			internal_map_widget /= Void		
+		do		
+			create Result.make_with_line_and_representation(internal_map_widget.map.line (a_line), internal_map_widget.traffic_lines)
 		end
 
 feature {NONE} -- Implementation
@@ -37,7 +46,5 @@ feature {NONE} -- Implementation
 	
 	internal_map_file_name: STRING
 
-invariant
-	invariant_clause: True -- Your invariant here
 
-end
+end -- class TOUCH_MAP

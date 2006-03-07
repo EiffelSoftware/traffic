@@ -75,7 +75,7 @@ feature -- Drawing
 --			if traffic_line_ride and then show_shortest_path and then shortest_path_line /= Void and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
 --				prepare_for_traffic_line_ride
 --			else
-				traffic_line_ride := False
+--				traffic_line_ride := False
 				-- Translation
 				gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
 				gl_translated_external (x_translation, -y_translation, 0)
@@ -368,11 +368,11 @@ feature -- options
 
 feature{NONE} -- Traffic line rides
 
-	last_polypoint: EM_VECTOR_2D
-			-- The last polypoint visited
-			
-	position: EM_VECTOR_2D
-			-- The current position
+--	last_polypoint: EM_VECTOR_2D
+--			-- The last polypoint visited
+--			
+--	position: EM_VECTOR_2D
+--			-- The current position
 --			
 --	Speed: DOUBLE is 0.05
 --			-- Speed of the traffic line rides

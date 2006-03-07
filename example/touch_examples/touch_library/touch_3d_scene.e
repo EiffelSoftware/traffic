@@ -45,11 +45,11 @@ feature -- Interface
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
 				create map.make
+				map.set_position (0, 0)
+				add_component (map)
 --				create map_widget.make
 --				map_widget.set_position(0,0)
 --				add_component (map_widget)
-				map.set_position (0, 0)
-				add_component (map)
 			else
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
@@ -108,7 +108,7 @@ feature -- Event handling
 		do
 			zoom_in_button.set_pressed (False)
 			map.zoom_in
-			console_textarea.set_text ("zooming in..%NThe zoom was awesome!")
+			console_textarea.set_text ("zooming in ...")
 		end
 		
 	zoom_out_button_clicked is
@@ -119,7 +119,7 @@ feature -- Event handling
 			zoom_out_button.set_pressed (False)
 			map.zoom_out
 			
-			console_textarea.set_text ("zooming out..")
+			console_textarea.set_text ("zooming out ...")
 		end
 	
 
@@ -189,8 +189,8 @@ feature -- Widgets
 	map: TOUCH_3D_MAP_WIDGET
 			-- The 3 dimensional representation of the map		
 			
-	map_widget: TRAFFIC_3D_MAP_WIDGET
-	
+--	map_widget: TRAFFIC_3D_MAP_WIDGET
+--	
 	number_of_buildings: INTEGER
 			-- Number of buildings on the map
 	

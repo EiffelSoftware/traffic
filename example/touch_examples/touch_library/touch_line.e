@@ -12,6 +12,9 @@ create make_with_line_and_representation
 feature 
 	
 	make_with_line_and_representation(a_line: TRAFFIC_LINE; a_rep: TRAFFIC_LINE_REPRESENTATION) is 
+		require
+			a_line /= Void
+			a_rep /= Void		
 		do 
 			internal_line := a_line
 			internal_rep := a_rep
@@ -31,6 +34,15 @@ feature -- Element change
 		do 
 			internal_rep.highlight_single_line(internal_line)
 		end
+		
+	highlight_for_5_seconds is 
+		do
+			internal_rep.highlight_single_line(internal_line)
+			
+			internal_rep.un_highlight_single_line(internal_line)
+--			internal_rep.highlight_single_line_for_5sec(internal_line)
+		end
+	
 
 feature {NONE} -- Implementation
 
@@ -38,8 +50,4 @@ feature {NONE} -- Implementation
 
 	internal_rep: TRAFFIC_LINE_REPRESENTATION
 
-
-invariant
-	invariant_clause: True -- Your invariant here
-
-end
+end -- class TOUCH_LINE
