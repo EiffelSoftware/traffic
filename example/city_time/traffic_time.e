@@ -87,8 +87,8 @@ feature  --Time Attributes
 --			temp_delay := ((simulated_minutes/minutes_per_hour)*seconds_per_minute*milliseconds_per_second).rounded
 			temp_delay := ((simulated_minutes/minutes_per_hour)*milliseconds_per_second).rounded
 --			io.putint (temp_delay)
-			if temp_delay < 10 then
-				callback_delay := 10
+			if temp_delay < 30 then
+				callback_delay := 30
 			else	
 				callback_delay := temp_delay
 			end

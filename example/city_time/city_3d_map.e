@@ -333,8 +333,9 @@ feature
 --
 --				temp_list.wipe_out
 
-				temp_list.force (create {EM_VECTOR_2D}.make (-0, -0))
 				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+
+				temp_list.force (create {EM_VECTOR_2D}.make (0, 0))
 				temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
 
 

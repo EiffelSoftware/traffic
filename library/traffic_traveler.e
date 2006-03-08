@@ -44,6 +44,7 @@ feature -- Initialization
 				polypoints := an_itinerary
 				polypoints.start
 				set_coordinates
+				set_angle
 				set_traffic_info (an_info)
 				virtual_speed := a_speed
 			ensure
@@ -114,6 +115,12 @@ feature -- Attributes
 
 	virtual_speed: DOUBLE
 		-- the virtual speed of the object oin the map.
+		
+	angle_x: DOUBLE
+		-- the angle in respect to the x-axis
+		
+	angle_y: DOUBLE
+		-- the angle in respect to the y-axis
 
 
 feature -- Procedures
@@ -127,10 +134,10 @@ feature -- Procedures
 				
 				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
 					set_coordinates
+					set_angle
 				else
 					position := position + (direction / direction.length) * speed
 				end
-
 				
 			end
 		
@@ -166,6 +173,7 @@ feature {NONE} -- helper for journey
 						destination := map_to_gl_coords (polypoints.item)										
 					end				
 				end
+			
 			ensure
 				origin /= Void
 				position /= Void
@@ -206,8 +214,63 @@ feature {NONE} -- helper for journey
 				end
 			end
 		
+	set_angle is	
+			-- set the angles to the x- and y-axis respectively
+			local 
+				x_difference, y_difference, hypo, quad: DOUBLE
+			do
+				-- as the x-axis is turned by 180° we have to take this into account
+				-- we need the x- and the y difference to calculate the norm
+				x_difference := origin.x - destination.x
+				y_difference := origin.y - destination.y
+				hypo := sqrt ((x_difference * x_difference) + (y_difference * y_difference))
+				
+				if hypo /= 0 then
+					-- arc_sine in radian
+					quad := 0
+					if  (x_difference >= 0) and (y_difference >= 0) then
+						angle_x := arc_sine (x_difference/hypo)
+							-- the same in degree
+						angle_x := angle_x * 180 / pi
+						angle_x := 180 + angle_x	
+					elseif (x_difference < 0) and (y_difference >= 0) then
+						x_difference := x_difference.abs
+						y_difference := y_difference.abs
+						angle_x := arc_sine (x_difference/hypo)
+							-- the same in degree
+						angle_x := angle_x * 180 / pi
+						angle_x := 180 - angle_x
+					elseif (x_difference < 0) and (y_difference < 0) then
+						x_difference := x_difference.abs
+						y_difference := y_difference.abs
+						angle_x := arc_sine (x_difference/hypo)
+							-- the same in degree
+						angle_x := angle_x * 180 / pi
+					elseif (x_difference >= 0) and (y_difference < 0) then
+						x_difference := x_difference.abs
+						y_difference := y_difference.abs
+						angle_x := arc_sine (x_difference/hypo)
+							-- the same in degree
+						angle_x := angle_x * 180 / pi
+						angle_x := 360 - angle_x
+--					elseif (x_difference = 0) and (y_difference > 0) then
+--					elseif (x_difference = 0) and (y_difference < 0) then
+--					elseif (x_difference > 0) and (y_difference = 0) then
+--					elseif (x_difference < 0) and (y_difference = 0) then
+					end
+					
+					if angle_x < 0 then
+						angle_x := 360 + angle_x
+					elseif angle_x > 360 then
+						angle_x := angle_x - 360
+					end
+				end
+				
+			end
+		
 		
 feature -- Attributes settings	
+
 	set_index (an_index: INTEGER) is
 			-- give the object an index
 			do
@@ -236,8 +299,7 @@ feature -- Attributes settings
 			ensure
 				speed = a_speed
 			end
-			
-			
+					
 	set_time (a_time: DOUBLE) is
 			-- set time to 'a_time'
 			require

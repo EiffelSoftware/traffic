@@ -7,12 +7,20 @@ indexing
 class
 	TRAFFIC_TRAVELER_FACTORY
 inherit	
-	EM_3D_OBJECT_FACTORY
+--	EM_3D_OBJECT_FACTORY
 
 	EM_SHARED_BITMAP_FACTORY
 		export {NONE} all end
 		
-		-- EM_3D_OBJ_LOADER
+	EM_3D_OBJ_LOADER
+--	rename
+--		specify_object as specify_loader
+--	export {TRAFFIC_TRAVELER_REPRESENTATION}
+--		specify_loader
+	redefine
+		make
+--		, specify_object, load_file
+	end
 
 create
 	make
@@ -22,19 +30,21 @@ feature -- Creation
 	make is
 			-- set up the factory
 			do
+				Precursor
+				loaded_file := ""
 				create traveler_templates.make(1)
 				create gaugers.make(1)
 			end
 		
 			
-	object_width: DOUBLE is 2.0
-			-- The size of the bounding box in x direction of created objects.
-			
-	object_height: DOUBLE is 2.0
-			-- The size of the bounding box in y direction of created objects.
-			
-	object_depth: DOUBLE is 2.0
-			-- The size of the bounding box in z direction of created objects.
+--	object_width: DOUBLE is 2.0
+--			-- The size of the bounding box in x direction of created objects.
+--			
+--	object_height: DOUBLE is 2.0
+--			-- The size of the bounding box in y direction of created objects.
+--			
+--	object_depth: DOUBLE is 2.0
+--			-- The size of the bounding box in z direction of created objects.
 		
 	
 feature -- Decision process
@@ -89,7 +99,18 @@ feature -- Decision process
 			decision := gaugers.item(gauger).item(args)
 			unchanged := False
 		end
-		
+	
+			
+--	load_file (a_filename: STRING) is
+--			-- save the name, so that a file is not loaded two times
+--			do
+--				if loaded_file /= a_filename then
+--					loaded_file := a_filename
+--					Precursor (a_filename)
+--				end
+--			end	
+
+
 feature {NONE} -- Implementation
 			
 	decision: STRING
@@ -101,14 +122,19 @@ feature {NONE} -- Implementation
 	traveler_templates: HASH_TABLE[PROCEDURE[ANY,TUPLE], STRING]
 			-- Containter of all types of travelers.
 			
+	loaded_file: STRING
+			
 feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessible from the outside
 
-	specify_object is
-			-- Specify an object that can be drawn in the origin
-			-- (front, left, lower corner of bounding box = 0,0,0)
-		do
-			traveler_templates.item(decision).apply
-		end
+--	specify_object is
+--			-- Specify an object that can be drawn in the origin
+--			-- (front, left, lower corner of bounding box = 0,0,0)
+--		do
+--			traveler_templates.item(decision).apply
+--			Precursor
+--		end
+
+		
 		
 
 		

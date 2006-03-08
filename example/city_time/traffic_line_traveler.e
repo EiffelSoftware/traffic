@@ -32,19 +32,21 @@ feature -- Creation
 				until
 					line.after
 				loop
---					polypoints.force (line.item.polypoints.first)
---					polypoints.force (line.item.polypoints.first)
---					polypoints.force (line.item.polypoints.first)
+					polypoints.force (line.item.polypoints.first)
+					polypoints.force (line.item.polypoints.first)
+					polypoints.force (line.item.polypoints.first)
 					-- this is that a tram stops for a short time at each place
 					polypoints.append (line.item.polypoints)
 					line.forth
 				end
---				polypoints.force (polypoints.last)
---				polypoints.force (polypoints.last)
---				polypoints.force (polypoints.last)
+				polypoints.force (polypoints.last)
+				polypoints.force (polypoints.last)
+				polypoints.force (polypoints.last)
 				-- same as in the loop
+				
 				polypoints.start
 				set_coordinates
+				set_angle
 				set_traffic_info ("tram")
 				virtual_speed := 0.5
 			end
@@ -81,23 +83,7 @@ feature {NONE} -- Journey
 					end				
 				end
 			end
-		
 
---	take_tour is
---			-- take a tour on the map
---			local
---				direction: EM_VECTOR_2D
---			do
---				direction := destination - origin
---				
---				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
---					set_coordinates
---				else
---
---					position := position + (direction / direction.length) * speed
---					
---				end
---			end
 		
 feature {TRAFFIC_MAP} -- Status
 
