@@ -24,9 +24,8 @@ feature -- Initialization
 		do
 			Precursor
 
-			create traffic_time.make_day (10)
-			
-			
+			create traffic_time.make_day (10)	
+
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
 			mouse_wheel_down_event.subscribe (agent wheel_down)
@@ -305,13 +304,48 @@ feature	-- Travelere objects
 	traveler_index: INTEGER
 	
 	adjust_speed is
-			-- adjust the speed by a double
+			-- adjust the speed by a double.
 			do
 				map.change_traveler_speed (traffic_time.simulated_minutes / 2)
+			end
+	
+	number_of_passengers: INTEGER
+			-- number of passengers on the map.
+	
+	update_passenger_number (number: INTEGER) is	
+			-- update the number of the passengers on the map
+			require
+				number >= 0
+			local
+				i: INTEGER
+				traveler: TRAFFIC_TRAVELER
+			do
+				if number_of_passengers >= number then
+					from
+						i := number_of_passengers
+					until
+						i <= number_of_passengers - number
+					loop
+						traffic_traveler.remove_traveler
+						i := i - 1
+					end
+				else
+					from 
+						i := 0
+					until
+						i >= number - number_of_passengers
+					loop
+						create traveler.make_random (traffic_time.time.ticks, 7, "passenger")
+						traffic_traveler.add_traveler(traveler, map)				
+						i := i + 1
+					end
+				end
+				number_of_passengers := number
 			end
 		
 	
 feature
+
 	
 	load_map (filename: STRING) is
 			-- 
@@ -320,9 +354,12 @@ feature
 				temp_list: ARRAYED_LIST [EM_VECTOR_2D]
 			do
 				Precursor (filename)
-				
-				create traffic_traveler.make (map, traffic_time)
 
+				create traffic_traveler.make (map, traffic_time)
+				
+				update_passenger_number (0)
+				update_passenger_number (number_of_passengers)
+				
 				create temp_list.make(1)
 --				temp_list.force (create {EM_VECTOR_2D}.make (-10, -10))
 --				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
@@ -342,7 +379,25 @@ feature
 				create traveler.make_directed (temp_list, "passenger", 0.5)
 				traveler.set_reiterate (True)
 				traffic_traveler.add_traveler (traveler, map)
-				
+
+--				create traveler.make_random (traffic_time.time.ticks, 5, "passenger")
+--				traffic_traveler.add_traveler(traveler, map)
+--				
+--				create traveler.make_random (traffic_time.time.ticks, 10, "passenger")
+--				traffic_traveler.add_traveler(traveler, map)
+--				
+--				create traveler.make_random (traffic_time.time.ticks, 6, "passenger")
+--				traffic_traveler.add_traveler(traveler, map)
+--
+--				create traveler.make_random (traffic_time.time.ticks, 2, "passenger")
+--				traffic_traveler.add_traveler(traveler, map)
+--
+--				create traveler.make_random (traffic_time.time.ticks, 20, "passenger")
+--				traffic_traveler.add_traveler(traveler, map)
+--				
+--				create traveler.make_random (traffic_time.time.ticks, 3, "passenger")
+--				traffic_traveler.add_traveler(traveler, map)
+
 --				temp_list.wipe_out
 --				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
 --				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))

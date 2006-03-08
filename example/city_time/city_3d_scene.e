@@ -42,6 +42,7 @@ feature -- Interface
 			create zoom_in_button.make_from_text ("Zoom in")
 			create zoom_out_button.make_from_text ("Zoom out")
 			create time_button.make_from_text("start time")
+			create passenger_button.make_from_text ("update passengers")
 						
 			-- Zoom out Button
 			zoom_out_button.set_position (180-zoom_out_button.width, 170)
@@ -67,7 +68,14 @@ feature -- Interface
 			time_button.clicked_event.subscribe (agent time_button_clicked)
 			time_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget(time_button)
-			
+	
+	
+			-- passenger button
+			passenger_button.set_position (140 ,200)
+			passenger_button.set_width (100)
+			passenger_button.clicked_event.subscribe (agent passenger_button_clicked)
+			passenger_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+			toolbar_panel.add_widget(passenger_button)		
 			
 			-- time labels
 			create time_label.make_from_text("hour: minute:")
@@ -90,6 +98,25 @@ feature -- Interface
 			time_slider.set_tooltip ("Day simulation minutes")
 			time_slider.position_changed_event.subscribe (agent number_of_minutes_changed (simulated_time_label, ?))
 			toolbar_panel.add_widget (time_slider)
+			
+			-- passenger
+			create passenger_label.make_from_text (passenger_number.out)
+			passenger_label.set_position (140 ,270)
+			passenger_label.set_optimal_dimension (50, 20)
+			passenger_label.resize_to_optimal_dimension
+			passenger_label.set_background_color (bg_color)
+			passenger_label.set_tooltip ("passengers")
+			toolbar_panel.add_widget (passenger_label)
+			
+			create passenger_slider.make_from_range_horizontal (0, 1000)
+			passenger_slider.set_position (20, 270)
+			passenger_slider.set_optimal_dimension (120, 20)
+			passenger_slider.resize_to_optimal_dimension
+			passenger_slider.set_background_color (bg_color)
+			passenger_slider.set_tooltip ("Number of random passengers")
+			passenger_slider.position_changed_event.subscribe (agent number_of_passengers_changed (passenger_label, ?))
+			toolbar_panel.add_widget (passenger_slider)
+			
 			
 			
 			-- Labels for origin and destination
@@ -221,6 +248,12 @@ feature -- Event handling
 			end
 		end
 		
+	passenger_button_clicked is
+			-- passenger_button clicked.
+		do
+			map.update_passenger_number (passenger_number)
+		end
+		
 
 	handle_mouse_click (origin_label, destination_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
 			-- Adapt the text on `origin_label' and `destination_label'.
@@ -249,6 +282,7 @@ feature -- Event handling
 		require
 			load_button /= Void
 		do
+			time_button_clicked
 			time_button_clicked
 			traffic_time.reset_time
 			load_button.set_pressed (False)
@@ -282,7 +316,19 @@ feature -- Event handling
 			label.set_text (simulated_time.out)
 		end
 		
+	number_of_passengers_changed (label: EM_LABEL; number: INTEGER) is
+			-- the slider was used
+		require
+			number > 0
+			label /= Void
+		do
+			passenger_number := number
+			label.set_text (passenger_number.out)
+		end
+		
+		
 feature	 -- time counting
+
 	time_count is
 			-- update the time label
 			do
@@ -306,10 +352,16 @@ feature -- Widgets
 			-- Button to load the xml file
 			
 	zoom_in_button: EM_BUTTON
+			-- Button to zoom in to the map.
 	
 	zoom_out_button: EM_BUTTON
+			-- Button to zoom out of the map.
 	
 	time_button: EM_BUTTON
+			-- Button to start, pause or continue the time.
+			
+	passenger_button: EM_BUTTON
+			-- Button to update the numbe rof passengers.
 			
 	marked_origin_label: EM_LABEL
 			-- Label for the origin.
@@ -320,8 +372,14 @@ feature -- Widgets
 	time_slider: EM_SLIDER
 			-- Scrollbar for the time.	
 	
+	passenger_slider: EM_SLIDER
+			-- Scrollbar for the number of passengers
+	
 	time_label: EM_LABEL
 			-- Label for time display.
+			
+	passenger_label: EM_LABEL
+			-- Label for passenger display.
 			
 	simulated_time_label: EM_LABEL
 			-- label for simulated time.
@@ -350,19 +408,22 @@ feature {NONE} -- Implementation
 		end
 
 	bg_color: EM_COLOR
-			-- Background color of the scene
+			-- Background color of the scene.
 
 	map_file_name: STRING
-			-- Name of the map file to be loaded
+			-- Name of the map file to be loaded.
 		
 	loaded_file_name: STRING
-			-- Name of the currently loaded 
+			-- Name of the currently loaded .
 
 	map: CITY_3D_MAP
-			-- The 3 dimensional representation of the map
+			-- The 3 dimensional representation of the map.
 	
 	simulated_time: INTEGER
-			-- Number of minutes a day will last
+			-- Number of minutes a day will last.
+	
+	passenger_number: INTEGER
+			-- number of random passengers on the map.
 	
 	search_for_xml: DS_LINKED_LIST[STRING] is
 			-- Search for xml files.

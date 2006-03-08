@@ -44,7 +44,6 @@ feature -- Initialization
 			create travelers.make
 			traveler_key := 0
 		ensure
-			traveler_factory_created: traveler_factory /= Void
 			travelers_created: travelers /= Void
 			traffic_time = a_time
 			map /= Void
@@ -53,7 +52,7 @@ feature -- Initialization
 feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 	
 	draw is
-			-- draw all places
+			-- draw all travelers
 		local
 			a_traveler: TUPLE[EM_3D_OBJECT, TRAFFIC_TRAVELER]
 			graphic: EM_3D_OBJECT
@@ -99,31 +98,66 @@ feature{CITY_3D_MAP} -- Implemenation
 					a_map /= Void
 				local
 					traveler: EM_3D_OBJECT
-					object_loader: EM_3D_OBJ_LOADER
+					object_loader: TRAFFIC_OBJECT_LOADER
+					traveler_color: GL_VECTOR_3D[DOUBLE]
 				do
 	
 					a_traveler.set_index (traveler_key)
 					traveler_key := traveler_key + 1
-					create object_loader.make
+					create object_loader.make_with_color (0, 0, 0)
 						-- set the key for the traveler here
 						
 					if a_traveler.traffic_info.is_equal ("passenger") then
-						object_loader.load_file ("objects/car1.obj")
-						gl_color3d (255, 0, 0)	
+--						create traveler_color.make_xyz (255, 0, 0)
+--						gl_flush_external
+--						gl_flush
+--						gl_color3bv_external (traveler_color.pointer)
+						object_loader.set_em_color (255, 0, 0)
+						object_loader.load_file ("objects/person1.obj")
+						traveler := object_loader.create_object	
+						traveler.set_scale (0.1, 0.1, 0.1)
 					elseif a_traveler.traffic_info.is_equal ("tram") then
-						object_loader.set_color (255, 0, 0 ,0)
-						object_loader.load_file ("objects/tram2.obj")
+--						create traveler_color.make_xyz (0, 0, 255)
+--						gl_color3dv_external(traveler_color.pointer)
+--						object_loader.set_color (255, 0, 0 ,0)
+						object_loader.set_em_color (0, 0, 255)
+						object_loader.load_file ("objects/tram1.obj")
+						traveler := object_loader.create_object
 						gl_color3d_external (0, 0, 255)
+						traveler.set_scale (0.2, 0.2, 0.2)
 					end	
-					traveler := object_loader.create_object
-					traveler.set_scale (0.2, 0.2, 0.2)
+					
+					
 					
 					traveler.set_origin (a_traveler.position.x, traveler_offset, a_traveler.position.y)
-					traveler.set_rotation (0, a_traveler.angle_x, 0)
+					traveler.set_rotation (0, a_traveler.angle_x, 0)					
 					traffic_time.add_callback_tour (agent a_traveler.take_tour)
 					travelers.force ([traveler, a_traveler])
 					a_map.add_traveler (a_traveler)	
 				end
+			
+		remove_traveler is	
+				-- remove a traveler
+				require
+					not travelers.is_empty
+				local
+					has_finished: BOOLEAN
+					traveler: TRAFFIC_TRAVELER
+				do
+					from
+						travelers.start
+					until
+						travelers.after or has_finished
+					loop
+						traveler ?= travelers.item @ 2
+						if traveler.traffic_info.is_equal ("passenger") then
+							travelers.remove
+							has_finished := True
+						end
+						travelers.forth
+					end
+				end
+			
 			
 		add_trams(a_map: TRAFFIC_MAP) is
 				-- add trams to the scene.
@@ -210,7 +244,6 @@ feature{NONE} -- Attributes
 
 invariant
 	TR_TR_REP_centre_set: centre /= Void
-	TR_TR_REP_traveler_factory_valid: traveler_factory /= Void
 	TR_TR_REP_collosion_polygons_valid: collision_polygons /= Void
 	TR_TR_REP_travelers_valid: travelers /= Void
 	

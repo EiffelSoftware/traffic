@@ -45,10 +45,13 @@ feature -- Creation
 				-- same as in the loop
 				
 				polypoints.start
+				polypoints.forth
+				polypoints.forth
+				polypoints.forth
 				set_coordinates
 				set_angle
 				set_traffic_info ("tram")
-				virtual_speed := 0.5
+				virtual_speed := 0.8
 			end
 		
 		

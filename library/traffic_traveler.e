@@ -18,7 +18,7 @@ inherit
 		export {NONE} all end
 		
 create
-	make, make_directed, make_random
+	make, make_directed, make_random, make_random_with_origin
 	
 feature -- Initialization
 
@@ -53,8 +53,39 @@ feature -- Initialization
 				traffic_info.is_equal (an_info)
 			end
 	
+	make_random (a_seed: INTEGER; stops: INTEGER; an_info: STRING) is
+			-- make a traveler who stops at 'stops' random positions
+			require
+				a_seed >= 0
+				stops >= 2
+				an_info /= Void
+			local 
+				i: INTEGER
+			do
+				create polypoints.make (stops)
+				traffic_info := an_info
+				create random_direction.set_seed(a_seed)
+				random_direction.forth
+				from
+					i := 1
+				until
+					i >= stops
+				loop
+					give_random_direction
+					polypoints.force (destination)
+					random_direction.forth
+					polypoints.force (destination)	
+					i := i+1
+				end
+				polypoints.start
+				set_coordinates
+				set_angle
+				virtual_speed := random_direction.double_item
+				random_direction.forth
+			end
+		
 	
-	make_random (an_origin: EM_VECTOR_2D; a_seed: INTEGER; an_info: STRING) is
+	make_random_with_origin (an_origin: EM_VECTOR_2D; a_seed: INTEGER; an_info: STRING) is
 			-- initalize the passenger for random walk
 		require
 			an_origin /= Void
@@ -68,7 +99,11 @@ feature -- Initialization
 			polypoints.force (destination)
 			polypoints.start
 			set_coordinates
-			virtual_speed := random_direction.double_item
+			set_angle
+			virtual_speed := random_direction.double_item / 2
+			if virtual_speed < 0.05 then
+				virtual_speed := 0.05
+			end
 			random_direction.forth
 		ensure	
 			position = an_origin	
@@ -118,9 +153,6 @@ feature -- Attributes
 		
 	angle_x: DOUBLE
 		-- the angle in respect to the x-axis
-		
-	angle_y: DOUBLE
-		-- the angle in respect to the y-axis
 
 
 feature -- Procedures
@@ -253,10 +285,6 @@ feature {NONE} -- helper for journey
 							-- the same in degree
 						angle_x := angle_x * 180 / pi
 						angle_x := 360 - angle_x
---					elseif (x_difference = 0) and (y_difference > 0) then
---					elseif (x_difference = 0) and (y_difference < 0) then
---					elseif (x_difference > 0) and (y_difference = 0) then
---					elseif (x_difference < 0) and (y_difference = 0) then
 					end
 					
 					if angle_x < 0 then
@@ -331,13 +359,13 @@ feature {NONE} -- random
 				temp_x := random_direction.double_item
 				random_direction.forth
 				temp_y := random_direction.double_item
-				create destination.make (100*temp_x, 100*temp_y)
+				create destination.make (1500 * temp_x, 1500 * temp_y)
 				random_direction.forth
 			ensure
-				destination.x < 1
-				destination.x > -1
-				destination.y < 1
-				destination.y > -1
+				destination.x < 1500
+				destination.x > 0
+				destination.y < 1500
+				destination.y > 0
 			end
 
 	random_direction: RANDOM
