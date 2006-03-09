@@ -71,6 +71,7 @@ feature -- Initialization
 				until
 					i >= stops
 				loop
+					random_direction.forth
 					give_random_direction
 					polypoints.force (destination)
 					random_direction.forth

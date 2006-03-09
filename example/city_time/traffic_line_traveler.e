@@ -93,6 +93,34 @@ feature {TRAFFIC_MAP} -- Status
 	line: TRAFFIC_LINE
 		-- line on which 'current' will travel.	
 
+feature -- Commands
+
+	set_to_place (a_place: TRAFFIC_PLACE) is
+			-- set the tram to 'a_place'
+			require
+				a_place_not_void: a_place /= Void
+			local
+				was_found: BOOLEAN
+			do
+				from
+					polypoints.start
+				until
+					was_found or polypoints.after
+				loop
+					if polypoints.item = a_place.position then
+						polypoints.forth
+						polypoints.forth
+						polypoints.forth
+						was_found := True
+						set_coordinates
+						set_angle
+					else
+						polypoints.forth
+					end
+					
+				end
+			end
+		
 
 	
 invariant

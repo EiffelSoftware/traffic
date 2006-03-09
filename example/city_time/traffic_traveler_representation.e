@@ -113,7 +113,7 @@ feature{CITY_3D_MAP} -- Implemenation
 --						gl_flush
 --						gl_color3bv_external (traveler_color.pointer)
 						object_loader.set_em_color (255, 0, 0)
-						object_loader.load_file ("objects/person1.obj")
+						object_loader.load_file ("objects/person2.obj")
 						traveler := object_loader.create_object	
 						traveler.set_scale (0.1, 0.1, 0.1)
 					elseif a_traveler.traffic_info.is_equal ("tram") then
@@ -121,10 +121,10 @@ feature{CITY_3D_MAP} -- Implemenation
 --						gl_color3dv_external(traveler_color.pointer)
 --						object_loader.set_color (255, 0, 0 ,0)
 						object_loader.set_em_color (0, 0, 255)
-						object_loader.load_file ("objects/tram1.obj")
+						object_loader.load_file ("objects/tram3.obj")
 						traveler := object_loader.create_object
 						gl_color3d_external (0, 0, 255)
-						traveler.set_scale (0.2, 0.2, 0.2)
+						traveler.set_scale (0.3, 0.3, 0.3)
 					end	
 					
 					
@@ -181,6 +181,8 @@ feature{CITY_3D_MAP} -- Implemenation
 		
 						create a_traveler.make_with_line (lines.item_for_iteration)
 						add_traveler (a_traveler, a_map)
+--						a_traveler.set_to_place (lines.item_for_iteration.item.destination)
+--						add_traveler (a_traveler, a_map)
 						
 						lines.forth
 						
@@ -239,7 +241,7 @@ feature{NONE} -- Attributes
 	map: TRAFFIC_MAP
 		-- city map.
 
-	traveler_offset: DOUBLE is 0.1
+	traveler_offset: DOUBLE is 0.0
 		-- offset of the traveler objects over map.
 
 invariant
