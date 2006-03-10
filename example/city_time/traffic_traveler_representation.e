@@ -52,7 +52,7 @@ feature -- Initialization
 feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 	
 	draw is
-			-- draw all travelers
+			-- draw all travelers.
 		local
 			a_traveler: TUPLE[EM_3D_OBJECT, TRAFFIC_TRAVELER]
 			graphic: EM_3D_OBJECT
@@ -71,9 +71,10 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 				if (graphic /= Void) and (info /= Void) then
 					-- we have to check so that no errors happen
 					if info.has_finished then
-						travelers.back
-						travelers.remove_right
+--						travelers.back
+--						travelers.remove_right
 						map.remove_traveler (info.index)
+						travelers.remove
 					else
 						graphic.set_origin (info.position.x, traveler_offset, info.position.y)
 						graphic.set_rotation (0, info.angle_x, 0)
@@ -87,19 +88,18 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 feature -- Collision detection
 
 	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-		-- Collision polygons to check for collisions with traffic lines
+		-- Collision polygons to check for collisions with traffic lines.
 	
 feature{CITY_3D_MAP} -- Implemenation
 		
 		add_traveler (a_traveler: TRAFFIC_TRAVELER; a_map: TRAFFIC_MAP) is
-				-- a passenger walks from origin to destination with 'speed'
+				-- a passenger walks from origin to destination with 'speed'.
 				require
 					a_traveler /= Void
 					a_map /= Void
 				local
 					traveler: EM_3D_OBJECT
 					object_loader: TRAFFIC_OBJECT_LOADER
-					traveler_color: GL_VECTOR_3D[DOUBLE]
 				do
 	
 					a_traveler.set_index (traveler_key)
@@ -108,18 +108,11 @@ feature{CITY_3D_MAP} -- Implemenation
 						-- set the key for the traveler here
 						
 					if a_traveler.traffic_info.is_equal ("passenger") then
---						create traveler_color.make_xyz (255, 0, 0)
---						gl_flush_external
---						gl_flush
---						gl_color3bv_external (traveler_color.pointer)
 						object_loader.set_em_color (255, 0, 0)
 						object_loader.load_file ("objects/person2.obj")
 						traveler := object_loader.create_object	
-						traveler.set_scale (0.1, 0.1, 0.1)
+						traveler.set_scale (0.2, 0.2, 0.2)
 					elseif a_traveler.traffic_info.is_equal ("tram") then
---						create traveler_color.make_xyz (0, 0, 255)
---						gl_color3dv_external(traveler_color.pointer)
---						object_loader.set_color (255, 0, 0 ,0)
 						object_loader.set_em_color (0, 0, 255)
 						object_loader.load_file ("objects/tram3.obj")
 						traveler := object_loader.create_object
@@ -134,10 +127,11 @@ feature{CITY_3D_MAP} -- Implemenation
 					traffic_time.add_callback_tour (agent a_traveler.take_tour)
 					travelers.force ([traveler, a_traveler])
 					a_map.add_traveler (a_traveler)	
+					
 				end
 			
 		remove_traveler is	
-				-- remove a traveler
+				-- remove a passenger.
 				require
 					not travelers.is_empty
 				local
@@ -157,17 +151,16 @@ feature{CITY_3D_MAP} -- Implemenation
 						travelers.forth
 					end
 				end
-			
-			
-		add_trams(a_map: TRAFFIC_MAP) is
-				-- add trams to the scene.
+		
+		
+		add_tram_per_line (a_map: TRAFFIC_MAP; number: INTEGER) is	
+				-- add 'number' or max trams to the lines.
 				require
 					a_map /= Void
+					number > 0
 				local
-					line_section: TRAFFIC_LINE_SECTION
 					lines: HASH_TABLE[TRAFFIC_LINE, STRING]
 					a_traveler: TRAFFIC_LINE_TRAVELER
-					temp_point: EM_VECTOR_2D
 					traveling_points: LINKED_LIST [EM_VECTOR_2D]
 					i: INTEGER
 				do
@@ -177,34 +170,24 @@ feature{CITY_3D_MAP} -- Implemenation
 						lines.start
 					until
 						lines.after
-					loop
-		
+					loop	
 						create a_traveler.make_with_line (lines.item_for_iteration)
-						add_traveler (a_traveler, a_map)
---						a_traveler.set_to_place (lines.item_for_iteration.item.destination)
---						add_traveler (a_traveler, a_map)
+						from
+							i := 1
+							create a_traveler.make_with_line (lines.item_for_iteration)
+						until
+							i > number or i = a_traveler.line_count
+						loop
+							create a_traveler.make_with_line (lines.item_for_iteration)
+							a_traveler.set_to_place (a_traveler.get_place (i))
+							add_traveler (a_traveler, a_map)
+							i := i + 1
+						end
 						
 						lines.forth
 						
 					end
 				end
-			
-	
-feature{NONE} -- Decision procedures
-
-	decide_traveler_type(i: INTEGER): STRING is
-			-- decide which type of place is chosen.
-		require
-			i > 0
-			i <= 2
-			-- 1 for passenger, 2 for tram
-		do
-			if i = 1 then
-				Result := "passenger"
-			else
-				Result := "tram"
-			end
-		end
 		
 		
 feature{NONE} -- Decision attributes
@@ -217,7 +200,7 @@ feature{NONE} -- Decision attributes
 feature{TRAFFIC_3D_MAP_WIDGET}
 
 	travelers: LINKED_LIST [TUPLE[EM_3D_OBJECT, TRAFFIC_TRAVELER]]		
-		-- Container for all traveler
+		-- Container for all traveler.
 		
 		
 		

@@ -93,8 +93,8 @@ feature  -- Commands
 				else
 					-- unknown => ignore line and print line as output
 					obj_file.read_line
-					print ("Unknown line:")
-					print (obj_file.last_string)
+--					print ("Unknown line:")
+--					print (obj_file.last_string)
 				end
 			end
 			obj_file.close

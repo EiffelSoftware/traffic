@@ -21,10 +21,11 @@ create
 feature -- Creation
 	
 	make_with_line (a_line: TRAFFIC_LINE) is
-			-- create a traveler who travels on 'a_line'
+			-- create a traveler who travels on 'a_line'.
 			require
 				a_line /= Void
 			do
+				line_count := 0
 				line := a_line
 				create polypoints.make (1)
 				from 
@@ -37,8 +38,10 @@ feature -- Creation
 					polypoints.force (line.item.polypoints.first)
 					-- this is that a tram stops for a short time at each place
 					polypoints.append (line.item.polypoints)
+					line_count := line_count + 1
 					line.forth
 				end
+				line_count := line_count + 1
 				polypoints.force (polypoints.last)
 				polypoints.force (polypoints.last)
 				polypoints.force (polypoints.last)
@@ -59,7 +62,7 @@ feature {NONE} -- Journey
 
 
 	set_coordinates is
-			-- set the positions to the corresponding ones of the line section
+			-- set the positions to the corresponding ones of the line section.
 			do
 				-- hopefully this will give a bit performance to the journey
 				-- otherwise just clear out the map_to_gl_coords
@@ -92,35 +95,73 @@ feature {TRAFFIC_MAP} -- Status
 
 	line: TRAFFIC_LINE
 		-- line on which 'current' will travel.	
+		
 
 feature -- Commands
 
 	set_to_place (a_place: TRAFFIC_PLACE) is
-			-- set the tram to 'a_place'
+			-- set the tram to 'a_place'.
 			require
 				a_place_not_void: a_place /= Void
 			local
 				was_found: BOOLEAN
 			do
 				from
-					polypoints.start
+					line.start
 				until
-					was_found or polypoints.after
+					was_found or line.after
 				loop
-					if polypoints.item = a_place.position then
-						polypoints.forth
-						polypoints.forth
-						polypoints.forth
-						was_found := True
-						set_coordinates
-						set_angle
+					if line.item.origin.position = a_place.position then
+						from
+							polypoints.start
+						until
+							polypoints.after or was_found
+						loop
+							if polypoints.item = line.item.polypoints.first then
+								polypoints.forth
+								polypoints.forth
+								polypoints.forth	
+								was_found := True
+								set_coordinates
+								set_angle	
+							else
+								polypoints.forth
+							end
+						end
 					else
-						polypoints.forth
+						line.forth
 					end
 					
 				end
 			end
 		
+	line_count: INTEGER
+		-- count for the number of stops.
+		
+	get_place (stop: INTEGER): TRAFFIC_PLACE is
+			-- return the stop at number 'stop'
+		require
+			stop <= line_count
+		local
+			i: INTEGER
+		do
+			from
+				i := 1
+				line.start
+			until
+				i = stop or
+				line.after
+			loop
+				line.forth
+				i := i + 1
+			end
+			if i < stop then
+				line.back
+				Result := line.item.destination
+			else				
+				Result := line.item.origin
+			end
+		end
 
 	
 invariant

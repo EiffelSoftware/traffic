@@ -23,7 +23,7 @@ create
 feature -- Initialization
 
 	make is
-			-- Creation procedure
+			-- Creation procedure.
 		local
 			keyboard: EM_KEYBOARD
 		do

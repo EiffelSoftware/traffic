@@ -22,7 +22,7 @@ creation
 feature -- Interface
 	
 	make is
-			-- Creation procedure
+			-- Creation procedure.
 		do
 			make_component_scene
 			
@@ -71,18 +71,18 @@ feature -- Interface
 	
 	
 			-- passenger button
-			passenger_button.set_position (140 ,200)
-			passenger_button.set_width (100)
+			passenger_button.set_position (20 ,300)
+			passenger_button.set_width (160)
 			passenger_button.clicked_event.subscribe (agent passenger_button_clicked)
 			passenger_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget(passenger_button)		
 			
 			-- time labels
-			create time_label.make_from_text("hour: minute:")
+			create time_label.make_from_text("day time: ")
 			create simulated_time_label.make_from_text (simulated_time.out)
 			
 			-- label init
-			simulated_time_label.set_position (140, 250)
+			simulated_time_label.set_position (140, 230)
 			simulated_time_label.set_optimal_dimension (50, 20)
 			simulated_time_label.resize_to_optimal_dimension
 			simulated_time_label.set_background_color (bg_color)
@@ -91,7 +91,7 @@ feature -- Interface
 
 			-- simulated time
 			create time_slider.make_from_range_horizontal (5, 60)
-			time_slider.set_position (20, 250)
+			time_slider.set_position (20, 230)
 			time_slider.set_optimal_dimension (120, 20)
 			time_slider.resize_to_optimal_dimension
 			time_slider.set_background_color (bg_color)
@@ -99,17 +99,18 @@ feature -- Interface
 			time_slider.position_changed_event.subscribe (agent number_of_minutes_changed (simulated_time_label, ?))
 			toolbar_panel.add_widget (time_slider)
 			
-			-- passenger
+			-- passenger label
 			create passenger_label.make_from_text (passenger_number.out)
-			passenger_label.set_position (140 ,270)
+			passenger_label.set_position (140 ,330)
 			passenger_label.set_optimal_dimension (50, 20)
 			passenger_label.resize_to_optimal_dimension
 			passenger_label.set_background_color (bg_color)
 			passenger_label.set_tooltip ("passengers")
 			toolbar_panel.add_widget (passenger_label)
 			
+			-- passenger slider
 			create passenger_slider.make_from_range_horizontal (0, 1000)
-			passenger_slider.set_position (20, 270)
+			passenger_slider.set_position (20, 330)
 			passenger_slider.set_optimal_dimension (120, 20)
 			passenger_slider.resize_to_optimal_dimension
 			passenger_slider.set_background_color (bg_color)
@@ -230,7 +231,7 @@ feature -- Event handling
 		end
 		
 	time_button_clicked is
-			-- "time" button clicked
+			-- "time" button clicked.
 		require
 			time_button /= Void
 		do
@@ -251,6 +252,10 @@ feature -- Event handling
 	passenger_button_clicked is
 			-- passenger_button clicked.
 		do
+			passenger_button.set_pressed (False)
+			if is_time_enabled then
+				time_button_clicked
+			end
 			map.update_passenger_number (passenger_number)
 		end
 		
@@ -282,13 +287,14 @@ feature -- Event handling
 		require
 			load_button /= Void
 		do
-			time_button_clicked
-			time_button_clicked
+			set_time_enabled (False)
+			time_button.set_text ("start time")
 			traffic_time.reset_time
 			load_button.set_pressed (False)
 			map.load_map (map_file_name)
 			marked_origin_label.set_text ("")
 			marked_destination_label.set_text ("")
+			passenger_button_clicked
 		rescue
 			catch(24)
 			catch(8)
@@ -308,7 +314,7 @@ feature -- Event handling
 		end
 	
 	number_of_minutes_changed (label: EM_LABEL; number: INTEGER) is
-			-- the slider was used
+			-- the slider was used.
 		require
 			label /= Void
 		do
@@ -317,7 +323,7 @@ feature -- Event handling
 		end
 		
 	number_of_passengers_changed (label: EM_LABEL; number: INTEGER) is
-			-- the slider was used
+			-- the slider was used.
 		require
 			number > 0
 			label /= Void
@@ -330,9 +336,9 @@ feature -- Event handling
 feature	 -- time counting
 
 	time_count is
-			-- update the time label
+			-- update the time label.
 			do
-				time_label.set_text ("hour: "+traffic_time.actual_hour.out+" minute: "+traffic_time.actual_minute.out)
+				time_label.set_text ("day time: " + traffic_time.actual_hour.out + " hour  " + traffic_time.actual_minute.out + " minute")
 			end
 	
 		
@@ -343,13 +349,13 @@ feature -- Widgets
 			-- Panel, in which all option widgets are displayed.
 			
 	combo_title: EM_LABEL
-			-- Title for combo box
+			-- Title for combo box.
 			
 	combo_box: EM_COMBOBOX[STRING]
-			-- Box to choose the xml file from
+			-- Box to choose the xml file from.
 			
 	load_button: EM_BUTTON
-			-- Button to load the xml file
+			-- Button to load the xml file.
 			
 	zoom_in_button: EM_BUTTON
 			-- Button to zoom in to the map.
@@ -373,7 +379,7 @@ feature -- Widgets
 			-- Scrollbar for the time.	
 	
 	passenger_slider: EM_SLIDER
-			-- Scrollbar for the number of passengers
+			-- Scrollbar for the number of passengers.
 	
 	time_label: EM_LABEL
 			-- Label for time display.
@@ -400,7 +406,7 @@ feature {NONE} -- Implementation
 
 
 	set_time_enabled(a_boolean: BOOLEAN) is
-			-- set the is_time_enabled option
+			-- set the is_time_enabled option.
 		do
 			is_time_enabled := a_boolean
 		ensure
@@ -414,7 +420,7 @@ feature {NONE} -- Implementation
 			-- Name of the map file to be loaded.
 		
 	loaded_file_name: STRING
-			-- Name of the currently loaded .
+			-- Name of the currently loaded.
 
 	map: CITY_3D_MAP
 			-- The 3 dimensional representation of the map.

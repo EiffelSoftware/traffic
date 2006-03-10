@@ -324,7 +324,7 @@ feature	-- Travelere objects
 					from
 						i := number_of_passengers
 					until
-						i <= number_of_passengers - number
+						i <= number
 					loop
 						traffic_traveler.remove_traveler
 						i := i - 1
@@ -370,14 +370,14 @@ feature
 --
 --				temp_list.wipe_out
 
-				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+				temp_list.force (create {EM_VECTOR_2D}.make (-67, -32))
 
 				temp_list.force (create {EM_VECTOR_2D}.make (0, 0))
 				temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
 
 
 				create traveler.make_directed (temp_list, "passenger", 0.5)
-				traveler.set_reiterate (True)
+--				traveler.set_reiterate (True)
 				traffic_traveler.add_traveler (traveler, map)
 
 --				create traveler.make_random (traffic_time.time.ticks, 5, "passenger")
@@ -406,7 +406,7 @@ feature
 --				traffic_traveler.add_traveler (traveler, map)
 				
 				
-				traffic_traveler.add_trams (map)
+				traffic_traveler.add_tram_per_line (map, 2)
 				
 			ensure then
 				traffic_traveler /= Void

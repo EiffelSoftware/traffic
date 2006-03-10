@@ -13,13 +13,8 @@ inherit
 		export {NONE} all end
 		
 	EM_3D_OBJ_LOADER
---	rename
---		specify_object as specify_loader
---	export {TRAFFIC_TRAVELER_REPRESENTATION}
---		specify_loader
 	redefine
 		make
---		, specify_object, load_file
 	end
 
 create
@@ -99,16 +94,6 @@ feature -- Decision process
 			decision := gaugers.item(gauger).item(args)
 			unchanged := False
 		end
-	
-			
---	load_file (a_filename: STRING) is
---			-- save the name, so that a file is not loaded two times
---			do
---				if loaded_file /= a_filename then
---					loaded_file := a_filename
---					Precursor (a_filename)
---				end
---			end	
 
 
 feature {NONE} -- Implementation
@@ -122,19 +107,7 @@ feature {NONE} -- Implementation
 	traveler_templates: HASH_TABLE[PROCEDURE[ANY,TUPLE], STRING]
 			-- Containter of all types of travelers.
 			
-	loaded_file: STRING
-			
-feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessible from the outside
-
---	specify_object is
---			-- Specify an object that can be drawn in the origin
---			-- (front, left, lower corner of bounding box = 0,0,0)
---		do
---			traveler_templates.item(decision).apply
---			Precursor
---		end
-
-		
+	loaded_file: STRING	
 		
 
 		

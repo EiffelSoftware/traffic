@@ -19,7 +19,7 @@ create
 feature -- Creation
 
 	make is
-			-- create a new object without setting the time
+			-- create a new object without setting the time.
 		do
 			callback_delay := 10
 			create all_procedures.make
@@ -34,7 +34,7 @@ feature -- Creation
 		
 
 	make_day(simulated_day_minutes: INTEGER) is
-			-- the day lasts for 'simulated_day_minutes'
+			-- the day lasts for 'simulated_day_minutes'.
 	require
 		simulated_day_minutes >= 5
 	do		
@@ -61,34 +61,34 @@ feature -- Creation
 feature{NONE} -- Time facts
 	
 	callback_delay: INTEGER
+		-- delay to call all procedures again.
 		
 
 feature  --Time Attributes
 	
 	simulated_minutes: INTEGER
+		-- minutes in realtime.
 	
 	actual_hour: INTEGER
-		-- actual hour, returns the simulated hour at this day
+		-- actual hour, returns the simulated hour at this day.
 	
 	actual_minute: INTEGER
-		-- actual minute, returns the simulated minute in this hour
+		-- actual minute, returns the simulated minute in this hour.
 	
 	actual_second: INTEGER
-		-- simluated second, not useful yet 
+		-- simluated second, not useful yet. 
 		
-	change_simulated_time(simulated_day_minutes: INTEGER) is
-			-- the day lasts for 'simulated_day_minutes'
+	change_simulated_time (simulated_day_minutes: INTEGER) is
+			-- the day lasts for 'simulated_day_minutes'.
 		require
 			simulated_day_minutes >= 5
 		local
 			temp_delay : INTEGER
 		do		
 			simulated_minutes := simulated_day_minutes
---			temp_delay := ((simulated_minutes/minutes_per_hour)*seconds_per_minute*milliseconds_per_second).rounded
-			temp_delay := ((simulated_minutes/minutes_per_hour)*milliseconds_per_second).rounded
---			io.putint (temp_delay)
-			if temp_delay < 30 then
-				callback_delay := 30
+			temp_delay := ((simulated_minutes / minutes_per_hour) * milliseconds_per_second).rounded
+			if temp_delay < 10 then
+				callback_delay := 10
 			else	
 				callback_delay := temp_delay
 			end
@@ -101,7 +101,7 @@ feature  --Time Attributes
 feature -- Handling
 
 	time_count is	
-			-- start the time
+			-- start the time.
 			require
 				actual_second >= 0
 				actual_minute >= 0
@@ -127,11 +127,11 @@ feature -- Handling
 		
 	
 	is_time_running: BOOLEAN		
-			-- is time startet
+			-- is time startet?
 		
 feature -- time
 	start_time is
-			-- start to count the time
+			-- start to count the time.
 			require
 				not is_time_running
 			do
@@ -143,7 +143,7 @@ feature -- time
 			end
 			
 	pause_time is
-			-- pause the time count
+			-- pause the time count.
 			require
 				is_time_running
 			do
@@ -153,7 +153,7 @@ feature -- time
 			end
 		
 	resume_time is
-			-- resume the paused time
+			-- resume the paused time.
 			require
 				not is_time_running
 			do
@@ -163,7 +163,7 @@ feature -- time
 			end
 	
 	reset_time is
-			-- reset the time to 0,0,0.
+			-- reset the time to 0, 0, 0.
 			do
 				actual_hour := 0
 				actual_minute := 0
@@ -180,23 +180,25 @@ feature -- time
 feature -- Procedures
 
 	all_procedures: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
+		-- container for all procedures except tours.	
 	
 	all_tours: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
+		-- container for all tours.
 	
 	add_callback_procedure (a_procedure: PROCEDURE[ANY, TUPLE]) is
-			-- add a procedure
+			-- add a procedure.
 		do
 			all_procedures.force (a_procedure)
 		end
 		
 	add_callback_tour (a_tour_procedure: PROCEDURE[ANY, TUPLE]) is
-			-- add the tour algorithms here
+			-- add the tour algorithms here.
 			do
 				all_tours.force (a_tour_procedure)
 			end
 
-	call_tours(an_interval: INTEGER): INTEGER is
-			-- call all procedures all 'an_interval' milliseconds
+	call_tours (an_interval: INTEGER): INTEGER is
+			-- call all procedures all 'an_interval' milliseconds.
 			do
 				from
 					all_tours.start
@@ -214,8 +216,8 @@ feature -- Procedures
 				
 			end		
 
-	call_procedure(an_interval: INTEGER): INTEGER is
-			-- call all procedures all 'an_interval' milliseconds
+	call_procedure (an_interval: INTEGER): INTEGER is
+			-- call all procedures all 'an_interval' milliseconds.
 			do
 				from
 					all_procedures.start

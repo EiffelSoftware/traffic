@@ -164,14 +164,15 @@ feature -- Procedures
 				direction: EM_VECTOR_2D
 			do
 				direction := destination - origin
-				
-				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
-					set_coordinates
-					set_angle
-				else
-					position := position + (direction / direction.length) * speed
+				if not has_finished then
+					
+					if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
+						set_coordinates
+						set_angle
+					else
+						position := position + (direction / direction.length) * speed
+					end
 				end
-				
 			end
 		
 feature {NONE} -- helper for journey	
@@ -204,7 +205,23 @@ feature {NONE} -- helper for journey
 						set_coordinates
 					else
 						destination := map_to_gl_coords (polypoints.item)										
-					end				
+					end
+--				elseif is_reiterating then
+--					polypoints.forth
+--					if polypoints.after then
+--						is_traveling_back := True
+--						polypoints.back
+--						set_coordinates
+--					else
+--						destination := map_to_gl_coords (polypoints.item)										
+--					end				
+--				else
+--					polypoints.forth
+--					if polypoints.after then
+--						has_finished := True
+--					else
+--						destination := map_to_gl_coords (polypoints.item)										
+--					end
 				end
 			
 			ensure
@@ -360,13 +377,14 @@ feature {NONE} -- random
 				temp_x := random_direction.double_item
 				random_direction.forth
 				temp_y := random_direction.double_item
-				create destination.make (1500 * temp_x, 1500 * temp_y)
+				create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
+				-- approximated places so that they are on the map
 				random_direction.forth
 			ensure
-				destination.x < 1500
-				destination.x > 0
-				destination.y < 1500
-				destination.y > 0
+				destination.x < 1433
+				destination.x > -67
+				destination.y < 1468
+				destination.y > -32
 			end
 
 	random_direction: RANDOM
