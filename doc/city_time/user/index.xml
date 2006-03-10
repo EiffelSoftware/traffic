@@ -1,0 +1,38 @@
+﻿<?xml version="1.0"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="citytime/user/index">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+
+<title>City_Time User Guide</title>
+
+<para>
+The <projectname>City_Time</projectname> project implements a 3 dimensional
+visualization of a <projectname>Traffic</projectname> map file and adds time functionality.
+</para>
+
+<para>
+This document is structured as follows:
+	<itemizedlist>
+		<listitem>
+			<link url="introduction.html">Introduction</link>
+			<para>
+				Welcome to <projectname>City_Time</projectname>!
+			</para>
+		</listitem>
+		<listitem>
+			<link url="mouse_controls.html">Mouse controls</link>
+			<para>
+				Shows the usage of <projectname>City_Time</projectname> application.
+			</para>
+		</listitem>
+	</itemizedlist>
+
+</para>
+
+</chapter>

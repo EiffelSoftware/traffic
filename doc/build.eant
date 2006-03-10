@@ -65,6 +65,7 @@
 		<geant file="build.eant" target="${target}" dir="traffic/developer"/>
 		<geant file="build.eant" target="${target}" dir="city_3d/user"/>
 		<geant file="build.eant" target="${target}" dir="city_3d/developer"/>
+		<geant file="build.eant" target="${target}" dir="city_time/user"/>		<!--		<geant file="build.eant" target="${target}" dir="city_time/user"/>-->		
 		<geant file="build.eant" target="${target}" dir="flat_hunt/user"/>
 		<geant file="build.eant" target="${target}" dir="flat_hunt/developer"/>
 <!--		<geant file="build.eant" target="${target}" dir="touch/user"/>

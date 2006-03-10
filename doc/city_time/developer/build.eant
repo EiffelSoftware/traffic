@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<project name="user_guide" default="help">
+
+	<description>
+		description: "Developer documentation for City3D"
+		date: "$Date: 2005/11/10 07:31:39 $"
+		revision: "$Revision: 1.2 $"
+	</description>
+
+	<inherit>
+		<parent location="../../misc/build_function.eant">
+			<redefine target="init"/>
+			<redefine target="do_all"/>
+		</parent>
+	</inherit>
+
+	<target name="init" export="NONE">
+		<description>
+			Init all needed Projectvariables
+		</description>
+		<set name="root_path" value="../../"/>
+		<set name="doc_section" value="city3d developer"/>
+	</target>
+
+	<target name="do_all" export="NONE">
+		<description>
+			Call 'geant' with the same target ${target}
+			without subdirectories.
+		</description>
+		
+		<geant target="${target}" arguments="overview"/>
+		<geant target="${target}" arguments="constants"/>
+		<geant target="${target}" arguments="widgets"/>
+		<geant target="${target}" arguments="buildings"/>
+		<geant target="${target}" arguments="factories"/>
+ 		<geant target="${target}" arguments="utilities"/>
+ 		<geant target="${target}" arguments="notes"/> 		
+        <geant target="${target}" arguments="index"/>
+	</target>
+
+
+</project>

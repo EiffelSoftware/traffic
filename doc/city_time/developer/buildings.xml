@@ -1,0 +1,44 @@
+﻿<?xml version="1.0"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/developer/buildings">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+
+<title>Buildings</title>
+<section id="building_ewer">
+	<para/>
+	<title>BUILDING_EWER</title>
+	<para>
+	</para>
+	<title>Description</title>
+	<para>
+	The class <classname cluster="city_3d">BUILDING_EWER</classname> is responsible for distributing buildings on the plane.
+	It takes the number of buildings from the map and places the according number 
+	of buildings on the plane using a random number generator and a collision detection, 
+	which checks for collisions with traffic lines. It stores the created objects (buildings) in a container 
+	and provides a feature to the map object that does the necessary drawing.
+	</para>
+	<title>Building distribution</title>
+	<para>
+	First, the centre of the new building is calculated using the random number generator. 
+	Next, the collision polygon is created with these coordinates. Then the feature <featurename class="city_3d.building_ewer">has_collision</featurename>
+	checks for collisions with the polygons of the traffic lines that have been created earlier in the creation procedure. 
+	If there are any collisions, the coordinates are discarded and new ones calculated. If not, the distance to the centre is calculated and the building created using the factory and a gauger of your choice. Finally, the building is set to the right position and put into the container where it is stored. 
+	</para>
+	<title>Adding buildings</title>
+	<para>
+	If the slidebar is moved and additional buildings have to be displayed, <featurename class="city_3d.building_ewer">set_building_number</featurename>
+	calculates how many and calls <featurename class="city_3d.building_ewer">add_buildings</featurename>, which takes the random number generator and the 
+	container of the buildings that have already been created and adds the difference to it. Similarly, if less buildings should be displayed, 
+	i.e. the slidebar is moved left, the container stays the same and only the feature <featurename class="city_3d.building_ewer">draw</featurename>, 
+	which is essentially a loop over the container and a draw call to all the items, is changed by setting 
+	a new upper limit.
+	</para>
+	<toplink/>
+</section>
+</chapter>

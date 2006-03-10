@@ -1,0 +1,36 @@
+﻿<?xml version="1.0"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/developer/constants">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+	<section id="constants">
+	<title>SHARED_CONSTANTS</title>
+	<para>
+	</para>
+	<title>Description</title>
+	<para>
+	The intention of this class is to collect information that would be spread over the whole project otherwise. 
+	This helps adjusting the project and makes minor changes easier, as a constant (like <featurename class="city_3d.shared_constants">line_width</featurename>) only has to be changed a single time to take effects on the whole project. 
+	All classes that want to use constants or procedures from <classname cluster="city_3d">SHARED_CONSTANTS</classname> inherit from this class, 
+	but do not export the inherited features so that they are not visible in the interface.
+	</para>
+	<title>Constants</title>
+	<para>
+	In addition to constants of minor importance, such as line-/window- height and width, the most important one is <featurename class="city_3d.shared_constants">plane_size</featurename> which is used 
+	mostly in the classes <classname cluster="city_3d">MAP</classname> and <classname cluster="city_3d">BUILDING_EWER</classname> for calculations related to the 
+	distribution of buildings and other issues.
+	</para>
+	<title>map_to_gl_coords</title>
+	<para>
+	This query is of great importance to the project as it maps the coordinates in the XML files that vary from 0 to 1500 to the coordinates of the plane, 
+	which are in the range of -plane_size/2 to +plane_size/2. 
+	All coordinate transformations that have to be done call this procedure. This makes an adjustment to new coordinates in an XML file pretty easy, 
+	because only this feature would have to be changed.
+	</para>
+	</section>
+</chapter>

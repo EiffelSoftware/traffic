@@ -1,0 +1,66 @@
+﻿<?xml version="1.0"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/developer/index">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+
+<title>City3D Developer Guide</title>
+
+<para>
+The <projectname>City3D</projectname> project implements a 3 dimensional
+visualization of a <projectname>Traffic</projectname> map file and adds some additional functionaliy.
+</para>
+
+<para>
+This document is structured as follows:
+	<itemizedlist>
+		<listitem>
+			<link url="overview.html">Overview</link>
+			<para>
+				BON-Diagram to get an overview.
+			</para>
+		</listitem>
+		<listitem>
+			<link url="constants.html">Shared constants</link>
+			<para>
+				Description of class <classname>SHARED_CONSTANTS</classname>.
+			</para>
+		</listitem>
+		<listitem>
+			<link url="widgets.html">Widgets</link>
+			<para>
+				Description of the classes that are responsible for the user interface.
+			</para>
+		</listitem>
+		<listitem>
+			<link url="buildings.html">Buildings</link>
+			<para>
+				How are the buildings created?
+			</para>
+		</listitem>
+		<listitem>
+			<link url="factories.html">Factories</link>
+			<para>
+				Explanation of the buildings factory and the line factory. 
+			</para>
+		</listitem>
+		<listitem>
+			<link url="utilities.html">Utilities</link>
+			<para>
+				Utilities for drawing 3D objects.
+			</para>
+		</listitem>
+		<listitem>
+			<link url="notes.html">Notes</link>
+			<para>
+				Notes from the developers of City3D.
+			</para>
+		</listitem>
+	</itemizedlist>
+</para>
+</chapter>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="citytime/user/introduction">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+
+<title>City3D User Guide</title>
+<section id="introduction">
+    <para> Welcome to <projectname>City3D</projectname>! </para>
+	<para>
+	The <projectname>City3D</projectname> application displays traffic lines as
+	colored polygons on a plane, adds passengers on this plane randomly, trams on their respective lines and provides 
+	mouse and keyboard support such that changing the viewpoint (zooming, 
+	different centres) is possible (easily). Moreover it provides different light settings
+	and runs time in the model.
+	</para>
+    <para>
+        <image src="image/citytime.png"/>
+    </para>
+</section>
+</chapter>

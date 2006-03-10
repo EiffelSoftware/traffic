@@ -1,0 +1,112 @@
+﻿<?xml version="1.0"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/developer/notes">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+
+<title>Notes</title>
+<section id="dependencies">
+	<title>External dependencies</title>
+    <para>
+        This section lists some things that are kind of ugly in the sense that the application may not work perfectly if some external parameters are changed.
+    </para>
+    <para>
+    In <classname cluster="city_3d">SHARED_CONSTANTS</classname>:
+        <itemizedlist>
+            <listitem><para>
+                <featurename class="city_3d.shared_constants">Plane_size</featurename> is a constant that is chosen with the example maps in mind. This works for them 
+		but it might not work perfectly for other map files.
+            </para></listitem>
+            <listitem><para>
+                <featurename class="city_3d.shared_constants">map_to_gl_coords</featurename> is also optimized for our example maps. It uses the range of the coordinates from 
+		the map xml file and centers the Zurich main station on the screen. This might not be intended for other examples.
+            </para></listitem>
+        </itemizedlist>
+        These issues could be solved by either extending the map file or using a separate xml file.
+    </para>
+</section>
+
+<section id="reuseability">
+	<para/>
+	<title>Reutilisation and extensions</title>
+	<para>
+		This section discusses some scenarios of how one could reuse this work.
+	</para>
+    <para/>
+	1) Replacing the GUI:
+         <para/>
+	One could replace the GUI with another one or integrate the 'map part' (i.e. <classname cluster="city_3d">MAP</classname> and the factories) of the project into another application. This could be done by creating an instance of <classname cluster="city_3d">MAP</classname> in the new application and accessing the features from the option section with the widgets of the new GUI simillary to how this is done in <classname cluster="city_3d">CITY_3D_SCENE</classname> or even add new features to <classname cluster="city_3d">MAP</classname>.
+	<para/>
+	2) Extending displayed objects:
+         <para/>
+	 One could add new factories to the project or use existing ones to display more and different buildings, traffic lines or anything else. The easiest way to create a new factory would be to inherit from <classname cluster="em.video.object_factory">EM_3D_OBJECT_FACTORY</classname> as this is done with the two implemented factories.
+	With <classname cluster="city_3d">BUILDING_FACTORY</classname> reuse comes naturally as it is able to draw any building of choice (how this is done is explained in the corresponding section in <ulink url="structure.html">classes</ulink>). 
+    If you would like to change the way traffic lines are displayed, you could change <featurename class="city_3d.traffic_line_factory">specify_object</featurename> in <classname cluster="city_3d">TRAFFIC_LINE_FACTORY</classname>.
+	<para/>
+	3) Extending functionality:
+         <para/>
+            To provide additonal options and functionallity, one would have to add the new features in <classname cluster="city_3d">MAP</classname> in the section options and make them accessible by adding corresponding widgets to <classname cluster="city_3d">CITY_3D_SCENE</classname> or any other GUI. Then one would have to add the new option to <featurename class="city_3d.map">draw</featurename> like this is done with all the other options.
+    <para>
+		 
+	</para>
+<toplink/>
+</section>
+
+<section id="future_perspective">
+	<para/>
+	<title>Ideas</title>
+	<para>
+		This section lists some things one could do in the future to inprove or enhance what we have done so far.
+	</para>
+	<para>
+    1) New features:
+        <itemizedlist>
+            <listitem><para>
+                Promenade through the city: would make it possible to walk through the city with some character and to explore the city 'per pedes'.
+            </para></listitem>
+            <listitem><para>
+                Extra XML file: that would contain additional information like the position of special buildings, their textures, height, etc. 
+		Moreover, things like the transformation that have to be done in <featurename class="city_3d.shared_constants">map_to_gl_coords</featurename> could be
+		stored in this file.
+            </para></listitem>
+        </itemizedlist>
+    </para>
+    <para>
+    2) Extensions:
+        <itemizedlist>
+            <listitem><para>
+                Text console or other GUI extensions like they're used in the already existing <projectname>Traffic</projectname> applications. But as mentioned above, 
+		abolishing <classname cluster="city_3d">CITY_3D_SCENE</classname> and taking the rest would probably be the more reasonable way.
+            </para></listitem>
+            <listitem><para>
+                Time tables for the means of transport: This would comprise automatic updating or requesting from the internet.
+            </para></listitem>
+            <listitem><para>
+                Integration of events like concerts, cinemas, theaters etc.
+            </para></listitem>
+        </itemizedlist>
+    </para>
+    <para>
+    3) Improvements:
+        <itemizedlist>
+            <listitem><para>
+	Faster parsing of the XML file as this is one of the main bottlenecks of the project. If the parsing would go faster, more information 
+	could be stored and used from the xml file. Otherwise, this project won't 'scale', because adding new features that would go
+	with extending the xml file would make the whole application unreasonably slow.
+            </para></listitem>
+	    <listitem><para>
+	An other way to bypass this would be to add multithreading. This would make it possible to do the parsing in the background while the user could still interact with the program or parts of the map could already be displayed.
+            </para></listitem>
+            <listitem><para>
+                more buildings etc. - would probably need an extra XML file
+            </para></listitem>
+        </itemizedlist>
+    </para>
+</section>
+
+</chapter>
