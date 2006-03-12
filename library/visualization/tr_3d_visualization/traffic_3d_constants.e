@@ -9,10 +9,10 @@ class
 feature -- Constants
 	
 	Hours_per_day: INTEGER is 24
-
+			-- Hours.
 
 	Minutes_per_hour: INTEGER is 60
-
+			-- Minutes
 
 	minutes_per_day: INTEGER is
 		do
@@ -20,52 +20,53 @@ feature -- Constants
 		end
 	
 	
-	Seconds_per_minute: INTEGER is 6
-	
+	Seconds_per_minute: INTEGER is 60
+			-- Virtual Seconds.
 	
 	Milliseconds_per_second: INTEGER is 1000
-	
+			-- Milliseconds.
 	
 	Building_width: DOUBLE is 0.2
 			-- Width of the quadratic (!) base of the building.
 			
 	Max_building_height: DOUBLE is 1.0
-			-- Maximum height of buildings
+			-- Maximum height of buildings.
 			
 	Plane_size: DOUBLE is 50.0
-			-- Length, resp. width, of plane
+			-- Length, resp. width, of plane.
 			
-	Window_width: INTEGER is 1000 -- 800 -- 1024 
-			-- Window width
+	Window_width: INTEGER is 800 -- 1000 -- 1024 
+			-- Window width.
 			
 	Window_height: INTEGER is 600 -- 768
-			-- Window height
+			-- Window height.
 			
 	Screen_resolution: INTEGER is 32
-			-- Screen resolution
+			-- Screen resolution.
 			
-	Fullscreen: BOOLEAN is false
+	Fullscreen: BOOLEAN is False
 			-- Fullscreen?
 			
 	Line_width: DOUBLE is 0.075
-			-- Width of the line representation on the map
+			-- Width of the line representation on the map.
 			
 	Line_height: DOUBLE is 0.01
-			-- Height of the line representation on the map
+			-- Height of the line representation on the map.
 			
 	Line_depth: DOUBLE is 0.2
-			-- Depth of the line representation on the map
+			-- Depth of the line representation on the map.
 			
-	place_width: DOUBLE is 0.075
-			-- Width of the place representation on the map
+	Place_width: DOUBLE is 0.075
+			-- Width of the place representation on the map.
 			
-	place_height: DOUBLE is 0.01
-			-- Height of the place representation on the map
+	Place_height: DOUBLE is 0.01
+			-- Height of the place representation on the map.
 			
-	place_depth: DOUBLE is 0.2
-			-- Depth of the place representation on the map
+	Place_depth: DOUBLE is 0.2
+			-- Depth of the place representation on the map.
+	
 	Station_radius: DOUBLE is
-			-- Radius of a station on the map
+			-- Radius of a station on the map.
 		do
 			Result := 2*line_width
 		end

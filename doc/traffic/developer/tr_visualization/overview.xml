@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/tr_visualization/overview">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+    <title>Overview</title>
+    <para> 
+		This is an overview over the 3D visualization widgets which are used to represent a map 
+	</para>
+    <para>
+        <image src="image/overview_3d_visualization.PNG"/>
+    </para>
+    <para>
+		As everyone can see the main class is represented by the <classname>TRAFFIC_3D_MAP_WIDGET</classname>. There are some constants and functions which are used by 
+		all of the represented classes. These can all be found in the <classname>TRAFFIC_3D_CONSTANTS</classname>.
+    </para>
+</chapter>

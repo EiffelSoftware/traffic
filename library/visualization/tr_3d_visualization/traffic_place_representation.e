@@ -234,13 +234,6 @@ feature{NONE} -- Attributes
 		
 	centre: GL_VECTOR_3D[DOUBLE]
 		-- Centre of the city
---
---feature{TRAFFIC_TRAVELER_REPRESENTATION} -- type Attributes
---		
---	place_type: STRING
---		-- which type was taken
---		
---	tram_type: STRING is "tram"
 	
 
 end -- class TRAFFIC_PLACE_REPRESENTATION

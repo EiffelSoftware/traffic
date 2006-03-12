@@ -91,7 +91,7 @@ feature -- Collision detection
 	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic lines.
 	
-feature{CITY_3D_MAP} -- Implemenation
+feature{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 		
 		add_traveler (a_traveler: TRAFFIC_TRAVELER; a_map: TRAFFIC_MAP) is
 				-- a passenger walks from origin to destination with 'speed'.
@@ -209,7 +209,8 @@ feature{CITY_3D_MAP} -- Implemenation
 							i > number or i = a_traveler.line_count
 						loop
 							create a_traveler.make_with_line (lines.item_for_iteration)
-							a_traveler.set_to_place (a_traveler.get_place (i))
+							a_traveler.get_place (i)
+							a_traveler.set_to_place (a_traveler.last_place)
 							add_traveler (a_traveler, a_map)
 							i := i + 1
 						end

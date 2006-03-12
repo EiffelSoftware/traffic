@@ -56,6 +56,8 @@ feature -- Initialisation
 				
 				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
 				create_coord_system
+				
+				create traffic_time.make_day (5)
 
 				mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 				create building_left_clicked_event.default_create
@@ -192,7 +194,11 @@ feature -- Drawing
 				end
 				traffic_lines.draw
 				-- here could also be traffic_places.draw, which would show all places in black
+				
+				traffic_traveler.draw
 			end
+			
+			
 	end
 
 feature{EM_3D_OBJECT} -- Collision
@@ -321,6 +327,9 @@ feature -- Traffic map loading
 			traffic_places_polygons := traffic_places.collision_polygons
 			create traffic_lines.make (map)
 			traffic_lines_polygons := traffic_lines.collision_polygons
+			create traffic_traveler.make (map, traffic_time)
+--			traffic_traveler_polygons := traffic_traveler.collision_polygons
+			
 			
 			traffic_buildings.set_map(map)
 			traffic_buildings.set_collision_polygons(collision_polygons)
@@ -344,6 +353,9 @@ feature -- Traffic map loading
 			
 	marked_station_changed: BOOLEAN
 			-- Has the marked station changed?
+			
+	traffic_time: TRAFFIC_TIME
+			-- Time of the system.
 	
 feature -- Options
 
@@ -394,6 +406,7 @@ feature -- Options
 			number_of_buildings = n
 		end
 		
+		
 	set_buildings_transparent (b: BOOLEAN) is
 			-- Set `buildings_transparent'.
 		do
@@ -435,6 +448,13 @@ feature -- Options
 		do
 			traffic_buildings.add_along_lines
 		end
+	
+	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
+			-- add a traveler to the map.
+			do
+				traffic_traveler.add_traveler (a_traveler, map)
+			end
+		
 		
 	sun_shown: BOOLEAN
 			-- Should sun be displayed?
@@ -500,6 +520,12 @@ feature -- Mousevents
 
 feature {NONE} -- Attributes
 
+	number_of_passengers: INTEGER
+			-- number of passengers on the map.
+	
+	traveler_index: INTEGER
+			-- Index such that it is unique.
+	
 	sun_angle: DOUBLE
 			-- Angle of sun rotation.
 			
@@ -532,6 +558,10 @@ feature {NONE} -- Attributes
 			
 			
 feature {NONE} -- Implementation
+
+	traffic_traveler: TRAFFIC_TRAVELER_REPRESENTATION
+		-- container for all travelers.
+	
 	traffic_lines: TRAFFIC_LINE_REPRESENTATION
 		-- container for the lines
 		
@@ -541,6 +571,9 @@ feature {NONE} -- Implementation
 	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic places.
 		
+--	traffic_traveler_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+--		-- Collision polygons to check for collisions with traffic places.
+
 	traffic_places: TRAFFIC_PLACE_REPRESENTATION
 		-- container for the places.
 		
@@ -555,5 +588,6 @@ feature {NONE} -- Implementation
 
 invariant
 	number_of_buildings_valid: number_of_buildings >= 0
+	traffic_time /= Void
 
 end -- class TRAFFIC_3D_MAP_WIDGET

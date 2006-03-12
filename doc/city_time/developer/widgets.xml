@@ -17,39 +17,41 @@
 	</para>
 	<title>Description</title>
 	<para>
-	An instance of <classname cluster="city_3d">CITY_3D_SCENE</classname> gets created by the root class and called using the standard EM procedure. 
-	It uses the widget toolkit of the EM library to display a panel for the OpenGL visualization of the map and another one used as a toolbar for the different options.
+		An instance of <classname cluster="city_time">CITY_3D_SCENE</classname> gets created by the root class <classname cluster="city_time">CITY_TIME_APPLICATION</classname> and called using the standard EM procedure. 
+		It uses the TRAFFIC_3D_MAP_WIDGET class to display the class and a toolkit from the EM library to create the toolbar.
 	</para>
 	<title>Creation procedure</title>
 	<para>
-	The creation procedure of the class creates all the needed widgets, such as checkboxes, slidebars or labels, and specifies their position, color 
+	The creation procedure of the class creates all the needed widgets, such as slidebars or labels, and specifies their position, color 
 	and properties. If necessary, it subscribes a feature in the appropriate event handler.
-	Moreover, it creates an instance of the <classname cluster="city_3d">MAP</classname> class, which is responsible for all the things that have to be done in order to visualize the map.
+	Moreover, it creates an instance of the <classname cluster="city_time">CITY_3D_MAP</classname> class, which is responsible for all the things that have to be done in order to visualize the map.
 	</para>
 	<title>Event handling</title>
 	<para>
-	The event handling of this class is very important as it is the link between the user input and the features of the <classname cluster="city_3d">MAP</classname> class that do the necessary 
+	The event handling of this class is very important as it is the link between the user input and the features of the <classname cluster="city_time">CITY_3D_MAP</classname> class that do the necessary 
 	operations such that the visual effects take place.
-	It is important to notice that the instance of the <classname cluster="city_3d">MAP</classname> class doesn't know it's scene and therefore commands are only 
+	It is important to notice that the instance of the <classname cluster="city_time">CITY_3D_MAP</classname> class doesn't know it's scene and therefore commands are only 
 	given from the scene to the map. If the map has to process information to the scene, such as the name of a marked point, the scene has to subscribe 
 	to the event handler of the map and query the desired information.
 	</para>
 <toplink/>
 </section>
 
-<section id="map">
+<section id="city_3d_map">
 	<para/>
-	<title>MAP</title>
+	<title>CITY_3D_MAP</title>
 	<para>
 	</para>
 	<title>Description</title>
 	<para>
 	This is the main class of the project and has three main tasks. First provides features for 
 	parsing the map XML file. Secondly, it is responsible for drawing the whole map with its lines, 
-	buildings, etc. This includes creating the necessary factories and drawing the map according to 
+	places, etc. This includes creating the necessary factories and drawing the map according to 
 	the enabled options. Last, it handles the user input. This means it has event handlers that 
 	change properties like zooming, translation or rotation (see 
-	<link url="../user/mouse_controls.html">User guide</link>).
+	<link url="../user/mouse_controls.html">User guide</link>). Most of the implementation can be found in the
+	class TRAFFIC_3D_MAP_WIDGET which is the parent of this class.
+	Moreover this class handles the number of travelers on the map. It adjust the speed according to the simulated time.
 	</para>
 </section>
 </chapter>

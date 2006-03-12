@@ -25,6 +25,9 @@
 				<link url="#traffic_line">TRAFFIC_LINE</link>
 			</listitem>
 			<listitem>
+				<link url="#traffic_line_traveler">TRAFFIC_LINE_TRAVELER</link>
+			</listitem>
+			<listitem>
 				<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>
 			</listitem>
 			<listitem>
@@ -59,9 +62,6 @@
 			</listitem>
 			<listitem>
 				<link url="#traffic_traveler">TRAFFIC_TRAVELER</link>
-			</listitem>
-			<listitem>
-				<link url="#traffic_line_traveler">TRAFFIC_LINE_TRAVELER</link>
 			</listitem>
 		</itemizedlist>
     </section>
@@ -143,6 +143,28 @@
     		<image src="image/sg_traffic_line.png"/>
     	</para>
     	</para>
+    	<toplink/>
+    </section>
+  <section id="traffic_line_traveler">
+    	<title>TRAFFIC_LINE_TRAVELER</title>
+   		<title>Requirements:</title>
+    	<para>
+   			None
+ 	   	</para>
+    	<title>Description</title>
+    	<para>
+			The class <classname>TRAFFIC_LINE_TRAVELER</classname> represents travelers which travel on a <classname>TRAFFIC_LINE</classname>.
+			Now the default for the traffic_type is 'tram' but this should be changed in future implementations.
+			There are two features added to this class: <featurename>get_place</featurename> and <featurename>set_to_place</featurename>. The first feature returns 
+			the place at the arguments position on the line, the result can be found at <featurename>last_place</featurename>. The second sets the traveler to the position 
+			of the given place, if the place is on the line.
+		</para>
+		<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_line_traveler.png"/>
+    	</para>
+     	</para>
     	<toplink/>
     </section>
     <section id="traffic_line_section">
@@ -485,4 +507,38 @@
      	</para>
     	<toplink/>
     </section>
+  <section id="traffic_traveler">
+    	<title>TRAFFIC_TRAVELER</title>
+   		<title>Requirements:</title>
+    	<para>
+   			None
+ 	   	</para>
+    	<title>Description</title>
+    	<para>
+			The class <classname>TRAFFIC_TRAVELER</classname> represents any type of traveler on the map. 
+			The actual type is then given through a <classname>TRAFFIC_TYPE</classname> object.
+		</para>
+		<para>
+			The feature <featurename>take_tour</featurename> lets the traveler change it's position if called.
+			There are two helper features: <featurename>set_coordinates</featurename> and <featurename>set_angle</featurename>, where
+			the first one sets the new <featurename>origin</featurename> and <featurename>destination</featurename>, the second one set the
+			<featurename>angle_x</featurename> which is used to let the traveler look into the right direction. 
+			If the traveler is random a new direction is given by the feature <featurename>give_random_direction</featurename> which sets the destination
+			to a random position on the map.
+		</para>
+		<para>
+			There are several attributes like <featurename>traffic_type</featurename> which represents the type of the traveler, <featurename>traffic_info</featurename>
+			could be used for information about the traveler, <featurename>speed</featurename> on the map which is changed according to <featurename>virtual_speed</featurename>
+			and <featurename>time</featurename>, <featurename>is_reiterating</featurename> and <featurename>is_traveling_back</featurename>
+			which is needed for the tour algorithm. There is the feature <featurename>index</featurename> which is a unique ID for each traveler.
+		</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_traveler.png"/>
+    	</para>
+     	</para>
+    	<toplink/>
+    </section>
+
 </chapter>

@@ -53,6 +53,8 @@ feature -- Creation
 				polypoints.forth
 				set_coordinates
 				set_angle
+				-- future implementations should tae care of this
+--				traffic_type := line.type
 				traffic_type := create {TRAFFIC_TYPE_TRAM}.make
 				virtual_speed := 0.8
 			end
@@ -138,7 +140,7 @@ feature -- Commands
 	line_count: INTEGER
 		-- count for the number of stops.
 		
-	get_place (stop: INTEGER): TRAFFIC_PLACE is
+	get_place (stop: INTEGER) is
 			-- return the stop at number 'stop'
 		require
 			stop <= line_count
@@ -157,13 +159,15 @@ feature -- Commands
 			end
 			if i < stop then
 				line.back
-				Result := line.item.destination
+				last_place := line.item.destination
 			else				
-				Result := line.item.origin
+				last_place := line.item.origin
 			end
 		end
 
-	
+	last_place: TRAFFIC_PLACE
+		-- place which is returned by get_place
+		
 invariant
 	TR_LINE_TR_line_set: line /= Void
 

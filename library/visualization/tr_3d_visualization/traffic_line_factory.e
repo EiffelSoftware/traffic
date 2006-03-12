@@ -14,22 +14,7 @@ inherit
 		export {NONE} all end
 		
 	EM_CONSTANTS
---		export {NONE} all end
---		
---	GL_FUNCTIONS
---		export {NONE} all end
---		
---	GLU_FUNCTIONS
---		export {NONE} all end
---		
---	MATH_CONST
---		export {NONE} all end
---		
---	DOUBLE_MATH
---		export {NONE} all end
---		
---	SHARED_CONSTANTS
---		export {NONE} all end
+		export {NONE} all end
 
 create
 	make
@@ -41,7 +26,6 @@ feature -- Creation
 				create line_templates.make(1)
 				create gaugers.make(1)
 			end
-		
 			
 	object_width: DOUBLE is 2.0
 			-- The size of the bounding box in x direction of created objects.
@@ -95,16 +79,6 @@ feature -- Decision process
 		ensure
 			line_templates.removed	
 		end
-
---	take_decision (gauger: STRING; args: TUPLE) is
---			-- Let `gauger' decide.
---		require
---			gauger_valid: gauger /= void and then not gauger.is_empty
---			args_valid: args /= Void
---		do
---			decision := gaugers.item(gauger).item(args)
---			unchanged := False
---		end
 		
 	take_decision (gauger: STRING) is
 			-- Let `gauger' decide.

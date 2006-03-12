@@ -14,14 +14,21 @@ inherit
 	{TRAFFIC_TRAVELER_REPRESENTATION}
 		create_object
 	redefine
-		load_file, specify_object 
+		make, load_file, specify_object 
 	end
 	
 	
 create	
-	make_with_color 
+	make, make_with_color 
 	
 feature -- Initialization
+	
+	make is
+			-- 
+		do
+			create em_color.make_xyz (0, 0, 0)
+		end
+		
 
 	make_with_color (a_r: DOUBLE; a_g: DOUBLE; a_b: DOUBLE) is
 		do

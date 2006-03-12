@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/tr_visualization/index">
+<chapterinfo>
+	<copyright>
+		<year>2006</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+    <title>Traffic Visualization Library Developer Guide</title>
+    <para>
+This section consists of a description of the intention and use of the 
+<projectname>Traffic library</projectname> with a description of each class and its simplified interface. 
+The class overviews are sorted in alphabetic ascending order to be able to find a class description faster when knowing the name of it.</para> 
+    <para> This document describes how the visualization of the  <projectname>Traffic library</projectname> is structured and consists of the following parts: 
+	<itemizedlist>
+		<listitem>
+			<link url="overview.html">Overview</link>
+			<para>
+				Gives an overview of the classes that are involved in the visualization of the <projectname>Traffic library</projectname>
+			</para>
+		</listitem>
+		<listitem>
+	        <link url="classes.html">Classes</link>
+			<para>
+				Describes each class of the visualization of the <projectname>Traffic library</projectname> 
+			</para>
+		</listitem>
+	</itemizedlist>
+    </para>
+</chapter>

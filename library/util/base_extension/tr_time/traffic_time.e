@@ -86,7 +86,7 @@ feature  --Time Attributes
 			temp_delay : INTEGER
 		do		
 			simulated_minutes := simulated_day_minutes
-			temp_delay := ((simulated_minutes / minutes_per_hour) * milliseconds_per_second).rounded
+			temp_delay := ((simulated_minutes * seconds_per_minute * milliseconds_per_second) / (hours_per_day *minutes_per_hour)).rounded
 			if temp_delay < 10 then
 				callback_delay := 10
 			else	
@@ -98,7 +98,7 @@ feature  --Time Attributes
 		end
 	
 	
-feature -- Handling
+feature{NONE} -- Handling
 
 	time_count is	
 			-- start the time.
@@ -107,9 +107,9 @@ feature -- Handling
 				actual_minute >= 0
 				actual_hour >= 0
 			do
-				if actual_second < seconds_per_minute - 1 then
-					actual_second := actual_second + 5
-				else
+--				if actual_second < seconds_per_minute - 1 then
+--					actual_second := actual_second + 15
+--				else
 					if actual_minute < minutes_per_hour - 1 then
 						actual_minute := actual_minute + 1
 					else
@@ -120,16 +120,18 @@ feature -- Handling
 						end
 						actual_minute := 0
 					end
-					actual_second := 0
-				end
+--					actual_second := 0
+--				end
 			end
 		
 		
 	
-	is_time_running: BOOLEAN		
-			-- is time startet?
 		
 feature -- time
+
+	is_time_running: BOOLEAN		
+			-- is time startet?
+
 	start_time is
 			-- start to count the time.
 			require
@@ -176,14 +178,15 @@ feature -- time
 				actual_second = 0
 			end
 		
-		
-feature -- Procedures
+feature{NONE} -- Attributes		
 
 	all_procedures: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
 		-- container for all procedures except tours.	
 	
 	all_tours: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
 		-- container for all tours.
+
+feature -- Procedures
 	
 	add_callback_procedure (a_procedure: PROCEDURE[ANY, TUPLE]) is
 			-- add a procedure.

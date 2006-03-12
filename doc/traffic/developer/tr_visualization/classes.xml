@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/tr_visualization/classes">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+    <title>Classes</title>
+	<section id="top_of_page">
+    	<para>
+			In the following sections the classes will be described. The layout for each class is: 
+			Requirements, Description, Class overview. In the Requirements the name of classes you 
+			need to know in order to understand the class described is given. Description is a short 
+			description of what the class does. It is more detailed than just the class description 
+			that you find in the class header. The class overview provides you with a class diagram. 
+		</para>
+		<itemizedlist>
+			<listitem>
+				<link url="#traffic_3d_constants">TRAFFIC_3D_CONSTANTS</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_3d_map_widget">TRAFFIC_3D_MAP_WIDGET</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_building_representation">TRAFFIC_BUILDING_REPRESENTATION</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_line_factory">TRAFFIC_LINE_FACTORY</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_line_representation">TRAFFIC_LINE_REPRESENTATION</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_object_loader">TRAFFIC_OBJECT_LOADER</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_place_factory">TRAFFIC_3D_PLACE_FACTORY</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_place_representation">TRAFFIC_PLACE_REPRESENTATION</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_traveler_representation">TRAFFIC_TRAVELER_REPRESENTATION</link>
+			</listitem>
+		</itemizedlist>
+    </section>
+    <section id="traffic_3d_constants">
+    	<title>TRAFFIC_3D_CONSTANTS</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+			This class is shared by all other classes in this section. It has some default values like <featurename>window_width</featurename>
+			or <featurename>place_height</featurename>. It could be thought of if it's more useful to provide such values in their respective classes to
+			get some more independance for the following classes. Another feature <featurename>map_to_gl_coords</featurename> can be found in this class.
+			This feature translates given coordinates to coordinates according to the map.
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_3d_constants.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+<section id="traffic_3d_map_widget">
+    	<title>TRAFFIC_3D_MAP_WIDGET</title>
+   		<title>Requirements:</title>
+    	<para>
+    		EM_3D_COMPONENT
+			TRAFFIC_3D_CONSTANTS
+    	</para>
+    	<title>Description</title>
+    	<para>
+			The TRAFFIC_3D_MAP_WIDGET class is the main class in this cluster. As seen in the overview it contains all the representations of buildings, 
+			lines, places and travelers. It represents the whole map which can be plugged into a EM_3D_SCENE. It provides the feature <featurename>draw</featurename>. 
+			Then for other classes there is a feature <featurename>collision_polygons</featurename> which is useful to search for a collision. 
+			The feature <featurename>load_map</featurename> is used to load from a file and create all the lines and places. There is a map dump which is loaded instead 
+			if there is such a map dump and this dump file is on date.
+    	</para>
+		<para>
+			There are several features to add buildings <featurename>add_building</featurename>, <featurename>add_buildings</featurename>, <featurename>add_buildings_along_lines</featurename>, where one, several at random or several at a line are added.
+			Then you can add a traveler through <featurename>add_traveler</featurename>. For all attributes there are corresponding setter methods.
+		</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_3d_map_widget.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+<section id="traffic_building_representation">
+    	<title>TRAFFIC_BUILDING_REPRESENTATION</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+			
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_building_representation.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+<section id="traffic_line_factory">
+    	<title>TRAFFIC_LINE_FACTORY</title>
+   		<title>Requirements:</title>
+    	<para>
+    		EM_3D_OBJECT_FACTORY
+    	</para>
+    	<title>Description</title>
+    	<para>
+			The class TRAFFIC_LINE_FACTORY is a factory for the 3D objects which represent the lines on the map. The interface is for each of the factories the same:
+			With the features <featurename>add_gauger</featurename> and <featurename>remove_gauger</featurename> one can handle procedures for decisions. These procedures can then 
+			be called through the feature <featurename>take_decision</featurename> which calls the right gauger and saves the decision in the String <featurename>decision</featurename>.
+			For creating a The presentation of the built object one can add specific procedures through the features <featurename>add_line_type</featurename> and remove them by calling
+			<featurename>remove_line_type</featurename>. The last two features are the feature <featurename>specify_object</featurename> which takes takes the right line type according to the decision
+			and the feature <featurename>create_object</featurename> which is inherited from EM_3D_OBJECT_FACTORY and returns the created object.
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_line_factory.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+<section id="traffic_line_representation">
+    	<title>TRAFFIC_LINE_REPRESENTATION</title>
+   		<title>Requirements:</title>
+    	<para>
+    		EM_3D_OBJECT
+    	</para>
+    	<title>Description</title>
+    	<para>
+			The class TRAFFIC_LINE_REPRESENTATION is a container for all traffic_line 3D objects. As expected there is a feature <featurename>draw</featurename> all to draw all objects
+			in the container. If a shortest line is added by <featurename>add_shortest_line</featurename> and not removed through <featurename>remove_shortest_line</featurename> the feature
+			<featurename>draw_shortest_line</featurename> draws it. Lines can be highlithed or un-highlighted by calling the features
+			<featurename>highlight_single_line</featurename>, <featurename>un_highlight_single_line</featurename> and similar ones. With the feature <featurename>add_lines</featurename> all lines
+			of a map can be added, but single lines can be added too.
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_line_representation.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+<section id="traffic_object_loader">
+    	<title>TRAFFIC_OBJECT_LOADER</title>
+   		<title>Requirements:</title>
+    	<para>
+    		EM_OBJ_LOADER
+    	</para>
+    	<title>Description</title>
+    	<para>
+			In principle this class is a factory as well. It is used to create ".obj" files. As for now it is not possible to make one factory and make several loads. Therefore everytime 
+			a 3D object should be created a new factory has to be created too (what isn't the meaning of a factory at all). The feature <featurename>set_em_color</featurename> sets the color of a created object.
+			The feature <featurename>load_file</featurename> is used to load a new file, other than the original feature this feature closes it's opened files after use.
+			The feature <featurename>specify_object</featurename> specifies the object according to the loaded file and the given color.
+		</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_object_loader.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+<section id="traffic_place_factory">
+    	<title>TRAFFIC_PLACE_FACTORY</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+			The class TRAFFIC_PLACE_FACTORY is a factory for the 3D objects which represent the places on the map. The interface is for each of the factories the same:
+			With the features <featurename>add_gauger</featurename> and <featurename>remove_gauger</featurename> one can handle procedures for decisions. These procedures can then 
+			be called through the feature <featurename>take_decision</featurename> which calls the right gauger and saves the decision in the String <featurename>decision</featurename>.
+			For creating a The presentation of the built object one can add specific procedures through the features <featurename>add_place_type</featurename> and remove them by calling
+			<featurename>remove_place_type</featurename>. The last two features are the feature <featurename>specify_object</featurename> which takes takes the right place type according to the decision
+			and the feature <featurename>create_object</featurename> which is inherited from EM_3D_OBJECT_FACTORY and returns the created object.
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_place_factory.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+<section id="traffic_place_representation">
+    	<title>TRAFFIC_PLACE_REPRESENTATION</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+			The class supports the feature <featurename>draw</featurename> to draw all places. The feature <featurename>highlight_place</featurename> highlights a place.
+			Through the feature <featurename>add_places</featurename> all places of a map are added to the container.
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_place_representation.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+<section id="traffic_traveler_representation">
+    	<title>TRAFFIC_TRAVELER_REPRESENTATION</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+			Like all other container the feature <featurename>draw</featurename> is also provided to draw all travelers. To add a traveler call <featurename>add_traveler</featurename>. 
+			As there are no travelers provided in the map you have to provide the TRAFFIC_MAP to add this traveler. The feature <featurename>remove_traveler</featurename> removes a walking traveler
+			from the map, the feature <featurename>remove_specific_traveler</featurename> does the same by comparing the given traveler with all others in the container. If found it is removed.
+			There is a feature <featurename>add_trams_per_line</featurename> which adds the given number or maximal trams to each line.
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/sg_traffic_traveler_representation.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+
+</chapter>
