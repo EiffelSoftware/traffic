@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0"?>
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/developer/index">
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="citytime/developer/index">
 <chapterinfo>
 	<copyright>
 		<year>2005</year>
@@ -9,11 +9,11 @@
 	<date>$Date$</date>
 </chapterinfo>
 
-<title>City3D Developer Guide</title>
+<title>City_Time Developer Guide</title>
 
 <para>
-The <projectname>City3D</projectname> project implements a 3 dimensional
-visualization of a <projectname>Traffic</projectname> map file and adds some additional functionaliy.
+The <projectname>City_Time</projectname> project implements a 3 dimensional
+visualization of a <projectname>Traffic</projectname> map file and adds time functionality.
 </para>
 
 <para>
@@ -26,39 +26,27 @@ This document is structured as follows:
 			</para>
 		</listitem>
 		<listitem>
-			<link url="constants.html">Shared constants</link>
-			<para>
-				Description of class <classname>SHARED_CONSTANTS</classname>.
-			</para>
-		</listitem>
-		<listitem>
 			<link url="widgets.html">Widgets</link>
 			<para>
 				Description of the classes that are responsible for the user interface.
 			</para>
 		</listitem>
 		<listitem>
-			<link url="buildings.html">Buildings</link>
+			<link url="travelers.html">Travelers</link>
 			<para>
-				How are the buildings created?
+				How are the travelers created?
 			</para>
 		</listitem>
 		<listitem>
-			<link url="factories.html">Factories</link>
+			<link url="time.html">Time</link>
 			<para>
-				Explanation of the buildings factory and the line factory. 
-			</para>
-		</listitem>
-		<listitem>
-			<link url="utilities.html">Utilities</link>
-			<para>
-				Utilities for drawing 3D objects.
+				How does the time work?
 			</para>
 		</listitem>
 		<listitem>
 			<link url="notes.html">Notes</link>
 			<para>
-				Notes from the developers of City3D.
+				Notes from the developer of City_Time.
 			</para>
 		</listitem>
 	</itemizedlist>

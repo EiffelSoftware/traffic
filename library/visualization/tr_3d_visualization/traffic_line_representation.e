@@ -56,7 +56,7 @@ feature -- Initialization
 feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 
 	draw is
-			-- draw all lines
+			-- draw all lines.
 			local
 				i, j: INTEGER
 				actual_line_objects: ARRAY[EM_3D_OBJECT]
@@ -88,7 +88,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 		
 		
 	draw_shortest_path is
-			-- draw the shortest line if it exists
+			-- draw the shortest line if it exists.
 			do
 				from
 					shortest_line.start
@@ -101,7 +101,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			end
 			
 	remove_shortest_path is
-			-- remove the shortest path from the map
+			-- remove the shortest path from the map.
 			do
 				shortest_line.wipe_out
 			ensure
@@ -393,13 +393,12 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Collision detection
 feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 
 	add_lines(map: TRAFFIC_MAP) is
-			-- add all lines from the map to the lines array
+			-- add all lines from the map to the lines array.
 			require
 				map_valid: map /= Void
 			local
 				x_coord, z_coord: DOUBLE
 				i, j: INTEGER
-	--			all_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 				all_sections_of_one_line: TRAFFIC_LINE -- lines are at beginning and end of linesections
 				a_line: EM_3D_OBJECT
 				collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
@@ -562,7 +561,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			
 
 	add_shortest_line(a_line: TRAFFIC_LINE) is
-		-- add one line to the map, e.g. the shortest path line
+		-- add one line to the map, e.g. the shortest path line.
 		require
 			a_line_valid: a_line /= Void
 		local
@@ -615,7 +614,7 @@ feature{NONE} -- Decision attributes
 feature -- Attributes Setting
 
 	highlight_single_line(a_line: TRAFFIC_LINE) is	
-		-- Has the line as a key and the corresponding line segmants as em_3d_object 
+		-- Has the line as a key and the corresponding line segmants as em_3d_object. 
 		require
 			a_line_valid: a_line /= Void
 		local 
@@ -713,7 +712,7 @@ feature -- Attributes Setting
 	
 	
 	set_highlighted(b: BOOLEAN) is
-			-- set the is_highlighted variable
+			-- set the is_highlighted variable.
 		do
 			is_highlighted := b
 			if b then
@@ -739,7 +738,7 @@ feature{NONE} -- Attributes - Implementation
 			-- Traffic line provides information about points and segments.
 	
 	line_color: GL_VECTOR_3D[DOUBLE]
-			-- Vector of RGB values for the line color
+			-- Vector of RGB values for the line color.
 			
 	object_width: DOUBLE is 2.0
 			-- The size of the bounding box in x direction of created objects.
@@ -751,16 +750,16 @@ feature{NONE} -- Attributes - Implementation
 			-- The size of the bounding box in z direction of created objects.
 				
 	line_objects: HASH_TABLE[ARRAY[EM_3D_OBJECT], TRAFFIC_LINE]
-		--  Container for all drawable lines, separated by line
+		--  Container for all drawable lines, separated by line.
 	
 	shortest_line: ARRAYED_LIST[EM_3D_OBJECT]
-		-- Container for shortest path line
+		-- Container for shortest path line.
 	
 	line_factory: TRAFFIC_LINE_FACTORY
-		-- factory for lines	
+		-- factory for lines.	
 		
 	centre: GL_VECTOR_3D[DOUBLE]
-		-- Centre of the city
+		-- Centre of the city.
 		
 	is_highlighted: BOOLEAN
 		-- are the lines highlighted

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0"?>
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/developer/utilities">
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="citytime/developer/utilities">
 <chapterinfo>
 	<copyright>
 		<year>2005</year>
@@ -9,10 +9,10 @@
 	<date>$Date$</date>
 </chapterinfo>
 
-<title>Utilities</title>
-<section id="gl_vector">
+<title>Time</title>
+<section id="tr_time">
 	<para/>
-	<title>GL_VECTOR</title>
+	<title>TRAFFIC_TIME</title>
     <para>
 	</para>
 	<para>

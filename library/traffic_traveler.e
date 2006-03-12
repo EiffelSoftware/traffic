@@ -31,13 +31,14 @@ feature -- Initialization
 			create origin.make (0, 0)
 			create destination.make (0, 0)
 			virtual_speed := 0
+			traffic_type := create {TRAFFIC_TYPE_WALKING}.make
 		end
 
-	make_directed (an_itinerary: ARRAYED_LIST [EM_VECTOR_2D]; an_info: STRING; a_speed: DOUBLE) is
+	make_directed (an_itinerary: ARRAYED_LIST [EM_VECTOR_2D]; a_type: TRAFFIC_TYPE; a_speed: DOUBLE) is
 			-- create an object with defined origin and destination
 			require
 				an_itinerary /= Void
-				an_info /= Void
+				a_type /= Void
 				a_speed >= 0
 			do
 				create polypoints.make (1)
@@ -45,25 +46,24 @@ feature -- Initialization
 				polypoints.start
 				set_coordinates
 				set_angle
-				set_traffic_info (an_info)
+				traffic_type := a_type
 				virtual_speed := a_speed
 			ensure
 				origin /= Void
 				destination /= Void
-				traffic_info.is_equal (an_info)
 			end
 	
-	make_random (a_seed: INTEGER; stops: INTEGER; an_info: STRING) is
+	make_random (a_seed: INTEGER; stops: INTEGER; a_type: TRAFFIC_TYPE) is
 			-- make a traveler who stops at 'stops' random positions
 			require
 				a_seed >= 0
 				stops >= 2
-				an_info /= Void
+				a_type /= Void
 			local 
 				i: INTEGER
 			do
 				create polypoints.make (stops)
-				traffic_info := an_info
+				traffic_type := a_type
 				create random_direction.set_seed(a_seed)
 				random_direction.forth
 				from
@@ -86,14 +86,14 @@ feature -- Initialization
 			end
 		
 	
-	make_random_with_origin (an_origin: EM_VECTOR_2D; a_seed: INTEGER; an_info: STRING) is
+	make_random_with_origin (an_origin: EM_VECTOR_2D; a_seed: INTEGER; a_type: TRAFFIC_TYPE) is
 			-- initalize the passenger for random walk
 		require
 			an_origin /= Void
 			a_seed >= 0
 		do
 			create polypoints.make (1)
-			traffic_info := an_info
+			traffic_type := a_type
 			create random_direction.set_seed(a_seed)
 			give_random_direction
 			polypoints.force (origin)
@@ -111,13 +111,15 @@ feature -- Initialization
 			origin = an_origin
 			destination /= Void
 			speed >= 0
-			traffic_info.is_equal (an_info)
 		end	
 		
 feature -- Attributes
 	
-	traffic_info: STRING
+	traffic_type: TRAFFIC_TYPE
 		-- type of traffic.
+	
+	traffic_info: STRING
+		-- some info for the traveler.
 
 	position: EM_VECTOR_2D
 		-- current position on map.

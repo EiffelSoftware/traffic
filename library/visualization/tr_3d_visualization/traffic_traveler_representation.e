@@ -40,6 +40,7 @@ feature -- Initialization
 				
 			create collision_polygons.make (1)		
 			
+			create traveler_factory.make_with_color (0, 0, 0)
 			
 			create travelers.make
 			traveler_key := 0
@@ -107,16 +108,21 @@ feature{CITY_3D_MAP} -- Implemenation
 					create object_loader.make_with_color (0, 0, 0)
 						-- set the key for the traveler here
 						
-					if a_traveler.traffic_info.is_equal ("passenger") then
+					if a_traveler.traffic_type.name.is_equal ("walking") then
 						object_loader.set_em_color (255, 0, 0)
 						object_loader.load_file ("objects/person2.obj")
-						traveler := object_loader.create_object	
+						traveler_factory.set_em_color (255, 0, 0)
+						traveler_factory.load_file ("objects/person2.obj")
+						traveler := object_loader.create_object
+--						traveler := traveler_factory.create_object							
 						traveler.set_scale (0.2, 0.2, 0.2)
-					elseif a_traveler.traffic_info.is_equal ("tram") then
+					elseif a_traveler.traffic_type.name.is_equal ("tram") then
 						object_loader.set_em_color (0, 0, 255)
 						object_loader.load_file ("objects/tram3.obj")
+--						traveler_factory.set_em_color (0, 0, 255)
+--						traveler_factory.load_file ("objects/tram3.obj")
 						traveler := object_loader.create_object
-						gl_color3d_external (0, 0, 255)
+--						traveler := traveler_factory.create_object
 						traveler.set_scale (0.3, 0.3, 0.3)
 					end	
 					
@@ -144,13 +150,37 @@ feature{CITY_3D_MAP} -- Implemenation
 						travelers.after or has_finished
 					loop
 						traveler ?= travelers.item @ 2
-						if traveler.traffic_info.is_equal ("passenger") then
+						if traveler.traffic_type.name.is_equal ("walking") then
 							travelers.remove
 							has_finished := True
 						end
 						travelers.forth
 					end
 				end
+				
+		remove_specific_traveler (a_traveler: TRAFFIC_TRAVELER) is
+				-- remove a traveler
+				require
+					a_traveler /= Void
+				local
+					found: BOOLEAN
+					traveler: TRAFFIC_TRAVELER
+				do
+					from
+						travelers.start
+					until
+						found = True or travelers.after
+					loop
+						traveler ?= travelers.item @ 2
+						if traveler = a_traveler then
+							travelers.remove
+							map.remove_traveler (a_traveler.index)
+							found := True
+						end
+						travelers.forth
+					end
+				end
+			
 		
 		
 		add_tram_per_line (a_map: TRAFFIC_MAP; number: INTEGER) is	
@@ -209,8 +239,8 @@ feature{NONE} -- Attributes
 	traveler_key: INTEGER
 		-- key for travelers.
 
-	traveler_factory: TRAFFIC_TRAVELER_FACTORY
-		-- factory for places.
+	traveler_factory: TRAFFIC_OBJECT_LOADER
+		-- factory for travelers.
 
 	color: GL_VECTOR_3D[DOUBLE]
 		-- color of the place.

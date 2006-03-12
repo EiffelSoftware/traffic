@@ -53,7 +53,7 @@ feature -- Creation
 				polypoints.forth
 				set_coordinates
 				set_angle
-				set_traffic_info ("tram")
+				traffic_type := create {TRAFFIC_TYPE_TRAM}.make
 				virtual_speed := 0.8
 			end
 		

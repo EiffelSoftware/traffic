@@ -57,6 +57,12 @@
 			<listitem>
 				<link url="#traffic_type_factory">TRAFFIC_TYPE_FACTORY</link>
 			</listitem>
+			<listitem>
+				<link url="#traffic_traveler">TRAFFIC_TRAVELER</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_line_traveler">TRAFFIC_LINE_TRAVELER</link>
+			</listitem>
 		</itemizedlist>
     </section>
     <section id="traffic_color">

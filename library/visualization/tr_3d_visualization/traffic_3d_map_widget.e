@@ -198,7 +198,7 @@ feature -- Drawing
 feature{EM_3D_OBJECT} -- Collision
 	
 	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE] is
-			-- return all the collidables 
+			-- return all the collidables. 
 			local
 				all_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 			do
@@ -337,7 +337,7 @@ feature -- Traffic map loading
 			-- Has parsing already taken place?
 			
 	map: TRAFFIC_MAP
-			-- Parsed map
+			-- Parsed map.
 			
 	number_of_buildings: INTEGER
 			-- How many buildings should be displayed?
@@ -431,15 +431,11 @@ feature -- Options
 		end
 	
 	add_buildings_along_lines is	
-			--  adds buildings along lines to map
+			--  adds buildings along lines to map.
 		do
 			traffic_buildings.add_along_lines
 		end
 		
-	
-		
-	
-	
 	sun_shown: BOOLEAN
 			-- Should sun be displayed?
 			
@@ -492,47 +488,47 @@ feature -- Mousevents
 		end
 	
 	building_left_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING]]
-			-- event for left click on building
+			-- event for left click on building.
 	
 	building_right_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING]]
-			-- event for right click on building
+			-- event for right click on building.
 	
 	building_middle_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING]]
-			-- event for middle click on building
+			-- event for middle click on building.
 
 	
 
 feature {NONE} -- Attributes
 
 	sun_angle: DOUBLE
-			-- Angle of sun rotation
+			-- Angle of sun rotation.
 			
 	focus: DOUBLE
 			-- Used to zoom in or out.
 			
 	x_coord: DOUBLE
-			-- X coordinate of the viewer
+			-- X coordinate of the viewer.
 			
 	y_coord: DOUBLE
-			-- Y coordinate of the viewer
+			-- Y coordinate of the viewer.
 			
 	z_coord: DOUBLE
-			-- Z coordinate of the viewer
+			-- Z coordinate of the viewer.
 			
 	x_rotation: DOUBLE
-			-- Rotation around the x axis
+			-- Rotation around the x axis.
 			
 	y_rotation: DOUBLE
-			-- Rotation around the y axis
+			-- Rotation around the y axis.
 			
 	x_translation: DOUBLE
-			-- Translation of the map's origin in x direction
+			-- Translation of the map's origin in x direction.
 			
 	y_translation: DOUBLE
-			-- Translation of the map's origin in y direction
+			-- Translation of the map's origin in y direction.
 			
 	highlighting_delta: DOUBLE
-			-- Height difference between highlighted and normal line representation
+			-- Height difference between highlighted and normal line representation.
 			
 			
 feature {NONE} -- Implementation
@@ -540,22 +536,22 @@ feature {NONE} -- Implementation
 		-- container for the lines
 		
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-		-- Collision polygons to check for collisions with traffic lines
+		-- Collision polygons to check for collisions with traffic lines.
 
 	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-		-- Collision polygons to check for collisions with traffic places
+		-- Collision polygons to check for collisions with traffic places.
 		
 	traffic_places: TRAFFIC_PLACE_REPRESENTATION
-		-- container for the places
+		-- container for the places.
 		
 	traffic_buildings: TRAFFIC_BUILDING_REPRESENTATION
-		-- container for the buildings
+		-- container for the buildings.
 			
 	sun_light: GL_LIGHT
-			-- Light that imitates the sun
-			
+			-- Light that imitates the sun.
+						
 	constant_light: GL_LIGHT
-			-- Constant white light from one direction
+			-- Constant white light from one direction.
 
 invariant
 	number_of_buildings_valid: number_of_buildings >= 0

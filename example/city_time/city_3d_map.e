@@ -335,7 +335,7 @@ feature	-- Travelere objects
 					until
 						i >= number - number_of_passengers
 					loop
-						create traveler.make_random (traffic_time.time.ticks, 7, "passenger")
+						create traveler.make_random (traffic_time.time.ticks, 7, create {TRAFFIC_TYPE_WALKING}.make)
 						traffic_traveler.add_traveler(traveler, map)				
 						i := i + 1
 					end
@@ -376,34 +376,16 @@ feature
 				temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
 
 
-				create traveler.make_directed (temp_list, "passenger", 0.5)
---				traveler.set_reiterate (True)
+				create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
+				traveler.set_reiterate (True)
 				traffic_traveler.add_traveler (traveler, map)
 
---				create traveler.make_random (traffic_time.time.ticks, 5, "passenger")
---				traffic_traveler.add_traveler(traveler, map)
---				
---				create traveler.make_random (traffic_time.time.ticks, 10, "passenger")
---				traffic_traveler.add_traveler(traveler, map)
---				
---				create traveler.make_random (traffic_time.time.ticks, 6, "passenger")
---				traffic_traveler.add_traveler(traveler, map)
---
---				create traveler.make_random (traffic_time.time.ticks, 2, "passenger")
---				traffic_traveler.add_traveler(traveler, map)
---
---				create traveler.make_random (traffic_time.time.ticks, 20, "passenger")
---				traffic_traveler.add_traveler(traveler, map)
---				
---				create traveler.make_random (traffic_time.time.ticks, 3, "passenger")
---				traffic_traveler.add_traveler(traveler, map)
+				temp_list.wipe_out
+				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
+				temp_list.force (create {EM_VECTOR_2D}.make (1200, 40))
 
---				temp_list.wipe_out
---				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
---				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
---
---				create traveler.make_directed (temp_list, "passenger", 0.5)
---				traffic_traveler.add_traveler (traveler, map)
+				create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
+				traffic_traveler.add_traveler (traveler, map)
 				
 				
 				traffic_traveler.add_tram_per_line (map, 2)
