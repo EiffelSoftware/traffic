@@ -18,7 +18,7 @@ inherit
 		export {NONE} all end
 		
 create
-	make_directed, make_random, make_random_with_origin
+	make, make_directed, make_random, make_random_with_origin
 	
 feature -- Initialization
 
@@ -329,7 +329,7 @@ feature -- Attributes settings
 		
 	
 	set_traffic_info (a_type: STRING) is	
-			-- set the traffic info
+			-- set the traffic info.
 			require
 				a_type /= Void
 			do
@@ -339,7 +339,7 @@ feature -- Attributes settings
 			end
 		
 	set_speed (a_speed: DOUBLE) is
-			-- set the speed to 'a_speed'
+			-- set the speed to 'a_speed'.
 			require
 				a_speed >= 0
 			do
@@ -349,7 +349,7 @@ feature -- Attributes settings
 			end
 					
 	set_time (a_time: DOUBLE) is
-			-- set time to 'a_time'
+			-- set time to 'a_time'.
 			require
 				a_time > 0
 			do
@@ -359,7 +359,7 @@ feature -- Attributes settings
 			end
 		
 	set_reiterate (a_boolean: BOOLEAN) is
-			-- set the traveler reiterating his itinerary
+			-- set the traveler reiterating his itinerary.
 			do
 				is_reiterating := a_boolean
 			ensure

@@ -22,9 +22,7 @@ feature -- Initialization
 	make is
 			-- Creation procedure
 		do
-			Precursor
-
-			create traffic_time.make_day (10)	
+			Precursor	
 
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
@@ -54,8 +52,6 @@ feature -- Drawing
 			do
 				Precursor
 				
-				
-				traffic_traveler.draw
 							-- Draw marked stations
 				if marked_origin /= Void then
 						traffic_places.highlight_place (marked_origin,0)
@@ -100,8 +96,6 @@ feature -- Time
 				Result := traffic_time.simulated_minutes
 			end
 		
-		
-	traffic_time: TRAFFIC_TIME
 
 feature {NONE} -- Event handling
 
@@ -300,18 +294,11 @@ feature {NONE} -- Event handling
 
 feature -- {CITY_3D_SCENE}	-- Travelere objects
 	
-	traffic_traveler: TRAFFIC_TRAVELER_REPRESENTATION
-	
-	traveler_index: INTEGER
-	
 	adjust_speed is
 			-- adjust the speed by a double.
 			do
 				map.change_traveler_speed (traffic_time.simulated_minutes / 2)
 			end
-	
-	number_of_passengers: INTEGER
-			-- number of passengers on the map.
 	
 	update_passenger_number (number: INTEGER) is	
 			-- update the number of the passengers on the map
@@ -337,7 +324,7 @@ feature -- {CITY_3D_SCENE}	-- Travelere objects
 						i >= number - number_of_passengers
 					loop
 						create traveler.make_random (traffic_time.time.ticks, 7, create {TRAFFIC_TYPE_WALKING}.make)
-						traffic_traveler.add_traveler(traveler, map)				
+						add_traveler (traveler)				
 						i := i + 1
 					end
 				end
@@ -345,7 +332,8 @@ feature -- {CITY_3D_SCENE}	-- Travelere objects
 			end
 		
 	
-feature -- {CITY_3D_SCENE}
+feature
+
 	
 	load_map (filename: STRING) is
 			-- 
@@ -354,21 +342,11 @@ feature -- {CITY_3D_SCENE}
 				temp_list: ARRAYED_LIST [EM_VECTOR_2D]
 			do
 				Precursor (filename)
-
-				create traffic_traveler.make (map, traffic_time)
 				
 				update_passenger_number (0)
 				update_passenger_number (number_of_passengers)
 				
 				create temp_list.make(1)
---				temp_list.force (create {EM_VECTOR_2D}.make (-10, -10))
---				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
---				
---
---				create traveler.make_directed (temp_list, "passenger", 0.2)
---				traffic_traveler.add_traveler (traveler, map)
---
---				temp_list.wipe_out
 
 				temp_list.force (create {EM_VECTOR_2D}.make (-67, -32))
 
@@ -378,14 +356,14 @@ feature -- {CITY_3D_SCENE}
 
 				create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
 				traveler.set_reiterate (True)
-				traffic_traveler.add_traveler (traveler, map)
+				add_traveler (traveler)
 
 				temp_list.wipe_out
 				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
 				temp_list.force (create {EM_VECTOR_2D}.make (1200, 40))
 
 				create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
-				traffic_traveler.add_traveler (traveler, map)
+				add_traveler (traveler)
 				
 				
 				traffic_traveler.add_tram_per_line (map, 2)
@@ -395,6 +373,6 @@ feature -- {CITY_3D_SCENE}
 			end
 		
 invariant
-	traffic_time /= Void
+	
 	
 end -- class CITY_3D_MAP
