@@ -82,17 +82,18 @@ feature -- Drawing
 				gl_rotated_external (y_rotation, 0, 1, 0)
 			end
 
-feature -- places
+feature -- Places
 			
 	marked_origin: TRAFFIC_PLACE
-			-- Currently marked origin
+			-- Currently marked origin.
 			
 	marked_destination: TRAFFIC_PLACE
-			-- Currently marked destination
+			-- Currently marked destination.
 
-feature -- time
+feature -- Time
+
 	simulated_time: INTEGER is
-			-- get the time from traffic time
+			-- get the time from traffic time.
 			require
 				traffic_time /= Void
 			do
@@ -297,7 +298,7 @@ feature {NONE} -- Event handling
 		end
 
 
-feature	-- Travelere objects
+feature -- {CITY_3D_SCENE}	-- Travelere objects
 	
 	traffic_traveler: TRAFFIC_TRAVELER_REPRESENTATION
 	
@@ -344,8 +345,7 @@ feature	-- Travelere objects
 			end
 		
 	
-feature
-
+feature -- {CITY_3D_SCENE}
 	
 	load_map (filename: STRING) is
 			-- 

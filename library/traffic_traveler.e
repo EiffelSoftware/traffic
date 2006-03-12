@@ -18,7 +18,7 @@ inherit
 		export {NONE} all end
 		
 create
-	make, make_directed, make_random, make_random_with_origin
+	make_directed, make_random, make_random_with_origin
 	
 feature -- Initialization
 
@@ -367,7 +367,7 @@ feature -- Attributes settings
 			end
 		
 			
-feature {NONE} -- random
+feature {NONE} -- Random
 
 	give_random_direction is
 			-- give a random destination

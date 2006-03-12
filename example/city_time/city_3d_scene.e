@@ -109,7 +109,7 @@ feature -- Interface
 			toolbar_panel.add_widget (passenger_label)
 			
 			-- passenger slider
-			create passenger_slider.make_from_range_horizontal (0, 1000)
+			create passenger_slider.make_from_range_horizontal (0, 300)
 			passenger_slider.set_position (20, 330)
 			passenger_slider.set_optimal_dimension (120, 20)
 			passenger_slider.resize_to_optimal_dimension
