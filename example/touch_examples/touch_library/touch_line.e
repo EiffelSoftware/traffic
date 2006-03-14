@@ -37,10 +37,7 @@ feature -- Element change
 		
 	highlight_for_5_seconds is 
 		do
-			internal_rep.highlight_single_line(internal_line)
-			
-			internal_rep.un_highlight_single_line(internal_line)
---			internal_rep.highlight_single_line_for_5sec(internal_line)
+			internal_rep.highlight_single_line_for_5sec(internal_line)
 		end
 	
 
