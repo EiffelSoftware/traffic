@@ -121,7 +121,7 @@ feature  -- Example main feature
 --	animation: EM_ANIMATION
 
 feature -- Predefines
-	Louvre: TOUCH_GRAPHICAL_TRAFFIC_PLACE
+--	Louvre: TOUCH_GRAPHICAL_TRAFFIC_PLACE
 	
 	Louvre_Label: EM_LABEL
 	
@@ -130,16 +130,16 @@ feature -- Predefines
 			Result := Paris.get_line("tram 8")  
 		end
 	
-	Passenger: TOUCH_PASSENGER
+--	Passenger: TOUCH_PASSENGER
 
 --	Paris: TRAFFIC_MAP_WIDGET
 	
 	Paris: TOUCH_MAP
 
-	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
-	
-	Route2: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
-	
+--	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
+--	
+--	Route2: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
+--	
 	a_rep: TRAFFIC_LINE_REPRESENTATION
 		
 

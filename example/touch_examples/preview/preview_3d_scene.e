@@ -89,7 +89,7 @@ feature -- Event handling
 
 --			console_textarea.set_text ("time")
 --			map.draw
---			map.set_single_line_highlighted_5sec (Line8)
+--			map.set_single_line_highlighted (Line8)
 --			console_textarea.set_text ("timeout")
 
 	--		map.set_single_line_un_highlighted (Line8)
