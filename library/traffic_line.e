@@ -101,13 +101,6 @@ feature -- Element change
 			color_set: equal(color, a_color)
 		end
 		
---	highlight is
---			-- to highlight the particular line
---		do
---			map.set_single_line_highlighted(name)
---		end
-				
-		
 feature -- Removal
 
 	remove_color is
