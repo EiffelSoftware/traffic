@@ -56,7 +56,7 @@ feature -- Initialisation
 				
 				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
 				create_coord_system
-				
+
 				create traffic_time.make_day (5)
 
 				mouse_clicked_event.subscribe (agent publish_mouse_event (?))
@@ -197,8 +197,6 @@ feature -- Drawing
 				
 				traffic_traveler.draw
 			end
-			
-			
 	end
 
 feature{EM_3D_OBJECT} -- Collision
@@ -330,7 +328,6 @@ feature -- Traffic map loading
 			create traffic_traveler.make (map, traffic_time)
 --			traffic_traveler_polygons := traffic_traveler.collision_polygons
 			
-			
 			traffic_buildings.set_map(map)
 			traffic_buildings.set_collision_polygons(collision_polygons)
 			marked_station_changed := True
@@ -353,7 +350,7 @@ feature -- Traffic map loading
 			
 	marked_station_changed: BOOLEAN
 			-- Has the marked station changed?
-			
+	
 	traffic_time: TRAFFIC_TIME
 			-- Time of the system.
 	
@@ -406,7 +403,6 @@ feature -- Options
 			number_of_buildings = n
 		end
 		
-		
 	set_buildings_transparent (b: BOOLEAN) is
 			-- Set `buildings_transparent'.
 		do
@@ -416,10 +412,29 @@ feature -- Options
 		end
 		
 	set_lines_highlighted (b: BOOLEAN) is
-			-- If `b' then traffic lines are highlighted.
+			-- If `b' then all traffic lines are highlighted.
 		do
-			traffic_lines.set_highlighted (b)
+			traffic_lines.highlight_all_lines (b)
 
+		end
+		
+	set_single_line_highlighted(a_line: TRAFFIC_LINE) is
+			-- a_line is highlighted
+		do
+			traffic_lines.highlight_single_line (a_line)
+		end
+		
+	set_single_line_un_highlighted(a_line: TRAFFIC_LINE) is
+			-- a_line is unhighlighted
+		do
+			traffic_lines.un_highlight_single_line (a_line)
+		end
+		
+	
+	set_single_line_highlighted_5sec(a_line: TRAFFIC_LINE) is
+			-- a_line is highlighted
+		do
+			traffic_lines.highlight_single_line_for_5sec (a_line)
 		end
 	
 	set_show_shortest_path (b: BOOLEAN) is
@@ -442,7 +457,7 @@ feature -- Options
 		do
 			traffic_buildings.add (a_building)
 		end
-	
+		
 	add_buildings_along_lines is	
 			--  adds buildings along lines to map.
 		do
@@ -454,8 +469,7 @@ feature -- Options
 			do
 				traffic_traveler.add_traveler (a_traveler, map)
 			end
-		
-		
+	
 	sun_shown: BOOLEAN
 			-- Should sun be displayed?
 			
@@ -571,9 +585,6 @@ feature {NONE} -- Implementation
 	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic places.
 		
---	traffic_traveler_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
---		-- Collision polygons to check for collisions with traffic places.
-
 	traffic_places: TRAFFIC_PLACE_REPRESENTATION
 		-- container for the places.
 		
@@ -582,7 +593,7 @@ feature {NONE} -- Implementation
 			
 	sun_light: GL_LIGHT
 			-- Light that imitates the sun.
-						
+			
 	constant_light: GL_LIGHT
 			-- Constant white light from one direction.
 

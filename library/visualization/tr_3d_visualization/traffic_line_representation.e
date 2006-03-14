@@ -648,23 +648,25 @@ feature -- Attributes Setting
 		
 	
 	highlight_single_line_for_5sec(a_line: TRAFFIC_LINE) is	
-		-- Highlights 'a_line' for 5 seconds and resets it. 
+		-- Highlights 'a_line' for 5 seconds and reset it. 
+		local
+--			delay_time_3:EM_DELAYED_PROCEDURES
 		do 
 			
 			highlight_single_line(a_line)
 			
 			draw
-	--		create delay_time.make
+--			create delay_time.make
 --			wait_time := 5000
---			--delay_time.make
-			create delay_time_2.make_wait
-			delay_time_2.delay_and_process (5000)
-			
-			
-			--		delay_time.delay(5000)
+--			delay_time.delay(wait_time)
 
+--			create delay_time_2.make_wait
+--			delay_time_2.delay_and_process (5000)
 
-			un_highlight_single_line(a_line)
+--			create delay_time_3.make
+--			delay_time_3.add_timed_procedure (un_highlight_single_line(a_line), 5000)
+			
+	--		un_highlight_single_line(a_line)
 		end	
 		
 		
@@ -738,7 +740,7 @@ feature{NONE} -- Attributes - Implementation
 			-- Traffic line provides information about points and segments.
 	
 	line_color: GL_VECTOR_3D[DOUBLE]
-			-- Vector of RGB values for the line color.
+			-- Vector of RGB values for the line color
 			
 	object_width: DOUBLE is 2.0
 			-- The size of the bounding box in x direction of created objects.
@@ -750,16 +752,16 @@ feature{NONE} -- Attributes - Implementation
 			-- The size of the bounding box in z direction of created objects.
 				
 	line_objects: HASH_TABLE[ARRAY[EM_3D_OBJECT], TRAFFIC_LINE]
-		--  Container for all drawable lines, separated by line.
+		--  Container for all drawable lines, separated by line
 	
 	shortest_line: ARRAYED_LIST[EM_3D_OBJECT]
-		-- Container for shortest path line.
+		-- Container for shortest path line
 	
 	line_factory: TRAFFIC_LINE_FACTORY
-		-- factory for lines.	
+		-- factory for lines	
 		
 	centre: GL_VECTOR_3D[DOUBLE]
-		-- Centre of the city.
+		-- Centre of the city
 		
 	is_highlighted: BOOLEAN
 		-- are the lines highlighted
