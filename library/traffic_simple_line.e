@@ -56,6 +56,35 @@ feature {NONE} -- Initialization
 		end
 		
 feature -- Access
+
+	one_end: TRAFFIC_PLACE is
+			-- One end of the line
+		do
+			if start_place /= Void then
+				Result:= start_place
+			else
+				if places_one_direction.count > 0  then
+					Result := places_one_direction.first
+				else
+					Result := Void
+				end				
+			end
+		end
+		
+	other_end: TRAFFIC_PLACE is
+			-- Other end of the line
+		do
+			if start_place /= Void then
+				Result:= start_place
+			else
+				if places_one_direction.count > 0  then
+					Result := places_one_direction.last
+				else
+					Result := Void
+				end				
+			end
+		end	
+		
 	start_to_terminal (a_terminal: TRAFFIC_PLACE): TRAFFIC_PLACE is
 			-- The start place to existing terminal `a_terminal'.
 		do
@@ -65,8 +94,94 @@ feature -- Access
 				Result := terminal_1
 			end
 		end
+
+	has (a_place: TRAFFIC_PLACE): BOOLEAN is
+			-- Does line include `a_line_section'?
+		do
+			Result := places_one_direction.has (a_place)	
+		end
+
+	i_th (i: INTEGER): TRAFFIC_PLACE is
+			-- Place at `i'-th position
+		require
+			i_correct_index: i >= 1 and then i <= count
+		do
+			if start_place /= Void then
+				Result := start_place
+			else
+				Result := places_one_direction.i_th (i)			
+			end
+		ensure
+			result_not_void: Result /= Void
+		end		
+
+	item: TRAFFIC_PLACE is
+			-- Current place
+		do
+			Result := places_one_direction.item			
+		end		
+				
+feature -- Status report
+
+	after: BOOLEAN is
+			-- Is there no valid cursor position to the right of cursor?
+		do
+			Result := places_one_direction.after
+		end
 		
+	before: BOOLEAN is
+			-- Is there no valid cursor position to the left of cursor?
+		do
+			Result := places_one_direction.before
+		end
+
+	off: BOOLEAN is
+			-- Is there no current item?
+		do
+			Result := places_one_direction.off
+		end
+		
+feature -- Measurement
+
+	count: INTEGER is
+			-- Number of places
+		do
+			if start_place /= Void then
+				Result := 1
+			else
+				Result := places_one_direction.count			
+			end
+		end
+		
+feature -- Cursor movement
+
+	forth is
+			-- Move cursor to next position.
+		do
+			places_one_direction.forth
+		end
+		
+	back is
+			-- Move to previous item.
+		do
+			places_one_direction.back
+		end
+
+	start is
+			-- Move cursor to first position.
+		do
+			places_one_direction.start
+		end
+		
+	finish is
+			-- Move cursor to last position.
+			-- (Go before if empty)
+		do
+			places_one_direction.finish
+		end
+
 feature -- Basic operations
+
 	extend (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Add `a_line_section' at beginning or end of existing direction(s).
 		local
@@ -132,6 +247,64 @@ feature -- Basic operations
 						end
 					end
 				end
+			end
+		end
+
+	remove_all_sections is
+			-- Remove all line sections but keep the first place
+		do
+			from
+				start_line
+			until
+				off_line
+			loop
+				map.remove_line_section (item_line)
+				forth_line
+			end
+			
+			wipe_out_line
+			
+			if places_one_direction.count > 0 then
+				start_place := places_one_direction.first
+
+				--remove all places		
+				places_one_direction.wipe_out
+				places_other_direction.wipe_out
+
+				
+				terminal_1 := Void
+				terminal_2 := Void
+				
+				start_other_direction := Void
+			end
+		end
+		
+	extend_place (a_place: TRAFFIC_PLACE) is
+			-- Extend the simple line by a place.
+			-- Line sections in both directions are added to the line if there
+			-- is at least one place in the line
+		require
+			a_place_not_void: a_place /= Void
+			a_place_not_in_places_of_line: not has (a_place)
+		local
+			line_section: TRAFFIC_LINE_SECTION
+			origin: TRAFFIC_PLACE
+		do
+			if places_one_direction.count = 0 and then start_place = Void then
+				start_place := a_place
+			else
+				if places_one_direction.count = 0 then
+					-- No line_section inserted yet
+					origin := start_place
+					start_place := Void
+				else
+					origin := places_one_direction.last
+				end
+
+				create line_section.make (origin, a_place, type, Void)
+				map.add_line_section (line_section) 
+
+				extend (line_section)								
 			end
 		end
 
@@ -210,166 +383,6 @@ feature {NONE} -- Implementation
 			places_other_direction_set: places_other_direction.has (a_line_section.destination)
 		end	
 		
-feature -- Cursor Queries
-	has (a_place: TRAFFIC_PLACE): BOOLEAN is
-			--
-		do
-			Result := places_one_direction.has (a_place)	
-		end
-		
-	after: BOOLEAN is
-		do
-			Result := places_one_direction.after
-		end
-		
-	off: BOOLEAN is
-		do
-			Result := places_one_direction.off
-		end
-		
-	before: BOOLEAN is
-		do
-			Result := places_one_direction.before
-		end
-
-	count: INTEGER is
-		do
-			if start_place /= Void then
-				Result := 1
-			else
-				Result := places_one_direction.count			
-			end
-		end
-		
-	item: TRAFFIC_PLACE is
-		do
-			Result := places_one_direction.item			
-		end
-		
-
-	i_th (i: INTEGER): TRAFFIC_PLACE is
-		require
-			i_correct_index: i >= 1 and then i <= count
-		do
-			if start_place /= Void then
-				Result := start_place
-			else
-				Result := places_one_direction.i_th (i)			
-			end
-		ensure
-			result_not_void: Result /= Void
-		end		
-
-feature -- Cursor Commands
-	forth is
-		do
-			places_one_direction.forth
-		end
-		
-	back is
-		do
-			places_one_direction.back
-		end
-
-	start is
-		do
-			places_one_direction.start
-		end
-		
-	finish is
-		do
-			places_one_direction.finish
-		end
-
-
-feature -- Simple Line Queries
-	one_end: TRAFFIC_PLACE is
-			-- One end of the line
-		do
-			if start_place /= Void then
-				Result:= start_place
-			else
-				if places_one_direction.count > 0  then
-					Result := places_one_direction.first
-				else
-					Result := Void
-				end				
-			end
-		end
-		
-	other_end: TRAFFIC_PLACE is
-			-- Other end of the line
-		do
-			if start_place /= Void then
-				Result:= start_place
-			else
-				if places_one_direction.count > 0  then
-					Result := places_one_direction.last
-				else
-					Result := Void
-				end				
-			end
-		end	
-		
-feature -- Simple Line Commands
-	remove_all_sections is
-			-- Remove all line sections but keep the first place
-		do
-			from
-				start_line
-			until
-				off_line
-			loop
-				map.remove_line_section (item_line)
-				forth_line
-			end
-			
-			wipe_out_line
-			
-			if places_one_direction.count > 0 then
-				start_place := places_one_direction.first
-
-				--remove all places		
-				places_one_direction.wipe_out
-				places_other_direction.wipe_out
-
-				
-				terminal_1 := Void
-				terminal_2 := Void
-				
-				start_other_direction := Void
-			end
-		end
-		
-	extend_place (a_place: TRAFFIC_PLACE) is
-			-- Extend the simple line by a place.
-			-- Line sections in both directions are added to the line if there
-			-- is at least one place in the line
-		require
-			a_place_not_void: a_place /= Void
-			a_place_not_in_places_of_line: not has (a_place)
-		local
-			line_section: TRAFFIC_LINE_SECTION
-			origin: TRAFFIC_PLACE
-		do
-			if places_one_direction.count = 0 and then start_place = Void then
-				start_place := a_place
-			else
-				if places_one_direction.count = 0 then
-					-- No line_section inserted yet
-					origin := start_place
-					start_place := Void
-				else
-					origin := places_one_direction.last
-				end
-
-				create line_section.make (origin, a_place, type, Void)
-				map.add_line_section (line_section) 
-
-				extend (line_section)								
-			end
-		end
-
 invariant
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
