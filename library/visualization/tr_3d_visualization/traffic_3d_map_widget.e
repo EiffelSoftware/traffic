@@ -69,7 +69,30 @@ feature -- Initialisation
 				sun_created: sun_light /= Void
 				constant_light_created: constant_light /= Void
 			end
+
+feature -- Status report
+
+	is_map_hidden: BOOLEAN
+			-- Is the map currently hidden?
 			
+feature -- Status setting
+
+	enable_map_hidden is			
+			-- Set `is_map_hidden' to True.
+		do
+			is_map_hidden := True
+		ensure
+			map_hidden: is_map_hidden
+		end
+
+	disable_map_hidden is			
+			-- Set `is_map_hidden' to False.
+		do
+			is_map_hidden := False
+		ensure
+			map_not_hidden: not is_map_hidden
+		end
+		
 feature -- Drawing
 
 	prepare_drawing is
@@ -182,7 +205,7 @@ feature -- Drawing
 			end
 			
 			-- Display buildings and lines and places
-			if is_map_loaded then
+			if is_map_loaded and then not is_map_hidden then
 				if buildings_shown then
 					if buildings_transparent then
 						gl_polygon_mode_external (em_gl_front_and_back, em_gl_line)
