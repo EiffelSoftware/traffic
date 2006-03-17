@@ -69,7 +69,7 @@ feature -- Access
 		
 		do  		
 			-- Create Paris
-			create Paris.make (a_runtime, "./map/paris.xml")
+			create Paris.make (a_runtime, "../map/paris.xml")
 
 			-- Creation of 'Line8' object as once 
 
@@ -134,7 +134,7 @@ feature -- Predefines
 
 --	Paris: TRAFFIC_MAP_WIDGET
 	
-	Paris: TOUCH_MAP
+	Paris: TOUCH_MAP 		
 
 --	Route1: TOUCH_GRAPHICAL_TRAFFIC_ROUTE
 --	
