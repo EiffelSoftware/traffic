@@ -7,36 +7,271 @@ indexing
 class
 	TOUCH_MAP
 
+inherit
+	
+	ANY
+		redefine out end
+		
 create make
 
 feature -- Initialisation
-	make(a_widget: TOUCH_3D_MAP_WIDGET; map_file_name: STRING) is
+
+	make(a_widget: TOUCH_3D_MAP_WIDGET) is
 		do
 			internal_map_widget := a_widget
-			internal_map_file_name := map_file_name
 		ensure
 			internal_map_widget /= Void
-			internal_map_file_name /=Void
+		end
+
+feature -- Status report
+
+	has_place (a_name: STRING): BOOLEAN is
+			-- Has traffic map place called `a_name'?
+		require
+			a_name_exists: a_name /= Void
+			a_name_not_empty: not a_name.is_empty
+		do
+			Result := internal_map.has_place (a_name)
 		end
 		
-feature -- Access
+	has_line_section_between (a_origin_name, a_destination_name: STRING): BOOLEAN is
+			-- Has traffic map line section between places with given names?
+		require
+			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
+			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
+		do
+			Result := internal_map.has_line_section_between (a_origin_name, a_destination_name)
+		end
 
-feature -- 
+	has_line_section (a_origin_name, a_destination_name: STRING; a_traffic_type: TRAFFIC_TYPE; a_line: TRAFFIC_LINE): BOOLEAN is
+			-- Has traffic map line section `a_line_section'?
+		require
+			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
+			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
+			a_traffic_type_exists: a_traffic_type /= Void
+		do
+			Result := internal_map.has_line_section (a_origin_name, a_destination_name, a_traffic_type, a_line)
+		end
+
+	has_line (a_name: STRING): BOOLEAN is
+			-- Has traffic map line `a_name'?
+		require
+			a_name_exists: a_name /= Void
+			a_name_not_empty: not a_name.is_empty
+		do
+			Result := internal_map.has_line (a_name)
+		end
+		
+feature -- Element change
+
+	set_description (a_description: STRING) is
+			-- Set map description.
+		do
+			internal_map.set_description (a_description)
+		ensure
+			description_set: description = a_description
+		end		
+
+	add_place (a_place: TRAFFIC_PLACE) is
+			-- Add place `a_place' to map.
+		require
+			a_place_exists: a_place /= Void
+			no_place_with_same_name_in_map: not has_place (a_place.name)
+		do
+			internal_map.add_place (a_place)
+		ensure
+			a_place_in_map: has_place (a_place.name)
+		end
+		
+	add_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
+			-- Add line section `a_line_section' to map.
+		require
+			a_line_section_exists: a_line_section /= Void
+			a_line_section_not_in_map: not has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
+		do
+			internal_map.add_line_section (a_line_section)
+		ensure
+			a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
+		end
+		
+	add_line (a_line: TRAFFIC_LINE) is
+			-- Add line `a_line' to map.
+		require
+			a_line_exists: a_line /= Void
+			no_line_with_same_name_in_map: not has_line (a_line.name)
+		do
+			internal_map.add_line (a_line)
+		ensure
+			a_line_in_map: has_line (a_line.name)
+		end
+		
+	add_building (a_building: TRAFFIC_BUILDING) is
+			-- Add building `a_building' to map.
+		require
+			a_building_exists: a_building /= Void
+		do
+			internal_map.add_building (a_building)
+		end
+		
+	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
+			-- Add traveler 'a_traveler' to map.
+			require
+				a_traveler_exists: a_traveler /= Void
+			do
+				internal_map.add_traveler (a_traveler)
+			end	
+	
+	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
+			-- Remove line_section `a_line_section' from map (bad implementation)
+			require
+				has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
+			do
+				internal_map.remove_line_section (a_line_section)
+			end
+	
+	remove_traveler (index: INTEGER) is
+			-- Remove traveler at position index
+			require
+				index_valid: index >= 0
+			do
+				internal_map.remove_traveler (index)
+			end
+	
+	change_traveler_speed (divisor: DOUBLE) is	
+			-- Divide the speed of each traveler by divisor
+			require
+				divisor >= 2
+			do
+				internal_map.change_traveler_speed (divisor)
+			end
+	
+	increment_index is
+			-- Increment the traveler index
+		do
+			internal_map.increment_index
+		end
+				
+feature -- Access
+	
+	traveler_index: INTEGER is
+			-- Index of travelers
+		do
+			Result := internal_map.traveler_index
+		end
+			
+	name: STRING is
+			-- Name of region this map represents.
+		do
+			Result := internal_map.name
+		end
+			
+	description: STRING is
+			-- Textual description.
+		do
+			Result := internal_map.description
+		end
+			
+	place (a_name: STRING): TRAFFIC_PLACE is
+			-- Place named `a_name'.
+		require
+			a_name_exists: a_name /= Void
+			place_in_map: has_place (a_name)
+		do
+			Result := internal_map.place (a_name)
+		ensure
+			result_exists: Result /= Void
+		end
+		
+	places: HASH_TABLE [TRAFFIC_PLACE, STRING] is
+			-- All places in map.
+		do
+			Result := internal_map.places
+		end
+		
+	line (a_name: STRING): TOUCH_LINE is
+			-- Line named `a_name'
+		require
+			a_name_exists: a_name /= Void
+			line_in_map: has_line (a_name)
+		do
+			create Result.make_with_line_and_representation(internal_map.line (a_name), internal_map_widget.traffic_lines)
+		end
+		
+	simple_line (a_name: STRING): TOUCH_SIMPLE_LINE is
+			-- Simple line named `a_name'
+		require
+			a_name_exists: a_name /= Void
+			line_in_map: has_line (a_name)
+		local
+			a_line: TRAFFIC_SIMPLE_LINE
+		do		
+			a_line ?= internal_map.line (a_name)
+			if a_line /= Void then
+				create Result.make_with_line_and_representation(a_line, internal_map_widget.traffic_lines)			
+			end
+		end			
+		
+	line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION] is
+			-- All line sections in map
+		do
+			Result := internal_map.line_sections
+		end
+		
+	lines: HASH_TABLE [TRAFFIC_LINE, STRING] is
+			-- All lines in map.
+		do
+			Result := internal_map.lines
+		end
+		
+	buildings: LINKED_LIST [TRAFFIC_BUILDING] is
+			-- All buildings on map.
+		do
+			Result := internal_map.buildings
+		end
+		
+	travelers: HASH_TABLE [TRAFFIC_TRAVELER, INTEGER] is
+			-- All travelers on the map
+		do
+			Result := internal_map.travelers
+		end
+		
+	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_LINE_SECTION] is
+			-- Line sections with origin or destination place `a_name'.
+		require
+			place_in_map: has_place (a_name)
+		do
+			Result := internal_map.line_sections_of_place (a_name)
+		end
+
+	place_events: TRAFFIC_ITEM_EVENTS  [TRAFFIC_PLACE] is
+			-- Event channel for events concerning the places
+		do
+			Result := internal_map.place_events
+		end
+	
+	line_section_events: TRAFFIC_ITEM_EVENTS [TRAFFIC_LINE_SECTION] is
+			-- Event channel for events concerning the line sections
+		do
+			Result := internal_map.line_section_events
+		end
+
+feature -- Basic operation
+
+	out: STRING is
+			-- Textual representation.
+		do
+			Result := internal_map.out
+		end
+			
+feature -- Basic operations
 
 	display is
 		do
-			internal_map_widget.load_map(internal_map_file_name)			
+			internal_map_widget.disable_map_hidden
 		end
 		
-	get_line(a_line: STRING):TOUCH_LINE is
-		require
-			a_line /= Void
---			internal_map_widget /= Void		
-		do		
-			create Result.make_with_line_and_representation(internal_map_widget.map.line (a_line), internal_map_widget.traffic_lines)
-		end
-
 feature {NONE} -- Implementation
+
 	internal_map : TRAFFIC_MAP is 
 		do
 			Result := internal_map_widget.map
@@ -44,7 +279,13 @@ feature {NONE} -- Implementation
 		
 	internal_map_widget: TOUCH_3D_MAP_WIDGET
 	
-	internal_map_file_name: STRING
+invariant
 
+	name_not_void: name /= Void -- Map name exists.
+	name_not_empty: not name.is_empty -- Map name not empty.
+	places_not_void: places /= Void -- Places exist.
+	lines_not_void: lines /= Void -- Lines exist.
+	line_sections_not_void: line_sections /= Void -- Line sections exist
+	travelers_not_void: travelers /= Void -- Travelers exist
 
 end -- class TOUCH_MAP

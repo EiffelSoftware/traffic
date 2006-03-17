@@ -73,6 +73,7 @@
 	<target name="do_all">
 		<!--geant file="build.eant" target="${target}" dir="simple"/-->
 		<geant file="build.eant" target="${target}" dir="preview"/>
+		<geant file="build.eant" target="${target}" dir="queries"/>
 		<!--geant file="build.eant" target="${target}" dir="touch"/-->
 	</target>
 

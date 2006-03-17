@@ -90,13 +90,13 @@ feature -- Interface
 			console_panel.set_position((window_width*0.75).rounded, (window_height*0.75).rounded)	
 			add_component(console_panel)
 						
-			create console_textarea.make_empty
-			console_textarea.set_position(8, 12)
-			console_textarea.set_background_color (create {EM_COLOR}.make_with_rgb(200, 200, 200))
-			console_textarea.set_dimension ((window_width*0.25).rounded - 16, (window_height*0.25).rounded - 20)
-			console_textarea.disable
+			create console.make_empty
+			console.set_position(8, 12)
+			console.set_background_color (create {EM_COLOR}.make_with_rgb(200, 200, 200))
+			console.set_dimension ((window_width*0.25).rounded - 16, (window_height*0.25).rounded - 20)
+			console.disable
 			
-			console_panel.add_widget(console_textarea)				
+			console_panel.add_widget(console)				
 		end
 		
 feature -- Event handling
@@ -108,7 +108,7 @@ feature -- Event handling
 		do
 			zoom_in_button.set_pressed (False)
 			map.zoom_in
-			console_textarea.set_text ("zooming in ...")
+			console.set_text ("zooming in ...")
 		end
 		
 	zoom_out_button_clicked is
@@ -119,7 +119,7 @@ feature -- Event handling
 			zoom_out_button.set_pressed (False)
 			map.zoom_out
 			
-			console_textarea.set_text ("zooming out ...")
+			console.set_text ("zooming out ...")
 		end
 	
 
@@ -156,7 +156,7 @@ feature -- Widgets
 	console_panel: EM_PANEL
 			-- Panel, in which the console is displayed.
 	
-	console_textarea: EM_TEXTAREA
+	console: TOUCH_CONSOLE
 			-- 	For displaying the process of the program.	
 				
 	toolbar_panel: EM_PANEL

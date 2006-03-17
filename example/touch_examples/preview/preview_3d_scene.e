@@ -12,14 +12,6 @@ inherit
 		rename make as make_touch_scene
 		end
 	
-	EM_COMPONENT_SCENE
-	
-	TOUCH_3D_CONSTANTS
-		export {NONE} all end
-	
-	EXCEPTIONS
-		export {NONE} all end
-	
 creation
 	make
 
@@ -47,14 +39,12 @@ feature -- Interface
 			start_button.clicked_event.subscribe (agent start_button_clicked)
 			start_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (start_button)
-			
-			preview := create {PREVIEW}
-			preview.run(map)
-			
+
+			create preview
+			preview.run (map, console)			
 		end
 		
 feature -- Event handling
---
 
 	load_button_clicked is
 			-- "Load" button has been clicked.
@@ -85,7 +75,7 @@ feature -- Event handling
 		do
 			start_button.set_pressed (False)
 			
-			console_textarea.set_text ("Starting the preview example from chapter 2...")
+			console.set_text ("Starting the preview example from chapter 2...")
 
 --			console_textarea.set_text ("time")
 --			map.draw
@@ -94,7 +84,7 @@ feature -- Event handling
 
 	--		map.set_single_line_un_highlighted (Line8)
 	--		map.set_lines_highlighted (False)
-			preview.run(map)
+			preview.run(map, console)
 		
 		rescue
 			catch(24)
@@ -115,10 +105,4 @@ feature -- Widgets
 	start_button: EM_BUTTON
 			-- Button to start the preview exampe		
 	
-	Line8: TRAFFIC_LINE is
-			-- 
-		once
-			Result := map.map.line ("tram 8")
-		end		
-
 end -- class PREVIEW_3D_SCENE
