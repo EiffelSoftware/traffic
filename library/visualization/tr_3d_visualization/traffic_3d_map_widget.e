@@ -303,44 +303,47 @@ feature{NONE}	-- Auxiliary drawing
 
 feature -- Traffic map loading
 
-	load_map (filename: STRING) is
+	load_map (a_filename: STRING) is
 			-- Load the map.
 		require
-			name_valid: filename /= void and then not filename.is_empty
+			name_valid: a_filename /= void and then not a_filename.is_empty
 		local
-			map_file: TRAFFIC_MAP_FILE
-			dump: TRAFFIC_MAP_DUMP
+			loader: TRAFFIC_MAP_LOADER
 		do	
-			create dump.make_with_name (filename)
-			map := dump.get_map
-			if  map = void or else not dump.is_up_to_date then
-				create map_file.make_from_file (filename)
-				map := map_file.traffic_map
-				dump.create_dump (map)
+			create loader.make (a_filename)
+			loader.load_map
+			if not loader.has_error then
+				map := loader.map
+				is_map_loaded := True
+				last_loading_successful := True
+				number_of_buildings := 0
+				traffic_buildings.delete_buildings
+				create traffic_places.make (map)
+				traffic_places_polygons := traffic_places.collision_polygons
+				create traffic_lines.make (map)
+				traffic_lines_polygons := traffic_lines.collision_polygons
+				create traffic_traveler.make (map, traffic_time)
+	--			traffic_traveler_polygons := traffic_traveler.collision_polygons
+				
+				traffic_buildings.set_map(loader.map)
+				traffic_buildings.set_collision_polygons(collision_polygons)
+				marked_station_changed := True	
+			else			
+				last_loading_successful := False
 			end
-			is_map_loaded := True
-			number_of_buildings := 0
-			traffic_buildings.delete_buildings
-			create traffic_places.make (map)
-			traffic_places_polygons := traffic_places.collision_polygons
-			create traffic_lines.make (map)
-			traffic_lines_polygons := traffic_lines.collision_polygons
-			create traffic_traveler.make (map, traffic_time)
---			traffic_traveler_polygons := traffic_traveler.collision_polygons
-			
-			traffic_buildings.set_map(map)
-			traffic_buildings.set_collision_polygons(collision_polygons)
-			marked_station_changed := True
 		ensure
-			map /= Void
-			is_map_loaded = True
-			place_representation_startet: traffic_places /= Void
-			line_representation_started: traffic_lines /= Void
-			buildings_ewer_created: traffic_buildings /= Void
+--			map /= Void
+----			is_map_loaded = True
+--			place_representation_startet: traffic_places /= Void
+--			line_representation_started: traffic_lines /= Void
+--			buildings_ewer_created: traffic_buildings /= Void
 		end
 		
 	is_map_loaded: BOOLEAN
-			-- Has parsing already taken place?
+			-- Is there a loaded map?
+			
+	last_loading_successful: BOOLEAN
+			-- Was last map loading successful?
 			
 	map: TRAFFIC_MAP
 			-- Parsed map.
@@ -569,9 +572,8 @@ feature {NONE} -- Attributes
 			
 	highlighting_delta: DOUBLE
 			-- Height difference between highlighted and normal line representation.
-			
-			
-feature {NONE} -- Implementation
+
+feature -- Representations
 
 	traffic_traveler: TRAFFIC_TRAVELER_REPRESENTATION
 		-- container for all travelers.
@@ -579,18 +581,20 @@ feature {NONE} -- Implementation
 	traffic_lines: TRAFFIC_LINE_REPRESENTATION
 		-- container for the lines
 		
+	traffic_places: TRAFFIC_PLACE_REPRESENTATION
+		-- container for the places.
+		
+	traffic_buildings: TRAFFIC_BUILDING_REPRESENTATION
+		-- container for the buildings.				
+			
+feature {NONE} -- Implementation
+
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic lines.
 
 	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic places.
 		
-	traffic_places: TRAFFIC_PLACE_REPRESENTATION
-		-- container for the places.
-		
-	traffic_buildings: TRAFFIC_BUILDING_REPRESENTATION
-		-- container for the buildings.
-			
 	sun_light: GL_LIGHT
 			-- Light that imitates the sun.
 			

@@ -11,7 +11,7 @@ inherit
 	STORABLE
 		export
 			
-			{TRAFFIC_MAP_DUMP} all 
+			{TRAFFIC_MAP_LOADER} all 
 		undefine
 			out
 		end
