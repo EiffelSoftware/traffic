@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Loader that handles the map loading from xml and dump files"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,7 +20,9 @@ create
 feature -- Initialization
 
 	make (a_filename: STRING) is
-			-- 
+			-- Sets all necessary pathnames if the directory and the xml-file specified by `a_filename' exists.
+		require
+			a_filename_exists: a_filename /= Void
 		local
 			a_path: KL_PATHNAME
 		do
@@ -36,6 +37,7 @@ feature -- Initialization
 				xml_filename := a_filename 
 				dump_filename := file_system.pathname (directory_name, file_system.basename (xml_filename).split('.')[1] + ".dump")
 				log_filename := file_system.pathname (directory_name, "dump.log")
+				has_error := False
 			end
 		end
 
@@ -65,6 +67,7 @@ feature -- Initialization
 feature -- Status report
 
 	has_error: BOOLEAN
+			-- Did the map loading succeed?
 
 feature -- Access
 
@@ -106,6 +109,7 @@ feature {NONE} -- Implementation
 				raise ("Error while parsing " + xml_filename + ": " + map_parser.error_description)	
 			else
 				map := factory.map
+				has_error := False
 				create_dump
 			end
 		end
@@ -120,16 +124,19 @@ feature {NONE} -- Implementation
 			create directory.make_open_read (directory_name)
 			if directory.has_entry (file_system.basename (dump_filename)) then
 				map ?= (create {TRAFFIC_MAP}.make("temp")).retrieve_by_name (dump_filename)
+				has_error := False
 			else
 				map := void
+				has_error := True
 			end
 		rescue
+			has_error := True
 			get_from_xml
 			retry
 		end
 
 	is_dump_up_to_date: BOOLEAN is
-			-- is the dump file up to date
+			-- Is the dump file up to date?
 		require
 			log_file_exists: log_filename /= Void and then file_system.file_exists (log_filename)
 			xml_file_exists: xml_filename /= Void and then file_system.file_exists (xml_filename)
@@ -163,7 +170,7 @@ feature {NONE} -- Implementation
 		end
 
 	create_dump is
-			-- creating a dump file
+			-- Write map to dump file.
 		require
 			dump_file_exists: dump_filename /= Void and then not dump_filename.is_empty
 		local
