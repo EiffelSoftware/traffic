@@ -42,6 +42,8 @@ feature {NONE} -- Initialization
 			a_name_not_empty: not a_name.is_empty
 		local
 			default_size: INTEGER
+			i: INTEGER
+			temp_list: LINKED_LIST[TRAFFIC_BUILDING]
 		do
 			create place_events.make;
 			create line_section_events.make;
@@ -55,7 +57,16 @@ feature {NONE} -- Initialization
 			create internal_travelers.make (1)
 			traveler_index := 1
 			internal_line_sections.compare_objects -- use equal for object comparision
-			create internal_buildings.make
+			create internal_buildings.make (1,4)
+			from
+				i:=1
+			until
+				i>4
+			loop
+				create temp_list.make
+				internal_buildings[i]:=temp_list
+				i:=i+1
+			end
 		ensure
 			name_set: equal (name, a_name)
 			places_not_void: places /= Void
@@ -184,7 +195,36 @@ feature -- Element change
 		require
 			a_building_exists: a_building /= Void
 		do
-			internal_buildings.extend (a_building)
+--			internal_buildings.extend (a_building)
+			if (a_building.p1.x>=0 and a_building.p1.y>=0) or
+			   (a_building.p2.x>=0 and a_building.p2.y>=0) or
+			   (a_building.p3.x>=0 and a_building.p3.y>=0) or
+			   (a_building.p4.x>=0 and a_building.p4.y>=0)
+			then
+				internal_buildings.item(1).extend(a_building)	
+			end
+			if (a_building.p1.x<=0 and a_building.p1.y>=0) or
+			   (a_building.p2.x<=0 and a_building.p2.y>=0) or
+			   (a_building.p3.x<=0 and a_building.p3.y>=0) or
+			   (a_building.p4.x<=0 and a_building.p4.y>=0)
+			then
+				internal_buildings.item(2).extend(a_building)	
+			end
+			if (a_building.p1.x>=0 and a_building.p1.y<=0) or
+			   (a_building.p2.x>=0 and a_building.p2.y<=0) or
+			   (a_building.p3.x>=0 and a_building.p3.y<=0) or
+			   (a_building.p4.x>=0 and a_building.p4.y<=0)
+			then
+				internal_buildings.item(3).extend(a_building)	
+			end
+			if (a_building.p1.x<=0 and a_building.p1.y<=0) or
+			   (a_building.p2.x<=0 and a_building.p2.y<=0) or
+			   (a_building.p3.x<=0 and a_building.p3.y<=0) or
+			   (a_building.p4.x<=0 and a_building.p4.y<=0)
+			then
+				internal_buildings.item(4).extend(a_building)	
+			end
+			
 		end
 		
 	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
@@ -304,9 +344,10 @@ feature -- Access
 			Result := internal_lines.twin
 		end
 		
-	buildings: LINKED_LIST [TRAFFIC_BUILDING] is
+	buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]] is
 			-- All buildings on map.
 		do
+			--evtl jede list twin
 			Result := internal_buildings.twin
 		end
 		
@@ -369,7 +410,7 @@ feature {NONE} -- Implementation
 	internal_line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION]
 			--	Line sections on map.
 			
-	internal_buildings: LINKED_LIST [TRAFFIC_BUILDING]
+	internal_buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]]
 			-- Buildings on map.
 			
 	internal_travelers: HASH_TABLE [TRAFFIC_TRAVELER, INTEGER]

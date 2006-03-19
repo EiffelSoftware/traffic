@@ -29,9 +29,10 @@ feature -- Initialization
 			mouse_wheel_up_event.subscribe (agent wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
-			building_left_clicked_event.subscribe (agent traffic_buildings.highlight_building(?))
-			building_right_clicked_event.subscribe (agent traffic_buildings.un_highlight_building(?))
+--			building_left_clicked_event.subscribe (agent traffic_buildings.highlight_building(?))
+--			building_right_clicked_event.subscribe (agent traffic_buildings.un_highlight_building(?))
 --			building_left_clicked_event.subscribe (agent test_click(?))
+			building_clicked_event.subscribe (agent building_clicked(?,?))
 		end
 			
 
@@ -242,20 +243,6 @@ feature {NONE} -- Event handling
 					end
 				end
 				
-				-- check whether a building is clicked 
---				buildings:= map.buildings
---					from 
---						buildings.start
---					until 
---						buildings.after
---					loop
---						if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
---							traffic_buildings.highlight_building (buildings.item)
---						end
---						buildings.forth
---					end
-
-				
 			elseif event.is_right_button then
 				result_vec := transform_coords(event.screen_x, event.screen_y)				
 				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
@@ -307,19 +294,6 @@ feature {NONE} -- Event handling
 						marked_station_changed := True
 					end
 					
-					-- check whether a building is clicked
---					buildings:= map.buildings
---					from 
---						buildings.start
---					until 
---						buildings.after
---					loop
---						if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
---							traffic_buildings.un_highlight_building (buildings.item)
---						end
---						buildings.forth
---					end
-
 				end
 			end
 		end
@@ -448,13 +422,18 @@ feature{NONE} -- Traffic line rides
 			end
 		end
 		
-	test_click (a_building: TRAFFIC_BUILDING) is
+	building_clicked (a_building: TRAFFIC_BUILDING; an_event: EM_MOUSEBUTTON_EVENT) is
 			-- a test function
 		require
 			building_valid: a_building /= void
+			event_valid: an_event /= void
 		do
-			io.putstring (a_building.name)
-			io.new_line
+			if an_event.is_left_button then
+				traffic_buildings.highlight_building(a_building)
+			elseif an_event.is_right_button then
+				traffic_buildings.un_highlight_building(a_building)
+			end
+
 		end
 		
 	

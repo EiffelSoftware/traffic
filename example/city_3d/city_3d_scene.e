@@ -65,6 +65,12 @@ feature -- Interface
 			-- 'Take traffic line ride' button 
 			create traffic_line_ride_button.make_from_text ("Take a traffic line ride")
 			
+			-- Labels, Buttons for buildings
+			create traffic_building_name.make_from_text("")
+			create traffic_building_label.make_from_text("Name of marked building:")
+			create load_buildings_button.make_from_text("Load buildings from XML")
+			create load_buildings_along_lines_button.make_from_text("Load buildings along lines")
+			
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
@@ -77,11 +83,8 @@ feature -- Interface
 			else
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
-			map.building_left_clicked_event.subscribe (agent show_building_information)
+			map.building_clicked_event.subscribe (agent show_building_information(?,?))
 			
-			create traffic_building_name.make_from_text("")
-			create traffic_building_label.make_from_text("Name of marked building:")
-			create load_buildings_button.make_from_text("Load buildings")
 			
 			-- Toolbar Panel
 			toolbar_panel.set_background_color (bg_color)
@@ -94,15 +97,20 @@ feature -- Interface
 			toolbar_panel_left.set_position (0,0)
 			add_component (toolbar_panel_left)
 			
+			-- Building labels
 			traffic_building_label.set_position(10,40)
 			toolbar_panel_left.add_widget (traffic_building_label)
 			traffic_building_name.set_position(10,60)
 			traffic_building_name.set_dimension (150,20)
 			toolbar_panel_left.add_widget (traffic_building_name)
 			
+			-- Building buttons
 			load_buildings_button.set_position (10, 100)
 			load_buildings_button.clicked_event.subscribe (agent load_buildings_clicked)
 			toolbar_panel_left.add_widget (load_buildings_button)
+			load_buildings_along_lines_button.set_position(10,150)
+			load_buildings_along_lines_button.clicked_event.subscribe (agent load_buildings_along_lines_clicked)
+			toolbar_panel_left.add_widget (load_buildings_along_lines_button)
 			
 			
 			-- Combobox title
@@ -446,12 +454,15 @@ feature -- Event handling
 			map_file_name = name
 		end
 		
-	show_building_information (a_building: TRAFFIC_BUILDING) is
-			-- a test function
+	show_building_information (a_building: TRAFFIC_BUILDING; an_event: EM_MOUSEBUTTON_EVENT) is
+			-- Agent to show building information
 		require
 			building_valid: a_building /= void
+			event_valid: an_event /= void
 		do
-			traffic_building_name.set_text (a_building.name)
+			if an_event.is_left_button then
+				traffic_building_name.set_text (a_building.name)
+			end
 		end	
 		
 	load_buildings_clicked is
@@ -459,19 +470,26 @@ feature -- Event handling
 		local
 			parser: TRAFFIC_BUILDING_PARSER
 		do
---			create parser.make_with_map(map)
---			parser.set_file_name ("buildings/test.xml")
---			parser.parse
---			if parser.has_error then
---				io.putstring ("Error while parsing buildings ")
---				io.putstring (parser.error_description)
---			end
---			parser.process
---			if parser.has_error then
---				io.putstring ("Error while processing" + parser.error_description)
---			end
-			map.add_buildings_along_lines
+			create parser.make_with_map(map)
+			parser.set_file_name ("buildings/test.xml")
+			parser.parse
+			if parser.has_error then
+				io.putstring ("Error while parsing buildings ")
+				io.putstring (parser.error_description)
+			end
+			parser.process
+			if parser.has_error then
+				io.putstring ("Error while processing" + parser.error_description)
+			end
+			
 		end
+		
+	load_buildings_along_lines_clicked is
+			-- 
+		do
+			map.add_buildings_along_lines	
+		end
+			
 		
 	
 feature -- Widgets
@@ -540,9 +558,16 @@ feature -- Widgets
 			-- Botton to take a traffic line ride
 			
 	traffic_building_name: EM_LABEL
+			-- Label for the building name
+	
 	traffic_building_label: EM_LABEL
+			-- Label for the building
 	
 	load_buildings_button: EM_BUTTON
+			-- Button to load buildings from XML file
+			
+	load_buildings_along_lines_button: EM_BUTTON
+			-- Button to load buildings along lines
 		
 feature {NONE} -- Implementation
 

@@ -60,9 +60,7 @@ feature -- Initialisation
 				create traffic_time.make_day (5)
 
 				mouse_clicked_event.subscribe (agent publish_mouse_event (?))
-				create building_left_clicked_event.default_create
-				create building_right_clicked_event.default_create
-				create building_middle_clicked_event.default_create
+				create building_clicked_event.default_create
 				create traffic_buildings.make				
 
 			ensure
@@ -522,39 +520,36 @@ feature -- Mousevents
 			result_vec: GL_VECTOR_3D[DOUBLE]
 			clicked_point: GL_VECTOR_3D[DOUBLE]
 			buildings: LINKED_LIST[TRAFFIC_BUILDING]
+			found: BOOLEAN
 		
 		do
 			result_vec := transform_coords(event.screen_x, event.screen_y)				
 			create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z) 
-			buildings:= map.buildings
-			
+			if clicked_point.x >=0 and clicked_point.z>=0 then
+				buildings:= map.buildings[1]	
+			elseif clicked_point.x<=0 and clicked_point.z>=0 then
+				buildings:= map.buildings[2]
+			elseif clicked_point.x>=0 and clicked_point.z<=0 then
+				buildings:= map.buildings[3]
+			else
+				buildings:= map.buildings[4]
+			end
 			from 
 				buildings.start
+				found:= false
 			until 
-				buildings.after
+				buildings.after or found
 			loop
 				if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
-					if event.is_left_button then
-						building_left_clicked_event.publish([buildings.item])
-					elseif event.is_right_button then
-							building_right_clicked_event.publish([buildings.item])
-					elseif event.is_middle_button then
-						building_middle_clicked_event.publish([buildings.item])
-					end
-				
+					building_clicked_event.publish([buildings.item,event])
+					found:= true
 				end
 			buildings.forth
 			end
 		end
-	
-	building_left_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING]]
-			-- event for left click on building.
-	
-	building_right_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING]]
-			-- event for right click on building.
-	
-	building_middle_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING]]
-			-- event for middle click on building.
+			
+	building_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING,EM_MOUSEBUTTON_EVENT]]
+			-- event for click on building.
 
 	
 

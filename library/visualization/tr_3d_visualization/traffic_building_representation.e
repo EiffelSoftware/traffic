@@ -399,72 +399,74 @@ feature
 								end_point.set_y (end_point.y-0.51)
 							end
 						else
-
+							
 							angle:= arc_tangent((line_section.polypoints.i_th (i+1).y-line_section.polypoints.i_th (i).y)/(line_section.polypoints.i_th (i+1).x-line_section.polypoints.i_th (i).x))
-							
-							temp_destination:=map_to_gl_coords(line_section.polypoints.i_th(i+1).rotation (line_section.polypoints.i_th(i), -angle))
-							gl_origin:=map_to_gl_coords (line_section.polypoints.i_th(i))
-							
-							from 
-								start_point.set_y (gl_origin.y)
-								start_point.set_x (gl_origin.x-0.5)
-								if start_point.x < temp_destination.x then
-									temp:=start_point
-									start_point:=temp_destination
-									temp_destination:=temp
-								end
-								end_point.set_y (start_point.y)
-								end_point.set_x(start_point.x-0.5)
-							until
-								end_point.x<= temp_destination.x
-							loop	
-								--building above the line
-								create p2.make (start_point.x,start_point.y+0.25)
-								create p1.make (p2.x,p2.y+0.5)
-								create p3.make (end_point.x,end_point.y+0.25)
-								create p4.make (p3.x,p3.y+0.5)
-								p1:= p1.rotation (gl_origin, -angle)
-								p2:= p2.rotation (gl_origin, -angle)
-								p3:= p3.rotation (gl_origin, -angle)
-								p4:= p4.rotation (gl_origin, -angle)
-								create building.make (p1,p2,p3,p4,"building " + id_counter.out)
-								building.set_height (0.5)
-								building.set_angle (angle*180/pi)
-								create poly_points.make
-								poly_points.force (p1, 1)
-								poly_points.force (p2, 2)
-								poly_points.force (p3, 3)
-								poly_points.force (p4, 4)
-								create collision_poly.make_from_absolute_list (building.center, poly_points)
-								if not has_collision (collision_poly) then
-									add (building)
-									buildings_polygons.extend(collision_poly)
-								end
+							if angle*180/pi>-70 and angle*180/pi<70 then
 								
-								--builiding underneath the line
-								create p1.make (start_point.x,start_point.y-0.25)
-								create p2.make (p1.x,p1.y-0.5)
-								create p4.make (end_point.x,end_point.y-0.25)
-								create p3.make(p4.x,p4.y-0.5)
-								p1:= p1.rotation (gl_origin, -angle)
-								p2:= p2.rotation (gl_origin, -angle)
-								p3:= p3.rotation (gl_origin, -angle)
-								p4:= p4.rotation (gl_origin, -angle)
-								create building.make (p1,p2,p3,p4,"building " + id_counter.out)
-								building.set_height (0.5)
-								building.set_angle (angle*180/pi)
-								create poly_points.make
-								poly_points.force (p1, 1)
-								poly_points.force (p2, 2)
-								poly_points.force (p3, 3)
-								poly_points.force (p4, 4)
-								create collision_poly.make_from_absolute_list (building.center, poly_points)
-								if not has_collision (collision_poly) then
-									add (building)
-									buildings_polygons.extend(collision_poly)
+								temp_destination:=map_to_gl_coords(line_section.polypoints.i_th(i+1).rotation (line_section.polypoints.i_th(i), -angle))
+								gl_origin:=map_to_gl_coords (line_section.polypoints.i_th(i))
+								
+								from 
+									start_point.set_y (gl_origin.y)
+									start_point.set_x (gl_origin.x-0.5)
+									if start_point.x < temp_destination.x then
+										temp:=start_point
+										start_point:=temp_destination
+										temp_destination:=temp
+									end
+									end_point.set_y (start_point.y)
+									end_point.set_x(start_point.x-0.5)
+								until
+									end_point.x<= temp_destination.x
+								loop	
+									--building above the line
+									create p2.make (start_point.x,start_point.y+0.25)
+									create p1.make (p2.x,p2.y+0.5)
+									create p3.make (end_point.x,end_point.y+0.25)
+									create p4.make (p3.x,p3.y+0.5)
+									p1:= p1.rotation (gl_origin, -angle)
+									p2:= p2.rotation (gl_origin, -angle)
+									p3:= p3.rotation (gl_origin, -angle)
+									p4:= p4.rotation (gl_origin, -angle)
+									create building.make (p1,p2,p3,p4,"building " + id_counter.out)
+									building.set_height (0.5)
+									building.set_angle (angle*180/pi)
+									create poly_points.make
+									poly_points.force (p1, 1)
+									poly_points.force (p2, 2)
+									poly_points.force (p3, 3)
+									poly_points.force (p4, 4)
+									create collision_poly.make_from_absolute_list (building.center, poly_points)
+									if not has_collision (collision_poly) then
+										add (building)
+										buildings_polygons.extend(collision_poly)
+									end
+									
+									--builiding underneath the line
+									create p1.make (start_point.x,start_point.y-0.25)
+									create p2.make (p1.x,p1.y-0.5)
+									create p4.make (end_point.x,end_point.y-0.25)
+									create p3.make(p4.x,p4.y-0.5)
+									p1:= p1.rotation (gl_origin, -angle)
+									p2:= p2.rotation (gl_origin, -angle)
+									p3:= p3.rotation (gl_origin, -angle)
+									p4:= p4.rotation (gl_origin, -angle)
+									create building.make (p1,p2,p3,p4,"building " + id_counter.out)
+									building.set_height (0.5)
+									building.set_angle (angle*180/pi)
+									create poly_points.make
+									poly_points.force (p1, 1)
+									poly_points.force (p2, 2)
+									poly_points.force (p3, 3)
+									poly_points.force (p4, 4)
+									create collision_poly.make_from_absolute_list (building.center, poly_points)
+									if not has_collision (collision_poly) then
+										add (building)
+										buildings_polygons.extend(collision_poly)
+									end
+									start_point.set_x (end_point.x-0.01)
+									end_point.set_x (end_point.x-0.51)
 								end
-								start_point.set_x (end_point.x-0.01)
-								end_point.set_x (end_point.x-0.51)
 							end
 						end
 						i:=i+1
