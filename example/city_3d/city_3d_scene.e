@@ -43,7 +43,7 @@ feature -- Interface
 			
 			-- Box and button for xml files
 			create combo_title.make_from_text ("Choose a map:")
-			create combo_box.make_from_list (search_for_xml)
+			create combo_box.make_from_list (search_for_xml("map"))
 			create load_button.make_from_text ("Load map")
 			
 			-- Slider and label for number of buildings
@@ -68,8 +68,10 @@ feature -- Interface
 			-- Labels, Buttons for buildings
 			create traffic_building_name.make_from_text("")
 			create traffic_building_label.make_from_text("Name of marked building:")
-			create load_buildings_button.make_from_text("Load buildings from XML")
+			create load_buildings_button.make_from_text("Load buildings from file")
 			create load_buildings_along_lines_button.make_from_text("Load buildings along lines")
+			create building_combo_title.make_from_text ("Choose building file:")
+			create building_combo_box.make_from_list (search_for_xml("buildings"))
 			
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -105,12 +107,23 @@ feature -- Interface
 			toolbar_panel_left.add_widget (traffic_building_name)
 			
 			-- Building buttons
-			load_buildings_button.set_position (10, 100)
+			load_buildings_button.set_position (10, 175)
 			load_buildings_button.clicked_event.subscribe (agent load_buildings_clicked)
 			toolbar_panel_left.add_widget (load_buildings_button)
-			load_buildings_along_lines_button.set_position(10,150)
+			load_buildings_along_lines_button.set_position(10,225)
 			load_buildings_along_lines_button.clicked_event.subscribe (agent load_buildings_along_lines_clicked)
 			toolbar_panel_left.add_widget (load_buildings_along_lines_button)
+			
+			-- Combox for building XML selection
+			building_combo_title.set_position (10,100)
+			toolbar_panel_left.add_widget (building_combo_title)
+			building_combo_box.set_position (10,125)
+			building_combo_box.set_optimal_dimension (150, 20)
+			building_combo_box.resize_to_optimal_dimension
+			building_combo_box.set_background_color (create {EM_COLOR}.make_white)
+			building_combo_box.set_selected_index (1)
+			building_combo_box.selection_changed_event.subscribe (agent building_combo_selection_changed(?))
+			toolbar_panel_left.add_widget (building_combo_box)
 			
 			
 			-- Combobox title
@@ -454,6 +467,17 @@ feature -- Event handling
 			map_file_name = name
 		end
 		
+	building_combo_selection_changed (name: STRING) is
+			-- Combo Box selection has been changed.
+		require
+			name_exists: name /= void and then not name.is_empty
+		do
+			building_file_name := name
+		ensure 
+			building_file_name = name
+		end
+		
+		
 	show_building_information (a_building: TRAFFIC_BUILDING; an_event: EM_MOUSEBUTTON_EVENT) is
 			-- Agent to show building information
 		require
@@ -471,7 +495,8 @@ feature -- Event handling
 			parser: TRAFFIC_BUILDING_PARSER
 		do
 			create parser.make_with_map(map)
-			parser.set_file_name ("buildings/test.xml")
+--			parser.set_file_name ("buildings/test.xml")
+			parser.set_file_name (building_file_name)
 			parser.parse
 			if parser.has_error then
 				io.putstring ("Error while parsing buildings ")
@@ -568,6 +593,12 @@ feature -- Widgets
 			
 	load_buildings_along_lines_button: EM_BUTTON
 			-- Button to load buildings along lines
+			
+	building_combo_title: EM_LABEL
+			-- Title for building combo
+	
+	building_combo_box: EM_COMBOBOX[STRING]
+			-- Box to choose the building xml file from
 		
 feature {NONE} -- Implementation
 
@@ -576,6 +607,9 @@ feature {NONE} -- Implementation
 
 	map_file_name: STRING
 			-- Name of the map file to be loaded
+			
+	building_file_name: STRING
+			-- Name of the building file to be loaded
 		
 	loaded_file_name: STRING
 			-- Name of the currently loaded 
@@ -588,14 +622,16 @@ feature {NONE} -- Implementation
 	number_of_buildings: INTEGER
 			-- Number of buildings on the map
 	
-	search_for_xml: DS_LINKED_LIST[STRING] is
-			-- Search for xml files.
+	search_for_xml(directory_name:STRING) : DS_LINKED_LIST[STRING] is
+			-- Search for xml files in directory `directory_name'.
+		require
+			directory_name_valid: directory_name /= void and then not directory_name.is_empty
 		local
 			directory: DIRECTORY
 		do
 			create Result.make
 			
-			create directory.make_open_read ("./map")
+			create directory.make_open_read ("./"+directory_name)
 			if directory.is_readable and not directory.is_empty then
 				from
 					directory.start
@@ -604,11 +640,26 @@ feature {NONE} -- Implementation
 					directory.lastentry = void
 				loop
 					if directory.lastentry.has_substring (".xml") then
-						Result.force_last ("map/" + directory.lastentry)
+						Result.force_last (directory_name + "/" + directory.lastentry)
 					end
 					directory.readentry
 				end
 			end
+			
+--			create directory.make_open_read ("./map")
+--			if directory.is_readable and not directory.is_empty then
+--				from
+--					directory.start
+--					directory.readentry
+--				until
+--					directory.lastentry = void
+--				loop
+--					if directory.lastentry.has_substring (".xml") then
+--						Result.force_last ("map/" + directory.lastentry)
+--					end
+--					directory.readentry
+--				end
+--			end
 		end
 
 end -- class CITY_3D_SCENE

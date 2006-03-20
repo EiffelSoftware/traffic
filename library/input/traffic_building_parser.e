@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that ..."
+	description: "Parser for XML building files"
 	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
@@ -18,6 +18,8 @@ create
 feature
 
 	make_with_map(a_map:TRAFFIC_3D_MAP_WIDGET)  is
+		require
+			map_valid: a_map /= void
 		do
 			make
 			from
@@ -31,7 +33,7 @@ feature
 		end
 	
 	can_process: BOOLEAN is
-			-- 
+			-- Can document tree be processed?
 		do
 			Result := is_parsed and then has_processor (root_element.name)
 		end
@@ -55,5 +57,4 @@ feature
 				end
 			end
 		end		
-	
 end

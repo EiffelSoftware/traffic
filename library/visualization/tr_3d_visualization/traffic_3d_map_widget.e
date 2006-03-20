@@ -479,7 +479,7 @@ feature -- Options
 	add_building(a_building: TRAFFIC_BUILDING) is
 			-- add `a_building' to map.
 		do
-			traffic_buildings.add (a_building)
+			traffic_buildings.add_building (a_building)
 		end
 		
 	add_buildings_along_lines is	

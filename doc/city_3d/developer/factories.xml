@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/developer/factories">
 <chapterinfo>
 	<copyright>
@@ -30,19 +30,15 @@
 	<toplink/>
 </section>
 
-<section id="building_factory">
+<section id="traffic_building_factory">
 	<para/>
-	<title>BUILDING_FACTORY</title>
+	<title>TRAFFIC_BUILDING_FACTORY</title>
 	<para>
 	</para>
 	<title>Description</title>
 	<para>
-	Similarly to <classname cluster="city_3d">TRAFFIC_LINE_FACTORY</classname>, this class is responsible for creating new buildings. You can add to <classname cluster="city_3d">BUILDING_FACTORY</classname> object new kinds of buildings and procedures that decide about the kind of building that should be created.
-	</para>
-	<title>Types of buildings and decision process</title>
-	<para>
-	Initially, <classname cluster="city_3d">TRAFFIC_LINE_FACTORY</classname> has no information about what kind of buildings there are and how to draw them. It has two containers, <featurename class="city_3d.building_factory">building_templates</featurename> for drawing and <featurename class="city_3d.building_factory">gaugers</featurename> for 'decision taking procedures'. Therefore, the object that wants to create buildings using an object of this class, can pass it his own drawing and 'decision taking procedures'. Then it may <featurename class="city_3d.building_factory">take_decision</featurename>, giving it the name of the desired gauger and his parameters. Then this gauger decides by the means of his parameters which type of building to draw and stores his decision. That's how the factory knows what kind of building to draw if <featurename class="city_3d.building_factory">create_object</featurename> is called later.
-	This modus operandi garantees maximum flexibility.
+	This class is a factory for creating displayable representations of <classname cluster="traffic">TRAFFIC_BUILDING</classname> objects. 
+	It inherits from <classname cluster="em.video.object_factory">EM_3D_OBJECT_FACTORY</classname> which provides the necessary structures such as the feature <featurename class="em.video.object_factory.em_3d_object_factory">create_object</featurename> or <featurename class="em.video.object_factory.em_3d_object_factory">specify_object</featurename>. <featurename class="city_3d.traffic_line_factory">specify_object</featurename> contains the (OpenGL) commands to create the object and has to be implemented. To actually create and draw an object, the feature <featurename class="city_3d.traffic_line_factory">create_object</featurename> of the factory is called, which returns a <classname cluster="em.video">EM_3D_OBJECT</classname>. 
 	</para>
 	<toplink/>
 </section>

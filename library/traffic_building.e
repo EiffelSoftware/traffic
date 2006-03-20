@@ -20,7 +20,7 @@ inherit
 create
 	make
 
-feature --Initialization
+feature -- Initialization
 	make (a_p1, a_p2, a_p3, a_p4: EM_VECTOR_2D; a_name: STRING) is
 			-- Sets the corner to `a_p1', `a_p2', `a_p3', `a_p4' and the name to `a_name'.
 			-- Calculates the breadth, width and center.
@@ -99,7 +99,7 @@ feature -- Options
 			temp: EM_VECTOR_2D
 		do
 			angle := an_angle
-			
+		
 			-- check if points have to be switch, so that p1 is always on top
 			if angle > 0 then
 				temp := p4
@@ -162,6 +162,6 @@ feature -- Attributes
 			-- Additional information.
 
 invariant
-	angle_valid: angle > -70 and angle < 70
+	angle_valid: angle >= -70 and angle <= 70
 
 end

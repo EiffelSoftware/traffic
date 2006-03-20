@@ -185,7 +185,6 @@ feature {NONE} -- Event handling
 			is_found: BOOLEAN
 			result_vec: GL_VECTOR_3D[DOUBLE]
 			clicked_point: GL_VECTOR_3D[DOUBLE]
-			buildings: LINKED_LIST[TRAFFIC_BUILDING]
 
 		do
 			if event.is_left_button then

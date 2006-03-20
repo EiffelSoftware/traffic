@@ -37,7 +37,7 @@ feature -- Basic operations
 			height: DOUBLE
 			building_name: STRING
 		do
-
+			-- check whether aributes exist and have proper type
 			if not has_attribute ("name") then
 				set_error (Mandatory_attribute_missing, << "name" >>)
 			elseif not has_attribute ("x1") then
@@ -51,22 +51,22 @@ feature -- Basic operations
 			elseif not (is_attribute_integer ("x1") and is_attribute_integer ("x2") and
 						(is_attribute_integer ("y1") and is_attribute_integer ("y2")) or
 						(is_attribute_double ("x1") and is_attribute_double ("x2")) and
-						is_attribute_double ("y1") and is_attribute_double ("y2"))
-			then
+						is_attribute_double ("y1") and is_attribute_double ("y2")) then
 				set_error (Wrong_attribute_type, << "x", "y" >>)
 			elseif not has_attribute ("height") then
 				set_error (Mandatory_attribute_missing, << "height" >>)
+			elseif not (is_attribute_integer("height") and is_attribute_double("height")) then
+				set_error (Wrong_attribute_type, << "height" >>)
 			else
-				x1:= attribute_double("x1")
-				x2:= attribute_double("x2")
-				y1:= attribute_double("y1")
-				y2:= attribute_double("y2")
-				height:= attribute_double("height")
-				building_name:= attribute ("name")
+				x1 := attribute_double("x1")
+				x2 := attribute_double("x2")
+				y1 := attribute_double("y1")
+				y2 := attribute_double("y2")
+				height := attribute_double("height")
+				building_name := attribute ("name")
 				create building.make (create {EM_VECTOR_2D}.make(x1,y1),create {EM_VECTOR_2D}.make(x1,y2),create {EM_VECTOR_2D}.make(x2,y2),create {EM_VECTOR_2D}.make(x2,y1),building_name)
 				building.set_height(height)
 				internal_map.add_building (building)
 			end
 		end
-
 end

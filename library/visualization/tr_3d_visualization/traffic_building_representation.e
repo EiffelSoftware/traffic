@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that ..."
+	description: "Object that represents traffic buildings"
 	author: "Fabian Wüest"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -29,9 +29,10 @@ inherit
 creation
 	make
 
-feature
+feature -- Initialization
+
 	make is
-			-- Create a new object
+			-- Create a new object and set the representation method for the factory
 		do
 			create centre.make_xyz (0,0,0)
 			create building_factory.make(agent representation)
@@ -44,22 +45,22 @@ feature
 			create buildings_polygons.make (1)
 		end
 		
-feature	
+feature	-- Drawing
 
 	draw is
-			-- draw all buildings
+			-- Draw all buildings.
+		
 		local				
 			i:INTEGER
 		do
-			
 			if not (buildings = void and number_of_buildings <= 0) then
 				from
-					i:= 1
+					i := 1
 				until
 					i > number_of_buildings
 				loop
 					buildings.i_th(i).draw
-					i:=i+1
+					i := i+1
 				end
 			end
 		end
@@ -67,25 +68,29 @@ feature
 		
 	highlight_building(a_building: TRAFFIC_BUILDING) is
 			-- highlight `a_building'
+		
 		require
 			building_valid: a_building /= void
 		local
 			temp: EM_3D_OBJECT
 		do
+			-- set color to highlighted values
 			wall_color.set_xyz (1.0,1.0,0)
 			roof_color.set_xyz (0,1.0,1.0)
+			-- display list is changed
 			building_factory.changed
 			
-			temp:= building_factory.create_object
+			-- creat new temporary building with same attributes as a_building
+			temp := building_factory.create_object
 			temp.set_scale (a_building.width,a_building.height,a_building.breadth)
 			temp.set_rotation (0,a_building.angle,0)
 			temp.set_origin (a_building.center.x, 0, a_building.center.y)
 			
---			temp:= building_factory.create_object
---			temp.set_origin ((a_building.x1+a_building.x2)/2,0,(a_building.y1+a_building.y2)/2)
---			temp.set_scale ((a_building.x2-a_building.x1),a_building.height/4,(a_building.y2-a_building.y1))
+			-- replace a_building with temporary building, so that this is drawn instead
 			buildings.go_i_th (a_building.id)
 			buildings.replace (temp)
+			
+			-- set color back to normal values
 			wall_color.set_xyz (0.5,0.5,0.5)
 			roof_color.set_xyz (1.0,0,0)
 			building_factory.changed
@@ -94,128 +99,56 @@ feature
 		
 	un_highlight_building(a_building: TRAFFIC_BUILDING) is
 			-- unhighlight `a_building'
+		
 		require
 			building_valid: a_building /= void
 		local
 			temp: EM_3D_OBJECT
 		do
-			temp:= building_factory.create_object
-			temp.set_scale (a_building.width,a_building.height,a_building.breadth)
-			temp.set_rotation (0,a_building.angle,0)
+			-- creat new temporary building with same attributes as a_building
+			temp := building_factory.create_object
+			temp.set_scale (a_building.width, a_building.height, a_building.breadth)
+			temp.set_rotation (0, a_building.angle, 0)
 			temp.set_origin (a_building.center.x, 0, a_building.center.y)
---			temp:= building_factory.create_object
---			temp.set_origin ((a_building.x1+a_building.x2)/2,0,(a_building.y1+a_building.y2)/2)
---			temp.set_scale ((a_building.x2-a_building.x1),a_building.height/4,(a_building.y2-a_building.y1))
+			
+			-- replace a_building with temporary building, so that this is drawn instead
 			buildings.go_i_th (a_building.id)
 			buildings.replace (temp)
 		end
-	
-	set_map (a_map: TRAFFIC_MAP) is
-			-- set map to `a_map'
-		require 
-			map_exists: a_map /= Void
-		do
-			map:= a_map
-		end
-		
-		
-	representation is
-			-- 
-		do
 
 		
-						
-			gl_begin(Em_gl_polygon)
-			
-				--Front
-				gl_color3dv(wall_color.pointer)
-				gl_normal3b(0,0,1)
-				gl_vertex3d(0.5,0,-0.5)
-				gl_vertex3d(-0.5,0,-0.5)
-				gl_vertex3d(-0.5,1,-0.5)
-				gl_vertex3d(0,1.25,-0.5)
-				gl_vertex3d(0.5,1,-0.5)
-			gl_end
-			
-				
-			gl_begin(Em_gl_polygon)
-				--Back
-				gl_normal3b(0,0,-1)
-				gl_vertex3d(0.5,0,0.5)
-				gl_vertex3d(-0.5,0,0.5)
-				gl_vertex3d(-0.5,1,0.5)
-				gl_vertex3d(0,1.25,0.5)
-				gl_vertex3d(0.5,1,0.5)
-			gl_end
-				
-			gl_begin(Em_gl_quads)	
-				--Left
-				gl_normal3b(1,0,0)
-				gl_vertex3d(0.5,0,-0.5)				
-				gl_vertex3d(0.5,1,-0.5)
-				gl_vertex3d(0.5,1,0.5)				
-				gl_vertex3d(0.5,0,0.5)
+feature -- Options
 
-				--Right
-				gl_normal3b(-1,0,0)
-				gl_vertex3d(-0.5,0,-0.5)				
-				gl_vertex3d(-0.5,1,-0.5)
-				gl_vertex3d(-0.5,1,0.5)				
-				gl_vertex3d(-0.5,0,0.5)
-				
-				--Roof
-				--Right
-				gl_color3dv(roof_color.pointer)
-				gl_normal3d(-0.5,1,0)
-				gl_vertex3d(-0.5,1,-0.5)	
-				gl_vertex3d(-0.5,1,0.5)
-				gl_vertex3d(0,1.25,0.5)
-				gl_vertex3d(0,1.25,-0.5)
-				
-				--Left
-				gl_normal3d(0.5,1,0)
-				gl_vertex3d(0.5,1,-0.5)	
-				gl_vertex3d(0,1.25,-0.5)
-				gl_vertex3d(0,1.25,0.5)
-				gl_vertex3d(0.5,1,0.5)
-				
-			gl_end		
-			
-		end
-		
-		
-		
-
-
-	add (a_building: TRAFFIC_BUILDING) is
+	add_building (a_building: TRAFFIC_BUILDING) is
 			-- add `a_building' to representation
+		
 		require
 			building_valid: a_building /= Void
 		local
 			building: EM_3D_OBJECT
-			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 		do
-			
 			building := building_factory.create_object
-			building.set_scale (a_building.width,a_building.height,a_building.breadth)
-			building.set_rotation (0,a_building.angle,0)
+			building.set_scale (a_building.width, a_building.height, a_building.breadth)
+			building.set_rotation (0, a_building.angle, 0)
 			building.set_origin (a_building.center.x, 0, a_building.center.y)
 			
 			a_building.set_id(id_counter)
 			id_counter := id_counter + 1
 			buildings.force (building)
 			map.add_building (a_building)
-			number_of_buildings:= number_of_buildings + 1
+			number_of_buildings := number_of_buildings + 1
+			
 		end
 		
 	add_randomly (n: INTEGER) is
 			-- Randomly add buildings to the list of buildings.
+		
 		require
 			n_not_negative: n >= 0
 		local
-			x_coord, y_coord: DOUBLE
+			x_coord, y_coord: DOUBLE -- cooridnates of the building center 
 			i, j: INTEGER
-			angle: DOUBLE --random number between 0,360
+			angle: DOUBLE -- random number between -45 and 45
 			stretch_factor_x, stretch_factor_y: DOUBLE
 			building: EM_3D_OBJECT
 			traffic_building: TRAFFIC_BUILDING
@@ -227,51 +160,39 @@ feature
 			taken: BOOLEAN
 		do
 			old_number := buildings.count
+			
+			-- set stretch factor
 			stretch_factor_x := .25
 			stretch_factor_y := .25
-			taken:=FALSE
+		
+			taken:=false
 			from
 				i := buildings.count + 1
 				j := 1
 			until
 				i > (n + old_number)
 			loop
+				-- calculate center of building
 				x_coord := centre.x - (plane_size/2) + randomizer.double_i_th (j)*plane_size
 				y_coord := centre.z - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size
-				angle := angle_randomizer.double_i_th(j)*-90+45
-				
---				x_coord:=3
---				y_coord:=3
---				angle:= -45
---				angle:=45
-
 				create center.make (x_coord, y_coord)
---				create p1.make (x_coord-0.5*stretch_factor_x, y_coord+0.5*stretch_factor_y)
---				create p2.make (x_coord-0.5*stretch_factor_x, y_coord-0.5*stretch_factor_y)
---				create p3.make (x_coord+0.5*stretch_factor_x, y_coord-0.5*stretch_factor_y)
---				create p4.make (x_coord+0.5*stretch_factor_x, y_coord+0.5*stretch_factor_y)
-
+				
+				-- calculate angle of building
+				angle := angle_randomizer.double_i_th(j)*-90+45
+		
+				-- create the four corners
 				create p1.make (x_coord+0.5*stretch_factor_x, y_coord+0.5*stretch_factor_y)
 				create p2.make (x_coord+0.5*stretch_factor_x, y_coord-0.5*stretch_factor_y)
 				create p3.make (x_coord-0.5*stretch_factor_x, y_coord-0.5*stretch_factor_y)
 				create p4.make (x_coord-0.5*stretch_factor_x, y_coord+0.5*stretch_factor_y)
 				
---				io.putstring (p1.out)
-
+				-- rotate the building
 				p1:=p1.rotation (center,-angle*pi/180)
 				p2:=p2.rotation (center,-angle*pi/180)
 				p3:=p3.rotation (center,-angle*pi/180)
 				p4:=p4.rotation (center,-angle*pi/180)
-
---				io.putstring (p1.out)
---				io.new_line
---				io.putstring (p2.out)
---				io.new_line
---				io.putstring (p3.out)
---				io.new_line
---				io.putstring (p4.out)
---				io.new_line
-
+				
+				-- Check for collision with lines and other buildings
 				create poly_points.make
 				poly_points.force (p1, 1)
 				poly_points.force (p2, 2)
@@ -280,12 +201,9 @@ feature
 				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord, y_coord), poly_points)
 				
 				if not has_collision (collision_poly) then
-
---				if true then
-					
-					
+										
 					-- create traffic building and add it to map
-					create traffic_building.make(p1,p2,p3,p4,"building " + id_counter.out)
+					create traffic_building.make(p1, p2, p3, p4, "building " + id_counter.out)
 					traffic_building.set_height (1)
 					traffic_building.set_id (id_counter)
 					traffic_building.set_height (.25)
@@ -295,7 +213,6 @@ feature
 					
 					--create representation
 					building := building_factory.create_object
---					io.putstring (traffic_building.center.out)
 					building.set_origin (traffic_building.center.x, 0, traffic_building.center.y)
 					building.set_scale (traffic_building.width,traffic_building.height,traffic_building.breadth)
 					building.set_rotation (0,traffic_building.angle,0)
@@ -303,6 +220,7 @@ feature
 					
 					i := i + 1
 				end
+				-- we need to random j's per round
 				j := j + 2
 			end
 			
@@ -310,6 +228,7 @@ feature
 		
 	add_along_lines is
 			-- Adds buildings along tram lines
+		
 		local
 			line_sections:ARRAYED_LIST [TRAFFIC_LINE_SECTION]
 			line_section: TRAFFIC_LINE_SECTION
@@ -320,31 +239,34 @@ feature
 			angle: DOUBLE
 			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
-			i: INTEGER
+			i : INTEGER
 			start_point, end_point: EM_VECTOR_2D
 			temp: EM_VECTOR_2D
-		do
-			
+		do	
 			create start_point.make(0,0)
 			create end_point.make(0,0)
 			line_sections:=map.line_sections
+			
+			-- add buildings along every line section
 			from
 				line_sections.start
-				line_sections.forth
+				--line_sections.forth
 			until
-				line_sections.index > line_sections.count
+				line_sections.after
+				--line_sections.index > line_sections.count
 			loop
-				line_section:= line_sections.item
+				line_section := line_sections.item
+				-- railways are not taken into account
 				if not line_section.type.name.is_equal ("rail") then
 					from
-						i:=1
+						i := 1
 					until
-						i+1>line_section.polypoints.count
+						i+1 > line_section.polypoints.count
 					loop
 						--check if linesection is vertical
 						if line_section.polypoints.i_th(i+1).x = line_section.polypoints.i_th(i).x then
-							temp_destination:=map_to_gl_coords(line_section.polypoints.i_th(i+1))
-							gl_origin:=map_to_gl_coords (line_section.polypoints.i_th(i))
+							temp_destination := map_to_gl_coords(line_section.polypoints.i_th(i+1))
+							gl_origin := map_to_gl_coords (line_section.polypoints.i_th(i))
 							from 
 								start_point.set_y (gl_origin.y-0.5)
 								start_point.set_x (gl_origin.x)
@@ -358,7 +280,7 @@ feature
 							until
 								end_point.y<= temp_destination.y
 							loop	
-								--building right the line
+								--buildings on the right hand side of the line
 								create p1.make (start_point.x-0.25, start_point.y)
 								create p2.make (end_point.x-0.25, end_point.y)
 								create p3.make (p2.x-0.5,p2.y)
@@ -373,11 +295,11 @@ feature
 								poly_points.force (p4, 4)
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
 								if not has_collision (collision_poly) then
-									add (building)
+									add_building (building)
 									buildings_polygons.extend(collision_poly)
 								end
 								
-								--builiding left the line
+								--builiding on the left hand sinde of the line
 								create p4.make (start_point.x+0.25, start_point.y)
 								create p3.make (end_point.x+0.25, end_point.y)
 								create p2.make (p3.x+0.5,p3.y)
@@ -392,14 +314,14 @@ feature
 								poly_points.force (p4, 4)
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
 								if not has_collision (collision_poly) then
-									add (building)
+									add_building (building)
 									buildings_polygons.extend(collision_poly)
 								end
 								start_point.set_y (end_point.y-0.01)
 								end_point.set_y (end_point.y-0.51)
 							end
 						else
-							
+							-- linessection is not vertical
 							angle:= arc_tangent((line_section.polypoints.i_th (i+1).y-line_section.polypoints.i_th (i).y)/(line_section.polypoints.i_th (i+1).x-line_section.polypoints.i_th (i).x))
 							if angle*180/pi>-70 and angle*180/pi<70 then
 								
@@ -438,7 +360,7 @@ feature
 									poly_points.force (p4, 4)
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
 									if not has_collision (collision_poly) then
-										add (building)
+										add_building (building)
 										buildings_polygons.extend(collision_poly)
 									end
 									
@@ -461,7 +383,7 @@ feature
 									poly_points.force (p4, 4)
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
 									if not has_collision (collision_poly) then
-										add (building)
+										add_building (building)
 										buildings_polygons.extend(collision_poly)
 									end
 									start_point.set_x (end_point.x-0.01)
@@ -472,8 +394,9 @@ feature
 						i:=i+1
 					end		
 				end	
+				-- we need only every second section since there is one section for every direction
 				line_sections.forth
---				line_sections.forth				
+				line_sections.forth				
 			end
 		end			
 		
@@ -486,36 +409,6 @@ feature
 			buildings_polygons.wipe_out
 			id_counter:=1
 		end
-		
-		
-	
-	has_collision (poly_a: EM_COLLIDABLE): BOOLEAN is
-			-- Is there a collision?
-		require
-			poly_a /= void
-		do
-			from
-				traffic_lines_polygons.start
-				Result := False
-			until
-				traffic_lines_polygons.after or Result
-			loop
-				if poly_a.collides_with (traffic_lines_polygons.item) then
-					Result := True
-				end
-				traffic_lines_polygons.forth
-			end
-			from 
-				buildings_polygons.start
-			until
-				buildings_polygons.after or Result
-			loop
-				if poly_a.collides_with (buildings_polygons.item) then
-					Result := True
-				end
-				buildings_polygons.forth
-			end
-		end	
 		
 	set_building_number (n: INTEGER) is
 			-- Set the number of buildings that are shown.
@@ -533,46 +426,157 @@ feature
 			buildings.count >= number_of_buildings
 		end
 		
-	feature -- Collsion setting		
+	set_map (a_map: TRAFFIC_MAP) is
+			-- set map to `a_map'
+		
+		require 
+			map_exists: a_map /= Void
+		do
+			map := a_map
+		ensure
+			map_set: map = a_map
+		end		
+		
+		
+feature -- Collsion setting		
 			
 	set_collision_polygons(some_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]) is
 			-- set the collision_polygons
-			do
-				traffic_lines_polygons := some_polygons
-			ensure
-				traffic_lines_polygons = some_polygons
-			end
+		do
+			traffic_lines_polygons := some_polygons
+		ensure
+			traffic_lines_polygons = some_polygons
+		end
 	
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+			-- Traffic lines collision polygons
 	
 	buildings_polygons: ARRAYED_LIST [EM_POLYGON_CONVEX_COLLIDABLE]
-	
-feature
+			-- Building collision polygons
+			
+feature {NONE} -- Attributes
 
 	number_of_buildings: INTEGER
+			-- Count of buildings in the representation
 	
 	randomizer: RANDOM
+			-- Randomizer for building center
 	
 	angle_randomizer: RANDOM
+			-- Randomizer for angle
 
 	buildings: ARRAYED_LIST [EM_3D_OBJECT]
+			-- Buildings in the representation
 	
 	building_factory: TRAFFIC_BUILDING_FACTORY
+			-- Factory for buildings
 
 	wall_color: GL_VECTOR_3D[DOUBLE]
-		-- color of the walls
+			-- Color of the walls
 	
 	roof_color: GL_VECTOR_3D[DOUBLE]
-		-- color of the roof	
+			-- Color of the roof	
 		
 	centre: GL_VECTOR_3D[DOUBLE]
-		-- Centre of the city
+			-- Centre of the city
 	
 	map: TRAFFIC_MAP
-	
-feature {NONE}
+			-- Map to which the representation belongs
 
 	id_counter: INTEGER
-
+			-- Counter for the ids
+	
+feature {NONE} -- Internal methods
+	
+	has_collision (a_poly: EM_COLLIDABLE): BOOLEAN is
+			-- Is there a collision?
+		require
+			a_poly /= void
+		do
+			-- Check if there is a collision with a line
+			from
+				traffic_lines_polygons.start
+				Result := False
+			until
+				traffic_lines_polygons.after or Result
+			loop
+				if a_poly.collides_with (traffic_lines_polygons.item) then
+					Result := True
+				end
+				traffic_lines_polygons.forth
+			end
+			
+			-- Check if there is a collsion with a building
+			from 
+				buildings_polygons.start
+			until
+				buildings_polygons.after or Result
+			loop
+				if a_poly.collides_with (buildings_polygons.item) then
+					Result := True
+				end
+				buildings_polygons.forth
+			end
+		end	
 		
+	representation is
+		-- Representation for the displaylist.
+	
+	do
+		--Front			
+		gl_begin(Em_gl_polygon)
+			gl_color3dv(wall_color.pointer)
+			gl_normal3b(0,0,1)
+			gl_vertex3d(0.5,0,-0.5)
+			gl_vertex3d(-0.5,0,-0.5)
+			gl_vertex3d(-0.5,1,-0.5)
+			gl_vertex3d(0,1.25,-0.5)
+			gl_vertex3d(0.5,1,-0.5)
+		gl_end
+		
+		--Back	
+		gl_begin(Em_gl_polygon)
+			gl_normal3b(0,0,-1)
+			gl_vertex3d(0.5,0,0.5)
+			gl_vertex3d(-0.5,0,0.5)
+			gl_vertex3d(-0.5,1,0.5)
+			gl_vertex3d(0,1.25,0.5)
+			gl_vertex3d(0.5,1,0.5)
+		gl_end
+		
+		gl_begin(Em_gl_quads)
+			
+			--Left	
+			gl_normal3b(1,0,0)
+			gl_vertex3d(0.5,0,-0.5)				
+			gl_vertex3d(0.5,1,-0.5)
+			gl_vertex3d(0.5,1,0.5)				
+			gl_vertex3d(0.5,0,0.5)
+
+			--Right
+			gl_normal3b(-1,0,0)
+			gl_vertex3d(-0.5,0,-0.5)				
+			gl_vertex3d(-0.5,1,-0.5)
+			gl_vertex3d(-0.5,1,0.5)				
+			gl_vertex3d(-0.5,0,0.5)
+			
+			--Roof right
+			gl_color3dv(roof_color.pointer)
+			gl_normal3d(-0.5,1,0)
+			gl_vertex3d(-0.5,1,-0.5)	
+			gl_vertex3d(-0.5,1,0.5)
+			gl_vertex3d(0,1.25,0.5)
+			gl_vertex3d(0,1.25,-0.5)
+			
+			-- Roof left
+			gl_normal3d(0.5,1,0)
+			gl_vertex3d(0.5,1,-0.5)	
+			gl_vertex3d(0,1.25,-0.5)
+			gl_vertex3d(0,1.25,0.5)
+			gl_vertex3d(0.5,1,0.5)
+			
+		gl_end		
+		
+	end 
+	
 end

@@ -1,1 +1,8 @@
 city_3d.exe
+*.ace
+Diagrams
+EIFGEN
+arguments.wb
+city_3d.epr
+city_3d.rc
+preferences.wb

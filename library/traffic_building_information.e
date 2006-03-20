@@ -10,13 +10,15 @@ class
 creation
 	make
 
-feature -- Creation
+feature -- Initialization
 	
 	make is
-		-- Initialize
+		-- Create new object.
 		do
 			
 		end
+
+feature -- Options
 	
 	set_street (a_street: STRING) is
 			-- assign `a_street'
@@ -38,7 +40,7 @@ feature -- Creation
 		
 		
 		
-feature {NONE} -- Internal
+feature  -- Attributes
 	
 	street: STRING
 	house_number: INTEGER

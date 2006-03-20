@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/user/introduction">
 <chapterinfo>
 	<copyright>
@@ -14,9 +14,9 @@
     <para> Welcome to <projectname>City3D</projectname>! </para>
 	<para>
 	The <projectname>City3D</projectname> application displays traffic lines as
-	colored polygons on a plane, adds buildings on this plane randomly and provides 
+	colored polygons on a plane, adds buildings and provides 
 	mouse and keyboard support such that changing the viewpoint (zooming, rotation, 
-	different centres) is possible (easily). Moreover it provides different light settings
+	different centres) and interaction with the buildings is possible (easily). Moreover it provides different light settings
 	and visualizes shortest paths in the city.
 	</para>
     <para>
