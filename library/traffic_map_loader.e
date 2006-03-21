@@ -23,8 +23,6 @@ feature -- Initialization
 			-- Sets all necessary pathnames if the directory and the xml-file specified by `a_filename' exists.
 		require
 			a_filename_exists: a_filename /= Void
-		local
-			a_path: KL_PATHNAME
 		do
 			if not file_system.directory_exists (file_system.absolute_parent_directory (a_filename)) then
 				error_handler.raise_warning (error_handler.traffic_error_directory_does_not_exist, [file_system.absolute_parent_directory (a_filename)])
@@ -73,6 +71,10 @@ feature -- Access
 
 	map: TRAFFIC_MAP
 	
+	
+		
+feature {NONE} -- Implementation
+
 	log_filename: STRING
 			-- Location of the log-File for the dumps
 			
@@ -84,8 +86,6 @@ feature -- Access
 
 	dump_filename: STRING
 			-- Location of the dump-File
-		
-feature {NONE} -- Implementation
 
 	get_from_xml is
 			-- Initialize with map loaded from file with `a_filename'.

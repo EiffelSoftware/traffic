@@ -21,7 +21,7 @@ feature -- Initialization
 feature -- Options
 	
 	set_street (a_street: STRING) is
-			-- assign `a_street'
+			-- Assign `a_street'.
 		require
 			a_street /= void
 		do
@@ -31,18 +31,35 @@ feature -- Options
 		end
 	
 	set_house_number (a_number: INTEGER) is
-			-- assign `a_number'
+			-- Assign `a_number'.
+		require
+			a_number_valid: a_number >= 1
 		do
 			house_number := a_number
 		ensure		
 			house_number = a_number
 		end
-		
-		
+	
+	set_description (a_description: STRING) is
+			-- Assign `a_description'.
+		require
+			a_description_valid: a_description /= void
+		do
+			description := a_description
+		ensure
+			description_set: description = a_description
+		end
+	
 		
 feature  -- Attributes
 	
 	street: STRING
+		-- Street
+		
 	house_number: INTEGER
+		-- House number
+	
+	description: STRING
+		-- Description
 
 end

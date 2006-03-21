@@ -98,7 +98,7 @@
 		<argument name="a_file"/>
 		<argument name="a_next"/>
 
-		<xslt processor="${xslt_processor}" input="${a_file}.xml" output="${a_file}.html" stylesheet="../../misc/traffic2html.xsl">
+		<xslt processor="${xslt_processor}" input="${a_file}.xml" output="${a_file}.html" stylesheet="${root_path}/misc/traffic2html.xsl">
 			<parameter name="previous" value="&quot;'${a_previous}.html'&quot;"/>
 			<parameter name="next" value="&quot;'${a_next}.html'&quot;"/>
 			<parameter name="current_file" value="&quot;'${a_file}'&quot;"/>

@@ -28,17 +28,17 @@ feature -- Initialization
 			points_valid: a_p1 /= void and a_p2 /= void and a_p3 /= void and a_p4 /= void
 			name_valid: a_name /= void
 		do
-			p1 := a_p1
-			p2 := a_p2
-			p3 := a_p3
-			p4 := a_p4
+			corner1 := a_p1
+			corner2 := a_p2
+			corner3 := a_p3
+			corner4 := a_p4
 			name := a_name
 			angle := 0
-			breadth := sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y))
-			width := sqrt((p1.x-p4.x)*(p1.x-p4.x)+(p1.y-p4.y)*(p1.y-p4.y))
-			create center.make((p2.x+p4.x)/2,(p1.y+p3.y)/2)
+			breadth := sqrt((corner1.x-corner2.x)*(corner1.x-corner2.x)+(corner1.y-corner2.y)*(corner1.y-corner2.y))
+			width := sqrt((corner1.x-corner4.x)*(corner1.x-corner4.x)+(corner1.y-corner4.y)*(corner1.y-corner4.y))
+			create center.make((corner2.x+corner4.x)/2,(corner1.y+corner3.y)/2)
 		ensure
-			points_set: p1 = a_p1 and p2 = a_p2 and p3 = a_p3 and p4 = a_p4
+			points_set: corner1 = a_p1 and corner2 = a_p2 and corner3 = a_p3 and corner4 = a_p4
 			name_set: name = a_name	
 		end
 
@@ -54,15 +54,15 @@ feature -- Status report
 			Result := false
 			
 			if angle/=0 and angle/=90 then
-				delta_x1 := dabs((a_y-p2.y)/tangent(pi/2+angle*pi/180))
-				delta_x2 := dabs((p4.y-a_y)/tangent(pi/2+angle*pi/180))
+				delta_x1 := dabs((a_y-corner2.y)/tangent(pi/2+angle*pi/180))
+				delta_x2 := dabs((corner4.y-a_y)/tangent(pi/2+angle*pi/180))
 			else
 				delta_x1 := 0
 				delta_x2 := 0
 			end
 			
-			if (a_y >= p3.y - 0.1) and (a_y <= p1.y + 0.1) then
-				if (a_x <= p2.x-delta_x1+0.1) and (a_x >= p4.x+delta_x2 - 0.1) then
+			if (a_y >= corner3.y - 0.1) and (a_y <= corner1.y + 0.1) then
+				if (a_x <= corner2.x-delta_x1+0.1) and (a_x >= corner4.x+delta_x2 - 0.1) then
 					Result := true
 				end
 			end
@@ -100,13 +100,13 @@ feature -- Options
 		do
 			angle := an_angle
 		
-			-- check if points have to be switch, so that p1 is always on top
+			-- check if points have to be switch, so that corner1 is always on top
 			if angle > 0 then
-				temp := p4
-				p4 := p3
-				p3 := p2
-				p2 := p1
-				p1 := temp
+				temp := corner4
+				corner4 := corner3
+				corner3 := corner2
+				corner2 := corner1
+				corner1 := temp
 			end
 		ensure
 			angle_set: angle = an_angle
@@ -134,16 +134,16 @@ feature -- Attributes
 	center: EM_VECTOR_2D
 			-- Center of the building
 	
-	p1: EM_VECTOR_2D
+	corner1: EM_VECTOR_2D
 			-- Left upper corner
 			
-	p2: EM_VECTOR_2D
+	corner2: EM_VECTOR_2D
 			-- Left lower corner
 			
-	p3: EM_VECTOR_2D
+	corner3: EM_VECTOR_2D
 			-- Right lower corner
 			
-	p4: EM_VECTOR_2D
+	corner4: EM_VECTOR_2D
 			-- Right upper corner
 			
 	angle: DOUBLE

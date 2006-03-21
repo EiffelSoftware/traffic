@@ -28,8 +28,7 @@ feature -- Interface
 			
 			set_frame_counter_visibility (False)
 			
-			create bg_color.make_with_rgb (0,136,108)
-			
+			create bg_color.make_with_rgb (211,211,211)
 			-- Toolbar
 			create toolbar_panel.make_from_dimension (200, window_height)
 			create toolbar_panel_left.make_from_dimension (200, window_height)
@@ -72,6 +71,7 @@ feature -- Interface
 			create load_buildings_along_lines_button.make_from_text("Load buildings along lines")
 			create building_combo_title.make_from_text ("Choose building file:")
 			create building_combo_box.make_from_list (search_for_xml("buildings"))
+			create delete_buildings_button.make_from_text("Delete buildings")
 			
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -90,8 +90,7 @@ feature -- Interface
 			
 			-- Toolbar Panel
 			toolbar_panel.set_background_color (bg_color)
---			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
-			toolbar_panel.set_position (window_width-200, 0)
+			toolbar_panel.set_position (city_3d_window_width-200, 0)
 			add_component (toolbar_panel)
 			
 			-- Toolbar Panel left hand side
@@ -113,6 +112,10 @@ feature -- Interface
 			load_buildings_along_lines_button.set_position(10,225)
 			load_buildings_along_lines_button.clicked_event.subscribe (agent load_buildings_along_lines_clicked)
 			toolbar_panel_left.add_widget (load_buildings_along_lines_button)
+			delete_buildings_button.set_position (10, 275)
+			delete_buildings_button.clicked_event.subscribe (agent delete_buildings_clicked)
+			toolbar_panel_left.add_widget (delete_buildings_button)
+			
 			
 			-- Combox for building XML selection
 			building_combo_title.set_position (10,100)
@@ -495,7 +498,6 @@ feature -- Event handling
 			parser: TRAFFIC_BUILDING_PARSER
 		do
 			create parser.make_with_map(map)
---			parser.set_file_name ("buildings/test.xml")
 			parser.set_file_name (building_file_name)
 			parser.parse
 			if parser.has_error then
@@ -510,11 +512,17 @@ feature -- Event handling
 		end
 		
 	load_buildings_along_lines_clicked is
-			-- 
+			-- Load buildings along lines.
 		do
 			map.add_buildings_along_lines	
 		end
 			
+	delete_buildings_clicked is
+			-- Delete buildings from representation.
+		do
+			map.delete_buildings
+		end
+		
 		
 	
 feature -- Widgets
@@ -594,6 +602,8 @@ feature -- Widgets
 	load_buildings_along_lines_button: EM_BUTTON
 			-- Button to load buildings along lines
 			
+	delete_buildings_button: EM_BUTTON
+			
 	building_combo_title: EM_LABEL
 			-- Title for building combo
 	
@@ -601,6 +611,9 @@ feature -- Widgets
 			-- Box to choose the building xml file from
 		
 feature {NONE} -- Implementation
+
+	city_3d_window_width: INTEGER is 1000
+			-- Width of map
 
 	bg_color: EM_COLOR
 			-- Background color of the scene

@@ -13,20 +13,57 @@
 This section consists of a description of the intention and use of the 
 <projectname>Traffic library</projectname> with a description of each class and its simplified interface. 
 The class overviews are sorted in alphabetic ascending order to be able to find a class description faster when knowing the name of it. For each class a short example of use will be added to show how it can be used. These examples can be found in the cluster test example.</para> 
-    <para> This document describes how the <projectname>Traffic library</projectname> is structured and consists of the following parts: 
+    <para> This document describes how the <projectname>Traffic library</projectname> is structured and consists of the following parts:
+    <section> 
+    <title>Map representation</title>
 	<itemizedlist>
 		<listitem>
 			<link url="overview.html">Overview</link>
 			<para>
-				Gives an overview of the classes that are involved in the <projectname>Traffic library</projectname>
+				Gives an overview of the classes that are involved in the map representation part <projectname>Traffic library</projectname>
 			</para>
 		</listitem>
 		<listitem>
 	        <link url="classes.html">Classes</link>
 			<para>
-				Describes each class of the <projectname>Traffic library</projectname> 
+				Describes each class of the map representation part <projectname>Traffic library</projectname> 
 			</para>
 		</listitem>
 	</itemizedlist>
+	</section>
+	<section> 
+    <title>Visualization</title>
+	<itemizedlist>
+		<listitem>
+			<link url="tr_visualization/overview.html">Overview</link>
+			<para>
+				Gives an overview of the classes that are involved in the visualization part in the <projectname>Traffic library</projectname>
+			</para>
+		</listitem>
+		<listitem>
+	        <link url="tr_visualization/classes.html">Classes</link>
+			<para>
+				Describes each class of the visualization part <projectname>Traffic library</projectname> 
+			</para>
+		</listitem>
+	</itemizedlist>
+	</section>
+	<section> 
+    <title>Input</title>
+	<itemizedlist>
+		<listitem>
+			<link url="tr_input/overview.html">Overview</link>
+			<para>
+				Gives an overview of the classes that are involved in the input part of <projectname>Traffic library</projectname>
+			</para>
+		</listitem>
+		<listitem>
+	        <link url="tr_input/classes.html">Classes</link>
+			<para>
+				Describes each class of the input / output part <projectname>Traffic library</projectname> 
+			</para>
+		</listitem>
+	</itemizedlist>
+	</section>
     </para>
 </chapter>

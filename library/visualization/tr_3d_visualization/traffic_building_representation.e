@@ -408,6 +408,9 @@ feature -- Options
 			number_of_buildings:= 0
 			buildings_polygons.wipe_out
 			id_counter:=1
+			if map /= void then
+				map.delete_buildings
+			end
 		end
 		
 	set_building_number (n: INTEGER) is

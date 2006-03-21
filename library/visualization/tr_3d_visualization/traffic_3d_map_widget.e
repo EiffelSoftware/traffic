@@ -488,6 +488,14 @@ feature -- Options
 			traffic_buildings.add_along_lines
 		end
 	
+	delete_buildings is
+			-- delete all buildings from representation
+		do
+			traffic_buildings.delete_buildings
+			number_of_buildings := 0
+		end
+		
+	
 	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
 			-- add a traveler to the map.
 			do

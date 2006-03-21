@@ -19,6 +19,12 @@
 		</para>
 		<itemizedlist>
 			<listitem>
+				<link url="#traffic_building">TRAFFIC_BUILDING</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link>
+			</listitem>
+			<listitem>
 				<link url="#traffic_color">TRAFFIC_COLOR</link>
 			</listitem>
 			<listitem>
@@ -43,6 +49,9 @@
 				<link url="#traffic_map_factory">TRAFFIC_MAP_FACTORY</link>
 			</listitem>
 			<listitem>
+				<link url="#traffic_map_loader">TRAFFIC_MAP_LOADER</link>
+			</listitem>
+			<listitem>
 				<link url="#traffic_place">TRAFFIC_PLACE</link>
 			</listitem>
 			<listitem>
@@ -65,6 +74,36 @@
 			</listitem>
 		</itemizedlist>
     </section>
+    <section id="traffic_building">
+		<title>TRAFFIC_BUILDING</title>
+		<title>Requirements:</title>
+		<para>
+				<link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link>
+		</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TRAFFIC_BUILDING</classname> represents a building. A building is always a rectangle and is specified by its four corners and the three dimensions width, breadth and height. The four corners can be accessed through the four features: <featurename>corner1</featurename> (upper left corner), <featurename>corner2</featurename> (lower left corner), <featurename>corner3</featurename> (lower right corner) and <featurename>corner4</featurename> (upper right corner), whereas the three dimensions can be accessed through the tree features: <featurename>width</featurename>, <featurename>breadth</featurename> and <featurename>height</featurename>. Furthermore, the feature <featurename>angle</featurename> allows to specify an angle (in range -70 to 70 degrees) by which the buildings is rotated. There exists also the possibility to attach <link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link> through <featurename>set_information</featurename>
+		</para>
+		<title>Class overview</title>
+		<toplink/>
+    </section>
+    <section>
+		<title>TRAFFIC_BUILDING_INFORMATION</title>
+		<title>Requirements:</title>
+		<para>
+			None
+		</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TRAFFIC_BUILDING_REPRESENTATION</classname> is a collection of additional 
+			information for a building. This can be a street, a house number and a textual description.
+		</para>
+		<para>	
+			A street can be added by <featurename>set_street</featurename>, a house number by <featurename>set_house_number</featurename> and description by <featurename>set_description</featurename>.
+		</para>
+		<title>Class overview</title>
+		<toplink/>
+    </section>
     <section id="traffic_color">
     	<title>TRAFFIC_COLOR</title>
    		<title>Requirements:</title>
@@ -73,7 +112,7 @@
     	</para>
     	<title>Description</title>
     	<para>
-    		The class TRAFFIC_COLOR represents a RGB-Color. A RGB-Color is a color composed of the
+    		The class <classname>TRAFFIC_COLOR</classname> represents a RGB-Color. A RGB-Color is a color composed of the
     		three additive components: red, green, blue. The three color parts can be accessed 
     		through the three features: <featurename>red</featurename>, <featurename>green</featurename>, 
     		<featurename>blue</featurename>. An important feature is <featurename>is_valid_color_part
@@ -332,6 +371,22 @@
     	</para>
      	</para>
     	<toplink/>
+    </section>
+    <section id="traffic_map_loader">
+		<title>TRAFFIC_MAP_LOADER</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_map">TRAFFIC_MAP</link>, <link url="#traffic_shared_error_handler">TRAFFIC_SHARED_HANDLER</link>
+		</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TRAFFIC_MAP_LOADER</classname> is used to load maps, specifed by by the name.
+		</para>
+		<para>
+			A new instance of <classname>TRAFFIC_MAP_LOADER</classname> is create through <featurename>make</featurename>. It takes as input the name of the map to be loaded. The map is then loaded by <featurename>load_map</featurename>, which is either loaded from a dump file or, if this is not available or outdated, parsed from the specified XML file. If the map had to be parsed, a new dump is created, which can be used next time. Afterwards, the map can be access through <featurename>map</featurename>.
+		</para>
+		<title>Class overview</title>
+		<toplink/>
     </section>
     <section id="traffic_place">
     	<title>TRAFFIC_PLACE</title>

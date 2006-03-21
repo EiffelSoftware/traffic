@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/tr_input/classes">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date$</date>
+</chapterinfo>
+    <title>Classes</title>
+	<section id="top_of_page">
+    	<para>
+			In the following sections the classes will be described. The layout for each class is: 
+			Requirements, Description, Class overview. In the Requirements the name of classes you 
+			need to know in order to understand the class described is given. Description is a short 
+			description of what the class does. It is more detailed than just the class description 
+			that you find in the class header. The class overview provides you with a class diagram. 
+		</para>
+		<itemizedlist>
+			<listitem>
+				<link url="#traffic_building_parser">TRAFFIC_BUILDING_PARSER</link>
+			</listitem>
+			<listitem>
+				<link url="traffic_building_node_processor">TRAFFIC_BUILDING_NODE_PROCESSOR</link>
+			</listitem>
+			<listitem>
+				<link url="traffic_buildings_node_processor">TRAFFIC_BUILDINGS_NODE_PROCESSOR</link>
+			</listitem>
+		</itemizedlist>
+    </section>
+    <section id="traffic_building_parser">
+    	<title>TRAFFIC_BUILDING_PARSER</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+			
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+    <section id="traffic_building_node_processor">
+    	<title>TRAFFIC_NODE_PROCESSOR</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+			
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+    <section id="traffic_buildings_node_processor">
+    	<title>TRAFFIC_BUILDINGS_PROCESSOR</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+			
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+</chapter>

@@ -195,37 +195,46 @@ feature -- Element change
 		require
 			a_building_exists: a_building /= Void
 		do
---			internal_buildings.extend (a_building)
-			if (a_building.p1.x>=0 and a_building.p1.y>=0) or
-			   (a_building.p2.x>=0 and a_building.p2.y>=0) or
-			   (a_building.p3.x>=0 and a_building.p3.y>=0) or
-			   (a_building.p4.x>=0 and a_building.p4.y>=0)
+			if (a_building.corner1.x>=0 and a_building.corner1.y>=0) or
+			   (a_building.corner2.x>=0 and a_building.corner2.y>=0) or
+			   (a_building.corner3.x>=0 and a_building.corner3.y>=0) or
+			   (a_building.corner4.x>=0 and a_building.corner4.y>=0)
 			then
 				internal_buildings.item(1).extend(a_building)	
 			end
-			if (a_building.p1.x<=0 and a_building.p1.y>=0) or
-			   (a_building.p2.x<=0 and a_building.p2.y>=0) or
-			   (a_building.p3.x<=0 and a_building.p3.y>=0) or
-			   (a_building.p4.x<=0 and a_building.p4.y>=0)
+			if (a_building.corner1.x<=0 and a_building.corner1.y>=0) or
+			   (a_building.corner2.x<=0 and a_building.corner2.y>=0) or
+			   (a_building.corner3.x<=0 and a_building.corner3.y>=0) or
+			   (a_building.corner4.x<=0 and a_building.corner4.y>=0)
 			then
 				internal_buildings.item(2).extend(a_building)	
 			end
-			if (a_building.p1.x>=0 and a_building.p1.y<=0) or
-			   (a_building.p2.x>=0 and a_building.p2.y<=0) or
-			   (a_building.p3.x>=0 and a_building.p3.y<=0) or
-			   (a_building.p4.x>=0 and a_building.p4.y<=0)
+			if (a_building.corner1.x>=0 and a_building.corner1.y<=0) or
+			   (a_building.corner2.x>=0 and a_building.corner2.y<=0) or
+			   (a_building.corner3.x>=0 and a_building.corner3.y<=0) or
+			   (a_building.corner4.x>=0 and a_building.corner4.y<=0)
 			then
 				internal_buildings.item(3).extend(a_building)	
 			end
-			if (a_building.p1.x<=0 and a_building.p1.y<=0) or
-			   (a_building.p2.x<=0 and a_building.p2.y<=0) or
-			   (a_building.p3.x<=0 and a_building.p3.y<=0) or
-			   (a_building.p4.x<=0 and a_building.p4.y<=0)
+			if (a_building.corner1.x<=0 and a_building.corner1.y<=0) or
+			   (a_building.corner2.x<=0 and a_building.corner2.y<=0) or
+			   (a_building.corner3.x<=0 and a_building.corner3.y<=0) or
+			   (a_building.corner4.x<=0 and a_building.corner4.y<=0)
 			then
 				internal_buildings.item(4).extend(a_building)	
 			end
 			
 		end
+	
+	delete_buildings () is
+			-- Delete all buildings from map.
+		do
+			internal_buildings.item (1).wipe_out
+			internal_buildings.item (2).wipe_out
+			internal_buildings.item (3).wipe_out
+			internal_buildings.item (4).wipe_out
+		end
+		
 		
 	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
 			-- Add traveler 'a_traveler' to map.
