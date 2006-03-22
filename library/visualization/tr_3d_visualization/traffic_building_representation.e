@@ -35,14 +35,18 @@ feature -- Initialization
 			-- Create a new object and set the representation method for the factory
 		do
 			create centre.make_xyz (0,0,0)
-			create building_factory.make(agent representation)
+--			create building_factory.make(agent representation)
+			create building_factory.make
 			create buildings.make (1)
 			create wall_color.make_xyz (0.5,0.5,0.5)
 			create roof_color.make_xyz (1.0,0,0)
 			create randomizer.set_seed (42)
 			create angle_randomizer.set_seed(45)
-			id_counter := 1
 			create buildings_polygons.make (1)
+			id_counter := 1
+			building_factory.add_building_type (agent create_building_type, building_type)
+			building_factory.add_gauger(agent decide_building_type, decision_type)
+			building_factory.take_decision(decision_type)
 		end
 		
 feature	-- Drawing
@@ -78,7 +82,7 @@ feature	-- Drawing
 			wall_color.set_xyz (1.0,1.0,0)
 			roof_color.set_xyz (0,1.0,1.0)
 			-- display list is changed
-			building_factory.changed
+			building_factory.take_decision (decision_type)
 			
 			-- creat new temporary building with same attributes as a_building
 			temp := building_factory.create_object
@@ -93,7 +97,8 @@ feature	-- Drawing
 			-- set color back to normal values
 			wall_color.set_xyz (0.5,0.5,0.5)
 			roof_color.set_xyz (1.0,0,0)
-			building_factory.changed
+--			building_factory.changed
+			building_factory.take_decision (decision_type)
 		end
 		
 		
@@ -150,8 +155,7 @@ feature -- Options
 			i, j: INTEGER
 			angle: DOUBLE -- random number between -45 and 45
 			stretch_factor_x, stretch_factor_y: DOUBLE
-			building: EM_3D_OBJECT
-			traffic_building: TRAFFIC_BUILDING
+			building: TRAFFIC_BUILDING
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 			old_number: INTEGER
 			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
@@ -203,21 +207,9 @@ feature -- Options
 				if not has_collision (collision_poly) then
 										
 					-- create traffic building and add it to map
-					create traffic_building.make(p1, p2, p3, p4, "building " + id_counter.out)
-					traffic_building.set_height (1)
-					traffic_building.set_id (id_counter)
-					traffic_building.set_height (.25)
-					traffic_building.set_angle (angle)
-					map.add_building (traffic_building)
-					id_counter := id_counter + 1
-					
-					--create representation
-					building := building_factory.create_object
-					building.set_origin (traffic_building.center.x, 0, traffic_building.center.y)
-					building.set_scale (traffic_building.width,traffic_building.height,traffic_building.breadth)
-					building.set_rotation (0,traffic_building.angle,0)
-					buildings.force (building)
-					
+					create building.make(p1, p2, p3, p4, 0.25, "building " + id_counter.out)
+					building.set_angle (angle)
+					add_building (building)
 					i := i + 1
 				end
 				-- we need to random j's per round
@@ -237,12 +229,14 @@ feature -- Options
 			gl_origin: EM_VECTOR_2D
 			p1,p2,p3,p4: EM_VECTOR_2D
 			angle: DOUBLE
+			building_height: DOUBLE
 			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 			i : INTEGER
 			start_point, end_point: EM_VECTOR_2D
 			temp: EM_VECTOR_2D
 		do	
+			building_height := 0.5
 			create start_point.make(0,0)
 			create end_point.make(0,0)
 			line_sections:=map.line_sections
@@ -285,8 +279,7 @@ feature -- Options
 								create p2.make (end_point.x-0.25, end_point.y)
 								create p3.make (p2.x-0.5,p2.y)
 								create p4.make (p1.x-0.5,p1.y)
-								create building.make (p1,p2,p3,p4,"building " + id_counter.out)
-								building.set_height (0.5)
+								create building.make (p1,p2,p3,p4, building_height, "building " + id_counter.out)
 								building.set_angle (0)
 								create poly_points.make
 								poly_points.force (p1, 1)
@@ -304,8 +297,7 @@ feature -- Options
 								create p3.make (end_point.x+0.25, end_point.y)
 								create p2.make (p3.x+0.5,p3.y)
 								create p1.make (p4.x+0.5,p4.y)
-								create building.make (p1,p2,p3,p4,"building " + id_counter.out)
-								building.set_height (0.5)
+								create building.make (p1,p2,p3,p4, building_height, "building " + id_counter.out)
 								building.set_angle (0)
 								create poly_points.make
 								poly_points.force (p1, 1)
@@ -350,8 +342,7 @@ feature -- Options
 									p2:= p2.rotation (gl_origin, -angle)
 									p3:= p3.rotation (gl_origin, -angle)
 									p4:= p4.rotation (gl_origin, -angle)
-									create building.make (p1,p2,p3,p4,"building " + id_counter.out)
-									building.set_height (0.5)
+									create building.make (p1,p2,p3,p4, building_height, "building " + id_counter.out)
 									building.set_angle (angle*180/pi)
 									create poly_points.make
 									poly_points.force (p1, 1)
@@ -373,8 +364,7 @@ feature -- Options
 									p2:= p2.rotation (gl_origin, -angle)
 									p3:= p3.rotation (gl_origin, -angle)
 									p4:= p4.rotation (gl_origin, -angle)
-									create building.make (p1,p2,p3,p4,"building " + id_counter.out)
-									building.set_height (0.5)
+									create building.make (p1,p2,p3,p4, building_height, "building " + id_counter.out)
 									building.set_angle (angle*180/pi)
 									create poly_points.make
 									poly_points.force (p1, 1)
@@ -456,6 +446,80 @@ feature -- Collsion setting
 	
 	buildings_polygons: ARRAYED_LIST [EM_POLYGON_CONVEX_COLLIDABLE]
 			-- Building collision polygons
+
+feature {NONE} -- Decision features
+	
+	create_building_type is
+		-- Create a building.
+	
+	do
+		--Front			
+		gl_begin(Em_gl_polygon)
+			gl_color3dv(wall_color.pointer)
+			gl_normal3b(0,0,1)
+			gl_vertex3d(0.5,0,-0.5)
+			gl_vertex3d(-0.5,0,-0.5)
+			gl_vertex3d(-0.5,1,-0.5)
+			gl_vertex3d(0,1.25,-0.5)
+			gl_vertex3d(0.5,1,-0.5)
+		gl_end
+		
+		--Back	
+		gl_begin(Em_gl_polygon)
+			gl_normal3b(0,0,-1)
+			gl_vertex3d(0.5,0,0.5)
+			gl_vertex3d(-0.5,0,0.5)
+			gl_vertex3d(-0.5,1,0.5)
+			gl_vertex3d(0,1.25,0.5)
+			gl_vertex3d(0.5,1,0.5)
+		gl_end
+		
+		gl_begin(Em_gl_quads)
+			
+			--Left	
+			gl_normal3b(1,0,0)
+			gl_vertex3d(0.5,0,-0.5)				
+			gl_vertex3d(0.5,1,-0.5)
+			gl_vertex3d(0.5,1,0.5)				
+			gl_vertex3d(0.5,0,0.5)
+
+			--Right
+			gl_normal3b(-1,0,0)
+			gl_vertex3d(-0.5,0,-0.5)				
+			gl_vertex3d(-0.5,1,-0.5)
+			gl_vertex3d(-0.5,1,0.5)				
+			gl_vertex3d(-0.5,0,0.5)
+			
+			--Roof right
+			gl_color3dv(roof_color.pointer)
+			gl_normal3d(-0.5,1,0)
+			gl_vertex3d(-0.5,1,-0.5)	
+			gl_vertex3d(-0.5,1,0.5)
+			gl_vertex3d(0,1.25,0.5)
+			gl_vertex3d(0,1.25,-0.5)
+			
+			-- Roof left
+			gl_normal3d(0.5,1,0)
+			gl_vertex3d(0.5,1,-0.5)	
+			gl_vertex3d(0,1.25,-0.5)
+			gl_vertex3d(0,1.25,0.5)
+			gl_vertex3d(0.5,1,0.5)
+			
+		gl_end		
+		
+	end 	
+	
+	decide_building_type: STRING is
+			-- decide which type of place is chosen.
+		do
+			Result := building_type
+		end
+
+feature {NONE} -- Decision attributes
+
+	building_type: STRING is "building_place"
+	 
+	decision_type: STRING is "standard"
 			
 feature {NONE} -- Attributes
 
@@ -521,65 +585,4 @@ feature {NONE} -- Internal methods
 				buildings_polygons.forth
 			end
 		end	
-		
-	representation is
-		-- Representation for the displaylist.
-	
-	do
-		--Front			
-		gl_begin(Em_gl_polygon)
-			gl_color3dv(wall_color.pointer)
-			gl_normal3b(0,0,1)
-			gl_vertex3d(0.5,0,-0.5)
-			gl_vertex3d(-0.5,0,-0.5)
-			gl_vertex3d(-0.5,1,-0.5)
-			gl_vertex3d(0,1.25,-0.5)
-			gl_vertex3d(0.5,1,-0.5)
-		gl_end
-		
-		--Back	
-		gl_begin(Em_gl_polygon)
-			gl_normal3b(0,0,-1)
-			gl_vertex3d(0.5,0,0.5)
-			gl_vertex3d(-0.5,0,0.5)
-			gl_vertex3d(-0.5,1,0.5)
-			gl_vertex3d(0,1.25,0.5)
-			gl_vertex3d(0.5,1,0.5)
-		gl_end
-		
-		gl_begin(Em_gl_quads)
-			
-			--Left	
-			gl_normal3b(1,0,0)
-			gl_vertex3d(0.5,0,-0.5)				
-			gl_vertex3d(0.5,1,-0.5)
-			gl_vertex3d(0.5,1,0.5)				
-			gl_vertex3d(0.5,0,0.5)
-
-			--Right
-			gl_normal3b(-1,0,0)
-			gl_vertex3d(-0.5,0,-0.5)				
-			gl_vertex3d(-0.5,1,-0.5)
-			gl_vertex3d(-0.5,1,0.5)				
-			gl_vertex3d(-0.5,0,0.5)
-			
-			--Roof right
-			gl_color3dv(roof_color.pointer)
-			gl_normal3d(-0.5,1,0)
-			gl_vertex3d(-0.5,1,-0.5)	
-			gl_vertex3d(-0.5,1,0.5)
-			gl_vertex3d(0,1.25,0.5)
-			gl_vertex3d(0,1.25,-0.5)
-			
-			-- Roof left
-			gl_normal3d(0.5,1,0)
-			gl_vertex3d(0.5,1,-0.5)	
-			gl_vertex3d(0,1.25,-0.5)
-			gl_vertex3d(0,1.25,0.5)
-			gl_vertex3d(0.5,1,0.5)
-			
-		gl_end		
-		
-	end 
-	
 end

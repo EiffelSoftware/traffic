@@ -64,8 +64,7 @@ feature -- Basic operations
 				y2 := attribute_double("y2")
 				height := attribute_double("height")
 				building_name := attribute ("name")
-				create building.make (create {EM_VECTOR_2D}.make(x1,y1),create {EM_VECTOR_2D}.make(x1,y2),create {EM_VECTOR_2D}.make(x2,y2),create {EM_VECTOR_2D}.make(x2,y1),building_name)
-				building.set_height(height)
+				create building.make (create {EM_VECTOR_2D}.make(x1,y1),create {EM_VECTOR_2D}.make(x1,y2),create {EM_VECTOR_2D}.make(x2,y2),create {EM_VECTOR_2D}.make(x2,y1), height, building_name)
 				internal_map.add_building (building)
 			end
 		end

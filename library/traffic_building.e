@@ -21,12 +21,13 @@ create
 	make
 
 feature -- Initialization
-	make (a_p1, a_p2, a_p3, a_p4: EM_VECTOR_2D; a_name: STRING) is
+	make (a_p1, a_p2, a_p3, a_p4: EM_VECTOR_2D; an_height: DOUBLE; a_name: STRING) is
 			-- Sets the corner to `a_p1', `a_p2', `a_p3', `a_p4' and the name to `a_name'.
 			-- Calculates the breadth, width and center.
 		require
 			points_valid: a_p1 /= void and a_p2 /= void and a_p3 /= void and a_p4 /= void
 			name_valid: a_name /= void
+			height_valdi: an_height > 0
 		do
 			corner1 := a_p1
 			corner2 := a_p2
@@ -36,10 +37,12 @@ feature -- Initialization
 			angle := 0
 			breadth := sqrt((corner1.x-corner2.x)*(corner1.x-corner2.x)+(corner1.y-corner2.y)*(corner1.y-corner2.y))
 			width := sqrt((corner1.x-corner4.x)*(corner1.x-corner4.x)+(corner1.y-corner4.y)*(corner1.y-corner4.y))
+			height := an_height
 			create center.make((corner2.x+corner4.x)/2,(corner1.y+corner3.y)/2)
 		ensure
 			points_set: corner1 = a_p1 and corner2 = a_p2 and corner3 = a_p3 and corner4 = a_p4
-			name_set: name = a_name	
+			name_set: name = a_name
+			height_set: height = an_height	
 		end
 
 feature -- Status report
@@ -79,16 +82,6 @@ feature -- Options
 			id := an_id
 		ensure
 			id_set: id = an_id
-		end
-		
-	set_height(a_height: DOUBLE) is
-			-- set height to `a_height'.
-		require
-			valid_height: a_height > 0
-		do
-			height := a_height
-		ensure
-			height_set: height = a_height
 		end
 		
 	set_angle(an_angle: DOUBLE) is
@@ -163,5 +156,8 @@ feature -- Attributes
 
 invariant
 	angle_valid: angle >= -70 and angle <= 70
+	breadth_valid: breadth > 0
+	width_valid: width > 0
+	heigth_valid: height > 0
 
 end

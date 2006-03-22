@@ -470,7 +470,7 @@ feature -- Options
 			show_shortest_path = b
 		end
 		
-	add_buildings(n: INTEGER) is
+	add_buildings_randomly(n: INTEGER) is
 			-- adds n buildings to map.
 		do
 			traffic_buildings.add_randomly (n)

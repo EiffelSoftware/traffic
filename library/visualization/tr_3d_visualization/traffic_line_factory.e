@@ -88,7 +88,7 @@ feature -- Decision process
 			decision := gaugers.item(gauger).item([1])
 			unchanged := False
 		end
-		
+	
 feature {NONE} -- Implementation
 			
 	decision: STRING

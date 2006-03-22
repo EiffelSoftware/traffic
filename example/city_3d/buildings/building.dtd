@@ -1,11 +1,12 @@
 <!ELEMENT buildings (building*)>
 
+<!--- A building is specified by its name, height, and its upper left  (x1,y1) and bottom right (x2,y2) corner  --> 
 <!ELEMENT building EMPTY>
 <!ATTLIST building
 	name CDATA #REQUIRED
 	x1 CDATA #REQUIRED
-	x2 CDATA #REQUIRED
 	y1 CDATA #REQUIRED
+	x2 CDATA #REQUIRED
 	y2 CDATA #REQUIRED
 	height CDATA #REQUIRED
   >

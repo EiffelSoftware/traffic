@@ -15,9 +15,11 @@ inherit
 create
 	make_with_map
 	
-feature
+feature -- Initialization
 
 	make_with_map(a_map:TRAFFIC_3D_MAP_WIDGET)  is
+			-- Create parser.
+			
 		require
 			map_valid: a_map /= void
 		do
@@ -31,14 +33,20 @@ feature
 				Processor_registry.forth
 			end
 		end
+
+feature -- Status report		
 	
 	can_process: BOOLEAN is
 			-- Can document tree be processed?
+		
 		do
 			Result := is_parsed and then has_processor (root_element.name)
 		end
 		
+feature -- Basic operations
+		
 	process is
+		
 			-- Process document tree.
 		local
 			p: TRAFFIC_NODE_PROCESSOR

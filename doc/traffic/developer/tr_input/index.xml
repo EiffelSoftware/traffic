@@ -10,7 +10,7 @@
 </chapterinfo>
     <title>Traffic Input Library Developer Guide</title>
     <para>
-This section consists of a description of the intention and use of the 
+This section consists of a description of the intention and use of the input part of the 
 <projectname>Traffic library</projectname> with a description of each class and its simplified interface. 
 The class overviews are sorted in alphabetic ascending order to be able to find a class description faster when knowing the name of it.</para> 
     <para> This document describes how the input part of the  <projectname>Traffic library</projectname> is structured and consists of the following parts: 

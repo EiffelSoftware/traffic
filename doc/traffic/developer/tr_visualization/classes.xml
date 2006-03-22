@@ -25,6 +25,9 @@
 				<link url="#traffic_3d_map_widget">TRAFFIC_3D_MAP_WIDGET</link>
 			</listitem>
 			<listitem>
+				<link url="#traffic_building_factory">TRAFFIC_BUILDING_FACTORY</link>
+			</listitem>
+			<listitem>
 				<link url="#traffic_building_representation">TRAFFIC_BUILDING_REPRESENTATION</link>
 			</listitem>
 			<listitem>
@@ -91,6 +94,24 @@
     	<para>
     	<para>
     		<image src="image/sg_traffic_3d_map_widget.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+    <section id="traffic_building_factory">
+    	<title>TRAFFIC_BUILDING_FACTORY</title>
+   		<title>Requirements:</title>
+    	<para>
+    		None
+    	</para>
+    	<title>Description</title>
+    	<para>
+			The class TRAFFIC_BUILDING_FACTORY is a factory for the 3D objects which represent the buildings on the map. The interface is for each of the factories the same: With the features <featurename>add_gauger</featurename> and <featuername>remove_gauger</featuername> one can handle procedures for decisions. These procedures can then be called through the feature <featurename>take_decision</featurename> which calls the right gauger and saves the decision in the string <featurename>decision</featurename>. For creating a  representation of the built object one can add specific procedures through the features <featurename>add_line_type</featurename> and remove them by calling <featurename>remove_line_type</featurename>. The last two features are the feature <featurename>specify_object</featurename> which takes the right line type according to the decision and the feature <featurename>create_object</featurename> which is inherited from EM_3D_OBJECT_FACTORY and returns the created object.
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		
     	</para>
     	</para>
     	<toplink/>

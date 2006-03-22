@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/classes">
-<chapterinfo>
-	<copyright>
-		<year>2005</year>
-		<holder>Michela Pedroni</holder>
-	</copyright>
-    <email>michela.pedroni@inf.ethz.ch</email>
-	<date>$Date$</date>
-</chapterinfo>
-    <title>Classes</title>
+	<chapterinfo>
+		<copyright>
+			<year>2005</year>
+			<holder>Michela Pedroni</holder>
+		</copyright>
+		<email>michela.pedroni@inf.ethz.ch</email>
+		<date>$Date$</date>
+	</chapterinfo>
+	<title>Classes</title>
 	<section id="top_of_page">
-    	<para>
+		<para>
 			In the following sections the classes will be described. The layout for each class is: 
 			Requirements, Description, Class overview. In the Requirements the name of classes you 
 			need to know in order to understand the class described is given. Description is a short 
@@ -73,21 +73,35 @@
 				<link url="#traffic_traveler">TRAFFIC_TRAVELER</link>
 			</listitem>
 		</itemizedlist>
-    </section>
-    <section id="traffic_building">
+	</section>
+	<section id="traffic_building">
 		<title>TRAFFIC_BUILDING</title>
 		<title>Requirements:</title>
 		<para>
-				<link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link>
+			<link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link>
 		</para>
 		<title>Description</title>
 		<para>
-			The class <classname>TRAFFIC_BUILDING</classname> represents a building. A building is always a rectangle and is specified by its four corners and the three dimensions width, breadth and height. The four corners can be accessed through the four features: <featurename>corner1</featurename> (upper left corner), <featurename>corner2</featurename> (lower left corner), <featurename>corner3</featurename> (lower right corner) and <featurename>corner4</featurename> (upper right corner), whereas the three dimensions can be accessed through the tree features: <featurename>width</featurename>, <featurename>breadth</featurename> and <featurename>height</featurename>. Furthermore, the feature <featurename>angle</featurename> allows to specify an angle (in range -70 to 70 degrees) by which the buildings is rotated. There exists also the possibility to attach <link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link> through <featurename>set_information</featurename>
+			The class <classname>TRAFFIC_BUILDING</classname> represents a building. A building is always a rectangle and is specified by its four corners (corner 1 is always the upper left, corner 2 the lower left, corner 3 the lower right and corner 4 the upper right one) and the three dimensions width, breadth and height. Furthermore, an angle (in range -70 to 70 degrees) can be specified by which the building is rotated.
+		</para>
+		<para>
+			A new building is created through the feature <featurename>make</featurename>, which needs the four corners of the building, its height and its name. The creation feature then calculates the width, the breath and the center and sets the angle to zero. <newline/>
+			In case the angle has to be changed after creation, this can be done through <featurename>set_angle</featurename>. <newline/>
+			If the building has to be drawn, then it needs also an unique identification number which can be set through <featurename>set_id</featurename>. 
+		</para>
+		<para>
+			The four corners can be accessed through the four features: <featurename>corner1</featurename> (upper left corner), <featurename>corner2</featurename> (lower left corner), <featurename>corner3</featurename> (lower right corner) and <featurename>corner4</featurename> (upper right corner), whereas the three dimensions can be accessed through the tree features: <featurename>width</featurename>, <featurename>breadth</featurename> and <featurename>height</featurename>. Finally, the angle can be accessed through <featurename>angle</featurename>
+		</para>
+		<para>
+		There exists also the possibility to attach <link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link> through <featurename>set_information</featurename>, which can afterwards be accessed through <featurename>information</featurename>
+		</para>
+		<para>
+			A quite important feature is <featurename>contains_point</featurename>, which allows to check, whether a point is inside a building. It is mainly used to check, whether a building has been clicked.
 		</para>
 		<title>Class overview</title>
 		<toplink/>
-    </section>
-    <section>
+	</section>
+	<section>
 		<title>TRAFFIC_BUILDING_INFORMATION</title>
 		<title>Requirements:</title>
 		<para>
@@ -103,15 +117,15 @@
 		</para>
 		<title>Class overview</title>
 		<toplink/>
-    </section>
-    <section id="traffic_color">
-    	<title>TRAFFIC_COLOR</title>
-   		<title>Requirements:</title>
-    	<para>
+	</section>
+	<section id="traffic_color">
+		<title>TRAFFIC_COLOR</title>
+		<title>Requirements:</title>
+		<para>
     		None
     	</para>
-    	<title>Description</title>
-    	<para>
+		<title>Description</title>
+		<para>
     		The class <classname>TRAFFIC_COLOR</classname> represents a RGB-Color. A RGB-Color is a color composed of the
     		three additive components: red, green, blue. The three color parts can be accessed 
     		through the three features: <featurename>red</featurename>, <featurename>green</featurename>, 
@@ -123,37 +137,37 @@
     		change the color to is valid. For this the <featurename>is_valid_color_part</featurename>
     		query can be used.
     	</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_color.png"/>
-    	</para>
-    	</para>
-    	<toplink/>
-    </section>
-    <section id="traffic_line">
-    	<title>TRAFFIC_LINE</title>
-   		<title>Requirements:</title>
-    	<para>
-    		<link url="#traffic_color">TRAFFIC_COLOR</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_color.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_line">
+		<title>TRAFFIC_LINE</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_color">TRAFFIC_COLOR</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
     		<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>, <link url="#traffic_type">
     		TRAFFIC_TYPE</link>
-    	</para>
-    	<title>Description</title>
-    	<para>
+		</para>
+		<title>Description</title>
+		<para>
     		The class <classname>TRAFFIC_LINE</classname> models a line of a public transportation system. 
     		Each line has a type, e.g. <classname>TRAFFIC_TYPE_BUS</classname> for a bus line, <classname>
     		TRAFFIC_TYPE_RAIL</classname> for a rail line and so on. This type can be accessed through the 
     		feature <featurename>type</featurename>. In addition a line can have up to two directions. 
     		A line which only has one direction is also valid. Each direction has a terminal place. 
     	</para>
-    	<para>	
+		<para>	
 			A new line is created through the feature <featurename>make</featurename>. It takes as input
 			the name of your new line and a traffic type. The features <featurename>name</featurename>, 
     		<featurename>color</featurename>, <featurename>type</featurename>, <featurename>terminal_1
     		</featurename>, <featurename>terminal_2</featurename> can directly be called. 
     	</para>
-    	<para>
+		<para>
     		If you want to get the starting place of a direction of your line use the feature <featurename>
     		start_to_terminal</featurename>. It takes as input either the place in <featurename>terminal_1
     		</featurename> or <featurename>terminal_2</featurename>. If you use just a place, make sure 
@@ -163,7 +177,7 @@
     		true if one or other direction (depending on the feature you call) exists. Only if a direction 
     		exists there exists a terminal and a starting place. 
     	</para>
-    	<para>
+		<para>
     		The query <featurename>is_valid_for_insertion </featurename> tells you if a line section, as it 
     		is, can be inserted into the line. The query <featurename>is_valid_insertion</featurename> tells
     		you if it is possible for a line section of the correct type from a origin place to a destination 
@@ -172,26 +186,26 @@
     		or real line section. <featurename>Extend</featurename> adds a line section to the line where
     		it fits. So directions can be extended at both their beginning and their end.
     	</para>
-    	<para>
+		<para>
     		The color of a line can be changed or removed through the features <featurename>set_color
     		</featurename> and <featurename>remove_color</featurename>. 
         </para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_line.png"/>
-    	</para>
-    	</para>
-    	<toplink/>
-    </section>
-  <section id="traffic_line_traveler">
-    	<title>TRAFFIC_LINE_TRAVELER</title>
-   		<title>Requirements:</title>
-    	<para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_line.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_line_traveler">
+		<title>TRAFFIC_LINE_TRAVELER</title>
+		<title>Requirements:</title>
+		<para>
    			None
  	   	</para>
-    	<title>Description</title>
-    	<para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_LINE_TRAVELER</classname> represents travelers which travel on a <classname>TRAFFIC_LINE</classname>.
 			Now the default for the traffic_type is 'tram' but this should be changed in future implementations.
 			There are two features added to this class: <featurename>get_place</featurename> and <featurename>set_to_place</featurename>. The first feature returns 
@@ -199,29 +213,29 @@
 			of the given place, if the place is on the line.
 		</para>
 		<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_line_traveler.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-    <section id="traffic_line_section">
-    	<title>TRAFFIC_LINE_SECTION</title>
-   		<title>Requirements:</title>
-    	<para>
-    		<link url="#traffic_place">TRAFFIC_PLACE</link>, <link url="#traffic_line_section">
+		<para>
+			<para>
+				<image src="image/sg_traffic_line_traveler.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_line_section">
+		<title>TRAFFIC_LINE_SECTION</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_place">TRAFFIC_PLACE</link>, <link url="#traffic_line_section">
     		TRAFFIC_LINE_SECTION</link>, <link url="#traffic_line_state">TRAFFIC_LINE_STATE</link>
-	   	</para>
-    	<title>Description</title>
-    	<para>
+		</para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_LINE_SECTION</classname> represents a connection of a line 
 			from one place to another. Those places are called origin and destination. A line section 
 			is of some traffic type, e.g. <classname>TRAFFIC_BUS_TYPE</classname>. A line section can 
 			be added to a line, forming the lines connection. It can belong to at most one line. 
 			Additionally a line section can have different states.
     	</para>
-    	<para>
+		<para>
 			To create a new line section an origin place, a destination place and a traffic type have 
 			to be defined. Such a line section will not belong to any line, its state will be set to
 			some normal state and the polypoints are empty.    	
@@ -237,70 +251,70 @@
 			that when a line section has a line attached it should be in this line. Therefore the line 
 			is responsible to update line sections that are added to or removed from it.
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_line_section.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-    <section id="traffic_line_section_state">
-    	<title>TRAFFIC_LINE_SECTION_STATE</title>
-   		<title>Requirements:</title>
-    	<para>
-    		<link url="#traffic_line_section_state_constants">TRAFFIC_LINE_SECTION_STATE_CONSTANTS</link>
-	   	</para>
-    	<title>Description</title>
-    	<para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_line_section.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_line_section_state">
+		<title>TRAFFIC_LINE_SECTION_STATE</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_line_section_state_constants">TRAFFIC_LINE_SECTION_STATE_CONSTANTS</link>
+		</para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_LINE_SECTION_STATE</classname> provides the interface to define 
 			states and attach them to line sections. The available states are defined from the 
 			<classname>TRAFFIC_LINE_SECTION_STATE_CONSTANTS</classname> class.    	
 		</para>
-    	<para>
+		<para>
 			 A new state is simply created by calling its creation feature. The feature <featurename>make
 			 </featurename> always creates a normal state. To change it, call the feature <featurename>
 			 set_state</featurename> with one of the values defined in <classname>
 			 TRAFFIC_LINE_SECTION_STATE_CONSTANTS</classname>.    	
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_line_section_state.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-    <section id="traffic_line_section_state_constants">
-    	<title>TRAFFIC_LINE_SECTION_STATE_CONSTANTS</title>
-   		<title>Requirements:</title>
-    	<para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_line_section_state.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_line_section_state_constants">
+		<title>TRAFFIC_LINE_SECTION_STATE_CONSTANTS</title>
+		<title>Requirements:</title>
+		<para>
     		None
 	   	</para>
-    	<title>Description</title>
-    	<para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_LINE_SECTION_STATE_CONSTANTS</classname> defines all line 
 			section states and has the feature <featurename>is_valid_state_value</featurename> that 
 			tests any integer value to the states value and the feature <featurename>value_to_string
 			</featurename> that returns a string representation of the state value.    	
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_line_section_state_constants.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-    <section id="traffic_map">
-    	<title>TRAFFIC_MAP</title>
-   		<title>Requirements:</title>
-    	<para>
-   			<link url="#traffic_line">TRAFFIC_LINE</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_line_section_state_constants.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_map">
+		<title>TRAFFIC_MAP</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_line">TRAFFIC_LINE</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
     		<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>
- 	   	</para>
-    	<title>Description</title>
-    	<para>
+		</para>
+		<title>Description</title>
+		<para>
 			The <classname>TRAFFIC_MAP</classname> is the collection of all lines, line sections and places.
 			All elements are administrated by the map. Through the name of a place or a line you can 
 			retrieve it, you can search for line sections and even search shortest paths from one place
@@ -317,26 +331,26 @@
 			features <featurename>add_place</featurename>, <featurename>add_line</featurename> or
 			<featurename>add_line_section</featurename>.
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_map.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-    <section id="traffic_map_factory">
-    	<title>TRAFFIC_MAP_FACTORY</title>
-   		<title>Requirements:</title>
-    	<para>
-   			<link url="#traffic_line">TRAFFIC_LINE</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_map.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_map_factory">
+		<title>TRAFFIC_MAP_FACTORY</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_line">TRAFFIC_LINE</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
     		<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>, <link url="#traffic_simple_line">
     		TRAFFIC_SIMPLE_LINE</link>, <link url="#traffic_map">TRAFFIC_MAP</link>,
     		<link url="#traffic_type">TRAFFIC_TYPE</link>, <link url="#traffic_type_factory">
     		TRAFFIC_TYPE_FACTORY</link>
- 	   	</para>
-    	<title>Description</title>
-    	<para>
+		</para>
+		<title>Description</title>
+		<para>
 			The <classname>TRAFFIC_MAP_FACTORY</classname> is used to create a map and its elements. 
 			The general principle is easy. Call the corresponding build feature. Test with the 
 			has-features if a valid object was created and access the last created object of a 
@@ -364,15 +378,15 @@
 			have polypoints defining its appearance and a line it belongs to. Therefore all these arguments 
 			have to be given to the build features of the line section.
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_map_factory.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-    <section id="traffic_map_loader">
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_map_factory.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_map_loader">
 		<title>TRAFFIC_MAP_LOADER</title>
 		<title>Requirements:</title>
 		<para>
@@ -387,15 +401,15 @@
 		</para>
 		<title>Class overview</title>
 		<toplink/>
-    </section>
-    <section id="traffic_place">
-    	<title>TRAFFIC_PLACE</title>
-   		<title>Requirements:</title>
-    	<para>
-   			<link url="#traffic_place_information">TRAFFIC_PLACE_INFORMATION</link>
- 	   	</para>
-    	<title>Description</title>
-    	<para>
+	</section>
+	<section id="traffic_place">
+		<title>TRAFFIC_PLACE</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_place_information">TRAFFIC_PLACE_INFORMATION</link>
+		</para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_PLACE</classname> represents a place in a city. It can 
 			have additional information like one ore more pictures and a description attached to
 			it. Additionally it can have a position.		
@@ -411,22 +425,22 @@
 			The information can be Void, whereas the name and position should never be void. 
 			The information and position can also be changed during the lifetime of a place object.
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_place.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-   <section id="traffic_place_information">
-    	<title>TRAFFIC_PLACE_INFORMATION</title>
-   		<title>Requirements:</title>
-    	<para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_place.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_place_information">
+		<title>TRAFFIC_PLACE_INFORMATION</title>
+		<title>Requirements:</title>
+		<para>
    			LINKED_LIST
  	   	</para>
-    	<title>Description</title>
-    	<para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_PLACE_INFORMATION</classname> is a collection of additional 
 			information for a place. This can be one or more pictures (path to the pictures) and a 
 			textual description.
@@ -438,23 +452,23 @@
 			remove_picture</featurename>. To remove a description just call <featurename>
 			remove_description</featurename>.		
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_place_information.png"/>
-    	</para>
-     	</para>
-     	<toplink/>
-    </section>
-   <section id="traffic_route">
-    	<title>TRAFFIC_ROUTE</title>
-   		<title>Requirements:</title>
-    	<para>
-   			<link url="#traffic_place">TRAFFIC_PLACE</link>, <link url="#traffic_line_section">
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_place_information.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_route">
+		<title>TRAFFIC_ROUTE</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_place">TRAFFIC_PLACE</link>, <link url="#traffic_line_section">
    			TRAFFIC_LINE_SECTION</link>
- 	   	</para>
-    	<title>Description</title>
-    	<para>
+		</para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_ROUTE</classname> calculates the shortest path for a set 
 			of places you want to visit on a given map. You can change the route by adding or removing 
 			places you want to visit with the features <featurename>extend</featurename> and
@@ -465,48 +479,49 @@
 			</featurename> the places and used line sections that are on the route can be accessed 
 			through <featurename>places_on_route</featurename> and <featurename>line_sections</featurename>.
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_route.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-   <section id="traffic_simple_line">
-    	<title>TRAFFIC_SIMPLE_LINE</title>
-   		<title>Requirements:</title>
-    	<para>
-   			<link url="#traffic_line">TRAFFIC_LINE</link>
- 	   	</para>
-    	<title>Description</title>
-    	<para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_route.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_simple_line">
+		<title>TRAFFIC_SIMPLE_LINE</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_line">TRAFFIC_LINE</link>
+		</para>
+		<title>Description</title>
+		<para>
 			<classname>TRAFFIC_SIMPLE_LINE</classname> is a line that always has a line section in 
 			both directions. So if you add a line section from place A to place B the line section 
 			from place B to place A will be added as well. As a result you get a symmetric line.		
 		</para>
 		<para>
 			The only feature that differs from the features of class <link url="#traffic_line">
-			<classname>TRAFFIC_LINE</classname></link> is the creation feature
+				<classname>TRAFFIC_LINE</classname>
+			</link> is the creation feature
 			that has an additional argument: the traffic map that the simple line (and consequently its 
 			line sections) is in.
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_simple_line.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-  <section id="traffic_type">
-    	<title>TRAFFIC_TYPE</title>
-   		<title>Requirements:</title>
-    	<para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_simple_line.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_type">
+		<title>TRAFFIC_TYPE</title>
+		<title>Requirements:</title>
+		<para>
    			None
  	   	</para>
-    	<title>Description</title>
-    	<para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_TYPE</classname> is used to identify the type of a line 
 			or line_section. <classname>TRAFFIC_TYPE</classname> is the abstract class of all 
 			possible traffic types. Traffic types are mainly used to make sure that only line 
@@ -517,22 +532,22 @@
 			The traffic type classes have one interesting query: <featurename>name</featurename> 
 			returns a textual representation of the traffic type.
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_type.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-  <section id="traffic_type_factory">
-    	<title>TRAFFIC_TYPE_FACTORY</title>
-   		<title>Requirements:</title>
-    	<para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_type.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_type_factory">
+		<title>TRAFFIC_TYPE_FACTORY</title>
+		<title>Requirements:</title>
+		<para>
    			None
  	   	</para>
-    	<title>Description</title>
-    	<para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_TYPE_FACTORY</classname> creates singleton traffic types. 
 			This means you get the same type object every time you build a type. This makes it 
 			easier to compare two objects of a given traffic type: you can simply compare the 
@@ -554,22 +569,22 @@
 			<featurename>traffic_type</featurename>. The query <featurename>has_type</featurename> 
 			returns true if the type could be built.
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_type_factory.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-  <section id="traffic_traveler">
-    	<title>TRAFFIC_TRAVELER</title>
-   		<title>Requirements:</title>
-    	<para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_type_factory.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_traveler">
+		<title>TRAFFIC_TRAVELER</title>
+		<title>Requirements:</title>
+		<para>
    			None
  	   	</para>
-    	<title>Description</title>
-    	<para>
+		<title>Description</title>
+		<para>
 			The class <classname>TRAFFIC_TRAVELER</classname> represents any type of traveler on the map. 
 			The actual type is then given through a <classname>TRAFFIC_TYPE</classname> object.
 		</para>
@@ -587,13 +602,12 @@
 			and <featurename>time</featurename>, <featurename>is_reiterating</featurename> and <featurename>is_traveling_back</featurename>
 			which is needed for the tour algorithm. There is the feature <featurename>index</featurename> which is a unique ID for each traveler.
 		</para>
-    	<title>Class overview</title>
-    	<para>
-    	<para>
-    		<image src="image/sg_traffic_traveler.png"/>
-    	</para>
-     	</para>
-    	<toplink/>
-    </section>
-
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_traveler.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
 </chapter>
