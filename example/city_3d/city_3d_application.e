@@ -28,7 +28,7 @@ feature -- Initialization
 			keyboard: EM_KEYBOARD
 		do
 			-- Initialise screen
-			video_subsystem.set_video_surface_width (1000)
+			video_subsystem.set_video_surface_width (window_width)
 			video_subsystem.set_video_surface_height (window_height)
 			video_subsystem.set_video_bpp (Screen_resolution)
 			video_subsystem.set_fullscreen (Fullscreen)
@@ -52,6 +52,7 @@ feature -- Initialization
 			set_scene (create {CITY_3D_SCENE}.make)
 			launch
 			full_collect
+			video_subsystem.disable
 		end
 
 end -- class CITY_3D_APPLICATION
