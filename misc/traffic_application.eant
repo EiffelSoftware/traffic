@@ -30,6 +30,44 @@
 		<echo message="   geant compile_debug"/>
 	</target>
 
+  <target name="xace" depend="init">
+    <description>
+      Build Ace file or ESD file for Eiffel compiler ${eiffel}.
+      Generate file in ${gexace_output} if specified.
+      Pass $DEBUG option to 'gexace' if ${debug} is defined.
+      Pass $BOOTSTRAP option to 'gexace' if ${bootstrap} is defined.
+      Pass $GOBO_OS value to 'gexace'.
+      Pass $cc value to 'gexace' as $GOBO_CC.
+      Pass $eiffel value to 'gexace' as $GOBO_EIFFEL.
+      Pass $GOBO_XML_EXPAT option to 'gexace' if defined.
+      Pass $GOBO_DOTNET option to 'gexace' if defined.
+      Pass $ISE_5_1 option to 'gexace' if defined.
+      Pass $SE_0_74 option to 'gexace' if defined.
+      Pass $EWG_FFCALL option to 'gexace' if defined.
+      Pass $IS_MAC_OS_X option to 'gexace' if `ewg.is_mac_os_x' is set to 'true'.
+      Pass $HAS_NEW_GTK_CONFIG option to 'gexace' if `em.has_new_gtk_config' is set to 'true'.
+      To be redefined in descendant if additional options are
+      necessary.
+    </description>
+
+    <set name="gexace_output" value="" unless="${gexace_output}"/>
+    <gexace system="${eiffel}" output="${gexace_output}" xace="&quot;${system_dir}/system.xace&quot;">
+      <define name="DEVELOP" value="${develop}" if="${develop}"/>
+      <define name="DEBUG" value="${debug}" if="${debug}"/>
+      <define name="BOOTSTRAP" value="${bootstrap}" if="${bootstrap}"/>
+      <define name="GOBO_OS" value="${GOBO_OS}"/>
+      <define name="GOBO_CC" value="${cc}"/>
+      <define name="GOBO_EIFFEL" value="${eiffel}"/>
+      <define name="GOBO_XML_EXPAT" value="true" if="${GOBO_XML_EXPAT}"/>
+      <define name="GOBO_DOTNET" value="true" if="${GOBO_DOTNET}"/>
+      <define name="ISE_5_1" value="true" if="${ISE_5_1}"/>
+      <define name="SE_0_74" value="true" if="${SE_0_74}"/>
+      <define name="EWG_FFCALL" value="true" if="${EWG_FFCALL}"/>
+      <define name="IS_MAC_OS_X" value="true" if="${ewg.is_mac_os_x}=true"/>
+      <define name="HAS_NEW_GTK_CONFIG" value="true" if="${em.has_new_gtk_config}=true"/>
+    </gexace>
+  </target>
+
   <target name="install_develop" depend="init">
 		<echo message="   generate ace file for ${system}"/>
 		<description>
@@ -56,37 +94,4 @@
 		<delete file="developer.ace"/>
 	</target>
 	
-	<target name="xace" depend="init">
-		<description>
-			Build Ace file or ESD file for Eiffel compiler ${gexace_system}
-			if specifed, ${eiffel} otherwise.
-			Generate file in ${gexace_output} if specified.
-			Pass $DEBUG option to 'gexace' if ${debug} is defined.
-			Pass $BOOTSTRAP option to 'gexace' if ${bootstrap} is defined.
-			Pass $GOBO_EIFFEL value to 'gexace'.
-			Pass $GOBO_OS value to 'gexace'.
-			Pass $GOBO_CC value to 'gexace' if defined.
-			Pass $GOBO_XML_EXPAT option to 'gexace' if defined.
-			Pass $GOBO_DOTNET option to 'gexace' if defined.
-			Pass $SE_1_0 option to 'gexace' if defined.
-			To be redefined in descendant if additional options are
-			necessary.
-		</description>
-
-		<set name="l_gexace_output" value="" unless="${gexace_output}"/>
-		<set name="l_gexace_output" value="${gexace_output}" if="${gexace_output}"/>
-		<set name="l_gexace_system" value="${eiffel}" unless="${gexace_system}"/>
-		<set name="l_gexace_system" value="${gexace_system}" if="${gexace_system}"/>
-		<gexace system="${l_gexace_system}" output="${l_gexace_output}" xace="${system_dir}/system.xace">
-			<define name="DEBUG" value="${debug}" if="${debug}"/>
-			<define name="DEVELOP" value="${develop}" if="${develop}"/>
-			<define name="BOOTSTRAP" value="${bootstrap}" if="${bootstrap}"/>
-			<define name="GOBO_EIFFEL" value="${eiffel}"/>
-			<define name="GOBO_OS" value="${GOBO_OS}"/>
-			<define name="GOBO_CC" value="${GOBO_CC}" if="${GOBO_CC}"/>
-			<define name="GOBO_XML_EXPAT" value="true" if="${GOBO_XML_EXPAT}"/>
-			<define name="GOBO_DOTNET" value="true" if="${GOBO_DOTNET}"/>
-			<define name="SE_1_0" value="true" if="${SE_1_0}"/>
-		</gexace>
-	</target>
 </project>
