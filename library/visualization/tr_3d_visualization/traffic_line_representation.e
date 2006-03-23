@@ -23,6 +23,12 @@ inherit
 	GLU_FUNCTIONS
 		export {NONE} all end	
 		
+	EM_TIME_SINGLETON
+		export {NONE} all end
+		
+	EM_COMPONENT_SCENE
+		export {NONE} all end
+		
 create
 	make
 
@@ -397,12 +403,9 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			require
 				map_valid: map /= Void
 			local
-				x_coord, z_coord: DOUBLE
-				i, j: INTEGER
-				all_sections_of_one_line: TRAFFIC_LINE -- lines are at beginning and end of linesections
-				a_line: EM_3D_OBJECT
-				collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-				poly_points: DS_LINKED_LIST[EM_VECTOR_2D]				
+				
+				i: INTEGER	
+				all_sections_of_one_line: TRAFFIC_LINE 
 				actual_line: ARRAY[EM_3D_OBJECT]
 			do
 				all_lines := map.lines
@@ -412,48 +415,17 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 				until
 					all_lines.after
 				loop
-					-- iterate over all lines
-					j :=0		-- for the individual line segments
-					create actual_line.make(1,1)
-					all_sections_of_one_line := all_lines.item_for_iteration --###die linie 9... alle Segmente davon
-					line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (all_lines.item_for_iteration.color.red/255, all_lines.item_for_iteration.color.green/255, all_lines.item_for_iteration.color.blue/255)
-					from
-						all_sections_of_one_line.start
-					until
-						all_sections_of_one_line.after
-					loop
-						-- iterate over all sections of one line
-							
-						line_section := all_sections_of_one_line.item
+					all_sections_of_one_line:= all_lines.item_for_iteration
+					actual_line := make_normal_line(all_sections_of_one_line)
+					line_objects.force (actual_line, all_sections_of_one_line)							
+--					line_objects.put(actual_line, all_sections_of_one_line)					
 
-						x_coord := map_to_gl_coords(all_sections_of_one_line.item.polypoints.first).x
-						z_coord := map_to_gl_coords(all_sections_of_one_line.item.polypoints.first).y
-						
-						-- polypoints for the line
-						create poly_points.make
-						poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord), 1)	-- left bottom corner
-						poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord-line_width), 2) -- left upper corner
-						poly_points.force (create {EM_VECTOR_2D}.make (x_coord-line_width, z_coord-line_width), 3) -- right upper corner
-						poly_points.force (create {EM_VECTOR_2D}.make (x_coord-line_width, z_coord), 4) -- right bottom corner
-					
-						create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-0.1,z_coord-0.1), poly_points)
-						
-						-- line creation
-						line_factory.take_decision (decision_type)
-						a_line := line_factory.create_object
-						
-						actual_line.force(a_line, j)
-						j := j+1
-						all_sections_of_one_line.forth
-					end
-					
-					line_objects.put(actual_line, all_sections_of_one_line)					
 					i := i+1
 					all_lines.forth
 				end
 			end
 			
-	make_highlighted_line(line_to_highlight: TRAFFIC_LINE; height: INTEGER):ARRAY[EM_3D_OBJECT] is
+	make_highlighted_line(line_to_highlight: TRAFFIC_LINE; highlight_line_height: INTEGER):ARRAY[EM_3D_OBJECT] is
 			-- to build  the bold highlighted line objects.
 		require
 			line_to_highlight_valid: line_to_highlight /= Void
@@ -494,7 +466,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 				is_highlighted := true
 				line_factory.take_decision (decision_type)
 				a_line := line_factory.create_object
-				a_line.set_origin (0, line_height + 0.4*height + highlighting_delta, 0)
+				a_line.set_origin (0, line_height + 0.4*highlight_line_height + highlighting_delta, 0)
 				actual_line.force(a_line, j)
 				j := j+1
 				all_sections_of_one_line.forth
@@ -504,10 +476,10 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			Result := actual_line	
 		end
 		
-	make_normal_line(line_to_un_highlight: TRAFFIC_LINE):ARRAY[EM_3D_OBJECT] is
+	make_normal_line(normal_line: TRAFFIC_LINE):ARRAY[EM_3D_OBJECT] is
 			-- to build  the normal (un-highlighted) line objects.
 		require
-			line_to_un_highlight_valid: line_to_un_highlight /= Void
+			normal_line_valid: normal_line /= Void
 		local
 			x_coord, z_coord: DOUBLE
 			j: INTEGER
@@ -517,11 +489,11 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]				
 			actual_line: ARRAY[EM_3D_OBJECT]
 		do
-			line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (line_to_un_highlight.color.red/255, line_to_un_highlight.color.green/255, line_to_un_highlight.color.blue/255)
+			line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (normal_line.color.red/255, normal_line.color.green/255, normal_line.color.blue/255)
 			is_highlighted := false
 			j :=0		-- for the individual line segments
 	
-			all_sections_of_one_line := all_lines.item (line_to_un_highlight.name)
+			all_sections_of_one_line := all_lines.item (normal_line.name)
 			create actual_line.make(1,1)
 			from
 				all_sections_of_one_line.start
@@ -648,25 +620,16 @@ feature -- Attributes Setting
 		
 	
 	highlight_single_line_for_5sec(a_line: TRAFFIC_LINE) is	
-		-- Highlights 'a_line' for 5 seconds and reset it. 
-		local
---			delay_time_3:EM_DELAYED_PROCEDURES
+		-- Highlights 'a_line' for 5 seconds and reset it.
 		do 
-			
+			wait_time := 5000
+			time.delay (wait_time)
 			highlight_single_line(a_line)
-			
+						
 			draw
---			create delay_time.make
---			wait_time := 5000
---			delay_time.delay(wait_time)
-
---			create delay_time_2.make_wait
---			delay_time_2.delay_and_process (5000)
-
---			create delay_time_3.make
---			delay_time_3.add_timed_procedure (un_highlight_single_line(a_line), 5000)
 			
-	--		un_highlight_single_line(a_line)
+			time.delay (wait_time)
+			un_highlight_single_line(a_line)
 		end	
 		
 		
@@ -732,9 +695,9 @@ feature -- Attributes Setting
 		
 feature{NONE} -- Attributes - Implementation
 
-	all_lines: HASH_TABLE [TRAFFIC_LINE, STRING]		-- WAS LOCAL SK
+	all_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 	
-	line_section: TRAFFIC_LINE_SECTION	
+	line_section: TRAFFIC_LINE_SECTION
 		
 	lines: ARRAYED_LIST[TRAFFIC_LINE_SECTION]
 			-- Traffic line provides information about points and segments.
@@ -764,17 +727,10 @@ feature{NONE} -- Attributes - Implementation
 		-- Centre of the city
 		
 	is_highlighted: BOOLEAN
-		-- are the lines highlighted
-		
-	delay_time: EM_TIME --is
---		-- for waiting time of highlighting
---		once
---			delay_time.make
---		end
-	
-	delay_time_2: EM_EVENT_LOOP	
-		
+		-- If the lines are highlighted
+
 	wait_time: INTEGER
+		-- For highlighting a line 5 seconds
 		
 	highlighting_delta: DOUBLE
 		-- Height difference between highlighted and normal line representation
