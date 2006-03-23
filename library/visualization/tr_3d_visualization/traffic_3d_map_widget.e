@@ -361,7 +361,6 @@ feature -- Traffic map loading
 ----			is_map_loaded = True
 --			place_representation_startet: traffic_places /= Void
 --			line_representation_started: traffic_lines /= Void
---			buildings_ewer_created: traffic_buildings /= Void
 		end
 		
 	is_map_loaded: BOOLEAN
@@ -419,13 +418,12 @@ feature -- Options
 		end
 	
 	set_number_of_buildings (n: INTEGER) is
-			-- Set `number_of_buildings'.
+			-- Set `n' buildings and add them randomly to the map.
 		require
 			n >= 0
 		do
 			
 			if is_map_loaded then
-				--traffic_buildings.set_building_number (number_of_buildings)
 				if n > number_of_buildings then
 					add_buildings_randomly (n - number_of_buildings)
 					number_of_buildings := n
@@ -482,13 +480,7 @@ feature -- Options
 		end
 		
 	add_buildings_randomly(n: INTEGER) is
-			-- adds n buildings to map.
---		do
---			traffic_buildings.add_randomly (n)
---		end
---		add_randomly (n: INTEGER) is
-			-- Randomly add buildings to the list of buildings.
-		
+			-- Adds randomly `n' buildings to map.		
 		require
 			n_not_negative: n >= 0
 		local
@@ -502,7 +494,6 @@ feature -- Options
 			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
 			p1,p2,p3,p4: EM_VECTOR_2D
 			center: EM_VECTOR_2D
-			taken: BOOLEAN
 		do
 			old_number := number_of_buildings
 			
@@ -510,7 +501,6 @@ feature -- Options
 			stretch_factor_x := .25
 			stretch_factor_y := .25
 		
-			taken:=false
 			from
 				i := number_of_buildings + 1
 				j := 1
@@ -593,23 +583,20 @@ feature -- Options
 
 	
 	add_building(a_building: TRAFFIC_BUILDING) is
-			-- add `a_building' to map.
+			-- Add `a_building' to map.
 		do
 			traffic_buildings.add_building (a_building)
 		end
 		
 	add_buildings_along_lines is	
-			--  adds buildings along lines to map.
---		do
---			traffic_buildings.add_along_lines
---		
---		end
-			local
+			-- Add buildings along all lines (expect railway).
+
+		local
 			line_sections:ARRAYED_LIST [TRAFFIC_LINE_SECTION]
 			line_section: TRAFFIC_LINE_SECTION
 			building: TRAFFIC_BUILDING
-			temp_destination: EM_VECTOR_2D
-			gl_origin: EM_VECTOR_2D
+			temp_destination: EM_VECTOR_2D -- destination rotated by line angle
+			gl_origin: EM_VECTOR_2D -- origin in gl coordinates
 			p1,p2,p3,p4: EM_VECTOR_2D
 			angle: DOUBLE
 			building_height: DOUBLE
@@ -778,7 +765,7 @@ feature -- Options
 		end	
 	
 	delete_buildings is
-			-- delete all buildings from representation
+			-- Delete all buildings from representation.
 		do
 			traffic_buildings.delete_buildings
 			buildings_polygons.wipe_out
@@ -788,7 +775,7 @@ feature -- Options
 		
 	
 	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
-			-- add a traveler to the map.
+			-- Add a traveler to the map.
 			do
 				traffic_traveler.add_traveler (a_traveler, map)
 			end
@@ -814,7 +801,7 @@ feature -- Options
 feature -- Mousevents
 
 	publish_mouse_event (event: EM_MOUSEBUTTON_EVENT) is
-			-- 	
+			-- 	Event queue for building clicked event.
 		local
 			result_vec: GL_VECTOR_3D[DOUBLE]
 			clicked_point: GL_VECTOR_3D[DOUBLE]

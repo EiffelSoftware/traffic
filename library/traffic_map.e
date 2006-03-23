@@ -357,7 +357,6 @@ feature -- Access
 	buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]] is
 			-- All buildings on map.
 		do
-			--evtl jede list twin
 			Result := internal_buildings.twin
 		end
 		

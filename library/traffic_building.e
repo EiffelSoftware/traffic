@@ -1,8 +1,8 @@
 indexing
 	description: "Buildings for the traffic library"
-	author: "Fabian Wüest"
-	date: "22.01.2006"
-	revision: "0.1"
+	author: ""
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	TRAFFIC_BUILDING
@@ -75,7 +75,7 @@ feature -- Status report
 feature -- Options
 		
 	set_id(an_id: INTEGER) is
-			-- set id to `an_id'.
+			-- Set id to `an_id'.
 		require
 			valid_id: an_id > 0
 		do
@@ -85,7 +85,7 @@ feature -- Options
 		end
 		
 	set_angle(an_angle: DOUBLE) is
-			-- set angle to `a_angle'.
+			-- Set angle to `a_angle'.
 		require
 			angle_valid: an_angle >= -70 and an_angle <=70
 		local
@@ -106,7 +106,7 @@ feature -- Options
 		end
 		
 	 set_information(a_information: TRAFFIC_BUILDING_INFORMATION) is
-	 		-- set information to `a_information'
+	 		-- Set information to `a_information'.
 	 	require
 	 		information_valid: a_information /= void
 	 	do

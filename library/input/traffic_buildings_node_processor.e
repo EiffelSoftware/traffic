@@ -1,8 +1,8 @@
 indexing
 	description: "XML processors for <buildings> nodes."
-	author: "Fabian Wüest"
-	date: "28.01.2006"
-	revision: "0.1"
+	author: ""
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	TRAFFIC_BUILDINGS_NODE_PROCESSOR

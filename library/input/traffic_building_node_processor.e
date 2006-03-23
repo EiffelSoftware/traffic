@@ -1,8 +1,8 @@
 indexing
 	description: "XML processors for <building> nodes."
-	author: "Fabian Wüest"
-	date: "28.01.2006"
-	revision: "0.1"
+	author: ""
+	date: "$Date:$"
+	revision: "$Revision:$"
 
 class
 	TRAFFIC_BUILDING_NODE_PROCESSOR
@@ -37,7 +37,7 @@ feature -- Basic operations
 			height: DOUBLE
 			building_name: STRING
 		do
-			-- check whether aributes exist and have proper type
+			-- Check whether aributes exist and have proper type
 			if not has_attribute ("name") then
 				set_error (Mandatory_attribute_missing, << "name" >>)
 			elseif not has_attribute ("x1") then
@@ -58,6 +58,7 @@ feature -- Basic operations
 			elseif not (is_attribute_integer("height") and is_attribute_double("height")) then
 				set_error (Wrong_attribute_type, << "height" >>)
 			else
+				--Create new building
 				x1 := attribute_double("x1")
 				x2 := attribute_double("x2")
 				y1 := attribute_double("y1")

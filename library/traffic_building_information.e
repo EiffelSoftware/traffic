@@ -21,7 +21,7 @@ feature -- Initialization
 feature -- Options
 	
 	set_street (a_street: STRING) is
-			-- Assign `a_street'.
+			-- Set street to `a_street'.
 		require
 			a_street /= void
 		do
@@ -31,7 +31,7 @@ feature -- Options
 		end
 	
 	set_house_number (a_number: INTEGER) is
-			-- Assign `a_number'.
+			-- Set house_number to `a_number'.
 		require
 			a_number_valid: a_number >= 1
 		do
@@ -41,7 +41,7 @@ feature -- Options
 		end
 	
 	set_description (a_description: STRING) is
-			-- Assign `a_description'.
+			-- Set description to `a_description'.
 		require
 			a_description_valid: a_description /= void
 		do

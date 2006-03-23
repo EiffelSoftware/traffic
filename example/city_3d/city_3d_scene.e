@@ -521,6 +521,7 @@ feature -- Event handling
 			-- Delete buildings from representation.
 		do
 			map.delete_buildings
+			buildings_slider.set_current_value (0)	
 		end
 		
 		

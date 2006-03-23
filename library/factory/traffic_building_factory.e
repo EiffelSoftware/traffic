@@ -1,8 +1,8 @@
 indexing
 	description: "Factory for TRAFFIC_BUILDINGS"
-	author: "Fabian Wüest"
-	date: "22.01.2006"
-	revision: "0.1"
+	author: ""
+	date: "$Date$"
+	revision: "$Revision"
 
 class
 	TRAFFIC_BUILDING_FACTORY
@@ -16,7 +16,7 @@ creation
 feature -- Initialization
 
 	make is
-			-- set up the factory
+			-- Set up the factory.
 			do
 				create building_templates.make(1)
 				create gaugers.make(1)
@@ -91,10 +91,10 @@ feature {NONE} -- Implementation
 			-- The decision the gauger has taken
 			
 	gaugers: HASH_TABLE[FUNCTION [ANY, TUPLE, STRING], STRING]
-			-- Helps to decide the kind of place to draw.		
+			-- Helps to decide the kind of place to draw		
 			
 	building_templates: HASH_TABLE[PROCEDURE[ANY,TUPLE], STRING]
-			-- Containter of all types of places.
+			-- Containter of all types of places
 
 feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessible from the outside
 
