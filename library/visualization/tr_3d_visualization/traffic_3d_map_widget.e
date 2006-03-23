@@ -61,7 +61,12 @@ feature -- Initialisation
 
 				mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 				create building_clicked_event.default_create
-				create traffic_buildings.make				
+				create traffic_buildings.make
+				
+				create randomizer.set_seed (42)
+				create angle_randomizer.set_seed(45)
+				create buildings_polygons.make (1)
+				building_id:= 1				
 
 			ensure
 				sun_created: sun_light /= Void
@@ -347,7 +352,6 @@ feature -- Traffic map loading
 	--			traffic_traveler_polygons := traffic_traveler.collision_polygons
 				
 				traffic_buildings.set_map(loader.map)
-				traffic_buildings.set_collision_polygons(collision_polygons)
 				marked_station_changed := True	
 			else			
 				last_loading_successful := False
@@ -419,9 +423,16 @@ feature -- Options
 		require
 			n >= 0
 		do
-			number_of_buildings := n
+			
 			if is_map_loaded then
-				traffic_buildings.set_building_number (number_of_buildings)
+				--traffic_buildings.set_building_number (number_of_buildings)
+				if n > number_of_buildings then
+					add_buildings_randomly (n - number_of_buildings)
+					number_of_buildings := n
+				else
+					number_of_buildings := n
+				end
+				traffic_buildings.set_building_number (number_of_buildings)			
 			end
 		ensure 
 			number_of_buildings = n
@@ -472,9 +483,114 @@ feature -- Options
 		
 	add_buildings_randomly(n: INTEGER) is
 			-- adds n buildings to map.
+--		do
+--			traffic_buildings.add_randomly (n)
+--		end
+--		add_randomly (n: INTEGER) is
+			-- Randomly add buildings to the list of buildings.
+		
+		require
+			n_not_negative: n >= 0
+		local
+			local_x_coord, local_y_coord: DOUBLE -- cooridnates of the building center 
+			i, j: INTEGER
+			angle: DOUBLE -- random number between -45 and 45
+			stretch_factor_x, stretch_factor_y: DOUBLE
+			building: TRAFFIC_BUILDING
+			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
+			old_number: INTEGER
+			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
+			p1,p2,p3,p4: EM_VECTOR_2D
+			center: EM_VECTOR_2D
+			taken: BOOLEAN
 		do
-			traffic_buildings.add_randomly (n)
+			old_number := number_of_buildings
+			
+			-- set stretch factor
+			stretch_factor_x := .25
+			stretch_factor_y := .25
+		
+			taken:=false
+			from
+				i := number_of_buildings + 1
+				j := 1
+			until
+				i > (n + old_number)
+			loop
+				-- calculate center of building
+				local_x_coord := - (plane_size/2) + randomizer.double_i_th (j)*plane_size
+				local_y_coord := - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size
+				create center.make (local_x_coord, local_y_coord)
+				
+				-- calculate angle of building
+				angle := angle_randomizer.double_i_th(j)*-90+45
+		
+				-- create the four corners
+				create p1.make (local_x_coord+0.5*stretch_factor_x, local_y_coord+0.5*stretch_factor_y)
+				create p2.make (local_x_coord+0.5*stretch_factor_x, local_y_coord-0.5*stretch_factor_y)
+				create p3.make (local_x_coord-0.5*stretch_factor_x, local_y_coord-0.5*stretch_factor_y)
+				create p4.make (local_x_coord-0.5*stretch_factor_x, local_y_coord+0.5*stretch_factor_y)
+				
+				-- rotate the building
+				p1:=p1.rotation (center,-angle*pi/180)
+				p2:=p2.rotation (center,-angle*pi/180)
+				p3:=p3.rotation (center,-angle*pi/180)
+				p4:=p4.rotation (center,-angle*pi/180)
+				
+				-- Check for collision with lines and other buildings
+				create poly_points.make
+				poly_points.force (p1, 1)
+				poly_points.force (p2, 2)
+				poly_points.force (p3, 3)
+				poly_points.force (p4, 4)
+				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord, y_coord), poly_points)
+				
+				if not has_collision (collision_poly) then
+										
+					-- create traffic building and add it to map
+					create building.make(p1, p2, p3, p4, 0.25, "building " + building_id.out)
+					building_id := building_id + 1
+					building.set_angle (angle)
+					traffic_buildings.add_building (building)
+					i := i + 1
+				end
+				-- we need to random j's per round
+				j := j + 2
+			end
+			
 		end
+	
+		has_collision (a_poly: EM_COLLIDABLE): BOOLEAN is
+			-- Is there a collision?
+		require
+			a_poly /= void
+		do
+			-- Check if there is a collision with a line
+			from
+				traffic_lines_polygons.start
+				Result := False
+			until
+				traffic_lines_polygons.after or Result
+			loop
+				if a_poly.collides_with (traffic_lines_polygons.item) then
+					Result := True
+				end
+				traffic_lines_polygons.forth
+			end
+			
+			-- Check if there is a collsion with a building
+			from 
+				buildings_polygons.start
+			until
+				buildings_polygons.after or Result
+			loop
+				if a_poly.collides_with (buildings_polygons.item) then
+					Result := True
+				end
+				buildings_polygons.forth
+			end
+		end
+
 	
 	add_building(a_building: TRAFFIC_BUILDING) is
 			-- add `a_building' to map.
@@ -484,15 +600,190 @@ feature -- Options
 		
 	add_buildings_along_lines is	
 			--  adds buildings along lines to map.
-		do
-			traffic_buildings.add_along_lines
-		end
+--		do
+--			traffic_buildings.add_along_lines
+--		
+--		end
+			local
+			line_sections:ARRAYED_LIST [TRAFFIC_LINE_SECTION]
+			line_section: TRAFFIC_LINE_SECTION
+			building: TRAFFIC_BUILDING
+			temp_destination: EM_VECTOR_2D
+			gl_origin: EM_VECTOR_2D
+			p1,p2,p3,p4: EM_VECTOR_2D
+			angle: DOUBLE
+			building_height: DOUBLE
+			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
+			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
+			i : INTEGER
+			start_point, end_point: EM_VECTOR_2D
+			temp: EM_VECTOR_2D
+		do	
+			building_height := 0.5
+			create start_point.make(0,0)
+			create end_point.make(0,0)
+			line_sections:=map.line_sections
+			
+			-- add buildings along every line section
+			from
+				line_sections.start
+				--line_sections.forth
+			until
+				line_sections.after
+				--line_sections.index > line_sections.count
+			loop
+				line_section := line_sections.item
+				-- railways are not taken into account
+				if not line_section.type.name.is_equal ("rail") then
+					from
+						i := 1
+					until
+						i+1 > line_section.polypoints.count
+					loop
+						--check if linesection is vertical
+						if line_section.polypoints.i_th(i+1).x = line_section.polypoints.i_th(i).x then
+							temp_destination := map_to_gl_coords(line_section.polypoints.i_th(i+1))
+							gl_origin := map_to_gl_coords (line_section.polypoints.i_th(i))
+							from 
+								start_point.set_y (gl_origin.y-0.5)
+								start_point.set_x (gl_origin.x)
+								if start_point.y < temp_destination.y then
+									temp:=start_point
+									start_point:=temp_destination
+									temp_destination:=temp
+								end
+								end_point.set_y (start_point.y-0.5)
+								end_point.set_x(start_point.x)
+							until
+								end_point.y<= temp_destination.y
+							loop	
+								--buildings on the right hand side of the line
+								create p1.make (start_point.x-0.25, start_point.y)
+								create p2.make (end_point.x-0.25, end_point.y)
+								create p3.make (p2.x-0.5,p2.y)
+								create p4.make (p1.x-0.5,p1.y)
+								create building.make (p1,p2,p3,p4, building_height, "building " + building_id.out)
+								building_id := building_id + 1
+								building.set_angle (0)
+								create poly_points.make
+								poly_points.force (p1, 1)
+								poly_points.force (p2, 2)
+								poly_points.force (p3, 3)
+								poly_points.force (p4, 4)
+								create collision_poly.make_from_absolute_list (building.center, poly_points)
+								if not has_collision (collision_poly) then
+									add_building (building)
+									buildings_polygons.extend(collision_poly)
+								end
+								
+								--builiding on the left hand sinde of the line
+								create p4.make (start_point.x+0.25, start_point.y)
+								create p3.make (end_point.x+0.25, end_point.y)
+								create p2.make (p3.x+0.5,p3.y)
+								create p1.make (p4.x+0.5,p4.y)
+								create building.make (p1,p2,p3,p4, building_height, "building " + building_id.out)
+								building_id := building_id + 1
+								building.set_angle (0)
+								create poly_points.make
+								poly_points.force (p1, 1)
+								poly_points.force (p2, 2)
+								poly_points.force (p3, 3)
+								poly_points.force (p4, 4)
+								create collision_poly.make_from_absolute_list (building.center, poly_points)
+								if not has_collision (collision_poly) then
+									add_building (building)
+									buildings_polygons.extend(collision_poly)
+								end
+								start_point.set_y (end_point.y-0.01)
+								end_point.set_y (end_point.y-0.51)
+							end
+						else
+							-- linessection is not vertical
+							angle:= arc_tangent((line_section.polypoints.i_th (i+1).y-line_section.polypoints.i_th (i).y)/(line_section.polypoints.i_th (i+1).x-line_section.polypoints.i_th (i).x))
+							if angle*180/pi>-70 and angle*180/pi<70 then
+								
+								temp_destination:=map_to_gl_coords(line_section.polypoints.i_th(i+1).rotation (line_section.polypoints.i_th(i), -angle))
+								gl_origin:=map_to_gl_coords (line_section.polypoints.i_th(i))
+								
+								from 
+									start_point.set_y (gl_origin.y)
+									start_point.set_x (gl_origin.x-0.5)
+									if start_point.x < temp_destination.x then
+										temp:=start_point
+										start_point:=temp_destination
+										temp_destination:=temp
+									end
+									end_point.set_y (start_point.y)
+									end_point.set_x(start_point.x-0.5)
+								until
+									end_point.x<= temp_destination.x
+								loop	
+									--building above the line
+									create p2.make (start_point.x,start_point.y+0.25)
+									create p1.make (p2.x,p2.y+0.5)
+									create p3.make (end_point.x,end_point.y+0.25)
+									create p4.make (p3.x,p3.y+0.5)
+									p1:= p1.rotation (gl_origin, -angle)
+									p2:= p2.rotation (gl_origin, -angle)
+									p3:= p3.rotation (gl_origin, -angle)
+									p4:= p4.rotation (gl_origin, -angle)
+									create building.make (p1,p2,p3,p4, building_height, "building " + building_id.out)
+									building_id := building_id + 1
+									building.set_angle (angle*180/pi)
+									create poly_points.make
+									poly_points.force (p1, 1)
+									poly_points.force (p2, 2)
+									poly_points.force (p3, 3)
+									poly_points.force (p4, 4)
+									create collision_poly.make_from_absolute_list (building.center, poly_points)
+									if not has_collision (collision_poly) then
+										add_building (building)
+										buildings_polygons.extend(collision_poly)
+									end
+									
+									--builiding underneath the line
+									create p1.make (start_point.x,start_point.y-0.25)
+									create p2.make (p1.x,p1.y-0.5)
+									create p4.make (end_point.x,end_point.y-0.25)
+									create p3.make(p4.x,p4.y-0.5)
+									p1:= p1.rotation (gl_origin, -angle)
+									p2:= p2.rotation (gl_origin, -angle)
+									p3:= p3.rotation (gl_origin, -angle)
+									p4:= p4.rotation (gl_origin, -angle)
+									create building.make (p1,p2,p3,p4, building_height, "building " + building_id.out)
+									building_id := building_id + 1
+									building.set_angle (angle*180/pi)
+									create poly_points.make
+									poly_points.force (p1, 1)
+									poly_points.force (p2, 2)
+									poly_points.force (p3, 3)
+									poly_points.force (p4, 4)
+									create collision_poly.make_from_absolute_list (building.center, poly_points)
+									if not has_collision (collision_poly) then
+										add_building (building)
+										buildings_polygons.extend(collision_poly)
+									end
+									start_point.set_x (end_point.x-0.01)
+									end_point.set_x (end_point.x-0.51)
+								end
+							end
+						end
+						i:=i+1
+					end		
+				end	
+				-- we need only every second section since there is one section for every direction
+				line_sections.forth
+				line_sections.forth				
+			end
+		end	
 	
 	delete_buildings is
 			-- delete all buildings from representation
 		do
 			traffic_buildings.delete_buildings
+			buildings_polygons.wipe_out
 			number_of_buildings := 0
+			building_id:= 1
 		end
 		
 	
@@ -598,6 +889,16 @@ feature {NONE} -- Attributes
 			
 	highlighting_delta: DOUBLE
 			-- Height difference between highlighted and normal line representation.
+	
+	building_id: INTEGER
+			-- Number to specify the building name.
+	
+	randomizer: RANDOM
+			-- Randomizer for building center
+	
+	angle_randomizer: RANDOM
+			-- Randomizer for angle
+
 
 feature -- Representations
 
@@ -620,6 +921,9 @@ feature {NONE} -- Implementation
 
 	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic places.
+	
+	buildings_polygons: ARRAYED_LIST [EM_POLYGON_CONVEX_COLLIDABLE]
+			-- Building collision polygons
 		
 	sun_light: GL_LIGHT
 			-- Light that imitates the sun.

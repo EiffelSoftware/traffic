@@ -8,7 +8,7 @@
     <email>michela.pedroni@inf.ethz.ch</email>
 	<date>$Date$</date>
 </chapterinfo>
-    <title>Classes</title>
+    <title>Traffic visualization classes</title>
 	<section id="top_of_page">
     	<para>
 			In the following sections the classes will be described. The layout for each class is: 
@@ -60,7 +60,7 @@
     	<para>
 			This class is shared by all other classes in this section. It has some default values like <featurename>window_width</featurename>
 			or <featurename>place_height</featurename>. It could be thought of if it's more useful to provide such values in their respective classes to
-			get some more independance for the following classes. Another feature <featurename>map_to_gl_coords</featurename> can be found in this class.
+			get some more independency for the following classes. Another feature <featurename>map_to_gl_coords</featurename> can be found in this class.
 			This feature translates given coordinates to coordinates according to the map.
     	</para>
     	<title>Class overview</title>
@@ -87,8 +87,11 @@
 			if there is such a map dump and this dump file is on date.
     	</para>
 		<para>
-			There are several features to add buildings <featurename>add_building</featurename>, <featurename>add_buildings</featurename>, <featurename>add_buildings_along_lines</featurename>, where one, several at random or several at a line are added.
+			There are three features to add buildings (<featurename>add_building</featurename>, <featurename>add_buildings_randomly</featurename>, <featurename>add_buildings_along_lines</featurename>) which either add one, several at random or several along all traffic lines (expect railways). It is also possible to delete all building with the feature <featurename>delete_buildings</featurename>. <newline/>
 			Then you can add a traveler through <featurename>add_traveler</featurename>. For all attributes there are corresponding setter methods.
+		</para>
+		<para>
+			It is also possible to information if a building is clicked. If a class needs this functionality, it has to subscribe to <featurename>building_clicked_event</featurename>.
 		</para>
     	<title>Class overview</title>
     	<para>
@@ -106,12 +109,12 @@
     	</para>
     	<title>Description</title>
     	<para>
-			The class TRAFFIC_BUILDING_FACTORY is a factory for the 3D objects which represent the buildings on the map. The interface is for each of the factories the same: With the features <featurename>add_gauger</featurename> and <featuername>remove_gauger</featuername> one can handle procedures for decisions. These procedures can then be called through the feature <featurename>take_decision</featurename> which calls the right gauger and saves the decision in the string <featurename>decision</featurename>. For creating a  representation of the built object one can add specific procedures through the features <featurename>add_line_type</featurename> and remove them by calling <featurename>remove_line_type</featurename>. The last two features are the feature <featurename>specify_object</featurename> which takes the right line type according to the decision and the feature <featurename>create_object</featurename> which is inherited from EM_3D_OBJECT_FACTORY and returns the created object.
+			The class TRAFFIC_BUILDING_FACTORY is a factory for the 3D objects which represent the buildings on the map. The interface is for each of the factories the same: With the features <featurename>add_gauger</featurename> and <featurename>remove_gauger</featurename> one can handle procedures for decisions. These procedures can then be called through the feature <featurename>take_decision</featurename> which calls the right gauger and saves the decision in the string <featurename>decision</featurename>. For creating a  representation of the built object one can add specific procedures through the features <featurename>add_building_type</featurename> and remove them by calling <featurename>remove_building_type</featurename>. The last two features are <featurename>specify_object</featurename> which takes the right building type according to the decision and <featurename>create_object</featurename> which is inherited from EM_3D_OBJECT_FACTORY and returns the created object.
     	</para>
     	<title>Class overview</title>
     	<para>
     	<para>
-    		
+    		<image src="image/traffic_building_factory.png"/>
     	</para>
     	</para>
     	<toplink/>
@@ -120,16 +123,17 @@
     	<title>TRAFFIC_BUILDING_REPRESENTATION</title>
    		<title>Requirements:</title>
     	<para>
-    		None
+    		<link url="../classes.html#traffic_building">TRAFFIC_BUILDING</link>
     	</para>
     	<title>Description</title>
     	<para>
-			
+			 The class TRAFFIC_BUILDING_REPRESENTATION is a container for all traffic_building 3D objects. As expected there is a feature <featurename>draw</featurename> all to draw all objects in the container. <newline/>
+Buildings can be highlighted or un-highlighted by calling the features <featurenam>highlight_building</featurenam> or <featurename>un_highlight_building</featurename>. With the feature <featurename>add_building</featurename> a building can be added to the representation and <featurename>delete_buildings</featurename> deletes all building from the representation.
     	</para>
     	<title>Class overview</title>
     	<para>
     	<para>
-    		<image src="image/sg_traffic_building_representation.png"/>
+    		<image src="image/traffic_building_representation.png"/>
     	</para>
     	</para>
     	<toplink/>
@@ -167,7 +171,7 @@
     	<para>
 			The class TRAFFIC_LINE_REPRESENTATION is a container for all traffic_line 3D objects. As expected there is a feature <featurename>draw</featurename> all to draw all objects
 			in the container. If a shortest line is added by <featurename>add_shortest_line</featurename> and not removed through <featurename>remove_shortest_line</featurename> the feature
-			<featurename>draw_shortest_line</featurename> draws it. Lines can be highlithed or un-highlighted by calling the features
+			<featurename>draw_shortest_line</featurename> draws it. Lines can be highlighted or un-highlighted by calling the features
 			<featurename>highlight_single_line</featurename>, <featurename>un_highlight_single_line</featurename> and similar ones. With the feature <featurename>add_lines</featurename> all lines
 			of a map can be added, but single lines can be added too.
     	</para>

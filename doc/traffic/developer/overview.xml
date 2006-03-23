@@ -18,7 +18,7 @@
 		in the following figure.
 	</para>
     <para>
-        <image src="image/sg_traffic_overview.png"/>
+        <image src="image/traffic_all.png"/>
     </para>
     <para>
     	As is visible from the picture, the most important class is the TRAFFIC_MAP class. It 

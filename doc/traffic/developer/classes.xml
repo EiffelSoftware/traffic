@@ -85,9 +85,9 @@
 			The class <classname>TRAFFIC_BUILDING</classname> represents a building. A building is always a rectangle and is specified by its four corners (corner 1 is always the upper left, corner 2 the lower left, corner 3 the lower right and corner 4 the upper right one) and the three dimensions width, breadth and height. Furthermore, an angle (in range -70 to 70 degrees) can be specified by which the building is rotated.
 		</para>
 		<para>
-			A new building is created through the feature <featurename>make</featurename>, which needs the four corners of the building, its height and its name. The creation feature then calculates the width, the breath and the center and sets the angle to zero. <newline/>
+			A new building is created through the feature <featurename>make</featurename>, which needs the four corners of the building, its height and its name. The creation feature then calculates the width, the breadth and the center and sets the angle to zero. <newline/>
 			In case the angle has to be changed after creation, this can be done through <featurename>set_angle</featurename>. <newline/>
-			If the building has to be drawn, then it needs also an unique identification number which can be set through <featurename>set_id</featurename>. 
+			If the building has to be drawn, then it needs also a unique identification number which can be set through <featurename>set_id</featurename>. 
 		</para>
 		<para>
 			The four corners can be accessed through the four features: <featurename>corner1</featurename> (upper left corner), <featurename>corner2</featurename> (lower left corner), <featurename>corner3</featurename> (lower right corner) and <featurename>corner4</featurename> (upper right corner), whereas the three dimensions can be accessed through the tree features: <featurename>width</featurename>, <featurename>breadth</featurename> and <featurename>height</featurename>. Finally, the angle can be accessed through <featurename>angle</featurename>
@@ -99,6 +99,9 @@
 			A quite important feature is <featurename>contains_point</featurename>, which allows to check, whether a point is inside a building. It is mainly used to check, whether a building has been clicked.
 		</para>
 		<title>Class overview</title>
+		<para>
+			<image src="image/traffic_building.png"/>
+		</para>
 		<toplink/>
 	</section>
 	<section>
@@ -116,6 +119,9 @@
 			A street can be added by <featurename>set_street</featurename>, a house number by <featurename>set_house_number</featurename> and description by <featurename>set_description</featurename>.
 		</para>
 		<title>Class overview</title>
+		<para>
+			None
+		</para>
 		<toplink/>
 	</section>
 	<section id="traffic_color">
@@ -315,7 +321,7 @@
 		</para>
 		<title>Description</title>
 		<para>
-			The <classname>TRAFFIC_MAP</classname> is the collection of all lines, line sections and places.
+			The <classname>TRAFFIC_MAP</classname> is the collection of all lines, line sections, places and buildings.
 			All elements are administrated by the map. Through the name of a place or a line you can 
 			retrieve it, you can search for line sections and even search shortest paths from one place
 			to another. A map has a name and can additionally have a description that gives more 
@@ -328,8 +334,8 @@
 			For all the elements of the map there exist features to find out whether there is 
 			such an element (<featurename>has_place</featurename>, <featurename>has_line</featurename>
 			and <featurename>has_line_section</featurename>). To add new elements to the map use the
-			features <featurename>add_place</featurename>, <featurename>add_line</featurename> or
-			<featurename>add_line_section</featurename>.
+			features <featurename>add_place</featurename>, <featurename>add_line</featurename>, 
+			<featurename>add_line_section</featurename> or <featurename>add_building</featurename>. To remove all building form the map use <featurename>delete_buildings</featurename>.
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -394,12 +400,18 @@
 		</para>
 		<title>Description</title>
 		<para>
-			The class <classname>TRAFFIC_MAP_LOADER</classname> is used to load maps, specifed by by the name.
+			The class <classname>TRAFFIC_MAP_LOADER</classname> is used to load maps, specifed by its name.
 		</para>
 		<para>
 			A new instance of <classname>TRAFFIC_MAP_LOADER</classname> is create through <featurename>make</featurename>. It takes as input the name of the map to be loaded. The map is then loaded by <featurename>load_map</featurename>, which is either loaded from a dump file or, if this is not available or outdated, parsed from the specified XML file. If the map had to be parsed, a new dump is created, which can be used next time. Afterwards, the map can be access through <featurename>map</featurename>.
 		</para>
+		<para>
+			To be able to find out, if a XML file has been altered since the dump was created, a log file is written which contains the XML file names and the corresponding timestamps. Only if the timestamp of the XML file is still the same, it has not been changed and can therefore safely be loadad from dump.
+		</para>
 		<title>Class overview</title>
+		<para>
+			<image src="traffic_map_loader.png"/>
+		</para>
 		<toplink/>
 	</section>
 	<section id="traffic_place">

@@ -8,7 +8,7 @@
     <email>michela.pedroni@inf.ethz.ch</email>
 	<date>$Date$</date>
 </chapterinfo>
-    <title>Overview</title>
+    <title>Traffic visualization overview</title>
     <para> 
 		This is an overview over the 3D visualization widgets which are used to represent a map 
 	</para>

@@ -60,7 +60,7 @@ The class overviews are sorted in alphabetic ascending order to be able to find 
 		<listitem>
 	        <link url="tr_input/classes.html">Classes</link>
 			<para>
-				Describes each class of the input / output part <projectname>Traffic library</projectname> 
+				Describes each class of the input  part <projectname>Traffic library</projectname> 
 			</para>
 		</listitem>
 	</itemizedlist>

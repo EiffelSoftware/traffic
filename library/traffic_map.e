@@ -141,6 +141,7 @@ feature -- Status report
 			Result := internal_lines.has (a_name)
 		end
 		
+		
 feature -- Element change
 
 	set_description (a_description: STRING) is

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/user/index">
 <chapterinfo>
 	<copyright>
@@ -13,7 +13,7 @@
 
 <para>
 The <projectname>City3D</projectname> project implements a 3 dimensional
-visualization of a <projectname>Traffic</projectname> map file and adds some additional functionaliy.
+visualization of a <projectname>Traffic</projectname> map file and adds some additional functionality.
 </para>
 
 <para>

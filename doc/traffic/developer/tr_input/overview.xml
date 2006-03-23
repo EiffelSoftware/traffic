@@ -8,14 +8,11 @@
     <email>michela.pedroni@inf.ethz.ch</email>
 	<date>$Date$</date>
 </chapterinfo>
-    <title>Overview</title>
+    <title>Traffic input overview</title>
     <para> 
 		This is an overview over the input part, which is used to load from XML files 
 	</para>
     <para>
-        
-    </para>
-    <para>
-		
+        <image src="image/traffic_input_all.png"/>
     </para>
 </chapter>

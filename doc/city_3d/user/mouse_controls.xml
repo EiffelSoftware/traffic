@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city3d/user/mouse_controls">
 <chapterinfo>
 	<copyright>
@@ -50,39 +50,61 @@
 	</para>
 	<title>Options</title>
     <para>
-        <image src="image/options.png"/>
+        <image src="image/right_options.png"/>
     </para>
 	
 	<para>
 		<para>
-	 		i) Change the number of buildings to be displayed on the map: The number of buildings can be varied from 150 up to 15000. 
-	 		The buildings are randomly distributed.
-	 	</para>
-	 	<para>
-			ii) Make the buildings transparent in order to achieve a better overview.
+			i) Choose the map to be loaded and load it.
 		</para>
 		<para>
-			iii) Change lighting of the map: Initially, the scene is lit by a constant light coming down the y axis. 
+			ii) Zoom in and out.
+		</para>
+		<para>
+	 		iii) Change the number of buildings to be randomly displayed on the map: The number of buildings can be varied from 0 up to 4900. 
+	 	</para>
+	 	<para>
+			iv) Make the buildings transparent in order to achieve a better overview.
+		</para>
+		<para>
+			v) Change lighting of the map: Initially, the scene is lit by a constant light coming down the y axis. 
 			However, this can be changed to a variable light that tries to imitate the effect of the sun.
 		</para>
 		<para>
-			iv) Show a coordinate system: This shows a coordinate system at the origin for better orientation.
+			vi) Show a coordinate system: This shows a coordinate system at the origin for better orientation.
 		</para>
 		<para>
-			v) Highlight the traffic lines by drawing them with different height on the map, in order to achieve a better overview.
+			vii) Highlight the traffic lines by drawing them with different height on the map, in order to achieve a better overview.
 		</para>
 		<para>
-			vi) The buildings can be hidden or shown by enabling/disabling the "show buildings" option.
+			viii) The buildings can be hidden or shown by enabling/disabling the "show buildings" option.
 		</para>
 		<para>	
-			vii) Show the shortest path between two marked stations and display it as a white line. The origin for the route 
+			ix) Show the shortest path between two marked stations and display it as a white line. The origin for the route 
 			is marked by clicking on the place with the left mouse button and the destination with the right mouse button.
 		</para>
 		<para>
-			viii) When two stations are selected, a new button appears. If you press it, you can take a traffic 
+			x) When two stations are selected, a new button appears. If you press it, you can take a traffic 
 			line ride in a first-person perspective between the two marked stations.
 	 	</para>
 	</para>
+	<para>
+        <image src="image/right_options.png"/>
+    </para>
+    <para>
+		<para>
+		i) Shows the name of the most recently marked building.
+		</para>
+		<para>
+		ii) Choose the XML file for building loading and load them.
+		</para>
+		<para>
+		iii) Load buildings along all traffic lines (expect railway).
+		</para>
+		<para>
+		iv) Delete all buildings.
+		</para>
+    </para>
 <toplink/>
 </section>
 </chapter>
