@@ -59,7 +59,7 @@ feature -- Constants
 	Place_width: DOUBLE is 0.075
 			-- Width of the place representation on the map.
 			
-	Place_height: DOUBLE is 0.01
+	Place_height: DOUBLE is 0.02
 			-- Height of the place representation on the map.
 			
 	Place_depth: DOUBLE is 0.2

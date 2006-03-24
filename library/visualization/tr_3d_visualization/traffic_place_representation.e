@@ -1,6 +1,5 @@
 indexing
 	description: "Representation for places, contains them and puts them on the map"
-	author: "Florian Geldmacher"
 	date: "15.12.2005"
 	revision: "0.1"
 
@@ -29,81 +28,85 @@ create
 
 feature -- Initialization
 	
-	make (map: TRAFFIC_MAP) is
+	make (a_map: TRAFFIC_MAP) is
 			-- Create a new object.
 		require
-			map_exists: map /= void
+			a_map_exists: a_map /= void
 		do
-			create centre.make_xyz(0,0,0)
+			map := a_map
 			create color.make_xyz(0,0,0)
 				-- default color black
 				
 			create place_factory.make
 			create collision_polygons.make (1)	
 				-- Could be extended, if desired.
-			place_factory.add_place_type (agent create_tram_place, tram_type)
-			place_factory.add_gauger(agent decide_place_type, decision_type)
+			place_factory.add_place_type (agent create_square_rep, "square")
+			place_factory.add_place_type (agent create_circle_rep, "circle")
+			place_factory.add_gauger(agent decide_place_type_normal, decision_type_normal)
 			
-			create places.make(1,1)
-			add_places(map)
+			create place_views.make (1)
+			add_places
+			
+			map.place_inserted_event.subscribe (agent process_item_inserted)
+			map.place_removed_event.subscribe (agent process_item_removed)
 			
 		ensure
 			place_factory_created: place_factory /= Void
-			places_created: places /= Void
+			places_created: place_views /= Void
 		end
 		
 feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 	
 	draw is
 			-- draw all places
-		local
-			i: INTEGER
 		do
 			from
-				i := places.lower
+				place_views.start
 			until
-				i > places.upper
+				place_views.off
 			loop
-				places.item(i).draw
-				i := i+1
+				place_views.item_for_iteration.draw
+				place_views.forth
 			end
 		end
 
-	highlight_place(place: TRAFFIC_PLACE; highlight_type: INTEGER) is
-			-- highlight the marked place, highlight_type = 0 means origin, otherwise destination
-			require
-				place_valid: place /= Void
-			local
-				i: INTEGER
-			do
-				from
-					i := places.lower
-				until
-					i > places.upper
-				loop
-					-- search for the place which should be shown
-					if map_to_gl_coords(place.position).x = places.item (i).origin.x then
-						if
-							map_to_gl_coords(place.position).y = places.item (i).origin.z
-						then						
-							if highlight_type = 0 then
-								color.set_xyz (0,255,0)
-								place_factory.take_decision (decision_type)
-								origin_place := place_factory.create_object
-								origin_place.set_origin(places.item (i).origin.x, places.item (i).origin.y, places.item (i).origin.z)	
-								origin_place.draw					
-							else
-								color.set_xyz (255,0,0)
-								place_factory.take_decision (decision_type)
-								destination_place := place_factory.create_object
-								destination_place.set_origin(places.item (i).origin.x, places.item (i).origin.y, places.item (i).origin.z)
-								destination_place.draw
-							end						
-						end
-					end
-					i := i+1
-				end
-			end
+	highlight_place (a_place: TRAFFIC_PLACE; a_color: GL_VECTOR_3D[DOUBLE]) is
+			-- Highlight the marked place
+		require
+			place_valid: a_place /= Void
+		local
+			old_color: GL_VECTOR_3D [DOUBLE]
+			place_view: EM_3D_OBJECT
+		do
+			old_color := color
+			color := a_color
+
+			place_bounding_box := update_place_bounding_box (a_place)
+			current_place := a_place
+				
+			-- place creation
+			place_factory.take_decision (decision_type_normal)
+			place_view := place_factory.create_object			
+			place_views.replace (place_view, a_place)
+			
+			color := old_color	
+		end
+
+	unhighlight_place (a_place: TRAFFIC_PLACE) is
+			-- Unhighlight the marked place
+		require
+			place_valid: a_place /= Void
+		local
+			place_view: EM_3D_OBJECT
+		do
+			place_bounding_box := update_place_bounding_box (a_place)
+			current_place := a_place
+				
+			-- place creation
+			place_factory.take_decision (decision_type_normal)
+			place_view := place_factory.create_object			
+			place_views.replace (place_view, a_place)
+		end
 			
 feature -- Collision detection
 
@@ -112,128 +115,202 @@ feature -- Collision detection
 	
 feature{NONE} -- Implemenation
 
-	add_places(map: TRAFFIC_MAP) is
-			-- add all places from the map to the places array
-			require
-				map_valid: map /= Void
-			local
-				x_coord, z_coord: DOUBLE
-				i: INTEGER
-				all_places: ARRAYED_LIST [TRAFFIC_LINE_SECTION] -- places are at beginning and end of linesections
-				place: EM_3D_OBJECT
-				collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-				poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
-			do
-				all_places := map.line_sections
-				from
-					all_places.start
-					i := 0
-				until
-					all_places.after
-				loop
-					x_coord := centre.x + map_to_gl_coords(all_places.item.polypoints.first).x
-					z_coord := centre.z + map_to_gl_coords(all_places.item.polypoints.first).y
-					
-					-- polypoints for the place
-					create poly_points.make
-					poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord), 1)	-- left bottom corner
-					poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord-place_width), 2) -- left upper corner
-					poly_points.force (create {EM_VECTOR_2D}.make (x_coord-place_width, z_coord-place_width), 3) -- right upper corner
-					poly_points.force (create {EM_VECTOR_2D}.make (x_coord-place_width, z_coord), 4) -- right bottom corner
-				
-					create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-(place_width/2),z_coord-(place_width/2)), poly_points)
-					collision_polygons.force (collision_poly)
-					
-					-- place creation
-					place_factory.take_decision (decision_type)
-					place := place_factory.create_object
-					place.set_origin(x_coord, 0.1 ,z_coord)
-					places.force(place, i)
-					i := i+1
-					all_places.forth
+	update_place_bounding_box (a_place: TRAFFIC_PLACE): EM_ORTHOGONAL_RECTANGLE is
+			-- Bounding box of `a_place' in map coordinates
+		local
+			links: LIST [TRAFFIC_LINE_SECTION]
+			p: EM_VECTOR_2D
+		do
+			-- Calculate rectangle to include all outgoing links of `a_place'.
+			links := map.line_sections_of_place (a_place.name)			
+			from			
+				links.start
+			until
+				links.after
+			loop
+				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then   
+				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
+					p := links.item.polypoints.first
+					if Result = Void then
+						create Result.make (p.twin, p.twin)
+					else
+						Result.extend (p)	
+					end
 				end
-				
+				links.forth
+			end			
+			if Result = Void then
+				create Result.make_from_position_and_size (a_place.position.x, a_place.position.y, 0.1, 0.1)
+			else
+				Result.set_size_centered (Result.width + 5.0, Result.height + 5.0)
 			end
-		
+		end
 
+	add_places is
+			-- add all places from the map to the places array
+		local
+			all_places: HASH_TABLE [TRAFFIC_PLACE, STRING] 
+			place_view: EM_3D_OBJECT
+		do
+			all_places := map.places
+			from
+				all_places.start
+			until
+				all_places.off
+			loop
+				place_bounding_box := update_place_bounding_box (all_places.item_for_iteration)
+				current_place := all_places.item_for_iteration
+				
+				-- place creation
+				place_factory.take_decision (decision_type_normal)
+				place_view := place_factory.create_object
+				place_views.force(place_view, current_place)
+				all_places.forth
+			end
+		end
+			
+	add_place (a_place: TRAFFIC_PLACE) is
+			-- Add visualization for `a_place'.
+		local
+			place_view: EM_3D_OBJECT
+		do
+			place_bounding_box := update_place_bounding_box (a_place)
+			current_place := a_place
+				
+			-- place creation
+			place_factory.take_decision (decision_type_normal)
+			place_view := place_factory.create_object
+			place_views.force (place_view, a_place)
+		end			
+		
+feature -- Event handling
+
+	process_item_inserted (a_place: TRAFFIC_PLACE) is
+			-- Update visualization to include new inserted place `a_place'.
+		require
+			a_place_exists: a_place /= Void
+		do
+			add_place (a_place)
+		end
+		
+	process_item_removed (a_place: TRAFFIC_PLACE) is
+			-- Update visualization to drop removed place `a_place'.
+		require
+			a_place_exists: a_place /= Void
+		do
+			place_views.remove (a_place)
+		end		
 
 feature{NONE} -- Decision procedures
 
-	decide_place_type: STRING is
+
+	decide_place_type_normal: STRING is
 			-- decide which type of place is chosen.
 		do
-			Result := tram_type
+			if place_bounding_box.width.max (place_bounding_box.height) > 0.2*30 then --map.line_sections_of_place (current_place.name).count > 4 then
+				Result := "square"
+			else
+				Result := "circle"
+			end			
 		end
 
-	create_tram_place is
-			-- create a tram place
+	create_square_rep is
+			-- Create square representation for a place.
+		local
+			p1, p2, p3, p4: GL_VECTOR_3D[DOUBLE]
+			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
+			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
+		do
+			-- Normals all parallel to y axis
+			p1 := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (place_bounding_box.lower_left).x, place_height, map_to_gl_coords (place_bounding_box.lower_left).y)
+			p2 := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (place_bounding_box.upper_left).x, place_height, map_to_gl_coords (place_bounding_box.upper_left).y)
+			p3 := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (place_bounding_box.upper_right).x, place_height, map_to_gl_coords (place_bounding_box.upper_right).y)
+			p4 := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (place_bounding_box.lower_right).x, place_height, map_to_gl_coords (place_bounding_box.lower_right).y)
+			gl_begin_external (em_gl_quads)
+				gl_color3dv_external (color.pointer)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p1.x, p1.y, p1.z)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p2.x, p2.y, p2.z)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p3.x, p3.y, p3.z)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p4.x, p4.y, p4.z)
+			gl_end
+			gl_flush_external
+
+			create poly_points.make
+			poly_points.force (create {EM_VECTOR_2D}.make (p1.x, p1.z), 1) -- left bottom corner
+			poly_points.force (create {EM_VECTOR_2D}.make (p2.x, p2.z), 2) -- left upper corner
+			poly_points.force (create {EM_VECTOR_2D}.make (p3.x, p3.z), 3) -- right upper corner
+			poly_points.force (create {EM_VECTOR_2D}.make (p4.x, p4.z), 4) -- right bottom corner
+
+			create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (p3.x-(p3.x-p1.x)/2, p1.z-(p3.z-p1.z)/2), poly_points)
+			collision_polygons.force (collision_poly)
+		end
+		
+	create_circle_rep is
+			-- Create circle representation for place.
 		require
 			color /= Void
 		local
 			place_radius: DOUBLE
 				-- radius of a tram place
+			p1, p2: EM_VECTOR_2D
+			p: GL_VECTOR_3D [DOUBLE]
+			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
+			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
 		do
-			place_radius := 0.2
-			gl_matrix_mode_external (Em_gl_modelview)
-			gl_push_matrix_external
-			gl_color3dv_external(color.pointer)
-			-- a little bit higher than the line
-			gl_translated_external (0, place_height, 0)
-			gl_rotated_external (90, 1, 0, 0)
-			gl_disable_external (em_gl_lighting)
-			glu_disk_external (glu_new_quadric, 0, place_radius, 72, 1)
-			gl_pop_matrix_external
-			gl_flush_external
+			p1 := map_to_gl_coords (place_bounding_box.upper_left)
+			p2 := map_to_gl_coords (place_bounding_box.lower_right)
+			place_radius := 	(p1.distance (p2)/2).max (0.1)
 			
-			gl_matrix_mode_external (Em_gl_modelview)
-			gl_push_matrix_external
-			gl_color3dv_external(color.pointer)
-			-- a little bit higher than the plane
-			gl_translated_external (0 , place_height, 0)
-			gl_rotated_external (90, 1, 0, 0)
-			gl_disable_external (em_gl_lighting)
-			glu_cylinder_external (glu_new_quadric_external, place_radius, place_radius, line_depth, 8, 8)
-			gl_pop_matrix_external
-			gl_flush_external
-			
-			place_radius := 0.2
-			gl_matrix_mode_external (Em_gl_modelview)
-			gl_push_matrix_external
-			gl_color3dv_external(color.pointer)
-			-- on plane height
-			gl_translated_external (0, 0, 0)
-			gl_rotated_external (90, 1, 0, 0)
-			gl_disable_external (em_gl_lighting)
-			glu_disk_external (glu_new_quadric, 0, place_radius, 72, 1)
-			gl_pop_matrix_external
-			gl_flush_external
+			p := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (place_bounding_box.center).x, place_height, map_to_gl_coords (place_bounding_box.center).y)
+
+				gl_matrix_mode_external (Em_gl_modelview)
+				gl_push_matrix_external
+				gl_color3dv_external(color.pointer)
+				-- a little bit higher than the line
+				gl_translated_external (p.x, p.y, p.z)
+				gl_rotated_external (90, 1, 0, 0)
+				gl_disable_external (em_gl_lighting)
+				glu_disk_external (glu_new_quadric, 0, place_radius, 72, 1)
+				gl_pop_matrix_external
+				gl_flush_external
+
+			create poly_points.make
+			poly_points.force (create {EM_VECTOR_2D}.make (p.x, p.z), 1)	-- left bottom corner
+			poly_points.force (create {EM_VECTOR_2D}.make (p.x, p.z-place_width), 2) -- left upper corner
+			poly_points.force (create {EM_VECTOR_2D}.make (p.x-place_width, p.z-place_width), 3) -- right upper corner
+			poly_points.force (create {EM_VECTOR_2D}.make (p.x-place_width, p.z), 4) -- right bottom corner
+
+			create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (p.x-(place_width/2),p.z-(place_width/2)), poly_points)
+			collision_polygons.force (collision_poly)
 		end
 		
 feature{NONE} -- Decision attributes
 	
 	tram_type: STRING is "tram_place"
 	 
-	decision_type: STRING is "highlighted"
+	decision_type_normal: STRING is "normal"
 		
-feature{NONE} -- Attributes
+feature {NONE} -- Attributes
 
-	places: ARRAY[EM_3D_OBJECT]
+	place_views: HASH_TABLE [EM_3D_OBJECT, TRAFFIC_PLACE]
 		-- Container for all places
 	
-	origin_place: EM_3D_OBJECT
-		-- 3D Object for the origin place
-	
-	destination_place: EM_3D_OBJECT
-		-- 3D Object for the destination place
-
 	place_factory: TRAFFIC_PLACE_FACTORY
 		-- factory for places
 
 	color: GL_VECTOR_3D[DOUBLE]
 		-- color of the place	
 		
-	centre: GL_VECTOR_3D[DOUBLE]
-		-- Centre of the city
+	map: TRAFFIC_MAP
 	
+	place_bounding_box: EM_ORTHOGONAL_RECTANGLE
+			-- Bounding box of current place
+			
+	current_place: TRAFFIC_PLACE
+			-- Place currently being rendered
 
 end -- class TRAFFIC_PLACE_REPRESENTATION

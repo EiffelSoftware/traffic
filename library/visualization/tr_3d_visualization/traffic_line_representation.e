@@ -1,8 +1,7 @@
 indexing
-	description: "Representation for the lines, all lines are stored here and representated"
-	author: "Florian Geldmacher"
+	description: "Representation for the traffic lines"
 	date: "$Date$"
-	revision: "0.1"
+	revision: "$Revision: 1.90 $"
 
 class
 	TRAFFIC_LINE_REPRESENTATION
@@ -26,297 +25,452 @@ inherit
 	EM_TIME_SINGLETON
 		export {NONE} all end
 		
-	EM_COMPONENT_SCENE
-		export {NONE} all end
-		
 create
 	make
 
 feature -- Initialization
 	
-	make (map: TRAFFIC_MAP) is
+	make (a_map: TRAFFIC_MAP) is
 			-- Create a new object.
 		require
-			map_exists: map /= void
+			map_exists: a_map /= void
 		do
-			create centre.make_xyz (0,0,0)
+			map := a_map
 				
-			create line_factory.make
-	
-				-- Could be extended, if desired.
-			line_factory.add_line_type (agent create_tram_line, tram_type)
+			create line_factory.make	
+			line_factory.add_line_type (agent create_line_section_normal, normal_type)
+			line_factory.add_line_type (agent create_line_section_highlighted, highlighted_type)
 			line_factory.add_gauger(agent decide_line_type, decision_type)
 			
-			create lines.make(1)
 			create shortest_line.make (1)
-			create line_objects.make(1)
+			create line_section_views.make(1)
+			create collision_polygons.make (4)
+
 			add_lines(map)	
-			create_collision_polygons(map)
+
+			map.line_section_inserted_event.subscribe (agent process_item_inserted)
+			map.line_section_removed_event.subscribe (agent process_item_removed)
+
+			height := 1
 		ensure	
 			line_factory_created: line_factory /= Void
-			lines_created: lines /= Void
 			shortest_line_created: shortest_line /= Void
-			line_objects_created: line_objects /= Void
+			line_objects_created: line_section_views /= Void
 		end
 		
-feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
+feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 
 	draw is
-			-- draw all lines.
-			local
-				i, j: INTEGER
-				actual_line_objects: ARRAY[EM_3D_OBJECT]
-			do
-				create actual_line_objects.make(1,1)
-
-				-- draw all the lines in the hashtable.  					
-				from 
-					i := 0
-					line_objects.start
-				until
-					line_objects.after
-				loop
-					j := 0
-					actual_line_objects := line_objects.item_for_iteration
-					from
-						j := actual_line_objects.lower
-					until
-						j > actual_line_objects.upper
-					loop
-						actual_line_objects.item (j).draw
-						j := j+1
-					end
-					i := i+1
-					line_objects.forth
-				end
+			-- Draw all lines onto the screen.
+		do
+			-- draw all the lines in the hashtable.  					
+			from 
+				line_section_views.start
+			until
+				line_section_views.after
+			loop
+				line_section_views.item_for_iteration.draw
+				line_section_views.forth
 			end
-
-		
+		end
 		
 	draw_shortest_path is
-			-- draw the shortest line if it exists.
-			do
-				from
-					shortest_line.start
-				until
-					shortest_line.after
-				loop
-					shortest_line.item.draw
-					shortest_line.forth
-				end
+			-- Draw the shortest line if it exists.
+		do
+			from
+				shortest_line.start
+			until
+				shortest_line.after
+			loop
+				shortest_line.item.draw
+				shortest_line.forth
 			end
+		end
 			
 	remove_shortest_path is
-			-- remove the shortest path from the map.
-			do
-				shortest_line.wipe_out
-			ensure
-				shortest_line_empty: shortest_line.is_empty
-			end
-		
-
-feature {NONE} -- Drawing		
-
-	draw_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r, h: DOUBLE) is
-			-- Draw a circle between two traffic line segments.
-		require
-			p /= Void
-			rgb /= Void
-			r > 0
+			-- Remove the shortest path from the map.
 		do
-			if is_highlighted then
-				gl_matrix_mode_external (Em_gl_modelview)
-				gl_push_matrix_external
-				gl_color3dv_external(rgb.pointer)
-				-- a little bit higher than the line
-				gl_translated_external (p.x, h, p.z)
-				gl_rotated_external (90, 1, 0, 0)
-				gl_disable_external (em_gl_lighting)
-				glu_disk_external (glu_new_quadric, 0, r, 8, 1)
-				gl_pop_matrix_external
-				gl_flush_external
+			shortest_line.wipe_out
+		ensure
+			shortest_line_empty: shortest_line.is_empty
+		end		
 
-				gl_matrix_mode_external (Em_gl_modelview)
-				gl_push_matrix_external
-				gl_color3dv_external(rgb.pointer)
-				-- a little bit higher than the line
-				gl_translated_external (p.x, h, p.z)
-				gl_rotated_external (90, 1, 0, 0)
-				gl_disable_external (em_gl_lighting)
-				glu_cylinder_external (glu_new_quadric_external, r, r, line_depth, 8, 8)
-				gl_pop_matrix_external
-				gl_flush_external
+feature -- Event handling
 
-				gl_matrix_mode_external (Em_gl_modelview)
-				gl_push_matrix_external
-				gl_color3dv_external(rgb.pointer)
-				-- a little bit higher than the line
-				gl_translated_external (p.x, h - line_depth, p.z)
-				gl_rotated_external (90, 1, 0, 0)
-				gl_disable_external (em_gl_lighting)
-				glu_disk_external (glu_new_quadric, 0, r, 8, 1)
-				gl_pop_matrix_external
-				gl_flush_external
-			else
-				gl_matrix_mode_external (Em_gl_modelview)
-				gl_push_matrix_external
-				gl_color3dv_external(rgb.pointer)
-				-- a little bit higher than the line
-				gl_translated_external (p.x, h, p.z)
-				gl_rotated_external (90, 1, 0, 0)
-				gl_disable_external (em_gl_lighting)
-				glu_disk_external (glu_new_quadric, 0, r, 72, 1)
-				gl_pop_matrix_external
-				gl_flush_external
-			end
-		end
-		
-	draw_line (p, q: GL_VECTOR_3D[DOUBLE]) is
-			-- Draw a line from `p' to `q'.
+	process_item_inserted (a_line_section: TRAFFIC_LINE_SECTION) is
+			-- Add view for `a_line_section'.
 		require
-			p /= Void
-			q /= Void
+			a_line_section: a_line_section /= Void
 		local
-			delta_x, delta_z: DOUBLE
-			norm: DOUBLE
+			c: GL_VECTOR_3D [DOUBLE]
+			l: TRAFFIC_LINE
 		do
-			delta_x := q.x - p.x
-			delta_z := q.z - p.z
-			
-			norm := sqrt (delta_x*delta_x + delta_z*delta_z)
-			
-			draw_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x-delta_z*line_width/norm, p.y, p.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (p.x+delta_z*line_width/norm, p.y, p.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x+delta_z*line_width/norm, q.y, q.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q.x-delta_z*line_width/norm, q.y, q.z+delta_x*line_width/norm))
-			gl_flush_external
+			l := a_line_section.line
+			if l /= Void then
+				c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (l.color.red/255, l.color.green/255, l.color.blue/255)			
+			else	
+				c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0, 0, 0)
+			end
+			add_line_section (a_line_section, c)
 		end
 		
-	draw_plane (p1, p2, p3, p4: GL_VECTOR_3D[DOUBLE]) is
-			-- Draw a plane with vertices `p1', `p2', `p3' and `p4'.
+	process_item_removed (a_line_section: TRAFFIC_LINE_SECTION) is
+			-- Remove view for `a_line_section'.
 		require
-			p1 /= Void
-			p2 /= Void
-			p3 /= Void
-			p4 /= Void
+			a_line_section_exists: a_line_section /= Void
 		do
-			if is_highlighted then
-				gl_begin_external (em_gl_quads)
-					gl_color3dv_external (line_color.pointer)
-					
-					-- Front
-					gl_normal3d_external (1, 0, 0)
-					gl_vertex3d_external (p1.x, p1.y, p1.z)
-					
-					gl_normal3d_external (1, 0, 0)
-					gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
-					
-					gl_normal3d_external (1, 0, 0)
-					gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
-	
-					gl_normal3d_external (1, 0, 0)
-					gl_vertex3d_external (p2.x, p2.y, p2.z)
-				
-					-- Back
-					gl_normal3d_external (-1, 0, 0)
-					gl_vertex3d_external (p3.x, p3.y, p3.z)
-					
-					gl_normal3d_external (-1, 0, 0)
-					gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
-					
-					gl_normal3d_external (-1, 0, 0)
-					gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
-					
-					gl_normal3d_external (-1, 0, 0)
-					gl_vertex3d_external (p4.x, p4.y, p4.z)
-					
-					-- Left
-					gl_normal3d_external (0, 0, 1)
-					gl_vertex3d_external (p3.x, p3.y, p3.z)
-					
-					gl_normal3d_external (0, 0, 1)
-					gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
-					
-					gl_normal3d_external (0, 0, 1)
-					gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
-					
-					gl_normal3d_external (0, 0, 1)
-					gl_vertex3d_external (p1.x, p1.y, p1.z)
-					
-					-- Right
-					gl_normal3d_external (0, 0, -1)
-					gl_vertex3d_external (p2.x, p2.y, p2.z)
-					
-					gl_normal3d_external (0, 0, -1)
-					gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
-					
-					gl_normal3d_external (0, 0, -1)
-					gl_vertex3d_external (p4.x, p4.y - line_width, p4.z)
-					
-					gl_normal3d_external (0, 0, -1)
-					gl_vertex3d_external (p4.x, p4.y, p4.z)
-					
-					-- Top
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3dv_external (p1.pointer)
-					
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3dv_external (p2.pointer)
-					
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3dv_external (p3.pointer)
-					
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3dv_external (p4.pointer)
-					
-					-- Bottom
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
-					
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
-					
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
-					
-					gl_normal3d_external (0, 1, 0)
-					gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
-				gl_end_external
-			else
-				-- Normals all parallel to y axis
-				gl_begin_external (em_gl_quads)
-					gl_color3dv_external (line_color.pointer)
-					gl_normal3d_external (0,1,0)
-					gl_vertex3d_external (p1.x, p1.y, p1.z)
-					gl_normal3d_external (0,1,0)
-					gl_vertex3d_external (p2.x, p2.y, p2.z)
-					gl_normal3d_external (0,1,0)
-					gl_vertex3d_external (p3.x, p3.y, p3.z)
-					gl_normal3d_external (0,1,0)
-					gl_vertex3d_external (p4.x, p4.y, p4.z)
-				gl_end
+			if line_section_views.has (a_line_section) then
+				line_section_views.remove (a_line_section)			
+			end
+		end	
+		
+feature {TRAFFIC_3D_MAP_WIDGET} -- Collision detection
+
+	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+			-- Collision polygons to check for collisions with traffic lines
+			
+feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
+
+	add_lines(a_map: TRAFFIC_MAP) is
+			-- Add views for all lines of `a_map'.
+		require
+			map_valid: a_map /= Void
+		local
+			all_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
+		do
+			all_lines := map.lines
+			from
+				all_lines.start
+			until
+				all_lines.after
+			loop
+				add_line (all_lines.item_for_iteration)
+				all_lines.forth
+			end
+		end
+			
+	add_line (a_line: TRAFFIC_LINE) is
+			-- Add views for all line sections of `a_line'.
+		require
+			a_line_exists: a_line /= Void
+		local
+			c: GL_VECTOR_3D [DOUBLE]			
+		do
+			if a_line.color /= Void then
+				c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (a_line.color.red/255, a_line.color.green/255, a_line.color.blue/255)
+			else	
+				c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0, 0, 0)				
+			end
+			from
+				a_line.start
+			until
+				a_line.after
+			loop
+				add_line_section (a_line.item, c)
+				a_line.forth
 			end
 		end
 		
-	draw_line_section (section: TRAFFIC_LINE_SECTION) is
-			-- Draw a traffic line section on the map.
+	add_line_section (a_line_section: TRAFFIC_LINE_SECTION; a_color: GL_VECTOR_3D[DOUBLE]) is
+			-- Add view for `a_line_section'.
 		require
-			section /= Void
+			a_color_exists: a_color /= Void
+			a_line_section_exists: a_line_section /= Void
+		local
+			line_section_view: EM_3D_OBJECT
+		do
+			line_color := a_color		
+			line_section := a_line_section
+			line_factory.take_decision (decision_type)
+			line_section_view := line_factory.create_object			
+			line_section_views.force (line_section_view, line_section)			
+		end
+
+	add_shortest_line(a_line: TRAFFIC_LINE) is
+		-- Add one line to the map, e.g. the shortest path line.
+		require
+			a_line_exists: a_line /= Void
+		local
+			i: INTEGER
+			a_line_section: EM_3D_OBJECT
+		do
+			shortest_line.wipe_out
+			line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1,1,1)
+			from
+				a_line.start
+				i := 0
+			until
+				a_line.after
+			loop
+				line_section := a_line.item
+				-- line creation
+				
+				line_factory.take_decision (decision_type)
+				a_line_section := line_factory.create_object
+				a_line_section.set_origin (0, line_height + 0.01, 0)
+				shortest_line.force(a_line_section)
+				i := i+1
+				a_line.forth
+			end
+		end
+
+feature -- Basic operations
+
+	highlight_path (a_route: TRAFFIC_ROUTE) is
+			-- Highlight `a_route' on the map.
+		require
+			a_route_exists: a_route /= Void
+		local 
+			line_section_view: EM_3D_OBJECT
+			line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
+			old_is_highlighted: BOOLEAN
+		do
+			old_is_highlighted := is_highlighted
+			is_highlighted := False
+			from
+				line_sections := a_route.line_sections
+				line_sections.start
+			until
+				line_sections.off
+			loop
+				line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1)
+
+				line_section := line_sections.item
+					
+				line_factory.take_decision (decision_type)
+				line_section_view := line_factory.create_object
+				
+				line_section_views.replace (line_section_view, line_section)			
+				line_sections.forth
+			end
+			is_highlighted := old_is_highlighted
+			
+		end
+
+	unhighlight_path (a_route: TRAFFIC_ROUTE) is
+			-- Unhighlight `a_route' on the map.
+		require
+			a_route_exists: a_route /= Void
+		local 
+			line_section_view: EM_3D_OBJECT
+			line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
+			old_is_highlighted: BOOLEAN
+		do
+			old_is_highlighted := is_highlighted
+			is_highlighted := False
+			from
+				line_sections := a_route.line_sections
+				line_sections.start
+			until
+				line_sections.off
+			loop
+				line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (line_sections.item.line.color.red/255, line_sections.item.line.color.green/255, line_sections.item.line.color.blue/255)
+
+				line_section := line_sections.item
+					
+				-- line creation
+				line_factory.take_decision (decision_type)
+				line_section_view := line_factory.create_object
+				
+				line_section_views.replace (line_section_view, line_section)			
+				line_sections.forth
+			end
+			is_highlighted := old_is_highlighted			
+		end
+
+	highlight_single_line(a_line: TRAFFIC_LINE) is	
+			-- Highlight the line `a_line'. 
+		require
+			a_line_valid: a_line /= Void
+		local 
+			line_section_view: EM_3D_OBJECT
+			old_is_highlighted: BOOLEAN
+		do 
+			old_is_highlighted := is_highlighted
+			is_highlighted := True
+			from
+				a_line.start
+			until
+				a_line.off
+			loop
+				line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (a_line.color.red/255, a_line.color.green/255, a_line.color.blue/255)
+
+				line_section := a_line.item
+					
+				-- line creation
+				line_factory.take_decision (decision_type)
+				line_section_view := line_factory.create_object
+				
+				line_section_views.replace (line_section_view, line_section)			
+				line_section_view := line_section_views.item (a_line.item)
+				a_line.forth
+			end
+			is_highlighted := old_is_highlighted
+		end				
+	
+	unhighlight_single_line(a_line:TRAFFIC_LINE) is
+			-- Highlight the line `a_line'.
+		require 
+				a_line_valid: a_line /= Void
+		local 
+			line_section_view: EM_3D_OBJECT
+			old_is_highlighted: BOOLEAN
+		do 
+			old_is_highlighted := is_highlighted
+			is_highlighted := False
+			from
+				a_line.start
+			until
+				a_line.off
+			loop
+				line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (a_line.color.red/255, a_line.color.green/255, a_line.color.blue/255)
+
+				line_section := a_line.item
+					
+				-- line creation
+				line_factory.take_decision (decision_type)
+				line_section_view := line_factory.create_object
+				
+				line_section_views.replace (line_section_view, line_section)			
+				line_section_view := line_section_views.item (a_line.item)
+				a_line.forth
+			end
+			is_highlighted := old_is_highlighted
+		end				
+	
+	highlight_single_line_for_5sec (a_line: TRAFFIC_LINE) is	
+			-- Highlight `a_line' for 5 seconds and reset it. 
+		require
+			a_line_exists: a_line /= Void
+		do 
+			highlight_single_line(a_line)
+			time.add_timed_procedure (agent end_highlighting (a_line), 5000)
+		end	
+		
+	end_highlighting (a_line: TRAFFIC_LINE) is
+			-- End highlighting of `a_line'.
+		require
+			a_line_exists: a_line /= Void
+		do
+			unhighlight_single_line (a_line)
+		end
+				
+	unhighlight_all_lines is
+			-- Unhighlight all the lines.
+		local 
+			lines: HASH_TABLE [TRAFFIC_LINE , STRING]
+		do 
+			from
+				lines := map.lines
+				lines.start
+			until
+				lines.off
+			loop
+				unhighlight_single_line (lines.item_for_iteration)
+				lines.forth
+			end
+			height := 1			
+		end
+		
+	highlight_all_lines is 
+			-- Highlight all the lines.
+		local 
+			lines: HASH_TABLE [TRAFFIC_LINE , STRING]
+			i: INTEGER
+		do 
+			from
+				lines := map.lines
+				lines.start
+				i := 1
+			until
+				lines.off
+			loop
+				height := i
+				highlight_single_line (lines.item_for_iteration)
+				lines.forth
+				i := i + 1
+			end
+			height := 1
+		 end		
+
+feature -- Access
+
+	line_section_views: DS_HASH_TABLE [ EM_3D_OBJECT, TRAFFIC_LINE_SECTION]
+			--  Container for all line section representations
+
+	shortest_line: ARRAYED_LIST [EM_3D_OBJECT]
+			-- Container for shortest path line
+	
+	line_factory: TRAFFIC_LINE_FACTORY
+			-- Factory for line segments
+		
+	map: TRAFFIC_MAP
+			-- Map where lines are stored
+				
+feature {NONE} -- Implementation
+
+	line_section: TRAFFIC_LINE_SECTION	
+			-- Line section for which a representation should  be created
+		
+	line_color: GL_VECTOR_3D[DOUBLE]
+			-- Vector of RGB values for the line color 
+			
+	height: INTEGER
+			-- Level of highlighted line (starts with lowest at 1)
+			
+	is_highlighted: BOOLEAN
+			-- Is the line section highlighted?
+		
+	wait_time: INTEGER is 5000
+			-- Wait time before a highlighted line is reset when calling `highlight_single_line_for_5sec'
+		
+	highlighting_delta: DOUBLE is 2.0
+			-- Height difference between highlighted line representations
+
+	decision_type: STRING is "line_type"
+			-- Name of the decision function
+	
+	normal_type: STRING is "normal"
+			-- Name of the type for normal line section representations
+	
+	highlighted_type: STRING is "highlighted"
+			-- Name of the type for highlighted line section representations
+	 
+feature {NONE} -- Implementation
+
+	decide_line_type: STRING is
+			-- Line type to be taken
+		do
+			if is_highlighted then
+				Result := highlighted_type
+			else
+				Result := normal_type
+			end
+		ensure
+			Result_is_valid: Result = highlighted_type or Result = normal_type
+		end
+
+	create_line_section_normal is
+			-- Create a representation for a normal `line_section'.
+		do
+			create_line_section_rep_normal (line_section)
+		end
+		
+	create_line_section_highlighted is
+			-- Create a representation for a highlighted `line_section'.
+		do
+			create_line_section_rep_highlighted (line_section)
+		end
+		
+	create_line_section_rep_highlighted (section: TRAFFIC_LINE_SECTION) is
+			-- Create a representation for a highlighted section `section'.
+		require
+			section_exists: section /= Void
 		local
 			i: INTEGER
 			org, dst: GL_VECTOR_3D[DOUBLE]
-
-			color: GL_VECTOR_3D[DOUBLE]
+			delta_x, delta_z, norm: DOUBLE
 		do
-			-- draw circles at the origin and destination
-			create color.make_xyz (0, 0, 0)	-- Black
-			create org.make_xyz (map_to_gl_coords (section.polypoints.first).x, line_height, map_to_gl_coords (section.polypoints.first).y)
-			create dst.make_xyz (map_to_gl_coords (section.polypoints.last).x, line_height, map_to_gl_coords (section.polypoints.last).y)
-			
-			
-			
-			-- draw a circle a little bit higher than the line
-			draw_circle (org, color, 2*line_width, line_height+0.01)
-			draw_circle (dst, color, 2*line_width, line_height+0.01)
-
-			-- draw a connecting line
 			from
 				i := 1
 			until
@@ -324,415 +478,246 @@ feature {NONE} -- Drawing
 			loop
 				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i)).y)
 				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i+1)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i+1)).y)
-				draw_line (org, dst)
-				draw_circle (org, line_color, line_width, line_height)
+				delta_x := dst.x - org.x
+				delta_z := dst.z - org.z
+				
+				norm := sqrt (delta_x*delta_x + delta_z*delta_z)
+
+				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*line_width/norm, org.y, org.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*line_width/norm, org.y, org.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*line_width/norm, dst.y, dst.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*line_width/norm, dst.y, dst.z+delta_x*line_width/norm))
+				create_circle (org, line_color, line_width, line_height)
+				create_cube (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*line_width/norm, org.y + line_height + 0.4*height + highlighting_delta, org.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*line_width/norm, org.y + line_height + 0.4*height + highlighting_delta, org.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*line_width/norm, dst.y + line_height + 0.4*height + highlighting_delta, dst.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*line_width/norm, dst.y + line_height + 0.4*height + highlighting_delta, dst.z+delta_x*line_width/norm))
+				create_cylinder (org, line_color, line_width, line_height + line_height + 0.4*height + highlighting_delta)
+				
 				i := i + 1
-			end
-			draw_circle (dst, line_color, line_width, line_height)
-		end
+			end			
+		end		
 
-feature{TRAFFIC_3D_MAP_WIDGET} -- Collision detection
-
-		create_collision_polygons(map: TRAFFIC_MAP) is
-			-- Create a list of collidable pieces.
+	create_line_section_rep_normal (section: TRAFFIC_LINE_SECTION) is
+			-- Create a representation for the line section `section'.
 		require
-			map_not_void : map /= Void
+			section_exists: section /= Void
 		local
-			all_lines_polygon: ARRAYED_LIST[TRAFFIC_LINE]
-			line: TRAFFIC_LINE
-			section: TRAFFIC_LINE_SECTION
-			collidable: EM_POLYGON_CONVEX_COLLIDABLE
-			i, j: INTEGER
-			delta_x, delta_y, norm: DOUBLE
+			i: INTEGER
+			org, dst: GL_VECTOR_3D[DOUBLE]
+			delta_x, delta_y, delta_z, norm: DOUBLE
 			start_point, end_point, a_point, c_point: EM_VECTOR_2D 
 			polygon_points: DS_LINKED_LIST [EM_VECTOR_2D]
+			collidable: EM_POLYGON_CONVEX_COLLIDABLE
 		do
-			all_lines_polygon := map.lines.linear_representation
-			create collision_polygons.make (4)
-			
-			from all_lines_polygon.start
-			until all_lines_polygon.after
-			loop
-				line := all_lines_polygon.item
-				from
-					line.start
-					j := 1
-				until j > line.count//2
-				loop
-					section := line.i_th (j)
-					from i := 1; section.polypoints.start
-					until i >= section.polypoints.count
-					loop
-						create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
-						create end_point.make (section.polypoints.i_th (i+1).x, section.polypoints.i_th (i+1).y)
-						
-						-- Transformation
-						start_point := map_to_gl_coords (start_point)
-						end_point := map_to_gl_coords (end_point)
-						
-						delta_x := end_point.x - start_point.x
-						delta_y := end_point.y - start_point.y
-						
-						norm := sqrt (delta_x*delta_x + delta_y*delta_y)
-						
-						create a_point.make (start_point.x-delta_y*1.5*line_width/norm, start_point.y+delta_x*1.5*line_width/norm)
-						create c_point.make (end_point.x+delta_y*1.5*line_width/norm, end_point.y-delta_x*1.5*line_width/norm) 
-						
-						create polygon_points.make
-						polygon_points.force ((a_point),1)
-						polygon_points.force (create {EM_VECTOR_2D}.make (start_point.x+delta_y*1.5*line_width/norm, start_point.y-delta_x*1.5*line_width/norm), 2)
-						polygon_points.force ((c_point),3)
-						polygon_points.force (create {EM_VECTOR_2D}.make (end_point.x-delta_y*1.5*line_width/norm, end_point.y+delta_x*1.5*line_width/norm), 4)
-						create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2), polygon_points)
-						collision_polygons.force (collidable)
-						i := i + 1
-					end
-					j := j + 1
-				end
-				all_lines_polygon.forth
-			end
-		end
-		
-		collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-			-- Collision polygons to check for collisions with traffic lines
-			
-feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
-
-	add_lines(map: TRAFFIC_MAP) is
-			-- add all lines from the map to the lines array.
-			require
-				map_valid: map /= Void
-			local
-				
-				i: INTEGER	
-				all_sections_of_one_line: TRAFFIC_LINE 
-				actual_line: ARRAY[EM_3D_OBJECT]
-			do
-				all_lines := map.lines
-				from
-					i := 0		-- for the different lines
-					all_lines.start
-				until
-					all_lines.after
-				loop
-					all_sections_of_one_line:= all_lines.item_for_iteration
-					actual_line := make_normal_line(all_sections_of_one_line)
-					line_objects.force (actual_line, all_sections_of_one_line)							
---					line_objects.put(actual_line, all_sections_of_one_line)					
-
-					i := i+1
-					all_lines.forth
-				end
-			end
-			
-	make_highlighted_line(line_to_highlight: TRAFFIC_LINE; highlight_line_height: INTEGER):ARRAY[EM_3D_OBJECT] is
-			-- to build  the bold highlighted line objects.
-		require
-			line_to_highlight_valid: line_to_highlight /= Void
-		local
-			x_coord, z_coord: DOUBLE
-			j: INTEGER
-			all_sections_of_one_line: TRAFFIC_LINE -- lines are at beginning and end of linesections
-			a_line: EM_3D_OBJECT
-			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]				
-			actual_line: ARRAY[EM_3D_OBJECT]
-		do
-			line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (line_to_highlight.color.red/255, line_to_highlight.color.green/255, line_to_highlight.color.blue/255)
-			is_highlighted := true
-			j :=0		-- for the individual line segments
-	
-			all_sections_of_one_line := all_lines.item (line_to_highlight.name)
-			create actual_line.make(1,1)
 			from
-				all_sections_of_one_line.start
-			until
-				all_sections_of_one_line.after
-			loop
-				-- iterate over all sections of the to highlighted line	
-				line_section := all_sections_of_one_line.item
-				x_coord := map_to_gl_coords(all_sections_of_one_line.item.polypoints.first).x
-				z_coord := map_to_gl_coords(all_sections_of_one_line.item.polypoints.first).y
-				-- polypoints for the line
-				create poly_points.make
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord), 1)	-- left bottom corner
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord-line_width), 2) -- left upper corner
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord-line_width, z_coord-line_width), 3) -- right upper corner
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord-line_width, z_coord), 4) -- right bottom corner
-			
-				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-0.1,z_coord-0.1), poly_points)
-				
-				-- line creation
-				is_highlighted := true
-				line_factory.take_decision (decision_type)
-				a_line := line_factory.create_object
-				a_line.set_origin (0, line_height + 0.4*highlight_line_height + highlighting_delta, 0)
-				actual_line.force(a_line, j)
-				j := j+1
-				all_sections_of_one_line.forth
-			
-				line_objects.put(actual_line, all_sections_of_one_line)					
-			end		
-			Result := actual_line	
-		end
-		
-	make_normal_line(normal_line: TRAFFIC_LINE):ARRAY[EM_3D_OBJECT] is
-			-- to build  the normal (un-highlighted) line objects.
-		require
-			normal_line_valid: normal_line /= Void
-		local
-			x_coord, z_coord: DOUBLE
-			j: INTEGER
-			all_sections_of_one_line: TRAFFIC_LINE -- lines are at beginning and end of linesections
-			a_line: EM_3D_OBJECT
-			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]				
-			actual_line: ARRAY[EM_3D_OBJECT]
-		do
-			line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (normal_line.color.red/255, normal_line.color.green/255, normal_line.color.blue/255)
-			is_highlighted := false
-			j :=0		-- for the individual line segments
-	
-			all_sections_of_one_line := all_lines.item (normal_line.name)
-			create actual_line.make(1,1)
-			from
-				all_sections_of_one_line.start
-			until
-				all_sections_of_one_line.after
-			loop
-				-- iterate over all sections of the to highlighted line	
-				line_section := all_sections_of_one_line.item
-
-				x_coord := map_to_gl_coords(all_sections_of_one_line.item.polypoints.first).x
-				z_coord := map_to_gl_coords(all_sections_of_one_line.item.polypoints.first).y
-				
-				-- polypoints for the line
-				create poly_points.make
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord), 1)	-- left bottom corner
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord, z_coord-line_width), 2) -- left upper corner
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord-line_width, z_coord-line_width), 3) -- right upper corner
-				poly_points.force (create {EM_VECTOR_2D}.make (x_coord-line_width, z_coord), 4) -- right bottom corner
-			
-				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord-0.1,z_coord-0.1), poly_points)
-				
-				-- line creation
-				line_factory.take_decision (decision_type)
-				a_line := line_factory.create_object
-				a_line.set_origin (0, line_height + 0.1, 0)
-				
-				actual_line.force(a_line, j)
-				j := j+1
-				all_sections_of_one_line.forth
-			
-				line_objects.put(actual_line, all_sections_of_one_line)					
-			end		
-			Result := actual_line	
-		end
-		
-		-----------
-			
-
-	add_shortest_line(a_line: TRAFFIC_LINE) is
-		-- add one line to the map, e.g. the shortest path line.
-		require
-			a_line_valid: a_line /= Void
-		local
-			i: INTEGER
-			a_line_section: EM_3D_OBJECT
-		do
-			shortest_line.wipe_out
-			line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1,1,1)
-			set_highlighted (true)		
-					from
-						a_line.start
-						i := 0
-					until
-						a_line.after
-					loop
-						line_section := a_line.item
-						-- line creation
-						
-						line_factory.take_decision (decision_type)
-						a_line_section := line_factory.create_object
-						a_line_section.set_origin (0, line_height + 0.01, 0)
-						shortest_line.force(a_line_section)
-						i := i+1
-						a_line.forth
-					end
-			set_highlighted (false)
-		end
-
-feature{NONE} -- Decision procedures
-	
-	decide_line_type: STRING is
-			-- decide which type of line is chosen.
-		do
-			Result := tram_type
-		end
-
-	create_tram_line is
-			-- create a tram line
-		do
-			draw_line_section (line_section)
-		end
-		
-feature{NONE} -- Decision attributes
-	
-	tram_type: STRING is "tram_line"
-	 
-	decision_type: STRING is "not_highlighted"
-	
-	
-feature -- Attributes Setting
-
-	highlight_single_line(a_line: TRAFFIC_LINE) is	
-		-- Has the line as a key and the corresponding line segmants as em_3d_object. 
-		require
-			a_line_valid: a_line /= Void
-		local 
-			actual_line_objects: ARRAY[EM_3D_OBJECT]
-			i: INTEGER
-		do 
-				highlighting_delta := 2
-				is_highlighted := true
 				i := 1
-				create actual_line_objects.make(1,1)
-				actual_line_objects := make_highlighted_line(a_line, i)	
-				line_objects.force (actual_line_objects, a_line)
-				draw	
-		end				
-	
-	un_highlight_single_line(a_line:TRAFFIC_LINE) is
-			-- a_line is unhighlighted. 
-		require 
-				a_line_valid: a_line /= Void
-		local 
-			actual_line_objects: ARRAY[EM_3D_OBJECT]
-		do 
-			--	highlighting_delta := 0
-				is_highlighted := false
+			until
+				i >= section.polypoints.count
+			loop
+				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i)).y)
+				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i+1)).x, line_height, map_to_gl_coords (section.polypoints.i_th (i+1)).y)
+				delta_x := dst.x - org.x
+				delta_z := dst.z - org.z
 				
-				create actual_line_objects.make(1,1)
-				actual_line_objects := make_normal_line(a_line)
-				line_objects.force (actual_line_objects, a_line)
-				draw
+				norm := sqrt (delta_x*delta_x + delta_z*delta_z)
+				
+				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*line_width/norm, org.y, org.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*line_width/norm, org.y, org.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*line_width/norm, dst.y, dst.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*line_width/norm, dst.y, dst.z+delta_x*line_width/norm))
+				create_circle (org, line_color, line_width, line_height)
+				
+				-- Collision polygon
+				create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
+				create end_point.make (section.polypoints.i_th (i+1).x, section.polypoints.i_th (i+1).y)
+				
+				start_point := map_to_gl_coords (start_point)
+				end_point := map_to_gl_coords (end_point)
+				
+				delta_x := end_point.x - start_point.x
+				delta_y := end_point.y - start_point.y
+				
+				norm := sqrt (delta_x*delta_x + delta_y*delta_y)
+				
+				create a_point.make (start_point.x-delta_y*1.5*line_width/norm, start_point.y+delta_x*1.5*line_width/norm)
+				create c_point.make (end_point.x+delta_y*1.5*line_width/norm, end_point.y-delta_x*1.5*line_width/norm) 
+				
+				create polygon_points.make
+				polygon_points.force ((a_point),1)
+				polygon_points.force (create {EM_VECTOR_2D}.make (start_point.x+delta_y*1.5*line_width/norm, start_point.y-delta_x*1.5*line_width/norm), 2)
+				polygon_points.force ((c_point),3)
+				polygon_points.force (create {EM_VECTOR_2D}.make (end_point.x-delta_y*1.5*line_width/norm, end_point.y+delta_x*1.5*line_width/norm), 4)
+				create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2), polygon_points)
+				collision_polygons.force (collidable)
+
+				i := i + 1
+			end
+		end
+
+	create_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r, h: DOUBLE) is
+			-- Create a circle at point `p' with color `rgb' and radius `r' and height `h'.
+		require
+			p_exists: p /= Void
+			rgb_exists: rgb /= Void and then (rgb.x >= 0 and rgb.x <= 1 and rgb.y >= 0 and rgb.y <= 1 and rgb.z >= 0 and rgb.z <= 1)
+			r_greater_than_zero: r > 0
+		do
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(rgb.pointer)
+			-- a little bit higher than the line
+			gl_translated_external (p.x, h, p.z)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+			glu_disk_external (glu_new_quadric, 0, r, 72, 1)
+			gl_pop_matrix_external
+			gl_flush_external
+		end
+		
+	create_cylinder (p, rgb: GL_VECTOR_3D[DOUBLE]; r, h: DOUBLE) is
+			-- Create a cylinder at point `p' with color `rgb' and radius `r' and height `h'.
+		require
+			p_exists: p /= Void
+			rgb_exists: rgb /= Void and then (rgb.x >= 0 and rgb.x <= 1 and rgb.y >= 0 and rgb.y <= 1 and rgb.z >= 0 and rgb.z <= 1)
+			r_greater_than_zero: r > 0
+		do
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(rgb.pointer)
+			-- a little bit higher than the line
+			gl_translated_external (p.x, h, p.z)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+			glu_disk_external (glu_new_quadric, 0, r, 8, 1)
+			gl_pop_matrix_external
+			gl_flush_external
+
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(rgb.pointer)
+			-- a little bit higher than the line
+			gl_translated_external (p.x, h, p.z)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+			glu_cylinder_external (glu_new_quadric_external, r, r, line_depth, 8, 8)
+			gl_pop_matrix_external
+			gl_flush_external
+
+			gl_matrix_mode_external (Em_gl_modelview)
+			gl_push_matrix_external
+			gl_color3dv_external(rgb.pointer)
+			-- a little bit higher than the line
+			gl_translated_external (p.x, h - line_depth, p.z)
+			gl_rotated_external (90, 1, 0, 0)
+			gl_disable_external (em_gl_lighting)
+			glu_disk_external (glu_new_quadric, 0, r, 8, 1)
+			gl_pop_matrix_external
+			gl_flush_external			
 		end		
 		
-	
-	highlight_single_line_for_5sec(a_line: TRAFFIC_LINE) is	
-		-- Highlights 'a_line' for 5 seconds and reset it.
-		do 
-			wait_time := 5000
-			time.delay (wait_time)
-			highlight_single_line(a_line)
-						
-			draw
+	create_cube (p1, p2, p3, p4: GL_VECTOR_3D[DOUBLE]) is
+			-- Create a cube with four edges `p1', `p2', `p3', and `p4' and height `line_depth'.
+		require
+			p1_exists: p1 /= Void
+			p2_exists: p2 /= Void
+			p3_exists: p3 /= Void
+			p4_exists: p4 /= Void
+		do
+			gl_begin_external (em_gl_quads)
+				gl_color3dv_external (line_color.pointer)
+				
+				-- Front
+				gl_normal3d_external (1, 0, 0)
+				gl_vertex3d_external (p1.x, p1.y, p1.z)
+				
+				gl_normal3d_external (1, 0, 0)
+				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
+				
+				gl_normal3d_external (1, 0, 0)
+				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+
+				gl_normal3d_external (1, 0, 0)
+				gl_vertex3d_external (p2.x, p2.y, p2.z)
 			
-			time.delay (wait_time)
-			un_highlight_single_line(a_line)
+				-- Back
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (p3.x, p3.y, p3.z)
+				
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
+				
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
+				
+				gl_normal3d_external (-1, 0, 0)
+				gl_vertex3d_external (p4.x, p4.y, p4.z)
+				
+				-- Left
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (p3.x, p3.y, p3.z)
+				
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
+				
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
+				
+				gl_normal3d_external (0, 0, 1)
+				gl_vertex3d_external (p1.x, p1.y, p1.z)
+				
+				-- Right
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (p2.x, p2.y, p2.z)
+				
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+				
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (p4.x, p4.y - line_width, p4.z)
+				
+				gl_normal3d_external (0, 0, -1)
+				gl_vertex3d_external (p4.x, p4.y, p4.z)
+				
+				-- Top
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3dv_external (p1.pointer)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3dv_external (p2.pointer)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3dv_external (p3.pointer)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3dv_external (p4.pointer)
+				
+				-- Bottom
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (p1.x, p1.y - line_depth, p1.z)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (p2.x, p2.y - line_depth, p2.z)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (p3.x, p3.y - line_depth, p3.z)
+				
+				gl_normal3d_external (0, 1, 0)
+				gl_vertex3d_external (p4.x, p4.y - line_depth, p4.z)
+			gl_end_external			
 		end	
 		
-		
-	highlight_all_lines(b: BOOLEAN) is 
-			-- highlight all the lines/set the is_highlighted variable
-		local 
-			actual_line: TRAFFIC_LINE 
-			i: INTEGER
-		do 
-			is_highlighted := b
-			if b then
-				-- highlight all lines
-				highlighting_delta := 2
-
-				from 
-					i := 0
-					line_objects.start
-				until
-					line_objects.after
-				loop
-					actual_line := line_objects.key_for_iteration	
-					line_objects.force (make_highlighted_line(actual_line, i), actual_line)
-					i := i+1
-					line_objects.forth
-				end				
-				
-			else	
-				-- unhighlight all lines				
-				highlighting_delta := 0	
-				from 
-					line_objects.start
-				until
-					line_objects.after
-				loop
-					actual_line := line_objects.key_for_iteration	
-					line_objects.force (make_normal_line(actual_line), actual_line)
-					line_objects.forth
-				end	
-			end
-		ensure
-			is_highlighted = b
-			b implies highlighting_delta = 2
-			not b implies highlighting_delta = 0
-		 end		
-	
-	
-	set_highlighted(b: BOOLEAN) is
-			-- set the is_highlighted variable.
+	create_plane (p1, p2, p3, p4: GL_VECTOR_3D[DOUBLE]) is
+			-- Draw a plane with vertices `p1', `p2', `p3' and `p4'.
+		require
+			p1_exists: p1 /= Void
+			p2_exists: p2 /= Void
+			p3_exists: p3 /= Void
+			p4_exists: p4 /= Void
 		do
-			is_highlighted := b
-			if b then
-				highlighting_delta := 2
-			else
-				highlighting_delta := 0
-			end
-		ensure
-			is_highlighted = b
-			b implies highlighting_delta = 2
-			not b implies highlighting_delta = 0
-		end
-		
-	
-		
-feature{NONE} -- Attributes - Implementation
-
-	all_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
-	
-	line_section: TRAFFIC_LINE_SECTION
-		
-	lines: ARRAYED_LIST[TRAFFIC_LINE_SECTION]
-			-- Traffic line provides information about points and segments.
-	
-	line_color: GL_VECTOR_3D[DOUBLE]
-			-- Vector of RGB values for the line color
-			
-	object_width: DOUBLE is 2.0
-			-- The size of the bounding box in x direction of created objects.
-			
-	object_height: DOUBLE is 2.0
-			-- The size of the bounding box in y direction of created objects.
-			
-	object_depth: DOUBLE is 2.0
-			-- The size of the bounding box in z direction of created objects.
-				
-	line_objects: HASH_TABLE[ARRAY[EM_3D_OBJECT], TRAFFIC_LINE]
-		--  Container for all drawable lines, separated by line
-	
-	shortest_line: ARRAYED_LIST[EM_3D_OBJECT]
-		-- Container for shortest path line
-	
-	line_factory: TRAFFIC_LINE_FACTORY
-		-- factory for lines	
-		
-	centre: GL_VECTOR_3D[DOUBLE]
-		-- Centre of the city
-		
-	is_highlighted: BOOLEAN
-		-- If the lines are highlighted
-
-	wait_time: INTEGER
-		-- For highlighting a line 5 seconds
-		
-	highlighting_delta: DOUBLE
-		-- Height difference between highlighted and normal line representation
+			-- Normals all parallel to y axis
+			gl_begin_external (em_gl_quads)
+				gl_color3dv_external (line_color.pointer)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p1.x, p1.y, p1.z)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p2.x, p2.y, p2.z)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p3.x, p3.y, p3.z)
+				gl_normal3d_external (0,1,0)
+				gl_vertex3d_external (p4.x, p4.y, p4.z)
+			gl_end
+			gl_flush_external
+		end		
 	
 end

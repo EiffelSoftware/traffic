@@ -107,7 +107,6 @@ feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessibl
 			-- (front, left, lower corner of bounding box = 0,0,0)
 		do
 			line_templates.item(decision).apply
-		end
+		end		
 		
-		
-end -- class TRAFFIC_LINE_FACTORY
+end 

@@ -3,14 +3,15 @@ indexing
 					map widget to display the map in 3D.
 					Inherit from this class and add events to handle the map
 					]"
-	author: "Florian Geldmacher"
-	date: "8.12.2005"
-	revision: "0.1"
+	date: "$Date: 2006/03/02 18:57:05 $"
+	revision: "$Revision: 1.26 $"
 
-class
-	TRAFFIC_3D_MAP_WIDGET
+class TRAFFIC_3D_MAP_WIDGET
 
 inherit
+	
+	TRAFFIC_MAP_WIDGET
+	
 	EM_3D_COMPONENT
 		redefine
 			prepare_drawing
@@ -54,15 +55,16 @@ feature -- Initialisation
 				create sun_light.make (em_gl_light0 )
 				create constant_light.make (em_gl_light1)
 				
-				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
+				plane := create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
 				create_coord_system
 
 				create traffic_time.make_day (5)
 
 				mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 				create building_clicked_event.default_create
-				create traffic_buildings.make
-				
+				create place_clicked_event
+				create traffic_buildings.make				
+
 				create randomizer.set_seed (42)
 				create angle_randomizer.set_seed(45)
 				create buildings_polygons.make (1)
@@ -200,7 +202,7 @@ feature -- Drawing
 			end
 
 			-- Draw plane
-			gl_call_list_external (1)
+			plane.draw
 			
 			-- Show coordinate system
 			if coordinates_shown then
@@ -208,7 +210,7 @@ feature -- Drawing
 			end
 			
 			-- Display buildings and lines and places
-			if is_map_loaded and then not is_map_hidden then
+			if is_map_displayed and then not is_map_hidden then
 				if buildings_shown then
 					if buildings_transparent then
 						gl_polygon_mode_external (em_gl_front_and_back, em_gl_line)
@@ -220,6 +222,7 @@ feature -- Drawing
 				end
 				traffic_lines.draw
 				-- here could also be traffic_places.draw, which would show all places in black
+				traffic_places.draw
 				
 				traffic_traveler.draw
 			end
@@ -233,14 +236,14 @@ feature{EM_3D_OBJECT} -- Collision
 				all_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 			do
 				create all_polygons.make_from_array (traffic_lines_polygons)
---				all_polygons.append (traffic_places_polygons)
+				all_polygons.append (traffic_places_polygons)
 				Result := all_polygons
 			end
 		
 
 feature{NONE}	-- Auxiliary drawing
 
-	create_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]) is
+	create_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]): EM_3D_OBJECT is
 			-- OpenGL display list Nr. `1' for a plane.
 		require
 			p1 /= Void
@@ -248,8 +251,11 @@ feature{NONE}	-- Auxiliary drawing
 			p3 /= Void
 			p4 /= Void
 			rgb /= Void
+		local
+			displaylist: INTEGER
 		do
-			gl_new_list_external (1, em_gl_compile)
+			displaylist := gl_gen_lists (1)
+			gl_new_list (displaylist, EM_GL_COMPILE)
 				gl_begin_external (em_gl_quads)
 					gl_color3dv_external (rgb.pointer)
 					gl_normal3d_external (0,1,0)
@@ -260,8 +266,10 @@ feature{NONE}	-- Auxiliary drawing
 					gl_vertex3dv_external (p3.pointer)
 					gl_normal3d_external (0,1,0)
 					gl_vertex3dv_external (p4.pointer)
+				gl_flush_external
 				gl_end_external
-			gl_end_list_external
+			gl_end_list
+			create {EM_3D_OBJECT_DISPLAYLIST} Result.make (displaylist, (p3.x-p1.x).abs, (p3.y-p1.y).abs, (p3.z-p1.z).abs)
 		end
 		
 	create_coord_system is
@@ -329,19 +337,12 @@ feature{NONE}	-- Auxiliary drawing
 
 feature -- Traffic map loading
 
-	load_map (a_filename: STRING) is
-			-- Load the map.
-		require
-			name_valid: a_filename /= void and then not a_filename.is_empty
-		local
-			loader: TRAFFIC_MAP_LOADER
+	set_map (a_map: TRAFFIC_MAP) is
+			-- Use `a_map' to be displayed.
 		do	
-			create loader.make (a_filename)
-			loader.load_map
-			if not loader.has_error then
-				map := loader.map
-				is_map_loaded := True
-				last_loading_successful := True
+			map := a_map
+			if map /= Void then
+				is_map_displayed := True
 				number_of_buildings := 0
 				traffic_buildings.delete_buildings
 				create traffic_places.make (map)
@@ -349,28 +350,20 @@ feature -- Traffic map loading
 				create traffic_lines.make (map)
 				traffic_lines_polygons := traffic_lines.collision_polygons
 				create traffic_traveler.make (map, traffic_time)
-	--			traffic_traveler_polygons := traffic_traveler.collision_polygons
-				
-				traffic_buildings.set_map(loader.map)
+			
+				traffic_buildings.set_map(a_map)
+--				traffic_buildings.set_collision_polygons(collision_polygons)
 				marked_station_changed := True	
-			else			
-				last_loading_successful := False
+			else				
+				-- Todo remove everything
 			end
-		ensure
---			map /= Void
-----			is_map_loaded = True
---			place_representation_startet: traffic_places /= Void
---			line_representation_started: traffic_lines /= Void
 		end
 		
-	is_map_loaded: BOOLEAN
+	is_map_displayed: BOOLEAN
 			-- Is there a loaded map?
 			
 	last_loading_successful: BOOLEAN
 			-- Was last map loading successful?
-			
-	map: TRAFFIC_MAP
-			-- Parsed map.
 			
 	number_of_buildings: INTEGER
 			-- How many buildings should be displayed?
@@ -423,14 +416,14 @@ feature -- Options
 			n >= 0
 		do
 			
-			if is_map_loaded then
+			if is_map_displayed then
 				if n > number_of_buildings then
 					add_buildings_randomly (n - number_of_buildings)
 					number_of_buildings := n
 				else
 					number_of_buildings := n
 				end
-				traffic_buildings.set_building_number (number_of_buildings)			
+				traffic_buildings.set_building_number (number_of_buildings)
 			end
 		ensure 
 			number_of_buildings = n
@@ -447,7 +440,11 @@ feature -- Options
 	set_lines_highlighted (b: BOOLEAN) is
 			-- If `b' then all traffic lines are highlighted.
 		do
-			traffic_lines.highlight_all_lines (b)
+			if b = True then
+				traffic_lines.highlight_all_lines
+			else			
+				traffic_lines.unhighlight_all_lines
+			end
 
 		end
 		
@@ -457,12 +454,11 @@ feature -- Options
 			traffic_lines.highlight_single_line (a_line)
 		end
 		
-	set_single_line_un_highlighted(a_line: TRAFFIC_LINE) is
+	set_single_line_unhighlighted(a_line: TRAFFIC_LINE) is
 			-- a_line is unhighlighted
 		do
-			traffic_lines.un_highlight_single_line (a_line)
-		end
-		
+			traffic_lines.unhighlight_single_line (a_line)
+		end		
 	
 	set_single_line_highlighted_5sec(a_line: TRAFFIC_LINE) is
 			-- a_line is highlighted
@@ -543,11 +539,11 @@ feature -- Options
 					building.set_angle (angle)
 					traffic_buildings.add_building (building)
 					i := i + 1
-				end
+		end
 				-- we need to random j's per round
 				j := j + 2
 			end
-			
+	
 		end
 	
 		has_collision (a_poly: EM_COLLIDABLE): BOOLEAN is
@@ -605,7 +601,7 @@ feature -- Options
 			i : INTEGER
 			start_point, end_point: EM_VECTOR_2D
 			temp: EM_VECTOR_2D
-		do	
+		do
 			building_height := 0.5
 			create start_point.make(0,0)
 			create end_point.make(0,0)
@@ -638,7 +634,7 @@ feature -- Options
 									temp:=start_point
 									start_point:=temp_destination
 									temp_destination:=temp
-								end
+		end
 								end_point.set_y (start_point.y-0.5)
 								end_point.set_x(start_point.x)
 							until
@@ -662,7 +658,7 @@ feature -- Options
 									add_building (building)
 									buildings_polygons.extend(collision_poly)
 								end
-								
+	
 								--builiding on the left hand sinde of the line
 								create p4.make (start_point.x+0.25, start_point.y)
 								create p3.make (end_point.x+0.25, end_point.y)
@@ -804,18 +800,27 @@ feature -- Mousevents
 			-- 	Event queue for building clicked event.
 		local
 			result_vec: GL_VECTOR_3D[DOUBLE]
-			clicked_point: GL_VECTOR_3D[DOUBLE]
-			buildings: LINKED_LIST[TRAFFIC_BUILDING]
-			found: BOOLEAN
-		
+			clicked_point: GL_VECTOR_3D[DOUBLE]		
 		do
-			result_vec := transform_coords(event.screen_x, event.screen_y)				
-			create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z) 
-			if clicked_point.x >=0 and clicked_point.z>=0 then
+			if map /= Void then
+				result_vec := transform_coords(event.screen_x, event.screen_y)				
+				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z) 
+				publish_building_events (clicked_point, event)
+				publish_place_events (clicked_point, event)				
+			end
+		end
+		
+	publish_building_events (a_point: GL_VECTOR_3D[DOUBLE]; event: EM_MOUSEBUTTON_EVENT) is
+			-- Publish mouse event if a building was clicked.
+		local
+			buildings: LINKED_LIST[TRAFFIC_BUILDING]
+			found: BOOLEAN			
+		do
+			if a_point.x >=0 and a_point.z>=0 then
 				buildings:= map.buildings[1]	
-			elseif clicked_point.x<=0 and clicked_point.z>=0 then
+			elseif a_point.x<=0 and a_point.z>=0 then
 				buildings:= map.buildings[2]
-			elseif clicked_point.x>=0 and clicked_point.z<=0 then
+			elseif a_point.x>=0 and a_point.z<=0 then
 				buildings:= map.buildings[3]
 			else
 				buildings:= map.buildings[4]
@@ -826,18 +831,45 @@ feature -- Mousevents
 			until 
 				buildings.after or found
 			loop
-				if buildings.item.contains_point(clicked_point.x, clicked_point.z) then
+				if buildings.item.contains_point(a_point.x, a_point.z) then
 					building_clicked_event.publish([buildings.item,event])
 					found:= true
 				end
-			buildings.forth
+				buildings.forth
+			end			
+		end
+		
+	publish_place_events (a_point: GL_VECTOR_3D[DOUBLE]; event: EM_MOUSEBUTTON_EVENT) is
+			-- Publish mouse event if a place was clicked.
+		local
+			places: HASH_TABLE [TRAFFIC_PLACE, STRING]
+			found: BOOLEAN
+			place: TRAFFIC_PLACE
+			delta, delta_x, delta_z: DOUBLE
+		do
+			from
+				places := map.places
+				places.start
+			until
+				places.off or found
+			loop
+				place := places.item_for_iteration
+				delta_x := place.position.x - a_point.x
+				delta_z := place.position.y - a_point.z
+				delta := sqrt (delta_x^2 + delta_z^2)
+				if delta < station_radius* 30 then
+					place_clicked_event.publish([place,event])
+					found := True
+				end
+				places.forth
 			end
 		end
 			
 	building_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING,EM_MOUSEBUTTON_EVENT]]
-			-- event for click on building.
-
-	
+			-- Event for click on building
+			
+	place_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE, EM_MOUSEBUTTON_EVENT]]
+			-- Event for click on place
 
 feature {NONE} -- Attributes
 
@@ -876,7 +908,7 @@ feature {NONE} -- Attributes
 			
 	highlighting_delta: DOUBLE
 			-- Height difference between highlighted and normal line representation.
-	
+
 	building_id: INTEGER
 			-- Number to specify the building name.
 	
@@ -908,7 +940,7 @@ feature {NONE} -- Implementation
 
 	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic places.
-	
+		
 	buildings_polygons: ARRAYED_LIST [EM_POLYGON_CONVEX_COLLIDABLE]
 			-- Building collision polygons
 		
@@ -917,6 +949,8 @@ feature {NONE} -- Implementation
 			
 	constant_light: GL_LIGHT
 			-- Constant white light from one direction.
+			
+	plane: EM_3D_OBJECT
 
 invariant
 	number_of_buildings_valid: number_of_buildings >= 0
