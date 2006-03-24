@@ -33,6 +33,7 @@ feature -- Initialization
 		end
 			
 feature -- Zoom options
+
 	zoom_in is
 			-- Zoom in.
 		do
@@ -293,6 +294,22 @@ feature {NONE} -- Event handling
 
 
 feature -- {CITY_3D_SCENE}	-- Travelere objects
+	add_travelers is
+			-- fill in here the travelers and call it in load_map
+			local
+				traveler: TRAFFIC_TRAVELER
+				temp_list: ARRAYED_LIST [EM_VECTOR_2D]
+			do
+				create temp_list.make(1)
+				temp_list.force (create {EM_VECTOR_2D}.make (-67, -32))
+				temp_list.force (create {EM_VECTOR_2D}.make (0, 0))
+				temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
+
+				create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
+				
+				add_traveler (traveler)
+			end
+		
 	
 	adjust_speed is
 			-- adjust the speed by a double.
@@ -324,6 +341,7 @@ feature -- {CITY_3D_SCENE}	-- Travelere objects
 						i >= number - number_of_passengers
 					loop
 						create traveler.make_random (traffic_time.time.ticks, 7, create {TRAFFIC_TYPE_WALKING}.make)
+						traveler.set_reiterate (True)
 						add_traveler (traveler)				
 						i := i + 1
 					end
@@ -338,33 +356,14 @@ feature
 	load_map (filename: STRING) is
 			-- 
 			local
-				traveler: TRAFFIC_TRAVELER
-				temp_list: ARRAYED_LIST [EM_VECTOR_2D]
+
 			do
 				Precursor (filename)
 				
 				update_passenger_number (0)
 				update_passenger_number (number_of_passengers)
 				
-				create temp_list.make(1)
-
-				temp_list.force (create {EM_VECTOR_2D}.make (-67, -32))
-
-				temp_list.force (create {EM_VECTOR_2D}.make (0, 0))
-				temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
-
-
-				create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
-				traveler.set_reiterate (True)
-				add_traveler (traveler)
-
-				temp_list.wipe_out
-				temp_list.force (create {EM_VECTOR_2D}.make (60, 40))
-				temp_list.force (create {EM_VECTOR_2D}.make (1200, 40))
-
-				create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
-				add_traveler (traveler)
-				
+--				add_travelers
 				
 				traffic_traveler.add_tram_per_line (map, 2)
 				

@@ -13,8 +13,10 @@ inherit
 		all
 	{TRAFFIC_TRAVELER_REPRESENTATION}
 		create_object
+--		, load_file
 	redefine
-		make, load_file, specify_object 
+		make, specify_object, read_face
+		,load_file 
 	end
 	
 	
@@ -47,7 +49,7 @@ feature -- Attribute Setting
 			changed: not unchanged
 		end
 
-	em_color: GL_VECTOR_3D[DOUBLE]
+	em_color: GL_VECTOR_3D [DOUBLE]
 	
 feature  -- Commands
 
@@ -73,12 +75,14 @@ feature  -- Commands
 
 			create vertices.make (0,2)
 			create faces.make (0,0)
-			file_loader.load_text_file_read_write (a_filename)
+			file_loader.load_text_file_read (a_filename)
 			obj_file := file_loader.last_text_file
 
 			-- read line for line
 			from
 				vertex_count := 0
+				face_count := 0
+				obj_file.start
 			until
 				obj_file.after
 			loop
@@ -100,8 +104,8 @@ feature  -- Commands
 				else
 					-- unknown => ignore line and print line as output
 					obj_file.read_line
---					print ("Unknown line:")
---					print (obj_file.last_string)
+					print ("Unknown line:")
+					print (obj_file.last_string + "%N")	
 				end
 			end
 			obj_file.close
@@ -124,7 +128,7 @@ feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessibl
 			vert0,vert1,vert2: ARRAY[DOUBLE]
 			p, q: ARRAY[DOUBLE]
 			fnormal: ARRAY[DOUBLE]
-			tmp: ANY
+--			tmp: ANY
 		do
 			-- TODO support other faces than triangles
 			-- and also support other data, like texture coordinates
@@ -141,7 +145,7 @@ feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessibl
 			-- so max and min are reversed for the z coordinate
 			gl_begin ( Em_gl_triangles )
 				gl_color3dv (em_color.pointer)
-				gl_materialfv (Em_gl_front, Em_gl_ambient_and_diffuse, $tmp)
+				gl_materialfv (Em_gl_front, Em_gl_ambient_and_diffuse, $default_pointer)
 				from
 					act_face := 0
 				until
@@ -183,4 +187,28 @@ feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessibl
 			object_depth := max_z - min_z
 		end
 
+
+feature {NONE} -- implementation
+
+	read_face (a_file: FILE): ARRAY[INTEGER] is
+			-- Read the face data from the current position
+		do
+			create result.make(0,2)
+
+			-- read face data (format integer//integer integer//integer integer//integer)
+			-- TODO at the moment we only read the geometric vertices
+			-- it would be possible to also read texture vertices or normal vertices
+			-- we also only read 3 vertices, so only triangle faces are acceptable
+			a_file.read_integer
+			result.put (a_file.last_integer-1, 0)
+			a_file.read_stream (2)
+			a_file.read_integer
+			a_file.read_integer
+			result.put (a_file.last_integer-1, 1)
+			a_file.read_stream (2)
+			a_file.read_integer
+			a_file.read_integer
+			result.put (a_file.last_integer-1, 2)
+			a_file.readline
+		end
 end

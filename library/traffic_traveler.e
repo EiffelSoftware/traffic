@@ -101,9 +101,12 @@ feature -- Initialization
 			polypoints.start
 			set_coordinates
 			set_angle
-			virtual_speed := random_direction.double_item / 2
+			virtual_speed := random_direction.double_item / 8
 			if virtual_speed < 0.05 then
 				virtual_speed := 0.05
+			elseif virtual_speed > 0.3 then
+				virtual_speed := 0.3
+				
 			end
 			random_direction.forth
 		ensure	
@@ -199,16 +202,7 @@ feature {NONE} -- helper for journey
 					else
 						destination := map_to_gl_coords (polypoints.item)										
 					end
-				else
-					polypoints.forth
-					if polypoints.after then
-						is_traveling_back := True
-						polypoints.back
-						set_coordinates
-					else
-						destination := map_to_gl_coords (polypoints.item)										
-					end
---				elseif is_reiterating then
+--				else
 --					polypoints.forth
 --					if polypoints.after then
 --						is_traveling_back := True
@@ -216,14 +210,23 @@ feature {NONE} -- helper for journey
 --						set_coordinates
 --					else
 --						destination := map_to_gl_coords (polypoints.item)										
---					end				
---				else
---					polypoints.forth
---					if polypoints.after then
---						has_finished := True
---					else
---						destination := map_to_gl_coords (polypoints.item)										
 --					end
+				elseif is_reiterating then
+					polypoints.forth
+					if polypoints.after then
+						is_traveling_back := True
+						polypoints.back
+						set_coordinates
+					else
+						destination := map_to_gl_coords (polypoints.item)										
+					end				
+				else
+					polypoints.forth
+					if polypoints.after then
+						has_finished := True
+					else
+						destination := map_to_gl_coords (polypoints.item)										
+					end
 				end
 			
 			ensure

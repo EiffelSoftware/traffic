@@ -100,29 +100,28 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					a_map /= Void
 				local
 					traveler: EM_3D_OBJECT
-					object_loader: TRAFFIC_OBJECT_LOADER
 				do
 	
 					a_traveler.set_index (traveler_key)
 					traveler_key := traveler_key + 1
-					create object_loader.make_with_color (0, 0, 0)
 						-- set the key for the traveler here
 						
 					if a_traveler.traffic_type.name.is_equal ("walking") then
-						object_loader.set_em_color (255, 0, 0)
-						object_loader.load_file ("objects/person2.obj")
-						traveler_factory.set_em_color (255, 0, 0)
-						traveler_factory.load_file ("objects/person2.obj")
-						traveler := object_loader.create_object
---						traveler := traveler_factory.create_object							
+						if person_toggle = 0 then
+							traveler_factory.set_em_color (255, 0, 0)						
+							traveler_factory.load_file ("objects/man.obj")
+							person_toggle := 1
+						else	
+							traveler_factory.set_em_color (200, 0, 100)					
+							traveler_factory.load_file ("objects/woman.obj")
+							person_toggle := 0
+						end
+						traveler := traveler_factory.create_object							
 						traveler.set_scale (0.2, 0.2, 0.2)
 					elseif a_traveler.traffic_type.name.is_equal ("tram") then
-						object_loader.set_em_color (0, 0, 255)
-						object_loader.load_file ("objects/tram3.obj")
---						traveler_factory.set_em_color (0, 0, 255)
---						traveler_factory.load_file ("objects/tram3.obj")
-						traveler := object_loader.create_object
---						traveler := traveler_factory.create_object
+						traveler_factory.set_em_color (0, 0, 255)
+						traveler_factory.load_file ("objects/tram.obj")
+						traveler := traveler_factory.create_object
 						traveler.set_scale (0.3, 0.3, 0.3)
 					end	
 					
@@ -219,13 +218,6 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 						
 					end
 				end
-		
-		
-feature{NONE} -- Decision attributes
-		
-	tram_type: STRING is "tram"
-	
-	passenger_type: STRING is "passenger"
 	
 	
 feature{TRAFFIC_3D_MAP_WIDGET}
@@ -257,6 +249,9 @@ feature{NONE} -- Attributes
 
 	traveler_offset: DOUBLE is 0.0
 		-- offset of the traveler objects over map.
+		
+	person_toggle: INTEGER
+		-- if 0 then man otherwise woman
 
 invariant
 	TR_TR_REP_centre_set: centre /= Void

@@ -28,7 +28,7 @@ feature -- Interface
 			
 			set_frame_counter_visibility (True)
 			
-			create bg_color.make_with_rgb (150,255,150)
+--			create bg_color.make_with_rgb (0,0,0)
 						
 			-- Toolbar
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded, window_height)
@@ -85,7 +85,7 @@ feature -- Interface
 			simulated_time_label.set_position (140, 230)
 			simulated_time_label.set_optimal_dimension (50, 20)
 			simulated_time_label.resize_to_optimal_dimension
-			simulated_time_label.set_background_color (bg_color)
+--			simulated_time_label.set_background_color (bg_color)
 			simulated_time_label.set_tooltip ("simulated time")
 			toolbar_panel.add_widget (simulated_time_label)
 
@@ -94,7 +94,7 @@ feature -- Interface
 			time_slider.set_position (20, 230)
 			time_slider.set_optimal_dimension (120, 20)
 			time_slider.resize_to_optimal_dimension
-			time_slider.set_background_color (bg_color)
+--			time_slider.set_background_color (bg_color)
 			time_slider.set_tooltip ("Day simulation minutes")
 			time_slider.position_changed_event.subscribe (agent number_of_minutes_changed (simulated_time_label, ?))
 			toolbar_panel.add_widget (time_slider)
@@ -104,7 +104,7 @@ feature -- Interface
 			passenger_label.set_position (140 ,330)
 			passenger_label.set_optimal_dimension (50, 20)
 			passenger_label.resize_to_optimal_dimension
-			passenger_label.set_background_color (bg_color)
+--			passenger_label.set_background_color (bg_color)
 			passenger_label.set_tooltip ("passengers")
 			toolbar_panel.add_widget (passenger_label)
 			
@@ -113,7 +113,7 @@ feature -- Interface
 			passenger_slider.set_position (20, 330)
 			passenger_slider.set_optimal_dimension (120, 20)
 			passenger_slider.resize_to_optimal_dimension
-			passenger_slider.set_background_color (bg_color)
+--			passenger_slider.set_background_color (bg_color)
 			passenger_slider.set_tooltip ("Number of random passengers")
 			passenger_slider.position_changed_event.subscribe (agent number_of_passengers_changed (passenger_label, ?))
 			toolbar_panel.add_widget (passenger_slider)
@@ -142,13 +142,13 @@ feature -- Interface
 			traffic_time.add_callback_procedure (agent time_count)
 			
 			-- Toolbar Panel
-			toolbar_panel.set_background_color (bg_color)
+--			toolbar_panel.set_background_color (bg_color)
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
 			add_component (toolbar_panel)
 			
 			-- Combobox title
 			combo_title.set_position (10,50)
-			combo_title.set_background_color (bg_color)
+--			combo_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (combo_title)
 			
 			-- Combobox for XML selection
@@ -170,21 +170,21 @@ feature -- Interface
 			marked_origin_title.set_position (10, 430)
 			marked_origin_title.set_optimal_dimension (180, 20)
 			marked_origin_title.resize_to_optimal_dimension
-			marked_origin_title.set_background_color (bg_color)
+--			marked_origin_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (marked_origin_title)
 			
 			-- Marked destination title
 			marked_destination_title.set_position (10, 470)
 			marked_destination_title.set_optimal_dimension (180, 20)
 			marked_destination_title.resize_to_optimal_dimension
-			marked_destination_title.set_background_color (bg_color)
+--			marked_destination_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (marked_destination_title)
 			
 			-- Marked origin label
 			marked_origin_label.set_position (15, 450)
 			marked_origin_label.set_optimal_dimension (180, 20)
 			marked_origin_label.resize_to_optimal_dimension
-			marked_origin_label.set_background_color (bg_color)
+--			marked_origin_label.set_background_color (bg_color)
 			marked_origin_label.set_tooltip ("Marked Station")
 			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_origin_label, marked_destination_label, ?))
 			toolbar_panel.add_widget (marked_origin_label)
@@ -193,7 +193,7 @@ feature -- Interface
 			marked_destination_label.set_position (15, 490)
 			marked_destination_label.set_optimal_dimension (180, 20)
 			marked_destination_label.resize_to_optimal_dimension
-			marked_destination_label.set_background_color (bg_color)
+--			marked_destination_label.set_background_color (bg_color)
 			marked_destination_label.set_tooltip ("Marked Station")
 			toolbar_panel.add_widget (marked_destination_label)
 			
@@ -201,7 +201,7 @@ feature -- Interface
 			time_label.set_position(15, 550)
 			time_label.set_optimal_dimension(180,20)
 			time_label.resize_to_optimal_dimension
-			time_label.set_background_color (bg_color)
+--			time_label.set_background_color (bg_color)
 			toolbar_panel.add_widget (time_label)
 			
 			-- adding zurich_mini.xml as default
@@ -325,7 +325,7 @@ feature -- Event handling
 	number_of_passengers_changed (label: EM_LABEL; number: INTEGER) is
 			-- the slider was used.
 		require
-			number > 0
+			number >= 0
 			label /= Void
 		do
 			passenger_number := number
@@ -413,7 +413,7 @@ feature {NONE} -- Implementation
 			is_time_enabled = a_boolean
 		end
 
-	bg_color: EM_COLOR
+--	bg_color: EM_COLOR
 			-- Background color of the scene.
 
 	map_file_name: STRING
