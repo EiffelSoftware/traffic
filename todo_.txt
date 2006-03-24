@@ -4,6 +4,23 @@ current:
 all:
 - add "traffic_" to all file and classnames using search and replace in eclipse
 - are the classes in $TRAFFIC/library/*.e in the right place?
+- check that all classes use gobo data structures
+- 3d_widget: publish mouse events
+- 3d_widget: turn coordinate system into the right direction
+- 3d_widget, representation, and factory classes: check contracts
+- catching of mouse clicks on places needs to be fixed
+- improve speed of randomly generated buildings
+- randomize buildings along lines more
+- randomize look and feel of buildings
+- improve *.obj file loading to be faster
+- create icon for traffic apps
+- check whether all constants are constants
+- improve path algorithm
+- improve drawing of shortest_path (city 3d)
+- improve console window to be scrollable and flashier
+- improve error handling and messages
+- fix flathunt
+
 
 library:
 
