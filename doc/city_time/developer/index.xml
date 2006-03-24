@@ -32,15 +32,15 @@ This document is structured as follows:
 			</para>
 		</listitem>
 		<listitem>
-			<link url="travelers.html">Travelers</link>
-			<para>
-				How are the travelers created?
-			</para>
-		</listitem>
-		<listitem>
 			<link url="time.html">Time</link>
 			<para>
 				How does the time work?
+			</para>
+		</listitem>
+		<listitem>
+			<link url="travelers.html">Travelers</link>
+			<para>
+				How are the travelers created?
 			</para>
 		</listitem>
 		<listitem>

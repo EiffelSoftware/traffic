@@ -18,7 +18,7 @@
 	<title>Description</title>
 	<para>
 	The class <classname cluster="tr_traffic">TRAFFIC_TRAVELER</classname> provides all the information which the <class cluster="tr_traffic.tr_visualization.tr_3d_visualization">TRAVELER_REPRESENTATION</class> needs to draw the traveler.
-	There is the <featurename class="tr_traffic.traffic_traveler">traffic_type</featurename> which gives the type of the traveler, in this application only "tram" and "walking" type are used (descendants of the <classname cluster="tr_traffic.tr_type">TRAFFIC_TYPE</classname>).
+	There is the <featurename class="tr_traffic.traffic_traveler">traffic_type</featurename> which gives the type of the traveler, in this application only "tram" and "walking" type are used (descendants of the class <classname cluster="tr_traffic.tr_type">TRAFFIC_TYPE</classname>).
 	The feature <featurename class="tr_traffic.traffic_traveler">take_tour</featurename> is given to the <class cluster="tr_traffic.tr_util.tr_base_extension.tr_tr_time">TRAFFIC_TIME</class> where it is used to get the current position of the traveler.
 	There are 3 basic types of travelers: directed ones, where in the constructor an itinerary is given (ARRAYED_LIST [EM_VECTOR_2D]). Random ones which start at an origin (EM_VECTOR_2D) and fully random ones where origin, destination and speed are all given by random.
 	</para>
@@ -46,9 +46,9 @@
 	</para>
 	<title>Travelers distribution</title>
 	<para>
-	As there is a traffic_traveler object always associated to the 3D object which is drawn in this class the position of each travelers is given by it's corresponding traveler.
+	As there is a traffic_traveler object always associated to the 3D object which is drawn in this class, the position of each travelers is given by it's corresponding traveler.
 	Because of performance reasons the traveler stores it's position according to the position on the map (the traveler uses the feature <featurename class="tr_traffic.tr_visualization.tr_3d_visualization.tr_3d_constants">map_to_gl_coords</featurename> by itself).
-	As one should be able to change the map and it's size there should be something provided.
+	As one should be able to change the map and its size this should be changed sometime.
 	</para>  
 	<title>Adding travelers</title>
 	<para>

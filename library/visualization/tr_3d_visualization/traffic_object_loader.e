@@ -13,10 +13,8 @@ inherit
 		all
 	{TRAFFIC_TRAVELER_REPRESENTATION}
 		create_object
---		, load_file
 	redefine
-		make, specify_object, read_face
-		,load_file 
+		make, specify_object, read_face, load_file 
 	end
 	
 	
@@ -104,8 +102,8 @@ feature  -- Commands
 				else
 					-- unknown => ignore line and print line as output
 					obj_file.read_line
-					print ("Unknown line:")
-					print (obj_file.last_string + "%N")	
+--					print ("Unknown line:")
+--					print (obj_file.last_string + "%N")	
 				end
 			end
 			obj_file.close

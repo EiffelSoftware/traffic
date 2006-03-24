@@ -1,0 +1,11 @@
+2006/03/23 17:47:54.347 - Error 10001: Failed to load text file 'C:\Programme\Eiffel56\Projects\traffic_v2\example\city_time\objects/tram3.obj'. File doesn't exist
+------
+2006/03/23 17:51:13.243 - Error 10001: Failed to load text file 'C:\Programme\Eiffel56\Projects\traffic_v2\example\city_time\objects/tram3.obj'. File doesn't exist
+------
+2006/03/23 17:52:59.927 - Error 10001: Failed to load text file 'C:\Programme\Eiffel56\Projects\traffic_v2\example\city_time\objects/tram3.obj'. File doesn't exist
+------
+2006/03/23 17:53:35.077 - Error 10001: Failed to load text file 'C:\Programme\Eiffel56\Projects\traffic_v2\example\city_time\objects/tram3.obj'. File doesn't exist
+------
+2006/03/23 19:00:14.318 - Error 10001: Failed to load text file 'C:\Programme\Eiffel56\Projects\traffic_v2\example\city_time\objects/tram3.obj'. File doesn't exist
+------
+2006/03/23 19:01:59.780 - Error 10001: Failed to load text file 'C:\Programme\Eiffel56\Projects\traffic_v2\example\city_time\objects/tram3.obj'. File doesn't exist
