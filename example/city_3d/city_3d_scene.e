@@ -3,8 +3,7 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	CITY_3D_SCENE
+class CITY_3D_SCENE
 	
 inherit
 	
@@ -22,7 +21,9 @@ creation
 feature -- Interface
 	
 	make is
-			-- Creation procedure
+			-- Create all checkboxes and gui elements.
+		local
+			loader: TRAFFIC_MAP_LOADER
 		do
 			make_component_scene
 			
@@ -77,9 +78,6 @@ feature -- Interface
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
 				create map.make
---				create map_widget.make
---				map_widget.set_position(0,0)
---				add_component (map_widget)
 				map.set_position (200, 0)
 				add_component (map)
 			else
@@ -115,7 +113,6 @@ feature -- Interface
 			delete_buildings_button.set_position (10, 275)
 			delete_buildings_button.clicked_event.subscribe (agent delete_buildings_clicked)
 			toolbar_panel_left.add_widget (delete_buildings_button)
-			
 			
 			-- Combox for building XML selection
 			building_combo_title.set_position (10,100)
@@ -279,7 +276,9 @@ feature -- Interface
 			traffic_line_ride_button.hide
 			
 			-- adding zurich_big.xml as default
-			map.load_map ("map/zurich_tiny.xml")
+			create loader.make ("map/zurich_tiny.xml")
+			loader.load_map
+			map.set_map (loader.map)
 			loaded_file_name := "map/zurich_tiny.xml"
 			
 		end
@@ -348,7 +347,7 @@ feature -- Event handling
 		do
 			number_of_buildings := number*49
 			label.set_text (number_of_buildings.out)
-			if map /= Void and then map.is_map_loaded then
+			if map /= Void and then map.is_map_displayed then
 				map.set_number_of_buildings (number_of_buildings)
 			end
 		end
@@ -444,10 +443,13 @@ feature -- Event handling
 			-- "Load" button has been clicked.
 		require
 			load_button /= Void
+		local
+			loader: TRAFFIC_MAP_LOADER
 		do
+			create loader.make (map_file_name)
 			load_button.set_pressed (False)
---			map_widget.load_map (map_file_name)
-			map.load_map (map_file_name)
+			loader.load_map
+			map.set_map (loader.map)
 			buildings_slider.set_current_value (buildings_slider.left_value)
 			marked_origin_label.set_text ("")
 			marked_destination_label.set_text ("")
@@ -478,8 +480,7 @@ feature -- Event handling
 			building_file_name := name
 		ensure 
 			building_file_name = name
-		end
-		
+		end	
 		
 	show_building_information (a_building: TRAFFIC_BUILDING; an_event: EM_MOUSEBUTTON_EVENT) is
 			-- Agent to show building information
@@ -493,7 +494,7 @@ feature -- Event handling
 		end	
 		
 	load_buildings_clicked is
-			-- 
+			-- Load buildings from an xml file.
 		local
 			parser: TRAFFIC_BUILDING_PARSER
 		do
@@ -507,8 +508,7 @@ feature -- Event handling
 			parser.process
 			if parser.has_error then
 				io.putstring ("Error while processing" + parser.error_description)
-			end
-			
+			end		
 		end
 		
 	load_buildings_along_lines_clicked is
@@ -522,9 +522,7 @@ feature -- Event handling
 		do
 			map.delete_buildings
 			buildings_slider.set_current_value (0)	
-		end
-		
-		
+		end		
 	
 feature -- Widgets
 
@@ -604,6 +602,7 @@ feature -- Widgets
 			-- Button to load buildings along lines
 			
 	delete_buildings_button: EM_BUTTON
+			-- Button to delete buildings from the map
 			
 	building_combo_title: EM_LABEL
 			-- Title for building combo
@@ -631,8 +630,6 @@ feature {NONE} -- Implementation
 	map: CITY_3D_MAP
 			-- The 3 dimensional representation of the map
 			
---	map_widget: TRAFFIC_3D_MAP_WIDGET
-	
 	number_of_buildings: INTEGER
 			-- Number of buildings on the map
 	
@@ -659,21 +656,6 @@ feature {NONE} -- Implementation
 					directory.readentry
 				end
 			end
-			
---			create directory.make_open_read ("./map")
---			if directory.is_readable and not directory.is_empty then
---				from
---					directory.start
---					directory.readentry
---				until
---					directory.lastentry = void
---				loop
---					if directory.lastentry.has_substring (".xml") then
---						Result.force_last ("map/" + directory.lastentry)
---					end
---					directory.readentry
---				end
---			end
 		end
 
-end -- class CITY_3D_SCENE
+end 

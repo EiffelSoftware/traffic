@@ -3,24 +3,24 @@ indexing
 	date: "$Date: 2005/12/22 10:48:08 $"
 	revision: "$Revision: 1.90 $"
 
-class
-	CITY_3D_MAP
-	
+class CITY_3D_MAP
 	
 inherit
-	TRAFFIC_3D_MAP_WIDGET
-	redefine
-		make, prepare_drawing, draw
-	end
-		
-creation
 	
+	TRAFFIC_3D_MAP_WIDGET
+		redefine
+			make, 
+			prepare_drawing, 
+			draw
+		end
+		
+create
 	make
 	
 feature -- Initialization
 
 	make is
-			-- Creation procedure
+			-- Subscribe to events.
 		do
 			Precursor
 			-- User Interaction
@@ -29,14 +29,22 @@ feature -- Initialization
 			mouse_wheel_up_event.subscribe (agent wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
---			building_left_clicked_event.subscribe (agent traffic_buildings.highlight_building(?))
---			building_right_clicked_event.subscribe (agent traffic_buildings.un_highlight_building(?))
---			building_left_clicked_event.subscribe (agent test_click(?))
 			building_clicked_event.subscribe (agent building_clicked(?,?))
-		end
-			
+		end		
 
-feature -- Zoom options
+feature -- Access
+			
+	marked_origin: TRAFFIC_PLACE
+			-- Currently marked origin
+			
+	marked_destination: TRAFFIC_PLACE
+			-- Currently marked destination
+
+	shortest_path_line: TRAFFIC_LINE
+			-- Artificial traffic line for the shortest path
+
+feature -- Basic operations
+			
 	zoom_in is
 			-- Zoom in.
 		do
@@ -49,59 +57,6 @@ feature -- Zoom options
 			wheel_down
 		end
 
-feature -- Drawing
-
-	draw is
-			-- 
-			do
-				Precursor
-							-- Draw marked stations
-				if marked_origin /= Void then
-						traffic_places.highlight_place (marked_origin,0)
-					-- 0 for origin			
-				end
-				if marked_destination /= Void then
-					traffic_places.highlight_place (marked_destination,1)
-					-- 1 for destination
-					if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
-						calculate_shortest_path
-						traffic_lines.draw_shortest_path
-					end
-				end
-			end
-		
-	
-	prepare_drawing is
-			-- 
-			do
-				Precursor
-				-- Traffic line rides
-			if traffic_line_ride and then show_shortest_path and then shortest_path_line /= Void and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
-				prepare_for_traffic_line_ride
-			else
-				traffic_line_ride := False
-				-- Translation
-				gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
-				gl_translated_external (x_translation, -y_translation, 0)
-				
-				-- Rotation
-				gl_rotated_external (x_rotation, 1, 0, 0)
-				gl_rotated_external (y_rotation, 0, 1, 0)
-			end
-			
-			end
-
-feature -- Shortest path
-			
-	marked_origin: TRAFFIC_PLACE
-			-- Currently marked origin
-			
-	marked_destination: TRAFFIC_PLACE
-			-- Currently marked destination
-
-	shortest_path_line: TRAFFIC_LINE
-			-- Artificial traffic line for the shortest path
-			
 	calculate_shortest_path is
 			-- Calculate the shortest path.
 		require
@@ -110,6 +65,7 @@ feature -- Shortest path
 			line: TRAFFIC_LINE
 			origin, destination: TRAFFIC_PLACE
 			section: TRAFFIC_LINE_SECTION
+			places_to_visit: LINKED_LIST [TRAFFIC_PLACE]
 		do
 			if marked_station_changed then
 				map.find_shortest_path (map.places.item (marked_origin.name), map.places.item (marked_destination.name))
@@ -145,12 +101,64 @@ feature -- Shortest path
 				shortest_path_line := line
 
 				traffic_lines.add_shortest_line(line)
-				-- add the line to the representation
 				marked_station_changed := False
 			end
 		end		
 
+	take_traffic_line_ride is
+			-- Take a traffic line ride.
+		require
+			shortest_path_line /= Void
+		do
+			traffic_line_ride := True
+			create last_polypoint.make (0, 0)
+			shortest_path_line.start
+			if not shortest_path_line.after then
+				shortest_path_line.item.polypoints.start
+				last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
+				shortest_path_line.item.polypoints.forth
+			end
+			create position.make (0, 0)
+		ensure
+			traffic_line_ride
+			last_polypoint /= Void
+			position /= Void
+		end
+
+feature -- Drawing
+
+	draw is
+			-- Draw all elements on the screen.
+		do
+			Precursor
+						-- Draw marked stations
+			if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
+				calculate_shortest_path
+				traffic_lines.draw_shortest_path
+			end
+		end		
+	
+	prepare_drawing is
+			-- Prepare for drawing.
+		do
+			Precursor
+			-- Traffic line rides
+			if traffic_line_ride and then show_shortest_path and then shortest_path_line /= Void and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
+				prepare_for_traffic_line_ride
+			else
+				traffic_line_ride := False
+				-- Translation
+				gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
+				gl_translated_external (x_translation, -y_translation, 0)
+				
+				-- Rotation
+				gl_rotated_external (x_rotation, 1, 0, 0)
+				gl_rotated_external (y_rotation, 0, 1, 0)
+			end			
+		end
+
 feature {NONE} -- Event handling
+
 	wheel_down is
 			-- Handle mouse wheel down event.
 		do
@@ -185,14 +193,15 @@ feature {NONE} -- Event handling
 			is_found: BOOLEAN
 			result_vec: GL_VECTOR_3D[DOUBLE]
 			clicked_point: GL_VECTOR_3D[DOUBLE]
-
 		do
 			if event.is_left_button then
 				result_vec := transform_coords(event.screen_x, event.screen_y)				
 				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
 				
 				if map /= Void then
-					
+					if marked_origin /= Void then
+						traffic_places.unhighlight_place (marked_origin)
+					end					
 					from lines := map.lines
 						lines.start
 						is_found := False
@@ -211,8 +220,8 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								traffic_places.highlight_place(section.origin, 0)
-								create marked_origin.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
+								marked_origin := section.origin
+								traffic_places.highlight_place(marked_origin, place_highlight_color1)
 								is_found := True
 								marked_station_changed := True
 							end
@@ -224,8 +233,8 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								traffic_places.highlight_place(section.destination,0)
-								create marked_origin.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
+								marked_origin := section.destination
+								traffic_places.highlight_place(marked_origin,place_highlight_color1)
 								is_found := True
 								marked_station_changed := True
 							end
@@ -234,6 +243,12 @@ feature {NONE} -- Event handling
 						lines.forth
 					end	
 					if not is_found then
+						if marked_origin /= Void then
+							traffic_places.unhighlight_place (marked_origin)
+						end
+						if marked_destination /= Void then
+							traffic_places.unhighlight_place (marked_destination)
+						end
 						marked_origin := Void
 						marked_destination := Void
 						shortest_path_line := void
@@ -246,6 +261,9 @@ feature {NONE} -- Event handling
 				result_vec := transform_coords(event.screen_x, event.screen_y)				
 				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
 				if map /= Void then
+					if marked_destination /= Void then
+						traffic_places.unhighlight_place (marked_destination)
+					end
 					from lines := map.lines
 						lines.start
 						is_found := False
@@ -264,8 +282,8 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								traffic_places.highlight_place(section.origin, 0)
-								create marked_destination.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
+								marked_destination := section.origin
+								traffic_places.highlight_place(marked_destination, place_highlight_color2)
 								is_found := True
 								marked_station_changed := True
 							end
@@ -277,8 +295,8 @@ feature {NONE} -- Event handling
 							delta_z := place_z - clicked_point.z
 							delta := sqrt (delta_x^2 + delta_z^2)
 							if delta < station_radius then
-								traffic_places.highlight_place(section.destination, 1)
-								create marked_destination.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
+								marked_destination := section.destination
+								traffic_places.highlight_place(marked_destination, place_highlight_color2)
 								is_found := True
 								marked_station_changed := True
 							end
@@ -287,6 +305,12 @@ feature {NONE} -- Event handling
 						lines.forth
 					end
 					if not is_found then
+						if marked_origin /= Void then
+							traffic_places.unhighlight_place (marked_origin)
+						end
+						if marked_destination /= Void then
+							traffic_places.unhighlight_place (marked_destination)
+						end
 						marked_destination := Void
 						marked_origin := Void
 						shortest_path_line := void
@@ -294,6 +318,19 @@ feature {NONE} -- Event handling
 					end
 					
 				end
+			end
+		end
+
+	building_clicked (a_building: TRAFFIC_BUILDING; an_event: EM_MOUSEBUTTON_EVENT) is
+			-- Highlight and unhighlight clicked buildings.
+		require
+			building_valid: a_building /= void
+			event_valid: an_event /= void
+		do
+			if an_event.is_left_button then
+				traffic_buildings.highlight_building(a_building)
+			elseif an_event.is_right_button then
+				traffic_buildings.un_highlight_building(a_building)
 			end
 		end
 	
@@ -349,28 +386,7 @@ feature {NONE} -- Event handling
 			end
 		end
 		
-feature -- options
-	take_traffic_line_ride is
-			-- Take a traffic line ride.
-		require
-			shortest_path_line /= Void
-		do
-			traffic_line_ride := True
-			create last_polypoint.make (0, 0)
-			shortest_path_line.start
-			if not shortest_path_line.after then
-				shortest_path_line.item.polypoints.start
-				last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
-				shortest_path_line.item.polypoints.forth
-			end
-			create position.make (0, 0)
-		ensure
-			traffic_line_ride
-			last_polypoint /= Void
-			position /= Void
-		end
-
-feature{NONE} -- Traffic line rides
+feature {NONE} -- Implementation
 
 	last_polypoint: EM_VECTOR_2D
 			-- The last polypoint visited
@@ -381,6 +397,22 @@ feature{NONE} -- Traffic line rides
 	Speed: DOUBLE is 0.05
 			-- Speed of the traffic line rides
 			
+	place_highlight_color1: GL_VECTOR_3D [DOUBLE] is
+			-- Highlight color for marked origins
+		once
+			create Result.make_xyz (0, 255, 0)
+		ensure
+			Result_exists: Result /= Void
+		end
+		
+	place_highlight_color2: GL_VECTOR_3D [DOUBLE] is
+			-- Highlight color for marked origins
+		once
+			create Result.make_xyz (0, 0, 255)
+		ensure
+			Result_exists: Result /= Void
+		end
+		
 	prepare_for_traffic_line_ride is
 			-- Change the viewpoint in order to take a traffic line ride.
 		local
@@ -419,24 +451,10 @@ feature{NONE} -- Traffic line rides
 				position.set_x (0)
 				position.set_y (0)
 			end
-		end
-		
-	building_clicked (a_building: TRAFFIC_BUILDING; an_event: EM_MOUSEBUTTON_EVENT) is
-			-- a test function
-		require
-			building_valid: a_building /= void
-			event_valid: an_event /= void
-		do
-			if an_event.is_left_button then
-				traffic_buildings.highlight_building(a_building)
-			elseif an_event.is_right_button then
-				traffic_buildings.un_highlight_building(a_building)
-			end
-
-		end
-		
+		end		
 	
 invariant
+
 	focus_greater_than_0: focus > 0
 
-end -- class CITY_3D_MAP
+end

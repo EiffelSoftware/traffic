@@ -1,11 +1,12 @@
 indexing
-	description	: "System's root class"
-	note		: "Initial version automatically generated"
+	description: "Root class for application City3D"
+	date: "$Date$"
+	revision: "$Revision$"
 
-class
-	CITY_3D_APPLICATION
+class CITY_3D_APPLICATION
 
 inherit
+	
 	EM_APPLICATION
 	
 	EM_SHARED_THEME
@@ -23,7 +24,7 @@ create
 feature -- Initialization
 
 	make is
-			-- Creation procedure
+			-- Initialize all subsystems of em and launch the first scene.
 		local
 			keyboard: EM_KEYBOARD
 		do
@@ -52,7 +53,6 @@ feature -- Initialization
 			set_scene (create {CITY_3D_SCENE}.make)
 			launch
 			full_collect
---			video_subsystem.disable
 		end
 
-end -- class CITY_3D_APPLICATION
+end
