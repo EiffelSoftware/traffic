@@ -1,9 +1,9 @@
 indexing
-	description	: "System's root class"
-	note		: "Initial version automatically generated"
+	description	: "Root class for traffic application Queries"
+	date: "$Date$"
+	revision: "$Revision$"
 
-class
-		QUERIES_3D_APPLICATION
+class QUERIES_3D_APPLICATION
 
 inherit
 
@@ -27,4 +27,4 @@ feature -- Initialization
 			set_application_id ("Touch_Queries")
 		end	
 
-end -- class PREVIEW_3D_APPLICATION
+end

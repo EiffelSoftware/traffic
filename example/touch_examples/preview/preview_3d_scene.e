@@ -3,22 +3,22 @@ indexing
 	date: "$Date: 2006/01/17 00:24:59 $"
 	revision: "$Revision: 1.57 $"
 
-class
-	PREVIEW_3D_SCENE
+class PREVIEW_3D_SCENE
 	
 inherit
 	
 	TOUCH_3D_SCENE
-		rename make as make_touch_scene
+		rename 
+			make as make_touch_scene
 		end
 	
-creation
+create
 	make
 
 feature -- Interface
 	
 	make is
-			-- Creation procedure
+			-- Create all gui elements.
 		do
 			make_touch_scene
 
@@ -41,7 +41,7 @@ feature -- Interface
 			toolbar_panel.add_widget (start_button)
 
 			create preview
-			preview.run (map, console)			
+			preview.run (map_widget, console)			
 		end
 		
 feature -- Event handling
@@ -84,7 +84,7 @@ feature -- Event handling
 
 	--		map.set_single_line_un_highlighted (Line8)
 	--		map.set_lines_highlighted (False)
-			preview.run(map, console)
+			preview.run(map_widget, console)
 		
 		rescue
 			catch(24)

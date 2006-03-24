@@ -1,9 +1,9 @@
 indexing
-	description	: "System's root class"
-	note		: "Initial version automatically generated"
+	description	: "Root class for traffic application Preview"
+	date: "$Date: 2006/03/02 18:57:05 $"
+	revision: "$Revision: 1.26 $"
 
-class
-	PREVIEW_3D_APPLICATION
+class PREVIEW_3D_APPLICATION
 
 inherit
 

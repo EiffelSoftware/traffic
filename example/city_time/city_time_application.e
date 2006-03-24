@@ -1,11 +1,12 @@
 indexing
-	description	: "System's root class"
-	note		: "Initial version automatically generated"
+	description	: "Root class for traffic application CityTime"
+	date: "$Date: 2006/03/02 18:57:05 $"
+	revision: "$Revision: 1.26 $"
 
-class
-	CITY_TIME_APPLICATION
+class CITY_TIME_APPLICATION
 
 inherit
+
 	EM_APPLICATION
 	
 	EM_SHARED_THEME
@@ -23,7 +24,7 @@ create
 feature -- Initialization
 
 	make is
-			-- Creation procedure.
+			-- Initialize subsystems of em and start first scene.
 		local
 			keyboard: EM_KEYBOARD
 		do
@@ -54,4 +55,4 @@ feature -- Initialization
 			full_collect
 		end
 
-end -- class CITY_TIME_APPLICATION
+end

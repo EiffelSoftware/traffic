@@ -1,15 +1,20 @@
 indexing
 	description: "The first example from TOUCH"
-	date: "2005/08/31"
-	revision: "1.0"
+	date: "$Date: 2006/03/02 18:57:05 $"
+	revision: "$Revision: 1.26 $"
 	
-class PREVIEW inherit
+class PREVIEW 
+
+inherit
+
 	TOURISM
-feature	
+
+feature	 -- Example
+
 	explore is
-		-- Show some city info.
-		-- Note that the objects are not of the type you may think
-		-- See 'TOURSIM' for the predefined objects and classes
+			-- Show some city info.
+			-- Note that the objects are not of the type you may think
+			-- See 'TOURSIM' for the predefined objects and classes
 		do
 			Paris.display
 			
@@ -22,4 +27,10 @@ feature
 --			Route1.animate
 --			Passenger.move_route (Route2)
 		end
+		
+	explore_on_button_click is
+			-- Do nothing. 
+		do
+		end
+		
 end -- class PREVIEW

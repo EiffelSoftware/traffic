@@ -3,13 +3,13 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	QUERIES_3D_SCENE
+class QUERIES_3D_SCENE
 	
 inherit
 	
 	TOUCH_3D_SCENE
-		rename make as make_touch_scene
+		rename 
+			make as make_touch_scene
 		end
 	
 creation
@@ -25,7 +25,7 @@ feature -- Interface
 			make_touch_scene
 
 			create queries
-			queries.run (map, console)			
+			queries.run (map_widget, console)			
 		end
 		
 end 

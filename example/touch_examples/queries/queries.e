@@ -1,17 +1,15 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Class to fill in example 'queries'"
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	QUERIES
+class QUERIES
 
 inherit
 	
 	TOURISM
 	
-feature
+feature -- Example
 	
 	explore is
 			-- Try some queries.
@@ -20,6 +18,11 @@ feature
 			Console.show (line8.count)
 			Console.show (line8.i_th (1))
 			Console.show (line8.i_th (line8.count))
+		end
+		
+	explore_on_button_click is
+			-- Do nothing. 
+		do
 		end
 		
 end

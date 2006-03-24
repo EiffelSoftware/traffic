@@ -1,26 +1,25 @@
 indexing
-	description: "3 dimensional map of a city with many event handlers"
+	description: "3 dimensional map of a city with travelers"
 	date: "$Date: 2005/12/22 10:48:08 $"
 	revision: "$Revision: 1.90 $"
 
-class
-	CITY_3D_MAP
-	
+class CITY_3D_MAP
 	
 inherit
-	TRAFFIC_3D_MAP_WIDGET
-	redefine
-		make, prepare_drawing, draw, load_map
-	end
-		
-creation
 	
+	TRAFFIC_3D_MAP_WIDGET
+		redefine
+			make,
+			prepare_drawing
+		end
+		
+create	
 	make
 	
 feature -- Initialization
 
 	make is
-			-- Creation procedure
+			-- Subscribe to events.
 		do
 			Precursor	
 
@@ -29,10 +28,9 @@ feature -- Initialization
 			mouse_wheel_down_event.subscribe (agent wheel_down)
 			mouse_wheel_up_event.subscribe (agent wheel_up)
 			key_down_event.subscribe (agent key_down (?))
-			mouse_clicked_event.subscribe (agent mouse_click)
 		end
 			
-feature -- Zoom options
+feature -- Basic operations
 
 	zoom_in is
 			-- Zoom in.
@@ -46,57 +44,92 @@ feature -- Zoom options
 			wheel_down
 		end
 
+	load_map (filename: STRING) is
+			-- Load the map with file name `filename'.
+		require
+			filename_exists: filename /= Void
+		local
+			traveler: TRAFFIC_TRAVELER
+			temp_list: ARRAYED_LIST [EM_VECTOR_2D]
+			loader: TRAFFIC_MAP_LOADER
+		do
+			create loader.make (filename)
+			if not loader.has_error then
+				loader.load_map
+				set_map (loader.map)
+
+				update_passenger_number (0)
+				update_passenger_number (number_of_passengers)
+				
+				traffic_traveler.add_tram_per_line (map, 2)
+			end
+		ensure then
+			travelers_created: map /= Void implies traffic_traveler /= Void
+		end
+
+	adjust_speed is
+			-- Double the speed of the travelers.
+		do
+			map.change_traveler_speed (traffic_time.simulated_minutes / 2)
+		end
+
+	update_passenger_number (number: INTEGER) is	
+			-- Update the number of the passengers on the map.
+		require
+			number >= 0
+		local
+			i: INTEGER
+			traveler: TRAFFIC_TRAVELER
+		do
+			if number_of_passengers >= number then
+				from
+					i := number_of_passengers
+				until
+					i <= number
+				loop
+					traffic_traveler.remove_traveler
+					i := i - 1
+				end
+			else
+				from 
+					i := 0
+				until
+					i >= number - number_of_passengers
+				loop
+					create traveler.make_random (traffic_time.time.ticks, 7, create {TRAFFIC_TYPE_WALKING}.make)
+					traveler.set_reiterate (True)
+					add_traveler (traveler)				
+					i := i + 1
+				end
+			end
+			number_of_passengers := number
+		end
+
 feature -- Drawing
 
-	draw is
-			-- draw the scene
-			do
-				Precursor
-				
-							-- Draw marked stations
-				if marked_origin /= Void then
-						traffic_places.highlight_place (marked_origin,0)
-					-- 0 for origin			
-				end
-				if marked_destination /= Void then
-					traffic_places.highlight_place (marked_destination,1)
-					-- 1 for destination
-				end
-			end
-		
-	
 	prepare_drawing is
-			-- prepare the drawing
-			do
-				Precursor
-				
-				-- Translation
-				gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
-				gl_translated_external (x_translation, -y_translation, 0)
-				
-				-- Rotation
-				gl_rotated_external (x_rotation, 1, 0, 0)
-				gl_rotated_external (y_rotation, 0, 1, 0)
-			end
-
-feature -- Places
+			-- Prepare the drawing.
+		do
+			Precursor
 			
-	marked_origin: TRAFFIC_PLACE
-			-- Currently marked origin.
+			-- Translation
+			gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
+			gl_translated_external (x_translation, -y_translation, 0)
 			
-	marked_destination: TRAFFIC_PLACE
-			-- Currently marked destination.
+			-- Rotation
+			gl_rotated_external (x_rotation, 1, 0, 0)
+			gl_rotated_external (y_rotation, 0, 1, 0)
+		end
 
-feature -- Time
+feature -- Access
 
 	simulated_time: INTEGER is
-			-- get the time from traffic time.
-			require
-				traffic_time /= Void
-			do
-				Result := traffic_time.simulated_minutes
-			end
-		
+			-- Minutes in real time
+		require
+			traffic_time_exists: traffic_time /= Void
+		do
+			Result := traffic_time.simulated_minutes
+		end		
 
 feature {NONE} -- Event handling
 
@@ -123,123 +156,7 @@ feature {NONE} -- Event handling
 		ensure then
 			focus_decremented: focus > 0.1 implies focus < old focus
 		end
-	mouse_click (event: EM_MOUSEBUTTON_EVENT) is
-			-- Handle mouse clicked event.
-		local
-			section: TRAFFIC_LINE_SECTION
-			line: TRAFFIC_LINE
-			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
-			place_x, place_z, delta_x, delta_z, delta: DOUBLE
-			is_found: BOOLEAN
-			result_vec: GL_VECTOR_3D[DOUBLE]
-			clicked_point: GL_VECTOR_3D[DOUBLE]
-		do
-			if event.is_left_button then
-				result_vec := transform_coords(event.screen_x, event.screen_y)				
-				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
-				
-				if map /= Void then
-					
-					from lines := map.lines
-						lines.start
-						is_found := False
-					until is_found or else lines.after
-					loop
-						from line := lines.item_for_iteration
-							line.start
-						until line.after
-						loop
-							section := line.item
-							
-							-- Checking origin of section
-							place_x := map_to_gl_coords (section.polypoints.first).x
-							place_z := map_to_gl_coords (section.polypoints.first).y
-							delta_x := place_x - clicked_point.x
-							delta_z := place_z - clicked_point.z
-							delta := sqrt (delta_x^2 + delta_z^2)
-							if delta < station_radius then
-								traffic_places.highlight_place(section.origin, 0)
-								create marked_origin.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
-								is_found := True
-								marked_station_changed := True
-							end
-							
-							-- Checking destination of section
-							place_x := map_to_gl_coords (section.polypoints.last).x
-							place_z := map_to_gl_coords (section.polypoints.last).y
-							delta_x := place_x - clicked_point.x
-							delta_z := place_z - clicked_point.z
-							delta := sqrt (delta_x^2 + delta_z^2)
-							if delta < station_radius then
-								traffic_places.highlight_place(section.destination,0)
-								create marked_origin.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
-								is_found := True
-								marked_station_changed := True
-							end
-							line.forth
-						end
-						lines.forth
-					end	
-					if not is_found then
-						marked_origin := Void
-						marked_destination := Void
-						marked_station_changed := True
-					end
-				end
-				
-			elseif event.is_right_button then
-				result_vec := transform_coords(event.screen_x, event.screen_y)				
-				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
-				if map /= Void then
-					from lines := map.lines
-						lines.start
-						is_found := False
-					until is_found or else lines.after
-					loop
-						from line := lines.item_for_iteration
-							line.start
-						until line.after
-						loop
-							section := line.item
-							
-							-- Checking origin of section
-							place_x := map_to_gl_coords (section.polypoints.first).x
-							place_z := map_to_gl_coords (section.polypoints.first).y
-							delta_x := place_x - clicked_point.x
-							delta_z := place_z - clicked_point.z
-							delta := sqrt (delta_x^2 + delta_z^2)
-							if delta < station_radius then
-								traffic_places.highlight_place(section.origin, 0)
-								create marked_destination.make_with_position (section.origin.name, section.polypoints.first.x.rounded, section.polypoints.first.y.rounded)
-								is_found := True
-								marked_station_changed := True
-							end
-							
-							-- Checking destination of section
-							place_x := map_to_gl_coords (section.polypoints.last).x
-							place_z := map_to_gl_coords (section.polypoints.last).y
-							delta_x := place_x - clicked_point.x
-							delta_z := place_z - clicked_point.z
-							delta := sqrt (delta_x^2 + delta_z^2)
-							if delta < station_radius then
-								traffic_places.highlight_place(section.destination, 1)
-								create marked_destination.make_with_position (section.destination.name, section.polypoints.last.x.rounded, section.polypoints.last.y.rounded)
-								is_found := True
-								marked_station_changed := True
-							end
-							line.forth
-						end
-						lines.forth
-					end
-					if not is_found then
-						marked_destination := Void
-						marked_origin := Void
-						marked_station_changed := True
-					end
-				end
-			end
-		end
-	
+
 	mouse_drag (event: EM_MOUSEMOTION_EVENT) is
 			-- Handle mouse movement event.
 		local
@@ -292,86 +209,21 @@ feature {NONE} -- Event handling
 			end
 		end
 
-
 feature -- {CITY_3D_SCENE}	-- Travelere objects
 	add_travelers is
 			-- fill in here the travelers and call it in load_map
-			local
-				traveler: TRAFFIC_TRAVELER
-				temp_list: ARRAYED_LIST [EM_VECTOR_2D]
-			do
-				create temp_list.make(1)
-				temp_list.force (create {EM_VECTOR_2D}.make (-67, -32))
-				temp_list.force (create {EM_VECTOR_2D}.make (0, 0))
-				temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
+		local
+			traveler: TRAFFIC_TRAVELER
+			temp_list: ARRAYED_LIST [EM_VECTOR_2D]
+		do
+			create temp_list.make(1)
+			temp_list.force (create {EM_VECTOR_2D}.make (-67, -32))
+			temp_list.force (create {EM_VECTOR_2D}.make (0, 0))
+			temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
 
-				create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
-				
-				add_traveler (traveler)
-			end
+			create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
+			
+			add_traveler (traveler)
+		end
 		
-	
-	adjust_speed is
-			-- adjust the speed by a double.
-			do
-				map.change_traveler_speed (traffic_time.simulated_minutes / 2)
-			end
-	
-	update_passenger_number (number: INTEGER) is	
-			-- update the number of the passengers on the map
-			require
-				number >= 0
-			local
-				i: INTEGER
-				traveler: TRAFFIC_TRAVELER
-			do
-				if number_of_passengers >= number then
-					from
-						i := number_of_passengers
-					until
-						i <= number
-					loop
-						traffic_traveler.remove_traveler
-						i := i - 1
-					end
-				else
-					from 
-						i := 0
-					until
-						i >= number - number_of_passengers
-					loop
-						create traveler.make_random (traffic_time.time.ticks, 7, create {TRAFFIC_TYPE_WALKING}.make)
-						traveler.set_reiterate (True)
-						add_traveler (traveler)				
-						i := i + 1
-					end
-				end
-				number_of_passengers := number
-			end
-		
-	
-feature
-
-	
-	load_map (filename: STRING) is
-			-- 
-			local
-
-			do
-				Precursor (filename)
-				
-				update_passenger_number (0)
-				update_passenger_number (number_of_passengers)
-				
---				add_travelers
-				
-				traffic_traveler.add_tram_per_line (map, 2)
-				
-			ensure then
-				traffic_traveler /= Void
-			end
-		
-invariant
-	
-	
-end -- class CITY_3D_MAP
+end
