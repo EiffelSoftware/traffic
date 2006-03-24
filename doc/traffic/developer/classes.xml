@@ -19,7 +19,7 @@
 		</para>
 		<itemizedlist>
 			<listitem>
-				<link url="#traffic_building">TRAFFIC_BUILDING</link>
+				<link url="#">TRAFFIC_BUILDING</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link>
@@ -93,10 +93,10 @@
 			The four corners can be accessed through the four features: <featurename>corner1</featurename> (upper left corner), <featurename>corner2</featurename> (lower left corner), <featurename>corner3</featurename> (lower right corner) and <featurename>corner4</featurename> (upper right corner), whereas the three dimensions can be accessed through the tree features: <featurename>width</featurename>, <featurename>breadth</featurename> and <featurename>height</featurename>. Finally, the angle can be accessed through <featurename>angle</featurename>
 		</para>
 		<para>
-		There exists also the possibility to attach <link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link> through <featurename>set_information</featurename>, which can afterwards be accessed through <featurename>information</featurename>
+		There exists also the possibility to attach <link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link> through <featurename>set_information</featurename>, which can afterwards be accessed through <featurename>information</featurename>.
 		</para>
 		<para>
-			A quite important feature is <featurename>contains_point</featurename>, which allows to check, whether a point is inside a building. It is mainly used to check, whether a building has been clicked.
+			A quite important feature is <featurename>contains_point</featurename>, which allows to check whether a point is inside a building. It is mainly used to check whether a building has been clicked.
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -120,7 +120,7 @@
 		</para>
 		<title>Class overview</title>
 		<para>
-			None
+			<image src="image/traffic_building_information.png"/>
 		</para>
 		<toplink/>
 	</section>
@@ -335,7 +335,7 @@
 			such an element (<featurename>has_place</featurename>, <featurename>has_line</featurename>
 			and <featurename>has_line_section</featurename>). To add new elements to the map use the
 			features <featurename>add_place</featurename>, <featurename>add_line</featurename>, 
-			<featurename>add_line_section</featurename> or <featurename>add_building</featurename>. To remove all building form the map use <featurename>delete_buildings</featurename>.
+			<featurename>add_line_section</featurename> or <featurename>add_building</featurename>. To remove all buildings from the map use <featurename>delete_buildings</featurename>.
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -368,9 +368,8 @@
 			can reset a factory to create a new map and it's elements from scratch.
 		</para>
 		<para>
-			At first you possibly want to build a map to be able to insert the maps elements 
-			afterwards. The build feature that builds a named map is called <featurename>build_map
-			</featurename>. The query <featurename>map</featurename> returns the last created 
+			At first you possibly want to build a map to be able to insert the map elements 
+			afterwards. The build feature that builds a named map is called <featurename>build_map</featurename>. The query <featurename>map</featurename> returns the last created 
 			map. With the call to the query <featurename>has_map</featurename> you make sure a
 			valid map exists. After a successful call to this feature it is safe to call <featurename>
 			map</featurename>. To build a place there are two features: to build a standard place whose 
@@ -403,14 +402,14 @@
 			The class <classname>TRAFFIC_MAP_LOADER</classname> is used to load maps, specifed by its name.
 		</para>
 		<para>
-			A new instance of <classname>TRAFFIC_MAP_LOADER</classname> is create through <featurename>make</featurename>. It takes as input the name of the map to be loaded. The map is then loaded by <featurename>load_map</featurename>, which is either loaded from a dump file or, if this is not available or outdated, parsed from the specified XML file. If the map had to be parsed, a new dump is created, which can be used next time. Afterwards, the map can be access through <featurename>map</featurename>.
+			A new instance of <classname>TRAFFIC_MAP_LOADER</classname> is create by calling <featurename>make</featurename>. It takes as input the name of the map to be loaded. The map is then loaded by <featurename>load_map</featurename>, which is either loaded from a dump file or, if this is not available or outdated, parsed from the specified XML file. If the map had to be parsed, a new dump is created, which can be used next time. Afterwards, the map can be access through <featurename>map</featurename>.
 		</para>
 		<para>
-			To be able to find out, if a XML file has been altered since the dump was created, a log file is written which contains the XML file names and the corresponding timestamps. Only if the timestamp of the XML file is still the same, it has not been changed and can therefore safely be loadad from dump.
+			To detect changes in the XML file, a log file containing the XML file names and their timestamps is maintained.
 		</para>
 		<title>Class overview</title>
 		<para>
-			<image src="traffic_map_loader.png"/>
+			<image src="image/traffic_map_loader.png"/>
 		</para>
 		<toplink/>
 	</section>

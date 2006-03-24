@@ -9,6 +9,9 @@ class
 
 inherit
 	TRAFFIC_NODE_PROCESSOR
+	
+	MATH_CONST
+			export{NONE} all end
 
 create
 	make
@@ -21,7 +24,7 @@ feature -- Access
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		do
-			Result := << "name", "x1", "x2", "y1", "y2", "height" >>
+			Result := << "name", "x1", "x2", "y1", "y2", "height", "angle" >>
 			Result.compare_objects
 		end
 		
@@ -35,7 +38,10 @@ feature -- Basic operations
 			x1,x2: DOUBLE
 			y1,y2: DOUBLE
 			height: DOUBLE
+			angle: DOUBLE
 			building_name: STRING
+			p1,p2,p3,p4: EM_VECTOR_2D
+			center: EM_VECTOR_2D
 		do
 			-- Check whether aributes exist and have proper type
 			if not has_attribute ("name") then
@@ -55,8 +61,12 @@ feature -- Basic operations
 				set_error (Wrong_attribute_type, << "x", "y" >>)
 			elseif not has_attribute ("height") then
 				set_error (Mandatory_attribute_missing, << "height" >>)
+			elseif not has_attribute ("angle") then
+				set_error (Mandatory_attribute_missing, << "angle" >>)
 			elseif not (is_attribute_integer("height") and is_attribute_double("height")) then
 				set_error (Wrong_attribute_type, << "height" >>)
+			elseif not (is_attribute_integer("angle") and is_attribute_double("angle"))  then
+				set_error (Wrong_attribute_type, << "angle" >>)
 			else
 				--Create new building
 				x1 := attribute_double("x1")
@@ -64,8 +74,24 @@ feature -- Basic operations
 				y1 := attribute_double("y1")
 				y2 := attribute_double("y2")
 				height := attribute_double("height")
+				angle := attribute_double ("angle")
+				if angle > 70 or angle < -70 then
+					io.putstring ("Angle has to be in range -70 to 70 degrees")
+					angle := 0
+				end
 				building_name := attribute ("name")
-				create building.make (create {EM_VECTOR_2D}.make(x1,y1),create {EM_VECTOR_2D}.make(x1,y2),create {EM_VECTOR_2D}.make(x2,y2),create {EM_VECTOR_2D}.make(x2,y1), height, building_name)
+				create p1.make(x1,y1)
+				create p2.make(x1,y2)
+				create p3.make(x2,y2)
+				create p4.make(x2,y1)
+				create center.make ((x1+x2)/2,(y1+y2)/2)
+				p1 := p1.rotation (center, -angle*pi/180)
+				p2 := p2.rotation (center, -angle*pi/180)
+				p3 := p3.rotation (center, -angle*pi/180)
+				p4 := p4.rotation (center, -angle*pi/180) 
+				create building.make (p1,p2,p3,p4, height, building_name)
+				
+				building.set_angle (angle)
 				internal_map.add_building (building)
 			end
 		end

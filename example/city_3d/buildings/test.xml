@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE buildings SYSTEM "building.dtd"> 
-
-<buildings>
-	<building name = "Hauptbahnhof" x1="0.5" x2="-0.5" y1="1" y2 = "-1.5" height = "5"/>
-	<building name = "ETH Zentrum" x1="2" x2="0" y1="3.25" y2 = "1.5" height = "7"/>
-	<building name = "IFW" x1="4" x2="3" y1="4" y2 = "3" height = "15"/>
-</buildings>

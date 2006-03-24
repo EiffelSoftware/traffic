@@ -11,8 +11,8 @@
     <title>Traffic input classes</title>
 	<section id="top_of_page">
     	<para>
-			In the following sections the classes will be described. The layout for each class is: 
-			Requirements, Description, Class overview. In the Requirements the name of classes you 
+			In the following sections the classes for the map loading will be described. The layout for each class is: 
+			Requirements, Description, Class overview. In the Requirements section the name of classes you 
 			need to know in order to understand the class described is given. Description is a short 
 			description of what the class does. It is more detailed than just the class description 
 			that you find in the class header. The class overview provides you with a class diagram. 
@@ -40,7 +40,7 @@
     	</para>
     	<title>Description</title>
     	<para>
-			This class is used for parsing a XML file, that contains building information and afterwards processing the received data so the buildings specified appear on the map.<newline/>
+			This class is used for parsing an XML file that contains building information and for processing the received data so the buildings specified appear on the map.<newline/>
 			The XML file has to follow the following DTD structure:
 			<programlisting>
 			&lt;!ELEMENT buildings (building*)&gt;
@@ -53,6 +53,7 @@
 				x2 CDATA #REQUIRED
 				y2 CDATA #REQUIRED
 				height CDATA #REQUIRED
+				angle CDATA #REQUIRED
 			&gt;
 			</programlisting>
 			The building position is specifid by the upper left corner (x1,y1) and the bottom right corner (x2,y2) of the building. One has to be aware that the x-axis increases in the left direction and the y-axis increases in the up direction.
@@ -61,8 +62,8 @@
 			A new building parser is created through the feature <featurename>make_with_map</featurename> which needs a <classname>TRAFFIC_3D_MAP_WIDGET</classname> as input.
     	</para>
     	<para>
-			The file can then be added through the inherited feature <featurename>set_file_name</featurename> and parsed through (the also inherited) feature <featurename>parse</featurename>. If the parsing is completed successfully, what can be checked with <featurename>has_error</featurename>, processing can be started with <featurename>process</featurename>.<newline/>
-			The processing is based on the rules specified in <link url="traffic_building_node_processor">TRAFFIC_BUILDING_NODE_PROCESSOR</link> and <link url="traffic_buildings_node_processor">TRAFFIC_BUILDINGS_NODE_PROCESSOR</link>.
+			The file can then be added through the inherited feature <featurename>set_file_name</featurename> and parsed through (the also inherited) feature <featurename>parse</featurename>. If the parsing is completed successfully (checked <featurename>has_error</featurename>) processing can be started with <featurename>process</featurename>.<newline/>
+			The processing is based on the rules specified in <classname>TRAFFIC_BUILDING_NODE_PROCESSOR</classname> and <classname>TRAFFIC_BUILDINGS_NODE_PROCESSOR</classname>.
     	</para>
     	<title>Class overview</title>
     	<para>
@@ -78,7 +79,7 @@
     	</para>
     	<title>Description</title>
     	<para>
-			In this class is specified how <link url="#traffic_building_parser">TRAFFIC_BUILDING_PARSER</link> has to process a building element. It has specified the element name (<featurename>Name</featurename>) and the mandatory attributes (<featurename>Mandatory_Attributes)</featurename>. <newline/>
+			In this class is specified how <link url="#traffic_building_parser">TRAFFIC_BUILDING_PARSER</link> has to process a building element. It has specified the element name (<featurename>name</featurename>) and the mandatory attributes (<featurename>mandatory_Attributes)</featurename>. <newline/>
 		In the feature <featurename>process</featurename> is specified, what has to be done during processing. In the case of a building element, we only have to check whether the required attributes are supported and have proper type and afterwards create a new building.
     	</para>
     	<title>Class overview</title>
@@ -97,8 +98,8 @@
     	</para>
     	<title>Description</title>
     	<para>
-			In this class is specified how <link url="#traffic_building_parser">TRAFFIC_BUILDING_PARSER</link> has to process a buildings element. It has specified the element name (<featurename>Name</featurename>) and the mandatory attributes (<featurename>Mandatory_Attributes)</featurename>. <newline/>
-		In the feature <featurename>process</featurename> is specified, what has to be done during processing. In the case of a buildings element, we only to process all subnodes.
+			In this class is specified how <link url="#traffic_building_parser">TRAFFIC_BUILDING_PARSER</link> has to process a buildings element. It has specified the element name (<featurename>name</featurename>) and the mandatory attributes (<featurename>mandatory_Attributes)</featurename>. <newline/>
+		In the feature <featurename>process</featurename> is specified, what has to be done during processing. In the case of a buildings element, we to process all subnodes.
     	</para>
     	<title>Class overview</title>
     	<para>

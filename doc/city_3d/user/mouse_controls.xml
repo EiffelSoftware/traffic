@@ -44,7 +44,7 @@
                 By pressing the up-/down- or left-/right- arrow keys the map will be rotated around the x- or y-axis respectively.
             </para></listitem>
             <listitem><para>
-                By pressing the enter key the translation will be reset to its initial value. However, zoom as well as rotation aren't affected.
+                By pressing the enter key the translation will be reset to its initial value. However, zoom as well as rotation are not affected.
             </para></listitem>
         </itemizedlist>
 	</para>
@@ -89,7 +89,7 @@
 	 	</para>
 	</para>
 	<para>
-        <image src="image/right_options.png"/>
+        <image src="image/left_options.png"/>
     </para>
     <para>
 		<para>
