@@ -258,7 +258,9 @@ feature -- Basic operations
 			until
 				off_line
 			loop
-				map.remove_line_section (item_line)
+				if map.line_sections.has (item_line) then
+					map.remove_line_section (item_line)				
+				end
 				forth_line
 			end
 			
@@ -285,6 +287,7 @@ feature -- Basic operations
 			-- is at least one place in the line
 		require
 			a_place_not_void: a_place /= Void
+			a_place_not_last_place: count > 0 implies a_place /= i_th (count)
 			a_place_not_in_places_of_line: not has (a_place)
 		local
 			line_section: TRAFFIC_LINE_SECTION
@@ -302,9 +305,8 @@ feature -- Basic operations
 				end
 
 				create line_section.make (origin, a_place, type, Void)
-				map.add_line_section (line_section) 
-
 				extend (line_section)								
+				map.add_line_section (line_section) 
 			end
 		end
 

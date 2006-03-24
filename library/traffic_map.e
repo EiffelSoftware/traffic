@@ -1,6 +1,5 @@
 indexing
 	description: "Map representing a traffic system of a region."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date: 2006/01/09 12:23:40 $"
 	revision: "$Revision: 1.5 $"
 
@@ -45,8 +44,6 @@ feature {NONE} -- Initialization
 			i: INTEGER
 			temp_list: LINKED_LIST[TRAFFIC_BUILDING]
 		do
-			create place_events.make;
-			create line_section_events.make;
 			default_size := 100
 			name := a_name
 			make_multi_graph
@@ -67,13 +64,26 @@ feature {NONE} -- Initialization
 				internal_buildings[i]:=temp_list
 				i:=i+1
 			end
+			
+			create unspecified_line_section_changed_event
+			create line_section_changed_event
+			create line_section_inserted_event
+			create line_section_removed_event
+			
+			create unspecified_line_changed_event
+			create line_changed_event
+			create line_inserted_event
+			create line_removed_event
+			
+			create unspecified_place_changed_event
+			create place_changed_event
+			create place_inserted_event
+			create place_removed_event
 		ensure
 			name_set: equal (name, a_name)
 			places_not_void: places /= Void
 			lines_not_void: internal_lines /= Void
 			line_sections_not_void: internal_line_sections /= Void
-			line_section_events_not_void: line_section_events /= Void
-			place_events_not_void: place_events /= Void
 		end
 		
 feature -- Status report
@@ -141,7 +151,6 @@ feature -- Status report
 			Result := internal_lines.has (a_name)
 		end
 		
-		
 feature -- Element change
 
 	set_description (a_description: STRING) is
@@ -162,7 +171,7 @@ feature -- Element change
 			internal_places.force (a_place, a_place.name)
 			internal_place_array.extend (a_place)
 			put_node (a_place)
-			place_events.publish_item_inserted_event (place_position (a_place.name))
+			place_inserted_event.publish ([a_place])
 		ensure
 			a_place_in_map: has_place (a_place.name)
 		end
@@ -175,7 +184,7 @@ feature -- Element change
 		do
 			internal_line_sections.extend (a_line_section)
 			put_edge (a_line_section.origin, a_line_section.destination, a_line_section, a_line_section.length)
-			line_section_events.publish_item_inserted_event (internal_line_sections.count)
+			line_section_inserted_event.publish ([a_line_section])
 		ensure
 			a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
 		end
@@ -224,9 +233,9 @@ feature -- Element change
 			then
 				internal_buildings.item(4).extend(a_building)	
 			end
-			
+		
 		end
-	
+		
 	delete_buildings () is
 			-- Delete all buildings from map.
 		do
@@ -259,7 +268,7 @@ feature -- Element change
 				internal_line_sections.search (a_line_section)
 				index := internal_line_sections.index
 				internal_line_sections.prune (a_line_section)
-				line_section_events.publish_item_removed_event (index, a_line_section)
+				line_section_removed_event.publish ([a_line_section])
 			ensure
 				-- we can assume, that the line_section was only once inserted
 				line_section_removed: not line_sections.has (a_line_section)
@@ -322,7 +331,7 @@ feature -- Access
 			a_name_exists: a_name /= Void
 			place_in_map: has_place (a_name)
 		do
-			Result := places.item (a_name)
+			Result := internal_places.item (a_name)
 		ensure
 			result_exists: Result /= Void
 		end
@@ -366,11 +375,8 @@ feature -- Access
 			Result := internal_travelers.twin
 		end
 		
-		
-		
-		
 	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_LINE_SECTION] is
-			-- Line sections with origin or destination place `a_name'.
+			-- Line sections with origin or destination place `a_name'
 		require
 			place_in_map: has_place (a_name)
 		do
@@ -378,9 +384,71 @@ feature -- Access
 			Result := incident_edge_labels
 		end
 
-	place_events: TRAFFIC_ITEM_EVENTS  [TRAFFIC_PLACE]
+--	place_events: TRAFFIC_ITEM_EVENTS  [TRAFFIC_PLACE]
+--	
+--	line_section_events: TRAFFIC_ITEM_EVENTS [TRAFFIC_LINE_SECTION]
+--
+feature -- Events
+
+	unspecified_place_changed_event: EM_EVENT_CHANNEL [TUPLE []]
+			-- Event to inform views of `Current'
+			-- when `Current' changed such that
+			-- views need to re-render
 	
-	line_section_events: TRAFFIC_ITEM_EVENTS [TRAFFIC_LINE_SECTION]
+	place_changed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE]]
+			-- Event to inform views of `Current' 
+			-- when item has been changed
+			-- at index passed as argument
+			
+	place_inserted_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE]]
+			-- Event to inform views of `Current' 
+			-- when item has been inserted
+			-- at index passed as argument
+			
+	place_removed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE]]
+			-- Event to inform views of `Current' 
+			-- when item has been removed 
+			-- at index passed as argument
+
+	unspecified_line_section_changed_event: EM_EVENT_CHANNEL [TUPLE []]
+			-- Event to inform views of `Current'
+			-- when `Current' changed such that
+			-- views need to re-render
+	
+	line_section_changed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE_SECTION]]
+			-- Event to inform views of `Current' 
+			-- when item has been changed
+			-- at index passed as argument
+			
+	line_section_inserted_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE_SECTION]]
+			-- Event to inform views of `Current' 
+			-- when item has been inserted
+			-- at index passed as argument
+			
+	line_section_removed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE_SECTION]]
+			-- Event to inform views of `Current' 
+			-- when item has been removed 
+			-- at index passed as argument
+
+	unspecified_line_changed_event: EM_EVENT_CHANNEL [TUPLE []]
+			-- Event to inform views of `Current'
+			-- when `Current' changed such that
+			-- views need to re-render
+	
+	line_changed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE]]
+			-- Event to inform views of `Current' 
+			-- when item has been changed
+			-- at index passed as argument
+			
+	line_inserted_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE]]
+			-- Event to inform views of `Current' 
+			-- when item has been inserted
+			-- at index passed as argument
+			
+	line_removed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE]]
+			-- Event to inform views of `Current' 
+			-- when item has been removed 
+			-- at index passed as argument
 
 feature {TRAFFIC_MAP_MODEL} -- Access
 	map_places: ARRAYED_LIST [TRAFFIC_PLACE] is
