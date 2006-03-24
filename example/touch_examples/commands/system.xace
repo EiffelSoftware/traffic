@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<system name="commands">
+  <description>
+    system: "'commands' application"
+    copyright: "Copyright (c) 2005"
+    license: "Eiffel Forum License v2 (see forum.txt)"
+    date: "$Date$"
+    revision: "$Revision$"
+  </description>
+  <root class="COMMANDS_3D_APPLICATION" creation="make"/>
+  <option unless="${DEBUG}">
+    	<option name="assertion" value="none"/>
+    	<option name="garbage_collector" value="none"/>
+    	<option name="finalize" value="true"/>
+    	<option name="console_application" value="false"/>
+  </option>
+  <option if="${DEBUG}">
+  	<option unless="${DEVELOP}">
+	    <option name="assertion" value="all"/>
+	    <option name="garbage_collector" value="none"/>
+	    <option name="finalize" value="false"/>
+	    <option name="console_application" value="false"/>
+	  </option>
+	  <option if="${DEVELOP}">
+	  	<option name="assertion" value="require"/>
+	    <option name="garbage_collector" value="none"/>
+	    <option name="finalize" value="false"/>
+	    <option name="console_application" value="false"/>
+		</option>  	
+  </option>
+
+  <cluster name="commands" location=".">
+  	<option if="${DEVELOP}">
+  		<option name="assertion" value="all"/>
+   	</option>
+  </cluster>
+  
+
+  <mount location="${GOBO}/library/kernel.xace"/>
+  <mount location="${GOBO}/library/library.xace"/>
+  <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
+  <mount location="${EM}/library/library.xace"/>
+  <mount location="../../../library/library_touch.xace"/> 
+  <mount location="../touch_library/library.xace"/>
+
+</system>
