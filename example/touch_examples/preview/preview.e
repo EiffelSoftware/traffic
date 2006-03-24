@@ -21,9 +21,7 @@ feature	 -- Example
 --			Louvre.spotlight			
 
 			Line8.highlight_for_5_seconds
-
-		--	Paris.display
-
+			
 --			Route1.animate
 --			Passenger.move_route (Route2)
 		end
