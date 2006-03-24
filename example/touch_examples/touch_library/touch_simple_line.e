@@ -1,18 +1,19 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
+	description: "Objects that forward calls to a TRAFFIC_SIMPLE_LINE and to its representation"
+	date: "$14.02.2006$"
 	revision: "$Revision$"
 
-class
-	TOUCH_SIMPLE_LINE
+class TOUCH_SIMPLE_LINE
 
 inherit
 	
 	ANY
-		redefine out end
+		redefine 
+			out 
+		end
 
-create make_with_line_and_representation
+create 
+	make_with_line_and_representation
 	
 feature -- Initialization
 	
@@ -32,18 +33,19 @@ feature -- Initialization
 feature -- Access
 
 	start_to_terminal (a_terminal: TRAFFIC_PLACE): TRAFFIC_PLACE is
-			-- The start place to existing terminal `a_terminal'.
+			-- The start place to existing terminal `a_terminal'
 		do
 			Result := internal_line.start_to_terminal (a_terminal)
 		end
 		
 	name: STRING is 
+			-- Name of the line
 		do 
 			Result := internal_line.name
 		end
 
 	type: TRAFFIC_TYPE is
-			-- Type of line.
+			-- Type of line
 		do
 			Result := internal_line.type
 		end
@@ -171,7 +173,7 @@ feature -- Basic operations
 	unhighlight is
 			-- Unhighlight the line.
 		do
-			internal_rep.un_highlight_single_line (internal_line)
+			internal_rep.unhighlight_single_line (internal_line)
 		end		
 		
 	highlight_for_5_seconds is 
@@ -191,14 +193,16 @@ feature -- Output
 feature {NONE} -- Implementation
 
 	internal_line: TRAFFIC_SIMPLE_LINE
+			-- Traffic line that gets all the calls
 
 	internal_rep: TRAFFIC_LINE_REPRESENTATION
+			-- Visualization of `internal_line' that gets calls concerning visualization changes
 		
 invariant
 
-	name_not_void: name /= Void -- Line has name.
-	name_not_empty: not name.is_empty -- Line has not empty name.
-	type_exists: type /= Void -- Line has type.
+	name_not_void: name /= Void 
+	name_not_empty: not name.is_empty 
+	type_exists: type /= Void
 	stations_at_right_place: count >= 2 implies one_end = i_th(1) and other_end = i_th(count)
 
 end

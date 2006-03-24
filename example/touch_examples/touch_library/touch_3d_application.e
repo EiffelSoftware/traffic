@@ -3,10 +3,10 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	TOUCH_3D_APPLICATION
+deferred class TOUCH_3D_APPLICATION
 
 inherit
+
 	EM_APPLICATION
 	
 	EM_SHARED_THEME
@@ -48,7 +48,8 @@ feature -- Initialization
 			set_first_scene
 			
 			launch
-			full_collect			
+			full_collect	
+			video_subsystem.disable		
 		end
 		
 	set_first_scene is
@@ -65,6 +66,5 @@ feature -- Initialization
 			window_title_exists: window_title /= Void
 			application_id_exists: application_id /= Void
 		end
-		
 
 end

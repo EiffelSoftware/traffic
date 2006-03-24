@@ -1,22 +1,26 @@
 indexing
 	description: "Objects that forwards calls to TRAFFIC_MAP and TOUCH_3D_MAP_WIDGET."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
-	TOUCH_MAP
+class TOUCH_MAP
 
 inherit
 	
 	ANY
-		redefine out end
+		redefine 
+			out 
+		end
 		
-create make
+create 
+	make
 
-feature -- Initialisation
+feature -- Initialization
 
-	make(a_widget: TOUCH_3D_MAP_WIDGET) is
+	make (a_widget: TOUCH_3D_MAP_WIDGET) is
+			-- Set `internal_map_widget' to `a_widget'.
+		require
+			a_widget_exists: a_widget /= Void
 		do
 			internal_map_widget := a_widget
 		ensure
@@ -225,8 +229,20 @@ feature -- Access
 		
 	buildings: LINKED_LIST [TRAFFIC_BUILDING] is
 			-- All buildings on map.
+		local
+			b: ARRAY [LINKED_LIST [TRAFFIC_BUILDING]]
+			i: INTEGER
 		do
-			Result := internal_map.buildings
+			from
+				b := internal_map.buildings
+				i := 1
+				create Result.make
+			until
+				i > b.count
+			loop
+				Result.append (b.item (i))
+				i := i + 1
+			end
 		end
 		
 	travelers: HASH_TABLE [TRAFFIC_TRAVELER, INTEGER] is
@@ -243,18 +259,6 @@ feature -- Access
 			Result := internal_map.line_sections_of_place (a_name)
 		end
 
-	place_events: TRAFFIC_ITEM_EVENTS  [TRAFFIC_PLACE] is
-			-- Event channel for events concerning the places
-		do
-			Result := internal_map.place_events
-		end
-	
-	line_section_events: TRAFFIC_ITEM_EVENTS [TRAFFIC_LINE_SECTION] is
-			-- Event channel for events concerning the line sections
-		do
-			Result := internal_map.line_section_events
-		end
-
 feature -- Basic operation
 
 	out: STRING is
@@ -266,26 +270,29 @@ feature -- Basic operation
 feature -- Basic operations
 
 	display is
+			-- Display `Current' on `internal_map_widget'.
 		do
 			internal_map_widget.disable_map_hidden
 		end
 		
 feature {NONE} -- Implementation
 
-	internal_map : TRAFFIC_MAP is 
+	internal_map: TRAFFIC_MAP is 
+			-- Map to which calls are forwarded
 		do
 			Result := internal_map_widget.map
 		end
 		
 	internal_map_widget: TOUCH_3D_MAP_WIDGET
+			-- Map widget that allows graphical changes
 	
 invariant
 
-	name_not_void: name /= Void -- Map name exists.
-	name_not_empty: not name.is_empty -- Map name not empty.
-	places_not_void: places /= Void -- Places exist.
-	lines_not_void: lines /= Void -- Lines exist.
-	line_sections_not_void: line_sections /= Void -- Line sections exist
-	travelers_not_void: travelers /= Void -- Travelers exist
+	name_not_void: name /= Void
+	name_not_empty: not name.is_empty 
+	places_not_void: places /= Void
+	lines_not_void: lines /= Void 
+	line_sections_not_void: line_sections /= Void 
+	travelers_not_void: travelers /= Void
 
-end -- class TOUCH_MAP
+end

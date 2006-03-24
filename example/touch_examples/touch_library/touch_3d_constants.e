@@ -3,8 +3,7 @@ indexing
 	date: "$Date: 2005/09/26 11:22:45 $"
 	revision: "$Revision: 1.23 $"
 
-class
-	TOUCH_3D_CONSTANTS
+class TOUCH_3D_CONSTANTS
 
 feature -- Constants
 
@@ -46,11 +45,17 @@ feature -- Constants
 			
 	place_depth: DOUBLE is 0.2
 			-- Depth of the place representation on the map
+
 	Station_radius: DOUBLE is
 			-- Radius of a station on the map
 		do
 			Result := 2*line_width
 		end
+	
+	margin: INTEGER is 20
+			-- Margin for window layout
+			
+feature -- Access
 		
 	map_to_gl_coords (vec: EM_VECTOR_2D): EM_VECTOR_2D is
 			-- Transform map coordinates to the ones used by OpenGL.
@@ -67,4 +72,4 @@ feature -- Constants
 			Result := (max_distance - 2*distance)*(max_building_height/max_distance)
 		end
 
-end -- class Touch_3D_CONSTANTS
+end

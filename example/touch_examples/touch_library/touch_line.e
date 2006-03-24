@@ -3,13 +3,14 @@ indexing
 	date: "$14.02.2006$"
 	revision: "$Revision$"
 
-class
-	TOUCH_LINE
+class TOUCH_LINE
 	
 inherit
 	
 	ANY
-		redefine out end
+		redefine 
+			out 
+		end
 
 create make_with_line_and_representation
 	
@@ -42,20 +43,20 @@ feature -- Access
 		end
 
 	terminal_1: TRAFFIC_PLACE is
-		-- Terminal of line in one direction.
+			-- Terminal of line in one direction.
 		do
 			Result := internal_line.terminal_1
 		end
 		
 	terminal_2: TRAFFIC_PLACE is
-		-- Terminal of line in other direction.
+			-- Terminal of line in other direction.
 		do
 			Result := internal_line.terminal_2
 		end
 		
 	color: TRAFFIC_COLOR is
-		-- Line color.
-		-- Used as color represenation.
+			-- Line color.
+			-- Used as color represenation.
 		do
 			Result := internal_line.color
 		end		
@@ -144,7 +145,7 @@ feature -- Element change
 	unhighlight is
 			-- Unhighlight the line.
 		do
-			internal_rep.un_highlight_single_line (internal_line)
+			internal_rep.unhighlight_single_line (internal_line)
 		end		
 		
 	highlight_for_5_seconds is 
@@ -280,12 +281,15 @@ feature -- Output
 feature {NONE} -- Implementation
 
 	internal_line: TRAFFIC_LINE
+			-- Traffic line that gets all the calls
 
 	internal_rep: TRAFFIC_LINE_REPRESENTATION
+			-- Visualization of `internal_line' that gets calls concerning visualization changes
 		
 invariant
-	name_not_void: name /= Void -- Line has name.
-	name_not_empty: not name.is_empty -- Line has not empty name.
-	type_exists: type /= Void -- Line has type.
+
+	name_not_void: name /= Void 
+	name_not_empty: not name.is_empty
+	type_exists: type /= Void
 
 end

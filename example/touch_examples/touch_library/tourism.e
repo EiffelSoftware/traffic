@@ -8,6 +8,10 @@ indexing
 
 deferred class
 	TOURISM
+	
+inherit
+	
+	TOUCH_PARIS_OBJECTS
 
 feature -- Access
 
@@ -17,17 +21,22 @@ feature -- Access
 			a_map_widget_exists: a_map_widget /= Void
 			a_console_exists: a_console /= Void
 		do  		
-			-- Create Paris
 			map_widget := a_map_widget
 			console := a_console
 			
 			explore
 
 		end
-
+		
 feature  -- Example main feature
 
 	explore is
+			-- Executed on startup.
+		deferred
+		end
+		
+	explore_on_button_click is
+			-- Executed when the button is clicked.
 		deferred
 		end
 		
@@ -41,30 +50,29 @@ feature -- Access
 			
 feature -- Status report
 
-	is_paris_loaded: BOOLEAN
-			-- Is the Paris map loaded?
-			
 	is_zurich_loaded: BOOLEAN
 			-- Is the Zurich map loaded?
 
-feature -- Paris
+feature -- Access (Paris)
 
-	Line8: TOUCH_SIMPLE_LINE is 
-			-- Line 8 of the Paris map
-		require
-			Paris_exists: Paris /= Void
-		once
-			Result := Paris.simple_line("tram 8")  
-		end
-	
 	Paris: TOUCH_MAP is		
 			-- Object representing the city of Paris
-		require
+		require else
 			map_widget_exists: map_widget /= Void
+		local
+			loader: TRAFFIC_MAP_LOADER
 		once
-				map_widget.load_map ("../map/paris.xml")
-				create Result.make (map_widget)
-				map_widget.enable_map_hidden
+			create loader.make ("../map/paris.xml")
+			if not loader.has_error then
+				loader.load_map
+				if not loader.has_error then
+					map_widget.set_map (loader.map)
+					create Result.make (map_widget)
+					map_widget.enable_map_hidden
+					is_paris_loaded := True
+					is_zurich_loaded := False									
+				end
+			end
 		end
-					
+
 end -- class TOURISM
