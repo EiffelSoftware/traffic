@@ -70,6 +70,9 @@ feature -- Status report
 		
 feature {NONE} -- Implementation
 
+	internal_traffic_type: TRAFFIC_TYPE
+			-- Traffic type last created.
+
 	bus_type: TRAFFIC_TYPE_BUS is
 			-- Bus traffic type.
 		once
@@ -106,9 +109,6 @@ feature {NONE} -- Implementation
 			create Result.make
 		end
 	
-	internal_traffic_type: TRAFFIC_TYPE
-			-- Traffic type last created.
-			
 	type_table: HASH_TABLE [TRAFFIC_TYPE, STRING] is
 			-- Table with all types.
 		once
@@ -119,6 +119,7 @@ feature {NONE} -- Implementation
 			Result.extend (taxi_type, taxi_type.name)
 			Result.extend (tram_type, tram_type.name)
 			Result.extend (walking_type, walking_type.name)
+			Result.compare_objects
 		end
-
+			
 end

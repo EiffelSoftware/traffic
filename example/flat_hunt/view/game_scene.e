@@ -31,6 +31,7 @@ feature -- Initialization
 			traffic_map := a_traffic_map
 			hunter_count := a_hunter_count
 			build_big_map_widget
+			build_little_map_widget
 			
 			-- Set defaults.
 			create status.make (0)	
@@ -46,15 +47,13 @@ feature -- Initialization
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
 		do			
+		
 			set_background_color (theme.background_color)
 
 			-- Build map widgets.
-			main_container.extend (big_container)
-			build_little_map_widget
-			
 			-- Build navigation widget to connect
 			-- little map to big map for navigation.
-			create navigation_widget.make (little_zoomable_container, big_zoomable_widget)	
+			create navigation_widget.make (little_map_widget, big_map_widget)	
 			
 			-- Build status box.
 			create status_box.make_from_coordinates (Map_area_width + 2 * Margin, Window_width - Map_area_width - 2 * Margin, Window_width - Margin, Map_area_height, "Status")
@@ -86,7 +85,7 @@ feature -- Initialization
 			display_players
 		ensure then
 			last_clicked_button_void: last_clicked_button = Void
-			big_container_added: main_container.has (big_container)
+			big_container_added: main_container.has (big_map_widget)
 			status_box_added: main_container.has (status_box)
 			player_status_box_added: main_container.has (player_status_box)
 		end
@@ -137,7 +136,7 @@ feature -- Access
 	player_displayers: ARRAYED_LIST [PLAYER_DISPLAYER]
 			-- Holds all player displayers.
 
-	big_map_widget: TRAFFIC_MAP_WIDGET
+	big_map_widget: TRAFFIC_2D_MAP_WIDGET
 			-- Map widget to visualize `traffic_map'
 			-- for big zoomable map.
 			
@@ -161,7 +160,7 @@ feature -- Access
 	center_on_player (a_player: PLAYER) is
 			-- Center map on `a_player'.
 		do
-			big_zoomable_widget.center_on (a_player.position)
+			big_map_widget.center_on (a_player.position)
 		end
 		
 	display_end_game is
@@ -343,18 +342,7 @@ feature {NONE} -- Menu Handling
 		
 feature {NONE} -- Views
 
-	big_container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
-			-- Container that holds `big_zoomable_widget' 
-			-- and `big_map_widget' and their background box.
-			
-	big_zoomable_widget: EM_ZOOMABLE_WIDGET
-			-- Interactive container inside which 
-			-- `traffic_map' is displayed and can be zoomed.
-
-	little_zoomable_container: EM_ZOOMABLE_CONTAINER
-			-- Container inside which `little_map_widget' is displayed.
-
-	little_map_widget: TRAFFIC_MAP_WIDGET
+	little_map_widget: TRAFFIC_2D_MAP_WIDGET
 			-- Map widget to visualize 'traffic_map'
 			-- for little navigation map.
 			
@@ -402,7 +390,7 @@ feature {NONE} -- Implementation
 			until
 				hash_from_button_to_player_displayer.after
 			loop
-				big_zoomable_widget.extend (hash_from_button_to_player_displayer.item_for_iteration)
+				big_map_widget.extend (hash_from_button_to_player_displayer.item_for_iteration)
 				main_container.extend (hash_from_button_to_player_displayer.key_for_iteration)
 				hash_from_button_to_player_displayer.forth
 			end
@@ -413,43 +401,15 @@ feature {NONE} -- Implementation
 			-- to visualize `traffic_map' within a dedicated box
 		require
 			traffic_map_not_void: traffic_map /= Void
-		local
-			background_box: EM_RECTANGLE
-			tmp_place_renderer: TRAFFIC_PLACE_RENDERER
 		do			
-			-- Create container to put background and widgets into.
-			create big_container.make
-			big_container.set_x_y (Margin, Margin)
-			
-			-- Create and customize the box in which the map will be displayed
-			create background_box.make_from_coordinates (0, 0, Map_area_width, Map_area_height)
-			background_box.set_rounded_corner_radius (10)
-			background_box.set_line_width (1)
-			background_box.set_line_color (theme.Game_widget_line_color)
-			background_box.set_fill_color (theme.Game_widget_fill_color)
-			big_container.extend (background_box)
-			
-			-- Create and customize big map widget to visualize `traffic_map'
-			create big_map_widget.make_with_map (traffic_map)			
-			create tmp_place_renderer.make_with_map (traffic_map)
-			tmp_place_renderer.set_place_color (theme.default_place_color)
-			big_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
-			big_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
-			big_map_widget.line_section_renderer.traffic_type_line_widths.put (2, "bus")
-			big_map_widget.set_default_place_renderer (tmp_place_renderer)
---			big_map_widget.place_renderer.set_place_color (dark_gray)
-			big_map_widget.render
-			
-			-- Create zoomable widget to make map zoomable
-			create big_zoomable_widget.make (background_box.width, background_box.height)
-			big_zoomable_widget.extend (big_map_widget)
-			big_zoomable_widget.calculate_object_area
-			big_zoomable_widget.set_object_area (big_map_widget.bounding_box)
-			big_zoomable_widget.scroll_and_zoom_to_rectangle (big_map_widget.bounding_box)
-			big_container.extend (big_zoomable_widget)
-		ensure
-			big_container_positioned: big_container.x = Margin and big_container.y = Margin
-			big_zoomable_widget_added: big_container.has (big_zoomable_widget)
+			create big_map_widget.make_with_map (map_area_width, map_area_height, traffic_map)
+			big_map_widget.set_x_y (Margin, Margin)
+			big_map_widget.set_background_color (create {EM_COLOR}.make_white)
+			big_map_widget.calculate_object_area
+			big_map_widget.set_background_color (create {EM_COLOR}.make_white)
+			big_map_widget.scroll_and_zoom_to_rectangle (big_map_widget.object_area)
+			big_map_widget.enable_scroll_and_zoom_by_mouse
+			main_container.extend (big_map_widget)		
 		end		
 
 	build_little_map_widget is
@@ -457,47 +417,13 @@ feature {NONE} -- Implementation
 			-- within a dedicated box and add it to `main_container'
 		require
 			traffic_map_not_void: traffic_map /= Void
-		local
-			container: EM_DRAWABLE_CONTAINER [EM_DRAWABLE]
-			background_box: EM_RECTANGLE
-			map_box: EM_ORTHOGONAL_RECTANGLE
-			tmp_place_renderer: TRAFFIC_PLACE_RENDERER
 		do	
-			-- Create container to put background and widgets into.
-			create container.make
-			container.set_x_y (map_area_width + 2 * margin, margin)
-		
-			-- Create background box.	
-			create background_box.make_from_coordinates (0, 0, Window_width - Map_area_width - 3 * Margin , Window_width - Map_area_width - 3 * Margin)
-			background_box.set_rounded_corner_radius (10)
-			background_box.set_line_width (1)
-			background_box.set_line_color (theme.Game_widget_line_color)
-			background_box.set_fill_color (theme.Game_widget_fill_color)
-			container.extend (background_box)
-			
-			-- Build little map widget to visualize `traffic_map'.
-			create little_map_widget.make_with_map (traffic_map)
-
-			-- Customize map widget and render (to affect changes)
-			little_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
-			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
-			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Tram_color, "tram")
-			create tmp_place_renderer.make_with_map (traffic_map)
-			tmp_place_renderer.set_place_color (theme.default_place_color)
-			little_map_widget.set_default_place_renderer (tmp_place_renderer)
-			little_map_widget.render
-
-			-- Build zoomable container to show little map widget in.
-			create little_zoomable_container.make (background_box.width, background_box.height)
-			little_zoomable_container.extend (little_map_widget)
-			create map_box.make_from_rectangle (little_map_widget.bounding_box)
-			map_box.zoom (1.05)
-			little_zoomable_container.scroll_and_zoom_to_rectangle (map_box)
-			container.extend (little_zoomable_container)
---			container.extend (little_map_widget)
-			
-			-- Extend scene with little map widget.
-			main_container.extend (container)
+			create little_map_widget.make_with_map (Window_width - Map_area_width - 3 * Margin , Window_width - Map_area_width - 3 * Margin, traffic_map)
+			little_map_widget.set_x_y (map_area_width + 2 * margin, margin)
+			little_map_widget.set_background_color (create {EM_COLOR}.make_white)
+			little_map_widget.calculate_object_area
+			little_map_widget.scroll_and_zoom_to_rectangle (little_map_widget.object_area)
+			main_container.extend (little_map_widget)		
 		end	
 
 invariant
@@ -505,7 +431,6 @@ invariant
 	hunter_count_valid: hunter_count > 0 and hunter_count <= 8
 	status_exists: status /= Void
 	big_map_widget_exists: big_map_widget /= Void
-	big_zoomable_widget_exists: big_zoomable_widget /= Void
 	hash_button2displayer_exists: hash_from_button_to_player_displayer /= Void
 	player_displayers_exist: player_displayers /= Void
 

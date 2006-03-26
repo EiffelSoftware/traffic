@@ -161,7 +161,7 @@ feature {NONE} -- Implementation
 	traffic_map: TRAFFIC_MAP
 			-- Reference to map where game takes place.
 	
-	map_widget: TRAFFIC_MAP_WIDGET
+	map_widget: TRAFFIC_2D_MAP_WIDGET
 			-- Reference to map widget where player gets displayed.
 			
 	possible_moves_unmarked: BOOLEAN

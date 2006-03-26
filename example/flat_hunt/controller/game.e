@@ -138,12 +138,17 @@ feature -- Basic Operations
 	create_map is
 			-- Open map with name `map_name'.
 		local
-			a_map_file: TRAFFIC_MAP_FILE			
+			loader: TRAFFIC_MAP_LOADER			
 		do
-			create a_map_file.make_from_file (map_name)
-			traffic_map := a_map_file.traffic_map
-			-- Build knowledge
-			knowledge.set_map (traffic_map)			
+			create loader.make (map_name)
+			if not loader.has_error then
+				loader.load_map
+				if not loader.has_error then
+					traffic_map := loader.map
+					-- Build knowledge
+					knowledge.set_map (traffic_map)								
+				end
+			end
 		ensure
 			traffic_map_exits: traffic_map /= Void
 			knowledge_knows_map: knowledge.map = traffic_map

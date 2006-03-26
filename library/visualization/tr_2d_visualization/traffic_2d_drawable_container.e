@@ -169,7 +169,7 @@ feature -- Mouse Events
 				from
 					item_views.finish
 				until
-					item_views.before or transformed_mouse_event.caught
+					item_views.off or transformed_mouse_event.caught
 				loop
 					if item_views.item_for_iteration /= Void then
 						item_views.item_for_iteration.publish_mouse_event (transformed_mouse_event)						
@@ -181,7 +181,7 @@ feature -- Mouse Events
 				-- Also publish mouse event with map item.
 				if transformed_mouse_event.caught then
 					
-					if not item_views.after then
+					if not item_views.off then
 						item_views.forth
 						dispatch_mouse_on_item_event (item_views.item_for_iteration, transformed_mouse_event)
 						dispatch_mouse_on_map_item_event (item_views.key_for_iteration, transformed_mouse_event)

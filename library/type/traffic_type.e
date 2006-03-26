@@ -10,7 +10,8 @@ deferred class
 inherit
 	ANY
 		redefine
-			out
+			out, 
+			is_equal
 		end
 	
 feature -- Access
@@ -26,7 +27,14 @@ feature -- Output
 			Result := name
 		end
 		
+feature -- Comparison
 		
+		is_equal (other: like Current): BOOLEAN is
+				-- Is `other' equal to `Current'?
+			do
+				Result := name.is_equal (other.name)
+			end
+			
 invariant
 	name_not_empty: not name.is_empty
 

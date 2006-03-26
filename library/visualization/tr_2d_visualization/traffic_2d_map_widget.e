@@ -7,8 +7,6 @@ class TRAFFIC_2D_MAP_WIDGET
 
 inherit	
 
---	EM_DRAWABLE_CONTAINER [EM_DRAWABLE] 
-
 	EM_ZOOMABLE_CONTAINER
 		redefine
 			draw
@@ -33,6 +31,8 @@ feature -- Initialization
 			make (a_width, a_height)
 
 			set_map (a_map)
+			mouse_drag_agent := agent process_mouse_move_event (?)
+
 		ensure
 			map_set: map = a_map
 		end
@@ -64,6 +64,20 @@ feature -- Input
 			line_section_drawables.mouse_button_down_on_map_item_event.subscribe (an_action)
 		end
 		
+feature -- Status change
+
+	enable_scroll_and_zoom_by_mouse is
+			-- Enable the widget to scroll and zoom on mouse dragging.
+		do
+			mouse_motion_event.subscribe (mouse_drag_agent)			
+		end
+
+	disable_scroll_and_zoom_by_mouse is
+			-- Enable the widget to scroll and zoom on mouse dragging.
+		do
+			mouse_motion_event.unsubscribe (mouse_drag_agent)			
+		end
+
 feature -- Status - Places
 
 	set_default_place_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]) is
@@ -164,9 +178,11 @@ feature -- Basic Operation
 	draw (a_surface: EM_SURFACE) is
 			-- Draw everything on a `a_surface'.
 		do
---			if background_color /= Void then
---				a_surface.fill (background_color)				
---			end
+			if background_color /= Void then
+				a_surface.set_drawing_color (background_color)
+				a_surface.set_line_width (5)
+				a_surface.fill_rectangle (create {EM_ORTHOGONAL_RECTANGLE}.make_from_position_and_size (x, y, width, height))
+			end
 			Precursor (a_surface)
 		end		
 
@@ -252,5 +268,29 @@ feature {NONE} -- Implementation
 	line_section_drawables: TRAFFIC_2D_LINE_SECTIONS_CONTAINER
 	
 	place_drawables: TRAFFIC_2D_PLACES_CONTAINER 
+
+	process_mouse_move_event (a_event: EM_MOUSEMOTION_EVENT) is
+			-- Process mouse move event over `Current' to zoom or scroll Current.
+		local
+			zoom_step: DOUBLE
+		do
+			if a_event.button_state_right then
+				scroll_proportional (- a_event.motion)
+			end
+			if a_event.button_state_middle then
+				zoom_step := 1.0 - (a_event.y_motion / 100)
+				if zoom_step <= 0.5 then
+					zoom_step := 0.5
+				end
+				if zoom_step > 2.0 then
+					zoom_step := 2.0
+				end
+				zoom (zoom_step)
+			end
+		end
+
+	mouse_drag_agent: PROCEDURE [ANY, TUPLE [EM_MOUSEMOTION_EVENT]]	
+			-- Agent that refers to the procedure for scrolling and zooming on mouse drag	
+		
 
 end
