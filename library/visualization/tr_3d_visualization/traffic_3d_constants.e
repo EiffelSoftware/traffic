@@ -77,7 +77,7 @@ feature -- Constants
 			vec /= void
 		do
 			-- (669,718) are the coordinates of the HB, where the centre is.
-			create Result.make ((1350 - vec.x - 669)/30,(vec.y - 718)/30)
+			create Result.make ((1350 - vec.x - 669)/30,(1420 - vec.y - 718)/30)
 		end
 		
 	calculate_building_height (max_distance, distance: DOUBLE): DOUBLE is

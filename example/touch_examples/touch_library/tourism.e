@@ -75,4 +75,24 @@ feature -- Access (Paris)
 			end
 		end
 
+	Zurich: TOUCH_MAP is		
+			-- Object representing the city of Zurich
+		require else
+			map_widget_exists: map_widget /= Void
+		local
+			loader: TRAFFIC_MAP_LOADER
+		once
+			create loader.make ("../map/zurich_big.xml")
+			if not loader.has_error then
+				loader.load_map
+				if not loader.has_error then
+					map_widget.set_map (loader.map)
+					create Result.make (map_widget)
+					map_widget.enable_map_hidden
+					is_paris_loaded := True
+					is_zurich_loaded := False									
+				end
+			end
+		end
+
 end -- class TOURISM
