@@ -213,7 +213,14 @@ feature -- Access
 			if a_line /= Void then
 				create Result.make_with_line_and_representation(a_line, internal_map_widget.traffic_lines)			
 			end
-		end			
+		end		
+		
+		
+	special_buidling(a_place: TRAFFIC_PLACE): TOUCH_PLACE is
+			-- Put a building at a special place.			
+		do
+			create Result.make_with_place_and_map_widget(a_place, internal_map_widget.traffic_buildings, internal_map_widget)
+		end
 		
 	line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION] is
 			-- All line sections in map
@@ -226,7 +233,7 @@ feature -- Access
 		do
 			Result := internal_map.lines
 		end
-		
+	
 	buildings: LINKED_LIST [TRAFFIC_BUILDING] is
 			-- All buildings on map.
 		local
