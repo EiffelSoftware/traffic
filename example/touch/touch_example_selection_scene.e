@@ -12,7 +12,7 @@ inherit
 	EM_DRAWABLE_SCENE
 		redefine
 			initialize_scene,
-			handle_outside_event,
+			handle_update_event,
 			make_scene
 		end
 	
@@ -310,7 +310,7 @@ feature -- Scene Initialization
 		end
 		
 feature {NONE} -- Agents, GUI events		
-	handle_outside_event is
+	handle_update_event is
 			-- Used to scroll
 		do
 			if scroll_down.is_down then

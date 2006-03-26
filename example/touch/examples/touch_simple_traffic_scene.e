@@ -11,7 +11,7 @@ inherit
 	EM_DRAWABLE_SCENE
 		redefine
 			initialize_scene,
-			handle_outside_event
+			handle_update_event
 		end
 	
 	TRAFFIC_TYPE_FACTORY   -- Singleton traffic types
@@ -62,13 +62,14 @@ feature -- Initialization
 	make_with_map_file (an_example: TOUCH_EXAMPLE; a_map_file: STRING) is
 			-- 
 		local
-			map_file: TRAFFIC_MAP_FILE
+			map_loader: TRAFFIC_MAP_LOADER
 		do
 			make_scene
 			-- Load `traffic_map'
 			example := an_example
-			create map_file.make_from_file (a_map_file)
-			traffic_map := map_file.traffic_map
+			create map_loader.make (a_map_file)
+			map_loader.load_map
+			traffic_map := map_loader.map
 		ensure
 			traffic_map_not_void: traffic_map /= Void
 		end
@@ -264,7 +265,7 @@ feature {NONE} -- Implementation
 		
 feature {NONE} -- Agents, GUI events
 
-	handle_outside_event is
+	handle_update_event is
 			-- 
 		do
 			if first_loop then

@@ -72,7 +72,7 @@ feature -- Basic operations
 feature {NONE} -- Implementation
 	down: BOOLEAN
 
-	clicked_event: EM_EVENT_TYPE [TUPLE [TOUCH_BUTTON]]
+	clicked_event: EM_EVENT_CHANNEL [TUPLE [TOUCH_BUTTON]]
 	
 	
 	on_button_up (me: EM_MOUSE_EVENT)	is
