@@ -65,6 +65,23 @@
 	</itemizedlist>
 </section>
 
+<section id="city_time">
+	<title>City_Time Documentation</title>
+	<itemizedlist>
+		<listitem>
+			<link url="city_time/user/index.html">User Documentation</link>
+			<para>
+				User documentation of the <projectname>City_Time</projectname> application
+			</para>
+		</listitem>
+		<listitem>
+			<link url="city_time/developer/index.html">Developer Documentation</link>
+			<para>
+				Developer documentation of the <projectname>City_Time</projectname> application
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
 
 <section id="flat_hunt">
 	<title>Flathunt Documentation</title>

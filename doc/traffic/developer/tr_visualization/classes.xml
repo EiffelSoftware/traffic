@@ -74,8 +74,8 @@
     	<title>TRAFFIC_3D_MAP_WIDGET</title>
    		<title>Requirements:</title>
     	<para>
-    		EM_3D_COMPONENT
-			TRAFFIC_3D_CONSTANTS
+			<classname>EM_3D_COMPONENT</classname>
+			<classname>TRAFFIC_3D_CONSTANTS</classname>
     	</para>
     	<title>Description</title>
     	<para>
@@ -123,6 +123,7 @@
    		<title>Requirements:</title>
     	<para>
     		<link url="../classes.html#traffic_building">TRAFFIC_BUILDING</link>
+			<classname>TRAFFIC_3D_CONSTANTS</classname>
     	</para>
     	<title>Description</title>
     	<para>
@@ -165,6 +166,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
    		<title>Requirements:</title>
     	<para>
     		<classname>EM_3D_OBJECT</classname>
+			<classname>TRAFFIC_3D_CONSTANTS</classname>
     	</para>
     	<title>Description</title>
     	<para>
@@ -190,8 +192,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	</para>
     	<title>Description</title>
     	<para>
-			In principle this class is a factory as well. It is used to create ".obj" files. As for now it is not possible to make one factory and make several loads. Therefore, everytime 
-			a 3D object should be created a new factory has to be created too. The feature <featurename>set_em_color</featurename> sets the color of a created object.
+			In principle this class is a factory as well. It is used to create ".obj" files. The feature <featurename>set_em_color</featurename> sets the color of a created object.
 			The feature <featurename>load_file</featurename> is used to load a new file, other than the original feature this feature closes it is opened files after use.
 			The feature <featurename>specify_object</featurename> specifies the object according to the loaded file and the given color.
 		</para>
@@ -207,7 +208,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	<title>TRAFFIC_PLACE_FACTORY</title>
    		<title>Requirements:</title>
     	<para>
-    		None
+    		<classname>EM_3D_OBJECT_FACTORY</classname>
     	</para>
     	<title>Description</title>
     	<para>
@@ -230,7 +231,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	<title>TRAFFIC_PLACE_REPRESENTATION</title>
    		<title>Requirements:</title>
     	<para>
-    		None
+    		<classname>TRAFFIC_3D_CONSTANTS</classname>
     	</para>
     	<title>Description</title>
     	<para>
@@ -249,7 +250,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	<title>TRAFFIC_TRAVELER_REPRESENTATION</title>
    		<title>Requirements:</title>
     	<para>
-    		None
+    		<classname>TRAFFIC_3D_CONSTANTS</classname>
     	</para>
     	<title>Description</title>
     	<para>

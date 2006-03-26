@@ -31,8 +31,8 @@
 		
 		<geant target="${target}" arguments="overview"/>
 		<geant target="${target}" arguments="widgets"/>
-		<geant target="${target}" arguments="travelers"/>
 		<geant target="${target}" arguments="time"/>
+		<geant target="${target}" arguments="travelers"/>
  		<geant target="${target}" arguments="notes"/> 		
         <geant target="${target}" arguments="index"/>
 	</target>

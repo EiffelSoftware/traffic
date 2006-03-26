@@ -27,6 +27,9 @@ The class overviews are sorted in alphabetic ascending order to be able to find 
 				Describes each class of the visualization of the <projectname>Traffic library</projectname> 
 			</para>
 		</listitem>
+		<listitem>
+	        <link url="../index.html">Library Developer Guide</link>
+		</listitem>
 	</itemizedlist>
     </para>
 </chapter>

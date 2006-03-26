@@ -19,10 +19,9 @@
 	<para>
 	The class <classname cluster="tr_traffic.tr_utils.tr_tr_time">TRAFFIC_TIME</classname> is the representation of time in the model. 
 	The time supports starting time, pausing time, resuming time and reseting time. The feature <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">time_count</featurename> counts the time according to the simulated
-	minutes. The functionality of the class EM_TIME_SINGLETON by the feature <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">add_callback_procedure</featurename> which makes it possible not only to call a function
-	every 'delay' time but also a procedure. The feature <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">add_callback_tour</featurename> provides the possibility to handle the tours otherwise because it could be the case
-	that one doesn't want to call the tour in the same frequence as the other procedures. Some generic extension could be thought of so that every procedure can have its one frequency.
-	To start the time just call <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">call_procedures</featurename> or <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">call_tours</featurename> with the time delay you want.
+	minutes. The functionality of the class EM_TIME_SINGLETON is extended by the feature <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">add_callback_procedure</featurename> which makes it possible not only to call functions
+	every 'delay' time but also procedures. The feature <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">add_callback_tour</featurename> provides the possibility to handle the tours separately because it could be the case
+	that one doesn't want to call the tours in the same frequence as the other procedures. Some generic extension could be thought of so that every procedure can have its one frequency.
 	</para>
 </section>
 </chapter>

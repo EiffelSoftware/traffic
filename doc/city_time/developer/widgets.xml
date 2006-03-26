@@ -30,7 +30,7 @@
 	<para>
 	The event handling of this class is very important as it is the link between the user input and the features of the <classname cluster="city_time">CITY_3D_MAP</classname> class that do the necessary 
 	operations such that the visual effects take place.
-	It is important to notice that the instance of the <classname cluster="city_time">CITY_3D_MAP</classname> class doesn't know it's scene and therefore commands are only 
+	It is important to notice that the instance of the <classname cluster="city_time">CITY_3D_MAP</classname> class doesn't know its scene and therefore commands are only 
 	given from the scene to the map. If the map has to process information to the scene, such as the name of a marked point, the scene has to subscribe 
 	to the event handler of the map and query the desired information.
 	</para>
@@ -44,7 +44,7 @@
 	</para>
 	<title>Description</title>
 	<para>
-	This is the main class of the project and has three main tasks. First provides features for 
+	This is the main class of the project and has three main tasks. First it provides features for 
 	parsing the map XML file. Secondly, it is responsible for drawing the whole map with its lines, 
 	places, etc. This includes creating the necessary factories and drawing the map according to 
 	the enabled options. Last, it handles the user input. This means it has event handlers that 
