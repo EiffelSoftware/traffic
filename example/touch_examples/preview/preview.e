@@ -18,7 +18,7 @@ feature	 -- Example
 		do
 			Paris.display
 			
-			Louvre.spotlight			
+--			Louvre.spotlight			
 
 			Line8.highlight_for_5_seconds
 

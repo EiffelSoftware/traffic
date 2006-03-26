@@ -140,39 +140,6 @@ feature -- Options
 			
 		end
 		
-	add_building_at_place(a_place: TRAFFIC_PLACE) is --:TRAFFIC_BUILDING is
-			-- To spotlight a special place. 
-	local
-			building: TRAFFIC_BUILDING
-			building_height: DOUBLE
-			p1,p2,p3,p4: EM_VECTOR_2D
-			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE			
-			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
-	--		building_factory: TRAFFIC_BUILDING_FACTORY
-		do
-			-- make a building at top of position of the place.
-			building_height := 1.5
-			create p1.make (a_place.position.x+0.5, a_place.position.y+1.5)
-			create p2.make (a_place.position.x+0.5, a_place.position.y+0.5)
-			create p3.make (a_place.position.x-0.5, a_place.position.y+0.5)
-			create p4.make (a_place.position.x-0.5, a_place.position.y+1.5)
-			create building.make (p1, p2, p3, p4, building_height, a_place.name)
-			building.set_angle (0)
-			create poly_points.make
-			poly_points.force (p1, 1)
-			poly_points.force (p2, 2)
-			poly_points.force (p3, 3)
-			poly_points.force (p4, 4)
-			create collision_poly.make_from_absolute_list (building.center, poly_points)
-		--	if not has_collision (collision_poly) then
-						building_factory.take_decision (decision_type)
-				add_building (building)
-		--		buildings_polygons.extend(collision_poly)
-
-		--	end
-			draw			
-		end
-		
 --	add_randomly (n: INTEGER) is
 --			-- Randomly add buildings to the list of buildings.
 --		
