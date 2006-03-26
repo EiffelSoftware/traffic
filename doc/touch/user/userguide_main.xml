@@ -31,10 +31,10 @@
     </para>
 
     <para>
-        <image src="image/menu_sm.png"/>
+        <image src="image/touch_preview_window.jpg"/>
     </para>
     <para>
-        <emphasis>Figure 1: Main Scene</emphasis>
+        <emphasis>Figure 1: The Main Window</emphasis>
     </para>
     
 		<section id="application">
@@ -42,13 +42,19 @@
 				How does this application work?
 			</title>
 			<para>
-				On the left side you can see the chapters and their examples. To change 
+				Each chapter respectively each example has its own application. All look almost the same 
+				for except some minor changes to meet the requirements of the individual exercise. 
+				The window has on its right side the control panel where the user can zoom in or zoom out.
+				Dependant on the exercise there are more buttons to click (for example a restart button etc.).
+
+			<--	On the left side you can see the chapters and their examples. To change 
 				between the examples from the book and the exercises use the two buttons 
 				on the bottom left of the screen. Simply click on an example and some 
 				information together with a picture will pop up on the right side. To see the example 
 				in action use the <emphasis>run example</emphasis> button on the right. What
 				happens after you pressed the button depends on the implementation of the 
 				example, but in most of the examples you will get a screen like this    
+			-->
 			</para>
 	    <para>
 	        <image src="image/map_sm.png"/>

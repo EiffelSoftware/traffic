@@ -3,7 +3,7 @@
 <project name="user_guide" default="help">
 
 	<description>
-		description: "User documentation for Touch"
+		description: "User documentation for Touch-Examples"
 		date: "$Date$"
 		revision: "$Revision$"
 	</description>
