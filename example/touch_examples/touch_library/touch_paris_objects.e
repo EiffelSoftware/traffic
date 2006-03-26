@@ -182,5 +182,24 @@ feature  -- Predefined objects (Places)
 		ensure
 			Result_exists: Result /= Void
 		end
-
+		
+	Place_Palais_Royal_du_Louvre: TRAFFIC_PLACE is
+			-- Place Palais Royal Musee du Louvre
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.place ("place Palais Royal Musee du Louvre")
+		ensure
+			Result_exists: Result /= Void
+		end
+		
+	Louvre: TOUCH_PLACE is
+			-- Building at position of Louvre to spotlight
+		require
+			Paris_exists: is_paris_loaded
+		once			
+			Result := Paris.special_buidling (Paris.place ("place Palais Royal Musee du Louvre"))
+		ensure
+			Result_exists: Result /= Void
+		end
 end
