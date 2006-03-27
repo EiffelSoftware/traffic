@@ -43,7 +43,7 @@
 				<link url="#traffic_3d_place_factory">TRAFFIC_3D_PLACE_FACTORY</link>
 			</listitem>
 			<listitem>
-				<link url="#traffic_place_representation">TRAFFIC_PLACE_REPRESENTATION</link>
+				<link url="#traffic_3d_place_representation">TRAFFIC_3D_PLACE_REPRESENTATION</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_traveler_representation">TRAFFIC_TRAVELER_REPRESENTATION</link>
@@ -227,8 +227,8 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	</para>
     	<toplink/>
     </section>
-<section id="traffic_place_representation">
-    	<title>TRAFFIC_PLACE_REPRESENTATION</title>
+<section id="traffic_3d_place_representation">
+    	<title>TRAFFIC_3D_PLACE_REPRESENTATION</title>
    		<title>Requirements:</title>
     	<para>
     		<classname>TRAFFIC_3D_CONSTANTS</classname>
@@ -241,7 +241,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	<title>Class overview</title>
     	<para>
     	<para>
-    		<image src="image/traffic_place_representation.png"/>
+    		<image src="image/traffic_3d_place_representation.png"/>
     	</para>
     	</para>
     	<toplink/>

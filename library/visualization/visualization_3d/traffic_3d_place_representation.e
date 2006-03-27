@@ -4,7 +4,7 @@ indexing
 	revision: "0.1"
 
 class
-	TRAFFIC_PLACE_REPRESENTATION
+	TRAFFIC_3D_PLACE_REPRESENTATION
 
 inherit
 	
@@ -313,4 +313,4 @@ feature {NONE} -- Attributes
 	current_place: TRAFFIC_PLACE
 			-- Place currently being rendered
 
-end -- class TRAFFIC_PLACE_REPRESENTATION
+end

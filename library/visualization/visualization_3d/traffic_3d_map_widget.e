@@ -927,7 +927,7 @@ feature -- Representations
 	traffic_lines: TRAFFIC_3D_LINE_REPRESENTATION
 		-- container for the lines
 		
-	traffic_places: TRAFFIC_PLACE_REPRESENTATION
+	traffic_places: TRAFFIC_3D_PLACE_REPRESENTATION
 		-- container for the places.
 		
 	traffic_buildings: TRAFFIC_3D_BUILDING_REPRESENTATION
