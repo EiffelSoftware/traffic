@@ -25,7 +25,7 @@
 				<link url="#traffic_3d_map_widget">TRAFFIC_3D_MAP_WIDGET</link>
 			</listitem>
 			<listitem>
-				<link url="#traffic_building_factory">TRAFFIC_BUILDING_FACTORY</link>
+				<link url="#traffic_3d_building_factory">TRAFFIC_3D_BUILDING_FACTORY</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_3d_building_representation">TRAFFIC_3D_BUILDING_REPRESENTATION</link>
@@ -100,20 +100,20 @@
     	</para>
     	<toplink/>
     </section>
-    <section id="traffic_building_factory">
-    	<title>TRAFFIC_BUILDING_FACTORY</title>
+    <section id="traffic_3d_building_factory">
+    	<title>TRAFFIC_3D_BUILDING_FACTORY</title>
    		<title>Requirements:</title>
     	<para>
     		None
     	</para>
     	<title>Description</title>
     	<para>
-			The class <classname>TRAFFIC_BUILDING_FACTORY</classname> is a factory for the 3D objects which represent the buildings on the map. The interface is for each of the factories the same: With the features <featurename>add_gauger</featurename> and <featurename>remove_gauger</featurename> one can handle procedures for decisions. These procedures can then be called through the feature <featurename>take_decision</featurename> which calls the right gauger and saves the decision in the string <featurename>decision</featurename>. For creating a  representation of the built object one can add specific procedures through the features <featurename>add_building_type</featurename> and remove them by calling <featurename>remove_building_type</featurename>. The last two features are <featurename>specify_object</featurename> which takes the right building type according to the decision and <featurename>create_object</featurename> which is inherited from <classname>EM_3D_OBJECT_FACTORY</classname> and returns the created object.
+			The class <classname>TRAFFIC_3D_BUILDING_FACTORY</classname> is a factory for the 3D objects which represent the buildings on the map. The interface is for each of the factories the same: With the features <featurename>add_gauger</featurename> and <featurename>remove_gauger</featurename> one can handle procedures for decisions. These procedures can then be called through the feature <featurename>take_decision</featurename> which calls the right gauger and saves the decision in the string <featurename>decision</featurename>. For creating a  representation of the built object one can add specific procedures through the features <featurename>add_building_type</featurename> and remove them by calling <featurename>remove_building_type</featurename>. The last two features are <featurename>specify_object</featurename> which takes the right building type according to the decision and <featurename>create_object</featurename> which is inherited from <classname>EM_3D_OBJECT_FACTORY</classname> and returns the created object.
     	</para>
     	<title>Class overview</title>
     	<para>
     	<para>
-    		<image src="image/traffic_building_factory.png"/>
+    		<image src="image/traffic_3d_building_factory.png"/>
     	</para>
     	</para>
     	<toplink/>
