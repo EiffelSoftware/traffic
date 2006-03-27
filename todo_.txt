@@ -13,13 +13,11 @@ all:
 - randomize buildings along lines more
 - randomize look and feel of buildings
 - improve *.obj file loading to be faster
-- create icon for traffic apps
 - check whether all constants are constants
 - improve path algorithm
 - improve drawing of shortest_path (city 3d)
 - improve console window to be scrollable and flashier
 - improve error handling and messages
-- fix flathunt
 
 
 library:
