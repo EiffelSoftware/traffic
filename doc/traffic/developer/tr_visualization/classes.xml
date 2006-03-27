@@ -34,7 +34,7 @@
 				<link url="#traffic_3d_line_factory">TRAFFIC_3D_LINE_FACTORY</link>
 			</listitem>
 			<listitem>
-				<link url="#traffic_line_representation">TRAFFIC_LINE_REPRESENTATION</link>
+				<link url="#traffic_3d_line_representation">TRAFFIC_3D_LINE_REPRESENTATION</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_object_loader">TRAFFIC_OBJECT_LOADER</link>
@@ -161,8 +161,8 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	</para>
     	<toplink/>
     </section>
-<section id="traffic_line_representation">
-    	<title>TRAFFIC_LINE_REPRESENTATION</title>
+<section id="traffic_3d_line_representation">
+    	<title>TRAFFIC_3D_LINE_REPRESENTATION</title>
    		<title>Requirements:</title>
     	<para>
     		<classname>EM_3D_OBJECT</classname>
@@ -170,7 +170,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	</para>
     	<title>Description</title>
     	<para>
-			The class <classname>TRAFFIC_LINE_REPRESENTATION</classname> is a container for all traffic line 3D objects. As expected there is a feature <featurename>draw</featurename> to draw all objects
+			The class <classname>TRAFFIC_3D_LINE_REPRESENTATION</classname> is a container for all traffic line 3D objects. As expected there is a feature <featurename>draw</featurename> to draw all objects
 			in the container. If a shortest line is added by <featurename>add_shortest_line</featurename> and not removed through <featurename>remove_shortest_line</featurename> the feature
 			<featurename>draw_shortest_line</featurename> draws it. Lines can be highlighted or un-highlighted by calling the features
 			<featurename>highlight_single_line</featurename>, <featurename>un_highlight_single_line</featurename> and similar ones. With the feature <featurename>add_lines</featurename> all lines
@@ -179,7 +179,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	<title>Class overview</title>
     	<para>
     	<para>
-    		<image src="image/traffic_line_representation.png"/>
+    		<image src="image/traffic_3d_line_representation.png"/>
     	</para>
     	</para>
     	<toplink/>

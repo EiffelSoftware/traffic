@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision: 1.90 $"
 
 class
-	TRAFFIC_LINE_REPRESENTATION
+	TRAFFIC_3D_LINE_REPRESENTATION
 inherit
 	
 	TRAFFIC_3D_CONSTANTS

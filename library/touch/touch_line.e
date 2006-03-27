@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that forward calls to traffic_line to traffic_line_representation"
+	description: "Objects that forward calls to traffic_line to traffic_3d_line_representation"
 	date: "$14.02.2006$"
 	revision: "$Revision$"
 
@@ -16,7 +16,7 @@ create make_with_line_and_representation
 	
 feature -- Initialization
 	
-	make_with_line_and_representation(a_line: TRAFFIC_LINE; a_rep: TRAFFIC_LINE_REPRESENTATION) is 
+	make_with_line_and_representation(a_line: TRAFFIC_LINE; a_rep: TRAFFIC_3D_LINE_REPRESENTATION) is 
 			-- Set `internal_line' to `a_line' (line for which this proxy is built) and allow access via `a_rep' to the visuals of the line.
 		require
 			a_line /= Void
@@ -283,7 +283,7 @@ feature {NONE} -- Implementation
 	internal_line: TRAFFIC_LINE
 			-- Traffic line that gets all the calls
 
-	internal_rep: TRAFFIC_LINE_REPRESENTATION
+	internal_rep: TRAFFIC_3D_LINE_REPRESENTATION
 			-- Visualization of `internal_line' that gets calls concerning visualization changes
 		
 invariant

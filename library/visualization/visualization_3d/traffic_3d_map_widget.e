@@ -924,7 +924,7 @@ feature -- Representations
 	traffic_traveler: TRAFFIC_TRAVELER_REPRESENTATION
 		-- container for all travelers.
 	
-	traffic_lines: TRAFFIC_LINE_REPRESENTATION
+	traffic_lines: TRAFFIC_3D_LINE_REPRESENTATION
 		-- container for the lines
 		
 	traffic_places: TRAFFIC_PLACE_REPRESENTATION
