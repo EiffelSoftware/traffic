@@ -1,6 +1,5 @@
 indexing
 	description: "Buildings for the traffic library"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

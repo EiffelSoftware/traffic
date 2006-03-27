@@ -1,6 +1,5 @@
 indexing
 	description: "Public transportation line where objects of a given type move along."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -404,4 +403,4 @@ invariant
 	one_direction_exists_implies_places_in_places_one_direction: one_direction_exists implies places_one_direction.count >= 2 -- One direction exists if at least two places in places one direction.
 	other_direction_exists_implies_places_in_places_other_direction: other_direction_exists implies places_other_direction.count >= 2 -- Other direction exists if at least two places in places other direction.
 
-end -- class TRAFFIC_LINE
+end

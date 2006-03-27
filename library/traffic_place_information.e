@@ -1,6 +1,5 @@
 indexing
 	description: "Additional information on a place."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -107,4 +106,4 @@ feature -- Basic operation
 invariant
 	pictures_exists: pictures /= Void
 
-end -- class TRAFFIC_PLACE_INFORMATION
+end

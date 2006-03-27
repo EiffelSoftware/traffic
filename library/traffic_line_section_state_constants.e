@@ -1,6 +1,5 @@
 indexing
 	description: "State constants definition."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -46,4 +45,4 @@ feature -- Basic operation
 			end
 		end
 		
-end -- class TRAFFIC_LINE_SECTION_STATE_CONSTANTS
+end

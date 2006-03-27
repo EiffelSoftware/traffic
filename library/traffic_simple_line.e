@@ -4,7 +4,6 @@ indexing
 					TODO: The cursor does not work, if there's only one place, because the first
 					place is not in the 'places_one_direction' nor in the 'places_other_direction'.
 					]"
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -402,4 +401,4 @@ invariant
 
 	stations_at_right_place: places_one_direction.count >= 2 implies one_end = i_th(1) and other_end = i_th(count)
 
-end -- class TRAFFIC_SIMPLE_LINE
+end

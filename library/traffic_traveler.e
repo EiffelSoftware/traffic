@@ -1,6 +1,5 @@
 indexing
 	description: "Travelers on the map"
-	author: "Florian Geldmacher"
 	date: "9.2.2006"
 	revision: "$Revision$"
 
@@ -402,4 +401,4 @@ invariant
 	position /= Void
 	speed >= 0
 
-end -- class TRAFFIC_TRAVELER
+end

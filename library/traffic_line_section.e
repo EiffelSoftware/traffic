@@ -1,6 +1,5 @@
 indexing
 	description: "Line section of line from one place to another."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -195,4 +194,4 @@ invariant
 	state_set: state /= Void -- State exists.
 	type_set: type /= Void -- Type exists.
 
-end -- class TRAFFIC_LINE_SECTION
+end

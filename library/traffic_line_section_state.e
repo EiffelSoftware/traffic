@@ -1,6 +1,5 @@
 indexing
 	description: "State of line section."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -54,4 +53,4 @@ feature -- Basic operation
 invariant
 	value_valid: is_valid_state_value (value) -- Valid state value.
 
-end -- class TRAFFIC_LINE_SECTION_STATE
+end

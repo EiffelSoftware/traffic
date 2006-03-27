@@ -1,6 +1,5 @@
 indexing
 	description: "Route on a map visiting different places of interest."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -232,4 +231,4 @@ feature {NONE} -- Implementation
 invariant
 	map_exists: map /= Void -- map exists
 
-end -- class TRAFFIC_ROUTE
+end

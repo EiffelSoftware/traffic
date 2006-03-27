@@ -1,6 +1,5 @@
 indexing
 	description: "Place."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -126,4 +125,4 @@ invariant
 	name_not_empty: not name.is_empty -- Name not empty.
 	position_not_void: position /= Void -- Position exists.
 
-end -- class TRAFFIC_PLACE
+end

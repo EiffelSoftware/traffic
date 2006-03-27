@@ -602,4 +602,4 @@ invariant
 	line_sections_not_void: internal_line_sections /= Void -- Line sections exist
 	travelers_not_void: internal_travelers /= Void -- Travelers exist
 
-end -- class TRAFFIC_MAP
+end

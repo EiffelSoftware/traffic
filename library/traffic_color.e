@@ -1,6 +1,5 @@
 indexing
 	description: "Color."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -99,4 +98,4 @@ invariant
 	green_valid: is_valid_rgb_part (green)
 	blue_valid: is_valid_rgb_part (blue)
 
-end -- class TRAFFIC_COLOR
+end

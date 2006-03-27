@@ -1,6 +1,5 @@
 indexing
 	description: "Objects that move along a line"
-	author: "Florian Geldmacher"
 	date: "$Date$"
 	revision: "$Revision$"
 
