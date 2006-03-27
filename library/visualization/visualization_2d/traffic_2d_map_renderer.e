@@ -5,7 +5,6 @@ indexing
 				(maybe create something like TRAFFIC_PLACE_VIEW instead of EM_RECTANGLE / EM_POLYLINE ??? etc. ....)	
 	
 				]"
-	author: "Rolf Bruderer"
 	date: "2005/03/15"
 	revision: "0.1"
 

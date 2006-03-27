@@ -1,6 +1,5 @@
 indexing
 	description: "Rail type."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,4 +20,4 @@ feature -- Creation
 			name := "rail"
 		end
 		
-end -- class TRAFFIC_TYPE_RAIL
+end

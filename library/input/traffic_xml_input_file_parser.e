@@ -1,8 +1,6 @@
 indexing
 	description: "Parser for XML input files."
 
-	status:	"See notice at end of class"
-	author: "Patrick Schoenbach, Michela Pedroni, Sibylle Aregger"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -183,13 +181,3 @@ invariant
 
 end
 
---|--------------------------------------------------------
---| This file is Copyright (C) 2003 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Patrick Schoenbach <pschoenb@gmx.de>
---|		Michela Pedroni <pedronim@inf.ethz.ch>
---|
---|--------------------------------------------------------

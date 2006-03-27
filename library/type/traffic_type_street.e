@@ -1,6 +1,5 @@
 indexing
 	description: "Street type."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,4 +20,4 @@ feature -- Creation
 			name := "street"
 		end
 
-end -- class TRAFFIC_TYPE_STREET
+end

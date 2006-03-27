@@ -1,6 +1,5 @@
 indexing
 	description: "Objects that represent the travelers on the map"
-	author: "Florian Geldmacher"
 	date: "$Date$"
 	revision: "$Revision$"
 

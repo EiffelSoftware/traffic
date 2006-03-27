@@ -465,4 +465,4 @@ feature -- Decision procedures
 			gl_end_external	
 		end
 		
-end -- class TRAFFIC_BUILDING_EWER
+end

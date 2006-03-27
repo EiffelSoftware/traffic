@@ -1,6 +1,5 @@
 indexing
 	description: "Factory for traffic type."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 

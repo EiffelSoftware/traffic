@@ -1,8 +1,6 @@
 indexing
 	description: "XML processors for <line section> nodes."
 
-	status:	"See notice at end of class"
-	author: "Patrick Schoenbach, Michela Pedroni, Sibylle Aregger"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -207,15 +205,4 @@ feature -- Basic operations
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			-- Polypoints of this link
 		
-end -- class TRAFFIC_LINE_SECTION_NODE_PROCESSOR
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2003 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Patrick Schoenbach <pschoenb@gmx.de>
---|		Michela Pedroni <pedronim@inf.ethz.ch>
---|
---|--------------------------------------------------------
+end

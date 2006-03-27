@@ -1,6 +1,5 @@
 indexing
 	description: "Factory for traffic elements like TRAFFIC_PLACE, TRAFFIC_LINE etc."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 

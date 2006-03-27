@@ -1,8 +1,6 @@
 indexing
 	description: "Shared registry of known XML node processors."
 
-	status:	"See notice at end of class"
-	author: "Patrick Schoenbach, Michela Pedroni, Sibylle Aregger"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -188,14 +186,3 @@ feature {NONE} -- Implementation
 		end
 		
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2003 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Patrick Schoenbach <pschoenb@gmx.de>
---|		Michela Pedroni <pedronim@inf.ethz.ch>
---|
---|--------------------------------------------------------

@@ -183,5 +183,5 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 		
-		end
+end
 		

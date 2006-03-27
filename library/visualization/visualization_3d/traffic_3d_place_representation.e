@@ -1,7 +1,7 @@
 indexing
 	description: "Representation for places, contains them and puts them on the map"
-	date: "15.12.2005"
-	revision: "0.1"
+	date: "$Date: 2005/09/26 11:22:45 $"
+	revision: "$Revision: 1.23 $"
 
 class
 	TRAFFIC_3D_PLACE_REPRESENTATION

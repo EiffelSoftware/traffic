@@ -1,7 +1,6 @@
 indexing
 	description: "XML processors for <places> elements."
 		 
-	author: "Michela Pedroni, Susanne Cech, Sibylle Aregger"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -36,14 +35,4 @@ feature -- Basic operations
 			end
 		end
 
-end -- class TRAFFIC_PLACES_NODE_PROCESSOR
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---|
---|--------------------------------------------------------
+end

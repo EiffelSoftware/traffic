@@ -105,5 +105,5 @@ feature {NONE} -- Implementation
 invariant
 	map_set: map /= Void
 
-end -- class TRAFFIC_PLACE
+end
 

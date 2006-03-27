@@ -1,8 +1,6 @@
 indexing
 	description: "XML processors for <point> elements. Example: <point x="3.2" y="1.7">."
 
-	status:	"See notice at end of class"
-	author: "Patrick Schoenbach, Michela Pedroni, Sibylle Aregger"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -60,14 +58,4 @@ feature -- Basic operations
 			end
 		end
 
-end -- class TRAFFIC_POINT_NODE_PROCESSOR
-
---|--------------------------------------------------------
---| This file is Copyright (p) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---|
---|--------------------------------------------------------
+end

@@ -1,6 +1,5 @@
 indexing
 	description: "XML processors for <buildings> nodes."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -4,7 +4,6 @@ indexing
 			XML processors for <station> nodes.
 		 ]"
 		 
-	author: "Michela Pedroni, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -52,13 +51,3 @@ feature -- Basic operations
 		end
 
 end
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---|
---|--------------------------------------------------------

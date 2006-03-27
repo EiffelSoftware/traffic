@@ -1,6 +1,5 @@
 indexing
 	description: "This object represent the time in the city model"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

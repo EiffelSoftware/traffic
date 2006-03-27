@@ -86,4 +86,4 @@ feature -- Constants
 			Result := (max_distance - 2*distance)*(max_building_height/max_distance)
 		end
 
-end -- class TRAFFIC_3D_CONSTANTS
+end

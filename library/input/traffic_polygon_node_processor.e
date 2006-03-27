@@ -4,8 +4,6 @@ indexing
 			XML processors for <polygon> elements.
 		 ]"
 
-	status:	"See notice at end of class"
-	author: "Patrick Schoenbach, Michela Pedroni"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -132,14 +130,4 @@ feature {NONE} -- Implementation
 	color: EV_COLOR
 			-- Color of the polygon
 
-end -- class TRAFFIC_POLYGON_NODE_PROCESSOR
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---|
---|--------------------------------------------------------
+end

@@ -1,6 +1,5 @@
 indexing
 	description: "Types of objects."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -38,4 +37,4 @@ feature -- Comparison
 invariant
 	name_not_empty: not name.is_empty
 
-end -- class TRAFFIC_TYPE
+end

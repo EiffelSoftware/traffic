@@ -95,4 +95,4 @@ feature -- Access (Paris)
 			end
 		end
 
-end -- class TOURISM
+end

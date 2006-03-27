@@ -1,8 +1,7 @@
 indexing
 	description: "Factory for places"
-	author: "Florian Geldmacher"
-	date: "12.12.2006"
-	revision: "0.1"
+	date: "$Date: 2005/09/26 11:22:45 $"
+	revision: "$Revision: 1.23 $"
 
 class
 	TRAFFIC_3D_PLACE_FACTORY

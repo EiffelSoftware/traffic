@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Loader for 3d-objects stored in a *.obj file format"
 	date: "$Date$"
 	revision: "$Revision$"
 

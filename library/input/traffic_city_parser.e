@@ -1,7 +1,5 @@
 indexing
 	description: "XML parser for the traffic map data."
-	status:	"See notice at end of class"
-	author: "Patrick Schoenbach, Michela Pedroni, Sibylle Aregger"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -70,15 +68,4 @@ invariant
 	can_process_definition: can_process = (is_parsed and 
 			has_processor (root_element.name))
 
-end -- class TRAFFIC_MAP_PARSER
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2003 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Patrick Schoenbach <pschoenb@gmx.de>
---|		Michela Pedroni <pedronim@inf.ethz.ch>
---|
---|--------------------------------------------------------
+end

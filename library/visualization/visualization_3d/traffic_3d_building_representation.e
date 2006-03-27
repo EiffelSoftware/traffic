@@ -1,6 +1,5 @@
 indexing
 	description: "Object that represents traffic buildings"
-	author: "Fabian Wüest"
 	date: "$Date$"
 	revision: "$Revision$"
 

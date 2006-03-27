@@ -956,4 +956,4 @@ invariant
 	number_of_buildings_valid: number_of_buildings >= 0
 	traffic_time /= Void
 
-end -- class TRAFFIC_3D_MAP_WIDGET
+end

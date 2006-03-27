@@ -1,7 +1,6 @@
 indexing
 	description: "XML processors for <color> elements."
 					
-	author: "Marcel Kessler & Michela Pedroni, Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -84,14 +83,4 @@ feature {NONE} -- Implementation
 			Result_exists: Result /= Void
 		end
 
-end -- class TRAFFIC_COLOR_NODE_PROCESSOR
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---|
---|--------------------------------------------------------
+end

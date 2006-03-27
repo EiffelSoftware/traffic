@@ -1,8 +1,6 @@
 indexing
 	description: "Interface for error constant classes."
 
-	status:	"See notice at end of class"
-	author: "Patrick Schoenbach, Michela Pedroni, Sibylle Aregger"
 	date: "$Date$"
 	revision: "$Revision$"
 

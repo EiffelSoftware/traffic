@@ -1,6 +1,5 @@
 indexing
 	description: "Bus type."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,4 +20,4 @@ feature -- Creation
 			name := "bus"
 		end
 	
-end -- class TRAFFIC_TYPE_BUS
+end

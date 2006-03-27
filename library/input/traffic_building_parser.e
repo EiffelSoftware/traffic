@@ -1,6 +1,5 @@
 indexing
 	description: "Parser for XML building files"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 

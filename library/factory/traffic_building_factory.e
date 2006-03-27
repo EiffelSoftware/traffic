@@ -1,6 +1,5 @@
 indexing
 	description: "Factory for TRAFFIC_BUILDINGS"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision"
 

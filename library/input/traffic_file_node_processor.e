@@ -1,8 +1,6 @@
 indexing
 	description: "XML processors for background <file> elements."
 
-	status:	"See notice at end of class"
-	author: "Marcel Kessler & Michela Pedroni, Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -46,14 +44,4 @@ feature -- Basic operations
 	file: STRING
 			-- String in which the filename is stored
 
-end -- class TRAFFIC_FILE_NODE_PROCESSOR
-
---|--------------------------------------------------------
---| This file is Copyright (C) 2004 by ETH Zurich.
---|
---| For questions, comments, additions or suggestions on
---| how to improve this package, please write to:
---|
---|     Michela Pedroni <michela.pedroni@inf.ethz.ch>
---|
---|--------------------------------------------------------
+end

@@ -1,6 +1,5 @@
 indexing
 	description: "Tram type."
-	author: "Sibylle Aregger, ETH Zurich"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -21,4 +20,4 @@ feature -- Creation
 			name := "tram"
 		end
 
-end -- class TRAFFIC_TYPE_TRAM
+end

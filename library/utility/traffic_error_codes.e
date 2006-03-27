@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Error codes that may occur in Traffic"
 	date: "$Date$"
 	revision: "$Revision$"
 
