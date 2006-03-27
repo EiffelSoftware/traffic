@@ -402,7 +402,7 @@ feature {NONE} -- Implementation
 		require
 			traffic_map_not_void: traffic_map /= Void
 		local
-			tmp_place_renderer: TRAFFIC_PLACE_RENDERER
+			tmp_place_renderer: TRAFFIC_2D_PLACE_RENDERER
 		do			
 			create big_map_widget.make_with_map (map_area_width, map_area_height, traffic_map)
 			big_map_widget.set_x_y (Margin, Margin)
@@ -429,7 +429,7 @@ feature {NONE} -- Implementation
 		require
 			traffic_map_not_void: traffic_map /= Void
 		local
-			tmp_place_renderer: TRAFFIC_PLACE_RENDERER
+			tmp_place_renderer: TRAFFIC_2D_PLACE_RENDERER
 		do	
 			create little_map_widget.make_with_map (Window_width - Map_area_width - 3 * Margin , Window_width - Map_area_width - 3 * Margin, traffic_map)
 			little_map_widget.set_x_y (map_area_width + 2 * margin, margin)

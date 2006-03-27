@@ -227,7 +227,7 @@ feature {NONE} -- Implementation
 	unmark_possible_moves is
 			-- Remove marking of possible moves.	
 		local
-			place_renderer: TRAFFIC_PLACE_RENDERER
+			place_renderer: TRAFFIC_2D_PLACE_RENDERER
 		do
 			if player.possible_moves /= Void then
 

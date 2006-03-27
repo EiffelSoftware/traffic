@@ -42,7 +42,7 @@ feature -- Access
 	line_section_renderer: TRAFFIC_2D_LINE_SECTION_RENDERER
 			--standard renderer for the TRAFFIC_LINE_SECTIONs
 			
-	place_renderer: TRAFFIC_PLACE_RENDERER
+	place_renderer: TRAFFIC_2D_PLACE_RENDERER
 			--standard renderer for the TRAFFIC_PLACEs
 			
 	background_color: EM_COLOR

@@ -7,7 +7,7 @@ indexing
 	revision: "1.0"
 
 class
-	TRAFFIC_PLACE_RENDERER
+	TRAFFIC_2D_PLACE_RENDERER
 		inherit
 			TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_PLACE]
 			redefine
