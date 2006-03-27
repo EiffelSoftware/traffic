@@ -50,7 +50,7 @@ feature -- Initialization
 			widget_options.disable_transparency_refresh
 			load_eclipse_theme
 			
-			set_scene (create {CITY_3D_SCENE}.make)
+			set_scene (create {CITY_TIME_SCENE}.make)
 			launch
 			full_collect
 		end

@@ -627,7 +627,7 @@ feature {NONE} -- Implementation
 	loaded_file_name: STRING
 			-- Name of the currently loaded 
 
-	map: CITY_3D_MAP
+	map: CITY_3D_MAP_WIDGET
 			-- The 3 dimensional representation of the map
 			
 	number_of_buildings: INTEGER

@@ -3,7 +3,7 @@ indexing
 	date: "$Date: 2005/12/22 10:48:08 $"
 	revision: "$Revision: 1.90 $"
 
-class CITY_3D_MAP
+class CITY_TIME_MAP_WIDGET
 	
 inherit
 	

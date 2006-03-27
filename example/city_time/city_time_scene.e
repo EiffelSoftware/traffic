@@ -3,7 +3,7 @@ indexing
 	date: "$Date: 2006/01/09 12:23:15 $"
 	revision: "$Revision: 1.56 $"
 
-class CITY_3D_SCENE
+class CITY_TIME_SCENE
 	
 inherit
 	
@@ -337,7 +337,7 @@ feature {NONE} -- Implementation
 	loaded_file_name: STRING
 			-- Name of the currently loaded
 
-	map: CITY_3D_MAP
+	map: CITY_TIME_MAP_WIDGET
 			-- The 3 dimensional representation of the map
 	
 	simulated_time: INTEGER
