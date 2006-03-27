@@ -8,7 +8,7 @@ indexing
 obsolete class
 	TRAFFIC_LINE_RENDERER
 		inherit
-			TRAFFIC_ITEM_RENDERER [EM_DRAWABLE]
+			TRAFFIC_2D_ITEM_RENDERER [EM_DRAWABLE]
 			redefine
 				render,
 				render_type

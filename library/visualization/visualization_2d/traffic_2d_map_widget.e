@@ -80,7 +80,7 @@ feature -- Status change
 
 feature -- Status - Places
 
-	set_default_place_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]) is
+	set_default_place_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_PLACE]) is
 			-- 
 		require
 			a_renderer_not_void: a_renderer /= Void		
@@ -89,7 +89,7 @@ feature -- Status - Places
 			place_drawables.render
 		end
 		
-	set_place_special_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]; a_place: TRAFFIC_PLACE) is
+	set_place_special_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_PLACE]; a_place: TRAFFIC_PLACE) is
 		-- set a proprietary renderer for a place
 		-- does not re-render the scene. call render to see the changes
 		require
@@ -108,7 +108,7 @@ feature -- Status - Places
 		end
 		
 feature -- Status - Line_Sections
-	set_default_line_section_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]) is
+	set_default_line_section_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_SECTION]) is
 			-- set new default renderer for the line_sections
 		require
 			a_renderer_not_void: a_renderer /= Void		
@@ -117,7 +117,7 @@ feature -- Status - Line_Sections
 			line_section_drawables.render
 		end
 
-	set_line_section_special_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]; a_line_section: TRAFFIC_LINE_SECTION) is
+	set_line_section_special_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_SECTION]; a_line_section: TRAFFIC_LINE_SECTION) is
 		--set a proprietary renderer for a line_section, if it exists
 		--does not re-render the scene. call render to see the changes
 		require
@@ -135,7 +135,7 @@ feature -- Status - Line_Sections
 			line_section_drawables.reset_renderer_for_item (a_line_section)
 		end	
 		
-	set_line_special_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [TRAFFIC_LINE_SECTION]; a_line: TRAFFIC_LINE) is
+	set_line_special_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_SECTION]; a_line: TRAFFIC_LINE) is
 		--set a proprietary renderer for a line, if it exists
 		--does not re-render the scene. call render to see the changes
 		require

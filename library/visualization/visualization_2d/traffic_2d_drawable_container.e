@@ -1,7 +1,7 @@
 indexing
 	description: "[		
 						Container which contains drawable objects.
-						Needs some TRAFFIC_ITEM_RENDERER's to render the map model
+						Needs some TRAFFIC_2D_ITEM_RENDERER's to render the map model
 						element items (ELEMENT) to appropriate drawable objects (EM_DRAWABLE) 
 						for drawing them. Use `set_renderer_for_item' to customize the renderer used 
 						to render an item.
@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			create mouse_button_up_on_map_item_event
 		end	
 		
-	make_with_map_and_default_renderer (a_map: TRAFFIC_MAP; a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]) is
+	make_with_map_and_default_renderer (a_map: TRAFFIC_MAP; a_renderer: TRAFFIC_2D_ITEM_RENDERER [ELEMENT]) is
 			-- Initialize with `a_map' to visualize.
 		require
 			a_list_not_void: a_map /= Void
@@ -71,7 +71,7 @@ feature -- Access
 		end		
 		
 feature -- Status setting
-	set_default_renderer (a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]) is
+	set_default_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [ELEMENT]) is
 			-- Set 'default_renderer'
 		require
 			a_renderer_not_null: a_renderer /= Void
@@ -79,7 +79,7 @@ feature -- Status setting
 			default_renderer := a_renderer	
 		end
 		
-	set_renderer_for_item (a_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]; an_item: ELEMENT) is
+	set_renderer_for_item (a_renderer: TRAFFIC_2D_ITEM_RENDERER [ELEMENT]; an_item: ELEMENT) is
 			-- Set `a_renderer' as renderer for item at position `a_index'
 		require
 			a_renderer_not_null: a_renderer /= Void
@@ -291,10 +291,10 @@ feature {NONE} -- Implementation
 
 
 
-	default_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]
+	default_renderer: TRAFFIC_2D_ITEM_RENDERER [ELEMENT]
 	-- Renderer used to render an item
 				
-	item_renderers: DS_HASH_TABLE [TRAFFIC_ITEM_RENDERER [ELEMENT], ELEMENT]
+	item_renderers: DS_HASH_TABLE [TRAFFIC_2D_ITEM_RENDERER [ELEMENT], ELEMENT]
 			-- Renderers used to render items that use a proprietary renderer
 			
 	item_views: DS_HASH_TABLE [EM_DRAWABLE, ELEMENT]
@@ -310,7 +310,7 @@ feature {NONE} -- Implementation
 		require
 			an_element_exists: an_element /= Void
 		local
-			item_renderer: TRAFFIC_ITEM_RENDERER [ELEMENT]
+			item_renderer: TRAFFIC_2D_ITEM_RENDERER [ELEMENT]
 			view: EM_DRAWABLE
 		do
 			--Check for specialized renderer for this item

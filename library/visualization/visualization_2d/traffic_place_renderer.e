@@ -9,7 +9,7 @@ indexing
 class
 	TRAFFIC_PLACE_RENDERER
 		inherit
-			TRAFFIC_ITEM_RENDERER [TRAFFIC_PLACE]
+			TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_PLACE]
 			redefine
 				render
 			end

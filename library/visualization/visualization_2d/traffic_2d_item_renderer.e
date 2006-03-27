@@ -7,7 +7,7 @@ indexing
 	revision: 1.0
 
 deferred class
-	TRAFFIC_ITEM_RENDERER [ITEM -> HASHABLE]
+	TRAFFIC_2D_ITEM_RENDERER [ITEM -> HASHABLE]
 
 feature -- Basic operations
 	render(an_object: ITEM ): EM_DRAWABLE is
@@ -17,4 +17,4 @@ feature -- Basic operations
 		deferred		
 		end
 		
-end -- class TRAFFIC_ITEM_RENDERER
+end
