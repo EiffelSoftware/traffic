@@ -12,7 +12,7 @@ indexing
 
 
 obsolete class
-	TRAFFIC_MAP_RENDERER
+	TRAFFIC_2D_MAP_RENDERER
 	
 create 
 	make_with_map
@@ -176,4 +176,4 @@ feature {NONE} -- Rendering	Implementation
 			
 		end		
 
-end -- class TRAFFIC_MAP_RENDERER
+end

@@ -1,5 +1,5 @@
 indexing
-	description: "Map widget to visualize a TRAFFIC_MAP with TRAFFIC_MAP_RENDERER."
+	description: "Map widget to visualize a TRAFFIC_MAP with TRAFFIC_2D_MAP_RENDERER."
 	date: "2005/08/31"
 	revision: "1.1"
 
