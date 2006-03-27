@@ -10,11 +10,11 @@
     revision: "$Revision$"
   </description>
 
-  <cluster name="traffic" location="../../library" relative="true" prefix="tr_">
+  <cluster name="traffic" location="../../library" relative="true">
   	<option if="${DEVELOP}">
   		<option name="assertion" value="all"/>
    	</option>
-    <cluster name="util">
+    <cluster name="utility" prefix="traffic_">
     	<option if="${DEVELOP}">
     		<option name="assertion" value="all"/>
     	</option>
@@ -62,11 +62,6 @@
 		    		<option name="assertion" value="all"/>
 		    	</option>        
         </cluster>
-	  <cluster name="tr_time">
-		    	<option if="${DEVELOP}">
-		    		<option name="assertion" value="all"/>
-		    	</option>        
-        </cluster>	
         <cluster name="tree">
 		    	<option if="${DEVELOP}">
 		    		<option name="assertion" value="all"/>
@@ -78,7 +73,7 @@
 		    	</option>
         </cluster>
     	</cluster>
-		<cluster name="tr_gl_tools">
+		<cluster name="gl_tools">
 				<option if="${DEVELOP}">
 		    		<option name="assertion" value="all"/>
 		    	</option>
@@ -88,12 +83,12 @@
     	<option if="${DEVELOP}">
     		<option name="assertion" value="all"/>
     	</option>
-		<cluster name="tr_2d_visualization">
+		<cluster name="visualization_2d">
     		<option if="${DEVELOP}">
     			<option name="assertion" value="all"/>
     		</option>
 		</cluster>
-		<cluster name="tr_3d_visualization">
+		<cluster name="visualization_3d">
     		<option if="${DEVELOP}">
     			<option name="assertion" value="all"/>
     		</option>
@@ -104,7 +99,7 @@
     		<option name="assertion" value="all"/>
     	</option>    
     </cluster>
-    <cluster name="input">
+    <cluster name="input" prefix="traffic_">
     	<option if="${DEVELOP}">
     		<option name="assertion" value="all"/>
     	</option>
@@ -113,16 +108,6 @@
     	<option if="${DEVELOP}">
     		<option name="assertion" value="all"/>
     	</option>
-    </cluster>
-    <cluster name="test">
-    	<option if="${DEVELOP}">
-    		<option name="assertion" value="all"/>
-    	</option>
-      <cluster name="example">
-	    	<option if="${DEVELOP}">
-	    		<option name="assertion" value="all"/>
-	    	</option>
-      </cluster>
     </cluster>
   </cluster>
 </library>

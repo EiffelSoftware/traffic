@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<library name="touch_library">
+<library name="touch">
 
   <description>
     description: "Xace file for Traffic Library"
@@ -10,7 +10,7 @@
     revision: "$Revision$"
   </description>
 
-  <cluster name="touch_library" location="../touch_library" relative="true">
+  <cluster name="touch" location="../../library/touch" relative="true">
   	<option if="${DEVELOP}">
   		<option name="assertion" value="all"/>
    	</option>
