@@ -930,7 +930,7 @@ feature -- Representations
 	traffic_places: TRAFFIC_PLACE_REPRESENTATION
 		-- container for the places.
 		
-	traffic_buildings: TRAFFIC_BUILDING_REPRESENTATION
+	traffic_buildings: TRAFFIC_3D_BUILDING_REPRESENTATION
 		-- container for the buildings.				
 			
 feature {NONE} -- Implementation

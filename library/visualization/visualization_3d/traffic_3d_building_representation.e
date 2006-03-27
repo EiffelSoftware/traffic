@@ -5,7 +5,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_BUILDING_REPRESENTATION
+	TRAFFIC_3D_BUILDING_REPRESENTATION
 
 inherit
 	EM_CONSTANTS
