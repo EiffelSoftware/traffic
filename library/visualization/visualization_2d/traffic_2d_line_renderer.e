@@ -6,7 +6,7 @@ indexing
 	revision: "1.0"
 
 obsolete class
-	TRAFFIC_LINE_RENDERER
+	TRAFFIC_2D_LINE_RENDERER
 		inherit
 			TRAFFIC_2D_ITEM_RENDERER [EM_DRAWABLE]
 			redefine
@@ -122,4 +122,4 @@ feature {NONE} -- Implementation
 invariant
 	invariant_clause: True -- Your invariant here
 
-end -- class TRAFFIC_LINE_RENDERER
+end
