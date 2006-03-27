@@ -7,7 +7,7 @@ class
 	FLAT_HUNT_PLACE_RENDERER
 
 inherit
-	TRAFFIC_PLACE_RENDERER
+	TRAFFIC_2D_PLACE_RENDERER
 		redefine
 			render
 		end
@@ -28,7 +28,7 @@ feature -- Basic operations
 			rectangle: EM_RECTANGLE
 			place_label: EM_STRING			
 		do
-			rectangle ?= Precursor {TRAFFIC_PLACE_RENDERER}(a_place)
+			rectangle ?= Precursor {TRAFFIC_2D_PLACE_RENDERER}(a_place)
 			create place_label.make (a_place.name, theme.place_label_font)
 			place_label.set_x_y (a_place.position.x.floor, a_place.position.y.floor)
 			create container.make_with_content (rectangle, place_label)
