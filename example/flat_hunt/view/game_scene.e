@@ -401,6 +401,8 @@ feature {NONE} -- Implementation
 			-- to visualize `traffic_map' within a dedicated box
 		require
 			traffic_map_not_void: traffic_map /= Void
+		local
+			tmp_place_renderer: TRAFFIC_PLACE_RENDERER
 		do			
 			create big_map_widget.make_with_map (map_area_width, map_area_height, traffic_map)
 			big_map_widget.set_x_y (Margin, Margin)
@@ -409,6 +411,15 @@ feature {NONE} -- Implementation
 			big_map_widget.set_background_color (create {EM_COLOR}.make_white)
 			big_map_widget.scroll_and_zoom_to_rectangle (big_map_widget.object_area)
 			big_map_widget.enable_scroll_and_zoom_by_mouse
+
+			create tmp_place_renderer.make_with_map (traffic_map)
+			tmp_place_renderer.set_place_color (theme.default_place_color)
+			big_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
+			big_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
+			big_map_widget.line_section_renderer.traffic_type_line_widths.put (2, "bus")
+			big_map_widget.set_default_place_renderer (tmp_place_renderer)
+			big_map_widget.render
+
 			main_container.extend (big_map_widget)		
 		end		
 
@@ -417,12 +428,24 @@ feature {NONE} -- Implementation
 			-- within a dedicated box and add it to `main_container'
 		require
 			traffic_map_not_void: traffic_map /= Void
+		local
+			tmp_place_renderer: TRAFFIC_PLACE_RENDERER
 		do	
 			create little_map_widget.make_with_map (Window_width - Map_area_width - 3 * Margin , Window_width - Map_area_width - 3 * Margin, traffic_map)
 			little_map_widget.set_x_y (map_area_width + 2 * margin, margin)
 			little_map_widget.set_background_color (create {EM_COLOR}.make_white)
 			little_map_widget.calculate_object_area
 			little_map_widget.scroll_and_zoom_to_rectangle (little_map_widget.object_area)
+
+			-- Customize map widget and render (to affect changes)
+			little_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
+			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
+			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Tram_color, "tram")
+			create tmp_place_renderer.make_with_map (traffic_map)
+			tmp_place_renderer.set_place_color (theme.default_place_color)
+			little_map_widget.set_default_place_renderer (tmp_place_renderer)
+			little_map_widget.render
+
 			main_container.extend (little_map_widget)		
 		end	
 
