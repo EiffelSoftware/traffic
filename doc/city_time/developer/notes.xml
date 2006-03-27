@@ -47,8 +47,8 @@
 	2) Extending displayed objects:
      </para>
 	 <para>
-	 For all objects there are factories provided. If someone needs an object which differs from the default ones he could implement a function in the *_REPRESENTATION classes and give it to the corresponding factory. Only the class <classname cluster="tr_traffic.tr_visualization.tr_3d_visualization">TRAFFIC_TRAVELER_REPRESENTATION</classname> doesn't support this way because
-	 its factory is different to the other ones. The corresponding factory <classname cluster="tr_traffic.tr_visualization.tr_3d_visualization">TRAFFIC_OBJECT_LOADER</classname> inherits from the EM_OBJ_LOADER class which seems not fully developed. A new object has to be modeled in a *.obj file and simply loaded. 
+	 For all objects there are factories provided. If someone needs an object which differs from the default ones he could implement a function in the *_REPRESENTATION classes and give it to the corresponding factory. Only the class <classname cluster="tr_traffic.tr_visualization.tr_3d_visualization">TRAFFIC_3D_TRAVELER_REPRESENTATION</classname> doesn't support this way because
+	 its factory is different to the other ones. The corresponding factory <classname cluster="tr_traffic.tr_visualization.tr_3d_visualization">TRAFFIC_3D_OBJECT_LOADER</classname> inherits from the EM_OBJ_LOADER class which seems not fully developed. A new object has to be modeled in a *.obj file and simply loaded. 
 	</para>
 	<para>
 	3) Extending functionality:

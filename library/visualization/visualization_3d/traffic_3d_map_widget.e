@@ -921,7 +921,7 @@ feature {NONE} -- Attributes
 
 feature -- Representations
 
-	traffic_traveler: TRAFFIC_TRAVELER_REPRESENTATION
+	traffic_traveler: TRAFFIC_3D_TRAVELER_REPRESENTATION
 		-- container for all travelers.
 	
 	traffic_lines: TRAFFIC_3D_LINE_REPRESENTATION

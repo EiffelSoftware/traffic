@@ -5,7 +5,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_TRAVELER_REPRESENTATION
+	TRAFFIC_3D_TRAVELER_REPRESENTATION
 inherit
 	
 	TRAFFIC_3D_CONSTANTS
@@ -259,4 +259,4 @@ invariant
 	TR_TR_REP_travelers_valid: travelers /= Void
 	
 
-end -- class TRAFFIC_TRAVELER_REPRESENTATION	
+end	

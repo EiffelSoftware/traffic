@@ -28,20 +28,20 @@
 	<title>Description</title>
 	<para>
 	The class <classname cluster="tr_traffic">TRAFFIC_LINE_TRAVELER</classname> is a descendant from the class <classname cluster="tr_traffic">TRAFFIC_TRAVELER</classname>. As there is an obvious need for travelers which move on instances from class <classname cluster="tr_traffic">TRAFFIC_LINE</classname>, 
-	this class was created. It creates travelers of type "tram" if given a line. There is a comment in the code how to change this class such that the new objects have the same type as the line. Moreover in the class <classname cluster="tr_traffic.tr_visualization.tr_3d_visualization">TRAFFIC_TRAVELER_REPRESENTATION</classname>
-	the feature <featurename class="tr_traffic.tr_visualization.tr_3d_visualization.traffic_traveler_representation">add_traveler</featurename> has to be adapted. This should be a short task, but new *.obj files should be provided (there are only trams and passengers modeled up to now).
+	this class was created. It creates travelers of type "tram" if given a line. There is a comment in the code how to change this class such that the new objects have the same type as the line. Moreover in the class <classname cluster="tr_traffic.tr_visualization.tr_3d_visualization">TRAFFIC_3D_TRAVELER_REPRESENTATION</classname>
+	the feature <featurename class="tr_traffic.tr_visualization.tr_3d_visualization.traffic3d__traveler_representation">add_traveler</featurename> has to be adapted. This should be a short task, but new *.obj files should be provided (there are only trams and passengers modeled up to now).
 	If there is a need to set a line_traveler to a specific place there is the feature <featurename class="tr_traffic.traffic_line_traveler">set_to_place</featurename> which checks if the place is on the line and then places the traveler to that place. If one needs a place he can get it by calling the feature
 	<featurename class="tr_traffic.traffic_line_traveler">get_place</featurename> which returns the place at 'number' in the feature <featurename class="tr_traffic.traffic_line_traveler">last_place</featurename>. 
 	</para>
 	<toplink/>
 </section>
 
-<section id="traffic_traveler_representation">
+<section id="traffic_3d_traveler_representation">
 	<para/>
-	<title>TRAFFIC_TRAVELER_REPRESENTATION</title>
+	<title>TRAFFIC_3D_TRAVELER_REPRESENTATION</title>
 	<title>Description</title>
 	<para>
-	The class <classname cluster="tr_traffic.tr_visualization.tr_3d_visualization">TRAFFIC_TRAVELER_REPRESENTATION</classname> is responsible for distributing travelers of all kind on the plane.
+	The class <classname cluster="tr_traffic.tr_visualization.tr_3d_visualization">TRAFFIC_3D_TRAVELER_REPRESENTATION</classname> is responsible for distributing travelers of all kind on the plane.
 	It stores all the travelers in a container and provides a feature to the map to draw all its objects. 
 	</para>
 	<title>Travelers distribution</title>

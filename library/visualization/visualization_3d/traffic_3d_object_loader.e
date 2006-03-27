@@ -11,7 +11,7 @@ inherit
 	EM_3D_OBJ_LOADER
 	export {NONE}
 		all
-	{TRAFFIC_TRAVELER_REPRESENTATION}
+	{TRAFFIC_3D_TRAVELER_REPRESENTATION}
 		create_object
 	redefine
 		make, specify_object, read_face, load_file 
