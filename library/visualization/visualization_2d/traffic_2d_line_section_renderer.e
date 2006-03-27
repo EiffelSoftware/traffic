@@ -10,7 +10,7 @@ indexing
 	revision: "1.0"
 
 class
-	TRAFFIC_LINE_SECTION_RENDERER
+	TRAFFIC_2D_LINE_SECTION_RENDERER
 		inherit
 			TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_SECTION]
 			redefine
@@ -113,4 +113,4 @@ feature -- Basic operations
 			Result := polyline
 		end		
 
-end -- class TRAFFIC_LINE_SECTION_RENDERER
+end

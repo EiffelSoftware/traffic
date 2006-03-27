@@ -39,7 +39,7 @@ feature -- Initialization
 		
 feature -- Access
 		
-	line_section_renderer: TRAFFIC_LINE_SECTION_RENDERER
+	line_section_renderer: TRAFFIC_2D_LINE_SECTION_RENDERER
 			--standard renderer for the TRAFFIC_LINE_SECTIONs
 			
 	place_renderer: TRAFFIC_PLACE_RENDERER
