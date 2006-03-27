@@ -17,18 +17,13 @@ feature	 -- Example
 			-- See 'TOURSIM' for the predefined objects and classes
 		do
 			Paris.display
-			
---			Louvre.spotlight			
-
 			Line8.highlight_for_5_seconds
-
---			Route1.animate
---			Passenger.move_route (Route2)
 		end
 		
 	explore_on_button_click is
 			-- Do nothing. 
 		do
+			Line8.highlight_for_5_seconds
 		end
 		
-end -- class PREVIEW
+end
