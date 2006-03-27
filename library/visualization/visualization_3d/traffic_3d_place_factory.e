@@ -5,7 +5,7 @@ indexing
 	revision: "0.1"
 
 class
-	TRAFFIC_PLACE_FACTORY
+	TRAFFIC_3D_PLACE_FACTORY
 	
 inherit
 	EM_3D_OBJECT_FACTORY
@@ -108,4 +108,4 @@ feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessibl
 		end
 		
 		
-end -- class TRAFFIC_PLACE_FACTORY
+end

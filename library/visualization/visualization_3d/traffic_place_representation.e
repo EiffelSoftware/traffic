@@ -299,7 +299,7 @@ feature {NONE} -- Attributes
 	place_views: HASH_TABLE [EM_3D_OBJECT, TRAFFIC_PLACE]
 		-- Container for all places
 	
-	place_factory: TRAFFIC_PLACE_FACTORY
+	place_factory: TRAFFIC_3D_PLACE_FACTORY
 		-- factory for places
 
 	color: GL_VECTOR_3D[DOUBLE]
