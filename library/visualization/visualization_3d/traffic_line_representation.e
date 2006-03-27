@@ -401,7 +401,7 @@ feature -- Access
 	shortest_line: ARRAYED_LIST [EM_3D_OBJECT]
 			-- Container for shortest path line
 	
-	line_factory: TRAFFIC_LINE_FACTORY
+	line_factory: TRAFFIC_3D_LINE_FACTORY
 			-- Factory for line segments
 		
 	map: TRAFFIC_MAP

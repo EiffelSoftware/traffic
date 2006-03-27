@@ -28,10 +28,10 @@
 				<link url="#traffic_building_factory">TRAFFIC_BUILDING_FACTORY</link>
 			</listitem>
 			<listitem>
-				<link url="#traffic_building_representation">TRAFFIC_BUILDING_REPRESENTATION</link>
+				<link url="#traffic_3d_building_representation">TRAFFIC_3D_BUILDING_REPRESENTATION</link>
 			</listitem>
 			<listitem>
-				<link url="#traffic_line_factory">TRAFFIC_LINE_FACTORY</link>
+				<link url="#traffic_3d_line_factory">TRAFFIC_3D_LINE_FACTORY</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_line_representation">TRAFFIC_LINE_REPRESENTATION</link>
@@ -118,8 +118,8 @@
     	</para>
     	<toplink/>
     </section>
-<section id="traffic_building_representation">
-    	<title>TRAFFIC_BUILDING_REPRESENTATION</title>
+<section id="traffic_3d_building_representation">
+    	<title>TRAFFIC_3D_BUILDING_REPRESENTATION</title>
    		<title>Requirements:</title>
     	<para>
     		<link url="../classes.html#traffic_building">TRAFFIC_BUILDING</link>
@@ -127,26 +127,26 @@
     	</para>
     	<title>Description</title>
     	<para>
-			 The class <classname>TRAFFIC_BUILDING_REPRESENTATION</classname> is a container for all traffic building 3D objects. As expected there is a feature <featurename>draw</featurename> to draw all objects in the container. <newline/>
+			 The class <classname>TRAFFIC_3D_BUILDING_REPRESENTATION</classname> is a container for all traffic building 3D objects. As expected there is a feature <featurename>draw</featurename> to draw all objects in the container. <newline/>
 Buildings can be highlighted or un-highlighted by calling the features <featurename>highlight_building</featurename> or <featurename>un_highlight_building</featurename>. With the feature <featurename>add_building</featurename> a building can be added to the representation and <featurename>delete_buildings</featurename> deletes all the buildings from the representation.
     	</para>
     	<title>Class overview</title>
     	<para>
     	<para>
-    		<image src="image/traffic_building_representation.png"/>
+    		<image src="image/traffic_3d_building_representation.png"/>
     	</para>
     	</para>
     	<toplink/>
     </section>
-<section id="traffic_line_factory">
-    	<title>TRAFFIC_LINE_FACTORY</title>
+<section id="traffic_3d_line_factory">
+    	<title>TRAFFIC_3D_LINE_FACTORY</title>
    		<title>Requirements:</title>
     	<para>
     		<classname>EM_3D_OBJECT_FACTORY</classname>
     	</para>
     	<title>Description</title>
     	<para>
-			The class <classname>TRAFFIC_LINE_FACTORY</classname> is a factory for the 3D objects which represent the lines on the map. The interface is for each of the factories the same:
+			The class <classname>TRAFFIC_3D_LINE_FACTORY</classname> is a factory for the 3D objects which represent the lines on the map. The interface is for each of the factories the same:
 			With the features <featurename>add_gauger</featurename> and <featurename>remove_gauger</featurename> one can handle procedures for decisions. These procedures can then 
 			be called through the feature <featurename>take_decision</featurename> which calls the right gauger and saves the decision in the string <featurename>decision</featurename>.
 			For creating a representation of the built object one can add specific procedures through the features <featurename>add_line_type</featurename> and remove them by calling
@@ -156,7 +156,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	<title>Class overview</title>
     	<para>
     	<para>
-    		<image src="image/traffic_line_factory.png"/>
+    		<image src="image/traffic_3d_line_factory.png"/>
     	</para>
     	</para>
     	<toplink/>

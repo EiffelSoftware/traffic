@@ -5,7 +5,7 @@ indexing
 	revision: "0.1"
 
 class
-	TRAFFIC_LINE_FACTORY
+	TRAFFIC_3D_LINE_FACTORY
 	
 inherit
 	EM_3D_OBJECT_FACTORY

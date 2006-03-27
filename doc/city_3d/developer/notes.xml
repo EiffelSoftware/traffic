@@ -46,7 +46,7 @@
          <para/>
 	 One could add new factories to the project or use existing ones to display more and different buildings, traffic lines or anything else. The easiest way to create a new factory would be to inherit from <classname cluster="em.video.object_factory">EM_3D_OBJECT_FACTORY</classname> as this is done with the two implemented factories.
 	With <classname cluster="city_3d">BUILDING_FACTORY</classname> reuse comes naturally as it is able to draw any building of choice (how this is done is explained in the corresponding section in <ulink url="structure.html">classes</ulink>). 
-    If you would like to change the way traffic lines are displayed, you could change <featurename class="city_3d.traffic_line_factory">specify_object</featurename> in <classname cluster="city_3d">TRAFFIC_LINE_FACTORY</classname>.
+    If you would like to change the way traffic lines are displayed, you could change <featurename class="city_3d.traffic_3d_line_factory">specify_object</featurename> in <classname cluster="city_3d">TRAFFIC_3D_LINE_FACTORY</classname>.
 	<para/>
 	3) Extending functionality:
          <para/>

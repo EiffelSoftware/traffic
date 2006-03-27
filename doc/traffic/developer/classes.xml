@@ -112,7 +112,7 @@
 		</para>
 		<title>Description</title>
 		<para>
-			The class <classname>TRAFFIC_BUILDING_REPRESENTATION</classname> is a collection of additional 
+			The class <classname>TRAFFIC_3D_BUILDING_REPRESENTATION</classname> is a collection of additional 
 			information for a building. This can be a street, a house number and a textual description.
 		</para>
 		<para>	
