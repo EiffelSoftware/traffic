@@ -151,8 +151,8 @@ feature -- Interface
 			toolbar_panel.add_widget (time_label)
 			
 			-- adding zurich_mini.xml as default
-			map.load_map ("map/zurich_mini.xml")
-			loaded_file_name := "map/zurich_mini.xml"
+			map.load_map ("../map/zurich_mini.xml")
+			loaded_file_name := "../map/zurich_mini.xml"
 		end
 		
 feature -- Event handling
@@ -353,7 +353,7 @@ feature {NONE} -- Implementation
 		do
 			create Result.make
 			
-			create directory.make_open_read ("./map")
+			create directory.make_open_read ("../map")
 			if directory.is_readable and not directory.is_empty then
 				from
 					directory.start
@@ -362,7 +362,7 @@ feature {NONE} -- Implementation
 					directory.lastentry = void
 				loop
 					if directory.lastentry.has_substring (".xml") then
-						Result.force_last ("map/" + directory.lastentry)
+						Result.force_last ("../map/" + directory.lastentry)
 					end
 					directory.readentry
 				end

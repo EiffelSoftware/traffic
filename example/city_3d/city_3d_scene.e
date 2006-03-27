@@ -43,7 +43,7 @@ feature -- Interface
 			
 			-- Box and button for xml files
 			create combo_title.make_from_text ("Choose a map:")
-			create combo_box.make_from_list (search_for_xml("map"))
+			create combo_box.make_from_list (search_for_xml("../map"))
 			create load_button.make_from_text ("Load map")
 			
 			-- Slider and label for number of buildings
@@ -276,10 +276,10 @@ feature -- Interface
 			traffic_line_ride_button.hide
 			
 			-- adding zurich_big.xml as default
-			create loader.make ("map/zurich_tiny.xml")
+			create loader.make ("../map/zurich_tiny.xml")
 			loader.load_map
 			map.set_map (loader.map)
-			loaded_file_name := "map/zurich_tiny.xml"
+			loaded_file_name := "../map/zurich_tiny.xml"
 			
 		end
 		

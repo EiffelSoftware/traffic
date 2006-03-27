@@ -67,7 +67,7 @@ feature -- Colors
 
 feature -- Fonts
 
-	Font_directory: STRING is "./resources/font/"
+	Font_directory: STRING is "./resource/font/"
 			-- Path to the font directory.
 
    	create_font (a_name: STRING; a_size: INTEGER; a_color: EM_COLOR): EM_COLOR_TTF_FONT is

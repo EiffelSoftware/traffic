@@ -239,7 +239,7 @@ feature -- Fonts
 
 feature -- Images
 
-	Image_directory: STRING is "./resources/themes/normal/"
+	Image_directory: STRING is "./resource/themes/normal/"
 			-- Path to the image directory.
 		
 	Flathunt_logo: EM_DRAWABLE is
@@ -341,7 +341,7 @@ feature -- Player Images
 	
 feature -- Sound
 
-	Sound_directory: STRING is "./resources/sound"
+	Sound_directory: STRING is "./resource/sound"
 			-- Path to the sound directory.
 
 	Background_music: STRING is 

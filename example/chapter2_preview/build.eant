@@ -12,7 +12,7 @@
   </description>
 
   <inherit>
-    <parent location="../../../misc/traffic_application.eant">
+    <parent location="../../misc/traffic_application.eant">
       <redefine target="init_system"/>
     </parent>
   </inherit>

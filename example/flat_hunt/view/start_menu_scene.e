@@ -28,7 +28,7 @@ feature -- Initialization
 			-- Set default values for game options
 			flathunt_mode := 1
 			flathunt_hunter_number := 2
-			flathunt_map := "./map/zurich_little.xml"
+			flathunt_map := "../map/zurich_little.xml"
 			flathunt_theme := "glass"
 			
 			-- Build menu.
@@ -151,7 +151,7 @@ feature {NONE} -- Implementation
 				elseif option_panel.option_menus.item.title.is_equal (option_title_number_of_flathunters) then
 					flathunt_hunter_number := option_panel.option_menus.item.selected_entry
 				elseif option_panel.option_menus.item.title.is_equal (option_title_map_size) then
-					flathunt_map := "./map/zurich_" + option_panel.option_menus.item.item (option_panel.option_menus.item.selected_entry).text.value + ".xml"					
+					flathunt_map := "../map/zurich_" + option_panel.option_menus.item.item (option_panel.option_menus.item.selected_entry).text.value + ".xml"					
 				elseif option_panel.option_menus.item.title.is_equal (option_title_characters) then
 					flathunt_theme := option_panel.option_menus.item.item (option_panel.option_menus.item.selected_entry).text.value	
 				end

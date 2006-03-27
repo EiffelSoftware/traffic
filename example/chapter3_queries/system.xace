@@ -41,7 +41,7 @@
   <mount location="${GOBO}/library/library.xace"/>
   <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
   <mount location="${EM}/library/library.xace"/>
-  <mount location="../../../library/library_touch.xace"/> 
-  <mount location="../touch_library/library.xace"/>
+  <mount location="../../library/library.xace"/> 
+  <mount location="../../library/touch/library.xace"/>
 
 </system>

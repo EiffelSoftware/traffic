@@ -42,7 +42,7 @@ feature -- Initialization
 			keyboard.enable_unicode_characters
 			keyboard.enable_repeating_key_down_events (200, 100)
 			
---			set_window_icon ("images/icon.png")
+			set_window_icon ("../image/traffic_icon.png")
 			set_window_title ("City TIME")
 			set_application_id ("city_time")
 			
