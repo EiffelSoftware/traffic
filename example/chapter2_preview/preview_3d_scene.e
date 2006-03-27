@@ -25,7 +25,9 @@ feature -- Interface
 			make_touch_scene
 
 			create preview
-			preview.run (map_widget, console)			
+			preview.run (map_widget, console)	
+	
+			click_here_button.clicked_event.subscribe (agent preview.explore_on_button_click)	
 		end
 		
 end
