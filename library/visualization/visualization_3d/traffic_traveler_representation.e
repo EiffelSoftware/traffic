@@ -232,7 +232,7 @@ feature{NONE} -- Attributes
 	traveler_key: INTEGER
 		-- key for travelers.
 
-	traveler_factory: TRAFFIC_OBJECT_LOADER
+	traveler_factory: TRAFFIC_3D_OBJECT_LOADER
 		-- factory for travelers.
 
 	color: GL_VECTOR_3D[DOUBLE]

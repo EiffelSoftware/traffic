@@ -37,7 +37,7 @@
 				<link url="#traffic_3d_line_representation">TRAFFIC_3D_LINE_REPRESENTATION</link>
 			</listitem>
 			<listitem>
-				<link url="#traffic_object_loader">TRAFFIC_OBJECT_LOADER</link>
+				<link url="#traffic_3d_object_loader">TRAFFIC_3D_OBJECT_LOADER</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_place_factory">TRAFFIC_3D_PLACE_FACTORY</link>
@@ -184,8 +184,8 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	</para>
     	<toplink/>
     </section>
-<section id="traffic_object_loader">
-    	<title>TRAFFIC_OBJECT_LOADER</title>
+<section id="traffic_3d_object_loader">
+    	<title>TRAFFIC_3D_OBJECT_LOADER</title>
    		<title>Requirements:</title>
     	<para>
     		<classname>EM_OBJ_LOADER</classname>
@@ -199,7 +199,7 @@ Buildings can be highlighted or un-highlighted by calling the features <featuren
     	<title>Class overview</title>
     	<para>
     	<para>
-    		<image src="image/traffic_object_loader.png"/>
+    		<image src="image/traffic_3d_object_loader.png"/>
     	</para>
     	</para>
     	<toplink/>

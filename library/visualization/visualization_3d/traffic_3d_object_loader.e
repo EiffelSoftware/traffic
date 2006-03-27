@@ -5,7 +5,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_OBJECT_LOADER
+	TRAFFIC_3D_OBJECT_LOADER
 
 inherit
 	EM_3D_OBJ_LOADER
