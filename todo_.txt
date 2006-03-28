@@ -3,9 +3,7 @@ all:
 - are the classes in $TRAFFIC/library/*.e in the right place?
 - check that all classes use gobo data structures
 - 3d_widget: publish mouse events
-- 3d_widget: turn coordinate system into the right direction
 - 3d_widget, representation, and factory classes: check contracts
-- catching of mouse clicks on places needs to be fixed
 - improve speed of randomly generated buildings
 - randomize buildings along lines more
 - randomize look and feel of buildings

@@ -186,63 +186,25 @@ feature {NONE} -- Event handling
 	mouse_click (event: EM_MOUSEBUTTON_EVENT) is
 			-- Handle mouse clicked event.
 		local
-			section: TRAFFIC_LINE_SECTION
-			line: TRAFFIC_LINE
-			lines: HASH_TABLE [TRAFFIC_LINE, STRING]
-			place_x, place_z, delta_x, delta_z, delta: DOUBLE
 			is_found: BOOLEAN
 			result_vec: GL_VECTOR_3D[DOUBLE]
-			clicked_point: GL_VECTOR_3D[DOUBLE]
+			clicked_point: EM_VECTOR_2D
+			place: TRAFFIC_PLACE
 		do
-			if event.is_left_button then
-				result_vec := transform_coords(event.screen_x, event.screen_y)				
-				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
-				
+			result_vec := transform_coords(event.screen_x, event.screen_y)				
+			clicked_point := gl_to_map_coords (create {EM_VECTOR_2D}.make (result_vec.x, result_vec.z))
+			if event.is_left_button then				
 				if map /= Void then
 					if marked_origin /= Void then
 						traffic_places.unhighlight_place (marked_origin)
-					end					
-					from lines := map.lines
-						lines.start
-						is_found := False
-					until is_found or else lines.after
-					loop
-						from line := lines.item_for_iteration
-							line.start
-						until line.after
-						loop
-							section := line.item
-							
-							-- Checking origin of section
-							place_x := map_to_gl_coords (section.polypoints.first).x
-							place_z := map_to_gl_coords (section.polypoints.first).y
-							delta_x := place_x - clicked_point.x
-							delta_z := place_z - clicked_point.z
-							delta := sqrt (delta_x^2 + delta_z^2)
-							if delta < station_radius then
-								marked_origin := section.origin
-								traffic_places.highlight_place(marked_origin, place_highlight_color1)
-								is_found := True
-								marked_station_changed := True
-							end
-							
-							-- Checking destination of section
-							place_x := map_to_gl_coords (section.polypoints.last).x
-							place_z := map_to_gl_coords (section.polypoints.last).y
-							delta_x := place_x - clicked_point.x
-							delta_z := place_z - clicked_point.z
-							delta := sqrt (delta_x^2 + delta_z^2)
-							if delta < station_radius then
-								marked_origin := section.destination
-								traffic_places.highlight_place(marked_origin,place_highlight_color1)
-								is_found := True
-								marked_station_changed := True
-							end
-							line.forth
-						end
-						lines.forth
 					end	
-					if not is_found then
+					place := traffic_places.place_at_position (clicked_point)
+					if place /= Void then
+						marked_origin := place
+						traffic_places.highlight_place(marked_origin, place_highlight_color1)
+						is_found := True
+						marked_station_changed := True	
+					else					
 						if marked_origin /= Void then
 							traffic_places.unhighlight_place (marked_origin)
 						end
@@ -253,58 +215,21 @@ feature {NONE} -- Event handling
 						marked_destination := Void
 						shortest_path_line := void
 						traffic_lines.remove_shortest_path
-						marked_station_changed := True
-					end
-				end
-				
+						marked_station_changed := True						
+					end				
+				end				
 			elseif event.is_right_button then
-				result_vec := transform_coords(event.screen_x, event.screen_y)				
-				create clicked_point.make_xyz (result_vec.x, result_vec.y, result_vec.z)
 				if map /= Void then
 					if marked_destination /= Void then
 						traffic_places.unhighlight_place (marked_destination)
 					end
-					from lines := map.lines
-						lines.start
-						is_found := False
-					until is_found or else lines.after
-					loop
-						from line := lines.item_for_iteration
-							line.start
-						until line.after
-						loop
-							section := line.item
-							
-							-- Checking origin of section
-							place_x := map_to_gl_coords (section.polypoints.first).x
-							place_z := map_to_gl_coords (section.polypoints.first).y
-							delta_x := place_x - clicked_point.x
-							delta_z := place_z - clicked_point.z
-							delta := sqrt (delta_x^2 + delta_z^2)
-							if delta < station_radius then
-								marked_destination := section.origin
-								traffic_places.highlight_place(marked_destination, place_highlight_color2)
-								is_found := True
-								marked_station_changed := True
-							end
-							
-							-- Checking destination of section
-							place_x := map_to_gl_coords (section.polypoints.last).x
-							place_z := map_to_gl_coords (section.polypoints.last).y
-							delta_x := place_x - clicked_point.x
-							delta_z := place_z - clicked_point.z
-							delta := sqrt (delta_x^2 + delta_z^2)
-							if delta < station_radius then
-								marked_destination := section.destination
-								traffic_places.highlight_place(marked_destination, place_highlight_color2)
-								is_found := True
-								marked_station_changed := True
-							end
-							line.forth
-						end
-						lines.forth
-					end
-					if not is_found then
+					place := traffic_places.place_at_position (clicked_point)
+					if place /= Void then
+						marked_destination := place
+						traffic_places.highlight_place(marked_destination, place_highlight_color2)
+						is_found := True
+						marked_station_changed := True
+					else
 						if marked_origin /= Void then
 							traffic_places.unhighlight_place (marked_origin)
 						end
@@ -315,8 +240,7 @@ feature {NONE} -- Event handling
 						marked_origin := Void
 						shortest_path_line := void
 						marked_station_changed := True
-					end
-					
+					end					
 				end
 			end
 		end

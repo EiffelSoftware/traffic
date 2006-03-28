@@ -55,7 +55,7 @@ feature -- Initialization
 			places_created: place_views /= Void
 		end
 		
-feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
+feature -- Basic operations
 	
 	draw is
 			-- draw all places
@@ -108,44 +108,6 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			place_views.replace (place_view, a_place)
 		end
 			
-feature -- Collision detection
-
-	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-		-- Collision polygons to check for collisions with traffic lines
-	
-feature{NONE} -- Implemenation
-
-	update_place_bounding_box (a_place: TRAFFIC_PLACE): EM_ORTHOGONAL_RECTANGLE is
-			-- Bounding box of `a_place' in map coordinates
-		local
-			links: LIST [TRAFFIC_LINE_SECTION]
-			p: EM_VECTOR_2D
-		do
-			-- Calculate rectangle to include all outgoing links of `a_place'.
-			links := map.line_sections_of_place (a_place.name)			
-			from			
-				links.start
-			until
-				links.after
-			loop
-				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then   
-				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
-					p := links.item.polypoints.first
-					if Result = Void then
-						create Result.make (p.twin, p.twin)
-					else
-						Result.extend (p)	
-					end
-				end
-				links.forth
-			end			
-			if Result = Void then
-				create Result.make_from_position_and_size (a_place.position.x, a_place.position.y, 0.1, 0.1)
-			else
-				Result.set_size_centered (Result.width + 5.0, Result.height + 5.0)
-			end
-		end
-
 	add_places is
 			-- add all places from the map to the places array
 		local
@@ -182,7 +144,38 @@ feature{NONE} -- Implemenation
 			place_view := place_factory.create_object
 			place_views.force (place_view, a_place)
 		end			
+
+feature -- Access
+
+	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+		-- Collision polygons to check for collisions with traffic lines
+
+feature -- Status report
+
+	place_at_position (a_point: EM_VECTOR_2D): TRAFFIC_PLACE	is
+			-- Place that `a_point' is located on
+			-- Returns Void if there is no place at this position
+		require
+			a_point_exists: a_point /= Void
+		local
+			places: HASH_TABLE [TRAFFIC_PLACE, STRING]
+			bb: EM_ORTHOGONAL_RECTANGLE
+		do
+			from
+				places := map.places
+				places.start
+			until
+				places.off or Result /= Void
+			loop
+				bb := update_place_bounding_box (places.item_for_iteration)
+				if bb.has (a_point) then
+					Result := places.item_for_iteration
+				end
+				places.forth
+			end
+		end
 		
+				
 feature -- Event handling
 
 	process_item_inserted (a_place: TRAFFIC_PLACE) is
@@ -201,8 +194,7 @@ feature -- Event handling
 			place_views.remove (a_place)
 		end		
 
-feature{NONE} -- Decision procedures
-
+feature {NONE} -- Implementation
 
 	decide_place_type_normal: STRING is
 			-- decide which type of place is chosen.
@@ -287,15 +279,42 @@ feature{NONE} -- Decision procedures
 			create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (p.x-(place_width/2),p.z-(place_width/2)), poly_points)
 			collision_polygons.force (collision_poly)
 		end
+
+	update_place_bounding_box (a_place: TRAFFIC_PLACE): EM_ORTHOGONAL_RECTANGLE is
+			-- Bounding box of `a_place' in map coordinates
+		local
+			links: LIST [TRAFFIC_LINE_SECTION]
+			p: EM_VECTOR_2D
+		do
+			-- Calculate rectangle to include all outgoing links of `a_place'.
+			links := map.line_sections_of_place (a_place.name)			
+			from			
+				links.start
+			until
+				links.after
+			loop
+				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then   
+				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
+					p := links.item.polypoints.first
+					if Result = Void then
+						create Result.make (p.twin, p.twin)
+					else
+						Result.extend (p)	
+					end
+				end
+				links.forth
+			end			
+			if Result = Void then
+				create Result.make_from_position_and_size (a_place.position.x, a_place.position.y, 0.1, 0.1)
+			else
+				Result.set_size_centered (Result.width + 5.0, Result.height + 5.0)
+			end
+		end
 		
-feature{NONE} -- Decision attributes
-	
 	tram_type: STRING is "tram_place"
 	 
 	decision_type_normal: STRING is "normal"
 		
-feature {NONE} -- Attributes
-
 	place_views: HASH_TABLE [EM_3D_OBJECT, TRAFFIC_PLACE]
 		-- Container for all places
 	

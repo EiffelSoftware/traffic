@@ -797,7 +797,7 @@ feature -- Options
 feature -- Mousevents
 
 	publish_mouse_event (event: EM_MOUSEBUTTON_EVENT) is
-			-- 	Event queue for building clicked event.
+			-- 	Event queue for clicked event.
 		local
 			result_vec: GL_VECTOR_3D[DOUBLE]
 			clicked_point: GL_VECTOR_3D[DOUBLE]		
@@ -842,26 +842,11 @@ feature -- Mousevents
 	publish_place_events (a_point: GL_VECTOR_3D[DOUBLE]; event: EM_MOUSEBUTTON_EVENT) is
 			-- Publish mouse event if a place was clicked.
 		local
-			places: HASH_TABLE [TRAFFIC_PLACE, STRING]
-			found: BOOLEAN
 			place: TRAFFIC_PLACE
-			delta, delta_x, delta_z: DOUBLE
 		do
-			from
-				places := map.places
-				places.start
-			until
-				places.off or found
-			loop
-				place := places.item_for_iteration
-				delta_x := place.position.x - a_point.x
-				delta_z := place.position.y - a_point.z
-				delta := sqrt (delta_x^2 + delta_z^2)
-				if delta < station_radius* 30 then
+			place := traffic_places.place_at_position (gl_to_map_coords (create {EM_VECTOR_2D}.make (a_point.x, a_point.z))) 
+			if place /= Void then
 					place_clicked_event.publish([place,event])
-					found := True
-				end
-				places.forth
 			end
 		end
 			

@@ -482,12 +482,15 @@ feature {NONE} -- Implementation
 				delta_z := dst.z - org.z
 				
 				norm := sqrt (delta_x*delta_x + delta_z*delta_z)
-
+				
+				if norm = 0 then
+					norm := 1
+				end
 				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*line_width/norm, org.y, org.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*line_width/norm, org.y, org.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*line_width/norm, dst.y, dst.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*line_width/norm, dst.y, dst.z+delta_x*line_width/norm))
 				create_circle (org, line_color, line_width, line_height)
 				create_cube (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*line_width/norm, org.y + line_height + 0.4*height + highlighting_delta, org.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*line_width/norm, org.y + line_height + 0.4*height + highlighting_delta, org.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*line_width/norm, dst.y + line_height + 0.4*height + highlighting_delta, dst.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*line_width/norm, dst.y + line_height + 0.4*height + highlighting_delta, dst.z+delta_x*line_width/norm))
 				create_cylinder (org, line_color, line_width, line_height + line_height + 0.4*height + highlighting_delta)
-				
+
 				i := i + 1
 			end			
 		end		
@@ -515,6 +518,10 @@ feature {NONE} -- Implementation
 				delta_z := dst.z - org.z
 				
 				norm := sqrt (delta_x*delta_x + delta_z*delta_z)
+
+				if norm = 0 then
+					norm := 1
+				end
 				
 				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*line_width/norm, org.y, org.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*line_width/norm, org.y, org.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*line_width/norm, dst.y, dst.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*line_width/norm, dst.y, dst.z+delta_x*line_width/norm))
 				create_circle (org, line_color, line_width, line_height)
@@ -530,6 +537,10 @@ feature {NONE} -- Implementation
 				delta_y := end_point.y - start_point.y
 				
 				norm := sqrt (delta_x*delta_x + delta_y*delta_y)
+
+				if norm = 0 then
+					norm := 1
+				end
 				
 				create a_point.make (start_point.x-delta_y*1.5*line_width/norm, start_point.y+delta_x*1.5*line_width/norm)
 				create c_point.make (end_point.x+delta_y*1.5*line_width/norm, end_point.y-delta_x*1.5*line_width/norm) 

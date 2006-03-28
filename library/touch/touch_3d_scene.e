@@ -82,7 +82,7 @@ feature -- Initialization
 			console.set_dimension ((window_width*0.25).rounded - 16, (window_height*0.25).rounded - 20)
 			console.disable
 			
-			console_panel.add_widget(console)				
+			console_panel.add_widget (console)				
 		end
 		
 feature -- Event handling
