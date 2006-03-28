@@ -100,7 +100,9 @@ feature  -- Commands
 					face_count := face_count + 1
 				else
 					-- unknown => ignore line and print line as output
-					obj_file.read_line
+					if not obj_file.off then
+						obj_file.read_line					
+					end
 --					print ("Unknown line:")
 --					print (obj_file.last_string + "%N")	
 				end
