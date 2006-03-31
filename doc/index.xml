@@ -17,7 +17,7 @@
 		<libraryname>Traffic</libraryname> is a software system used for teaching introductory 
 		programming. It consists of a library - the <projectname>Traffic library</projectname> -
 		and <!--tobeincluded three--> two example applications that use the <projectname>Traffic library</projectname>: 
-		<projectname>Flathunt</projectname><!--tobeincluded, <projectname>Touch</projectname>--> and <projectname>
+		<projectname>Flathunt</projectname><projectname>Touch</projectname> and <projectname>
 		City3D</projectname>. The goal of <projectname>Traffic</projectname> is to make learning 
 		to program exciting, interesting and realistic.
 	</para>
@@ -101,7 +101,6 @@
 	</itemizedlist>
 </section>
 
-<!--tobeincluded
 <section id="touch">
 	<title>Touch Documentation</title>
 	<itemizedlist>
@@ -119,7 +118,6 @@
 		</listitem>
 	</itemizedlist>
 </section>
--->
 <section id="references">
 	<title>References</title>
 	<itemizedlist>

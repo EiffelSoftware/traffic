@@ -71,8 +71,8 @@
 		<geant file="build.eant" target="${target}" dir="city_time/developer"/>	
 		<geant file="build.eant" target="${target}" dir="flat_hunt/user"/>
 		<geant file="build.eant" target="${target}" dir="flat_hunt/developer"/>
-<!--		<geant file="build.eant" target="${target}" dir="touch/user"/>
-		<geant file="build.eant" target="${target}" dir="touch/developer"/>-->
+		<geant file="build.eant" target="${target}" dir="touch/user"/>
+		<geant file="build.eant" target="${target}" dir="touch/developer"/>
 		<geant file="build.eant" target="${target}" dir="general/references"/>
 		<geant file="build.eant" target="${target}" dir="general/thanks"/>
 
