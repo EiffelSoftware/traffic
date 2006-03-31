@@ -2,18 +2,40 @@ all:
 - add "traffic_" to all file and classnames using search and replace in eclipse
 - are the classes in $TRAFFIC/library/*.e in the right place?
 - check that all classes use gobo data structures
-- 3d_widget: publish mouse events
-- 3d_widget, representation, and factory classes: check contracts
+
+Travelers:
+- Improve EM_OBJ_LOADER for more advanced file versions
+- improve *.obj file loading to be faster for travelers
+- First person view walks
+- Real itineraries and delays for trams
+- Tram depots where all the trams start until they are on their route.
+- Change default for TRAFFIC_LINE_TRAVELERS from TRAFFIC_TYPE tram 
+
+Buildings:
 - improve speed of randomly generated buildings
 - randomize buildings along lines more
 - randomize look and feel of buildings
-- improve *.obj file loading to be faster
-- check whether all constants are constants
+
+Shortest path:
+- Fix buggy algorithm
 - improve path algorithm
 - improve drawing of shortest_path (city 3d)
-- improve console window to be scrollable and flashier
+
+Map_widgets:
+- 3d_widget: publish mouse events
+- 3d_widget, representation, and factory classes: check contracts
+- check whether all constants are constants
+- Remove plane_size to be a constant and adapt map_to_gl_coords accordingly
+- Design a better method of generating representations -->either reading 3D objects from a file or getting an OpenGL function generating a displaylist
+
+
+Map loading:
 - improve error handling and messages
 
+Streets
+
+Touch examples:
+- improve console window to be scrollable and flashier
 
 general:
 - have gobo mounted into a subcluster
