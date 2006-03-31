@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer_guide/build_example">
+
+     <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Michela Pedroni</holder>
+        </copyright>
+        <email>michela.pedroni@inf.ethz.ch</email>
+        <date>$Date: 2006/03/26 10:54:24 $</date>
+    </chapterinfo>
+
+<title>Classes Needed for a New Example</title>
+ <section id="top_of_page">
+	<title>List of required classes</title>
+	<para>
+		To create and add a new example to the 
+		<projectname>TOUCH_EXAMPLES</projectname> you have to provide the following 3 classes:
+
+		<para>
+		    <itemizedlist>
+			<listitem>
+                <para>
+                    <indexlink url="#examplename">examplename</indexlink>
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <indexlink url="#examplename_3d_application">examplename_3d_application</indexlink>
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <indexlink url="#examplename_3d_scene">examplename_3d_scene</indexlink>
+                </para>
+            </listitem>
+        </itemizedlist>
+	    </para>	
+	</para>
+  </section>
+
+	<section>
+		<para>
+			The following sections are based on the <classname>PREVIEW</classname>-example, the first example in the book
+			<emphasis>"A Touch of Class"</emphasis>. The needed classes to create a new example and their relations
+			to the touch library are described. 
+		</para>
+
+		<title>Overview of the needed Classes</title> (considering the preview-example)
+		<para>
+			<image src="image/new_example/example.png"/>
+		</para>
+		<para>
+		    <emphasis>Figure 1: The class relations from the preview example.</emphasis>
+		</para>	
+	</section>
+
+	<section id = "examplename">
+		<title>examplename: preview</title>
+		<para>
+			Every example, like the preview example, has to inherit from <classname>TOURISM</classname>. 
+			The class <classname>TOURISM</classname> contains all the predefined objects needed for the examples
+			<classname>PREVIEW</classname> judt needs the specific code which will be executed for the particular 
+			example.
+		</para>	
+		<para>
+			The feature <featurename>explore</featurename> is executed while starting the application. 
+			It has to contain the loading of the map. 
+		</para>
+		
+		<para>
+			The second feature <featurename>explore_on button_click</featurename> contains the code 
+			which will be executed after pressing the button "click here". In the preview example, the 
+			line is highlighted again to have a look at it once more. 
+		</para>
+
+		<programlisting>
+<keyword>class</keyword>
+	<classname>PREVIEW</classname>
+
+<keyword>inherit</keyword>
+	<classname>TOURISM</classname>
+
+<keyword>feature</keyword> <comment>Example</comment>
+
+	<featurename>explore</featurename> <keyword>is</keyword>
+		<comment>Show some city info.</comment>
+		<keyword>do</keyword>
+			Paris.display
+			Line8.highlight_for_5_seconds
+		<keyword>end</keyword>
+
+	<featurename>explore_on_button_click</featurename> <keyword>is</keyword>
+		<comment>Highlight line.</comment>
+		<keyword>do</keyword>
+			Line8.highlight_for_5_seconds
+		<keyword>end</keyword>
+<keyword>end</keyword>
+		</programlisting>
+	<toplink/>							
+	</section>
+
+
+
+	<section id = "examplename_3d_application">
+
+		<title>examplename_3d_application: preview_3d_application</title>
+		<para>
+			<classname>PREVIEW_3D_APPLICATION</classname> is the root class of the whole example. 
+			Inheriting from <classname>TOUCH_3D_APPLICATION</classname> requires the implementation
+			of the two features <featurename>set_first_scene</featurename> and 
+			<featurename>set_application_specifics</featurename> which are deferred in the super class. 			 
+		</para>				
+		<para>
+			The feature <featurename>set_first_scene</featurename> sets the first scene which will
+			be run.  
+		</para>
+		<para>
+			The feature <featurename>set_application_specifics</featurename> defines the window title
+			and the application id.  
+		</para>
+		<para>
+			The example code for the preview example looks like this:  
+		</para>
+
+			<programlisting>
+<keyword>class</keyword>
+	<classname>PREVIEW_3D_APPLICATION</classname>
+
+<keyword>inherit</keyword>
+	<classname>TOUCH_3D_APPLICATION</classname>
+
+<keyword>create</keyword>
+	<featurename>make</featurename>
+
+<keyword>feature</keyword> <comment>Initialization</comment>
+
+	<featurename>set_first_scene</featurename> <keyword>is</keyword>
+	<comment>Set 'scene' to PREVIEW_3D_SCENE.</comment>
+		<keyword>do</keyword>
+			set_scene (<keyword>create</keyword> {<classname>PREVIEW_3D_SCENE</classname>}.make)
+		<keyword>end</keyword>
+
+	<featurename>set_application_specifics</featurename> <keyword>is</keyword>
+		<comment>Set application specifics.</comment>
+		<keyword>do</keyword>
+			set_window_title ("Touch - Preview")
+			set_application_id ("Touch_Preview")	
+		<keyword>end</keyword>
+<keyword>end</keyword>
+			</programlisting>
+	<toplink/>
+	</section>
+
+
+
+	<section id = "examplename_3d_scene">
+		<title>examplename_3d_scene: preview_3d_scene</title>
+	
+		<para>
+			The third class <classname>EXAMPLENAME_3D_SCENE</classname>, respectively
+			<classname>PREVIEW_3D_SCENE</classname> makes the first scene and 
+			invokes the examplecode from the corresponding example <classname>PREVIEW</classname>.
+		</para>
+
+			<programlisting>
+<keyword>class</keyword>
+	<classname>PREVIEW_3D_SCENE</classname>
+
+<keyword>inherit</keyword>
+	<classname>TOUCH_3D_SCENE</classname>
+		<keyword>rename</keyword>
+			make as make_touch_scene
+		<keyword>end</keyword>
+
+<keyword>create</keyword>
+	<featurename>make</featurename>
+
+<keyword>feature</keyword> <comment>Interface</comment>
+
+	<featurename>make</featurename> <keyword>is</keyword>
+	<comment>Create all gui elements.</comment>
+		<keyword>local</keyword>
+			<featurename>preview</featurename>: <classname>PREVIEW</classname>
+		<keyword>do</keyword>
+			make_touch_scene
+
+			<keyword>create</keyword> preview
+			preview.run (map_widget, console)
+
+			click_here_button.clicked_event.subscribe (<keyword>agent</keyword> preview.explore_on_button_click)	
+		<keyword>end</keyword>
+
+<keyword>end</keyword>
+			</programlisting>
+
+	<toplink/>			
+	</section>
+
+</chapter>
+

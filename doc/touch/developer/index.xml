@@ -26,9 +26,9 @@
 			<link url="classes.html">Touch-Example Classes</link>
 		</listitem>
 		<listitem>
-            <link url="build_example.html">Building a new Example</link>
+            <link url="new_example.html">Classes needed for a new Example</link>
 			<para>
-				TODO
+				
 			</para>
 		</listitem>
 	</itemizedlist>

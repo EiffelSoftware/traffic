@@ -29,9 +29,11 @@
 			without subdirectories.
 		</description>
 		<geant target="${target}" arguments="classes"/>
+		<geant target="${target}" arguments="new_example"/>
 		<geant target="${target}" arguments="build_example"/>
 		<geant target="${target}" arguments="index"/>
-	</target>
 
+
+	</target>
 
 </project>
