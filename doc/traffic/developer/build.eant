@@ -29,8 +29,8 @@
 			without subdirectories.
 		</description>
 		
-		<geant target="${target}" arguments="overview"/>
-		<geant target="${target}" arguments="classes"/>
+		<geant target="${target}" arguments="map_overview"/>
+		<geant target="${target}" arguments="map_classes"/>
 		<geant target="${target}" arguments="index"/>	
 	</target>
 

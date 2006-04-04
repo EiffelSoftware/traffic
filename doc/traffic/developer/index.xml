@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/index">
 <chapterinfo>
 	<copyright>
@@ -18,13 +18,13 @@ The class overviews are sorted in alphabetic ascending order to be able to find 
     <title>Map representation</title>
 	<itemizedlist>
 		<listitem>
-			<link url="overview.html">Overview</link>
+			<link url="map_overview.html">Overview</link>
 			<para>
 				Gives an overview of the classes that are involved in the map representation part <projectname>Traffic library</projectname>
 			</para>
 		</listitem>
 		<listitem>
-	        <link url="classes.html">Classes</link>
+	        <link url="map_classes.html">Classes</link>
 			<para>
 				Describes each class of the map representation part <projectname>Traffic library</projectname> 
 			</para>
