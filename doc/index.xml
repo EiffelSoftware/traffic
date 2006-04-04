@@ -14,12 +14,7 @@
 <section>
 	<title>Introduction</title>
 	<para>
-		<libraryname>Traffic</libraryname> is a software system used for teaching introductory 
-		programming. It consists of a library - the <projectname>Traffic library</projectname> -
-		and <!--tobeincluded three--> two example applications that use the <projectname>Traffic library</projectname>: 
-		<projectname>Flathunt</projectname><projectname>Touch</projectname> and <projectname>
-		City3D</projectname>. The goal of <projectname>Traffic</projectname> is to make learning 
-		to program exciting, interesting and realistic.
+		<libraryname>Traffic</libraryname> is a software system used for teaching introductory programming. It consists of a library - the <projectname>Traffic library</projectname> - and several example applications that use the <projectname>Traffic library</projectname>: <projectname>Flathunt</projectname>,<projectname>City3D</projectname>, <projectname>CityTime</projectname>, and the <projectname>Touch</projectname> applications accompanying the textbook <projectname>A Touch of Class</projectname>. The goal of <projectname>Traffic</projectname> is to make learning to program exciting, interesting and realistic.
 	</para>
 </section>
 
