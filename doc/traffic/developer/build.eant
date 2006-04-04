@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="user_guide" default="help">
+<project name="developer_guide" default="help">
 
 	<description>
 		description: "Developer documentation for Traffic"
@@ -31,6 +31,8 @@
 		
 		<geant target="${target}" arguments="map_overview"/>
 		<geant target="${target}" arguments="map_classes"/>
+		<geant target="${target}" arguments="input_overview"/>
+		<geant target="${target}" arguments="input_classes"/>
 		<geant target="${target}" arguments="index"/>	
 	</target>
 
