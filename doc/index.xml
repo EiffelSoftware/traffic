@@ -51,12 +51,6 @@
 				User documentation of the <projectname>City3D</projectname> application
 			</para>
 		</listitem>
-		<listitem>
-			<link url="city_3d/developer/index.html">Developer Documentation</link>
-			<para>
-				Developer documentation of the <projectname>City3D</projectname> application
-			</para>
-		</listitem>
 	</itemizedlist>
 </section>
 

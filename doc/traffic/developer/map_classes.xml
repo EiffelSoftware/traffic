@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/classes">
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/map_classes">
 	<chapterinfo>
 		<copyright>
 			<year>2005</year>
@@ -8,7 +8,7 @@
 		<email>michela.pedroni@inf.ethz.ch</email>
 		<date>$Date$</date>
 	</chapterinfo>
-	<title>Classes</title>
+	<title>Traffic map classes</title>
 	<section id="top_of_page">
 		<para>
 			In the following sections the classes will be described. The layout for each class is: 
@@ -62,6 +62,9 @@
 			</listitem>
 			<listitem>
 				<link url="#traffic_simple_line">TRAFFIC_SIMPLE_LINE</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_time">TRAFFIC_TIME</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_type">TRAFFIC_TYPE</link>
@@ -522,6 +525,23 @@
 			<para>
 				<image src="image/sg_traffic_simple_line.png"/>
 			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_time">
+		<para/>
+		<title>TRAFFIC_TIME</title>
+		<title>Requirements:</title>
+		<para>
+			None
+		</para>
+		<title>Description</title>
+		<para>
+		The class <classname cluster="tr_traffic.tr_utils.tr_tr_time">TRAFFIC_TIME</classname> is the representation of time in the model. 
+		The time supports starting time, pausing time, resuming time and reseting time. The feature <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">time_count</featurename> counts the time according to the simulated
+		minutes. The functionality of the class EM_TIME_SINGLETON is extended by the feature <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">add_callback_procedure</featurename> which makes it possible not only to call functions
+		every 'delay' time but also procedures. The feature <featurename class="tr_traffic.tr_util.tr_tr_time.traffic_time">add_callback_tour</featurename> provides the possibility to handle the tours separately because it could be the case
+		that one doesn't want to call the tours in the same frequence as the other procedures. Some generic extension could be thought of so that every procedure can have its one frequency.
 		</para>
 		<toplink/>
 	</section>
