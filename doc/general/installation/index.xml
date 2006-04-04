@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="general/installation/index">
 <chapterinfo>
 	<copyright>
@@ -15,20 +15,20 @@
             <itemizedlist>
                 <listitem>
                     <para>
-                        <keyword>EiffelStudio</keyword>: <link
+                        <keyword>EiffelStudio 5.6</keyword>: <link
                             url="http://www.eiffel.com/downloads/"
                         >http://www.eiffel.com/downloads/</link>
                     </para>
                 </listitem>
                 <listitem>
                     <para>
-                        <keyword>TRAFFIC</keyword>: <link url="http://se.inf.ethz.ch/traffic/"
+                        <keyword>TRAFFIC 3.0</keyword>: <link url="http://se.inf.ethz.ch/traffic/"
                             >http://se.inf.ethz.ch/traffic/</link>
                     </para>
                 </listitem>
                 <listitem>
                     <para>
-                        <keyword>EiffelMedia</keyword>: <link
+                        <keyword>EiffelMedia 0.8.0</keyword>: <link
                             url="http://eiffelmedia.origo.ethz.ch/downloads/"
                             >http://eiffelmedia.origo.ethz.ch/downloads/</link>
                     </para>
@@ -46,7 +46,7 @@
         <para>
             <projectname>Traffic</projectname> does not need to be installed, just download the zip-file and
             unzip it to a directory of your choice. The applications such as <keyword>Flat Hunt</keyword> 
-            <!--Toinclude, <keyword>Touch</keyword>,--> and <keyword>City3D</keyword> are located in the
+            and <keyword>City3D</keyword> are located in the
             respective directory under <filename>traffic/example</filename> (e.g. 
             <filename>traffic/example/flat_hunt</filename>). To get it to run, however,
             you'll have to compile it first. 
@@ -57,9 +57,6 @@
         <para>
             <orderedlist>
 				<listitem>
-					<para>
-						Only for <projectname>Traffic</projectname> 2.1:
-					</para>
 					<itemizedlist>
 						<listitem>
 		            		<para> 
@@ -110,29 +107,17 @@
                     <para>
 						<itemizedlist>
 							<listitem>
-								<para>
-									<emphasis>With Traffic 2.0:</emphasis>
-								</para>
-			                    <para>                     	
-			                        Depending on your operating system and compiler choose one of the provided ace files: 
-			                        <filename>flathunt_xxx.ace</filename> ('flathunt_windows_bcb.ace' for Borland on Windows, 
-			                        'flathunt_windows_msc.ace' for Microsoft Compiler on Windows, or 'flathunt_linux.ace' for 
-			                        Unix systems). 
-			                    </para>
+                    <para>                     	
+                        Choose <filename>developer.ace</filename>. 
+                    </para>
 							</listitem>
 							<listitem>
-								<para>
-									<emphasis>With Traffic 2.1:</emphasis>
-								</para>
-			                    <para>                     	
- 			                        Choose <filename>developer.ace</filename>. 
-			                    </para>
-							</listitem>
+										<para>
+											Click on "Open".
+										</para>
+							</listitem>						
 						</itemizedlist>
 					</para>
-					<para>
-						Click on "Open".
-					</para>						
 	            </listitem>
                 <listitem>
                     <para> The dialog shown in <emphasis>Figure 2</emphasis> lets you choose the

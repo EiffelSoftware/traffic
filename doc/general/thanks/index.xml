@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="general/thanks/index">
 <chapterinfo>
 	<copyright>
@@ -15,6 +15,21 @@
 		</para>
 		<blockquote>
 			<variablelist>
+				<varlistentry>
+					<term>
+						Susanne Kasper 
+					</term>
+                </varlistentry>
+				<varlistentry>
+					<term>
+						Florian Geldmacher 
+					</term>
+                </varlistentry>
+				<varlistentry>
+					<term>
+						Fabian Wüest
+					</term>
+                </varlistentry>
 				<varlistentry>
 					<term>
 						Roger Küng 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="general/references/index">
 <chapterinfo>
 	<copyright>
@@ -12,6 +12,33 @@
 		<title>Student projects on <projectname>Traffic</projectname></title>
 		<blockquote>
 			<variablelist>
+				<varlistentry>
+					<term>
+						Susanne Kasper. <emphasis>Traffic 3.0 - Extracting Software Examples for Pedagogical Effectiveness</emphasis>. ETH Zurich, 2005/2006. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/susanne_kasper">
+						http://se.inf.ethz.ch/projects/susanne_kasper</link>
+					</listitem>
+        </varlistentry>
+				<varlistentry>
+					<term>
+						Florian Geldmacher. <emphasis>Traffic 3.0 - Introducing time into a city model</emphasis>. ETH Zurich, 2005/2006. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/florian_geldmacher">
+						http://se.inf.ethz.ch/projects/florian_geldmacher</link>
+					</listitem>
+        </varlistentry>
+				<varlistentry>
+					<term>
+						Fabian Wüst. <emphasis>Traffic 3.0 – Realistic buildings and performance</emphasis>. ETH Zurich, 2005/2006. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/fabian_wueest">
+						http://se.inf.ethz.ch/projects/fabian_wueest</link>
+					</listitem>
+        </varlistentry>
 				<varlistentry>
 					<term>
 						Roger Küng. <emphasis>Redesign of Touch</emphasis>. ETH Zurich, 2005. 
