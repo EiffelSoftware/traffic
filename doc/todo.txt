@@ -1,4 +1,0 @@
-- Check all headers
-- Write Traffic library description (see Sibylle's, Rolf's and Roger's Documentation)
-- Write References page
-- Finish installation page
