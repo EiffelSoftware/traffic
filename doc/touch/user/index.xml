@@ -18,13 +18,13 @@
 		<listitem>
 			<link url="introduction.html">Introduction</link>
 			<para>
-				TODO
+				Welcome to the example applications for <projectname>A Touch of Class</projectname>!
 			</para>
 		</listitem>
 		<listitem>
 			<link url="userguide_main.html">Touch Userguide</link>
 			<para>
-				TODO
+				Explanation of mouse and keyboard usage
 			</para>
 		</listitem>
 	  </itemizedlist>

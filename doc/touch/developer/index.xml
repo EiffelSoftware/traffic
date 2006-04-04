@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer_guide/index">
      <chapterinfo>
@@ -15,10 +15,10 @@
         <projectname>TOUCH_EXAMPLES</projectname> is the application that comes with the textbook 
         <emphasis>A Touch of Class</emphasis>. It is the framework for the examples and exercises
         that you find in the book. <emphasis>A Touch of Class</emphasis> is used to teach programming to
-        students in the first semester. The examples are based on <libraryname>TRAFFIC</libraryname>
-        [<link url="references.html">sa05</link>] a library that models a city and its
+        students in the first semester. The examples are based on <libraryname>TRAFFIC</libraryname>,
+         a library that models a city and its
         transportation connections. The visual presentation is done using <libraryname>EiffelMedia</libraryname> 
-        (which is a further development of <libraryname>ESDL</libraryname> [<link url="references.html">tgb03</link>])
+        (which is a further development of <libraryname>ESDL</libraryname>).
     </para>
     <para> This documentation will guide you through the source code of <projectname>Touch</projectname>
 	<itemizedlist>

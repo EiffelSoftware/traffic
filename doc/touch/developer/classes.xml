@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="developer_guide/classes">
   <chapterinfo>
@@ -101,10 +101,10 @@
 		</para>
 		<title>Description</title>
 		<para>
-			The class <classname>TRAFFIC_BUILDING</classname> represents a touch line. 
+			The class <classname>TOUCH_LINE</classname> represents a touch line. 
 		</para>
 		<para>
-			The touch line connects the traffic_line with its traffic_line_representation. The calls are 
+			The touch line connects the <classname>TRAFFIC_LINE</classname> with its <classname>TRAFFIC_3D_LINE_REPRESENTATION</classname>. The calls are 
 			forwarded to the corresponding class.  			
 
 		</para>
