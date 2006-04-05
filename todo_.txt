@@ -42,4 +42,6 @@ general:
 	-> This is being looked into by Eric from gobosoft, it is not possible at the moment
 - rearrange the touch_examples into another directory
 
+Documentation:
+- Remove unneeded image files and make format of file names uniformly (only lowercase)
 last change $Date$
