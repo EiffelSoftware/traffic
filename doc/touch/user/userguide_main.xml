@@ -10,28 +10,14 @@
         <date>$Date: 2006/03/26 10:54:24 $</date>
     </chapterinfo>
 
-    <title>Touch-Examples Userguide</title>
+    <title>Touch-Examples User Guide</title>
     <para>
     	
-	TOUCH implements some of the examples of the book ''Touch of Class''. 
-	
-	<!--
-	Note that the examples as described in TOUCH are not totally equivalent 
-	to their description in the text book. At the time of this writing not 
-	all the examples of the book are implemented yet. So TOUCH needs to be 
-	taken with a pinch of salt! 
-	-->
-
+	<projectname>Touch</projectname> implements some of the examples of 
+	the book ''<emphasis>A Touch of Class</emphasis>''. 
 
     </para>
 
-<!--    <para>
-        <image src="image/touch_preview_window.png"/>
-    </para>
-    <para>
-        <emphasis>Figure 1: The Main Window</emphasis>
-    </para>
---> 
 	<section id="application">
 		<title>
 			How does this application work?
@@ -39,6 +25,8 @@
 		<para>
 			Each chapter respectively each example has its own application. All examples look almost the 
 			same, except for some minor changes to meet the requirements of the individual exercise. 
+		</para>
+		<para>
 			The window contains a square to display the map and a control panel at the right side. 
 			The control panel consists of two parts: One is for navigating throuch the map using for 
 			example zoom in or zoom out and the other is the console where possible output is displayed. 
@@ -46,10 +34,13 @@
 			Dependant on the exercise there are more buttons to click (for example a restart button etc.).
 		</para>
 	    <para>
-	        <image src="image/touch_preview_window.png"/>
+			The button ''click here'' starts the execution of the example. 
+		</para>
+	    <para>
+	        <image src="image/preview_window.png"/>
 	    </para>
 	    <para>
-	        <emphasis>Figure 2: Example Scene </emphasis>
+	        <emphasis>Figure 1: Example Scene </emphasis>
 	    </para>
 	    <para>
 		 You navigate on the map by pressing the mouse buttons. 
