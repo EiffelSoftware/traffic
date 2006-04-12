@@ -183,5 +183,21 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 		
+	Louvre_Building: TOUCH_BUILDING is
+			-- The building at the place of Louvre
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.make_building_at_place(Paris.place ("place Palais Royal Musee du Louvre"))
+		end
+		
+	Route1: TOUCH_ROUTE is
+			-- The route
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.make_route1 ()
+		end
+
 end
 		
