@@ -117,6 +117,32 @@ feature -- Element change
 			internal_map.add_building (a_building)
 		end
 		
+	make_building_at_place (a_place: TRAFFIC_PLACE): TOUCH_BUILDING is
+			-- Make a building at a defined place.
+		require
+			a_traffic_place_exists: a_place /= Void
+		do
+			create Result.make_at_place(a_place, internal_map_widget)
+		end
+		
+	make_route1(): TOUCH_ROUTE is
+			-- Make a route with places form 'a_places_list'.
+		local
+				temp_places: LINKED_LIST [TRAFFIC_PLACE]
+		do					
+ 			create temp_places.make
+			temp_places.force (internal_map_widget.map.place ("place Concorde"))
+			temp_places.force (internal_map_widget.map.place ("place Republique"))
+						
+			create Result.make_route(temp_places, internal_map_widget)
+		end
+		
+	make_empty_route(a_map: TRAFFIC_MAP): TOUCH_ROUTE is
+			-- Make an empty touch route.
+		do			
+			create Result.make_empty_route(a_map)
+		end	
+		
 	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
 			-- Add traveler 'a_traveler' to map.
 			require
@@ -258,6 +284,7 @@ feature -- Access
 		do
 			Result := internal_map.line_sections_of_place (a_name)
 		end
+
 
 feature -- Basic operation
 
