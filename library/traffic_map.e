@@ -245,6 +245,97 @@ feature -- Element change
 			internal_buildings.item (4).wipe_out
 		end
 		
+	remove_one_building (a_building: TRAFFIC_BUILDING) is
+			-- Delete the 'a_building' from the internal_buildings array.
+		local
+			index_to_remove, index: INTEGER
+		do			
+			if (a_building.corner1.x>=0 and a_building.corner1.y>=0) or
+			   (a_building.corner2.x>=0 and a_building.corner2.y>=0) or
+			   (a_building.corner3.x>=0 and a_building.corner3.y>=0) or
+			   (a_building.corner4.x>=0 and a_building.corner4.y>=0)
+			then		
+				from
+					internal_buildings.item(1).start
+					index := 1
+				until
+					internal_buildings.item(1).after
+				loop
+					if internal_buildings.item(1).item.center = a_building.center then
+						index_to_remove := index
+					end
+					index := index + 1
+					internal_buildings.item (1).forth
+				end	
+				internal_buildings.item(1).go_i_th (index_to_remove)
+				internal_buildings.item(1).remove		
+			end
+			
+			if (a_building.corner1.x<=0 and a_building.corner1.y>=0) or
+			   (a_building.corner2.x<=0 and a_building.corner2.y>=0) or
+			   (a_building.corner3.x<=0 and a_building.corner3.y>=0) or
+			   (a_building.corner4.x<=0 and a_building.corner4.y>=0)
+			then
+				from
+					internal_buildings.item(2).start
+					index := 1
+				until
+					internal_buildings.item(2).after
+				loop
+					if internal_buildings.item(2).item.center = a_building.center then
+						index_to_remove := index
+					end
+					index := index + 1
+					internal_buildings.item (2).forth
+				end	
+				internal_buildings.item(2).go_i_th (index_to_remove)
+				internal_buildings.item(2).remove		
+			end
+			
+			if (a_building.corner1.x>=0 and a_building.corner1.y<=0) or
+			   (a_building.corner2.x>=0 and a_building.corner2.y<=0) or
+			   (a_building.corner3.x>=0 and a_building.corner3.y<=0) or
+			   (a_building.corner4.x>=0 and a_building.corner4.y<=0)
+			then
+				from
+					internal_buildings.item(3).start
+					index := 1
+				until
+					internal_buildings.item(3).after
+				loop
+					if internal_buildings.item(3).item.center = a_building.center then
+						index_to_remove := index
+					end
+					index := index + 1
+					internal_buildings.item (3).forth
+				end	
+				internal_buildings.item(3).go_i_th (index_to_remove)
+				internal_buildings.item(3).remove		
+			end
+			
+			if (a_building.corner1.x<=0 and a_building.corner1.y<=0) or
+			   (a_building.corner2.x<=0 and a_building.corner2.y<=0) or
+			   (a_building.corner3.x<=0 and a_building.corner3.y<=0) or
+			   (a_building.corner4.x<=0 and a_building.corner4.y<=0)
+			then
+				from
+					internal_buildings.item(4).start
+					index := 1
+				until
+					internal_buildings.item(4).after
+				loop
+					if internal_buildings.item(4).item.center = a_building.center then
+						index_to_remove := index
+					end
+					index := index + 1
+					internal_buildings.item (4).forth
+				end	
+				
+				internal_buildings.item(4).go_i_th (index_to_remove)
+				internal_buildings.item(4).remove			
+			end
+		end
+		
 		
 	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
 			-- Add traveler 'a_traveler' to map.
@@ -252,9 +343,7 @@ feature -- Element change
 				a_traveler_exists: a_traveler /= Void
 			do
 				internal_travelers.force (a_traveler, a_traveler.index)
-			end
-		
-	
+			end	
 
 
 	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
