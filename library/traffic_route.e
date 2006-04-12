@@ -15,7 +15,7 @@ inherit
 create
 	make, make_empty
 
-feature {NONE} -- Initialization
+feature -- Initialization
 
 	make_empty (a_map: TRAFFIC_MAP) is
 			-- Create empty route on map `a_map'.
@@ -170,6 +170,7 @@ feature -- Basic operation
 				end
 			end
 		end
+
 
 	out: STRING is
 			-- Textual Representation
