@@ -460,12 +460,6 @@ feature -- Options
 			traffic_lines.unhighlight_single_line (a_line)
 		end		
 	
-	set_single_line_highlighted_5sec(a_line: TRAFFIC_LINE) is
-			-- a_line is highlighted
-		do
-			traffic_lines.highlight_single_line_for_5sec (a_line)
-		end
-	
 	set_show_shortest_path (b: BOOLEAN) is
 			-- Set `show_shortest_path'.
 		do
@@ -546,7 +540,7 @@ feature -- Options
 	
 		end
 	
-		has_collision (a_poly: EM_COLLIDABLE): BOOLEAN is
+	has_collision (a_poly: EM_COLLIDABLE): BOOLEAN is
 			-- Is there a collision?
 		require
 			a_poly /= void
@@ -584,6 +578,12 @@ feature -- Options
 			traffic_buildings.add_building (a_building)
 		end
 		
+	delete_one_building(a_building: TRAFFIC_BUILDING) is
+			-- Delete 'a_building' from map.
+		do
+			traffic_buildings.delete_one_building (a_building)
+		end
+				
 	add_buildings_along_lines is	
 			-- Add buildings along all lines (expect railway).
 
@@ -775,6 +775,13 @@ feature -- Options
 			do
 				traffic_traveler.add_traveler (a_traveler, map)
 			end
+	
+	delete_traveler (a_traveler: TRAFFIC_TRAVELER) is
+			-- Remove 'a_traveler' form the map. 
+			do 
+				traffic_traveler.remove_specific_traveler (a_traveler)
+			end
+		
 	
 	sun_shown: BOOLEAN
 			-- Should sun be displayed?
