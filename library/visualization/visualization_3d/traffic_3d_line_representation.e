@@ -337,23 +337,6 @@ feature -- Basic operations
 			end
 			is_highlighted := old_is_highlighted
 		end				
-	
-	highlight_single_line_for_5sec (a_line: TRAFFIC_LINE) is	
-			-- Highlight `a_line' for 5 seconds and reset it. 
-		require
-			a_line_exists: a_line /= Void
-		do 
-			highlight_single_line(a_line)
-			time.add_timed_procedure (agent end_highlighting (a_line), 5000)
-		end	
-		
-	end_highlighting (a_line: TRAFFIC_LINE) is
-			-- End highlighting of `a_line'.
-		require
-			a_line_exists: a_line /= Void
-		do
-			unhighlight_single_line (a_line)
-		end
 				
 	unhighlight_all_lines is
 			-- Unhighlight all the lines.
