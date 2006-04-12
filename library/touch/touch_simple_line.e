@@ -11,6 +11,11 @@ inherit
 		redefine 
 			out 
 		end
+		
+	TOUCH_TIMING
+		undefine
+			out
+		end
 
 create 
 	make_with_line_and_representation
@@ -179,7 +184,10 @@ feature -- Basic operations
 	highlight_for_5_seconds is 
 			-- Highlight the line for five seconds.
 		do
-			internal_rep.highlight_single_line_for_5sec(internal_line)
+--			internal_rep.highlight_single_line_for_5sec(internal_line)
+			highlight
+			wait(5000)
+			unhighlight
 		end	
 
 feature -- Output
