@@ -12,7 +12,8 @@ inherit
 
 	TRAFFIC_PARSE_ERROR_CONSTANTS
 		redefine
-			set_error
+			set_error,
+			is_complete
 		end
 
 feature -- Initialization
@@ -45,10 +46,10 @@ feature -- Access
 
 	parent: TRAFFIC_NODE_PROCESSOR
 			-- Parent processor.
-			
+
 	data: ANY
 			-- Data from subnodes for parent.
-			
+
 	attribute (a_name: STRING): STRING is
 			-- Attribute named `a_name'.
 		require
@@ -61,7 +62,7 @@ feature -- Access
 		ensure
 			Result_exists: Result /= Void
 		end
-		
+
 	attribute_integer (a_name: STRING): INTEGER is
 			-- Integer attribute named `a_name'.
 		require
@@ -131,7 +132,7 @@ feature -- Access
 		ensure
 			Result_exists: Result /= Void
 		end
-		
+
 	allowed_subnode_types: ARRAY [STRING] is
 			-- Table of allowed subnode types.
 		do
@@ -164,7 +165,7 @@ feature -- Measurement
 		do
 			Result := subnodes.count
 		end
-		
+
 feature -- Status report
 
 	has_subnodes: BOOLEAN is
@@ -172,7 +173,7 @@ feature -- Status report
 		do
 			Result := (subnode_count > 0)
 		end
-		
+
 	has_source: BOOLEAN is
 			-- Is a source set?
 		do
@@ -190,7 +191,7 @@ feature -- Status report
 		do
 			Result := (parent /= Void)
 		end
-		
+
 	has_attribute (a_name: STRING): BOOLEAN is
 			-- Is there an attribute named `a_name'?
 		require
@@ -251,14 +252,14 @@ feature -- Status report
 		do
 			Result := has_source and then source.text /= Void
 		end
-		
+
 	is_reset: BOOLEAN is
 			-- Is processor in default state?
 		do
-			Result := not has_source and not has_target and not has_parent and 
+			Result := not has_source and not has_target and not has_parent and
 				not has_subnodes and not has_error
 		end
-		
+
 feature -- Status setting
 
 	set_source (an_element: XM_ELEMENT) is
@@ -320,7 +321,14 @@ feature {TRAFFIC_NODE_PROCESSOR} -- Status setting
 				end
 			end
 		end
-			
+
+feature {TRAFFIC_NODE_PROCESSOR} -- Status report
+
+	is_complete	(a_code: INTEGER; an_error_string_array: ARRAY [STRING]): BOOLEAN is
+		-- redefined to provide visibility as it is used in the precondition of set_error
+		do
+			Result := Precursor(a_code, an_error_string_array)
+		end
 
 feature -- Basic operations
 
@@ -366,9 +374,9 @@ feature -- Basic operations
 				if not has_error then
 					p.set_source (n)
 					p.set_parent (Current)
-					
+
 					p.set_map_factory (map_factory)
-					
+
 					if has_target then
 						p.set_target (target)
 					end
@@ -415,7 +423,7 @@ feature {NONE} -- Implementation
 				has_error or i > el.count
 			loop
 				e := el.item (i)
-				if Allowed_subnode_types.has (e.name) then 
+				if Allowed_subnode_types.has (e.name) then
 					subnodes.extend (e)
 				else
 					set_error (Unknown_subnode, << e.name, name >>)
