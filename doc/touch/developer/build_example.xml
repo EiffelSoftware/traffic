@@ -11,7 +11,7 @@
         <date>$Date: 2006/03/26 10:54:24 $</date>
     </chapterinfo>
 
-	<title>Building a new example</title>
+	<title>Building a New Example</title>
 	<para>
 		To create and add a new example to the 
 		<projectname>TOUCH_EXAMPLES</projectname> you have to do the following steps:
@@ -26,11 +26,6 @@
             <listitem>
                 <para>
                     <indexlink url="#creation">Create 3 new classes</indexlink>
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    <indexlink url="#implementation">Implement needed features</indexlink>
                 </para>
             </listitem>
         </itemizedlist>
@@ -64,6 +59,9 @@
 		<para>
 			The third class <classname>EXAMPLENAME_3D_SCENE</classname> sets the first scene and 
 			invokes the examplecode from <classname>EXAMPLENAME</classname>.
+		</para>	
+		<para>
+			One code example of all three classes can be seen here: <link url="new_example.html">Classes Needed for a New Example</link>.	
 		</para>		
 		    <para>
 		        <image src="image/create_class.bmp"/>
@@ -72,60 +70,7 @@
 		        <emphasis>Figure 3: Creating a new class</emphasis>
 		    </para>		
 	</section>
-	<section id = "implementation">
-		<title>Implement needed features</title>	
-		<para>
-			Inheriting from <classname>TOUCH_EXAMPLE</classname> requires you to give an implementation for 
-			the two features <featurename>description</featurename> and <featurename>run</featurename>. 
-			You can also redefine name to give your example an other name than the name of your class. 
-			If you don't redefine <featurename>run_with_scene</featurename> a standard scene and an empty
-			map is set up for you. A simple example could look like the following:
-		</para>
-		
-		    <para>
-<!--		        <image src="image/simple_example.png"/>-->
-			<programlisting>
-<keyword>class</keyword>
-	<classname>SIMPLE_EXAMPLE</classname>
 
-<keyword>inherit</keyword>
-	<classname>TOUCH_EXAMPLE</classname>
-		<keyword>redefine</keyword>
-			<featurename>run_with_scene</featurename>
-		<keyword>end</keyword>
-
-<keyword>feature</keyword> <comment>Access</comment>
-	<featurename>description</featurename>: <classname>STRING</classname> <keyword>is</keyword>
-		<keyword>once</keyword>
-			<keyword>Result</keyword> := "Hello World Example"
-		<keyword>end</keyword>
-
-<keyword>feature</keyword> <comment>Basic operations</comment>
-	<featurename>run_with_scene</featurename> (exit_scene: <classname>EM_SCENE</classname>): <classname>EM_SCENE</classname> <keyword>is</keyword>
-		<keyword>local</keyword>
-			<variablename>example_scene</variablename>: <classname>TOUCH_SIMPLE_TRAFFIC_SCENE</classname>
-		<keyword>do</keyword>
-			<comment>Create the scene we want our example to run</comment>
-			create example_scene.make_with_zurich_little (Current)
-			<comment>Set the exit_scene</comment>
-			example_scene.set_next_scene (exit_scene)
-			<comment>Return scene</comment>
-			<keyword>Result</keyword> := example_scene
-		<keyword>end</keyword>
-		
-	<featurename>run</featurename> (a_runtime: <classname>TOUCH_EXAMPLE_RUNTIME</classname>) <keyword>is</keyword>
-		<keyword>do</keyword>
-			<comment>Ouptut Hello World</comment>
-			a_runtime.console_out ("Hello World")
-		<keyword>end</keyword>
-		
-<keyword>end</keyword> <comment>class SIMPLE_EXAMPLE</comment>
-				
-				</programlisting>
-				
-		    </para>	
-
-	</section>
 	<toplink/>
 </chapter>
 
