@@ -28,6 +28,9 @@
 	<itemizedlist>
 		
 		<listitem>
+			<link url="#touch_building">TOUCH_BUILDING</link>
+		</listitem>
+		<listitem>
 			<link url="#touch_console">TOUCH_CONSOLE</link>
 		</listitem>
 		<listitem>
@@ -38,6 +41,9 @@
 		</listitem>
 		<listitem>
 			<link url="#touch_paris_objects">TOUCH_PARIS_OBJECTS</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_route">TOUCH_ROUTE</link>
 		</listitem>
 		<listitem>
 			<link url="#touch_simple_line">TOUCH_SIMPLE_LINE</link>
@@ -60,6 +66,33 @@
 
 	</itemizedlist>
 </section>
+
+	<section id="touch_building">
+		<title>TOUCH_BUILDING</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TOUCH_BUILDING</classname> is a <classname>TRAFFIC_BUILDING</classname> 
+			which can be spotlighted and is created at a specific place. 
+		</para>
+		<para>
+			The features <featurename>make_at_place</featurename> takes a trafic_place and the 
+			touch_3d_map_widget and creates a building at the location of the place. The center of
+			the building is at (place_position.x, place_position.y + 1). 
+		</para>
+		<para>
+			The other calls are forwarded to the <classname>TRAFFIC_BUILDING</classname>. 
+		</para>
+
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_building_clients.png"/>
+		</para>
+		<toplink/>
+	</section>
 
 	<section id="touch_console">
 		<title>TOUCH_CONSOLE</title>
@@ -153,13 +186,36 @@
 			<featurename>is_paris_loaded</featurename>.
 		</para>
 
-
 		<title>Class overview</title>
 		<para>
 			<image src="image/touch_paris_objects.png"/>
 		</para>
 		<toplink/>
 	</section>
+
+		<section id="touch_route">
+		<title>TOUCH_ROUTE</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+				This class forwards calls to the class <classname>TRAFFIC_ROUTE</classname> 
+				and provides a traveler which travels along the route. 
+		</para>
+		<para>
+				The feature <featurename>animate</featurename> triggers the traveler to travel
+				along the route. After reaching its destination, the traveler is removed again. 
+		</para>
+
+		<title>Class overview</title>
+		<para>
+				<image src="image/touch_route.png"/>
+		</para>
+		<toplink/>
+	</section>
+
 
 	<section id="touch_simple_line">
 		<title>TOUCH_SIMPLE_LINE</title>
