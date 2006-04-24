@@ -78,10 +78,12 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 					else
 						graphic.set_origin (info.position.x, traveler_offset, info.position.y)
 						graphic.set_rotation (0, info.angle_x, 0)
-						graphic.draw			
+						graphic.draw
+						travelers.forth			
 					end
-				end			
-				travelers.forth
+				else			
+					travelers.forth
+				end
 			end
 		end
 			
@@ -90,7 +92,7 @@ feature -- Collision detection
 	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic lines.
 	
-feature{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
+feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 		
 		add_traveler (a_traveler: TRAFFIC_TRAVELER; a_map: TRAFFIC_MAP) is
 				-- a passenger walks from origin to destination with 'speed'.
@@ -151,8 +153,9 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 						if traveler.traffic_type.name.is_equal ("walking") then
 							travelers.remove
 							has_finished := True
+						else
+							travelers.forth
 						end
-						travelers.forth
 					end
 				end
 				
@@ -174,8 +177,9 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 							travelers.remove
 							map.remove_traveler (a_traveler.index)
 							found := True
+						else
+							travelers.forth
 						end
-						travelers.forth
 					end
 				end
 			
@@ -219,7 +223,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 				end
 	
 	
-feature{TRAFFIC_3D_MAP_WIDGET}
+feature --{TRAFFIC_3D_MAP_WIDGET}
 
 	travelers: LINKED_LIST [TUPLE[EM_3D_OBJECT, TRAFFIC_TRAVELER]]		
 		-- Container for all traveler.
