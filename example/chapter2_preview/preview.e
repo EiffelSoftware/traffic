@@ -22,18 +22,22 @@ feature	 -- Example
 	
 			Line8.highlight_for_5_seconds
 			
-	--		Route1.animate
+--			Route1.animate
 
 		end
 		
 	explore_on_button_click is
-			-- Do nothing. 
+			-- Execute preview example. 
 		do
+			-- button disable ???
+			
+			Route1.animate
+		
 			Louvre_Building.spotlight_for_5_seconds
 
 			Line8.highlight_for_5_seconds
 			
-			Route1.animate
+			
 		end
 		
 end
