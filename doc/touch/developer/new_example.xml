@@ -57,11 +57,11 @@
 	</section>
 
 	<section id = "examplename">
-		<title>examplename: preview</title>
+		<title>EXAMPLENAME: preview</title>
 		<para>
 			Every example, like the preview example, has to inherit from <classname>TOURISM</classname>. 
 			The class <classname>TOURISM</classname> contains all the predefined objects needed for the examples
-			<classname>PREVIEW</classname> judt needs the specific code which will be executed for the particular 
+			<classname>PREVIEW</classname> just needs the specific code which will be executed for the particular 
 			example.
 		</para>	
 		<para>
@@ -105,7 +105,7 @@
 
 	<section id = "examplename_3d_application">
 
-		<title>examplename_3d_application: preview_3d_application</title>
+		<title>EXAMPLENAME_3D_APPLICATION: preview_3d_application</title>
 		<para>
 			<classname>PREVIEW_3D_APPLICATION</classname> is the root class of the whole example. 
 			Inheriting from <classname>TOUCH_3D_APPLICATION</classname> requires the implementation
@@ -156,7 +156,7 @@
 
 
 	<section id = "examplename_3d_scene">
-		<title>examplename_3d_scene: preview_3d_scene</title>
+		<title>EXAMPLENAME_3D_SCENE: preview_3d_scene</title>
 	
 		<para>
 			The third class <classname>EXAMPLENAME_3D_SCENE</classname>, respectively
