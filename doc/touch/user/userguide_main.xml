@@ -42,6 +42,12 @@
 	    <para>
 	        <emphasis>Figure 1: Example Scene </emphasis>
 	    </para>
+	</section>
+
+	<section id="navigation">
+		<title>
+			Navigation
+		</title>
 	    <para>
 		 You navigate on the map by pressing the mouse buttons. 
 	    </para>
