@@ -23,10 +23,10 @@
     <para> This documentation will guide you through the source code of <projectname>Touch</projectname>
 	<itemizedlist>
 		<listitem>
-			<link url="classes.html">Touch-Example Classes</link>
+			<link url="classes.html">Touch Library Classes</link>
 		</listitem>
 		<listitem>
-            <link url="new_example.html">Classes needed for a new Example</link>
+            <link url="new_example.html">Classes Needed for a New Example</link>
 			<para>
 				
 			</para>
