@@ -18,16 +18,24 @@ create
 feature -- Interface
 	
 	make is
-			-- Create all gui elements.
-		local
-			preview: PREVIEW
+			-- Create all gui elements.			
 		do
 			make_touch_scene
 
 			create preview
 			preview.run (map_widget, console)	
 	
-			click_here_button.clicked_event.subscribe (agent preview.explore_on_button_click)	
+			click_here_button.clicked_event.subscribe (agent button_click)	
 		end
+
+	button_click is
+			-- Disable the button for the execution of preview.explore.
+		do
+			click_here_button.disable
+			preview.explore_on_button_click
+			click_here_button.enable
+		end
+
+	preview: PREVIEW		
 		
 end
