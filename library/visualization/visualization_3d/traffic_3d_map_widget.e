@@ -49,17 +49,22 @@ feature -- Initialisation
 				z_coord := -9
 				y_rotation := 180
 				x_rotation := 40
-				sun_angle := 0
 				
+				-- Create the Time Object
+				create traffic_time.make_day (5)
+				-- traffic_time.start_time
+				
+				-- Create the Sun Representation and Sun Light
+				-- Sunlight will have em_gl_light0
+				create traffic_sun_representation.make(traffic_time)
+					
 				-- various creations
-				create sun_light.make (em_gl_light0 )
 				create constant_light.make (em_gl_light1)
 				
 				plane := create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.5,0.5,0.5))
 				create_coord_system
 
-				create traffic_time.make_day (5)
-
+				
 				mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 				create building_clicked_event.default_create
 				create place_clicked_event
@@ -71,7 +76,8 @@ feature -- Initialisation
 				building_id:= 1				
 
 			ensure
-				sun_created: sun_light /= Void
+				time_created: traffic_time /= Void
+				sun_repr_created: traffic_sun_representation /= Void
 				constant_light_created: constant_light /= Void
 			end
 
@@ -144,11 +150,6 @@ feature -- Drawing
 			gl_depth_func_external (em_gl_lequal)
 			gl_enable_external (em_gl_depth_test)
 			
-			sun_light.ambient.set_xyzt (0, 0, 0, 1)
-			sun_light.specular.set_xyzt (0, 0, 0, 1)
-			sun_light.diffuse.set_xyzt (1, 1, 1, 1)
-			sun_light.apply_values
-			
 			constant_light.ambient.set_xyzt (0, 0, 0, 1)
 			constant_light.specular.set_xyzt (0, 0, 0, 1)
 			constant_light.diffuse.set_xyzt (1, 1, 1, 1) -- White
@@ -161,43 +162,15 @@ feature -- Drawing
 		
 	draw is
 			-- Draw the map.
-		local
-			sun_pos: GL_VECTOR_3D[DOUBLE]
 		do
-			-- Change angle of sun
-			sun_angle := sun_angle + 0.005
-			if sun_angle > 5 then
-				sun_angle := sun_angle - 5
-			end
-			
 			if sun_shown then
-				-- Draw sunset/sunrise differently
-				if sun_angle < 1.0 or sun_angle > 5 then
-					create sun_pos.make_xyz (0,0,0)
-				else
-					if sun_angle < 2 then
-						sun_light.diffuse.set_xyzt (0.8 + 0.2*(sun_angle - 1), 0.2 + 0.6*(sun_angle - 1), 0.1 + 0.9*(sun_angle - 1), 1)
-					elseif sun_angle > 4 then
-						sun_light.diffuse.set_xyzt (1 - 0.2*(sun_angle - 4), 1 - 0.6*(sun_angle - 4), 1 - 0.9*(sun_angle - 4), 1)
-					end
-					create sun_pos.make_xyz (-sine(sun_angle), -cosine(sun_angle), 0)
-				end
-				sun_light.position.set_xyz (sun_pos.x, sun_pos.y, 0)
-				sun_light.apply_values
-				
-				sun_light.enable
+				-- Enable Sunlight and draw Sun
 				constant_light.disable
-				
-				-- Draw "Sun"
-				gl_matrix_mode_external (em_gl_modelview_matrix)
-				gl_push_matrix_external
-				gl_color3d_external (1, 1, 0)
-				gl_translated_external (0, 8, 0)
-				gl_rotated_external (90, 1, 0, 0)
-				glu_sphere_external (glu_new_quadric, 1, 72, 100)
-				gl_pop_matrix_external
+				traffic_sun_representation.enable_sunlight
+				traffic_sun_representation.draw
 			else
-				sun_light.disable
+				-- Enable Constant Light
+				traffic_sun_representation.disable_sunlight
 				constant_light.enable
 			end
 
@@ -871,9 +844,6 @@ feature {NONE} -- Attributes
 	traveler_index: INTEGER
 			-- Index such that it is unique.
 	
-	sun_angle: DOUBLE
-			-- Angle of sun rotation.
-			
 	focus: DOUBLE
 			-- Used to zoom in or out.
 			
@@ -925,6 +895,9 @@ feature -- Representations
 	traffic_buildings: TRAFFIC_3D_BUILDING_REPRESENTATION
 		-- container for the buildings.				
 			
+	traffic_sun_representation: TRAFFIC_3D_SUN_REPRESENTATION
+		-- The Sun & Sunlight Representation
+
 feature {NONE} -- Implementation
 
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
@@ -936,13 +909,11 @@ feature {NONE} -- Implementation
 	buildings_polygons: ARRAYED_LIST [EM_POLYGON_CONVEX_COLLIDABLE]
 			-- Building collision polygons
 		
-	sun_light: GL_LIGHT
-			-- Light that imitates the sun.
-			
 	constant_light: GL_LIGHT
 			-- Constant white light from one direction.
 			
 	plane: EM_3D_OBJECT
+
 
 invariant
 	number_of_buildings_valid: number_of_buildings >= 0
