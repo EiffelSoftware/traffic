@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 	make(traffic_time_ref: TRAFFIC_TIME) is
 			-- Initialize `Current'.
 		require
-			time_object_valid: TRAFFIC_TIME /= Void
+			time_object_valid: traffic_time_ref /= Void
 		do
 			-- Create the Sun Object and Sunlight
 			create traffic_sun.make

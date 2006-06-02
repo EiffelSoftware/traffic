@@ -11,44 +11,56 @@ inherit
 	
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
+		
+	EM_SHARED_SCENE
 	
 create
 	make_day, make
 	
 feature -- Creation
 
+	stop: BOOLEAN 
+	
 	make is
-			-- create a new object without setting the time.
+			-- Set minutes for a simulated day to the default values.
 		do
-			callback_delay := 10
-			create all_procedures.make
-			create all_tours.make
-			
-			actual_hour := 0
-			actual_minute := 0
-			actual_second := 0
-			
-			add_callback_procedure (agent time_count)		
+			-- What is this for?
+			-- callback_delay := 10
+			make_day (default_simulated_day_minutes)
+--			create all_procedures.make
+--			create all_tours.make
+--			
+--			actual_hour := 0
+--			actual_minute := 0
+--			actual_second := 0
+--			
+--			add_callback_procedure (agent time_count)	
+		ensure	
+			simulated_minutes_set: simulated_minutes = default_simulated_day_minutes
 		end
 		
 
 	make_day(simulated_day_minutes: INTEGER) is
 			-- the day lasts for 'simulated_day_minutes'.
 	require
-		simulated_day_minutes >= 5
+		simulated_day_minutes >= 1
 	do		
 		simulated_minutes := simulated_day_minutes
 		change_simulated_time (simulated_minutes)
 		create all_procedures.make
 		create all_tours.make
-
+		
+--		running_scene.event_loop.update_event.subscribe (agent call_procedure)
+--		running_scene.event_loop.update_event.subscribe (agent call_tours )
 		
 		actual_hour := 0
 		actual_minute := 0
 		actual_second := 0
+
+		update_agent := agent update_time
 		
-		add_callback_procedure (agent time_count)
-		
+--		add_callback_procedure (agent time_count)
+				
 		actual_hour := 0
 		actual_minute := 0
 		actual_second := 0
@@ -80,18 +92,15 @@ feature  --Time Attributes
 	change_simulated_time (simulated_day_minutes: INTEGER) is
 			-- the day lasts for 'simulated_day_minutes'.
 		require
-			simulated_day_minutes >= 5
+			simulated_day_minutes >= 1
 		local
 			temp_delay : INTEGER
 		do		
 			simulated_minutes := simulated_day_minutes
-			temp_delay := ((simulated_minutes * seconds_per_minute * milliseconds_per_second) / (hours_per_day *minutes_per_hour)).rounded
-			if temp_delay < 10 then
-				callback_delay := 10
-			else	
-				callback_delay := temp_delay
+			if is_time_running then
+				pause_time
+				resume_time
 			end
-			
 		ensure
 			simulated_minutes = simulated_day_minutes
 		end
@@ -99,28 +108,25 @@ feature  --Time Attributes
 	
 feature{NONE} -- Handling
 
-	time_count is	
+	update_time is	
 			-- start the time.
 			require
 				actual_second >= 0
 				actual_minute >= 0
 				actual_hour >= 0
+			local
+				real_mili_secs: INTEGER	
+				sim_secs: DOUBLE
 			do
---				if actual_second < seconds_per_minute - 1 then
---					actual_second := actual_second + 15
---				else
-					if actual_minute < minutes_per_hour - 1 then
-						actual_minute := actual_minute + 1
-					else
-						if actual_hour < hours_per_day - 1 then
-							actual_hour := actual_hour + 1
-						else
-							actual_hour := 0
-						end
-						actual_minute := 0
-					end
---					actual_second := 0
---				end
+				if is_time_running then
+					real_mili_secs := time.ticks - real_ms_start	
+					sim_secs := 1440/simulated_minutes*real_mili_secs/1000.0 + sim_sec_start
+					actual_second := sim_secs.rounded\\60
+					actual_minute := (sim_secs/60).floor\\60
+					actual_hour := (sim_secs/3600).floor\\24
+					call_tours
+					call_procedure					
+				end
 			end
 		
 		
@@ -137,8 +143,11 @@ feature -- time
 				not is_time_running
 			do
 				is_time_running := True
-				time.add_timed_callback (callback_delay, agent call_procedure)
-				time.add_timed_callback (70, agent call_tours)
+				running_scene.event_loop.update_event.subscribe (update_agent)
+				real_ms_start := time.ticks
+				sim_sec_start := 0
+--				time.add_timed_callback (callback_delay, agent call_procedure)
+--				time.add_timed_callback (70, agent call_tours)
 			ensure
 				is_time_running
 			end
@@ -149,6 +158,9 @@ feature -- time
 				is_time_running
 			do
 				is_time_running := False
+				stop := True
+				running_scene.event_loop.update_event.unsubscribe (update_agent)
+				sim_sec_start := (1440/simulated_minutes*(time.ticks - real_ms_start)/1000.0 + sim_sec_start).floor
 			ensure
 				not is_time_running
 			end
@@ -158,7 +170,9 @@ feature -- time
 			require
 				not is_time_running
 			do
-				start_time
+				is_time_running := True
+				running_scene.event_loop.update_event.subscribe (update_agent)
+				real_ms_start := time.ticks
 			ensure
 				is_time_running
 			end
@@ -170,12 +184,20 @@ feature -- time
 				actual_minute := 0
 				actual_second := 0
 				is_time_running := False
+				real_ms_start := 0
+				sim_sec_start := 0
+				running_scene.event_loop.update_event.unsubscribe (update_agent)
 			ensure
 				is_time_running = False
 				actual_hour = 0
 				actual_minute = 0
 				actual_second = 0
 			end
+			
+feature -- Constants
+
+	Default_simulated_day_minutes: INTEGER is 1
+		-- Default number of minutes that a day lasts
 		
 feature{NONE} -- Attributes		
 
@@ -184,6 +206,15 @@ feature{NONE} -- Attributes
 	
 	all_tours: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
 		-- container for all tours.
+		
+	real_ms_start: INTEGER
+		-- Value of `ticks' in EM_TIME when our time counting started
+		
+	sim_sec_start: INTEGER
+		-- Value of simulated seconds that the `real_ms_start' denotes (used for pausing)
+		
+	update_agent: PROCEDURE [ANY, TUPLE]
+		-- Agent used for updating current simulated time
 
 feature -- Procedures
 	
@@ -199,7 +230,7 @@ feature -- Procedures
 				all_tours.force (a_tour_procedure)
 			end
 
-	call_tours (an_interval: INTEGER): INTEGER is
+	call_tours is
 			-- call all procedures all 'an_interval' milliseconds.
 			do
 				from
@@ -210,15 +241,9 @@ feature -- Procedures
 					all_tours.item.call ([Void])
 					all_tours.forth
 				end
-				if is_time_running then
-					Result := an_interval	
-				else
-					Result := 0
-				end
-				
 			end		
 
-	call_procedure (an_interval: INTEGER): INTEGER is
+	call_procedure is
 			-- call all procedures all 'an_interval' milliseconds.
 			do
 				from
@@ -229,12 +254,6 @@ feature -- Procedures
 					all_procedures.item.call ([Void])
 					all_procedures.forth
 				end
-				if is_time_running then
-					Result := an_interval	
-				else
-					Result := 0
-				end
-				
 			end
 		
 invariant

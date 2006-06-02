@@ -58,7 +58,7 @@ feature -- Basic operations
 				loader.load_map
 				set_map (loader.map)
 
-				update_passenger_number (0)
+--				update_passenger_number (0)
 				update_passenger_number (number_of_passengers)
 				
 				traffic_traveler.add_tram_per_line (map, 2)
@@ -70,7 +70,7 @@ feature -- Basic operations
 	adjust_speed is
 			-- Double the speed of the travelers.
 		do
-			map.change_traveler_speed (traffic_time.simulated_minutes / 2)
+			map.change_traveler_speed (traffic_time.simulated_minutes /2)
 		end
 
 	update_passenger_number (number: INTEGER) is	

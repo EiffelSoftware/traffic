@@ -29,7 +29,7 @@ feature {NONE} -- Initialization
 			phi := 1.0
 			radius := 50.0
 		ensure
-			Coordinates_Initialized : (theta = 0.6) and (phi = 1.0) and (radius = 100.0)
+			Coordinates_Initialized : (theta = 0.6) and (phi = 1.0) and (radius = 50.0)
 		end
 
 

@@ -323,6 +323,7 @@ feature -- Traffic map loading
 				create traffic_lines.make (map)
 				traffic_lines_polygons := traffic_lines.collision_polygons
 				create traffic_traveler.make (map, traffic_time)
+				number_of_passengers := 0
 			
 				traffic_buildings.set_map(a_map)
 --				traffic_buildings.set_collision_polygons(collision_polygons)

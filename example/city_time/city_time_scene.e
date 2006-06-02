@@ -57,7 +57,7 @@ feature -- Interface
 			toolbar_panel.add_widget (zoom_in_button)
 
 			-- time
-			simulated_time := 5
+			simulated_time := 1
 
 			-- time button
 			time_button.set_position (20 ,200)
@@ -83,7 +83,7 @@ feature -- Interface
 			toolbar_panel.add_widget (simulated_time_label)
 
 			-- simulated time
-			create time_slider.make_from_range_horizontal (5, 60)
+			create time_slider.make_from_range_horizontal (simulated_time, 60)
 			time_slider.set_position (20, 230)
 			time_slider.set_optimal_dimension (120, 20)
 			time_slider.resize_to_optimal_dimension
@@ -250,6 +250,8 @@ feature -- Event handling
 		do
 			simulated_time := number
 			label.set_text (simulated_time.out)
+			traffic_time.change_simulated_time (simulated_time)
+			map.adjust_speed
 		end
 
 	number_of_passengers_changed (label: EM_LABEL; number: INTEGER) is

@@ -376,7 +376,7 @@ feature -- Element change
 	change_traveler_speed (divisor: DOUBLE) is	
 			-- divise the speed of each traveler by divisor
 			require
-				divisor >= 2
+				divisor > 0
 			local
 				a_traveler: TRAFFIC_TRAVELER
 			do
