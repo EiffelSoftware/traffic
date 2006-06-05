@@ -20,23 +20,20 @@ inherit
 	MATH_CONST
 		export {NONE} all end
 
+	TRAFFIC_SHARED_TIME
+		
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make(traffic_time_ref: TRAFFIC_TIME) is
+	make is
 			-- Initialize `Current'.
-		require
-			time_object_valid: traffic_time_ref /= Void
 		do
 			-- Create the Sun Object and Sunlight
 			create traffic_sun.make
 			create traffic_sun_light.make(em_gl_light0)
 
-			-- Set Time
-			traffic_time := traffic_time_ref
-			
 			-- Set Sunight values
 			traffic_sun_light.ambient.set_xyzt (0, 0, 0, 1)
 			traffic_sun_light.specular.set_xyzt (0, 0, 0, 1)
@@ -46,25 +43,15 @@ feature {NONE} -- Initialization
 			-- Create Color
 			create traffic_sun_color.make_xyzt (1,1,0.5,1)
 			
-			-- Set Speed
-			traffic_sun_speed := 0.001
 		ensure
 			color_created: traffic_sun_color /= Void
 			sun_created: traffic_sun /= Void
 			sun_light_created: traffic_sun_light /= Void
-			time_object_initialized: traffic_time /= Void and traffic_time = traffic_time_ref
 		end
 
 feature -- Basic Operation
 
-	set_speed(speed: DOUBLE) is
-			-- Set the movement speed of the sun
-		do
-			traffic_sun_speed := speed
-		ensure
-			speed_set: traffic_sun_speed = speed			
-		end
-		
+	
 	enable_sunlight is
 			-- Enable the Sunlight
 		do		
@@ -83,19 +70,11 @@ feature -- Drawing
 			-- Draw the Sun
 		local
 			sun_pos: GL_VECTOR_3D[DOUBLE]
-			new_theta: DOUBLE
 		do
-			if traffic_time.is_time_running then
+			if time.is_time_running then
 				-- If the time is running, then update the Sun Coordinates
 				-- using the simulated time				
-				traffic_sun.update(traffic_time)
-			else
-				-- Otherwise just move it around using the movement speed
-				new_theta := traffic_sun.theta + traffic_sun_speed
-				if new_theta > 2*pi then
-					new_theta := new_theta - 2*pi
-				end
-				traffic_sun.set_theta(new_theta)
+				traffic_sun.update
 			end
 			
 			sun_pos := traffic_sun.position
@@ -118,9 +97,6 @@ feature -- Drawing
 		
 feature {NONE} -- Implementation
 
-	traffic_sun_speed: DOUBLE
-		-- The Movement speed of the Sun 
-		
 	traffic_sun: TRAFFIC_SUN
 		-- The Sun Object
 		
@@ -128,8 +104,6 @@ feature {NONE} -- Implementation
 		-- The Sun Light
 
 	traffic_sun_color: GL_VECTOR_4D[DOUBLE]
-				
-	traffic_time: TRAFFIC_TIME
-		-- The Time
+		-- The Color of the Sun
 
 end

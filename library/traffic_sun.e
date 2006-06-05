@@ -15,6 +15,9 @@ inherit
 			{NONE} all 
 			{ANY} pi
 		end
+		
+	TRAFFIC_SHARED_TIME
+	
 	
 create
 	make
@@ -85,13 +88,13 @@ feature -- Element change
 			New_Radius_Set: radius = new_radius
 		end
 
-	update(time: TRAFFIC_TIME) is
+	update is
 			-- Set Coordinates corresponding to time
 		require
 			time_exists: time /= Void
 		do
-			theta := (3*pi/2.0 + (2.0*pi*time.actual_hour*60.0 + time.actual_minute)/(24.0*60.0))
-			if theta > 2*pi then 
+			theta := (3*pi/2.0 + (2.0*pi*(time.actual_hour*3600.0 + time.actual_minute*60.0 + time.actual_second))/(24.0*60.0*60.0))
+			if theta >= 2*pi then 
 				theta := theta - 2*pi
 			end
 		ensure

@@ -42,7 +42,8 @@ feature -- Interface
 			create sun_checkbox.make_from_text ("Show sun")
 			create coordinates_checkbox.make_from_text ("Show coordinates")
 			create buildings_transparent_checkbox.make_from_text ("Transparent buildings")
-
+			create time_running_checkbox.make_from_text("Simulate Time")
+			
 			-- Box and button for xml files
 			create combo_title.make_from_text ("Choose a map:")
 			create combo_box.make_from_list (search_for_xml("../map"))
@@ -204,6 +205,15 @@ feature -- Interface
 			shortest_path_checkbox.unchecked_event.subscribe (agent shortest_path_unchecked)
 			toolbar_panel.add_widget (shortest_path_checkbox)
 
+			-- Time Running Checkbox
+			time_running_checkbox.set_position (10, 410)
+			time_running_checkbox.set_background_color (bg_color)
+			time_running_checkbox.set_optimal_dimension (120,20)
+			time_running_checkbox.resize_to_optimal_dimension
+			time_running_checkbox.checked_event.subscribe (agent time_running_checked)
+			time_running_checkbox.unchecked_event.subscribe (agent time_running_unchecked)
+			toolbar_panel.add_widget (time_running_checkbox)
+						
 			-- Zoom out Button
 			zoom_out_button.set_position (180-zoom_out_button.width, 170)
 			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
@@ -421,6 +431,18 @@ feature -- Event handling
 			map.set_sun_shown (False)
 		end
 
+	time_running_checked is
+			-- Checkbox has been checked.
+		do
+			map.time.start_time
+		end
+
+	time_running_unchecked is
+			-- Checkbox has been unchecked.
+		do
+			map.time.pause_time
+		end
+
 	highlighting_checked is
 			-- Checkbox has been checked.
 		do
@@ -556,6 +578,9 @@ feature -- Widgets
 	shortest_path_checkbox: EM_CHECKBOX
 			-- Checkbox for shortest path calculation
 
+	time_running_checkbox: EM_CHECKBOX
+			-- Checkbox to start/stop time simulation
+			
 	combo_title: EM_LABEL
 			-- Title for combo box
 

@@ -26,6 +26,8 @@ inherit
 	DOUBLE_MATH
 		export {NONE} all end
 
+	TRAFFIC_SHARED_TIME
+	
 create
 	make
 	
@@ -50,13 +52,9 @@ feature -- Initialisation
 				y_rotation := 180
 				x_rotation := 40
 				
-				-- Create the Time Object
-				create traffic_time.make_day (5)
-				-- traffic_time.start_time
-				
 				-- Create the Sun Representation and Sun Light
 				-- Sunlight will have em_gl_light0
-				create traffic_sun_representation.make(traffic_time)
+				create traffic_sun_representation.make
 					
 				-- various creations
 				create constant_light.make (em_gl_light1)
@@ -70,13 +68,12 @@ feature -- Initialisation
 				create place_clicked_event
 				create traffic_buildings.make				
 
-				create randomizer.set_seed (42)
+				create randomizer.set_seed (42) 
 				create angle_randomizer.set_seed(45)
 				create buildings_polygons.make (1)
 				building_id:= 1				
 
 			ensure
-				time_created: traffic_time /= Void
 				sun_repr_created: traffic_sun_representation /= Void
 				constant_light_created: constant_light /= Void
 			end
@@ -322,7 +319,7 @@ feature -- Traffic map loading
 				traffic_places_polygons := traffic_places.collision_polygons
 				create traffic_lines.make (map)
 				traffic_lines_polygons := traffic_lines.collision_polygons
-				create traffic_traveler.make (map, traffic_time)
+				create traffic_traveler.make (map)
 				number_of_passengers := 0
 			
 				traffic_buildings.set_map(a_map)
@@ -344,9 +341,6 @@ feature -- Traffic map loading
 			
 	marked_station_changed: BOOLEAN
 			-- Has the marked station changed?
-	
-	traffic_time: TRAFFIC_TIME
-			-- Time of the system.
 	
 feature -- Options
 
@@ -918,6 +912,5 @@ feature {NONE} -- Implementation
 
 invariant
 	number_of_buildings_valid: number_of_buildings >= 0
-	traffic_time /= Void
 
 end

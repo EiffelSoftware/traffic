@@ -22,18 +22,18 @@ inherit
 	GLU_FUNCTIONS
 		export {NONE} all end
 
+	TRAFFIC_SHARED_TIME
+		
 create
 	make
 
 feature -- Initialization
 	
-	make (a_map: TRAFFIC_MAP; a_time: TRAFFIC_TIME) is
+	make (a_map: TRAFFIC_MAP) is
 			-- Create a new object.
 		require
 			map_exists: a_map /= Void
-			a_time /= Void
 		do
-			traffic_time := a_time
 			map := a_map
 			create centre.make_xyz (0, 0, 0)
 				
@@ -45,7 +45,6 @@ feature -- Initialization
 			traveler_key := 0
 		ensure
 			travelers_created: travelers /= Void
-			traffic_time = a_time
 			map /= Void
 		end
 		
@@ -130,7 +129,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					
 					traveler.set_origin (a_traveler.position.x, traveler_offset, a_traveler.position.y)
 					traveler.set_rotation (0, a_traveler.angle_x, 0)					
-					traffic_time.add_callback_tour (agent a_traveler.take_tour)
+					time.add_callback_tour (agent a_traveler.take_tour)
 					travelers.force ([traveler, a_traveler])
 					a_map.add_traveler (a_traveler)	
 					
@@ -243,9 +242,6 @@ feature{NONE} -- Attributes
 		
 	centre: GL_VECTOR_3D[DOUBLE]
 		-- Centre of the city.
-		
-	traffic_time: TRAFFIC_TIME
-		-- time where to put the travelers.
 		
 	map: TRAFFIC_MAP
 		-- city map.

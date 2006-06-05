@@ -13,7 +13,7 @@ inherit
 			prepare_drawing, 
 			draw
 		end
-		
+
 create
 	make
 	
