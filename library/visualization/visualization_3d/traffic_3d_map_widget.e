@@ -342,17 +342,6 @@ feature -- Traffic map loading
 	marked_station_changed: BOOLEAN
 			-- Has the marked station changed?
 
-feature -- Access
-
-	traffic_time: TRAFFIC_TIME is	
-			-- Return the current simulated time object
-			-- Only here for compatibility Reasons!
-			-- For access to time inherit TRAFFIC_SHARED_TIME.
-		do
-			Result := time
-		ensure
-			time_set: Result = time
-		end
 		
 feature -- Options
 
@@ -843,6 +832,20 @@ feature -- Mousevents
 	place_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE, EM_MOUSEBUTTON_EVENT]]
 			-- Event for click on place
 
+feature -- Access
+
+	traffic_time: TRAFFIC_TIME is
+			-- Return the current simulated time object
+			-- Only here for compatibility Reasons!
+			-- For access to time inherit TRAFFIC_SHARED_TIME.
+		obsolete
+			"Inherit TRAFFIC_SHARED_TIME instead."
+		do
+			Result := time
+		ensure
+			time_set: Result = time
+		end
+
 feature {NONE} -- Attributes
 
 	number_of_passengers: INTEGER
@@ -886,7 +889,6 @@ feature {NONE} -- Attributes
 	
 	angle_randomizer: RANDOM
 			-- Randomizer for angle
-
 
 feature -- Representations
 
