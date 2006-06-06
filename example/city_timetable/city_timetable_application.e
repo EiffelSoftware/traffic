@@ -43,8 +43,8 @@ feature -- Initialization
 			keyboard.enable_repeating_key_down_events (200, 100)
 			
 			set_window_icon ("../image/traffic_icon.png")
-			set_window_title ("City 3D")
-			set_application_id ("city_3d")
+			set_window_title ("City TimeTable")
+			set_application_id ("city_timetable")
 			
 			-- Set widget theme and options
 			widget_options.disable_transparency_refresh
