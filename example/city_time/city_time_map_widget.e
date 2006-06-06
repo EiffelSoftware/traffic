@@ -79,7 +79,7 @@ feature -- Basic operations
 			number >= 0
 		local
 			i: INTEGER
-			traveler: TRAFFIC_TRAVELER
+			traveler: TRAFFIC_PASSENGER
 		do
 			if number_of_passengers >= number then
 				from
@@ -213,7 +213,7 @@ feature -- {CITY_3D_SCENE}	-- Travelere objects
 	add_travelers is
 			-- fill in here the travelers and call it in load_map
 		local
-			traveler: TRAFFIC_TRAVELER
+			traveler: TRAFFIC_PASSENGER
 			temp_list: ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			create temp_list.make(1)

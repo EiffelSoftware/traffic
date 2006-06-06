@@ -191,7 +191,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					number > 0
 				local
 					lines: HASH_TABLE[TRAFFIC_LINE, STRING]
-					a_traveler: TRAFFIC_LINE_TRAVELER
+					a_tram: TRAFFIC_TRAM
 					traveling_points: LINKED_LIST [EM_VECTOR_2D]
 					i: INTEGER
 				do
@@ -202,17 +202,17 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					until
 						lines.after
 					loop	
-						create a_traveler.make_with_line (lines.item_for_iteration)
+						create a_tram.make_with_line (lines.item_for_iteration)
 						from
 							i := 1
-							create a_traveler.make_with_line (lines.item_for_iteration)
+							create a_tram.make_with_line (lines.item_for_iteration)
 						until
-							i > number or i = a_traveler.line_count
+							i > number or i = a_tram.line_count
 						loop
-							create a_traveler.make_with_line (lines.item_for_iteration)
-							a_traveler.get_place (i)
-							a_traveler.set_to_place (a_traveler.last_place)
-							add_traveler (a_traveler, a_map)
+							create a_tram.make_with_line (lines.item_for_iteration)
+							a_tram.get_place (i)
+							a_tram.set_to_place (a_tram.last_place)
+							add_traveler (a_tram, a_map)
 							i := i + 1
 						end
 						

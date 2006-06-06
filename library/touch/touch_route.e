@@ -136,7 +136,7 @@ internal_route: TRAFFIC_ROUTE
 
 itinerary: ARRAYED_LIST [EM_VECTOR_2D]
 
-traveler: TRAFFIC_TRAVELER
+traveler: TRAFFIC_PASSENGER
 
 internal_map_widget: TOUCH_3D_MAP_WIDGET
 

@@ -3,7 +3,7 @@ indexing
 	date: "9.2.2006"
 	revision: "$Revision$"
 
-class
+deferred class
 	TRAFFIC_TRAVELER
 	
 inherit	
@@ -16,104 +16,53 @@ inherit
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
 		
-create
-	make, make_directed, make_random, make_random_with_origin
-	
-feature -- Initialization
+--create
+--	make, make_directed, make_random, make_random_with_origin
+--	
+--feature -- Initialization
 
-	make is
-		-- make a new object on default positions
-		do
-			set_traffic_info ("")
-			create position.make (0, 0)
-			create polypoints.make (1)
-			create origin.make (0, 0)
-			create destination.make (0, 0)
-			virtual_speed := 0
-			traffic_type := create {TRAFFIC_TYPE_WALKING}.make
-		end
-
-	make_directed (an_itinerary: ARRAYED_LIST [EM_VECTOR_2D]; a_type: TRAFFIC_TYPE; a_speed: DOUBLE) is
-			-- create an object with defined origin and destination
-			require
-				an_itinerary /= Void
-				a_type /= Void
-				a_speed >= 0
-			do
-				create polypoints.make (1)
-				polypoints := an_itinerary
-				polypoints.start
-				set_coordinates
-				set_angle
-				traffic_type := a_type
-				virtual_speed := a_speed
-			ensure
-				origin /= Void
-				destination /= Void
-			end
-	
-	make_random (a_seed: INTEGER; stops: INTEGER; a_type: TRAFFIC_TYPE) is
-			-- make a traveler who stops at 'stops' random positions
-			require
-				a_seed >= 0
-				stops >= 2
-				a_type /= Void
-			local 
-				i: INTEGER
-			do
-				create polypoints.make (stops)
-				traffic_type := a_type
-				create random_direction.set_seed(a_seed)
-				random_direction.forth
-				from
-					i := 1
-				until
-					i >= stops
-				loop
-					random_direction.forth
-					give_random_direction
-					polypoints.force (destination)
-					random_direction.forth
-					polypoints.force (destination)	
-					i := i+1
-				end
-				polypoints.start
-				set_coordinates
-				set_angle
-				virtual_speed := random_direction.double_item
-				random_direction.forth
-			end
-		
-	
-	make_random_with_origin (an_origin: EM_VECTOR_2D; a_seed: INTEGER; a_type: TRAFFIC_TYPE) is
-			-- initalize the passenger for random walk
-		require
-			an_origin /= Void
-			a_seed >= 0
-		do
-			create polypoints.make (1)
-			traffic_type := a_type
-			create random_direction.set_seed(a_seed)
-			give_random_direction
-			polypoints.force (origin)
-			polypoints.force (destination)
-			polypoints.start
-			set_coordinates
-			set_angle
-			virtual_speed := random_direction.double_item / 8
-			if virtual_speed < 0.05 then
-				virtual_speed := 0.05
-			elseif virtual_speed > 0.3 then
-				virtual_speed := 0.3
-				
-			end
-			random_direction.forth
-		ensure	
-			position = an_origin	
-			origin = an_origin
-			destination /= Void
-			speed >= 0
-		end	
+--	make is
+--		-- make a new object on default positions
+--		do
+--			set_traffic_info ("")
+--			create position.make (0, 0)
+--			create polypoints.make (1)
+--			create origin.make (0, 0)
+--			create destination.make (0, 0)
+--			virtual_speed := 0
+--			traffic_type := create {TRAFFIC_TYPE_WALKING}.make
+--		end
+--	
+--	
+--	make_random_with_origin (an_origin: EM_VECTOR_2D; a_seed: INTEGER; a_type: TRAFFIC_TYPE) is
+--			-- initalize the passenger for random walk
+--		require
+--			an_origin /= Void
+--			a_seed >= 0
+--		do
+--			create polypoints.make (1)
+--			traffic_type := a_type
+--			create random_direction.set_seed(a_seed)
+--			give_random_direction
+--			polypoints.force (origin)
+--			polypoints.force (destination)
+--			polypoints.start
+--			set_coordinates
+--			set_angle
+--			virtual_speed := random_direction.double_item / 8
+--			if virtual_speed < 0.05 then
+--				virtual_speed := 0.05
+--			elseif virtual_speed > 0.3 then
+--				virtual_speed := 0.3
+--				
+--			end
+--			random_direction.forth
+--		ensure	
+--			position = an_origin	
+--			origin = an_origin
+--			destination /= Void
+--			speed >= 0
+--		end	
 		
 feature -- Attributes
 	
