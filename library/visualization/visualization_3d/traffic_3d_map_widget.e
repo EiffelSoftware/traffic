@@ -341,7 +341,19 @@ feature -- Traffic map loading
 			
 	marked_station_changed: BOOLEAN
 			-- Has the marked station changed?
-	
+
+feature -- Access
+
+	traffic_time: TRAFFIC_TIME is	
+			-- Return the current simulated time object
+			-- Only here for compatibility Reasons!
+			-- For access to time inherit TRAFFIC_SHARED_TIME.
+		do
+			Result := time
+		ensure
+			time_set: Result = time
+		end
+		
 feature -- Options
 
 	set_zoom (d: DOUBLE) is
