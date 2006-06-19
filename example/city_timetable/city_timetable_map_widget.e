@@ -124,6 +124,15 @@ feature -- Basic operations
 			last_polypoint /= Void
 			position /= Void
 		end
+	
+	add_vehicles is
+			-- Add trams to lines
+		require
+			factory_exists: traffic_traveler /= Void
+		do
+			traffic_traveler.add_tram_per_line (map, 2)			
+		end
+		
 
 feature -- Drawing
 
