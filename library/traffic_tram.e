@@ -8,9 +8,16 @@ class
 	
 inherit
 	TRAFFIC_LINE_TRANSPORTATION
-		
+
+rename
+	load_capacity as engine_capacity 
+
+redefine
+	capacity end
+	
 create
 	make_with_line
+
 	
 feature -- Creation
 
@@ -19,6 +26,7 @@ feature -- Creation
 			require
 				a_line /= Void
 			do
+				engine_capacity := 30
 				line_count := 0
 				line := a_line
 				waggon_limitation := 3
@@ -26,10 +34,6 @@ feature -- Creation
 				traffic_type := create {TRAFFIC_TYPE_TRAM}.make
 				speed := 100
 				virtual_speed := 0.8
-				capacity := 50 --the capacity of the engines waggon			
-	
-				line_count := 0
-				line := a_line
 				create polypoints.make (1)
 				from 
 					line.start
@@ -59,16 +63,29 @@ feature -- Creation
 			
 			end
 
-feature -- Implementation
-	
+feature -- Access
+	waggon_limitation: INTEGER
+			--maximum number of waggons for this engine
 	waggons: ARRAYED_LIST[TRAFFIC_WAGGON]
 			--List of the waggons
-	waggon_limitation: INTEGER
-			-- Number of waggons allowed.
-	
+
 feature -- Basic operations
+	capacity: INTEGER is
+				-- the capacity is computed as the sum of the waggon's capacities
+			local
+				cap: INTEGER
+			do	
+				cap := engine_capacity		
+				from
+					waggons.start
+				until
+					waggons.after
+				loop
+					cap := cap + waggons.capacity
+				end
+				Result := cap
+			end
 	
-		
 	reroute(newPoints: ARRAYED_LIST [EM_VECTOR_2D]; start: TRAFFIC_PLACE) is
 			-- Reroute the tram when the line is interrupted.
 			do
@@ -87,10 +104,8 @@ feature -- Basic operations
 			do	
 				waggon := create {TRAFFIC_WAGGON}.make
 				waggons.force (waggon)
-				capacity := capacity + waggon.capacity
 			ensure
 				waggons.count = old waggons.count + 1
-				capacity >= old capacity
 			end
 	
 	remove_waggon(i: INTEGER) is
@@ -99,16 +114,14 @@ feature -- Basic operations
 				waggons.count > 0
 			do	
 				waggons.go_i_th (i)
-				capacity := capacity - waggons.item.capacity
 				waggons.remove
 			ensure
 				waggons.count = old waggons.count -1
-				capacity <= old capacity
 			end
 				
 invariant
 	waggons /= void
 	waggon_limitation >= 0
-	capacity <= 180
+	engine_capacity <= 200
 	speed <= 100
 end

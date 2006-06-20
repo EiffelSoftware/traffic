@@ -20,5 +20,5 @@ feature --Access
 
 invariant
 	capacity >= 0
-	capacity <= 50
+	capacity <= 200
 end

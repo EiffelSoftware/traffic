@@ -9,7 +9,7 @@ inherit
 	
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
-		
+
 	DOUBLE_MATH
 		export {NONE} all end
 		
@@ -57,6 +57,7 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 			graphic: EM_3D_OBJECT
 			info: TRAFFIC_TRAVELER
 		do
+			
 			from
 				travelers.start
 			until
@@ -69,19 +70,20 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 				
 				if (graphic /= Void) and (info /= Void) then
 					-- we have to check so that no errors happen
-					if info.has_finished then
+					
+					graphic.set_origin (info.position.x, traveler_offset, info.position.y)
+					graphic.set_rotation (0, info.angle_x, 0)
+					graphic.draw
+					
+--					if info.has_finished then
 --						travelers.back
 --						travelers.remove_right
-						map.remove_traveler (info.index)
-						travelers.remove
-					else
-						graphic.set_origin (info.position.x, traveler_offset, info.position.y)
-						graphic.set_rotation (0, info.angle_x, 0)
-						graphic.draw
-						travelers.forth			
-					end
-				else			
+--						map.remove_traveler (info.index)
+--						travelers.remove		
+--					end
+					if not travelers.after then
 					travelers.forth
+					end
 				end
 			end
 		end
@@ -121,6 +123,11 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					elseif a_traveler.traffic_type.name.is_equal ("tram") then
 						traveler_factory.set_em_color (0, 0, 255)
 						traveler_factory.load_file ("objects/tram.obj")
+						traveler := traveler_factory.create_object
+						traveler.set_scale (0.3, 0.3, 0.3)
+					elseif a_traveler.traffic_type.name.is_equal("taxi") then
+						traveler_factory.set_em_color (0, 255, 0)
+						traveler_factory.load_file ("objects/woman.obj")
 						traveler := traveler_factory.create_object
 						traveler.set_scale (0.3, 0.3, 0.3)
 					end	

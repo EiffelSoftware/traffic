@@ -9,12 +9,11 @@ class
 
 inherit
 	TRAFFIC_LINE_TRANSPORTATION
-		
 create
 	make_with_line
 	
 feature -- Creation
-	
+		
 	make_with_line (a_line: TRAFFIC_LINE) is
 			-- create a line bound vehicle
 			require

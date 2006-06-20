@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_TAXI
+	TRAFFIC_DISPATCHER_TAXI
 	inherit TRAFFIC_TRANSPORTATION
 
 feature -- Access

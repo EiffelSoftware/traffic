@@ -16,54 +16,6 @@ inherit
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
 		
---create
---	make, make_directed, make_random, make_random_with_origin
---	
---feature -- Initialization
-
---	make is
---		-- make a new object on default positions
---		do
---			set_traffic_info ("")
---			create position.make (0, 0)
---			create polypoints.make (1)
---			create origin.make (0, 0)
---			create destination.make (0, 0)
---			virtual_speed := 0
---			traffic_type := create {TRAFFIC_TYPE_WALKING}.make
---		end
---	
---	
---	make_random_with_origin (an_origin: EM_VECTOR_2D; a_seed: INTEGER; a_type: TRAFFIC_TYPE) is
---			-- initalize the passenger for random walk
---		require
---			an_origin /= Void
---			a_seed >= 0
---		do
---			create polypoints.make (1)
---			traffic_type := a_type
---			create random_direction.set_seed(a_seed)
---			give_random_direction
---			polypoints.force (origin)
---			polypoints.force (destination)
---			polypoints.start
---			set_coordinates
---			set_angle
---			virtual_speed := random_direction.double_item / 8
---			if virtual_speed < 0.05 then
---				virtual_speed := 0.05
---			elseif virtual_speed > 0.3 then
---				virtual_speed := 0.3
---				
---			end
---			random_direction.forth
---		ensure	
---			position = an_origin	
---			origin = an_origin
---			destination /= Void
---			speed >= 0
---		end	
-		
 feature -- Attributes
 	
 	traffic_type: TRAFFIC_TYPE
@@ -150,15 +102,7 @@ feature {NONE} -- helper for journey
 					else
 						destination := map_to_gl_coords (polypoints.item)										
 					end
---				else
---					polypoints.forth
---					if polypoints.after then
---						is_traveling_back := True
---						polypoints.back
---						set_coordinates
---					else
---						destination := map_to_gl_coords (polypoints.item)										
---					end
+
 				elseif is_reiterating then
 					polypoints.forth
 					if polypoints.after then
@@ -339,9 +283,10 @@ feature {NONE} -- Random
 				destination.y < 1468
 				destination.y > -32
 			end
-
+			
 	random_direction: RANDOM
 		-- make a direction out of this genererator	
+	
 	
 invariant
 	polypoints /= Void

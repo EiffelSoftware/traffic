@@ -11,7 +11,15 @@ inherit
 feature --Access
 	currentLoad: INTEGER
 			--Current load.
-	capacity: INTEGER
+			
+	capacity:INTEGER is
+			-- get the transportation's capacity
+		do		
+			Result := load_capacity
+		end
+			
+feature{NONE} --Constants			
+	load_capacity: INTEGER
 			--Load the transportation can carry.
 
 feature -- Basic operations
@@ -39,6 +47,6 @@ feature -- Basic operations
 
 		
 invariant
-	capacity_non_negative: capacity >= 0
+	load_capacity_non_negative: load_capacity >= 0
 	load_smaller_or_equal_than_capacity: currentload <= capacity
 end
