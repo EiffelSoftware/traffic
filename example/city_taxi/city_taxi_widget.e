@@ -75,7 +75,7 @@ feature -- Basic operations
 			if not loader.has_error then
 				loader.load_map
 				set_map (loader.map)
-				add_taxis (2)
+				add_taxis (7)
 				traffic_traveler.add_tram_per_line (map, 2)
 			end
 		ensure then
@@ -200,6 +200,9 @@ feature {NONE} -- Event handling
 					place := traffic_places.place_at_position (clicked_point)
 					if place /= Void then
 						marked_origin := place
+						-- the next line to demonstrates the behaviour of the 
+						-- request event on the TAXI_EVENT_OFFICE. The click simulates a call
+						-- and generates a random destinantion.
 						taxi_office.request.publish([place.position, give_random_destination])
 						traffic_places.highlight_place(marked_origin, place_highlight_color1)
 						marked_station_changed := True							

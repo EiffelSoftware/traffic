@@ -13,7 +13,7 @@ create
 	make_directed, make_random
 
 feature --Access
-
+	-- TODO: document the features!!!
 	intended_line: TRAFFIC_LINE
 	
 	current_transportation: TRAFFIC_TRANSPORTATION
@@ -29,7 +29,7 @@ feature --Access
 feature -- creation procedure
 
 	make_directed (an_itinerary: ARRAYED_LIST [EM_VECTOR_2D]; a_type: TRAFFIC_TYPE; a_speed: DOUBLE) is
-			-- create an object with defined origin and destination
+			-- create an object with an origin and a destination
 			require
 				an_itinerary /= Void
 				a_type /= Void
@@ -42,14 +42,10 @@ feature -- creation procedure
 				set_angle
 				traffic_type := a_type
 				virtual_speed := a_speed
-			ensure
-				origin /= Void
-				destination /= Void
 			end
-
 	
 	make_random (a_seed: INTEGER; stops: INTEGER; a_type: TRAFFIC_TYPE) is
-			-- make a traveler who stops at 'stops' random positions
+			-- make a passanger who stops at 'stops' random positions
 			require
 				a_seed >= 0
 				stops >= 2
@@ -57,6 +53,9 @@ feature -- creation procedure
 			local 
 				i: INTEGER
 			do
+				-- TODO: code reordering.
+				-- TODO: put the random positions generation in the father so that it can be
+				-- used by all descendants.
 				create polypoints.make (stops)
 				traffic_type := a_type
 				create random_direction.set_seed(a_seed)
@@ -105,7 +104,9 @@ feature --basic operations
 	board(a_line_transport: TRAFFIC_LINE_TRANSPORTATION; a_direction: INTEGER) is
 			-- board a line transportation
 				require
-					a_line_transport.line = intended_line and a_direction = direction		
+					a_line_transport.line = intended_line and a_line_transport.direction = direction
+					-- TODO: a_direction argument is obsolete. ^- is this well modeled as precondition?
+					-- TODO: condition names!!!
 				do
 					current_transportation := a_line_transport
 					current_transportation.load (1)
@@ -120,7 +121,10 @@ feature --basic operations
 			do
 				current_transportation.unload(1)
 				current_transportation := void
-			end
-	
+			ensure
+				current_transportatoin_not_set: current_transportation = void
+			end	
+			
+			-- TODO: check for additional invariants.
 end
 

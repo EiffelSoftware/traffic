@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that ..."
+	description: "Objects that ..." --TODO
 	author: ""
 	date: "$Date: 6/6/2006$"
 	revision: "$Revision$"
@@ -19,9 +19,12 @@ feature -- Creation
 			require
 				a_line /= Void
 			do
+				--TODO: code reordering
+				traffic_type := create {TRAFFIC_TYPE_BUS}.make				
 				line_count := 0
 				line := a_line
 				create polypoints.make (1)
+				--TODO: this next loop could maybe be defined in the father? duplicate code warning!
 				from 
 					line.start
 				until
@@ -54,7 +57,6 @@ feature -- Creation
 				set_angle
 				-- future implementations should tae care of this
 				-- traffic_type := line.type
-				traffic_type := create {TRAFFIC_TYPE_BUS}.make
 				virtual_speed := 0.8
 			end
 
@@ -74,11 +76,13 @@ feature -- Basic operations
 	replace(a_line: TRAFFIC_LINE) is
 			-- serve as replacement bus for an other traffic line.
 			do
-				
+				-- TODO: guess what...
 			end
 
 
 invariant
+	--TODO: condition names
+	--TODO: maybe constants for 180 and 120
 	capacity <= 180
 	speed <= 120
 end

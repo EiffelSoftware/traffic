@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that can be used to transport cargo or by a passenger to travel."
+	description: "Objects that can be used to transport cargo or passengers."
 	date: "$Date: 2006/06/06 12:23:40 $"
 	revision: "$Revision$"
 deferred class
@@ -9,7 +9,7 @@ inherit
 	TRAFFIC_TRAVELER
 	
 feature --Access
-	currentLoad: INTEGER
+	currentLoad: INTEGER --TODO: rename to current_load. THIS IS NOT JAVA, CAMEL!!
 			--Current load.
 			
 	capacity:INTEGER is
@@ -40,12 +40,11 @@ feature -- Basic operations
 			  quantity >= 0
 			  currentLoad >= quantity
 		do
-			  currentLoad := currentLoad - 1
+			  currentLoad := currentLoad - quantity
 		ensure
-			  currentLoad = old currentLoad - 1
+			  currentLoad = old currentLoad - quantity
     	end
 
-		
 invariant
 	load_capacity_non_negative: load_capacity >= 0
 	load_smaller_or_equal_than_capacity: currentload <= capacity

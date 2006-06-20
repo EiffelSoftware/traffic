@@ -13,10 +13,10 @@ create
 
 feature -- Creation procedure
 			
-		make_random (taxi_office: TRAFFIC_EVENT_TAXI_OFFICE; a_seed: INTEGER; stops: INTEGER) is
-		
+		make_random (taxi_office: TRAFFIC_EVENT_TAXI_OFFICE; a_seed: INTEGER; stops: INTEGER) is		
 			-- create a taxi that communicates with the taxioffice through events
 			-- stops at random positions
+			-- TODO: parameter description
 			require
 				taxi_office /= void
 				a_seed >= 0
@@ -26,30 +26,33 @@ feature -- Creation procedure
 				create polypoints.make (stops)
 				traffic_type := create {TRAFFIC_TYPE_TAXI}.make
 				create random_direction.set_seed(a_seed)
+				
+				random_direction.forth -- TODO: may this line be removed?
 				give_random_polypoints (stops)
 				set_coordinates
 				set_angle
 				virtual_speed := 1.5
 				--TODO if needed random_speed: virtual_speed := random_direction.double_item
-				random_direction.forth
 				office.taxi_available.publish([Current])
 			end
 			
 feature -- Status report
 	busy: BOOLEAN
 		--is taxi busy
+		--TODO: may be remove redundancy (taxi_list from office) 
 	
 feature -- Basic operations
 
 	take(address: EM_VECTOR_2D; dest: EM_VECTOR_2D) is
 			-- take and serve a request.
+			-- TODO:parameter names
 			require
 				valid_address: address /= void
+				--TODO: valid dest???
 			local
 				new_polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			do
 				if not busy then
-					
 				--set taxi busy and publish event to inform taxi_office
 					busy := True
 					office.taxi_busy.publish([Current])
@@ -89,9 +92,8 @@ feature -- Basic operations
 				do
 					Precursor
 					if has_finished and busy then
-						-- if taxi has fullfilled a request
-							busy := false
-							office.taxi_available.publish ([Current])
+						-- taxi has fullfilled a request
+						-- first: prepare for available state of the taxi:
 						-- add new random directions
 							polypoints.wipe_out
 							give_random_polypoints (7)
@@ -100,6 +102,9 @@ feature -- Basic operations
 							destination := map_to_gl_coords (polypoints.first)
 							has_finished := false
 							set_reiterate (true)
+						-- second: taxi is available again, that must be published
+							busy := false
+							office.taxi_available.publish ([Current])
 					end
 				end
 			
@@ -110,6 +115,7 @@ feature -- Basic operations
 		
 		give_random_polypoints(num: INTEGER) is
 				-- sets polypoints to random destinations with num stops.
+				-- TODO: require what????? num??
 				local 
 				i: INTEGER
 				do
@@ -121,6 +127,7 @@ feature -- Basic operations
 				loop
 					random_direction.forth
 					give_random_direction
+					-- TODO: polypoints.extend may be a better solution
 					polypoints.force (destination)
 					random_direction.forth
 					polypoints.force (destination)	
@@ -128,7 +135,7 @@ feature -- Basic operations
 				end
 				polypoints.start
 			end
-			
+			-- TODO: ensure what??
 invariant
 	office_not_void: office /= void
 	random_direction_not_void: random_direction /= void

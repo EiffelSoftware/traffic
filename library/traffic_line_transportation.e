@@ -1,5 +1,5 @@
 indexing
-	description: "A deffered class for transportations serving a line and pursuing a schedule."
+	description: "A deferred class for transportations serving a line and pursuing a schedule."
 	date: "$Date: 2006/06/06 12:23:40$"
 	revision: "$Revision$"
 
@@ -17,16 +17,18 @@ inherit
 feature --Access
 
 	line: TRAFFIC_LINE
-		-- line on which 'current' will travel.		
+		-- line on which 'Current' will travel.		
 	--TODO: schedule: SCHEDULE
 		-- the scheme to pursue
 	line_count: INTEGER
-		-- count for the number of stops.
+		--TODO change this to a function that returns line.count and renaming
+		-- the number of stops.
 	last_place: TRAFFIC_PLACE
+		-- the place where 'Current' stopped last. TODO: laugh about david
 		-- a place on the line which is returned by get_place		
 			
 feature -- Basic operations
-	
+	-- TODO: is obsolete
 	reroute(newPoints: ARRAYED_LIST [EM_VECTOR_2D]; start:TRAFFIC_PLACE) is
 			-- operation to reroute the line transportation in case of a line iterruption.
 			deferred
@@ -35,6 +37,7 @@ feature -- Basic operations
 		
 	set_to_place (a_place: TRAFFIC_PLACE) is
 			-- set the tram to 'a_place'.
+			-- TODO: which tram???
 			require
 				a_place_not_void: a_place /= Void
 			local
@@ -71,7 +74,7 @@ feature -- Basic operations
 		
 		
 get_place (stop: INTEGER) is
-			-- return the stop at number 'stop'
+			-- returns the place at number 'stop' in line.
 		require
 			stop <= line_count
 		local
@@ -128,7 +131,7 @@ feature{NONE} --Implementation
 			end		
 		
 invariant
-	TR_LINE_TR_line_set: line /= Void	 
 	line_set: line /= void
 	line_count_non_negative : line_count >= 0
+	--TODO: correct_line_count: line_count = line.count--TODO: redundancy!!
 end

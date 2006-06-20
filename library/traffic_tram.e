@@ -11,26 +11,27 @@ inherit
 
 rename
 	load_capacity as engine_capacity 
-
+		-- TODO: why??
 redefine
 	capacity end
 	
 create
-	make_with_line
-
-	
+	make_with_line 
 feature -- Creation
-
 	make_with_line (a_line: TRAFFIC_LINE) is
 			-- create a line bound vehicle
+			-- TOD0: make_default, etc. documented 
 			require
 				a_line /= Void
 			do
-				engine_capacity := 30
-				line_count := 0
+				engine_capacity := 30 
+				-- TODO: maybe default constants somewhere or make shure that
+				-- nowhere else these values are set!
+				-- TODO: code reordering.
 				line := a_line
-				waggon_limitation := 3
-				waggons := create {ARRAYED_LIST[TRAFFIC_WAGGON]}.make(3)
+				line_count := 0 --TODO: change this.
+				waggon_limitation := 3 --TODO: constant
+				waggons := create {ARRAYED_LIST[TRAFFIC_WAGGON]}.make(waggon_limitation)
 				traffic_type := create {TRAFFIC_TYPE_TRAM}.make
 				speed := 100
 				virtual_speed := 0.8
@@ -40,6 +41,7 @@ feature -- Creation
 				until
 					line.after
 				loop
+					-- TODO: comment item, section,...
 					polypoints.force (line.item.polypoints.first)
 					polypoints.force (line.item.polypoints.first)
 					polypoints.force (line.item.polypoints.first)
@@ -48,10 +50,10 @@ feature -- Creation
 					line_count := line_count + 1
 					line.forth
 				end
+				polypoints.force (polypoints.last)
+				polypoints.force (polypoints.last)
+				polypoints.force (polypoints.last)
 				line_count := line_count + 1
-				polypoints.force (polypoints.last)
-				polypoints.force (polypoints.last)
-				polypoints.force (polypoints.last)
 				-- same as in the loop
 				
 				polypoints.start
@@ -60,7 +62,6 @@ feature -- Creation
 				polypoints.forth
 				set_coordinates
 				set_angle
-			
 			end
 
 feature -- Access
@@ -71,7 +72,7 @@ feature -- Access
 
 feature -- Basic operations
 	capacity: INTEGER is
-				-- the capacity is computed as the sum of the waggon's capacities
+				-- the capacity is computed as the sum of the waggon's capacities plus the engine_capacity
 			local
 				cap: INTEGER
 			do	
@@ -120,6 +121,7 @@ feature -- Basic operations
 			end
 				
 invariant
+	-- TODO: allover the class: invariant- and condition-names.
 	waggons /= void
 	waggon_limitation >= 0
 	engine_capacity <= 200
