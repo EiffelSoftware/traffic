@@ -233,6 +233,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					a_map /= Void
 					number > 0
 				local
+					lines: HASH_TABLE[TRAFFIC_LINE, STRING]
 					a_tram: TRAFFIC_TRAM
 					i: INTEGER
 					schedule: TRAFFIC_LINE_SCHEDULE
@@ -241,13 +242,14 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					-- every tram has an offset which describes how many minutes it travels behind the schedule
 					offset_step := (60 / number).rounded
 					
+					lines := a_map.lines
 					from
-						map.lines.start
+						lines.start
 					until
-						map.lines.after
+						lines.after
 					loop	
 						-- create a schedule for the line
-						create schedule.make_for_line (map.lines.item_for_iteration)
+						create schedule.make_for_line (lines.item_for_iteration)
 						
 						-- create the number of trams
 						from
@@ -255,12 +257,12 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 						until
 							i > number
 						loop
-							create a_tram.make_with_schedule (map.lines.item_for_iteration, schedule, offset_step * (i - 1))
+							create a_tram.make_with_schedule (lines.item_for_iteration, schedule, offset_step * (i - 1))
 							add_traveler (a_tram, a_map)
 							i := i + 1
 						end
 					
-						map.lines.forth
+						lines.forth
 					end
 				end
 
