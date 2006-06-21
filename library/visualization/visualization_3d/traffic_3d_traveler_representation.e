@@ -227,6 +227,43 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					end
 				end
 	
+		add_tram_per_line_with_schedule (a_map: TRAFFIC_MAP; number: INTEGER) is	
+				-- add 'number' or max trams to the lines with an automatic generated schedule
+				require
+					a_map /= Void
+					number > 0
+				local
+					a_tram: TRAFFIC_TRAM
+					i: INTEGER
+					schedule: TRAFFIC_LINE_SCHEDULE
+					offset_step: INTEGER
+				do										
+					-- every tram has an offset which describes how many minutes it travels behind the schedule
+					offset_step := (60 / number).rounded
+					
+					from
+						map.lines.start
+					until
+						map.lines.after
+					loop	
+						-- create a schedule for the line
+						create schedule.make_for_line (map.lines.item_for_iteration)
+						
+						-- create the number of trams
+						from
+							i := 1
+						until
+							i > number
+						loop
+							create a_tram.make_with_schedule (map.lines.item_for_iteration, schedule, offset_step * (i - 1))
+							add_traveler (a_tram, a_map)
+							i := i + 1
+						end
+					
+						map.lines.forth
+					end
+				end
+
 	
 feature --{TRAFFIC_3D_MAP_WIDGET}
 
