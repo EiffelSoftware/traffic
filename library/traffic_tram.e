@@ -32,6 +32,7 @@ feature -- Creation
 				create polypoints.make (0)
 				line := a_line
 				set_line_route(line)
+				set_speed(1)
 				
 				engine_capacity := maximum_engine_capacity
 				waggon_limitation := maximum_waggon_limitation
@@ -54,12 +55,47 @@ feature -- Creation
 				schedule := a_schedule
 				schedule_offset_minutes := an_offset
 				
+				register_in_place_schedule
+				
 				--tram waits at the first station of the schedule
 				set_to_place (schedule.first.line_section.origin)
 			ensure
 				schedule_set: schedule = a_schedule
 				schedule_offset_set: schedule_offset_minutes = an_offset
 			end
+	
+	register_in_place_schedule is
+			-- Register the tram in the schedule of every place it visits
+			require
+				schedule_exists: schedule /= Void
+				valid_offset: schedule_offset_minutes >= 0 and schedule_offset_minutes < 60
+			local
+				hour: INTEGER
+				minute: INTEGER
+			do
+				from
+					schedule.start
+				until
+					schedule.after
+				loop
+					-- Use the time from the schedule...
+					hour := schedule.item.start_time_hour
+					minute := schedule.item.start_time_minute
+					
+					-- ...and add our offset
+					minute := minute + schedule_offset_minutes
+					if minute >= 60 then
+						minute := minute - 60
+						hour := hour + 1
+					end
+					
+					-- Register the departure time at the origin place
+					schedule.item.line_section.origin.register_in_schedule (Current, hour, minute)
+					
+					schedule.forth
+				end
+			end
+		
 
 feature -- Access
 	waggon_limitation: INTEGER

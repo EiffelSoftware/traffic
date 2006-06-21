@@ -47,7 +47,7 @@ feature -- Intialisation
 			until
 				-- Travel both directions until ~23:00
 				-- Watch that there is enough time for another roundtrip
-				act_hour >= 10
+				act_hour >= 7
 			loop
 				-- First direction
 				from

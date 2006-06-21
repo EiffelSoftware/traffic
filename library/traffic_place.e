@@ -25,6 +25,7 @@ feature {NONE} -- Initialize
 		do
 			name := a_name
 			create position.make (0.0, 0.0)
+			create schedule.make
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -38,6 +39,7 @@ feature {NONE} -- Initialize
 		do
 			name := a_name
 			create position.make (a_x, a_y)
+			create schedule.make
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -54,6 +56,9 @@ feature -- Access
 			
 	information: TRAFFIC_PLACE_INFORMATION
 			-- Additional information.
+			
+	schedule: LINKED_LIST[TUPLE[TRAFFIC_LINE_TRANSPORTATION, INTEGER, INTEGER]]
+			-- All departure times [hour, minute] of trams visiting this place
 			
 feature -- Element change
 
@@ -76,6 +81,23 @@ feature -- Element change
 		ensure
 			position_set: position = a_position
 		end
+		
+	register_in_schedule(an_object: TRAFFIC_LINE_TRANSPORTATION; hour: INTEGER; minute: INTEGER) is
+			-- Register a visiting tram in the schedule
+		require
+			valid_object: an_object /= Void
+			valid_hour: 0 <= hour and hour < 24
+			valid_minute: 0 <= minute and minute < 60
+		local
+			entry: TUPLE[TRAFFIC_LINE_TRANSPORTATION, INTEGER, INTEGER]
+		do
+			create entry
+			entry.put (an_object, 1)
+			entry.put (hour, 2)
+			entry.put (minute, 3)
+			schedule.extend (entry)
+		end
+		
 
 feature -- Measurement
 
