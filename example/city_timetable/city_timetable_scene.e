@@ -53,10 +53,12 @@ feature -- Interface
 			create zoom_in_button.make_from_text ("Zoom in")
 			create zoom_out_button.make_from_text ("Zoom out")
 
-			-- Labels, Buttons
+			-- Labels, Buttons, Lists
 			create load_buildings_button.make_from_text("Load buildings")
 			create time_label.make_from_text("00:00")
 			create delete_buildings_button.make_from_text("Delete buildings")
+			create station_label.make_from_text("Select station")
+			create station_schedule_textlist.make_empty
 
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -64,6 +66,7 @@ feature -- Interface
 				create map.make
 				map.set_position (0, 0)
 				add_component (map)
+				map.mouse_clicked_event.subscribe (agent handle_mouse_click (?))
 			else
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
@@ -135,6 +138,19 @@ feature -- Interface
 			time_label.align_center
 			toolbar_panel.add_widget (time_label)			
 
+			-- Station label
+			station_label.set_position(15, 200)
+			station_label.set_optimal_dimension(180,40)
+			station_label.resize_to_optimal_dimension
+			station_label.align_center
+			toolbar_panel.add_widget (station_label)	
+
+			-- Station label
+			station_schedule_textlist.set_position(15, 220)
+			station_schedule_textlist.set_optimal_dimension(180,250)
+			station_schedule_textlist.resize_to_optimal_dimension
+			toolbar_panel.add_widget (station_schedule_textlist)	
+
 			-- adding zurich_big.xml as default using platform independent paths
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 			s := fs.pathname ("..", "map")
@@ -176,23 +192,29 @@ feature -- Event handling
 			map.zoom_out
 		end
 
-	handle_mouse_click (origin_label, destination_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
-			-- Adapt the text on `origin_label' and `destination_label'.
+	handle_mouse_click (e: EM_MOUSEBUTTON_EVENT) is
+			-- Adapt the text on the station label
 		require
-			origin_label /= Void
-			destination_label /= Void
-			e /= Void
+			valid_station_label: station_label /= Void
+		local
+			text: STRING
+			traveler: TRAFFIC_LINE_TRANSPORTATION
 		do
-			if map.marked_origin /= Void then
-				origin_label.set_text (map.marked_origin.name)
+			if map.marked_station /= Void then
+				station_label.set_text (map.marked_station.name)
+				from 
+					map.marked_station.schedule.start
+				until
+					map.marked_station.schedule.after
+				loop
+					traveler ?= map.marked_station.schedule.item @ 1					
+					text := traveler.line.name + " " + (map.marked_station.schedule.item @ 2).out + ":" + (map.marked_station.schedule.item @ 3).out
+					station_schedule_textlist.put (text)
+					
+					map.marked_station.schedule.forth
+				end
 			else
-				origin_label.set_text ("")
-			end
-
-			if map.marked_destination /= Void and then map.show_shortest_path then
-				destination_label.set_text (map.marked_destination.name)
-			else
-				destination_label.set_text ("")
+				station_label.set_text ("Select station")
 			end
 		end
 
@@ -277,6 +299,12 @@ feature -- Widgets
 			
 	time_label: EM_LABEL
 			-- Clock
+			
+	station_label: EM_LABEL
+			-- Selected station
+	
+	station_schedule_textlist: EM_TEXTLIST[STRING]
+			-- Schedule of selected station
 
 	load_buildings_button: EM_BUTTON
 			-- Button to load buildings along lines
