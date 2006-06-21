@@ -19,8 +19,11 @@ feature --Access
 	line: TRAFFIC_LINE
 		-- line on which 'Current' will travel.
 			
-	--TODO: schedule: SCHEDULE
+	schedule: TRAFFIC_LINE_SCHEDULE
 		-- the scheme to pursue
+
+	schedule_offset_minutes: INTEGER
+		-- the number of minutes the object will travel behind the schedule
 		
 	line_count: INTEGER is
 			-- returns the 'Current's number of stops.

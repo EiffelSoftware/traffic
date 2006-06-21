@@ -42,6 +42,25 @@ feature -- Creation
 				virtual_speed := maximum_virtual_speed
 			end
 
+	make_with_schedule (a_line: TRAFFIC_LINE; a_schedule: TRAFFIC_LINE_SCHEDULE; an_offset: INTEGER) is
+			-- create a line bound vehicle for a schedule
+			require
+				line_exists: a_line /= Void
+				schedule_exists: schedule /= Void
+				valid_offset: an_offset >= 0 and an_offset < 60
+			do
+				make_with_line(a_line)
+				
+				schedule := a_schedule
+				schedule_offset_minutes := an_offset
+				
+				--tram waits at the first station of the schedule
+				set_to_place (schedule.first.line_section.origin)
+			ensure
+				schedule_set: schedule = a_schedule
+				schedule_offset_set: schedule_offset_minutes = an_offset
+			end
+
 feature -- Access
 	waggon_limitation: INTEGER
 			--maximum number of waggons for this engine
