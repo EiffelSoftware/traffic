@@ -9,7 +9,7 @@ class
 	
 inherit
 	
-	LINKED_LIST [TRAFFIC_LINE_SCHEDULE_ENTRY]
+	TWO_WAY_LIST [TRAFFIC_LINE_SCHEDULE_ENTRY]
 		rename 
 			make as make_linked_list
 		export 
@@ -27,6 +27,10 @@ feature -- Intialisation
 			-- where a tram moves along the line from 06:00 to 22:00
 			-- It could be extended to use an xml file which provies the real data
 			-- of the tram schedule of i.e. zurich
+			--
+			-- TODO: Time between stops is always 10 minutes
+			-- TODO: Better time handling :/
+			-- TODO: Remove repetion for directions
 		require
 			valid_line: a_line /= Void
 		local
@@ -41,8 +45,9 @@ feature -- Intialisation
 				act_hour := 6
 				act_minute := 0
 			until
-				-- Travel both directions until 22:00
-				act_hour >= 22	
+				-- Travel both directions until ~23:00
+				-- Watch that there is enough time for another roundtrip
+				act_hour >= 10
 			loop
 				-- First direction
 				from
@@ -54,7 +59,66 @@ feature -- Intialisation
 					create entry.make_with_line_section(a_line.item, false)
 					entry.set_start_time(act_hour, act_minute)
 					
+					-- Add time for traveling
+					act_minute := act_minute + 3
 					
+					if (act_minute >= 60) then
+						act_minute := act_minute - 60
+						act_hour := act_hour + 1
+					end
+					
+					-- Set end time in schedul entry
+					entry.set_end_time (act_hour, act_minute)
+					
+					-- Add entry to our schedule
+					extend (entry)
+					
+					-- Add 2 minutes waiting time
+					act_minute := act_minute + 2
+					
+					if (act_minute >= 60) then
+						act_minute := act_minute - 60
+						act_hour := act_hour + 1
+					end
+					
+					-- Next stop
+					a_line.forth
+				end
+
+				-- Other direction
+				from
+					a_line.back
+				until
+					a_line.before
+				loop
+					-- Create schedule entry
+					create entry.make_with_line_section(a_line.item, true)
+					entry.set_start_time(act_hour, act_minute)
+					
+					-- Add time for traveling
+					act_minute := act_minute + 3
+					
+					if (act_minute >= 60) then
+						act_minute := act_minute - 60
+						act_hour := act_hour + 1
+					end
+					
+					-- Set end time in schedul entry
+					entry.set_end_time (act_hour, act_minute)
+					
+					-- Add entry to our schedule
+					extend (entry)
+					
+					-- Add 2 minutes waiting time
+					act_minute := act_minute + 2
+					
+					if (act_minute >= 60) then
+						act_minute := act_minute - 60
+						act_hour := act_hour + 1
+					end
+					
+					-- Next stop
+					a_line.back
 				end
 			end
 		end
