@@ -20,7 +20,7 @@ redefine
 		-- capacity function inculding the capacities of the waggons.
 	
 create
-	make_default_with_line 
+	make_default_with_line, make_with_schedule
 
 feature -- Creation
 	make_default_with_line (a_line: TRAFFIC_LINE) is
@@ -49,7 +49,7 @@ feature -- Creation
 				schedule_exists: schedule /= Void
 				valid_offset: an_offset >= 0 and an_offset < 60
 			do
-				make_with_line(a_line)
+				make_default_with_line(a_line)
 				
 				schedule := a_schedule
 				schedule_offset_minutes := an_offset

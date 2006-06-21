@@ -51,7 +51,7 @@ feature -- Intialisation
 					a_line.after
 				loop
 					-- Create schedule entry
-					create entry.make_with_line_section(a_line.item)
+					create entry.make_with_line_section(a_line.item, false)
 					entry.set_start_time(act_hour, act_minute)
 					
 					
