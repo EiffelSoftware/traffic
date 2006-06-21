@@ -46,7 +46,7 @@ feature -- Creation
 			-- create a line bound vehicle for a schedule
 			require
 				line_exists: a_line /= Void
-				schedule_exists: schedule /= Void
+				schedule_exists: a_schedule /= Void
 				valid_offset: an_offset >= 0 and an_offset < 60
 			do
 				make_default_with_line(a_line)
