@@ -17,27 +17,22 @@ inherit
 feature --Access
 
 	line: TRAFFIC_LINE
-		-- line on which 'Current' will travel.		
+		-- line on which 'Current' will travel.
+			
 	--TODO: schedule: SCHEDULE
 		-- the scheme to pursue
-	line_count: INTEGER
-		--TODO change this to a function that returns line.count and renaming
-		-- the number of stops.
-	last_place: TRAFFIC_PLACE
-		-- the place where 'Current' stopped last. TODO: laugh about david
-		-- a place on the line which is returned by get_place		
-			
-feature -- Basic operations
-	-- TODO: is obsolete
-	reroute(newPoints: ARRAYED_LIST [EM_VECTOR_2D]; start:TRAFFIC_PLACE) is
-			-- operation to reroute the line transportation in case of a line iterruption.
-			deferred
-				--go to start and from there use newPoints.
+		
+	line_count: INTEGER is
+			-- returns the 'Current's number of stops.
+			do
+				Result := line.count
 			end
 		
+	
+feature -- Basic operations
+				
 	set_to_place (a_place: TRAFFIC_PLACE) is
-			-- set the tram to 'a_place'.
-			-- TODO: which tram???
+			-- set the line transportation to 'a_place'.
 			require
 				a_place_not_void: a_place /= Void
 			local
@@ -73,7 +68,7 @@ feature -- Basic operations
 			end
 		
 		
-get_place (stop: INTEGER) is
+get_place (stop: INTEGER): TRAFFIC_PLACE is
 			-- returns the place at number 'stop' in line.
 		require
 			stop <= line_count
@@ -92,14 +87,49 @@ get_place (stop: INTEGER) is
 			end
 			if i < stop then
 				line.back
-				last_place := line.item.destination
+				Result := line.item.destination
 			else				
-				last_place := line.item.origin
+				Result := line.item.origin
 			end
 		end
 
 		
 feature{NONE} --Implementation		
+		
+		set_line_route(a_line: TRAFFIC_LINE) is
+				-- set the points of the line in the polypoints to follow the route given by the line.
+			require
+				line_not_void: a_line /= void
+			do
+				from 
+					a_line.start
+				until
+					a_line.after
+				loop
+					-- add the first polypoint of the line item as a line item is a section
+					-- containing a origin polypoint and a destination polypoint.
+					-- the repetition is done that a tram stops for a short time at each place
+					polypoints.extend (a_line.item.polypoints.first)
+					polypoints.extend (a_line.item.polypoints.first)
+					polypoints.extend (a_line.item.polypoints.first)
+					-- add the whole section item (origin and destination)
+					polypoints.append (a_line.item.polypoints)
+					line.forth
+				end
+				-- repetition of the las polypoint to stop also there for a short time.
+				polypoints.extend (polypoints.last)
+				polypoints.extend (polypoints.last)
+				polypoints.extend (polypoints.last)	
+				
+				polypoints.start
+				-- not wait at starting point therefore omit first three points
+				polypoints.forth
+				polypoints.forth
+				polypoints.forth
+				
+			ensure
+				valid_polypoints: polypoints.count >= old polypoints.count
+		end
 		
 		set_coordinates is
 			-- set the positions to the corresponding ones of the line section.
@@ -132,6 +162,5 @@ feature{NONE} --Implementation
 		
 invariant
 	line_set: line /= void
-	line_count_non_negative : line_count >= 0
-	--TODO: correct_line_count: line_count = line.count--TODO: redundancy!!
+	correct_line_count: line_count = line.count
 end

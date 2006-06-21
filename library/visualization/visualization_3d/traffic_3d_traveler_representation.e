@@ -209,16 +209,15 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					until
 						lines.after
 					loop	
-						create a_tram.make_with_line (lines.item_for_iteration)
+						create a_tram.make_default_with_line (lines.item_for_iteration)
 						from
 							i := 1
-							create a_tram.make_with_line (lines.item_for_iteration)
+							create a_tram.make_default_with_line (lines.item_for_iteration)
 						until
 							i > number or i = a_tram.line_count
 						loop
-							create a_tram.make_with_line (lines.item_for_iteration)
-							a_tram.get_place (i)
-							a_tram.set_to_place (a_tram.last_place)
+							create a_tram.make_default_with_line (lines.item_for_iteration)
+							a_tram.set_to_place (a_tram.get_place (i))
 							add_traveler (a_tram, a_map)
 							i := i + 1
 						end

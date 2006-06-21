@@ -29,11 +29,6 @@ feature -- Creation procedure
 					taxi_available.subscribe(agent enlist(?))
 					taxi_busy.subscribe(agent delist(?))
 					
-				ensure
-					taxi_list_not_void: taxi_list /= void
-					request_not_void: request /= void
-					taxi_available_not_void: taxi_available /= void
-					taxi_busy_not_void: taxi_busy /= void
 				end
 				
 			
@@ -56,12 +51,19 @@ feature{NONE} -- Event handlers
 
 	enlist(taxi: TRAFFIC_EVENT_TAXI) is
 			-- called on taxi_available event to put taxi in the taxi_list
+			require
+				taxi_not_busy: taxi.busy = false
 			do
 				taxi_list.extend(taxi)
+				
+			ensure
+				taxi_added: taxi_list.count = old taxi_list.count + 1
 			end
 			
 	delist(taxi: TRAFFIC_EVENT_TAXI) is
 			-- called on taxi_busy event to take taxi out of the taxi_list
+			require
+				taxi_not_available: taxi.busy = true
 			do
 				if taxi_list.has(taxi)
 					then 
@@ -122,8 +124,6 @@ feature {TRAFFIC_EVENT_TAXI} -- communication from the taxis to their office
 				request.publish([address, dest])
 			end
 		
-
-feature {NONE} -- Implementation
 
 invariant
 	taxi_list_not_void: taxi_list /= void

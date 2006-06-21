@@ -1,6 +1,6 @@
 indexing
-	description: "Objects that ..." --TODO
-	author: ""
+	description: "Bus"
+	author: "Sarah Hauser"
 	date: "$Date: 6/6/2006$"
 	revision: "$Revision$"
 
@@ -14,75 +14,44 @@ create
 	
 feature -- Creation
 		
-	make_with_line (a_line: TRAFFIC_LINE) is
-			-- create a line bound vehicle
+	make_default_with_line (a_line: TRAFFIC_LINE) is
+			-- creates a line bound bus, following the line a_line
+			-- sets default maximum values for load_capacity etc.
 			require
 				a_line /= Void
 			do
-				--TODO: code reordering
-				traffic_type := create {TRAFFIC_TYPE_BUS}.make				
-				line_count := 0
+				traffic_type := create {TRAFFIC_TYPE_BUS}.make			
+				create polypoints.make (0)
 				line := a_line
-				create polypoints.make (1)
-				--TODO: this next loop could maybe be defined in the father? duplicate code warning!
-				from 
-					line.start
-				until
-					line.after
-				loop
-					polypoints.force (line.item.polypoints.first)
-					polypoints.force (line.item.polypoints.first)
-					polypoints.force (line.item.polypoints.first)
-					polypoints.force (line.item.polypoints.first)
-					polypoints.force (line.item.polypoints.first)
-					polypoints.force (line.item.polypoints.first)
-					-- TODO add stations to a stations array
-					-- TODO: change this
-					-- this is that a tram stops for a short time at each place
-					polypoints.append (line.item.polypoints)
-					line_count := line_count + 1
-					line.forth
-				end
-				line_count := line_count + 1
-				polypoints.force (polypoints.last)
-				polypoints.force (polypoints.last)
-				polypoints.force (polypoints.last)
-				-- same as in the loop
-				
-				polypoints.start
-				polypoints.forth
-				polypoints.forth
-				polypoints.forth
+				set_line_route(line)
+			
+				load_capacity := maximum_capacity
 				set_coordinates
 				set_angle
-				-- future implementations should tae care of this
-				-- traffic_type := line.type
-				virtual_speed := 0.8
+				virtual_speed := maximum_virtual_speed
 			end
-
-feature -- Implementation
 	
 feature -- Basic operations
 	
-		
-	reroute(newPoints: ARRAYED_LIST [EM_VECTOR_2D]; start: TRAFFIC_PLACE) is
-			-- Reroute the tram when the line is interrupted.
-			do
-				--bus travels to start, can use all streets.
-				--from start uses new points.
-				--polypoints do not have to lay on a line
-			end
-	
 	replace(a_line: TRAFFIC_LINE) is
 			-- serve as replacement bus for an other traffic line.
+			require 
+				a_line_not_void: a_line /= void
 			do
-				-- TODO: guess what...
+				line := a_line
+				polypoints.wipe_out
+				set_line_route(line)
+			ensure
+				new_line_set:  line = a_line
 			end
-
+			
+feature-- Constants
+	maximum_capacity: INTEGER is 180
+		-- the maximum load allowed for a bus
+	maximum_virtual_speed: INTEGER is 1.2
+		-- the maximum speed allowed for a bus
 
 invariant
-	--TODO: condition names
-	--TODO: maybe constants for 180 and 120
-	capacity <= 180
-	speed <= 120
+	capacity_limitaion: capacity <= maximum_capacity
+	speed_limitation: virtual_speed <= maximum_virtual_speed
 end

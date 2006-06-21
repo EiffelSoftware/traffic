@@ -9,9 +9,9 @@ inherit
 	TRAFFIC_TRAVELER
 	
 feature --Access
-	currentLoad: INTEGER --TODO: rename to current_load. THIS IS NOT JAVA, CAMEL!!
+	current_load: INTEGER 
 			--Current load.
-			
+
 	capacity:INTEGER is
 			-- get the transportation's capacity
 		do		
@@ -27,25 +27,25 @@ feature -- Basic operations
 			--load cargo or a passenger
 		require 
 			quantity >= 0 
-			capacity >= currentLoad + quantity
+			capacity >= current_load + quantity
     	do 
-			currentLoad := currentLoad + quantity
+			current_load := current_load + quantity
     	ensure 
-    		currentLoad = old currentLoad + quantity
+    		current_load = old current_load + quantity
     	end
     	
 	unload(quantity: INTEGER) is
 			--unload cargo or a passenger
 		require 
 			  quantity >= 0
-			  currentLoad >= quantity
+			  current_load >= quantity
 		do
-			  currentLoad := currentLoad - quantity
+			  current_load := current_load - quantity
 		ensure
-			  currentLoad = old currentLoad - quantity
+			  current_load = old current_load - quantity
     	end
 
 invariant
 	load_capacity_non_negative: load_capacity >= 0
-	load_smaller_or_equal_than_capacity: currentload <= capacity
+	load_smaller_or_equal_than_capacity: current_load <= capacity
 end

@@ -11,57 +11,35 @@ inherit
 
 rename
 	load_capacity as engine_capacity 
-		-- TODO: why??
+		-- load_capacity defines the capacity of a transportation, 
+		-- therefore in case of a tram it determines the capacity of the engine, the first waggon of a tram.
+		
 redefine
 	capacity end
+		-- the whole capacity of a tram is computed by the redefined 
+		-- capacity function inculding the capacities of the waggons.
 	
 create
-	make_with_line 
+	make_default_with_line 
+
 feature -- Creation
-	make_with_line (a_line: TRAFFIC_LINE) is
-			-- create a line bound vehicle
-			-- TOD0: make_default, etc. documented 
+	make_default_with_line (a_line: TRAFFIC_LINE) is
+			-- create a line bound vehicle, sets default maximum values for engine_capacity etc.
 			require
-				a_line /= Void
+				a_line_not_void: a_line /= Void
 			do
-				engine_capacity := 30 
-				-- TODO: maybe default constants somewhere or make shure that
-				-- nowhere else these values are set!
-				-- TODO: code reordering.
-				line := a_line
-				line_count := 0 --TODO: change this.
-				waggon_limitation := 3 --TODO: constant
-				waggons := create {ARRAYED_LIST[TRAFFIC_WAGGON]}.make(waggon_limitation)
 				traffic_type := create {TRAFFIC_TYPE_TRAM}.make
-				speed := 100
-				virtual_speed := 0.8
-				create polypoints.make (1)
-				from 
-					line.start
-				until
-					line.after
-				loop
-					-- TODO: comment item, section,...
-					polypoints.force (line.item.polypoints.first)
-					polypoints.force (line.item.polypoints.first)
-					polypoints.force (line.item.polypoints.first)
-					-- this is that a tram stops for a short time at each place
-					polypoints.append (line.item.polypoints)
-					line_count := line_count + 1
-					line.forth
-				end
-				polypoints.force (polypoints.last)
-				polypoints.force (polypoints.last)
-				polypoints.force (polypoints.last)
-				line_count := line_count + 1
-				-- same as in the loop
+				create polypoints.make (0)
+				line := a_line
+				set_line_route(line)
 				
-				polypoints.start
-				polypoints.forth
-				polypoints.forth
-				polypoints.forth
+				engine_capacity := maximum_engine_capacity
+				waggon_limitation := maximum_waggon_limitation
+				waggons := create {ARRAYED_LIST[TRAFFIC_WAGGON]}.make(waggon_limitation)
+			
 				set_coordinates
 				set_angle
+				virtual_speed := maximum_virtual_speed
 			end
 
 feature -- Access
@@ -86,44 +64,42 @@ feature -- Basic operations
 				end
 				Result := cap
 			end
-	
-	reroute(newPoints: ARRAYED_LIST [EM_VECTOR_2D]; start: TRAFFIC_PLACE) is
-			-- Reroute the tram when the line is interrupted.
-			do
-				--tram travels back on his line to start.
-				--from start uses new points.
-				--ensure polypoints lay on other tram lines.
-				--tram follows strict other tram lines.
-			end
 			
 	add_waggon is
 			-- Attach a new waggon.
 			require
-				waggon_limitation >= waggons.count + 1
+				waggons_not_full: waggon_limitation >= waggons.count + 1
 			local
 				waggon: TRAFFIC_WAGGON
 			do	
 				waggon := create {TRAFFIC_WAGGON}.make
 				waggons.force (waggon)
 			ensure
-				waggons.count = old waggons.count + 1
+				waggon_added: waggons.count = old waggons.count + 1
 			end
 	
 	remove_waggon(i: INTEGER) is
 			-- Remove the waggon at position i
 			require
-				waggons.count > 0
+				waggons_not_empty: waggons.count > 0
 			do	
 				waggons.go_i_th (i)
 				waggons.remove
 			ensure
-				waggons.count = old waggons.count -1
+				waggon_removed: waggons.count = old waggons.count -1
 			end
-				
+	
+	feature --Constants
+		maximum_engine_capacity: INTEGER is 200
+			-- the maximum load allowed for engine waggon of a tram.
+		maximum_waggon_limitation: INTEGER is 4
+			-- the maximum number of waggons allowed to attach at a tram.
+		maximum_virtual_speed: INTEGER is 1
+			-- the maximum speed allowed for a tram
+		
 invariant
-	-- TODO: allover the class: invariant- and condition-names.
-	waggons /= void
-	waggon_limitation >= 0
-	engine_capacity <= 200
-	speed <= 100
+	waggons_not_void: waggons /= void
+	waggon_limitation: waggon_limitation >= maximum_waggon_limitation
+	capacity_limitation: engine_capacity <= maximum_engine_capacity
+	speed_limitation: virtual_speed <= maximum_virtual_speed
 end

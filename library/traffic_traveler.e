@@ -264,6 +264,9 @@ feature -- Attributes settings
 			
 feature {NONE} -- Random
 
+	random_direction: RANDOM
+		-- make a direction out of this genererator	
+
 	give_random_direction is
 			-- give a random destination
 			require
@@ -284,9 +287,32 @@ feature {NONE} -- Random
 				destination.y > -32
 			end
 			
-	random_direction: RANDOM
-		-- make a direction out of this genererator	
-	
+	add_random_polypoints(num: INTEGER) is
+		--  adds to the polypoints 'num' random destinations.
+		require
+			random_direction_not_void: random_direction /= void
+		local 
+			i: INTEGER
+		do
+			random_direction.forth
+			from
+				i := 1
+			until
+				i >= num
+			loop
+				random_direction.forth
+				give_random_direction
+				polypoints.extend (destination)
+				random_direction.forth
+				polypoints.extend (destination)	
+				i := i+1
+			end
+			polypoints.start
+			
+		ensure
+			polypoints_extended: polypoints.count = old polypoints.count + (2* (num-1))
+		end
+		
 	
 invariant
 	polypoints /= Void
