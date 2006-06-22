@@ -202,6 +202,8 @@ feature -- Event handling
 		do
 			if map.marked_station /= Void then
 				station_label.set_text (map.marked_station.name)
+				station_schedule_textlist.elements.wipe_out
+				
 				from 
 					map.marked_station.schedule.start
 				until
@@ -214,7 +216,8 @@ feature -- Event handling
 					map.marked_station.schedule.forth
 				end
 			else
-				station_label.set_text ("Select station")
+				station_label.set_text ("Select station")			
+				station_schedule_textlist.elements.wipe_out				
 			end
 		end
 
