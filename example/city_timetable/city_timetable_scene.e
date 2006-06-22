@@ -59,6 +59,7 @@ feature -- Interface
 			create delete_buildings_button.make_from_text("Delete buildings")
 			create station_label.make_from_text("Select station")
 			create station_schedule_textlist.make_empty
+			create station_lines_combobox.make_empty
 
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
@@ -133,7 +134,7 @@ feature -- Interface
 			
 			-- Time label
 			time_label.set_position(15, 20)
-			time_label.set_optimal_dimension(180,40)
+			time_label.set_optimal_dimension(160,40)
 			time_label.resize_to_optimal_dimension
 			time_label.align_center
 			toolbar_panel.add_widget (time_label)			
@@ -145,9 +146,15 @@ feature -- Interface
 			station_label.align_center
 			toolbar_panel.add_widget (station_label)	
 
+			-- Station lines combobox
+			station_lines_combobox.set_position(15, 70)
+			station_lines_combobox.set_dimension (160,20)
+			station_lines_combobox.selection_changed_event.subscribe (agent station_lines_selection_changed)
+			toolbar_panel.add_widget (station_lines_combobox)
+
 			-- Station label
-			station_schedule_textlist.set_position(15, 70)
-			station_schedule_textlist.set_optimal_dimension(180,250)
+			station_schedule_textlist.set_position(15, 110)
+			station_schedule_textlist.set_optimal_dimension(160,250)
 			station_schedule_textlist.resize_to_optimal_dimension
 			toolbar_panel.add_widget (station_schedule_textlist)	
 
@@ -197,47 +204,65 @@ feature -- Event handling
 		require
 			valid_station_label: station_label /= Void
 		local
-			text: STRING
-			key: STRING
 			traveler: TRAFFIC_LINE_TRANSPORTATION
-			lines: HASH_TABLE[STRING, STRING]
 		do
+			-- Clear all information
+			station_label.set_text ("Selected station")
+			station_schedule_textlist.elements.wipe_out
+			station_lines_combobox.elements.wipe_out
+
 			if map.marked_station /= Void then
+				-- Display the name of the station
 				station_label.set_text (map.marked_station.name)
-				station_schedule_textlist.elements.wipe_out
-				create lines.make (0)
-				
+
+				-- Add the lines that travel trough the station to the combobox
 				from 
 					map.marked_station.schedule.start
 				until
 					map.marked_station.schedule.after
 				loop
 					traveler ?= map.marked_station.schedule.item @ 1
-					key := traveler.line.name
+
+					if not station_lines_combobox.has (traveler.line.name) then
+						station_lines_combobox.put (traveler.line.name)
+					end					
 					
-					if lines.has (key) then
-						lines.replace (lines.item (key) + " " + (map.marked_station.schedule.item @ 2).out + ":" + (map.marked_station.schedule.item @ 3).out, key)
-					else
-						lines.put ((map.marked_station.schedule.item @ 2).out + ":" + (map.marked_station.schedule.item @ 3).out, key)
-					end
-										
 					map.marked_station.schedule.forth
 				end
 				
-				from
-					lines.start
-				until
-					lines.after
-				loop
-					station_schedule_textlist.put ("Linie: " + lines.key_for_iteration)
-					station_schedule_textlist.put (lines.item_for_iteration)
-					
-					lines.forth
+				-- Select the first line if there is one
+				if station_lines_combobox.count > 0 then
+					station_lines_combobox.set_selected_index (1)
 				end
-			else
-				station_label.set_text ("Select station")			
-				station_schedule_textlist.elements.wipe_out				
 			end
+		end
+		
+		
+	station_lines_selection_changed (selection: STRING) is
+			-- The selection of the combobox of the lines of the selected station has changed
+		local
+			traveler: TRAFFIC_LINE_TRANSPORTATION
+		do
+			-- Clear all times
+			station_schedule_textlist.elements.wipe_out
+
+			if map.marked_station /= Void and station_lines_combobox.has_selected_element then
+				-- Add all times when a tram of this line departs at the station
+				from 
+					map.marked_station.schedule.start
+				until
+					map.marked_station.schedule.after
+				loop
+					traveler ?= map.marked_station.schedule.item @ 1
+
+					if traveler.line.name.is_equal (station_lines_combobox.selected_element) then
+						station_schedule_textlist.put ((map.marked_station.schedule.item @ 2).out + ":" + (map.marked_station.schedule.item @ 3).out)
+					end					
+					
+					map.marked_station.schedule.forth
+				end
+			end
+			
 		end
 
 	sun_checked is
@@ -324,6 +349,8 @@ feature -- Widgets
 			
 	station_label: EM_LABEL
 			-- Selected station
+			
+	station_lines_combobox: EM_COMBOBOX[STRING]
 	
 	station_schedule_textlist: EM_TEXTLIST[STRING]
 			-- Schedule of selected station
