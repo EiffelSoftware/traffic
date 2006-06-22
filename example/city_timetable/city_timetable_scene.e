@@ -139,14 +139,14 @@ feature -- Interface
 			toolbar_panel.add_widget (time_label)			
 
 			-- Station label
-			station_label.set_position(15, 200)
-			station_label.set_optimal_dimension(180,40)
+			station_label.set_position(15, 50)
+			station_label.set_optimal_dimension(180, 40)
 			station_label.resize_to_optimal_dimension
 			station_label.align_center
 			toolbar_panel.add_widget (station_label)	
 
 			-- Station label
-			station_schedule_textlist.set_position(15, 220)
+			station_schedule_textlist.set_position(15, 70)
 			station_schedule_textlist.set_optimal_dimension(180,250)
 			station_schedule_textlist.resize_to_optimal_dimension
 			toolbar_panel.add_widget (station_schedule_textlist)	
@@ -198,22 +198,41 @@ feature -- Event handling
 			valid_station_label: station_label /= Void
 		local
 			text: STRING
+			key: STRING
 			traveler: TRAFFIC_LINE_TRANSPORTATION
+			lines: HASH_TABLE[STRING, STRING]
 		do
 			if map.marked_station /= Void then
 				station_label.set_text (map.marked_station.name)
 				station_schedule_textlist.elements.wipe_out
+				create lines.make (0)
 				
 				from 
 					map.marked_station.schedule.start
 				until
 					map.marked_station.schedule.after
 				loop
-					traveler ?= map.marked_station.schedule.item @ 1					
-					text := traveler.line.name + " " + (map.marked_station.schedule.item @ 2).out + ":" + (map.marked_station.schedule.item @ 3).out
-					station_schedule_textlist.put (text)
+					traveler ?= map.marked_station.schedule.item @ 1
+					key := traveler.line.name
 					
+					if lines.has (key) then
+						lines.replace (lines.item (key) + " " + (map.marked_station.schedule.item @ 2).out + ":" + (map.marked_station.schedule.item @ 3).out, key)
+					else
+						lines.put ((map.marked_station.schedule.item @ 2).out + ":" + (map.marked_station.schedule.item @ 3).out, key)
+					end
+										
 					map.marked_station.schedule.forth
+				end
+				
+				from
+					lines.start
+				until
+					lines.after
+				loop
+					station_schedule_textlist.put ("Linie: " + lines.key_for_iteration)
+					station_schedule_textlist.put (lines.item_for_iteration)
+					
+					lines.forth
 				end
 			else
 				station_label.set_text ("Select station")			
