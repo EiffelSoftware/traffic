@@ -39,6 +39,7 @@ feature -- Intialisation
 			entry: TRAFFIC_LINE_SCHEDULE_ENTRY
 		do
 			make_linked_list
+			a_line.start
 			
 			from
 				-- Start at 06:00
@@ -50,8 +51,7 @@ feature -- Intialisation
 				act_hour >= 7
 			loop
 				-- First direction
-				from
-					a_line.start
+				from					
 				until
 					a_line.after
 				loop
@@ -67,7 +67,7 @@ feature -- Intialisation
 						act_hour := act_hour + 1
 					end
 					
-					-- Set end time in schedul entry
+					-- Set end time in schedule entry
 					entry.set_end_time (act_hour, act_minute)
 					
 					-- Add entry to our schedule
@@ -87,6 +87,7 @@ feature -- Intialisation
 
 				-- Other direction
 				from
+					a_line.back
 					a_line.back
 				until
 					a_line.before
@@ -120,6 +121,10 @@ feature -- Intialisation
 					-- Next stop
 					a_line.back
 				end
+				
+				-- Go to 
+				a_line.forth
+				a_line.forth
 			end
 		end
 end
