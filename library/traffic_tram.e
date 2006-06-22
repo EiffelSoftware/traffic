@@ -70,8 +70,7 @@ feature -- Creation
 				schedule_exists: schedule /= Void
 				valid_offset: schedule_offset_minutes >= 0 and schedule_offset_minutes < 60
 			local
-				hour: INTEGER
-				minute: INTEGER
+				time_with_offset: TIME
 			do
 				from
 					schedule.start
@@ -79,18 +78,13 @@ feature -- Creation
 					schedule.after
 				loop
 					-- Use the time from the schedule...
-					hour := schedule.item.start_time_hour
-					minute := schedule.item.start_time_minute
+					time_with_offset := schedule.item.start_time.twin
 					
 					-- ...and add our offset
-					minute := minute + schedule_offset_minutes
-					if minute >= 60 then
-						minute := minute - 60
-						hour := hour + 1
-					end
+					time_with_offset.minute_add (schedule_offset_minutes)
 					
 					-- Register the departure time at the origin place
-					schedule.item.line_section.origin.register_in_schedule (Current, hour, minute)
+					schedule.item.line_section.origin.register_in_schedule (Current, time_with_offset)
 					
 					schedule.forth
 				end

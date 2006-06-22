@@ -24,31 +24,28 @@ feature -- Intialisation
 	make_for_line (a_line: TRAFFIC_LINE) is
 			-- Create an automatic schedule for a traffic line
 			-- This method uses an automatich generator which generates a schedule
-			-- where a tram moves along the line from 06:00 to 22:00
+			-- where a tram moves along the line from 05:00 to 23:00
 			-- It could be extended to use an xml file which provies the real data
 			-- of the tram schedule of i.e. zurich
 			--
 			-- TODO: Time between stops is always 10 minutes
-			-- TODO: Better time handling :/
 			-- TODO: Remove repetion for directions
 		require
 			valid_line: a_line /= Void
 		local
-			act_hour: INTEGER
-			act_minute: INTEGER
+			act_time: TIME
 			entry: TRAFFIC_LINE_SCHEDULE_ENTRY
 		do
 			make_linked_list
 			a_line.start
 			
 			from
-				-- Start at 06:00
-				act_hour := 6
-				act_minute := 0
+				-- Start at 05:00
+				create act_time.make (5, 0, 0)
 			until
 				-- Travel both directions until ~23:00
 				-- Watch that there is enough time for another roundtrip
-				act_hour >= 7
+				act_time.hour > 8
 			loop
 				-- First direction
 				from					
@@ -57,29 +54,19 @@ feature -- Intialisation
 				loop
 					-- Create schedule entry
 					create entry.make_with_line_section(a_line.item, false)
-					entry.set_start_time(act_hour, act_minute)
+					entry.set_start_time(act_time.twin)
 					
 					-- Add time for traveling
-					act_minute := act_minute + 3
-					
-					if (act_minute >= 60) then
-						act_minute := act_minute - 60
-						act_hour := act_hour + 1
-					end
+					act_time.minute_add (3)
 					
 					-- Set end time in schedule entry
-					entry.set_end_time (act_hour, act_minute)
+					entry.set_end_time (act_time.twin)
 					
 					-- Add entry to our schedule
 					extend (entry)
 					
-					-- Add 2 minutes waiting time
-					act_minute := act_minute + 2
-					
-					if (act_minute >= 60) then
-						act_minute := act_minute - 60
-						act_hour := act_hour + 1
-					end
+					-- Add 2 minutes waiting time at the place
+					act_time.minute_add (2)
 					
 					-- Next stop
 					a_line.forth
@@ -94,29 +81,19 @@ feature -- Intialisation
 				loop
 					-- Create schedule entry
 					create entry.make_with_line_section(a_line.item, true)
-					entry.set_start_time(act_hour, act_minute)
+					entry.set_start_time(act_time.twin)
 					
 					-- Add time for traveling
-					act_minute := act_minute + 3
-					
-					if (act_minute >= 60) then
-						act_minute := act_minute - 60
-						act_hour := act_hour + 1
-					end
+					act_time.minute_add (3)
 					
 					-- Set end time in schedul entry
-					entry.set_end_time (act_hour, act_minute)
+					entry.set_end_time (act_time.twin)
 					
 					-- Add entry to our schedule
 					extend (entry)
-					
-					-- Add 2 minutes waiting time
-					act_minute := act_minute + 2
-					
-					if (act_minute >= 60) then
-						act_minute := act_minute - 60
-						act_hour := act_hour + 1
-					end
+
+					-- Add 2 minutes waiting time at the station
+					act_time.minute_add (2)					
 					
 					-- Next stop
 					a_line.back
