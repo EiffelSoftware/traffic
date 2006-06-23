@@ -8,7 +8,7 @@
     date: "$Date: 2006/01/09 12:23:15 $"
     revision: "$Revision: 1.10 $"
   </description>
-  <root class="CITY_TIME_APPLICATION" creation="make"/>
+  <root class="CITY_TAXI_APPLICATION" creation="make"/>
   <option unless="${DEBUG}">
     	<option name="assertion" value="none"/>
     	<option name="garbage_collector" value="none"/>
@@ -30,7 +30,7 @@
 		</option>  	
   </option>
 
-  <cluster name="city_time" location=".">
+  <cluster name="city_taxi" location=".">
   	<option if="${DEVELOP}">
   		<option name="assertion" value="all"/>
    	</option>

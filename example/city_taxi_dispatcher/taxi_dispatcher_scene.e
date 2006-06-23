@@ -31,11 +31,6 @@ feature -- Interface
 			-- Toolbar
 			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded, window_height)
 				
-			-- Box and button for xml files
-			create combo_title.make_from_text ("Choose a map:")
-			create combo_box.make_from_list (search_for_xml)
-			create load_button.make_from_text ("Load map")
-			
 			-- 'Zoom in' and 'Zoom out' buttons
 			create zoom_in_button.make_from_text ("Zoom in")
 			create zoom_out_button.make_from_text ("Zoom out")
@@ -66,7 +61,7 @@ feature -- Interface
 			toolbar_panel.add_widget(time_button)
 		
 			
-			-- Marked origin title
+			-- Marked place title
 			marked_origin_title.set_position (10, 430)
 			marked_origin_title.set_optimal_dimension (180, 20)
 			marked_origin_title.resize_to_optimal_dimension
@@ -84,7 +79,7 @@ feature -- Interface
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
 			
-				-- Marked origin label
+				-- Marked place label
 			marked_origin_label.set_position (15, 450)
 			marked_origin_label.set_optimal_dimension (180, 20)
 			marked_origin_label.resize_to_optimal_dimension
@@ -101,24 +96,6 @@ feature -- Interface
 			-- Toolbar Panel
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
 			add_component (toolbar_panel)
-			
-			-- Combobox title
-			combo_title.set_position (10,50)
-			toolbar_panel.add_widget (combo_title)
-			
-			-- Combobox for XML selection
-			combo_box.set_position (10, 75)
-			combo_box.set_optimal_dimension (150, 20)
-			combo_box.resize_to_optimal_dimension
-			combo_box.set_selected_index (1)
-			combo_box.selection_changed_event.subscribe (agent combo_selection_changed(?))
-			toolbar_panel.add_widget (combo_box)
-			
-			-- Load Button
-			load_button.set_position ((200-load_button.width) // 2, 110)
-			load_button.clicked_event.subscribe (agent load_button_clicked)
-			toolbar_panel.add_widget (load_button)
-			
 		
 			-- adding zurich_mini.xml as default
 			map.load_map ("../map/zurich_mini.xml")
@@ -164,36 +141,6 @@ feature -- Event handling
 			end
 		end
 		
-	
-		
-	load_button_clicked is
-			-- "Load" button has been clicked.
-		require
-			load_button /= Void
-		do
-			set_time_enabled (False)
-			time_button.set_text ("start time")
-			traffic_time.reset_time
-			load_button.set_pressed (False)
-			map.load_map (map_file_name)
-		rescue
-			catch(24)
-			catch(8)
-			map_file_name := loaded_file_name
-			add_component(create {EM_MESSAGE_DIALOG}.make_from_error(original_tag_name))
-			retry
-		end
-		
-	combo_selection_changed (name: STRING) is
-			-- Combo Box selection has been changed.
-		require
-			name_exists: name /= void and then not name.is_empty
-		do
-			map_file_name := name
-		ensure 
-			map_file_name = name
-		end
-	
 	number_of_minutes_changed (label: EM_LABEL; number: INTEGER) is
 			-- The slider was used.
 		require
@@ -225,15 +172,6 @@ feature -- Widgets
 
 	toolbar_panel: EM_PANEL
 			-- Panel, in which all option widgets are displayed
-			
-	combo_title: EM_LABEL
-			-- Title for combo box
-			
-	combo_box: EM_COMBOBOX[STRING]
-			-- Box to choose the xml file from
-			
-	load_button: EM_BUTTON
-			-- Button to load the xml file
 			
 	zoom_in_button: EM_BUTTON
 			-- Button to zoom in to the map

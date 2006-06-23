@@ -20,7 +20,7 @@
   <!-- Implementation -->
 
   <target name="init_system">
-    <set name="system" value="city_time"/>
+    <set name="system" value="city_taxi"/>
     <set name="system_dir" value="."/>
   </target>
 

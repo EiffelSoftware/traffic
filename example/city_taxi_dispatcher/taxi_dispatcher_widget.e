@@ -19,7 +19,7 @@ create
 feature -- Initialization
 
 	make is
-			-- Subscribe to events.F
+			-- Subscribe to events.
 		do
 			Precursor	
 
@@ -67,15 +67,15 @@ feature -- Basic operations
 		require
 			filename_exists: filename /= Void
 		local
-			traveler: TRAFFIC_TRAVELER
-			temp_list: ARRAYED_LIST [EM_VECTOR_2D]
 			loader: TRAFFIC_MAP_LOADER
 		do
 			create loader.make (filename)
 			if not loader.has_error then
 				loader.load_map
 				set_map (loader.map)
-				add_taxis (2)
+				-- add some taxis to show how taxi dispatch works
+				add_taxis (7)
+				-- add 2 trams per line
 				traffic_traveler.add_tram_per_line (map, 2)
 			end
 		ensure then
@@ -89,7 +89,7 @@ feature -- Basic operations
 		end
 			
 	add_taxis (number: INTEGER) is	
-			-- Update the number of the taxis on the map.
+			-- add 'number' taxis to the map.
 		require
 			number >= 0
 		local
@@ -200,6 +200,9 @@ feature {NONE} -- Event handling
 					place := traffic_places.place_at_position (clicked_point)
 					if place /= Void then
 						marked_origin := place
+						-- on place clicked event simulates a taxi office call.
+						-- calls the taxi office to order a taxi to this place
+						-- to go to a random destination (give_random_destination).
 						taxi_office.call(place.position, give_random_destination)
 						traffic_places.highlight_place(marked_origin, place_highlight_color1)
 						marked_station_changed := True							

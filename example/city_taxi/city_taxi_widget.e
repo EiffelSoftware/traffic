@@ -89,7 +89,7 @@ feature -- Basic operations
 		end
 			
 	add_taxis (number: INTEGER) is	
-			-- Update the number of the taxis on the map.
+			-- Add 'number' taxis to the map.
 		require
 			number >= 0
 		local
@@ -200,9 +200,10 @@ feature {NONE} -- Event handling
 					place := traffic_places.place_at_position (clicked_point)
 					if place /= Void then
 						marked_origin := place
-						-- the next line to demonstrates the behaviour of the 
-						-- request event on the TAXI_EVENT_OFFICE. The click simulates a call
-						-- and generates a random destinantion.
+						-- the next line demonstrates the behaviour of the 
+						-- request event on the TAXI_EVENT_OFFICE. 
+						-- request.publish orders a taxi to the place, where the user clicked on, 
+						-- to go to a random destination.
 						taxi_office.request.publish([place.position, give_random_destination])
 						traffic_places.highlight_place(marked_origin, place_highlight_color1)
 						marked_station_changed := True							

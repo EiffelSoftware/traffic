@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="city_time" default="help">
+<project name="city_taxi_dispatcher" default="help">
 
   <description>
     description: "Eiffel Ant file for 'City time'"
@@ -20,7 +20,7 @@
   <!-- Implementation -->
 
   <target name="init_system">
-    <set name="system" value="city_time"/>
+    <set name="system" value="city_taxi_dispatcher"/>
     <set name="system_dir" value="."/>
   </target>
 

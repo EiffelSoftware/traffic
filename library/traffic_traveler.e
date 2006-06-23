@@ -308,7 +308,6 @@ feature {NONE} -- Random
 				i := i+1
 			end
 			polypoints.start
-			
 		ensure
 			polypoints_extended: polypoints.count = old polypoints.count + (2* (num-1))
 		end
