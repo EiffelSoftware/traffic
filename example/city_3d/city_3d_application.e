@@ -21,7 +21,7 @@ inherit
 create
 	make
 
-feature -- Initializationasasas
+feature -- Initialization
 
 	make is
 			-- Initialize all subsystems of em and launch the first scene.
