@@ -85,7 +85,7 @@ feature -- Creation
 					
 					-- Register the departure time at the origin place
 					schedule.item.line_section.origin.register_in_schedule (Current, time_with_offset)
-					
+
 					schedule.forth
 				end
 			end

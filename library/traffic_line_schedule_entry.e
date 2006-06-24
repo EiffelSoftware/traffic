@@ -12,16 +12,14 @@ create
 	
 feature -- Initialisation
 	
-	make_with_line_section(a_line_section: TRAFFIC_LINE_SECTION; is_opposite_direction: BOOLEAN) is
+	make_with_line_section(a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Create the object for a given line section
 		require
 			valid_line_section: a_line_section /= Void
 		do
 			line_section := a_line_section
-			opposite_direction := is_opposite_direction
 		ensure
 			line_section_set: line_section /= Void and then line_section = a_line_section
-			direction_set: opposite_direction = is_opposite_direction
 		end
 		
 	
@@ -34,10 +32,7 @@ feature -- Access
 
 	line_section: TRAFFIC_LINE_SECTION
 		-- The line section which the object will travel on¨
-		
-	opposite_direction: BOOLEAN
-		-- Destination and origin of line section are switched
-		
+				
 	set_start_time(a_time: TIME) is
 			-- Set the start time
 		require

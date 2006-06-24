@@ -58,7 +58,7 @@ feature -- Access
 			-- Additional information.
 			
 	schedule: LINKED_LIST[TUPLE[TRAFFIC_LINE_TRANSPORTATION, TIME]]
-			-- All departure times [hour, minute] of trams visiting this place
+			-- All departure times [tram, time, direction] of trams visiting this place
 			
 feature -- Element change
 
