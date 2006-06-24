@@ -57,7 +57,7 @@ feature -- Basic operations
 		require
 			factory_exists: traffic_traveler /= Void
 		do
-			traffic_traveler.add_tram_per_line_with_schedule (map, 2)			
+			traffic_traveler.add_tram_per_line_with_schedule (map, 1)			
 		end
 
 feature -- Drawing

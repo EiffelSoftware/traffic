@@ -242,6 +242,7 @@ feature -- Event handling
 			-- The selection of the combobox of the lines of the selected station has changed
 		local
 			traveler: TRAFFIC_LINE_TRANSPORTATION
+			departure_time: TIME
 		do
 			-- Clear all times
 			station_schedule_textlist.elements.wipe_out
@@ -254,9 +255,10 @@ feature -- Event handling
 					map.marked_station.schedule.after
 				loop
 					traveler ?= map.marked_station.schedule.item @ 1
-
+					departure_time ?= map.marked_station.schedule.item @ 2
+					
 					if traveler.line.name.is_equal (station_lines_combobox.selected_element) then
-						station_schedule_textlist.put ((map.marked_station.schedule.item @ 2).out + ":" + (map.marked_station.schedule.item @ 3).out)
+						station_schedule_textlist.put (departure_time.out)
 					end					
 					
 					map.marked_station.schedule.forth
