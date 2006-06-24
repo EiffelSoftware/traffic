@@ -23,6 +23,8 @@ feature {NONE} -- Access
 		end
 
 feature -- Status setting
+	schedule_factory: TRAFFIC_SCHEDULE_FACTORY
+			-- Reference to the traffic schedule factory
 
 	map_factory: TRAFFIC_MAP_FACTORY
 			-- Reference to the traffic map factory.
