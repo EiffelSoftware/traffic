@@ -660,6 +660,7 @@ feature {NONE} -- Implementation
 
 	map: CITY_3D_MAP_WIDGET
 			-- The 3 dimensional representation of the map
+	
 
 	number_of_buildings: INTEGER
 			-- Number of buildings on the map
