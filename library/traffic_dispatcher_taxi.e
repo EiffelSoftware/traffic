@@ -12,7 +12,7 @@ class
 		make_random
 	
 feature -- Creation procedure
-	make_random (taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE; stops: INTEGER; a_seed: INTEGER;) is		
+	make_random (taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE; a_seed: INTEGER; stops: INTEGER;) is		
 			-- create a taxi with an associated taxi office taxi_office
 			-- which stops at 'stops' random positions.
 			-- a_seed is used as seed for the random generator.
@@ -21,7 +21,7 @@ feature -- Creation procedure
 				valid_seed: a_seed >= 0
 				valid_number_of_stops: stops >= 2
 			do
-				traffic_type := create {TRAFFIC_TYPE_TAXI}.make
+				traffic_type := create {TRAFFIC_TYPE_DISPATCHER_TAXI}.make
 				create polypoints.make (stops)
 				create random_direction.set_seed(a_seed)
 				add_random_polypoints (stops)
@@ -29,9 +29,10 @@ feature -- Creation procedure
 				office := taxi_office
 				office.enlist(Current)
 				
+				set_reiterate (true)
 				set_coordinates
 				set_angle
-				virtual_speed := maximum_virtual_speed
+				virtual_speed := default_virtual_speed
 				--TODO if needed random_speed: virtual_speed := random_direction.double_item	
 			end
 
@@ -49,9 +50,11 @@ feature -- Basic operations
 				--set taxi busy and take it out of the available_taxi_list of the office.
 					set_request_information(from_location, to_location)
 					busy := True
+				-- is_marked is set to true so that the view will draw the busy taxi marked.
+					is_marked := True
 					office.delist(Current)
 				else
-					office.reject(Current, from_location, to_location)
+					office.reject(from_location, to_location)
 				end
 			end
 			
@@ -72,6 +75,8 @@ feature -- Basic operations
 							set_reiterate (true)
 						-- second: taxi is available again, that must be published
 							busy := false
+						-- set is_marked to false so that the view will draw the taxi normally.
+							is_marked := false
 							office.enlist(Current)
 					end
 				end
@@ -81,6 +86,4 @@ feature --Constants
 
 invariant
 	random_direction_not_void: random_direction /= void
-	speed_limitation: virtual_speed <= maximum_virtual_speed
-
 end

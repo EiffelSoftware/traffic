@@ -52,6 +52,7 @@ feature {NONE} -- Initialization
 			create internal_line_sections.make (default_size)
 			create internal_place_array.make (200)
 			create internal_travelers.make (1)
+			create internal_taxi_offices.make(0)
 			traveler_index := 1
 			internal_line_sections.compare_objects -- use equal for object comparision
 			create internal_buildings.make (1,4)
@@ -344,7 +345,15 @@ feature -- Element change
 			do
 				internal_travelers.force (a_traveler, a_traveler.index)
 			end	
-
+	
+	add_taxi_office( a_taxi_office: TRAFFIC_TAXI_OFFICE) is
+			-- Add taxi office 'a_taxi_office' to map.
+			require
+				a_taxi_office_exists: a_taxi_office /= void
+			do
+				internal_taxi_offices.force(a_taxi_office)
+			end
+		
 
 	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Remove line_section `a_line_section' from map (bad implementation)
@@ -413,6 +422,13 @@ feature -- Access
 			
 	description: STRING
 			-- Textual description.
+	
+	taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE] is
+			-- All taxi offices associated with this map.
+			do
+				Result := internal_taxi_offices.twin
+			end
+			
 			
 	place (a_name: STRING): TRAFFIC_PLACE is
 			-- Place named `a_name'.
@@ -563,7 +579,7 @@ feature -- Basic operation
 		end
 			
 feature {NONE} -- Implementation
-
+	
 	internal_places: HASH_TABLE [TRAFFIC_PLACE, STRING]
 			-- Places on map.
 			
@@ -581,6 +597,9 @@ feature {NONE} -- Implementation
 			
 	internal_travelers: HASH_TABLE [TRAFFIC_TRAVELER, INTEGER]
 			-- Travelers on map.
+	
+	internal_taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE]
+			-- Taxi offices associated with this map
 			
 	place_position (a_name: STRING): INTEGER is
 			-- Position of place `a_name' in places.
@@ -690,5 +709,5 @@ invariant
 	lines_not_void: internal_lines /= Void -- Lines exist.
 	line_sections_not_void: internal_line_sections /= Void -- Line sections exist
 	travelers_not_void: internal_travelers /= Void -- Travelers exist
-
+	internal_taxi_offices_not_void: internal_taxi_offices /= Void
 end

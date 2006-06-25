@@ -59,7 +59,9 @@ feature -- Attributes
 		
 	angle_x: DOUBLE
 		-- the angle in respect to the x-axis
-
+		
+	is_marked: BOOLEAN
+		-- is the traveler marked, highlighted?
 
 feature -- Procedures
 	

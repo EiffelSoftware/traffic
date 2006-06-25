@@ -36,10 +36,12 @@ feature -- Interface
 			create zoom_in_button.make_from_text ("Zoom in")
 			create zoom_out_button.make_from_text ("Zoom out")
 			create time_button.make_from_text("start time")
-				
-			-- Labels for marked place
-			create marked_origin_title.make_from_text ("Marked station:")
-			create marked_origin_label.make_from_text ("")
+			
+			-- Taxi office type combobox sets default selection to dispatcher taxi office.
+			create taxi_office_type_combobox.make_empty
+			taxi_office_type_combobox.put ("Event Taxi Office")
+			taxi_office_type_combobox.put ("Dispatcher Taxi Office")
+			taxi_office_type_combobox.set_selected_element ("Event Taxi Office")
 						
 			-- Zoom out Button
 			zoom_out_button.set_position (180-zoom_out_button.width, 170)
@@ -61,15 +63,13 @@ feature -- Interface
 			time_button.clicked_event.subscribe (agent time_button_clicked)
 			toolbar_panel.add_widget(time_button)
 		
+			-- Taxi office type combobox
+			taxi_office_type_combobox.set_position (20, 300)
+			taxi_office_type_combobox.set_width (140)
+			taxi_office_type_combobox.set_height (20)
+			taxi_office_type_combobox.selection_changed_event.subscribe (agent taxi_office_type_changed(?))
+			toolbar_panel.add_widget (taxi_office_type_combobox)
 			
-			-- Marked place title
-			marked_origin_title.set_position (10, 430)
-			marked_origin_title.set_optimal_dimension (180, 20)
-			marked_origin_title.resize_to_optimal_dimension
-			marked_origin_title.set_background_color (bg_color)
-			toolbar_panel.add_widget (marked_origin_title)
-
-		
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
@@ -80,14 +80,6 @@ feature -- Interface
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
 			
-				-- Marked place label
-			marked_origin_label.set_position (15, 450)
-			marked_origin_label.set_optimal_dimension (180, 20)
-			marked_origin_label.resize_to_optimal_dimension
-			marked_origin_label.set_background_color (bg_color)
-			marked_origin_label.set_tooltip ("Marked Station")
-			map.mouse_clicked_event.subscribe (agent handle_mouse_click (marked_origin_label, ?))
-			toolbar_panel.add_widget (marked_origin_label)
 
 			
 			-- get time from map
@@ -165,6 +157,19 @@ feature -- Event handling
 			end
 		end
 		
+	taxi_office_type_changed(type: STRING) is
+			-- Change selection on "taxi_office_type_combobox".
+		do
+			if type.is_equal ("Event Taxi Office")  then
+				--Event Taxis in yellow
+				taxi_office_type_combobox.set_background_color(create {EM_COLOR}.make_with_rgb(255, 255, 0))
+			else
+				--Dispatcher Taxis in ozean
+				taxi_office_type_combobox.set_background_color (create {EM_COLOR}.make_with_rgb(0, 255, 255))
+			end
+			map.set_taxi_office_type(type)
+		end
+		
 feature	 -- Basic operations
 
 
@@ -182,21 +187,15 @@ feature -- Widgets
 	
 	time_button: EM_BUTTON
 			-- Button to start, pause or continue the time
-									
-	marked_origin_label: EM_LABEL
-			-- Label for the origin
-			
-	marked_origin_title: EM_LABEL
-			-- Name of the (origin) station
-			
-	time_slider: EM_SLIDER
-			-- Scrollbar for the time
 													
 	is_time_enabled: BOOLEAN
 			-- Is the time running?
 
 	traffic_time: TRAFFIC_TIME
 			-- Time of the city time system
+			
+	taxi_office_type_combobox: EM_COMBOBOX[STRING]
+			-- Button to select a taxioffice. Requests will be sent to the selected taxi office.
 			
 feature {NONE} -- Implementation
 

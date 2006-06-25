@@ -39,7 +39,6 @@ feature -- Basic operations
 					until
 						available_taxi_list.after
 					loop
-						--TODO: determine nearest point algorithm that uses streets.
 						position :=gl_to_map_coords (available_taxi_list.item.position)
 						temp_distance := sqrt((from_location.x - position.x)^2 + (from_location.y - position.y)^2)
 						if minimum_distance > temp_distance then
@@ -78,13 +77,21 @@ feature{TRAFFIC_TAXI}  	-- operations for taxi to communicate with their office.
 					end
 			end
 
-	reject(taxi: TRAFFIC_TAXI; from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is 
-				-- for taxis to reject a request because they got busy. 
+	reject(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is 
+				-- for taxis to reject a request because they got busy.
+				-- e.g. at this moment picked a passenger up on the street.
 			require
-				taxi_not_void: taxi /= void
 				from_location_not_void: from_location /= void
 				to_location_not_void: to_location /= void
 			deferred
+			end
+			
+feature {TRAFFIC_3D_MAP_WIDGET}
+	
+	get_taxi_list: ARRAYED_LIST[TRAFFIC_TAXI] is
+			-- return the taxi_list to the map widget to add the taxis to the 3d_traveler_representation.
+			do
+				Result := available_taxi_list
 			end
 
 invariant

@@ -70,17 +70,15 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 				
 				if (graphic /= Void) and (info /= Void) then
 					-- we have to check so that no errors happen
-					
+					if info.is_marked then
+						-- draw marked travelers bigger.
+						graphic.set_scale (0.6, 0.6, 0.6)
+					else
+						graphic.set_scale(0.3, 0.3, 0.3)
+					end
 					graphic.set_origin (info.position.x, traveler_offset, info.position.y)
 					graphic.set_rotation (0, info.angle_x, 0)
 					graphic.draw
-					
---					if info.has_finished then
---						travelers.back
---						travelers.remove_right
---						map.remove_traveler (info.index)
---						travelers.remove		
---					end
 					if not travelers.after then
 					travelers.forth
 					end
@@ -119,21 +117,26 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 							person_toggle := 0
 						end
 						traveler := traveler_factory.create_object							
-						traveler.set_scale (0.2, 0.2, 0.2)
+						traveler.set_scale (0.3, 0.3, 0.3)
 					elseif a_traveler.traffic_type.name.is_equal ("tram") then
 						traveler_factory.set_em_color (0, 0, 255)
 						traveler_factory.load_file ("objects/tram.obj")
 						traveler := traveler_factory.create_object
 						traveler.set_scale (0.3, 0.3, 0.3)
-					elseif a_traveler.traffic_type.name.is_equal("taxi") then
-						traveler_factory.set_em_color (0, 255, 0)
+					--TODO: change this to color associated with a taxi office. each taxi office has a 
+					--different color.
+					--Current situation: only different colors for different types of taxi.
+					elseif a_traveler.traffic_type.name.is_equal("event taxi") then
+						traveler_factory.set_em_color (255, 255, 0)
+						traveler_factory.load_file ("objects/woman.obj")
+						traveler := traveler_factory.create_object
+						traveler.set_scale (0.3, 0.3, 0.3)
+					elseif a_traveler.traffic_type.name.is_equal("dispatcher taxi") then
+						traveler_factory.set_em_color (0, 255 , 255)
 						traveler_factory.load_file ("objects/woman.obj")
 						traveler := traveler_factory.create_object
 						traveler.set_scale (0.3, 0.3, 0.3)
 					end	
-					
-					
-					
 					traveler.set_origin (a_traveler.position.x, traveler_offset, a_traveler.position.y)
 					traveler.set_rotation (0, a_traveler.angle_x, 0)					
 					time.add_callback_tour (agent a_traveler.take_tour)
@@ -270,9 +273,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 feature --{TRAFFIC_3D_MAP_WIDGET}
 
 	travelers: LINKED_LIST [TUPLE[EM_3D_OBJECT, TRAFFIC_TRAVELER]]		
-		-- Container for all traveler.
-		
-		
+		-- Container for all traveler.		
 		
 feature{NONE} -- Attributes
 

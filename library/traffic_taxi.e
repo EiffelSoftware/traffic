@@ -58,7 +58,11 @@ feature{NONE} --Implementation
 				destination := map_to_gl_coords (from_location)
 				set_reiterate (false)
 		end
-			
+
+feature --Constants
+	default_virtual_speed: REAL is 0.7
+		--the default speed a taxi drives on the average			
+	
 invariant
 	office_not_void: office /= void
 end

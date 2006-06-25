@@ -29,16 +29,21 @@ feature -- Initialization
 			mouse_wheel_up_event.subscribe (agent wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
-			create taxi_office.make
+			create event_taxi_offices.make(0)
+			create dispatcher_taxi_offices.make(0)
 			create random_destination.make
 			random_destination.set_seed(traffic_time.time.ticks)
 		end
 
 feature -- Access
-	taxi_office: TRAFFIC_EVENT_TAXI_OFFICE
-	
+	event_taxi_offices: ARRAYED_LIST[TRAFFIC_EVENT_TAXI_OFFICE]
+		-- event taxi offices list
+		
+	dispatcher_taxi_offices: ARRAYED_LIST[TRAFFIC_DISPATCHER_TAXI_OFFICE]
+		--dispatcher taxi offices list
+		
 	marked_origin: TRAFFIC_PLACE
-			-- Currently marked originb
+		-- Currently marked originb
 	
 	simulated_time: INTEGER is
 			-- Minutes in real time
@@ -75,7 +80,10 @@ feature -- Basic operations
 			if not loader.has_error then
 				loader.load_map
 				set_map (loader.map)
-				add_taxis (7)
+				-- add two offices on start up an event taxi office and 
+				-- a dispatcher taxi office. Both owning 5 taxis.
+				add_event_taxi_office(5)
+				add_dispatcher_taxi_office(5)
 				traffic_traveler.add_tram_per_line (map, 2)
 			end
 		ensure then
@@ -87,26 +95,47 @@ feature -- Basic operations
 		do
 			map.change_traveler_speed (traffic_time.simulated_minutes / 2)
 		end
-			
-	add_taxis (number: INTEGER) is	
+	
+	
+	add_dispatcher_taxi_office(number_of_taxis: INTEGER) is	
+			-- Add a new taxi_office to the map.
+		local
+			taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE
+		do	
+			-- set seed for random generating the positions of the taxis 
+			-- associated with the office to time.tick
+			create taxi_office.make(number_of_taxis, time.time.ticks)
+			dispatcher_taxi_offices.extend(taxi_office)
+			map.add_taxi_office (taxi_office)
+			add_taxis(taxi_office.get_taxi_list)
+		end
+		
+	add_event_taxi_office(number_of_taxis: INTEGER) is	
+			-- Add a new taxi_office to the map.
+		local
+			taxi_office: TRAFFIC_EVENT_TAXI_OFFICE
+		do
+			-- set seed for random generating the positions of the taxis 
+			-- associated with the office to time.tick
+			create taxi_office.make(number_of_taxis, time.time.ticks)
+			event_taxi_offices.extend(taxi_office)
+			map.add_taxi_office (taxi_office)
+			add_taxis(taxi_office.get_taxi_list)
+		end
+		
+	add_taxis (taxis: ARRAYED_LIST[TRAFFIC_TRAVELER]) is	
 			-- Add 'number' taxis to the map.
 		require
-			number >= 0
-		local
-			i: INTEGER
-			taxi: TRAFFIC_EVENT_TAXI
+			taxis_not_void: taxis /= void
+		
 		do
-				from 
-					i := 0
-				until
-					i >= number - number_of_passengers
-				loop
-					create taxi.make_random (taxi_office, traffic_time.time.ticks, 7)
-					taxi.set_reiterate (True)
-					add_traveler (taxi)				
-					i := i + 1
-				end
-			number_of_passengers := number
+			taxis.do_all (agent add_traveler(?))				
+		end
+		
+	set_taxi_office_type(type: STRING) is
+			-- set the type of the current taxi office to be used.
+		do
+			current_taxi_office := type
 		end
 
 feature -- Drawing
@@ -194,19 +223,23 @@ feature {NONE} -- Event handling
 			clicked_point := gl_to_map_coords (create {EM_VECTOR_2D}.make (result_vec.x, result_vec.z))
 			if event.is_left_button then				
 				if map /= Void then
-					if marked_origin /= Void then
-						traffic_places.unhighlight_place (marked_origin)
-					end	
 					place := traffic_places.place_at_position (clicked_point)
 					if place /= Void then
 						marked_origin := place
-						-- the next line demonstrates the behaviour of the 
-						-- request event on the TAXI_EVENT_OFFICE. 
-						-- request.publish orders a taxi to the place, where the user clicked on, 
-						-- to go to a random destination.
-						taxi_office.request.publish([place.position, give_random_destination])
-						traffic_places.highlight_place(marked_origin, place_highlight_color1)
-						marked_station_changed := True							
+						if current_taxi_office.is_equal ("Event Taxi Office") then
+							-- the next line demonstrates the behaviour of the 
+							-- request event on the TAXI_EVENT_OFFICE. 
+							-- request.publish orders a taxi to the place, where the user clicked on, 
+							-- to go to a random destination.
+							event_taxi_offices.go_i_th (1)
+							event_taxi_offices.item.request.publish([place.position, give_random_destination])
+							marked_station_changed := True
+						else
+							dispatcher_taxi_offices.go_i_th (1)
+							dispatcher_taxi_offices.item.call (place.position, give_random_destination)
+							marked_station_changed := True	
+						end
+												
 					end				
 				end				
 			end
@@ -233,6 +266,8 @@ feature {NONE} -- Event handling
 		end
 
 feature{NONE} --Implementation
+		
+		current_taxi_office: STRING
 
 		random_destination: RANDOM
 		
