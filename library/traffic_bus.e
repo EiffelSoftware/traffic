@@ -10,7 +10,7 @@ class
 inherit
 	TRAFFIC_LINE_TRANSPORTATION
 create
-	make_with_line
+	make_default_with_line
 	
 feature -- Creation
 		
@@ -48,7 +48,7 @@ feature -- Basic operations
 feature-- Constants
 	maximum_capacity: INTEGER is 180
 		-- the maximum load allowed for a bus
-	maximum_virtual_speed: INTEGER is 1.2
+	maximum_virtual_speed: REAL is 1.2
 		-- the maximum speed allowed for a bus
 
 invariant

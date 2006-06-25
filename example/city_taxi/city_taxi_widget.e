@@ -72,8 +72,6 @@ feature -- Basic operations
 		require
 			filename_exists: filename /= Void
 		local
-			traveler: TRAFFIC_TRAVELER
-			temp_list: ARRAYED_LIST [EM_VECTOR_2D]
 			loader: TRAFFIC_MAP_LOADER
 		do
 			create loader.make (filename)

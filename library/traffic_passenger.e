@@ -43,7 +43,7 @@ feature -- creation procedure
 				an_itinerary_not_void: an_itinerary /= Void
 				a_speed_not_negative: a_speed >= 0
 			do
-				traffic_type := {TRAFFIC_TYPE_WALKING}
+				traffic_type := create {TRAFFIC_TYPE_WALKING}.make
 				create polypoints.make (0)
 				polypoints := an_itinerary
 				polypoints.start
@@ -61,7 +61,7 @@ feature -- creation procedure
 			local 
 				i: INTEGER
 			do
-				traffic_type := {TRAFFIC_TYPE_WALKING}.make
+				traffic_type := create {TRAFFIC_TYPE_WALKING}.make
 				create polypoints.make (0)
 				create random_direction.set_seed(a_seed)
 				add_random_polypoints(stops)
