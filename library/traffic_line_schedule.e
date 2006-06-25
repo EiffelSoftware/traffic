@@ -51,20 +51,20 @@ feature -- Intialisation
 				llist.forth
 			end
 			
-			if not llist.after then
+--			if not llist.after then
+			if false then
 				
 				-- hier könnte die timetable für 'line' zugeordnet werden
 			
 			else
-				-- michi's timetable
 				from
-				-- Start at 05:00
-				create act_time.make (5, 0, 0)
+					-- Start at 05:00
+					create act_time.make (5, 0, 0)
 				until
-				-- Travel both directions until ~23:00
-				-- Watch that there is enough time for another roundtrip
-				-- TODO: Fix that 23:00 works
-				act_time.hour > 8
+					-- Travel both directions until ~23:00
+					-- Watch that there is enough time for another roundtrip
+					-- TODO: Fix that 23:00 works
+					act_time.hour > 8
 				loop
 					-- First direction
 					from	
