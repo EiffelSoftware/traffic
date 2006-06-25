@@ -10,8 +10,15 @@ inherit
 	TRAFFIC_TRANSPORTATION
 	
 	redefine 
-		set_coordinates
+		set_coordinates,
+		take_tour
 	end
+	
+	TRAFFIC_SHARED_TIME
+	rename
+		time as traffic_time
+	end
+	
 
 		
 feature --Access
@@ -25,6 +32,9 @@ feature --Access
 	schedule_offset_minutes: INTEGER
 		-- the number of minutes the object will travel behind the schedule
 		
+	schedule_index: INTEGER
+		-- the index of the schedule where we are at
+		
 	line_count: INTEGER is
 			-- returns the 'Current's number of stops.
 			do
@@ -33,6 +43,28 @@ feature --Access
 		
 	
 feature -- Basic operations
+
+	take_tour is
+			-- take a tour on the map
+			local
+				direction: EM_VECTOR_2D
+			do
+				if schedule = Void then
+					Precursor
+				else
+					direction := destination - origin
+					if not has_finished then
+			
+						if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
+							set_coordinates
+							set_angle
+						else
+							position := position + (direction / direction.length) * speed
+						end
+					end
+				end
+			end
+
 				
 	set_to_place (a_place: TRAFFIC_PLACE) is
 			-- set the line transportation to 'a_place'.
