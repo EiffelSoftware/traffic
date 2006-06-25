@@ -15,7 +15,7 @@ create
 	
 feature -- Access
 
-	Name: STRING is "schedulerline"
+	Name: STRING is "sline"
 			-- Name of node to process.
 			
 	Mandatory_attributes: ARRAY [STRING] is

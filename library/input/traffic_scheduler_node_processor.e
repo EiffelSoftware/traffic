@@ -14,7 +14,7 @@ create
 
 feature -- Access
 
-	Name: STRING is "schedule"
+	Name: STRING is "entry"
 			-- Name of element to process
 		
 	Mandatory_attributes: ARRAY [STRING] is

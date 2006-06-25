@@ -34,6 +34,13 @@ feature -- Status setting
 		do
 			Result := map_factory.map
 		end
+	set_schedule_factory(a_factory: TRAFFIC_SCHEDULE_FACTORY) is
+			-- Set a schedule factory
+		do
+			schedule_factory := a_factory
+		ensure
+			schedule_factory_set: schedule_factory = a_factory
+		end
 		
 	set_map_factory (a_factory: TRAFFIC_MAP_FACTORY) is
 			-- Set map reference.
@@ -128,6 +135,9 @@ feature {NONE} -- Implementation
 			Result.put (create {TRAFFIC_COLOR_NODE_PROCESSOR}.make, "color")
 			Result.put (create {TRAFFIC_BUILDINGS_NODE_PROCESSOR}.make, "buildings")
 			Result.put (create {TRAFFIC_BUILDING_NODE_PROCESSOR}.make, "building")
+			Result.put (create {TRAFFIC_SCHEDULER_LINES_NODE_PROCESSOR}.make, "slines")
+			Result.put (create {TRAFFIC_SCHEDULER_LINE_NODE_PROCESSOR}.make, "sline")
+			Result.put (create {TRAFFIC_SCHEDULER_NODE_PROCESSOR}.make, "entry")
 		ensure
 			Result_exists: Result /= Void
 			Result_not_empty: not Result.is_empty
@@ -185,6 +195,14 @@ feature {NONE} -- Implementation
 			a := << >>
 			a.compare_objects
 			Result.put (a, "building")
+--			schedule slines
+			a := << "sline" >>
+			a.compare_objects
+			Result.put (a, "slines")
+--			schedule sline
+			a := << "entry" >>
+			a.compare_objects
+			Result.put (a, "sline")
 		end
 		
 end

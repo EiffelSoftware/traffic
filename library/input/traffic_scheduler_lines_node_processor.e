@@ -14,13 +14,13 @@ create
 	
 feature -- Access
 
-	Name: STRING is "schedulerlines"
+	Name: STRING is "slines"
 			-- Name of node to process.
 			
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes.
 		once
-			Result := << "" >>
+			Result := <<  >>
 			Result.compare_objects
 		end
 

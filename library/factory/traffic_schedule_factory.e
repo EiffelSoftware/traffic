@@ -6,7 +6,8 @@ indexing
 
 class
 	TRAFFIC_SCHEDULE_FACTORY
-
+create
+	make
 feature -- Access
 	
 	make	is

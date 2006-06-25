@@ -20,7 +20,7 @@ create
 	
 feature -- Intialisation
 
-	make_for_line (a_line: TRAFFIC_LINE) is
+	make_for_line (a_line: TRAFFIC_LINE;scheduler: TRAFFIC_SCHEDULE_LOADER) is
 			-- Create an automatic schedule for a traffic line
 			-- This method uses an automatich generator which generates a schedule
 			-- where a tram moves along the line from 05:00 to 23:00
@@ -32,43 +32,66 @@ feature -- Intialisation
 			act_time: TIME
 			distance: DOUBLE
 			entry: TRAFFIC_LINE_SCHEDULE_ENTRY
+			llist : LINKED_LIST[TUPLE[STRING,LINKED_LIST[TUPLE[STRING,INTEGER,INTEGER]]]]
+			line : TUPLE[STRING,LINKED_LIST[TUPLE[STRING,INTEGER,INTEGER]]]
+			line_name : STRING
+		
 		do
 			make_linked_list
+
+			llist := scheduler.schedule.line_list
 			
 			from
+				llist.start
+			until
+				llist.after or line_name = a_line.name
+			loop
+				line := llist.item
+				line_name ?= line.item (1)
+				llist.forth
+			end
+			
+			if not llist.after then
+				
+				-- hier könnte die timetable für 'line' zugeordnet werden
+			
+			else
+				-- michi's timetable
+				from
 				-- Start at 05:00
 				create act_time.make (5, 0, 0)
-			until
+				until
 				-- Travel both directions until ~23:00
 				-- Watch that there is enough time for another roundtrip
 				-- TODO: Fix that 23:00 works
 				act_time.hour > 8
-			loop
-				-- First direction
-				from	
-					a_line.start				
-				until
-					a_line.after
 				loop
-					-- Create schedule entry
-					create entry.make_with_line_section(a_line.item)
-					entry.set_start_time(act_time.twin)
-					
-					-- Add time for traveling
-					distance := a_line.item.origin.position.distance (a_line.item.destination.position).abs
-					act_time.minute_add ((distance.rounded) // 80)
-					
-					-- Set end time in schedule entry
-					entry.set_end_time (act_time.twin)
-					
-					-- Add entry to our schedule
-					extend (entry)
-					
-					-- Add 2 minutes waiting time at the place
-					act_time.minute_add (2)
-					
-					-- Next stop
-					a_line.forth
+					-- First direction
+					from	
+						a_line.start				
+					until
+						a_line.after
+					loop
+						-- Create schedule entry
+						create entry.make_with_line_section(a_line.item)
+						entry.set_start_time(act_time.twin)
+						
+						-- Add time for traveling
+						distance := a_line.item.origin.position.distance (a_line.item.destination.position).abs
+						act_time.minute_add ((distance.rounded) // 80)
+						
+						-- Set end time in schedule entry
+						entry.set_end_time (act_time.twin)
+						
+						-- Add entry to our schedule
+						extend (entry)
+						
+						-- Add 2 minutes waiting time at the place
+						act_time.minute_add (2)
+						
+						-- Next stop
+						a_line.forth
+					end
 				end
 			end
 		end
