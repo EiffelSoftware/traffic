@@ -43,6 +43,9 @@ feature -- Initialization
 			
 			create travelers.make
 			traveler_key := 0
+			
+			create scheduler.make ("timetable_tram.xml")
+			scheduler.load_schedule
 		ensure
 			travelers_created: travelers /= Void
 			map /= Void
@@ -252,7 +255,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 						lines.after
 					loop	
 						-- create a schedule for the line
-						create schedule.make_for_line (lines.item_for_iteration)
+						create schedule.make_for_line (lines.item_for_iteration,scheduler)
 						
 						-- create the number of trams
 						from
@@ -297,6 +300,9 @@ feature{NONE} -- Attributes
 		
 	person_toggle: INTEGER
 		-- if 0 then man otherwise woman
+	
+	scheduler: TRAFFIC_SCHEDULE_LOADER
+		-- timetable from xml file
 
 invariant
 	TR_TR_REP_centre_set: centre /= Void
