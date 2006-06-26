@@ -56,6 +56,7 @@ feature -- Creation
 		actual_hour := 0
 		actual_minute := 0
 		actual_second := 0
+		actual_day := 0
 
 		update_agent := agent update_time
 		
@@ -89,6 +90,9 @@ feature  --Time Attributes
 	actual_second: INTEGER
 		-- simluated second, not useful yet. 
 		
+	actual_day: INTEGER
+		-- actual day
+		
 	change_simulated_time (simulated_day_minutes: INTEGER) is
 			-- the day lasts for 'simulated_day_minutes'.
 		require
@@ -117,13 +121,18 @@ feature{NONE} -- Handling
 			local
 				real_mili_secs: INTEGER	
 				sim_secs: DOUBLE
+				old_hour: INTEGER
 			do
 				if is_time_running then
 					real_mili_secs := time.ticks - real_ms_start	
 					sim_secs := 1440/simulated_minutes*real_mili_secs/1000.0 + sim_sec_start
 					actual_second := sim_secs.rounded\\60
 					actual_minute := (sim_secs/60).floor\\60
+					old_hour := actual_hour
 					actual_hour := (sim_secs/3600).floor\\24
+					if actual_hour < old_hour then
+						actual_day := actual_day + 1						
+					end
 					call_tours
 					call_procedure					
 				end
