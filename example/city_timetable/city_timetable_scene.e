@@ -149,8 +149,8 @@ feature -- Interface
 			toolbar_panel.add_widget (time_label)			
 
 			-- Station label
-			station_label.set_position(15, 50)
-			station_label.set_optimal_dimension(180, 40)
+			station_label.set_position(0, 50)
+			station_label.set_optimal_dimension(200, 40)
 			station_label.resize_to_optimal_dimension
 			station_label.align_center
 			toolbar_panel.add_widget (station_label)	
@@ -161,11 +161,12 @@ feature -- Interface
 			station_lines_combobox.selection_changed_event.subscribe (agent station_lines_selection_changed)
 			toolbar_panel.add_widget (station_lines_combobox)
 
-			-- Station label
-			station_schedule_textlist.set_position(15, 110)
-			station_schedule_textlist.set_optimal_dimension(160,250)
-			station_schedule_textlist.resize_to_optimal_dimension
-			toolbar_panel.add_widget (station_schedule_textlist)	
+			-- Station schedue scrollpanel			
+			create station_schedule_scrollpanel.make_from_dimension (160, 250)
+			station_schedule_scrollpanel.set_position (15, 110)
+			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
+			toolbar_panel.add_widget (station_schedule_scrollpanel)				
+			
 
 			-- adding zurich_big.xml as default using platform independent paths
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
@@ -252,9 +253,16 @@ feature -- Event handling
 		local
 			traveler: TRAFFIC_LINE_TRANSPORTATION
 			departure_time: TIME
+			target: TRAFFIC_PLACE
+			direction_name: STRING
+			list: LINKED_LIST[TIME]
+			schedule: HASH_TABLE[LINKED_LIST[TIME], STRING]
 		do
 			-- Clear all times
 			station_schedule_textlist.elements.wipe_out
+			
+			-- Create a hash table which we use to sort the schedule entrys by target
+			create schedule.make (2)
 
 			if map.marked_station /= Void and station_lines_combobox.has_selected_element then
 				-- Add all times when a tram of this line departs at the station
@@ -265,15 +273,45 @@ feature -- Event handling
 				loop
 					traveler ?= map.marked_station.schedule.item @ 1
 					departure_time ?= map.marked_station.schedule.item @ 2
+					target ?= map.marked_station.schedule.item @ 3
 					
 					if traveler.line.name.is_equal (station_lines_combobox.selected_element) then
-						station_schedule_textlist.put (departure_time.out)
+						direction_name := "To " + target.name
+						if schedule.has (direction_name) then
+							schedule.item (direction_name).extend (departure_time)
+						else
+							create list.make
+							list.extend (departure_time)
+							schedule.put (list, direction_name)
+						end					
 					end					
 					
 					map.marked_station.schedule.forth
 				end
+				
+				-- Display
+				from
+					schedule.start
+				until
+					schedule.after
+				loop
+					station_schedule_textlist.put (schedule.key_for_iteration)
+					
+					from 
+						schedule.item_for_iteration.start
+					until
+						schedule.item_for_iteration.after
+					loop
+						station_schedule_textlist.put ("  " + schedule.item_for_iteration.item.out)
+						
+						schedule.item_for_iteration.forth
+					end
+					
+					schedule.forth
+				end
 			end
 			
+			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
 		end
 
 	sun_checked is
@@ -372,10 +410,13 @@ feature -- Widgets
 			-- Selected station
 			
 	station_lines_combobox: EM_COMBOBOX[STRING]
-			-- The available lines in the selected station
+			-- The available lines in the selected station			
 	
 	station_schedule_textlist: EM_TEXTLIST[STRING]
 			-- Schedule of selected station
+	
+	station_schedule_scrollpanel: EM_SCROLLPANEL
+			-- Scrollpanel for station_schedule_textlist
 
 	load_buildings_button: EM_BUTTON
 			-- Button to load buildings along lines
