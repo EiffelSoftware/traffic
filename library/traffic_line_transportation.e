@@ -45,22 +45,37 @@ feature --Access
 feature -- Basic operations
 
 	take_tour is
-			-- take a tour on the map
+			-- If there is a schedule, use an other movement code for the schedul
 			local
-				direction: EM_VECTOR_2D
+				entry: TRAFFIC_LINE_SCHEDULE_ENTRY
 			do
+				-- If we don't have a schedule, fall back to the normal movement code
 				if schedule = Void then
 					Precursor
 				else
-					direction := destination - origin
-					if not has_finished then
-			
-						if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
+					entry := schedule.i_th (schedule_index)
+					
+					if (traffic_time.actual_hour > entry.start_time.hour) or else ((entry.start_time.hour = traffic_time.actual_hour) and (traffic_time.actual_minute >= entry.start_time.minute)) then						
+						if schedule_index < schedule.count then
+							schedule_index := schedule_index + 1
+						
+							from
+								polypoints.start
+							until
+								polypoints.after or polypoints.item = entry.line_section.polypoints.first
+							loop
+								polypoints.forth
+							end
+
+							polypoints.forth
+							polypoints.forth
+							polypoints.forth								
+							
 							set_coordinates
 							set_angle
-						else
-							position := position + (direction / direction.length) * speed
 						end
+					else
+						schedule_index := 1
 					end
 				end
 			end
@@ -87,7 +102,7 @@ feature -- Basic operations
 							if polypoints.item = line.item.polypoints.first then
 								polypoints.forth
 								polypoints.forth
-								polypoints.forth	
+								polypoints.forth								
 								was_found := True
 								set_coordinates
 								set_angle	
@@ -157,6 +172,7 @@ feature{NONE} --Implementation
 				polypoints.extend (polypoints.last)	
 				
 				polypoints.start
+				
 				-- not wait at starting point therefore omit first three points
 				polypoints.forth
 				polypoints.forth
@@ -164,7 +180,7 @@ feature{NONE} --Implementation
 				
 			ensure
 				valid_polypoints: polypoints.count >= old polypoints.count
-		end
+			end		
 		
 		set_coordinates is
 			-- set the positions to the corresponding ones of the line section.

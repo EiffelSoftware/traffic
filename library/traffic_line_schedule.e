@@ -8,11 +8,11 @@ class
 	TRAFFIC_LINE_SCHEDULE
 	
 inherit		
-	TWO_WAY_LIST [TRAFFIC_LINE_SCHEDULE_ENTRY]
+	ARRAYED_LIST [TRAFFIC_LINE_SCHEDULE_ENTRY]
 		rename 
-			make as make_linked_list
+			make as make_list
 		export 
-		{ANY} start, finish, after, before, off, forth, back, item, count, i_th, wipe_out, has
+		{ANY} item, i_th, first, last, back, after, forth
 		end		
 
 create
@@ -31,13 +31,13 @@ feature -- Intialisation
 		local
 			act_time: TIME
 			distance: DOUBLE
-			entry: TRAFFIC_LINE_SCHEDULE_ENTRY
+			new_entry: TRAFFIC_LINE_SCHEDULE_ENTRY
 			llist : LINKED_LIST[TUPLE[STRING,LINKED_LIST[TUPLE[STRING,INTEGER,INTEGER]]]]
 			line : TUPLE[STRING,LINKED_LIST[TUPLE[STRING,INTEGER,INTEGER]]]
 			line_name : STRING
 		
 		do
-			make_linked_list
+			make_list (0)
 
 			llist := scheduler.schedule.line_list
 			
@@ -73,18 +73,18 @@ feature -- Intialisation
 						a_line.after
 					loop
 						-- Create schedule entry
-						create entry.make_with_line_section(a_line.item)
-						entry.set_start_time(act_time.twin)
+						create new_entry.make_with_line_section(a_line.item)
+						new_entry.set_start_time(act_time.twin)
 						
 						-- Add time for traveling
 						distance := a_line.item.origin.position.distance (a_line.item.destination.position).abs
 						act_time.minute_add ((distance.rounded) // 80)
 						
 						-- Set end time in schedule entry
-						entry.set_end_time (act_time.twin)
+						new_entry.set_end_time (act_time.twin)
 						
 						-- Add entry to our schedule
-						extend (entry)
+						extend (new_entry)
 						
 						-- Add 2 minutes waiting time at the place
 						act_time.minute_add (2)

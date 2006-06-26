@@ -54,6 +54,7 @@ feature -- Creation
 				
 				schedule := a_schedule
 				schedule_offset_minutes := an_offset
+				schedule_index := 1
 				
 				register_in_place_schedule
 				
