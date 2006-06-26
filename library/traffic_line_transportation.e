@@ -34,6 +34,18 @@ feature --Access
 		
 	schedule_index: INTEGER
 		-- the index of the schedule where we are at
+	
+	schedule_day: INTEGER
+		-- we will use the schedule on this day
+		
+	schedule_speed: DOUBLE
+		-- the speed we have to use to fullfill the schedlue
+	
+	schedule_active: BOOLEAN
+		-- are we traveling or are we waiting
+	
+	last_update: INTEGER
+		-- last second the position was updated
 		
 	line_count: INTEGER is
 			-- returns the 'Current's number of stops.
@@ -48,38 +60,75 @@ feature -- Basic operations
 			-- If there is a schedule, use an other movement code for the schedul
 			local
 				entry: TRAFFIC_LINE_SCHEDULE_ENTRY
+				direction: EM_VECTOR_2D
+				seconds_passed: INTEGER
+				travel_distance: DOUBLE
 			do
 				-- If we don't have a schedule, fall back to the normal movement code
 				if schedule = Void then
 					Precursor
 				else
-					entry := schedule.i_th (schedule_index)
+					if schedule_active = True then
+						-- The tram is traveling on schedule
+						entry := schedule.i_th (schedule_index)
 					
-					if (traffic_time.actual_hour > entry.start_time.hour) or else ((entry.start_time.hour = traffic_time.actual_hour) and (traffic_time.actual_minute >= entry.start_time.minute)) then						
-						if schedule_index < schedule.count then
-							schedule_index := schedule_index + 1
-						
-							from
-								polypoints.start
-							until
-								polypoints.after or polypoints.item = entry.line_section.polypoints.first
-							loop
-								polypoints.forth
-							end
-
-							polypoints.forth
-							polypoints.forth
-							polypoints.forth								
+						if is_after (entry) then
+							-- If we are at the end of the schedule, disable the schedule and wait for the next day
+							if schedule_index = schedule.count then
+								schedule_day := schedule_day + 1
+								schedule_active := False
+							else
+								schedule_index := schedule_index + 1
 							
-							set_coordinates
-							set_angle
+								from
+									polypoints.start
+								until
+									polypoints.after or polypoints.item = entry.line_section.polypoints.first
+								loop
+									polypoints.forth
+								end
+	
+								polypoints.forth
+								polypoints.forth
+								polypoints.forth								
+								
+								schedule_speed := schedule.i_th (schedule_index).speed
+								set_speed (schedule_speed.rounded)
+								set_coordinates
+								set_angle
+							end
+						else
+							direction := destination - origin
+							seconds_passed := (traffic_time.actual_hour * 3600 + traffic_time.actual_minute * 60 + traffic_time.actual_second - last_update)
+							travel_distance := (schedule_speed * seconds_passed)
+							
+							if not has_finished then								
+								if ((position.x - destination.x).abs < travel_distance) and ((position.y - destination.y).abs < travel_distance) then
+									set_coordinates
+									set_angle
+								else									
+									position := position + (direction / direction.length) * travel_distance
+								end
+							end
 						end
 					else
-						schedule_index := 1
+						-- The tram is waiting until it's schedule is active again
+						entry := schedule.first						
+						if (schedule_day = traffic_time.actual_day) and is_after(entry) then
+							schedule_active := True
+						end						
 					end
+					
+					last_update := traffic_time.actual_hour * 3600 + traffic_time.actual_minute * 60 + traffic_time.actual_second
 				end
 			end
 
+	is_after (entry: TRAFFIC_LINE_SCHEDULE_ENTRY): BOOLEAN is
+			-- Return true if the traffic time is later than the start time
+			do
+				Result := (traffic_time.actual_hour > entry.start_time.hour) or else ((entry.start_time.hour = traffic_time.actual_hour) and (traffic_time.actual_minute >= entry.start_time.minute))	
+			end
+		
 				
 	set_to_place (a_place: TRAFFIC_PLACE) is
 			-- set the line transportation to 'a_place'.

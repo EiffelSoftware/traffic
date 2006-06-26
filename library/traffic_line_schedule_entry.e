@@ -7,6 +7,9 @@ indexing
 class
 	TRAFFIC_LINE_SCHEDULE_ENTRY
 	
+inherit
+	TRAFFIC_3D_CONSTANTS
+	
 create
 	make_with_line_section
 	
@@ -53,7 +56,7 @@ feature -- Access
 			time_set: end_time = a_time
 		end
 		
-	speed:INTEGER is
+	speed:DOUBLE is
 			-- Calculate the speed we need to travel the line section
 			-- Note: We cannot have total exact values, but we have a waiting time at the station
 			-- where all small errors are catched
@@ -61,24 +64,29 @@ feature -- Access
 			total_distance: DOUBLE
 			last_position: EM_VECTOR_2D
 			seconds: INTEGER
-		once
+		do
 			-- Get the total distance we have by adding the distances of all polypoints
 			from
 				line_section.polypoints.start
-				last_position := line_section.polypoints.first
+				last_position := map_to_gl_coords (line_section.polypoints.first)
 				total_distance := 0
 			until
 				line_section.polypoints.after
 			loop
-				total_distance := total_distance + last_position.distance (line_section.polypoints.item).abs
-				last_position := line_section.polypoints.item
+				total_distance := total_distance + last_position.distance (map_to_gl_coords (line_section.polypoints.item)).abs
+				last_position := map_to_gl_coords (line_section.polypoints.item)
+				
+				line_section.polypoints.forth
 			end
 
-			-- How many seconds do we have?
-			seconds := end_time.seconds_in_day - start_time.seconds_in_day
+			-- How many minutes do we have?
+			seconds := (end_time.hour * 3600 + end_time.minute * 60) - (start_time.hour * 3600 + start_time.minute * 60)
 			
-			-- Speed is distance / time
-			Result := (total_distance.rounded) // seconds
-		end
-		
+			-- Speed is distance / time			
+			if seconds > 0 then					
+				Result := (total_distance.rounded) / seconds
+			else
+				Result := 1
+			end		
+		end		
 end
