@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="city_time" default="help">
+<project name="city_taxi" default="help">
 
   <description>
     description: "Eiffel Ant file for 'City time'"
