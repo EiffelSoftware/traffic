@@ -73,50 +73,62 @@ feature -- Basic operations
 						entry := schedule.i_th (schedule_index)
 					
 						if is_after (entry) then
-							-- If we are at the end of the schedule, disable the schedule and wait for the next day
-							if schedule_index = schedule.count then
+							-- The start time of the actual schedule entry is in the past
+							
+							-- Iterate on the schedule until we find the index of the first entry which starts in the future
+							from
+							until
+								schedule_index > schedule.count or else not is_after (schedule.i_th (schedule_index))
+							loop
+								schedule_index := schedule_index + 1								
+							end
+		
+							-- Active entry is the entry before the first entry in the future
+							entry := schedule.i_th (schedule_index - 1)
+							
+							-- Use the polypoints of the schedule entry
+							polypoints.wipe_out
+							polypoints.append (entry.line_section.polypoints)
+							polypoints.start
+
+							-- Set correct speed and initial position
+							schedule_speed := entry.speed
+							set_speed (schedule_speed.rounded)
+							set_coordinates
+							set_angle
+							
+							-- If we arrived at the end, go to the beginning and wait for the next day							
+							if schedule_index > schedule.count then
 								schedule_day := schedule_day + 1
 								schedule_active := False
-							else
-								schedule_index := schedule_index + 1
-							
-								from
-									polypoints.start
-								until
-									polypoints.after or polypoints.item = entry.line_section.polypoints.first
-								loop
-									polypoints.forth
-								end
-	
-								polypoints.forth
-								polypoints.forth
-								polypoints.forth								
-								
-								schedule_speed := schedule.i_th (schedule_index).speed
-								set_speed (schedule_speed.rounded)
-								set_coordinates
-								set_angle
-							end
-						else
-							direction := destination - origin
-							seconds_passed := (traffic_time.actual_hour * 3600 + traffic_time.actual_minute * 60 + traffic_time.actual_second - last_update)
-							travel_distance := (schedule_speed * seconds_passed)
-							
-							if not has_finished then								
-								if ((position.x - destination.x).abs < travel_distance) and ((position.y - destination.y).abs < travel_distance) then
-									set_coordinates
-									set_angle
-								else									
-									position := position + (direction / direction.length) * travel_distance
-								end
+								schedule_index := 1
 							end
 						end
 					else
 						-- The tram is waiting until it's schedule is active again
 						entry := schedule.first						
-						if (schedule_day = traffic_time.actual_day) and is_after(entry) then
+						if (schedule_day <= traffic_time.actual_day) and is_after(entry) then
+							schedule_day := traffic_time.actual_day
 							schedule_active := True
 						end						
+					end
+
+					if not polypoints.after then								
+						direction := destination - origin
+						seconds_passed := (traffic_time.actual_hour * 3600 + traffic_time.actual_minute * 60 + traffic_time.actual_second - last_update)
+						travel_distance := (schedule_speed * seconds_passed)					
+
+						if ((position.x - destination.x).abs < travel_distance) and ((position.y - destination.y).abs < travel_distance) then
+							origin := map_to_gl_coords (polypoints.item)
+							position := map_to_gl_coords (polypoints.item)
+							polypoints.forth
+							if not polypoints.after then
+								destination := map_to_gl_coords (polypoints.item)
+								set_angle		
+							end								
+						else									
+							position := position + (direction / direction.length) * travel_distance
+						end
 					end
 					
 					last_update := traffic_time.actual_hour * 3600 + traffic_time.actual_minute * 60 + traffic_time.actual_second

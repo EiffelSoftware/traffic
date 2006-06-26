@@ -50,16 +50,22 @@ feature -- Creation
 				schedule_exists: a_schedule /= Void
 				valid_offset: an_offset >= 0 and an_offset < 60
 			do
+				-- Use the default creation
 				make_default_with_line(a_line)
 				
+				-- Save the schedule
 				schedule := a_schedule
 				schedule_offset_minutes := an_offset
 				schedule_index := 1
 				
+				-- Register us in all places we visit
 				register_in_place_schedule
 				
-				--tram waits at the first station of the schedule
+				-- Set position to first entry in schedule
 				set_to_place (schedule.first.line_section.origin)
+
+				-- Never reiterate
+				set_reiterate (False)
 			ensure
 				schedule_set: schedule = a_schedule
 				schedule_offset_set: schedule_offset_minutes = an_offset
