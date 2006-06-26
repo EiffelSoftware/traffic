@@ -58,8 +58,8 @@ feature -- Intialisation
 			
 			else
 				from
-					-- Start at 05:00
-					create act_time.make (5, 0, 0)
+					-- Start at 06:00
+					create act_time.make (6, 0, 0)
 				until
 					-- Travel both directions until ~23:00
 					-- Watch that there is enough time for another roundtrip
@@ -78,7 +78,7 @@ feature -- Intialisation
 						
 						-- Add time for traveling
 						distance := a_line.item.origin.position.distance (a_line.item.destination.position).abs
-						act_time.minute_add ((distance.rounded) // 80)
+						act_time.minute_add (((distance.rounded) // 80).max(1))
 						
 						-- Set end time in schedule entry
 						new_entry.set_end_time (act_time.twin)

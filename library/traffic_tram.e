@@ -91,7 +91,7 @@ feature -- Creation
 					time_with_offset.minute_add (schedule_offset_minutes)
 					
 					-- Register the departure time at the origin place
-					schedule.item.line_section.origin.register_in_schedule (Current, time_with_offset)
+					schedule.item.line_section.origin.register_in_schedule (Current, time_with_offset, schedule.item.line_section.destination)
 
 					schedule.forth
 				end
