@@ -9,7 +9,7 @@ inherit
 
 	EM_ZOOMABLE_CONTAINER
 		redefine
-			draw
+			draw, make
 		end
 	
 	TRAFFIC_MAP_WIDGET
@@ -31,10 +31,16 @@ feature -- Initialization
 			make (a_width, a_height)
 
 			set_map (a_map)
-			mouse_drag_agent := agent process_mouse_move_event (?)
 
 		ensure
 			map_set: map = a_map
+		end
+		
+	make (a_width, a_height: INTEGER) is
+			-- Make with size.
+		do
+			Precursor (a_width, a_height)
+			mouse_drag_agent := agent process_mouse_move_event (?)
 		end
 		
 feature -- Access
