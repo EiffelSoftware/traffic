@@ -1,24 +1,21 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Deferred class for taxi offices."
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	TRAFFIC_TAXI_OFFICE
-	inherit
+	TRAFFIC_TAXI_OFFICE	inherit
 		DOUBLE_MATH
 		TRAFFIC_3D_CONSTANTS export {NONE} all end
 	
 feature -- Access
 	available_taxi_list: ARRAYED_LIST[TRAFFIC_TAXI]
-		-- available taxis that work for the taxi office
+		-- Available taxis that work for the taxi office
 	
 feature -- Basic operations
-
 	call(from_location:EM_VECTOR_2D; to_location:EM_VECTOR_2D) is
-			-- determines the nearest taxi to the from_location place
-			-- and passes the request on to this taxi.
+			-- Determine the nearest taxi to the from_location place.
+			-- Pass the request on to this taxi.
 			require
 				from_location_not_void: from_location /= void
 				to_location_not_void: to_location /= void
@@ -35,7 +32,7 @@ feature -- Basic operations
 					from 
 						available_taxi_list.start
 						available_taxi_list.forth
-						--to start on second item on taxi_list
+						-- To start on second item on taxi_list.
 					until
 						available_taxi_list.after
 					loop
@@ -51,35 +48,34 @@ feature -- Basic operations
 				end
 			end
 		
-feature{TRAFFIC_TAXI}  	-- operations for taxi to communicate with their office.
-						-- TRAFFIC_DISPATCHER_TAXIs call them by client relation.
+feature{TRAFFIC_TAXI}  	-- For taxis to communicate with 'Current'.
+						-- TRAFFIC_DISPATCHER_TAXIs call use client relation.
 						-- TRAFFIC_EVENT_TAXIs call events that will be handled by these operations.
-
-	enlist(taxi: TRAFFIC_TAXI) is
-			-- called on taxi_available event to put taxi in the available_taxi_list
+	enlist(a_taxi: TRAFFIC_TAXI) is
+			-- Put 'a_taxi' in the available list.
 			require
-				taxi_not_busy: taxi.busy = false
+				a_taxi_not_busy: a_taxi.busy = false
 			do
-				available_taxi_list.extend(taxi)
+				available_taxi_list.extend(a_taxi)
 				
 			ensure
-				taxi_added: available_taxi_list.count = old available_taxi_list.count + 1
+				a_taxi_added: available_taxi_list.count = old available_taxi_list.count + 1
 			end
 			
-	delist(taxi: TRAFFIC_TAXI) is
-			-- called on taxi_busy event to take taxi out of the available_taxi_list
+	delist(a_taxi: TRAFFIC_TAXI) is
+			-- Take a_taxi out of the available_taxi_list
 			require
-				taxi_not_available: taxi.busy = true
+				a_taxi_not_available: a_taxi.busy = true
 			do
-				if available_taxi_list.has(taxi)
+				if available_taxi_list.has(a_taxi)
 					then 
-						available_taxi_list.prune_all(taxi)
+						available_taxi_list.prune_all(a_taxi)
 					end
 			end
 
-	reject(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is 
-				-- for taxis to reject a request because they got busy.
-				-- e.g. at this moment picked a passenger up on the street.
+	recall(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is 
+				-- Recall a request. 
+				-- E.g. when a taxi reject to take the request because it picked a passenger up on the street.
 			require
 				from_location_not_void: from_location /= void
 				to_location_not_void: to_location /= void
@@ -87,9 +83,9 @@ feature{TRAFFIC_TAXI}  	-- operations for taxi to communicate with their office.
 			end
 			
 feature {TRAFFIC_3D_MAP_WIDGET}
-	
-	get_taxi_list: ARRAYED_LIST[TRAFFIC_TAXI] is
-			-- return the taxi_list to the map widget to add the taxis to the 3d_traveler_representation.
+	taxi_list: ARRAYED_LIST[TRAFFIC_TAXI] is
+			-- The taxi_list.
+			-- Accessed by the map widget to add the taxis to the 3d_traveler_representation.
 			do
 				Result := available_taxi_list
 			end

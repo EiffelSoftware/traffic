@@ -1,7 +1,6 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
+	description: "Application that start the simulation of a taxi dispatch."
+	date: "$Date: 2006/06/18 12:23:15$"
 	revision: "$Revision$"
 
 class

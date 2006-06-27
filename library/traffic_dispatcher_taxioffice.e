@@ -1,22 +1,20 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Taxi office objects that taxis communicate with by client relation."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_DISPATCHER_TAXI_OFFICE
-inherit
-	TRAFFIC_TAXI_OFFICE
-
+	TRAFFIC_DISPATCHER_TAXI_OFFICE inherit
+		TRAFFIC_TAXI_OFFICE
 create
 		make
 		
-feature -- Creation procedure
+feature -- Initialization
 
 		make(number_of_taxis: INTEGER; a_seed: INTEGER) is
-				-- creates a taxi office that clients and taxis communicate with by client call.
-				-- add 'number' taxis to the taxi_list of the office.
+				-- Taxi office that clients and taxis communicate with by client call.
+				-- Add 'number' taxis to the taxi_list of the office. 
+				-- Use 'a_seed' to create random taxis.
 		local 
 			i: INTEGER
 		do
@@ -25,17 +23,17 @@ feature -- Creation procedure
 				until
 					i > number_of_taxis 
 				loop
-					-- add to i to a_seed in each loop to ensure that each taxi will use 
-					-- another seed for the random generation
+					-- Add to i to a_seed in each loop to ensure that each taxi will use 
+					-- another seed for the random generation.
 					available_taxi_list.extend( create {TRAFFIC_DISPATCHER_TAXI}.make_random(Current, a_seed+i, number_of_taxis))
 					i := i+1
 				end		
 		end					
 		
-feature {TRAFFIC_TAXI} -- communication from the taxis to their office
+feature {TRAFFIC_TAXI} -- Communication from the taxis to their office
 		
-		reject(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
-				-- dispatcher taxi calls the request again. 
+		recall(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
+				-- Recall the request again because a taxi rejected to take it.
 			do	
 				call(from_location, to_location)
 			end

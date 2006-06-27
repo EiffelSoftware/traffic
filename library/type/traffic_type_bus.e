@@ -1,6 +1,6 @@
 indexing
 	description: "Bus type."
-	date: "$Date$"
+	date: "$Date: 2006-06-26 20:01:11$"
 	revision: "$Revision$"
 
 class

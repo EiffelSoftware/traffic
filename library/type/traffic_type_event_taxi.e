@@ -1,6 +1,6 @@
 indexing
-	description: "Taxi type."
-	date: "$Date: 2006-03-27 20:01:11 +0200 (Mon, 27 Mar 2006) $"
+	description: "Event taxi type."
+	date: "$Date: 2006-06-26 $"
 	revision: "$Revision: 602 $"
 
 class
@@ -15,7 +15,7 @@ create
 feature -- Creation
 
 	make is
-			-- Create new taxi type.
+			-- Create new event taxi type.
 		do
 			name := "event taxi"
 		end

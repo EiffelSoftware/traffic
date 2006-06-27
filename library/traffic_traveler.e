@@ -1,5 +1,5 @@
 indexing
-	description: "Travelers on the map"
+	description: "Deferred class for movings on the map."
 	date: "9.2.2006"
 	revision: "$Revision$"
 
@@ -266,22 +266,22 @@ feature -- Attributes settings
 			
 feature {NONE} -- Random
 
-	random_direction: RANDOM
+	random_number: RANDOM
 		-- make a direction out of this genererator	
 
 	give_random_direction is
 			-- give a random destination
 			require
-				random_direction /= Void
+				random_number /= Void
 			local
 				temp_x, temp_y: DOUBLE
 			do
-				temp_x := random_direction.double_item
-				random_direction.forth
-				temp_y := random_direction.double_item
+				temp_x := random_number.double_item
+				random_number.forth
+				temp_y := random_number.double_item
 				create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
 				-- approximated places so that they are on the map
-				random_direction.forth
+				random_number.forth
 			ensure
 				destination.x < 1433
 				destination.x > -67
@@ -292,20 +292,20 @@ feature {NONE} -- Random
 	add_random_polypoints(num: INTEGER) is
 		--  adds to the polypoints 'num' random destinations.
 		require
-			random_direction_not_void: random_direction /= void
+			random_number_not_void: random_number /= void
 		local 
 			i: INTEGER
 		do
-			random_direction.forth
+			random_number.forth
 			from
 				i := 1
 			until
 				i >= num
 			loop
-				random_direction.forth
+				random_number.forth
 				give_random_direction
 				polypoints.extend (destination)
-				random_direction.forth
+				random_number.forth
 				polypoints.extend (destination)	
 				i := i+1
 			end

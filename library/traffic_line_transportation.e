@@ -1,5 +1,5 @@
 indexing
-	description: "A deferred class for transportations serving a line and pursuing a schedule."
+	description: "Deferred class for transportations serving a line and pursuing a schedule."
 	date: "$Date: 2006/06/06 12:23:40$"
 	revision: "$Revision$"
 
@@ -24,31 +24,31 @@ inherit
 feature --Access
 
 	line: TRAFFIC_LINE
-		-- line on which 'Current' will travel.
+		-- Line on which 'Current' moves.
 			
 	schedule: TRAFFIC_LINE_SCHEDULE
-		-- the scheme to pursue
+		-- The schedule to pursue.
 
 	schedule_offset_minutes: INTEGER
-		-- the number of minutes the object will travel behind the schedule
+		-- The number of minutes the object will travel behind the schedule.
 		
 	schedule_index: INTEGER
-		-- the index of the schedule where we are at
+		-- The index of the schedule where we are at.
 	
 	schedule_day: INTEGER
-		-- we will use the schedule on this day
+		-- We will use the schedule on this day.
 		
 	schedule_speed: DOUBLE
-		-- the speed we have to use to fullfill the schedlue
+		-- The speed we have to use to fullfill the schedlue.
 	
 	schedule_active: BOOLEAN
-		-- are we traveling or are we waiting
+		-- Are we traveling or are we waiting.
 	
 	last_update: INTEGER
-		-- last second the position was updated
+		-- Last second the position was updated
 		
 	line_count: INTEGER is
-			-- returns the 'Current's number of stops.
+			-- 'Current's number of stops.
 			do
 				Result := line.count
 			end
@@ -57,7 +57,7 @@ feature --Access
 feature -- Basic operations
 
 	take_tour is
-			-- If there is a schedule, use an other movement code for the schedul
+			-- If there is a schedule, use an other movement code for the schedule
 			local
 				entry: TRAFFIC_LINE_SCHEDULE_ENTRY
 				direction: EM_VECTOR_2D
@@ -143,7 +143,7 @@ feature -- Basic operations
 		
 				
 	set_to_place (a_place: TRAFFIC_PLACE) is
-			-- set the line transportation to 'a_place'.
+			-- Set the line transportation to 'a_place'.
 			require
 				a_place_not_void: a_place /= Void
 			local
@@ -179,8 +179,8 @@ feature -- Basic operations
 			end
 		
 		
-get_place (stop: INTEGER): TRAFFIC_PLACE is
-			-- returns the place at number 'stop' in line.
+place (stop: INTEGER): TRAFFIC_PLACE is
+			-- Place at position 'stop' on the line.
 		require
 			stop <= line_count
 		local
@@ -208,7 +208,7 @@ get_place (stop: INTEGER): TRAFFIC_PLACE is
 feature{NONE} --Implementation		
 		
 		set_line_route(a_line: TRAFFIC_LINE) is
-				-- set the points of the line in the polypoints to follow the route given by the line.
+				-- Set the polypoints to follow the route given by the line.
 			require
 				line_not_void: a_line /= void
 			do
@@ -217,24 +217,23 @@ feature{NONE} --Implementation
 				until
 					a_line.after
 				loop
-					-- add the first polypoint of the line item as a line item is a section
-					-- containing a origin polypoint and a destination polypoint.
-					-- the repetition is done that a tram stops for a short time at each place
+					-- Add the first polypoint of the line item as it is a section containing a origin polypoint and a destination polypoint.
+					-- The repetition is done that a tram stops for a short time at each place
 					polypoints.extend (a_line.item.polypoints.first)
 					polypoints.extend (a_line.item.polypoints.first)
 					polypoints.extend (a_line.item.polypoints.first)
-					-- add the whole section item (origin and destination)
+					-- Add the whole section item (origin and destination)
 					polypoints.append (a_line.item.polypoints)
 					line.forth
 				end
-				-- repetition of the las polypoint to stop also there for a short time.
+				-- Repetition of the las polypoint to stop also there for a short time.
 				polypoints.extend (polypoints.last)
 				polypoints.extend (polypoints.last)
 				polypoints.extend (polypoints.last)	
 				
 				polypoints.start
 				
-				-- not wait at starting point therefore omit first three points
+				-- Not wait at starting point therefore omit first three points
 				polypoints.forth
 				polypoints.forth
 				polypoints.forth
@@ -244,9 +243,9 @@ feature{NONE} --Implementation
 			end		
 		
 		set_coordinates is
-			-- set the positions to the corresponding ones of the line section.
+			-- Set the positions to the corresponding ones of the line section.
 			do
-				-- hopefully this will give a bit performance to the journey
+				-- Hopefully this will give a bit performance to the journey
 				-- otherwise just clear out the map_to_gl_coords
 				origin :=  map_to_gl_coords (polypoints.item)
 				position := map_to_gl_coords (polypoints.item)

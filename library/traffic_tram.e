@@ -10,50 +10,50 @@ inherit
 	TRAFFIC_LINE_TRANSPORTATION
 
 rename
-	load_capacity as engine_capacity 
-		-- load_capacity defines the capacity of a transportation, 
-		-- therefore in case of a tram it determines the capacity of the engine, the first waggon of a tram.
+	unit_capacity as engine_capacity 
+		-- Unit_capacity determines the capacity of the engine, the first waggon of a tram.
 		
 redefine
 	capacity end
-		-- the whole capacity of a tram is computed by the redefined 
-		-- capacity function inculding the capacities of the waggons.
+		-- Inculde the capacities of the waggons.
 	
 create
 	make_default_with_line, make_with_schedule
 
-feature -- Creation
+feature -- Initialization
 	make_default_with_line (a_line: TRAFFIC_LINE) is
-			-- create a line bound vehicle, sets default maximum values for engine_capacity etc.
+			-- Create a tram. Set default values for capacity, number of waggons and speed.
 			require
 				a_line_not_void: a_line /= Void
+				valid_line_type: a_line.type.name.is_equal ("tram") or a_line.type.name.is_equal ("rail") or a_line.type.name.is_equal ("bus")
 			do
 				traffic_type := create {TRAFFIC_TYPE_TRAM}.make
 				create polypoints.make (0)
 				line := a_line
 				set_line_route(line)
-				set_speed(1)
+				--set_speed(1)
 				
-				engine_capacity := maximum_engine_capacity
-				waggon_limitation := maximum_waggon_limitation
+				engine_capacity := Default_engine_capacity
+				waggon_limitation := Default_waggon_limitation
 				waggons := create {ARRAYED_LIST[TRAFFIC_WAGGON]}.make(waggon_limitation)
 			
 				set_coordinates
 				set_angle
-				virtual_speed := maximum_virtual_speed
+				virtual_speed := Default_virtual_speed
 			end
 
 	make_with_schedule (a_line: TRAFFIC_LINE; a_schedule: TRAFFIC_LINE_SCHEDULE; an_offset: INTEGER) is
-			-- create a line bound vehicle for a schedule
+			-- Create a line bound vehicle with a schedule.
 			require
 				line_exists: a_line /= Void
 				schedule_exists: a_schedule /= Void
 				valid_offset: an_offset >= 0 and an_offset < 60
+				valid_line_type: a_line.type.name.is_equal ("tram") or a_line.type.name.is_equal ("rail") or a_line.type.name.is_equal ("bus")
 			do
 				-- Use the default creation
 				make_default_with_line(a_line)
 				
-				-- Save the schedule
+				-- Add the schedule.
 				schedule := a_schedule
 				schedule_offset_minutes := an_offset
 				schedule_index := 1
@@ -100,13 +100,13 @@ feature -- Creation
 
 feature -- Access
 	waggon_limitation: INTEGER
-			--maximum number of waggons for this engine
+			--Maximum number of waggons allowed for this engine.
 	waggons: ARRAYED_LIST[TRAFFIC_WAGGON]
 			--List of the waggons
 
 feature -- Basic operations
 	capacity: INTEGER is
-				-- the capacity is computed as the sum of the waggon's capacities plus the engine_capacity
+				-- Compute capacity as the sum of the waggon's capacities plus the engine_capacity.
 			local
 				cap: INTEGER
 			do	
@@ -116,8 +116,10 @@ feature -- Basic operations
 				until
 					waggons.after
 				loop
-					cap := cap + waggons.capacity
+					cap := cap + waggons.item.capacity
+					waggons.forth
 				end
+				waggons.start
 				Result := cap
 			end
 			
@@ -128,7 +130,7 @@ feature -- Basic operations
 			local
 				waggon: TRAFFIC_WAGGON
 			do	
-				waggon := create {TRAFFIC_WAGGON}.make
+				waggon := create {TRAFFIC_WAGGON}.make_default
 				waggons.force (waggon)
 			ensure
 				waggon_added: waggons.count = old waggons.count + 1
@@ -139,6 +141,7 @@ feature -- Basic operations
 			require
 				waggons_not_empty: waggons.count > 0
 			do	
+				waggons.start
 				waggons.go_i_th (i)
 				waggons.remove
 			ensure
@@ -146,16 +149,16 @@ feature -- Basic operations
 			end
 	
 	feature --Constants
-		maximum_engine_capacity: INTEGER is 200
-			-- the maximum load allowed for engine waggon of a tram.
-		maximum_waggon_limitation: INTEGER is 4
-			-- the maximum number of waggons allowed to attach at a tram.
-		maximum_virtual_speed: INTEGER is 1
-			-- the maximum speed allowed for a tram
+		Default_engine_capacity: INTEGER is 200
+			-- Default load capacity of the first waggon of a tram.
+		Default_waggon_limitation: INTEGER is 2
+			-- Default number of waggons attached at a tram.
+		Default_virtual_speed: REAL is 1.0
+			-- Default speed of a tram.
 		
 invariant
 	waggons_not_void: waggons /= void
-	waggon_limitation: waggon_limitation >= maximum_waggon_limitation
-	capacity_limitation: engine_capacity <= maximum_engine_capacity
-	speed_limitation: virtual_speed <= maximum_virtual_speed
+	waggons_count_allowed: waggon_limitation >= waggons.count
+	valid_line_type: line.type.name.is_equal ("tram") or line.type.name.is_equal ("rail") or line.type.name.is_equal ("bus")
+	--TODO: change this, use a new objects rail and bus instead
 end

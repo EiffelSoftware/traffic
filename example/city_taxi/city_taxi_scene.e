@@ -37,7 +37,8 @@ feature -- Interface
 			create zoom_out_button.make_from_text ("Zoom out")
 			create time_button.make_from_text("start time")
 			
-			-- Taxi office type combobox sets default selection to dispatcher taxi office.
+			-- Taxi office type combobox 
+			-- Default selection to "Dispatcher Taxi office"
 			create taxi_office_type_combobox.make_empty
 			taxi_office_type_combobox.put ("Event Taxi Office")
 			taxi_office_type_combobox.put ("Dispatcher Taxi Office")
@@ -80,17 +81,14 @@ feature -- Interface
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
 			
-
-			
-			-- get time from map
+			-- Time from map
 			traffic_time := map.traffic_time
-			--traffic_time.add_callback_procedure (agent time_count)
 			
 			-- Toolbar Panel
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
 			add_component (toolbar_panel)
 		
-			-- adding zurich_mini.xml as default
+			-- Default map hbzurich_mini.xml
 			map.load_map ("../map/zurich_mini.xml")
 			loaded_file_name := "../map/zurich_mini.xml"
 		end
@@ -134,45 +132,19 @@ feature -- Event handling
 			end
 		end
 		
-	number_of_minutes_changed (label: EM_LABEL; number: INTEGER) is
-			-- The slider was used.
-		require
-			label /= Void
-		do
-			simulated_time := number
-			label.set_text (simulated_time.out)
-		end
-		
-		
-	handle_mouse_click (origin_label: EM_LABEL; e: EM_MOUSEBUTTON_EVENT) is
-			-- Adapt the text on `origin_label' and `destination_label'.
-		require
-			origin_label /= Void
-			e /= Void
-		do
-				if map.marked_origin /= Void then
-				origin_label.set_text (map.marked_origin.name)
-			else
-				origin_label.set_text ("")
-			end
-		end
-		
 	taxi_office_type_changed(type: STRING) is
-			-- Change selection on "taxi_office_type_combobox".
+			-- Selection on "taxi_office_type_combobox" changed.
 		do
 			if type.is_equal ("Event Taxi Office")  then
-				--Event Taxis in yellow
+				-- Event Taxis in yellow
 				taxi_office_type_combobox.set_background_color(create {EM_COLOR}.make_with_rgb(255, 255, 0))
 			else
-				--Dispatcher Taxis in ozean
+				-- Dispatcher Taxis in ozean
 				taxi_office_type_combobox.set_background_color (create {EM_COLOR}.make_with_rgb(0, 255, 255))
 			end
 			map.set_taxi_office_type(type)
 		end
 		
-feature	 -- Basic operations
-
-
 feature -- Widgets
 
 
@@ -195,7 +167,7 @@ feature -- Widgets
 			-- Time of the city time system
 			
 	taxi_office_type_combobox: EM_COMBOBOX[STRING]
-			-- Button to select a taxioffice. Requests will be sent to the selected taxi office.
+			-- Requests will be sent to the selected taxi office.
 			
 feature {NONE} -- Implementation
 
@@ -209,8 +181,6 @@ feature {NONE} -- Implementation
 	
 	bg_color: EM_COLOR
 			-- Background color of the scene
-	map_file_name: STRING
-			-- Name of the map file to be loaded
 		
 	loaded_file_name: STRING
 			-- Name of the currently loaded
@@ -221,28 +191,5 @@ feature {NONE} -- Implementation
 	simulated_time: INTEGER
 			-- Number of minutes a day will last
 	
-	
-	search_for_xml: DS_LINKED_LIST[STRING] is
-			-- Search for xml files
-		local
-			directory: DIRECTORY
-		do
-			create Result.make
-			
-			create directory.make_open_read ("../map")
-			if directory.is_readable and not directory.is_empty then
-				from
-					directory.start
-					directory.readentry
-				until
-					directory.lastentry = void
-				loop
-					if directory.lastentry.has_substring (".xml") then
-						Result.force_last ("../map/" + directory.lastentry)
-					end
-					directory.readentry
-				end
-			end
-		end
 
 end

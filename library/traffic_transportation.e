@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that can be used to transport cargo or passengers."
+	description: "Deferred class for objects that can be used to transport cargo or passengers."
 	date: "$Date: 2006/06/06 12:23:40 $"
 	revision: "$Revision$"
 deferred class
@@ -10,42 +10,41 @@ inherit
 	
 feature --Access
 	current_load: INTEGER 
-			--Current load.
+			-- Current amount of load.
 
 	capacity:INTEGER is
-			-- get the transportation's capacity
+			-- Maximum possible amount of load.
 		do		
-			Result := load_capacity
+			Result := unit_capacity
 		end
 			
-feature{NONE} --Constants			
-	load_capacity: INTEGER
-			--Load the transportation can carry.
-
 feature -- Basic operations
-	load(quantity: INTEGER) is 
-			--load cargo or a passenger
+	load(a_quantity: INTEGER) is 
+			-- Load cargo or a passenger.
 		require 
-			quantity >= 0 
-			capacity >= current_load + quantity
+			a_quantity_non_negative: a_quantity >= 0 
+			valid_quantity: capacity >= current_load + a_quantity
     	do 
-			current_load := current_load + quantity
+			current_load := current_load + a_quantity
     	ensure 
-    		current_load = old current_load + quantity
+    		loaded: current_load = old current_load + a_quantity
     	end
     	
-	unload(quantity: INTEGER) is
-			--unload cargo or a passenger
+	unload(a_quantity: INTEGER) is
+			-- Unload cargo or a passenger
 		require 
-			  quantity >= 0
-			  current_load >= quantity
+			  a_quantity_non_negative: a_quantity >= 0
+			  valid_quantity: current_load >= a_quantity
 		do
-			  current_load := current_load - quantity
+			  current_load := current_load - a_quantity
 		ensure
-			  current_load = old current_load - quantity
+			  unloaded: current_load = old current_load - a_quantity
     	end
 
+feature{NONE} -- Implementation			
+	unit_capacity: INTEGER
+			-- Maximum load this transportation unit can carry.
 invariant
-	load_capacity_non_negative: load_capacity >= 0
+	unit_capacity_non_negative: unit_capacity >= 0
 	load_smaller_or_equal_than_capacity: current_load <= capacity
 end

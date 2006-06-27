@@ -90,11 +90,6 @@ feature {NONE} -- Implementation
 			create Result.make
 		end
 			
-	taxi_type: TRAFFIC_TYPE_TAXI is
-			-- Taxi traffic type.
-		once
-			create Result.make
-		end
 			
 	tram_type: TRAFFIC_TYPE_TRAM is
 			-- Tram traffic type.
@@ -115,7 +110,6 @@ feature {NONE} -- Implementation
 			Result.extend (bus_type, bus_type.name)
 			Result.extend (rail_type, rail_type.name)
 			Result.extend (street_type, street_type.name)
-			Result.extend (taxi_type, taxi_type.name)
 			Result.extend (tram_type, tram_type.name)
 			Result.extend (walking_type, walking_type.name)
 			Result.compare_objects

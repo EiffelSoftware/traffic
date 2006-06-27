@@ -97,7 +97,7 @@ feature -- Collision detection
 feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 		
 		add_traveler (a_traveler: TRAFFIC_TRAVELER; a_map: TRAFFIC_MAP) is
-				-- a passenger walks from origin to destination with 'speed'.
+				-- A passenger walks from origin to destination with 'speed'.
 				require
 					a_traveler /= Void
 					a_map /= Void
@@ -126,7 +126,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 						traveler_factory.load_file ("objects/tram.obj")
 						traveler := traveler_factory.create_object
 						traveler.set_scale (0.3, 0.3, 0.3)
-					--TODO: change this to color associated with a taxi office. each taxi office has a 
+					--TODO: Change this to color associated with a taxi office. Each taxi office has a 
 					--different color.
 					--Current situation: only different colors for different types of taxi.
 					elseif a_traveler.traffic_type.name.is_equal("event taxi") then
@@ -149,7 +149,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 				end
 			
 		remove_traveler is	
-				-- remove a passenger.
+				-- Remove a passenger.
 				require
 					not travelers.is_empty
 				local
@@ -198,7 +198,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 		
 		
 		add_tram_per_line (a_map: TRAFFIC_MAP; number: INTEGER) is	
-				-- add 'number' or max trams to the lines.
+				-- Add 'number' or max trams to the lines.
 				require
 					a_map /= Void
 					number > 0
@@ -223,7 +223,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 							i > number or i = a_tram.line_count
 						loop
 							create a_tram.make_default_with_line (lines.item_for_iteration)
-							a_tram.set_to_place (a_tram.get_place (i))
+							a_tram.set_to_place (a_tram.place (i))
 							add_traveler (a_tram, a_map)
 							i := i + 1
 						end
@@ -234,7 +234,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 				end
 	
 		add_tram_per_line_with_schedule (a_map: TRAFFIC_MAP; number: INTEGER) is	
-				-- add 'number' or max trams to the lines with an automatic generated schedule
+				-- Add 'number' or max trams to the lines with an automatic generated schedule
 				require
 					a_map /= Void
 					number > 0
