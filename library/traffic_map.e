@@ -338,7 +338,7 @@ feature -- Element change
 		end
 		
 		
-	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
+	add_traveler (a_traveler: TRAFFIC_MOVING) is
 			-- Add traveler 'a_traveler' to map.
 			require
 				a_traveler_exists: a_traveler /= Void
@@ -387,7 +387,7 @@ feature -- Element change
 			require
 				divisor > 0
 			local
-				a_traveler: TRAFFIC_TRAVELER
+				a_traveler: TRAFFIC_MOVING
 			do
 				from
 					internal_travelers.start
@@ -474,7 +474,7 @@ feature -- Access
 			Result := internal_buildings.twin
 		end
 		
-	travelers: HASH_TABLE [TRAFFIC_TRAVELER, INTEGER] is
+	travelers: HASH_TABLE [TRAFFIC_MOVING, INTEGER] is
 			-- All travelers on the map
 		do
 			Result := internal_travelers.twin
@@ -595,7 +595,7 @@ feature {NONE} -- Implementation
 	internal_buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]]
 			-- Buildings on map.
 			
-	internal_travelers: HASH_TABLE [TRAFFIC_TRAVELER, INTEGER]
+	internal_travelers: HASH_TABLE [TRAFFIC_MOVING, INTEGER]
 			-- Travelers on map.
 	
 	internal_taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE]

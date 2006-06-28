@@ -49,7 +49,7 @@ feature  -- Initialization
 	animate is
 			-- A traveler is traveling along the shortest path of the route
 		do
-			create traveler.make_directed (itinerary, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
+			create traveler.make_directed (itinerary, 0.5)
 			traveler.set_reiterate (False)
 			internal_map_widget.add_traveler (traveler)  
 			traveler.take_tour

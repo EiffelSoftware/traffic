@@ -3,10 +3,10 @@ indexing
 	date: "$Date: 2006/06/06 12:23:40 $"
 	revision: "$Revision$"
 deferred class
-	TRAFFIC_TRANSPORTATION
+	TRAFFIC_VEHICLE
 
 inherit
-	TRAFFIC_TRAVELER
+	TRAFFIC_MOVING
 	
 feature --Access
 	current_load: INTEGER 
@@ -43,7 +43,7 @@ feature -- Basic operations
 
 feature{NONE} -- Implementation			
 	unit_capacity: INTEGER
-			-- Maximum load this transportation unit can carry.
+			-- Maximum load this vehicle unit can carry.
 invariant
 	unit_capacity_non_negative: unit_capacity >= 0
 	load_smaller_or_equal_than_capacity: current_load <= capacity

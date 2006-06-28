@@ -1,13 +1,13 @@
 indexing
-	description: "Deferred class for transportations serving a line and pursuing a schedule."
+	description: "Deferred class for vehicles serving a line and pursuing a schedule."
 	date: "$Date: 2006/06/06 12:23:40$"
 	revision: "$Revision$"
 
 deferred class
-	TRAFFIC_LINE_TRANSPORTATION
+	TRAFFIC_LINE_VEHICLE
 
 inherit
-	TRAFFIC_TRANSPORTATION
+	TRAFFIC_VEHICLE
 	
 	redefine 
 		set_coordinates,
@@ -143,7 +143,7 @@ feature -- Basic operations
 		
 				
 	set_to_place (a_place: TRAFFIC_PLACE) is
-			-- Set the line transportation to 'a_place'.
+			-- Set the line vehicle to 'a_place'.
 			require
 				a_place_not_void: a_place /= Void
 			local

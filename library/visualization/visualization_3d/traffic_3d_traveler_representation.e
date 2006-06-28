@@ -56,9 +56,9 @@ feature{TRAFFIC_3D_MAP_WIDGET} -- Interface
 	draw is
 			-- draw all travelers.
 		local
-			a_traveler: TUPLE[EM_3D_OBJECT, TRAFFIC_TRAVELER]
+			a_traveler: TUPLE[EM_3D_OBJECT, TRAFFIC_MOVING]
 			graphic: EM_3D_OBJECT
-			info: TRAFFIC_TRAVELER
+			info: TRAFFIC_MOVING
 		do
 			
 			from
@@ -96,7 +96,7 @@ feature -- Collision detection
 	
 feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 		
-		add_traveler (a_traveler: TRAFFIC_TRAVELER; a_map: TRAFFIC_MAP) is
+		add_traveler (a_traveler: TRAFFIC_MOVING; a_map: TRAFFIC_MAP) is
 				-- A passenger walks from origin to destination with 'speed'.
 				require
 					a_traveler /= Void
@@ -154,7 +154,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					not travelers.is_empty
 				local
 					has_finished: BOOLEAN
-					traveler: TRAFFIC_TRAVELER
+					traveler: TRAFFIC_MOVING
 				do
 					from
 						travelers.start
@@ -171,13 +171,13 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					end
 				end
 				
-		remove_specific_traveler (a_traveler: TRAFFIC_TRAVELER) is
+		remove_specific_traveler (a_traveler: TRAFFIC_MOVING) is
 				-- remove a traveler
 				require
 					a_traveler /= Void
 				local
 					found: BOOLEAN
-					traveler: TRAFFIC_TRAVELER
+					traveler: TRAFFIC_MOVING
 				do
 					from
 						travelers.start
@@ -275,7 +275,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 	
 feature --{TRAFFIC_3D_MAP_WIDGET}
 
-	travelers: LINKED_LIST [TUPLE[EM_3D_OBJECT, TRAFFIC_TRAVELER]]		
+	travelers: LINKED_LIST [TUPLE[EM_3D_OBJECT, TRAFFIC_MOVING]]		
 		-- Container for all traveler.		
 		
 feature{NONE} -- Attributes

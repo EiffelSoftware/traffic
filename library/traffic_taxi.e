@@ -5,7 +5,7 @@ indexing
 
 deferred class
 	TRAFFIC_TAXI inherit 
-		TRAFFIC_TRANSPORTATION 
+		TRAFFIC_VEHICLE
 	
 feature -- Access
 	office: TRAFFIC_TAXI_OFFICE is deferred end

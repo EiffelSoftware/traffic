@@ -49,7 +49,7 @@ feature -- Basic operations
 		require
 			filename_exists: filename /= Void
 		local
-			traveler: TRAFFIC_TRAVELER
+			traveler: TRAFFIC_MOVING
 			temp_list: ARRAYED_LIST [EM_VECTOR_2D]
 			loader: TRAFFIC_MAP_LOADER
 		do
@@ -96,7 +96,7 @@ feature -- Basic operations
 				until
 					i >= number - number_of_passengers
 				loop
-					create traveler.make_random (traffic_time.time.ticks, 7, create {TRAFFIC_TYPE_WALKING}.make)
+					create traveler.make_random (7, traffic_time.time.ticks)
 					traveler.set_reiterate (True)
 					add_traveler (traveler)				
 					i := i + 1
@@ -221,7 +221,7 @@ feature -- {CITY_3D_SCENE}	-- Travelere objects
 			temp_list.force (create {EM_VECTOR_2D}.make (0, 0))
 			temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
 
-			create traveler.make_directed (temp_list, create {TRAFFIC_TYPE_WALKING}.make, 0.5)
+			create traveler.make_directed (temp_list, 0.5)
 			
 			add_traveler (traveler)
 		end

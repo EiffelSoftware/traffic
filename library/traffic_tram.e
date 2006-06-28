@@ -7,7 +7,7 @@ class
 	TRAFFIC_TRAM
 	
 inherit
-	TRAFFIC_LINE_TRANSPORTATION
+	TRAFFIC_LINE_VEHICLE
 
 rename
 	unit_capacity as engine_capacity 

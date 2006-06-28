@@ -74,6 +74,12 @@ feature -- Basic operations
 			filename_exists: filename /= Void
 		local
 			loader: TRAFFIC_MAP_LOADER
+			passenger: TRAFFIC_PASSENGER
+			trolley: TRAFFIC_TROLLEYBUS
+			bus: TRAFFIC_BUS
+			tram: TRAFFIC_TRAM
+			cable: TRAFFIC_CABLECAR
+			
 		do
 			create loader.make (filename)
 			if not loader.has_error then
@@ -120,7 +126,7 @@ feature -- Basic operations
 			add_taxis(taxi_office.taxi_list)
 		end
 		
-	add_taxis (taxis: ARRAYED_LIST[TRAFFIC_TRAVELER]) is	
+	add_taxis (taxis: ARRAYED_LIST[TRAFFIC_MOVING]) is	
 			-- Add taxis to the map.
 		require
 			taxis_not_void: taxis /= void

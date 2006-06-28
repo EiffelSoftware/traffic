@@ -5,7 +5,7 @@ indexing
 
 class
 	TRAFFIC_BUS inherit
-		TRAFFIC_LINE_TRANSPORTATION
+		TRAFFIC_LINE_VEHICLE
 create
 	make_default_with_line
 	

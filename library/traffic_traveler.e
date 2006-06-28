@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 deferred class
-	TRAFFIC_TRAVELER
+	TRAFFIC_MOVING
 	
 inherit	
 	MATH_CONST
@@ -22,7 +22,7 @@ feature -- Attributes
 		-- type of traffic.
 	
 	traffic_info: STRING
-		-- some info for the traveler.
+		-- some info for the moving.
 
 	position: EM_VECTOR_2D
 		-- current position on map.
@@ -37,7 +37,7 @@ feature -- Attributes
 		-- speed on the map. TODO: speed := distance(take-tour) / time(from one point to another)
 		
 	index: INTEGER
-		-- index of the traveler
+		-- index of the moving
 		
 	time: DOUBLE
 		-- time for one minute.
@@ -49,10 +49,10 @@ feature -- Attributes
 		-- if the destination is reached it turns around.
 		
 	is_traveling_back: BOOLEAN
-		-- is set when a traveler returns trough the list.
+		-- is set when a moving returns trough the list.
 	
 	has_finished: BOOLEAN
-		-- has the traveler finished his journey.	
+		-- has the moving finished his journey.	
 
 	virtual_speed: DOUBLE
 		-- the virtual speed of the object oin the map.
@@ -61,7 +61,7 @@ feature -- Attributes
 		-- the angle in respect to the x-axis
 		
 	is_marked: BOOLEAN
-		-- is the traveler marked, highlighted?
+		-- is the moving marked, highlighted?
 
 feature -- Procedures
 	
@@ -256,7 +256,7 @@ feature -- Attributes settings
 			end
 		
 	set_reiterate (a_boolean: BOOLEAN) is
-			-- set the traveler reiterating his itinerary.
+			-- set the moving reiterating his itinerary.
 			do
 				is_reiterating := a_boolean
 			ensure

@@ -739,13 +739,13 @@ feature -- Options
 		end
 		
 	
-	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
+	add_traveler (a_traveler: TRAFFIC_MOVING) is
 			-- Add a traveler to the map.
 			do
 				traffic_traveler.add_traveler (a_traveler, map)
 			end
 	
-	delete_traveler (a_traveler: TRAFFIC_TRAVELER) is
+	delete_traveler (a_traveler: TRAFFIC_MOVING) is
 			-- Remove 'a_traveler' form the map. 
 			do 
 				traffic_traveler.remove_specific_traveler (a_traveler)

@@ -57,7 +57,7 @@ feature -- Access
 	information: TRAFFIC_PLACE_INFORMATION
 			-- Additional information.
 			
-	schedule: LINKED_LIST[TUPLE[TRAFFIC_LINE_TRANSPORTATION, TIME, TRAFFIC_PLACE]]
+	schedule: LINKED_LIST[TUPLE[TRAFFIC_LINE_VEHICLE, TIME, TRAFFIC_PLACE]]
 			-- All departure times [tram, time, direction] of trams visiting this place
 			
 feature -- Element change
@@ -82,14 +82,14 @@ feature -- Element change
 			position_set: position = a_position
 		end
 		
-	register_in_schedule(an_object: TRAFFIC_LINE_TRANSPORTATION; time: TIME; target: TRAFFIC_PLACE) is
+	register_in_schedule(an_object: TRAFFIC_LINE_VEHICLE; time: TIME; target: TRAFFIC_PLACE) is
 			-- Register a visiting tram in the schedule
 		require
 			valid_object: an_object /= Void
 			valid_time: time /= Void
 			valid_target: target /= Void
 		local
-			entry: TUPLE[TRAFFIC_LINE_TRANSPORTATION, TIME, TRAFFIC_PLACE]
+			entry: TUPLE[TRAFFIC_LINE_VEHICLE, TIME, TRAFFIC_PLACE]
 		do
 			create entry
 			entry.put (an_object, 1)

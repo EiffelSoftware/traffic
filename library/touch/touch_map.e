@@ -143,7 +143,7 @@ feature -- Element change
 			create Result.make_empty_route(a_map)
 		end	
 		
-	add_traveler (a_traveler: TRAFFIC_TRAVELER) is
+	add_traveler (a_traveler: TRAFFIC_MOVING) is
 			-- Add traveler 'a_traveler' to map.
 			require
 				a_traveler_exists: a_traveler /= Void
@@ -271,7 +271,7 @@ feature -- Access
 			end
 		end
 		
-	travelers: HASH_TABLE [TRAFFIC_TRAVELER, INTEGER] is
+	travelers: HASH_TABLE [TRAFFIC_MOVING, INTEGER] is
 			-- All travelers on the map
 		do
 			Result := internal_map.travelers

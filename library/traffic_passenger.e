@@ -1,11 +1,11 @@
 indexing
-	description: "Objects that use a transportation to travel"
+	description: "Objects that use a vehicle to travel"
 	date: "$Date: 6/6/2006$"
 	revision: "$Revision$"
 
 class
 	TRAFFIC_PASSENGER inherit
-		TRAFFIC_TRAVELER
+		TRAFFIC_MOVING
 create
 	make_directed, make_random
 
@@ -14,12 +14,12 @@ feature --Access
 	intended_line: TRAFFIC_LINE
 		-- The line the passenger intends to use next.
 	
-	current_transportation: TRAFFIC_TRANSPORTATION
-		-- The transportation the passenger is traveling by at the moment.
-		-- Is void if passenger uses no transportation.
+	current_vehicle: TRAFFIC_VEHICLE
+		-- The vehicle the passenger is traveling by at the moment.
+		-- Is void if passenger uses no means of transportation.
 		
 	boarding_stop: INTEGER
-		-- Stop where the passenger intends to board the transportation.
+		-- Stop where the passenger intends to board the vehicle.
 		-- Number of stops from line start until where to board.
 	
 	deboarding_stop: INTEGER
@@ -29,7 +29,7 @@ feature --Access
 	direction_line_back: BOOLEAN
 		-- In which direction the passenger will use to travel on the line.
 		-- If the deboarding_stop is less than the boarding_stop the passenger has to use
-		-- a transportation that travels back on its line.
+		-- a vehicle that travels back on its line.
 	
 feature -- Initialization
 
@@ -92,27 +92,27 @@ feature -- Basic operations
 			end
 	
 		
-	board(a_line_transport: TRAFFIC_LINE_TRANSPORTATION) is
+	board(a_line_transport: TRAFFIC_LINE_VEHICLE) is
 			-- Board 'a_line_transportation'.
 				require
 					inteded_line: a_line_transport.line = intended_line 
 					intended_direction: a_line_transport.is_traveling_back = direction_line_back
 				do
-					current_transportation := a_line_transport
-					current_transportation.load (1)
+					current_vehicle := a_line_transport
+					current_vehicle.load (1)
 				ensure
-					transportation_set: current_transportation = a_line_transport
+					vehicle_set: current_vehicle = a_line_transport
 				end	
 			
 	deboard() is 
-			-- Deboard current_transportation.
+			-- Deboard current_vehicle.
 			require
-				current_transportation /= void
+				current_vehicle /= void
 			do
-				current_transportation.unload(1)
-				current_transportation := void
+				current_vehicle.unload(1)
+				current_vehicle := void
 			ensure
-				current_transportatoin_not_set: current_transportation = void
+				current_transportatoin_not_set: current_vehicle = void
 			end	
 			
 			-- TODO: check for additional invariants.

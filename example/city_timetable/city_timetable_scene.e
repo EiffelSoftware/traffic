@@ -214,7 +214,7 @@ feature -- Event handling
 		require
 			valid_station_label: station_label /= Void
 		local
-			traveler: TRAFFIC_LINE_TRANSPORTATION
+			traveler: TRAFFIC_LINE_VEHICLE
 		do
 			-- Clear all information
 			station_label.set_text ("Selected station")
@@ -251,7 +251,7 @@ feature -- Event handling
 	station_lines_selection_changed (selection: STRING) is
 			-- The selection of the combobox of the lines of the selected station has changed
 		local
-			traveler: TRAFFIC_LINE_TRANSPORTATION
+			traveler: TRAFFIC_LINE_VEHICLE
 			departure_time: TIME
 			target: TRAFFIC_PLACE
 			direction_name: STRING
