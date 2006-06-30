@@ -17,9 +17,15 @@ feature -- Status report
 		
 feature -- Basic operations
 	
-	take(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is deferred end
+	take(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D)
+	is 
 		-- Take a request. 
 		-- Pick up somebody at from_location and bring him or her to  to_location.
+	require 
+	from_location_not_void: from_location /= void
+	to_location_not_void: to_location /= void
+	deferred
+	end
 
 feature{NONE} --Implementation
 

@@ -6,7 +6,6 @@ indexing
 class
 	TRAFFIC_DISPATCHER_TAXI inherit 
 		TRAFFIC_TAXI
-				redefine take_tour end
 create
 	make_random
 	
@@ -60,7 +59,7 @@ feature -- Basic operations
 			-- Take a tour on the map.
 			-- Set new random directions and if 'Current' has done a request and is available again .
 				do
-					Precursor
+					move
 					if has_finished and busy then
 							-- Taxi has fullfilled a request.
 							-- Add new random directions.

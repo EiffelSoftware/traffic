@@ -69,6 +69,13 @@ feature -- Initialization
 			end
 			
 feature -- Basic operations
+	
+	take_tour is
+			-- take a tour on the map.
+			do
+				move
+			end
+		
 	set_intended_line_info(a_line: TRAFFIC_LINE; a_boarding_stop: INTEGER; a_deboarding_stop: INTEGER) is
 			-- Set where 'Current' intends to board and to get off.
 			require
