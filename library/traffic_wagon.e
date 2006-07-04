@@ -1,10 +1,10 @@
 indexing
-	description: "Waggon objects can be used to increase the capacity of trams."
+	description: "Wagon objects can be used to increase the capacity of trams."
 	date: "$Date: 6/6/2006$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_WAGGON
+	TRAFFIC_WAGON
 create
 	make_default	
 feature -- Initialization
@@ -25,3 +25,4 @@ feature --Constants
 invariant
 	capacity >= 0
 end
+

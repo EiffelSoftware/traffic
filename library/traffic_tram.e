@@ -11,18 +11,18 @@ inherit
 
 rename
 	unit_capacity as engine_capacity 
-		-- Unit_capacity determines the capacity of the engine, the first waggon of a tram.
+		-- Unit_capacity determines the capacity of the engine, the first wagon of a tram.
 		
 redefine
 	capacity end
-		-- Inculde the capacities of the waggons.
+		-- Inculde the capacities of the wagons.
 	
 create
 	make_default_with_line, make_with_schedule
 
 feature -- Initialization
 	make_default_with_line (a_line: TRAFFIC_LINE) is
-			-- Create a tram. Set default values for capacity, number of waggons and speed.
+			-- Create a tram. Set default values for capacity, number of wagons and speed.
 			require
 				a_line_not_void: a_line /= Void
 				valid_line_type: a_line.type.name.is_equal ("tram") or a_line.type.name.is_equal ("rail") or a_line.type.name.is_equal ("bus")
@@ -34,8 +34,8 @@ feature -- Initialization
 				--set_speed(1)
 				
 				engine_capacity := Default_engine_capacity
-				waggon_limitation := Default_waggon_limitation
-				waggons := create {ARRAYED_LIST[TRAFFIC_WAGGON]}.make(waggon_limitation)
+				wagon_limitation := Default_wagon_limitation
+				wagons := create {ARRAYED_LIST[TRAFFIC_WAGON]}.make(wagon_limitation)
 			
 				set_coordinates
 				set_angle
@@ -99,66 +99,66 @@ feature -- Initialization
 		
 
 feature -- Access
-	waggon_limitation: INTEGER
-			--Maximum number of waggons allowed for this engine.
-	waggons: ARRAYED_LIST[TRAFFIC_WAGGON]
-			--List of the waggons
+	wagon_limitation: INTEGER
+			--Maximum number of wagons allowed for this engine.
+	wagons: ARRAYED_LIST[TRAFFIC_WAGON]
+			--List of the wagons
 
 feature -- Basic operations
 	capacity: INTEGER is
-				-- Compute capacity as the sum of the waggon's capacities plus the engine_capacity.
+				-- Compute capacity as the sum of the wagon's capacities plus the engine_capacity.
 			local
 				cap: INTEGER
 			do	
 				cap := engine_capacity		
 				from
-					waggons.start
+					wagons.start
 				until
-					waggons.after
+					wagons.after
 				loop
-					cap := cap + waggons.item.capacity
-					waggons.forth
+					cap := cap + wagons.item.capacity
+					wagons.forth
 				end
-				waggons.start
+				wagons.start
 				Result := cap
 			end
 			
-	add_waggon is
-			-- Attach a new waggon.
+	add_wagon is
+			-- Attach a new wagon.
 			require
-				waggons_not_full: waggon_limitation >= waggons.count + 1
+				wagons_not_full: wagon_limitation >= wagons.count + 1
 			local
-				waggon: TRAFFIC_WAGGON
+				wagon: TRAFFIC_WAGON
 			do	
-				waggon := create {TRAFFIC_WAGGON}.make_default
-				waggons.force (waggon)
+				wagon := create {TRAFFIC_WAGON}.make_default
+				wagons.force (wagon)
 			ensure
-				waggon_added: waggons.count = old waggons.count + 1
+				wagon_added: wagons.count = old wagons.count + 1
 			end
 	
-	remove_waggon(i: INTEGER) is
-			-- Remove the waggon at position i
+	remove_wagon(i: INTEGER) is
+			-- Remove the wagon at position i
 			require
-				waggons_not_empty: waggons.count > 0
+				wagons_not_empty: wagons.count > 0
 			do	
-				waggons.start
-				waggons.go_i_th (i)
-				waggons.remove
+				wagons.start
+				wagons.go_i_th (i)
+				wagons.remove
 			ensure
-				waggon_removed: waggons.count = old waggons.count -1
+				wagon_removed: wagons.count = old wagons.count -1
 			end
 	
 	feature --Constants
 		Default_engine_capacity: INTEGER is 200
-			-- Default load capacity of the first waggon of a tram.
-		Default_waggon_limitation: INTEGER is 2
-			-- Default number of waggons attached at a tram.
+			-- Default load capacity of the first wagon of a tram.
+		Default_wagon_limitation: INTEGER is 2
+			-- Default number of wagons attached at a tram.
 		Default_virtual_speed: REAL is 1.0
 			-- Default speed of a tram.
 		
 invariant
-	waggons_not_void: waggons /= void
-	waggons_count_allowed: waggon_limitation >= waggons.count
+	wagons_not_void: wagons /= void
+	wagons_count_allowed: wagon_limitation >= wagons.count
 	valid_line_type: line.type.name.is_equal ("tram") or line.type.name.is_equal ("rail") or line.type.name.is_equal ("bus")
 	--TODO: change this, use a new objects rail and bus instead
 end

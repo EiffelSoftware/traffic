@@ -15,6 +15,6 @@ feature -- Basic operations
 
 
 invariant
-	waggon_limitation = 0
+	wagon_limitation = 0
 end
 
