@@ -103,7 +103,7 @@
 				<link url="#traffic_vehicle">TRAFFIC_VEHICLE</link>
 			</listitem>
 			<listitem>
-				<link url="#traffic_waggon">TRAFFIC_WAGGON</link>
+				<link url="#traffic_wagon">TRAFFIC_WAGON</link>
 			</listitem>
 		</itemizedlist>
 	</section>
@@ -878,18 +878,18 @@
 		<title>Requirements:</title>
 		<para>
    			  <link url="#traffic_line_vehicle">TRAFFIC_LINE_VEHICLE</link>
- 			 <link url="#traffic_waggon">TRAFFIC_WAGGON</link>
+ 			 <link url="#traffic_wagon">TRAFFIC_WAGON</link>
  	   	</para>
 		<title>Description</title>
 		<para>
 			The class <classname>TRAFFIC_TRAM</classname> represents tram objects that can increase their capacity by adding
-			waggons, <classname>TRAFFIC_WAGGON</classname>s.
+			wagons, <classname>TRAFFIC_WAGON</classname>s.
 		</para>
 		<para>
-			The <classname>TRAFFIC_TRAM</classname> provides features <featurename>add_waggon</featurename> and 
-			<featurename>remove_waggon</featurename>.		
-			The feature <featurename>waggons</featurename> defines the list of waggons attached. The attribute <featurename>waggon_limitation</featurename>
-			determines the maximum number of  waggons that can be attached.
+			The <classname>TRAFFIC_TRAM</classname> provides features <featurename>add_wagon</featurename> and 
+			<featurename>remove_wagon</featurename>.		
+			The feature <featurename>wagons</featurename> defines the list of wagons attached. The attribute <featurename>wagon_limitation</featurename>
+			determines the maximum number of  wagons that can be attached.
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -921,15 +921,15 @@
 		</para>
 		<toplink/>
 	</section>
-<section id="traffic_waggon">
-		<title>TRAFFIC_WAGGON</title>
+<section id="traffic_wagon">
+		<title>TRAFFIC_WAGON</title>
 		<title>Requirements:</title>
 		<para>
    			  none
  	   	</para>
 		<title>Description</title>
 		<para>
-			The class <classname>TRAFFIC_WAGGON</classname> represents an object that can be
+			The class <classname>TRAFFIC_WAGON</classname> represents an object that can be
 			attached to a vehicle to increase its capacity.
 		</para>
 		<para>
@@ -938,7 +938,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_waggon.jpg"/>
+				<image src="image/traffic_wagon.jpg"/>
 			</para>
 		</para>
 		<toplink/>
