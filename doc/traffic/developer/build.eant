@@ -31,7 +31,6 @@
 		
 		<geant target="${target}" arguments="map_overview"/>
 		<geant target="${target}" arguments="map_classes"/>
-		<geant target="${target}" arguments="map_classes_new2"/>
 		<geant target="${target}" arguments="visualization_overview"/>
 		<geant target="${target}" arguments="visualization_classes"/>
 		<geant target="${target}" arguments="input_overview"/>
