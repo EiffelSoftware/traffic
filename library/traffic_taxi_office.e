@@ -1,12 +1,12 @@
 indexing
-	description: "Deferred class for taxi offices."
+	description: "Deferred class for taxi offices"
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
 	TRAFFIC_TAXI_OFFICE	inherit
-		DOUBLE_MATH
-		TRAFFIC_3D_CONSTANTS export {NONE} all end
+	DOUBLE_MATH
+	TRAFFIC_3D_CONSTANTS export {NONE} all end
 	
 feature -- Access
 	available_taxi_list: ARRAYED_LIST[TRAFFIC_TAXI]
@@ -14,8 +14,7 @@ feature -- Access
 	
 feature -- Basic operations
 	call(from_location:EM_VECTOR_2D; to_location:EM_VECTOR_2D) is
-			-- Determine the nearest taxi to the from_location place.
-			-- Pass the request on to this taxi.
+			-- Determine nearest taxi to from_location place, pass request on to this taxi.
 			require
 				from_location_not_void: from_location /= void
 				to_location_not_void: to_location /= void
@@ -48,11 +47,9 @@ feature -- Basic operations
 				end
 			end
 		
-feature{TRAFFIC_TAXI}  	-- For taxis to communicate with 'Current'.
-						-- TRAFFIC_DISPATCHER_TAXIs call use client relation.
-						-- TRAFFIC_EVENT_TAXIs call events that will be handled by these operations.
+feature{TRAFFIC_TAXI}  
 	enlist(a_taxi: TRAFFIC_TAXI) is
-			-- Put 'a_taxi' in the available list.
+			-- Put a_taxi into available list.
 			require
 				a_taxi_not_busy: a_taxi.busy = false
 			do
@@ -63,7 +60,7 @@ feature{TRAFFIC_TAXI}  	-- For taxis to communicate with 'Current'.
 			end
 			
 	delist(a_taxi: TRAFFIC_TAXI) is
-			-- Take a_taxi out of the available_taxi_list
+			-- Take a_taxi out of available_taxi_list.
 			require
 				a_taxi_not_available: a_taxi.busy = true
 			do
@@ -74,7 +71,7 @@ feature{TRAFFIC_TAXI}  	-- For taxis to communicate with 'Current'.
 			end
 
 	recall(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is 
-				-- Recall a request. 
+				-- Recall request. 
 				-- E.g. when a taxi reject to take the request because it picked a passenger up on the street.
 			require
 				from_location_not_void: from_location /= void
@@ -84,7 +81,7 @@ feature{TRAFFIC_TAXI}  	-- For taxis to communicate with 'Current'.
 			
 feature {TRAFFIC_3D_MAP_WIDGET}
 	taxi_list: ARRAYED_LIST[TRAFFIC_TAXI] is
-			-- The taxi_list.
+			-- List of available taxis
 			-- Accessed by the map widget to add the taxis to the 3d_traveler_representation.
 			do
 				Result := available_taxi_list

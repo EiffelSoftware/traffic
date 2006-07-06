@@ -1,5 +1,5 @@
 indexing
-	description: "Deferred class for taxis working for a taxi office."
+	description: "Deferred class for taxis working for a taxi office"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -9,17 +9,16 @@ deferred class
 	
 feature -- Access
 	office: TRAFFIC_TAXI_OFFICE is deferred end
-		-- Taxi office the taxi works for.
+		-- Taxi office the taxi works for
 		
 feature -- Status report
 	busy: BOOLEAN
-		--Is taxi busy.
+		--Is taxi busy?
 		
 feature -- Basic operations
 	
 	take(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D)
 	is 
-		-- Take a request. 
 		-- Pick up somebody at from_location and bring him or her to  to_location.
 	require 
 	from_location_not_void: from_location /= void
@@ -30,8 +29,7 @@ feature -- Basic operations
 feature{NONE} --Implementation
 
 	set_request_information (from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
-		-- Set the origin and destination of a request. 
-		-- Set new point to drive from from_location to to_location.
+		-- Set new origin and destination, new points to drive from from_location to to_location.
 		require
 			valid_from_location: from_location /= void
 			valid_to_locaton: to_location /= void

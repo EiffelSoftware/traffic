@@ -12,22 +12,22 @@ create
 feature --Access
 
 	intended_line: TRAFFIC_LINE
-		-- The line the passenger intends to use next.
+		-- line to use next
 	
 	current_vehicle: TRAFFIC_VEHICLE
-		-- The vehicle the passenger is traveling by at the moment.
-		-- Is void if passenger uses no means of transportation.
+		-- Vehicle passenger is traveling by
+		-- Void if passenger uses no means of transportation
 		
 	boarding_stop: INTEGER
-		-- Stop where the passenger intends to board the vehicle.
-		-- Number of stops from line start until where to board.
+		-- Stop where passenger intends to board
+		-- Number of stops from line start until where to board
 	
 	deboarding_stop: INTEGER
-		-- Stop where the passenger intends to get off 
-		-- Number of stops from line start until where to get off.
+		-- Stop where passenger intends to get off 
+		-- Number of stops from line start until where to get off
 	
 	direction_line_back: BOOLEAN
-		-- In which direction the passenger will use to travel on the line.
+		-- In which direction to travel?
 		-- If the deboarding_stop is less than the boarding_stop the passenger has to use
 		-- a vehicle that travels back on its line.
 	
@@ -50,7 +50,7 @@ feature -- Initialization
 			end
 	
 	make_random (stops: INTEGER; a_seed: INTEGER; ) is
-			-- Passenger stops at 'stops' random positions and has a random speed.
+			-- Stop at 'stops' random positions and give random speed.
 			-- 'a_seed' to set the random numbers seed, e. g. use time ticks.
 			require
 				a_seed_not_negative: a_seed >= 0
@@ -71,7 +71,7 @@ feature -- Initialization
 feature -- Basic operations
 	
 	take_tour is
-			-- take a tour on the map.
+			-- Take a tour on the map.
 			do
 				move
 			end

@@ -16,11 +16,11 @@ feature -- Initialization
 	
 feature --Access
 	capacity:INTEGER
-		-- Load allowed.
+		-- Load allowed
 	
 feature --Constants
 	Default_capacity: INTEGER is 100
-		-- Default capacity.
+		-- Default capacity
 	
 invariant
 	capacity >= 0

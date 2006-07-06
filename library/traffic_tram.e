@@ -11,18 +11,18 @@ inherit
 
 rename
 	unit_capacity as engine_capacity 
-		-- Unit_capacity determines the capacity of the engine, the first wagon of a tram.
+		-- Capacity of motorized carriage, engine
 		
 redefine
 	capacity end
-		-- Inculde the capacities of the wagons.
+		-- Inculde the wagons' capacities
 	
 create
 	make_default_with_line, make_with_schedule
 
 feature -- Initialization
 	make_default_with_line (a_line: TRAFFIC_LINE) is
-			-- Create a tram. Set default values for capacity, number of wagons and speed.
+			-- Create a tram, set default values for capacity, number of wagons and speed.
 			require
 				a_line_not_void: a_line /= Void
 				valid_line_type: a_line.type.name.is_equal ("tram") or a_line.type.name.is_equal ("rail") or a_line.type.name.is_equal ("bus")
@@ -100,13 +100,13 @@ feature -- Initialization
 
 feature -- Access
 	wagon_limitation: INTEGER
-			--Maximum number of wagons allowed for this engine.
+			--Maximum number of wagons allowed for this engine
 	wagons: ARRAYED_LIST[TRAFFIC_WAGON]
 			--List of the wagons
 
 feature -- Basic operations
 	capacity: INTEGER is
-				-- Compute capacity as the sum of the wagon's capacities plus the engine_capacity.
+				-- Capacity as the sum of wagons' capacities plus engine_capacity
 			local
 				cap: INTEGER
 			do	
@@ -124,7 +124,7 @@ feature -- Basic operations
 			end
 			
 	add_wagon is
-			-- Attach a new wagon.
+			-- Attach new wagon.
 			require
 				wagons_not_full: wagon_limitation >= wagons.count + 1
 			local
@@ -137,7 +137,7 @@ feature -- Basic operations
 			end
 	
 	remove_wagon(i: INTEGER) is
-			-- Remove the wagon at position i
+			-- Remove wagon at position i.
 			require
 				wagons_not_empty: wagons.count > 0
 			do	
@@ -150,12 +150,12 @@ feature -- Basic operations
 	
 	feature --Constants
 		Default_engine_capacity: INTEGER is 200
-			-- Default load capacity of the first wagon of a tram.
+			-- Default load capacity of the motorized carriage
 		Default_wagon_limitation: INTEGER is 2
-			-- Default number of wagons attached at a tram.
+			-- Default number of wagons attached
 		Default_virtual_speed: REAL is 1.0
-			-- Default speed of a tram.
-		
+			-- Default speed
+			
 invariant
 	wagons_not_void: wagons /= void
 	wagons_count_allowed: wagon_limitation >= wagons.count

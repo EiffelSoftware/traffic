@@ -1,5 +1,5 @@
 indexing
-	description: "Deferred class for movings on the map."
+	description: "Deferred class for movings on the map"
 	date: "9.2.2006"
 	revision: "$Revision$"
 
@@ -19,59 +19,59 @@ inherit
 feature -- Attributes
 	
 	traffic_type: TRAFFIC_TYPE
-		-- type of traffic.
+		-- Type of traffic
 	
 	traffic_info: STRING
-		-- some info for the moving.
+		-- Some info on moving
 
 	position: EM_VECTOR_2D
-		-- current position on map.
+		-- Current position on map
 	
 	origin: EM_VECTOR_2D
-		-- origin position on map.
+		-- Origin position on map
 	
 	destination: EM_VECTOR_2D
-		-- destination position on map.
+		-- Destination position on map
 	
 	speed: DOUBLE
-		-- speed on the map. TODO: speed := distance(take-tour) / time(from one point to another)
+		-- Speed on the map TODO: speed := distance(take-tour) / time(from one point to another)
 		
 	index: INTEGER
-		-- index of the moving
+		-- Index of moving
 		
 	time: DOUBLE
-		-- time for one minute.
+		-- Time for one minute
 			
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
-		-- all points to be traveled through.
+		-- All points to be traveled through
 	
 	is_reiterating: BOOLEAN
-		-- if the destination is reached it turns around.
+		-- if the destination is reached it turns around
 		
 	is_traveling_back: BOOLEAN
-		-- is set when a moving returns trough the list.
+		-- Is 'Current' traveling back through polypoints?
 	
 	has_finished: BOOLEAN
-		-- has the moving finished his journey.	
+		-- Has the moving finished his journey?	
 
 	virtual_speed: DOUBLE
-		-- the virtual speed of the object oin the map.
+		-- Virtual speed of the object on the map
 		
 	angle_x: DOUBLE
-		-- the angle in respect to the x-axis
+		-- Angle in respect to the x-axis
 		
 	is_marked: BOOLEAN
-		-- is the moving marked, highlighted?
+		-- Is the moving marked, highlighted?
 
 feature -- Procedures
 	
 	take_tour is deferred end
-			-- take a tour on the map
+			-- Take a tour on the map.
 			
 feature {NONE} -- helper for journey	
 	
 	move is
-			-- move 'Current' from origin to destination
+			-- Move 'Current' from origin to destination.
 			local
 				direction: EM_VECTOR_2D
 			do
@@ -88,7 +88,7 @@ feature {NONE} -- helper for journey
 			end
 			
 	set_coordinates is
-			-- set the positions to the corresponding ones of the line section
+			-- Set the positions to the corresponding ones of the line section.
 			require
 				not polypoints.after
 				not polypoints.before
@@ -133,7 +133,7 @@ feature {NONE} -- helper for journey
 			end	
 			
 	tour_helper is
-			-- help during the tour to get the next destination if there is any
+			-- Help during the tour to get the next destination if there is any.
 			do
 				if not polypoints.after and not polypoints.before then
 					
@@ -167,7 +167,7 @@ feature {NONE} -- helper for journey
 			end
 		
 	set_angle is	
-			-- set the angles to the x- and y-axis respectively
+			-- Set the angles to the x- and y-axis respectively.
 			local 
 				x_difference, y_difference, hypo, quad: DOUBLE
 			do
@@ -220,7 +220,7 @@ feature {NONE} -- helper for journey
 feature -- Attributes settings	
 
 	set_index (an_index: INTEGER) is
-			-- give the object an index
+			-- Give the object an index.
 			do
 				index := an_index
 			ensure
@@ -229,7 +229,7 @@ feature -- Attributes settings
 		
 	
 	set_traffic_info (a_type: STRING) is	
-			-- set the traffic info.
+			-- Set the traffic info.
 			require
 				a_type /= Void
 			do
@@ -239,7 +239,7 @@ feature -- Attributes settings
 			end
 		
 	set_speed (a_speed: DOUBLE) is
-			-- set the speed to 'a_speed'.
+			-- Set the speed to 'a_speed'.
 			require
 				a_speed >= 0
 			do
@@ -249,7 +249,7 @@ feature -- Attributes settings
 			end
 					
 	set_time (a_time: DOUBLE) is
-			-- set time to 'a_time'.
+			-- Set time to 'a_time'.
 			require
 				a_time > 0
 			do
@@ -259,7 +259,7 @@ feature -- Attributes settings
 			end
 		
 	set_reiterate (a_boolean: BOOLEAN) is
-			-- set the moving reiterating his itinerary.
+			-- Set the moving reiterating his itinerary.
 			do
 				is_reiterating := a_boolean
 			ensure
@@ -270,10 +270,10 @@ feature -- Attributes settings
 feature {NONE} -- Random
 
 	random_number: RANDOM
-		-- make a direction out of this genererator	
+		-- Make a direction out of this genererator	
 
 	give_random_direction is
-			-- give a random destination
+			-- Give a random destination.
 			require
 				random_number /= Void
 			local
@@ -293,7 +293,7 @@ feature {NONE} -- Random
 			end
 			
 	add_random_polypoints(num: INTEGER) is
-		--  adds to the polypoints 'num' random destinations.
+		--  Add to the polypoints 'num' random destinations.
 		require
 			random_number_not_void: random_number /= void
 		local 

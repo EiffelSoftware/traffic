@@ -1,5 +1,5 @@
 indexing
-	description: "Deferred class for objects that can be used to transport cargo or passengers."
+	description: "Deferred class for objects that can be used to transport cargo or passengers"
 	date: "$Date: 2006/06/06 12:23:40 $"
 	revision: "$Revision$"
 deferred class
@@ -10,10 +10,10 @@ inherit
 	
 feature --Access
 	current_load: INTEGER 
-			-- Current amount of load.
+			-- Current amount of load
 
 	capacity:INTEGER is
-			-- Maximum possible amount of load.
+			-- Maximum possible load
 		do		
 			Result := unit_capacity
 		end
@@ -31,7 +31,7 @@ feature -- Basic operations
     	end
     	
 	unload(a_quantity: INTEGER) is
-			-- Unload cargo or a passenger
+			-- Unload cargo or a passenger.
 		require 
 			  a_quantity_non_negative: a_quantity >= 0
 			  valid_quantity: current_load >= a_quantity
@@ -43,7 +43,7 @@ feature -- Basic operations
 
 feature{NONE} -- Implementation			
 	unit_capacity: INTEGER
-			-- Maximum load this vehicle unit can carry.
+			-- Maximum load this vehicle unit can carry
 invariant
 	unit_capacity_non_negative: unit_capacity >= 0
 	load_smaller_or_equal_than_capacity: current_load <= capacity
