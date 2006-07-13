@@ -60,53 +60,44 @@ feature -- Basic operations
 				elseif not map.has_place (attribute ("to")) then
 					set_error (Unknown_destination, << attribute ("to")>> )
 				else
-	--					--xx se è directed prima venivano generate 2 line_sections nelle due differenti
-	--					--   direzioni.... e adesso?
-				--		if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
+				--	if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
 						if attribute ("direction").is_equal ("undirected") then
 								map_factory.build_road (( attribute ("from")), ( attribute ("to")),Void, map, ( attribute ("type")), ( attribute ("id")))
 								road := map_factory.road
-							--xx una line veniva creata 2 volte! e una road?
 							--	map_factory.build_road (( attribute ("to")), ( attribute ("from")),Void, map,( attribute ("type")))
 							--	road := map_factory.road
 						else -- directed
-	--*							map_factory.build_road (( attribute ("from")), ( attribute ("to")),Void, map, ( attribute ("type")), ( attribute ("to")))
-	--*							road := map_factory.road
+							--	map_factory.build_road (( attribute ("from")), ( attribute ("to")),Void, map, ( attribute ("type")), ( attribute ("to")))
+							--	road := map_factory.road
 						end	
-	--			end
-	--			if not has_error and has_subnodes then
-	--				process_subnodes
-	--			end
-	--			if not has_error and polypoints.count >= 2 then
-	--				road.set_polypoints (polypoints)
-	----				if line_section_other_direction /= Void then
-	----					create pp.make (0)
-	----					from
-	----						polypoints.finish
-	----					until
-	----						polypoints.before
-	----					loop
-	----						pp.extend (polypoints.item.twin)
-	----						polypoints.back
-	----					end
-	----					line_section_other_direction.set_polypoints (pp)
-	----				end
-	--				
-	--				-- adjust the positions of the start and end place of this link
-	--				-- attenzione:
-	--				-- adjust_position (road, polypoints)
-	--				-- serve anche a me l'other direction?
-	----				if line_section_other_direction /= Void then
-	----					adjust_position (line_section_other_direction, pp)				
-	----				end
-	--
+	--				end
 				if not has_error and has_subnodes then
 					process_subnodes
 				end
+				if not has_error and polypoints.count >= 2 then
+					road.set_polypoints (polypoints)
+	--				if line_section_other_direction /= Void then
+	--					create pp.make (0)
+	--					from
+	--						polypoints.finish
+	--					until
+	--						polypoints.before
+	--					loop
+	--						pp.extend (polypoints.item.twin)
+	--						polypoints.back
+	--					end
+	--					line_section_other_direction.set_polypoints (pp)
+	--				end
+					
+					-- adjust the positions of the start and end place of this link
+					 adjust_position (road, polypoints)
+	--				if line_section_other_direction /= Void then
+	--					adjust_position (line_section_other_direction, pp)				
+	--				end
 				end
 			end
-				
-		end
+		end	
+	end
 		
 	zero_vector: EM_VECTOR_2D is
 	once
