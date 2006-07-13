@@ -84,13 +84,15 @@ feature -- Basic operations
 					map.shortest_path.after
 				loop
 					line_section?=map.shortest_path.item.label
-					line.force (line_section)
-					map.shortest_path.forth
-					if not map.shortest_path.after and then not line.last.polypoints.last.is_equal (map.shortest_path.item.label.polypoints.first) then
-						create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
-						create destination.make_with_position (map.shortest_path.item.label.origin.name, map.shortest_path.item.label.polypoints.first.x.rounded, map.shortest_path.item.label.polypoints.first.y.rounded)
-						create section.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void)
-						line.force (section)
+					if line_section/=Void then
+						line.force (line_section)
+						map.shortest_path.forth
+						if not map.shortest_path.after and then not line.last.polypoints.last.is_equal (map.shortest_path.item.label.polypoints.first) then
+							create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
+							create destination.make_with_position (map.shortest_path.item.label.origin.name, map.shortest_path.item.label.polypoints.first.x.rounded, map.shortest_path.item.label.polypoints.first.y.rounded)
+							create section.make (origin, destination, create {TRAFFIC_TYPE_WALKING}.make, void)
+							line.force (section)
+						end
 					end
 				end
 				
