@@ -64,8 +64,9 @@ feature -- Basic operations
 		local
 			line: TRAFFIC_LINE
 			origin, destination: TRAFFIC_PLACE
-			section: TRAFFIC_LINE_SECTION
+			section,line_section: TRAFFIC_LINE_SECTION
 			places_to_visit: LINKED_LIST [TRAFFIC_PLACE]
+			
 		do
 			if marked_station_changed then
 				map.find_shortest_path (map.places.item (marked_origin.name), map.places.item (marked_destination.name))
@@ -82,7 +83,8 @@ feature -- Basic operations
 				until
 					map.shortest_path.after
 				loop
-					line.force (map.shortest_path.item.label)
+					line_section?=map.shortest_path.item.label
+					line.force (line_section)
 					map.shortest_path.forth
 					if not map.shortest_path.after and then not line.last.polypoints.last.is_equal (map.shortest_path.item.label.polypoints.first) then
 						create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
