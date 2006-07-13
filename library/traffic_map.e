@@ -16,7 +16,7 @@ inherit
 		end
 		
 	
-	LINKED_WEIGHTED_GRAPH [TRAFFIC_PLACE, TRAFFIC_LINE_SECTION]
+	LINKED_WEIGHTED_GRAPH [TRAFFIC_PLACE, TRAFFIC_CONNECTION]
 		rename
 			item as graph_item
 		export
@@ -50,6 +50,7 @@ feature {NONE} -- Initialization
 			create internal_places.make (default_size * default_size)
 			create internal_lines.make (default_size)
 			create internal_line_sections.make (default_size)
+			create internal_roads.make (default_size)
 			create internal_place_array.make (200)
 			create internal_travelers.make (1)
 			create internal_taxi_offices.make(0)
@@ -80,6 +81,11 @@ feature {NONE} -- Initialization
 			create place_changed_event
 			create place_inserted_event
 			create place_removed_event
+			
+			create unspecified_road_changed_event
+			create road_changed_event
+			create road_inserted_event
+			create road_removed_event
 		ensure
 			name_set: equal (name, a_name)
 			places_not_void: places /= Void
@@ -151,6 +157,48 @@ feature -- Status report
 		do
 			Result := internal_lines.has (a_name)
 		end
+
+	has_road (a_origin_name, a_destination_name: STRING; an_id:INTEGER): BOOLEAN is
+			-- Has traffic map road `a_road'?
+		require
+			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
+			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
+		local
+			l_road: TRAFFIC_ROAD
+			l_origin, l_destination: TRAFFIC_PLACE
+			found: BOOLEAN
+		do
+			l_origin := places.item (a_origin_name)
+			l_destination := places.item (a_destination_name)
+			found := False
+			from
+				internal_roads.start
+			until
+				internal_roads.after or found
+			loop
+				l_road := internal_roads.item_for_iteration
+				if equal (l_road.origin, l_origin) and
+					equal (l_road.destination, l_destination) then
+					found := True
+				end
+				-- manca l'altro if
+				if l_road.id=an_id then
+					found:=true
+				end
+				internal_roads.forth
+			end
+			Result := found
+		end
+		
+	has_road_with_id (an_id: INTEGER): BOOLEAN is
+			-- Has traffic map road with `an_id'?
+		require
+			valid_id: an_id>=0
+		do
+			Result := internal_roads.has (an_id)
+		end
+	
+
 		
 feature -- Element change
 
@@ -200,6 +248,23 @@ feature -- Element change
 		ensure
 			a_line_in_map: has_line (a_line.name)
 		end
+
+
+	add_road(a_road: TRAFFIC_ROAD) is
+			-- Add road `a_road' to map.
+		require
+			a_road_exists: a_road /= Void
+			a_road_not_in_map: not has_road (a_road.origin.name, a_road.destination.name,a_road.id)
+		do
+			internal_roads.force (a_road, a_road.id)
+--			put_edge (a_road.origin, a_road.destination, a_road, a_road.length)
+			road_inserted_event.publish ([a_road])
+		ensure
+			a_road_in_map: has_road (a_road.origin.name, a_road.destination.name,a_road.id)
+		end
+		
+
+
 		
 	add_building (a_building: TRAFFIC_BUILDING) is
 			-- Add building `a_building' to map.
@@ -371,6 +436,29 @@ feature -- Element change
 				-- we can assume, that the line_section was only once inserted
 				line_section_removed: not line_sections.has (a_line_section)
 			end
+			
+		remove_road (a_road: TRAFFIC_ROAD) is
+			-- Remove road `a_road' from map
+			require
+				road_not_void: a_road /= Void
+--				map_has_road: internal_roads.has_item(a_road)
+
+			do
+				from
+					internal_roads.start
+				until
+					internal_roads.after
+				loop
+					if equal(internal_roads.item_for_iteration,a_road) then
+						internal_roads.remove (internal_roads.key_for_iteration)
+					end
+					internal_roads.forth
+				end
+
+			ensure
+				-- we can assume, that the line_section was only once inserted
+				road_removed: not internal_roads.has_item (a_road)
+			end
 	
 	remove_traveler (index: INTEGER) is
 			-- -- Remove traveler at position index
@@ -480,7 +568,7 @@ feature -- Access
 			Result := internal_travelers.twin
 		end
 		
-	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_LINE_SECTION] is
+	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_CONNECTION] is
 			-- Line sections with origin or destination place `a_name'
 		require
 			place_in_map: has_place (a_name)
@@ -534,6 +622,27 @@ feature -- Events
 			-- Event to inform views of `Current' 
 			-- when item has been removed 
 			-- at index passed as argument
+			
+			
+	unspecified_road_changed_event: EM_EVENT_CHANNEL [TUPLE []]
+			-- Event to inform views of `Current'
+			-- when `Current' changed such that
+			-- views need to re-render
+	
+	road_changed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_ROAD]]
+			-- Event to inform views of `Current' 
+			-- when item has been changed
+			-- at index passed as argument
+			
+	road_inserted_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_ROAD]]
+			-- Event to inform views of `Current' 
+			-- when item has been inserted
+			-- at index passed as argument
+			
+	road_removed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_ROAD]]
+			-- Event to inform views of `Current' 
+			-- when item has been removed 
+			-- at index passed as argument
 
 	unspecified_line_changed_event: EM_EVENT_CHANNEL [TUPLE []]
 			-- Event to inform views of `Current'
@@ -567,6 +676,8 @@ feature {TRAFFIC_MAP_MODEL} -- Access
 		do
 			Result := internal_line_sections
 		end
+
+		
 	
 feature -- Basic operation
 
@@ -577,6 +688,14 @@ feature -- Basic operation
 				"%N%Nplaces:%N" + places_out + 
 				"%N%Nlines:%N" + lines_out
 		end
+		
+		
+	retrieve_road(i: INTEGER): TRAFFIC_ROAD is
+			-- retrieve road with given id
+			do
+				Result:=internal_roads.item (i)
+			end
+			
 			
 feature {NONE} -- Implementation
 	
@@ -588,6 +707,9 @@ feature {NONE} -- Implementation
 			
 	internal_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 			-- Lines on map.
+			
+	internal_roads: HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+			--	Roads on map.
 			
 	internal_line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION]
 			--	Line sections on map.

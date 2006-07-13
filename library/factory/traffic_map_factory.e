@@ -28,6 +28,7 @@ feature {NONE} -- Initialization
 							 internal_place = Void and 
 							 internal_line_section = Void and 
 							 internal_line = Void
+							 internal_road=Void
 		end
 		
 feature -- Initialization
@@ -44,6 +45,7 @@ feature -- Initialization
 							 internal_place = Void and 
 							 internal_line_section = Void and 
 							 internal_line = Void
+							 internal_road= Void
 		end
 
 feature -- Traffic map building
@@ -169,6 +171,47 @@ feature -- Line section building
 		do
 			Result := internal_line_section /= Void
 		end
+
+
+feature -- Road section building
+	
+	build_road (a_origin, a_destination:STRING; a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]; a_map: TRAFFIC_MAP; a_type: STRING; an_id:STRING) is
+			-- Generate new traffic road object going from origin `a_origin' to place named `a_destination'
+			-- belonging to `a_map'.
+			-- (Access the generated object through feature `road')
+		require
+			a_map_exists: a_map /= Void
+			a_origin_exists: a_map.has_place (a_origin)
+			a_destination_exists: a_map.has_place (a_destination)
+			an_id_exists: an_id/=Void
+			a_type_exists: a_type/=Void
+		do
+			internal_road := create_road (a_origin, a_destination, a_polypoints, a_map,a_type,an_id)
+			a_map.add_road (internal_road)
+		ensure
+			road_created: road /= Void
+			map_has_origin: road.origin = a_map.place (a_origin)
+			map_has_destination: road.destination = a_map.place (a_destination)
+--			line_section_in_map: a_map.has_road (a_origin, a_destination, a_line.type, a_line)
+		end
+
+	road: TRAFFIC_ROAD is
+			-- Generated traffic road object.
+		require
+			road_available: has_road
+		do
+			Result := internal_road
+		ensure
+			Result_exists: Result /= Void
+		end
+		
+		
+		
+	has_road: BOOLEAN is
+			-- Is there a line section object available?
+		do
+			Result := internal_road /= Void
+		end
 		
 feature -- Traffic line building
 
@@ -266,6 +309,9 @@ feature {NONE} -- Implementation
 	internal_line: TRAFFIC_LINE
 			-- Internal representation of last created traffic line.
 	
+	internal_road: TRAFFIC_ROAD
+			-- Internal representation of last created traffic road.
+	
 	internal_simple_line: TRAFFIC_SIMPLE_LINE
 			-- Internal representation of last created traffic simple line.
 	
@@ -296,6 +342,37 @@ feature {NONE} -- Implementation
 		ensure
 			result_exists: Result /= Void
 		end
+		
+	
+	create_road (a_origin, a_destination: STRING; a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]; a_map: TRAFFIC_MAP; a_type:STRING;an_id:STRING): TRAFFIC_ROAD is
+			-- Create road with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_map'.
+		require
+			a_origin_exists: a_origin /= Void
+			a_origin_not_empty: not a_origin.is_empty
+			a_origin_in_map: a_map.has_place (a_origin)
+			a_destination_exists: a_destination /= Void
+			a_destination_not_empty: not a_destination.is_empty
+			a_destination_in_map: a_map.has_place (a_destination)
+			a_type_exists: a_type/=Void
+			an_id_exists: an_id/=Void
+		local
+			a_road: TRAFFIC_ROAD
+			origin: TRAFFIC_PLACE
+			destination: TRAFFIC_PLACE
+			type: TRAFFIC_TYPE
+			i: INTEGER	
+		do
+			origin := a_map.place (a_origin)
+			destination := a_map.place (a_destination)
+--			type:= create type.make
+			i:=an_id.to_integer
+			create a_road.make (origin, destination, a_polypoints,type,i)
+			Result := a_road
+		ensure
+			result_exists: Result /= Void
+		end	
+		
+	
 		
 	create_line (a_name: STRING; a_type: TRAFFIC_TYPE): TRAFFIC_LINE is
 			-- Create line named `a_name'.

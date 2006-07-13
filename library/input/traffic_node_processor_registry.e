@@ -122,6 +122,7 @@ feature {NONE} -- Implementation
 			-- Use `register_processor' for new node types and 
 			-- `register_allowed_subnode' for registering their subnode types.
 		once
+			
 			create Result.make (Default_registry_capacity)
 			Result.put (create {TRAFFIC_MAP_NODE_PROCESSOR}.make, "map")
 			Result.put (create {TRAFFIC_PLACES_NODE_PROCESSOR}.make, "places")
@@ -135,9 +136,14 @@ feature {NONE} -- Implementation
 			Result.put (create {TRAFFIC_COLOR_NODE_PROCESSOR}.make, "color")
 			Result.put (create {TRAFFIC_BUILDINGS_NODE_PROCESSOR}.make, "buildings")
 			Result.put (create {TRAFFIC_BUILDING_NODE_PROCESSOR}.make, "building")
+				
+			Result.put (create {TRAFFIC_ROADS_NODE_PROCESSOR}.make, "roads")
+			Result.put (create {TRAFFIC_ROAD_NODE_PROCESSOR}.make, "road")
+			
 			Result.put (create {TRAFFIC_SCHEDULER_LINES_NODE_PROCESSOR}.make, "slines")
 			Result.put (create {TRAFFIC_SCHEDULER_LINE_NODE_PROCESSOR}.make, "sline")
 			Result.put (create {TRAFFIC_SCHEDULER_NODE_PROCESSOR}.make, "entry")
+
 		ensure
 			Result_exists: Result /= Void
 			Result_not_empty: not Result.is_empty
@@ -152,7 +158,7 @@ feature {NONE} -- Implementation
 		once
 			create Result.make (Default_registry_capacity)
 --			map
-			a := << "description", "places", "lines" >>
+			a := << "description", "places","roads", "lines" >>
 			a.compare_objects
 			Result.put (a, "map")
 --			places
@@ -167,18 +173,22 @@ feature {NONE} -- Implementation
 			a := <<  >>
 			a.compare_objects
 			Result.put (a, "point")
---			line
-			a := << "color", "line_section" >>
+			
+--			line (new description)
+			a := << "color", "line_section">>
 			a.compare_objects
 			Result.put (a, "line")
 --			lines
 			a := << "line" >>
 			a.compare_objects
 			Result.put (a, "lines")
+
+			
 --			line_section
-			a := << "point" >>
+			a := << "point", "road" >>
 			a.compare_objects
 			Result.put (a, "line_section")
+			
 --			file
 			a := <<  >>
 			a.compare_objects
@@ -187,14 +197,17 @@ feature {NONE} -- Implementation
 			a := <<  >>
 			a.compare_objects
 			Result.put (a, "color")
---			buildings
-			a := << "building" >>
+			
+--			roads
+			a := << "road">>
 			a.compare_objects
-			Result.put (a, "buildings")
---			building
-			a := << >>
+			Result.put (a, "roads")
+
+--			point			
+			a := << "point" >>
 			a.compare_objects
-			Result.put (a, "building")
+			Result.put (a, "road")
+
 --			schedule slines
 			a := << "sline" >>
 			a.compare_objects
@@ -203,6 +216,18 @@ feature {NONE} -- Implementation
 			a := << "entry" >>
 			a.compare_objects
 			Result.put (a, "sline")
+			
+--			buildings
+			a := << "building" >>
+			a.compare_objects
+			Result.put (a, "buildings")
+			
+--			building
+			a := << >>
+			a.compare_objects
+			Result.put (a, "building")
+
+
 		end
 		
 end

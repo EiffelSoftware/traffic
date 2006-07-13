@@ -37,8 +37,8 @@ feature -- Basic operations
 			simple_line: TRAFFIC_SIMPLE_LINE
 			pp: ARRAYED_LIST [EM_VECTOR_2D]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_SECTION
-			
-			line_sections: LIST [TRAFFIC_LINE_SECTION]
+			connections: LIST [TRAFFIC_CONNECTION]
+			line_section: TRAFFIC_LINE_SECTION
 		do
 			line ?= parent.target
 			if not has_attribute ("from") then
@@ -64,18 +64,23 @@ feature -- Basic operations
 							line_section_one_direction := map_factory.line_section
 							-- line_section_other_direction is generated but not accessible
 							-- search for line section other direction
-							line_sections := map.line_sections_of_place ( (attribute("to")))
+							connections := map.line_sections_of_place ( (attribute("to")))
 							from
-								line_sections.start
+								connections.start
 							until
-								line_sections.after or else line_section_other_direction /= Void
+								connections.after or else line_section_other_direction /= Void
 							loop								
-								if line_sections.item.origin.name.is_equal (( attribute ("to"))) and then
-								   line_sections.item.destination.name.is_equal (( attribute ("from"))) and then
-								   line_sections.item.line = line then
-									line_section_other_direction := line_sections.item
+								-- qui
+								line_section?=connections.item
+								if line_section/=Void then
+									if line_section.origin.name.is_equal (( attribute ("to"))) and then
+									   line_section.destination.name.is_equal (( attribute ("from"))) and then
+									   line_section.line = line then
+										line_section_other_direction := line_section
+									end
+								
 								end
-								line_sections.forth
+								connections.forth
 							end
 						end
 					else -- directed
@@ -132,6 +137,14 @@ feature -- Basic operations
 				end
 
 			end
+			
+			
+	if not has_error and roads.count >= 1 then
+				line_section_one_direction.set_roads(roads)
+				if line_section_other_direction /= Void then
+					line_section_other_direction.set_roads(roads)				
+				end
+			end
 		end
 		
 	zero_vector: EM_VECTOR_2D is
@@ -167,8 +180,10 @@ feature -- Basic operations
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
 			position: EM_VECTOR_2D
+			road: TRAFFIC_ROAD
 		do
 			create polypoints.make (0)
+			create roads.make(0)
 			from
 				subnodes.start
 			until
@@ -194,6 +209,11 @@ feature -- Basic operations
 						if position /= Void then
 							polypoints.extend (position)
 						end
+						-- Has a road been generated?
+						road ?= data
+						if road /= Void then
+							roads.extend (road)
+						end
 					else
 						set_error (p.error_code, p.slots)
 					end
@@ -204,5 +224,8 @@ feature -- Basic operations
 
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			-- Polypoints of this link
+	
+	roads: ARRAYED_LIST[TRAFFIC_ROAD]
+		-- Roads of this line_section
 		
 end

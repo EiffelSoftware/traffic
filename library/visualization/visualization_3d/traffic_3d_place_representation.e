@@ -283,7 +283,7 @@ feature {NONE} -- Implementation
 	update_place_bounding_box (a_place: TRAFFIC_PLACE): EM_ORTHOGONAL_RECTANGLE is
 			-- Bounding box of `a_place' in map coordinates
 		local
-			links: LIST [TRAFFIC_LINE_SECTION]
+			links: LIST [TRAFFIC_CONNECTION]
 			p: EM_VECTOR_2D
 		do
 			-- Calculate rectangle to include all outgoing links of `a_place'.

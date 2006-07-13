@@ -24,12 +24,12 @@ feature -- Initialization
 		do
 			create places_to_visit.make
 			create places_on_route.make
-			create line_sections.make
+			create connections.make
 			map := a_map
 		ensure
 			places_to_visit_exists: places_to_visit /= Void
 			places_on_route_exists: places_on_route /= Void
-			line_sections_exists: line_sections /= Void
+			connections_exists: connections /= Void
 			map_exists: map /= Void
 			map_set: map = a_map
 		end
@@ -50,7 +50,7 @@ feature -- Initialization
 		ensure
 			places_to_visit_exists: places_to_visit /= Void
 			places_on_route_exists: places_on_route /= Void
-			line_sections_exists: line_sections /= Void
+			roads_exists: connections /= Void
 			map_exists: map /= Void
 			map_set: map = a_map
 		end
@@ -63,6 +63,10 @@ feature -- Access
 	places_on_route: LINKED_LIST [TRAFFIC_PLACE]
 			-- All Places on route of last call to `calculate_shortest_path'.
 		
+	connections: LINKED_LIST [TRAFFIC_CONNECTION]
+			-- Roads to be used to visit `places_to_visit'
+			-- of last call to `calculate_shortest_path'.
+			
 	line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
 			-- Line sections to be used to visit `places_to_visit'
 			-- of last call to `calculate_shortest_path'.
@@ -135,11 +139,11 @@ feature -- Basic operation
 			-- Calculate the shortest path from one place to visit to the next.
 		local
 			current_place, next_place: TRAFFIC_PLACE
-			shortest_path: LIST [ LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_PLACE, TRAFFIC_LINE_SECTION]]
-			current_line_section: TRAFFIC_LINE_SECTION
+			shortest_path: LIST [ LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_PLACE, TRAFFIC_CONNECTION]]
+			current_connection: TRAFFIC_CONNECTION
 		do
 			places_on_route.wipe_out
-			line_sections.wipe_out
+			connections.wipe_out
 			from
 				places_to_visit.start
 			until
@@ -158,13 +162,13 @@ feature -- Basic operation
 						until
 							shortest_path.after
 						loop
-							current_line_section := shortest_path.item.label
-							line_sections.extend (current_line_section)
-							places_on_route.extend (current_line_section.origin)
+							current_connection := shortest_path.item.label
+							connections.extend (current_connection)
+							places_on_route.extend (current_connection.origin)
 							shortest_path.forth
 						end		
 						if shortest_path.count > 0 then
-							places_on_route.extend (current_line_section.destination)							
+							places_on_route.extend (current_connection.destination)							
 						end
 					end
 				end
@@ -195,9 +199,9 @@ feature -- Basic operation
 			
 			last_line := Void
 			from
-				line_sections.start
+				connections.start
 			until
-				line_sections.after
+				connections.after
 			loop
 				current_line := line_sections.item.line
 				if not equal (current_line, last_line) then

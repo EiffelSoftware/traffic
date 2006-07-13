@@ -36,7 +36,6 @@ feature -- Basic operations
 	process is
 			-- Process node.
 		do
-
 			if not has_attribute ("name") then
 				set_error (Mandatory_attribute_missing, << "name" >>)
 			elseif not has_attribute ("type") then

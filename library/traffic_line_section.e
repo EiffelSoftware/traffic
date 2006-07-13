@@ -7,12 +7,11 @@ class
 	TRAFFIC_LINE_SECTION
 	
 inherit
-	HASHABLE
+		
+	TRAFFIC_CONNECTION
 		redefine
---			is_equal,
 			out
 		end
-		
 create
 	make
 
@@ -38,6 +37,7 @@ feature {NONE} -- Initialization
 				polypoints.extend (a_origin.position)
 				polypoints.extend (a_destination.position)
 			end
+			create roads.make (1)
 			
 		ensure
 			origin_set: origin = a_origin
@@ -45,6 +45,7 @@ feature {NONE} -- Initialization
 			state_exists: state /= Void
 			type_set: type = a_type
 			polypoints_exists: polypoints /= Void
+			roads_created: roads/=Void
 		end
 
 feature -- Access
@@ -52,42 +53,11 @@ feature -- Access
 	line: TRAFFIC_LINE
 			-- Line this line section belongs to.
 		
-	type: TRAFFIC_TYPE
-			-- Type of line section.
-		
-	origin: TRAFFIC_PLACE
-			-- Place of origin.
-			
-	destination: TRAFFIC_PLACE
-			-- Place of destination.
-	
-	state: TRAFFIC_LINE_SECTION_STATE
-			-- State of line section.
-			
-	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
+
+	roads: ARRAYED_LIST [TRAFFIC_ROAD]
 			-- position representation of line section.
 
-	length: DOUBLE is
-			-- Length from start of polypoints to end.
-			-- If no polypoints exists, distance between origin and destination.
-		local
-			i: INTEGER
-		do
-			if polypoints = Void or polypoints.count < 1 then
-				Result := origin.position.distance (destination.position)
-			else
-				Result := 0.0
-				from
-					i := 1
-				until
-					i = polypoints.count
-				loop
-					Result := Result + polypoints.i_th (i).distance (polypoints.i_th (i + 1))
-					i := i + 1
-				end
-			end
-		end
-		
+
 feature -- Status setting
 		
 	set_state (a_state: TRAFFIC_LINE_SECTION_STATE ) is
@@ -100,22 +70,23 @@ feature -- Status setting
 			state_set: state = a_state
 		end
 		
-	set_polypoints (a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]) is
-			-- Set polypoints to `a_polypoints'.
+
+	set_roads (a_roads: ARRAYED_LIST [TRAFFIC_ROAD]) is
+			-- Set roads to `a_roads'.
 		require
-			a_polypoints_exist: a_polypoints /= Void
+			a_roads_exist: a_roads /= Void
 		do
-			polypoints.copy (a_polypoints)
+			roads.copy (a_roads)
 		ensure
-			equal (polypoints, a_polypoints)
-			polypoints_exists: polypoints /= Void
-			polypoints_equal: polypoints.count > 0 implies equal (polypoints, a_polypoints)
+			equal (roads, a_roads)
+			roads_exists: roads /= Void
+			roads_equal: roads.count > 0 implies equal (roads, a_roads)
 		end
 		
-	remove_polypoints is
-			-- Remove polypoints.
+	remove_roads is
+			-- Remove roads.
 		do
-			polypoints.wipe_out
+			roads.wipe_out
 		end
 		
 feature {TRAFFIC_LINE} -- Status setting
@@ -140,20 +111,8 @@ feature {TRAFFIC_LINE} -- Status setting
 		ensure
 			line_void: line = Void
 		end		
-		
-feature -- Comparasion
 
---	is_equal (other: like Current): BOOLEAN is
-			-- Is `other' attached to an object considered
-			-- equal to current object?
-			-- (from ANY)
---		do
---			Result := equal (origin.name, other.origin.name) and
---				equal (destination.name, other.destination.name) and
---				equal (type, other.type) and
---				equal (line, other.line)
---		end
-		
+
 feature -- Basic operation
 
 	hash_code: INTEGER is
