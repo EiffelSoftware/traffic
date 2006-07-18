@@ -36,20 +36,6 @@ feature -- Status setting
 			polypoints.wipe_out
 		end
 		
-		feature -- Access
-
-
-
-
-
-
-feature{NONE} -- Implementation
-
-
-
-feature -- Basic operation
-
-
 
 
 

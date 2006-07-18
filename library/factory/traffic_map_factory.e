@@ -175,7 +175,7 @@ feature -- Line section building
 
 feature -- Road section building
 	
-	build_road (a_origin, a_destination:STRING; a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]; a_map: TRAFFIC_MAP; a_type: STRING; an_id:STRING) is
+	build_road (a_origin, a_destination:STRING; a_map: TRAFFIC_MAP; a_type: STRING; an_id:STRING; a_direction:STRING) is
 			-- Generate new traffic road object going from origin `a_origin' to place named `a_destination'
 			-- belonging to `a_map'.
 			-- (Access the generated object through feature `road')
@@ -185,14 +185,15 @@ feature -- Road section building
 			a_destination_exists: a_map.has_place (a_destination)
 			an_id_exists: an_id/=Void
 			a_type_exists: a_type/=Void
+			a_direction_exists: a_direction/=Void
 		do
-			internal_road := create_road (a_origin, a_destination, a_polypoints, a_map,a_type,an_id)
+			internal_road := create_road (a_origin, a_destination, a_map, a_type, an_id, a_direction)
 			a_map.add_road (internal_road)
 		ensure
 			road_created: road /= Void
 			map_has_origin: road.origin = a_map.place (a_origin)
 			map_has_destination: road.destination = a_map.place (a_destination)
---			line_section_in_map: a_map.has_road (a_origin, a_destination, a_line.type, a_line)
+			road_in_map: a_map.has_road (a_origin, a_destination,an_id.to_integer)
 		end
 
 	road: TRAFFIC_ROAD is
@@ -344,7 +345,7 @@ feature {NONE} -- Implementation
 		end
 		
 	
-	create_road (a_origin, a_destination: STRING; a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]; a_map: TRAFFIC_MAP; a_type:STRING;an_id:STRING): TRAFFIC_ROAD is
+	create_road (a_origin, a_destination: STRING; a_map: TRAFFIC_MAP; a_type:STRING;an_id:STRING; a_direction: STRING): TRAFFIC_ROAD is
 			-- Create road with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_map'.
 		require
 			a_origin_exists: a_origin /= Void
@@ -355,6 +356,7 @@ feature {NONE} -- Implementation
 			a_destination_in_map: a_map.has_place (a_destination)
 			a_type_exists: a_type/=Void
 			an_id_exists: an_id/=Void
+			a_direction_exists: a_direction/=Void
 		local
 			a_road: TRAFFIC_ROAD
 			origin: TRAFFIC_PLACE
@@ -364,9 +366,12 @@ feature {NONE} -- Implementation
 		do
 			origin := a_map.place (a_origin)
 			destination := a_map.place (a_destination)
---			type:= create type.make
+			create traffic_type_factory.make
+			--traffic_type_factory.build(a_type)
+			traffic_type_factory.build("street")
+			type:= traffic_type_factory.traffic_type
 			i:=an_id.to_integer
-			create a_road.make (origin, destination, a_polypoints,type,i)
+			create a_road.make (origin, destination, type,i,a_direction)
 			Result := a_road
 		ensure
 			result_exists: Result /= Void

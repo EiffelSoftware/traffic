@@ -159,16 +159,16 @@ feature -- Basic operations
 						until
 							polypoints.after or was_found
 						loop
-							if polypoints.item = line.item.polypoints.first then
+--							if polypoints.item = line.item.polypoints.first then
 								polypoints.forth
 								polypoints.forth
 								polypoints.forth								
 								was_found := True
 								set_coordinates
 								set_angle	
-							else
-								polypoints.forth
-							end
+--							else
+--								polypoints.forth
+--							end
 						end
 					else
 						line.forth
@@ -240,6 +240,38 @@ feature{NONE} --Implementation
 			ensure
 				valid_polypoints: polypoints.count >= old polypoints.count
 			end		
+			
+		
+		set_line_route_from_roads(a_line: TRAFFIC_LINE) is
+				-- Set the polypoints to follow the route given by the line.
+			require
+				line_not_void: a_line /= void
+			
+			local
+				pp: ARRAYED_LIST[EM_VECTOR_2D]
+			do
+				pp:=a_line.road_points
+				polypoints.extend (pp.first)
+				polypoints.extend (pp.first)
+				polypoints.extend (pp.first)
+				-- Add the whole section item (origin and destination)
+				polypoints.append (pp)
+				-- Repetition of the las polypoint to stop also there for a short time.
+				polypoints.extend (pp.last)
+				polypoints.extend (pp.last)
+				polypoints.extend (pp.last)	
+				
+				polypoints.start
+				
+				-- Not wait at starting point therefore omit first three points
+				polypoints.forth
+				polypoints.forth
+				polypoints.forth
+				
+			ensure
+				valid_polypoints: polypoints.count >= old polypoints.count
+			end		
+		
 		
 		set_coordinates is
 			-- Set the positions to the corresponding ones of the line section.

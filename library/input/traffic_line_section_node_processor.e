@@ -128,6 +128,7 @@ feature -- Basic operations
 						polypoints.back
 					end
 					line_section_other_direction.set_polypoints (pp)
+					
 				end
 				
 				-- adjust the positions of the start and end place of this link
@@ -139,7 +140,7 @@ feature -- Basic operations
 			end
 			
 			
-	if not has_error and roads.count >= 1 then
+			if not has_error and roads.count >= 1 then
 				line_section_one_direction.set_roads(roads)
 				if line_section_other_direction /= Void then
 					line_section_other_direction.set_roads(roads)				

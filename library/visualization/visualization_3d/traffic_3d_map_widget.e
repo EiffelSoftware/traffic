@@ -190,7 +190,13 @@ feature -- Drawing
 					gl_polygon_mode_external (em_gl_front_and_back, em_gl_fill)
 					gl_flush_external
 				end
-				traffic_lines.draw
+--				if lines_shown then
+					traffic_lines.draw
+--				else
+--					traffic_roads.draw
+--				end
+				
+				
 				-- here could also be traffic_places.draw, which would show all places in black
 				traffic_places.draw
 				
@@ -319,6 +325,10 @@ feature -- Traffic map loading
 				traffic_places_polygons := traffic_places.collision_polygons
 				create traffic_lines.make (map)
 				traffic_lines_polygons := traffic_lines.collision_polygons
+				
+				create traffic_roads.make (map)
+				traffic_roads_polygons := traffic_roads.collision_polygons
+				
 				create traffic_traveler.make (map)
 				number_of_passengers := 0
 			
@@ -377,6 +387,14 @@ feature -- Options
 			buildings_shown := b
 		ensure
 			buildings_shown = b
+		end
+		
+	set_lines_shown (b: BOOLEAN) is
+			-- Set `buildings_shown'.
+		do
+			lines_shown := b
+		ensure
+			lines_shown = b
 		end
 	
 	set_number_of_buildings (n: INTEGER) is
@@ -761,6 +779,9 @@ feature -- Options
 	buildings_shown: BOOLEAN
 			-- Should the buildings be displayed?
 			
+	lines_shown: BOOLEAN
+			-- Should the lines be displayed?
+			
 	buildings_transparent: BOOLEAN
 			-- Should the buildings be transparent?
 			
@@ -897,6 +918,9 @@ feature -- Representations
 	
 	traffic_lines: TRAFFIC_3D_LINE_REPRESENTATION
 		-- container for the lines
+
+	traffic_roads: TRAFFIC_3D_ROAD_REPRESENTATION
+		-- container for the roads
 		
 	traffic_places: TRAFFIC_3D_PLACE_REPRESENTATION
 		-- container for the places.
@@ -911,6 +935,9 @@ feature {NONE} -- Implementation
 
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic lines.
+		
+	traffic_roads_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+		-- Collision polygons to check for collisions with traffic roads.
 
 	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic places.

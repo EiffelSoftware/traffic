@@ -54,15 +54,7 @@ feature -- Utility
 				
 			end
 		
-			
-			
-feature -- Status setting
-		
-		
-
-
-
-
+				
 
 
 feature{NONE} -- Implementation
@@ -108,7 +100,7 @@ feature{NONE} -- Implementation
 feature{NONE} -- Creation
 
 
-		make (a_origin, a_destination: TRAFFIC_PLACE; a_list: ARRAYED_LIST [EM_VECTOR_2D]; a_type: TRAFFIC_TYPE; an_id: INTEGER ) is
+	make (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE; an_id: INTEGER; a_direction:STRING) is
 			-- Initialize `Current'. 
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -117,57 +109,29 @@ feature{NONE} -- Creation
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
 			an_id_is_valid: an_id>=0
+			a_direction_exists: a_direction/=Void
 		do
 			origin := a_origin
 			destination := a_destination
 			id:=an_id
---			create state.make
---			type := a_type
-			if a_list /= Void then
-				set_polypoints (a_list)
+			type := a_type
+			if a_direction.is_equal("directed") then
+				is_directed:=true
 			else
-				create polypoints.make (2)
-				polypoints.extend (a_origin.position)
-				polypoints.extend (a_destination.position)
+				is_directed:=false	
 			end
-			
+			create polypoints.make (2)
+			polypoints.extend (a_origin.position)
+			polypoints.extend (a_destination.position)
 		ensure
 			origin_set: origin = a_origin
 			destination_set: destination = a_destination
---			state_exists: state /= Void
---			type_set: type = a_type
+			type_set: type = a_type
 			polypoints_exists: polypoints /= Void
 		end
 			
 
-make_with_places (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE; a_list: ARRAYED_LIST [EM_VECTOR_2D] ) is
-			-- Initialize `Current'. 
-			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
-			-- `a_destination' are generated.
-		require
-			a_origin_exists: a_origin /= Void
-			a_destination_exists: a_destination /= Void
-			a_type_exists: a_type /= Void
-		do
-			origin := a_origin
-			destination := a_destination
---			create state.make
---			type := a_type
-			if a_list /= Void then
-				set_polypoints (a_list)
-			else
-				create polypoints.make (2)
-				polypoints.extend (a_origin.position)
-				polypoints.extend (a_destination.position)
-			end
-			
-		ensure
-			origin_set: origin = a_origin
-			destination_set: destination = a_destination
---			state_exists: state /= Void
---			type_set: type = a_type
-			polypoints_exists: polypoints /= Void
-		end
+
 
 
 feature -- Basic operation
@@ -195,6 +159,7 @@ feature -- Access
 	
 	id: INTEGER
 	
+	is_directed: BOOLEAN
 	
 	
 end	

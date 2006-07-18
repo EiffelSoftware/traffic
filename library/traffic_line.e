@@ -249,6 +249,78 @@ feature -- Basic operations
 				"%N   other direction: " + other_direction_out
 		end
 		
+	road_points: ARRAYED_LIST[EM_VECTOR_2D] is
+			-- returns the polypoints retrieve by the roads
+			-- that belongs to this line
+			local
+				roads:ARRAYED_LIST[TRAFFIC_ROAD]
+				pp: ARRAYED_LIST[EM_VECTOR_2D]
+				invert: BOOLEAN
+			do
+				create Result.make(1)
+				-- loop on all the line sections
+				from
+					start
+				until
+					after
+				loop
+					roads:=item.roads
+					-- loop on all the roads
+					
+					if item.origin=roads.first.origin and item.destination=roads.last.destination then
+						invert:=false
+					elseif item.origin=roads.last.destination and item.destination=roads.first.origin then
+						
+						invert:=true
+					else
+						-- problema!
+						io.putstring ("Error%N")
+					end
+					if invert then
+						from
+							roads.finish
+						until
+							roads.before				
+						loop
+							pp:=roads.item.polypoints
+							-- loop on all the polypoints
+							from
+								pp.finish
+							until
+								pp.before
+							loop
+								Result.extend(pp.item)
+								pp.back
+							end
+						
+							roads.back
+						end
+					else
+						from
+							roads.start
+						until
+							roads.after				
+						loop
+							pp:=roads.item.polypoints
+							-- loop on all the polypoints
+							from
+								pp.start
+							until
+								pp.after
+							loop
+								Result.extend(pp.item)
+								pp.forth
+							end
+						
+							roads.forth
+						end
+					end
+					
+					forth
+				end
+			end
+		
+		
 feature {NONE} -- Implementation
 
 	places_one_direction, places_other_direction: LINKED_LIST [TRAFFIC_PLACE]

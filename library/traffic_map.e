@@ -56,6 +56,7 @@ feature {NONE} -- Initialization
 			create internal_taxi_offices.make(0)
 			traveler_index := 1
 			internal_line_sections.compare_objects -- use equal for object comparision
+			internal_roads.compare_objects -- use equal for object comparision
 			create internal_buildings.make (1,4)
 			from
 				i:=1
@@ -177,12 +178,12 @@ feature -- Status report
 				internal_roads.after or found
 			loop
 				l_road := internal_roads.item_for_iteration
-				if equal (l_road.origin, l_origin) and
+				
+				if l_road.id=an_id and equal (l_road.origin, l_origin) and
 					equal (l_road.destination, l_destination) then
 					found := True
-				end
-				-- manca l'altro if
-				if l_road.id=an_id then
+				elseif l_road.id=an_id and equal (l_road.destination, l_origin) and
+					equal (l_road.origin, l_destination) then
 					found:=true
 				end
 				internal_roads.forth
@@ -257,7 +258,8 @@ feature -- Element change
 			a_road_not_in_map: not has_road (a_road.origin.name, a_road.destination.name,a_road.id)
 		do
 			internal_roads.force (a_road, a_road.id)
---			put_edge (a_road.origin, a_road.destination, a_road, a_road.length)
+			-- TODO: insert roads into graph, in a way similar to this one:
+			-- put_edge (a_road.origin, a_road.destination, a_road, a_road.length)
 			road_inserted_event.publish ([a_road])
 		ensure
 			a_road_in_map: has_road (a_road.origin.name, a_road.destination.name,a_road.id)
@@ -554,6 +556,12 @@ feature -- Access
 			-- All lines in map.
 		do
 			Result := internal_lines.twin
+		end
+		
+	roads: HASH_TABLE [TRAFFIC_ROAD, INTEGER] is
+			-- All lines in map.
+		do
+			Result := internal_roads.twin
 		end
 		
 	buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]] is

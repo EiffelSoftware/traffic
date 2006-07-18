@@ -30,7 +30,6 @@ feature -- Basic operations
 	process is
 			-- Process node.
 		do
-			io.putstring("Processing roads%N")
 			if has_subnodes then
 				process_subnodes
 			end

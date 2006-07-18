@@ -30,7 +30,11 @@ feature -- Initialization
 				traffic_type := create {TRAFFIC_TYPE_TRAM}.make
 				create polypoints.make (0)
 				line := a_line
+				
+				
 				set_line_route(line)
+				--set_line_route_from_roads(line)				
+				
 				--set_speed(1)
 				
 				engine_capacity := Default_engine_capacity
