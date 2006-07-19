@@ -16,7 +16,7 @@ inherit
 		end
 		
 	
-	LINKED_WEIGHTED_GRAPH [TRAFFIC_PLACE, TRAFFIC_CONNECTION]
+	LINKED_WEIGHTED_GRAPH [TRAFFIC_PLACE, TRAFFIC_LINE_SECTION]
 		rename
 			item as graph_item
 		export
@@ -576,7 +576,7 @@ feature -- Access
 			Result := internal_travelers.twin
 		end
 		
-	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_CONNECTION] is
+	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_LINE_SECTION] is
 			-- Line sections with origin or destination place `a_name'
 		require
 			place_in_map: has_place (a_name)

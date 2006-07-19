@@ -37,7 +37,8 @@ feature -- Basic operations
 			simple_line: TRAFFIC_SIMPLE_LINE
 			pp: ARRAYED_LIST [EM_VECTOR_2D]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_SECTION
-			connections: LIST [TRAFFIC_CONNECTION]
+			--connections: LIST [TRAFFIC_CONNECTION]
+			sections: LIST [TRAFFIC_LINE_SECTION]
 			line_section: TRAFFIC_LINE_SECTION
 		do
 			line ?= parent.target
@@ -64,23 +65,23 @@ feature -- Basic operations
 							line_section_one_direction := map_factory.line_section
 							-- line_section_other_direction is generated but not accessible
 							-- search for line section other direction
-							connections := map.line_sections_of_place ( (attribute("to")))
+							sections := map.line_sections_of_place ( (attribute("to")))
 							from
-								connections.start
+								sections.start
 							until
-								connections.after or else line_section_other_direction /= Void
+								sections.after or else line_section_other_direction /= Void
 							loop								
-								-- qui
-								line_section?=connections.item
-								if line_section/=Void then
+--								line_section?=connections.item
+--								if line_section/=Void then
+								line_section:=sections.item
 									if line_section.origin.name.is_equal (( attribute ("to"))) and then
 									   line_section.destination.name.is_equal (( attribute ("from"))) and then
 									   line_section.line = line then
 										line_section_other_direction := line_section
-									end
+--									end
 								
 								end
-								connections.forth
+								sections.forth
 							end
 						end
 					else -- directed
