@@ -71,14 +71,11 @@ feature -- Basic operations
 							until
 								sections.after or else line_section_other_direction /= Void
 							loop								
---								line_section?=connections.item
---								if line_section/=Void then
 								line_section:=sections.item
 									if line_section.origin.name.is_equal (( attribute ("to"))) and then
 									   line_section.destination.name.is_equal (( attribute ("from"))) and then
 									   line_section.line = line then
 										line_section_other_direction := line_section
---									end
 								
 								end
 								sections.forth
