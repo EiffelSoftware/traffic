@@ -255,7 +255,7 @@ feature -- Element change
 			-- Add road `a_road' to map.
 		require
 			a_road_exists: a_road /= Void
-			a_road_not_in_map: not has_road (a_road.origin.name, a_road.destination.name,a_road.id)
+			no_road_with_same_id: not has_road_with_id(a_road.id)
 		do
 			internal_roads.force (a_road, a_road.id)
 			-- TODO: insert roads into graph, in a way similar to this one:
