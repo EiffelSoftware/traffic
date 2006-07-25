@@ -6,10 +6,10 @@ indexing
 
 class
 	TRAFFIC_LINE_SECTION_NODE_PROCESSOR
-	
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
-		redefine 
+		redefine
 			process_subnodes
 		end
 
@@ -20,7 +20,7 @@ feature -- Access
 
 	Name: STRING is "line_section"
 			-- Name of element to process
-		
+
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		do
@@ -37,10 +37,13 @@ feature -- Basic operations
 			simple_line: TRAFFIC_SIMPLE_LINE
 			pp: ARRAYED_LIST [EM_VECTOR_2D]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_SECTION
-			--connections: LIST [TRAFFIC_CONNECTION]
+
 			sections: LIST [TRAFFIC_LINE_SECTION]
-			line_section: TRAFFIC_LINE_SECTION
 		do
+			if not has_error and has_subnodes then
+				process_subnodes
+			end
+
 			line ?= parent.target
 			if not has_attribute ("from") then
 				set_error (Mandatory_attribute_missing, <<"from">>)
@@ -61,117 +64,113 @@ feature -- Basic operations
 						if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
 							set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
 						else
-							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), Void, map, line)
+							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
 							line_section_one_direction := map_factory.line_section
 							-- line_section_other_direction is generated but not accessible
 							-- search for line section other direction
-							sections := map.line_sections_of_place ( (attribute("to")))
+							sections := map.line_sections_of_stop ( (attribute("to")), line)
 							from
 								sections.start
 							until
 								sections.after or else line_section_other_direction /= Void
-							loop								
-								line_section:=sections.item
-									if line_section.origin.name.is_equal (( attribute ("to"))) and then
-									   line_section.destination.name.is_equal (( attribute ("from"))) and then
-									   line_section.line = line then
-										line_section_other_direction := line_section
-								
+							loop
+								if sections.item.origin.name.is_equal (( attribute ("to"))) and then
+								   sections.item.destination.name.is_equal (( attribute ("from"))) then -- and then
+									line_section_other_direction := sections.item
 								end
 								sections.forth
 							end
 						end
 					else -- directed
 						set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
-					end	
-					set_target (line_section_one_direction)	
+					end
+					set_target (line_section_one_direction)
 				else
 					if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
 						if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
 							set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
 						else
-							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), Void, map, line)
+							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
 							line_section_one_direction := map_factory.line_section
 						end
 						if not line.is_valid_insertion (map.places.item ( attribute ("to")), map.places.item (attribute ("from"))) then
 							set_error (Invalid_line_section, << line.name, attribute ("to"), attribute ("from") >>)
 						else
-							map_factory.build_line_section (( attribute ("to")), (attribute ("from")), Void, map, line)
+							map_factory.build_line_section (( attribute ("to")), (attribute ("from")), polypoints, map, line)
 							line_section_other_direction := map_factory.line_section
 						end
 					else -- directed
 						if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
 							set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
 						else
-							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), Void, map, line)
+							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
 							line_section_one_direction := map_factory.line_section
 						end
-					end	
+					end
 					set_target (line_section_one_direction)
 				end
-			end
-			if not has_error and has_subnodes then
-				process_subnodes
-			end
-			if not has_error and polypoints.count >= 2 then
-				line_section_one_direction.set_polypoints (polypoints)
-				if line_section_other_direction /= Void then
-					create pp.make (0)
-					from
-						polypoints.finish
-					until
-						polypoints.before
-					loop
-						pp.extend (polypoints.item.twin)
-						polypoints.back
+
+				if polypoints.count > 2 then
+					line_section_one_direction.set_polypoints (polypoints)
+
+					if line_section_other_direction /= Void then
+						create pp.make (0)
+						from
+							polypoints.finish
+						until
+							polypoints.before
+						loop
+							pp.extend (polypoints.item.twin)
+							polypoints.back
+						end
+						line_section_other_direction.set_polypoints (pp)
 					end
-					line_section_other_direction.set_polypoints (pp)
-					
+
 				end
-				
-				-- adjust the positions of the start and end place of this link
+
 				adjust_position (line_section_one_direction, polypoints)
+
 				if line_section_other_direction /= Void then
-					adjust_position (line_section_other_direction, pp)				
+					adjust_position (line_section_other_direction, polypoints)
 				end
 
 			end
-			
-			
+
+
 			if not has_error and roads.count >= 1 then
 				line_section_one_direction.set_roads(roads)
 				if line_section_other_direction /= Void then
-					line_section_other_direction.set_roads(roads)				
+					line_section_other_direction.set_roads(roads)
 				end
 			end
 		end
-		
+
 	zero_vector: EM_VECTOR_2D is
 	once
 		Result := create {EM_VECTOR_2D}.make (0, 0)
 	end
-	
+
 	adjust_position (a_line_section: TRAFFIC_LINE_SECTION; a_polypoints: LIST [EM_VECTOR_2D]) is
 			-- Adjust positions
 		do
-			if a_line_section.origin.position = Void or equal(a_line_section.origin.position, zero_vector) then
-				a_line_section.origin.set_position 
+			if a_line_section.origin.place.position = Void or equal(a_line_section.origin.place.position, zero_vector) then
+				a_line_section.origin.place.set_position
 					(create {EM_VECTOR_2D}.make (a_polypoints.first.x, a_polypoints.first.y))
 			else
-				a_line_section.origin.set_position
-					(create {EM_VECTOR_2D}.make (	(a_line_section.origin.position.x + a_polypoints.first.x)/ 2.0,
-												(a_line_section.origin.position.y + a_polypoints.first.y)/ 2.0))
+				a_line_section.origin.place.set_position
+					(create {EM_VECTOR_2D}.make (	(a_line_section.origin.place.position.x + a_polypoints.first.x)/ 2.0,
+												(a_line_section.origin.place.position.y + a_polypoints.first.y)/ 2.0))
 			end
-			if a_line_section.destination.position = Void or equal(a_line_section.destination.position, zero_vector) then
-				a_line_section.destination.set_position 
+			if a_line_section.destination.place.position = Void or equal(a_line_section.destination.place.position, zero_vector) then
+				a_line_section.destination.place.set_position
 					(create {EM_VECTOR_2D}.make (a_polypoints.last.x, a_polypoints.last.y))
 			else
-				a_line_section.destination.set_position
-					(create {EM_VECTOR_2D}.make (	(a_line_section.destination.position.x + a_polypoints.last.x)/ 2.0,
-												(a_line_section.destination.position.y + a_polypoints.last.y)/ 2.0))
+				a_line_section.destination.place.set_position
+					(create {EM_VECTOR_2D}.make (	(a_line_section.destination.place.position.x + a_polypoints.last.x)/ 2.0,
+												(a_line_section.destination.place.position.y + a_polypoints.last.y)/ 2.0))
 			end
 		end
-		
+
 
 	process_subnodes is
 			-- Process subnodes.
@@ -223,8 +222,8 @@ feature -- Basic operations
 
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			-- Polypoints of this link
-	
+
 	roads: ARRAYED_LIST[TRAFFIC_ROAD]
 		-- Roads of this line_section
-		
+
 end

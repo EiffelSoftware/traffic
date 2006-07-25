@@ -5,7 +5,7 @@ indexing
 
 class
 	TRAFFIC_ROUTE
-	
+
 inherit
 	ANY
 		redefine
@@ -33,7 +33,7 @@ feature -- Initialization
 			map_exists: map /= Void
 			map_set: map = a_map
 		end
-		
+
 	make (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]; a_map: TRAFFIC_MAP) is
 			-- Create shortest path route through all places in `a_places_to_visit'.
 		require
@@ -54,19 +54,19 @@ feature -- Initialization
 			map_exists: map /= Void
 			map_set: map = a_map
 		end
-		
+
 feature -- Access
 
 	places_to_visit: LINKED_LIST [TRAFFIC_PLACE]
 			-- Places to visit on route.
-		
+
 	places_on_route: LINKED_LIST [TRAFFIC_PLACE]
 			-- All Places on route of last call to `calculate_shortest_path'.
-		
+
 	connections: LINKED_LIST [TRAFFIC_CONNECTION]
 			-- Roads to be used to visit `places_to_visit'
 			-- of last call to `calculate_shortest_path'.
-			
+
 	line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
 			-- Line sections to be used to visit `places_to_visit'
 			-- of last call to `calculate_shortest_path'.
@@ -87,7 +87,7 @@ feature -- Element change
 		end
 
 feature -- Removal
-		
+
 	remove (a_place: TRAFFIC_PLACE) is
 			-- Remove `a_place' from list of places to visit.
 			-- Call `calculate_shortest_path' to recalculate the shortest path
@@ -122,7 +122,7 @@ feature -- Status report
 			a_map_exists: a_map /= Void
 		do
 			Result := True
-			
+
 			from
 				a_places.start
 			until
@@ -132,14 +132,14 @@ feature -- Status report
 				a_places.forth
 			end
 		end
-		
+
 feature -- Basic operation
 
 	calculate_shortest_path is
 			-- Calculate the shortest path from one place to visit to the next.
 		local
 			current_place, next_place: TRAFFIC_PLACE
-			shortest_path: LIST [ LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_PLACE, TRAFFIC_CONNECTION]]
+			shortest_path: LIST [TRAFFIC_LINE_SECTION]
 			current_connection: TRAFFIC_CONNECTION
 		do
 			places_on_route.wipe_out
@@ -151,7 +151,7 @@ feature -- Basic operation
 			loop
 				current_place := places_to_visit.item
 				places_to_visit.forth
-				
+
 				if not places_to_visit.after then
 					next_place := places_to_visit.item
 					map.find_shortest_path (current_place, next_place)
@@ -162,13 +162,13 @@ feature -- Basic operation
 						until
 							shortest_path.after
 						loop
-							current_connection := shortest_path.item.label
+							current_connection := shortest_path.item
 							connections.extend (current_connection)
-							places_on_route.extend (current_connection.origin)
+							places_on_route.extend (current_connection.origin.place)
 							shortest_path.forth
-						end		
+						end
 						if shortest_path.count > 0 then
-							places_on_route.extend (current_connection.destination)							
+							places_on_route.extend (current_connection.destination.place)
 						end
 					end
 				end
@@ -196,7 +196,7 @@ feature -- Basic operation
 				end
 			end
 			Result := Result + "%Nlast calculated route:"
-			
+
 			last_line := Void
 			from
 				connections.start
@@ -217,19 +217,19 @@ feature -- Basic operation
 					end
 					Result := Result + last_destination_name + "%N   " + line_name + ": "
 				end
-				
+
 				current_line_section := line_sections.item
 				Result := Result + current_line_section.origin.name + ", "
 				line_sections.forth
 				last_line := current_line
 			end
 			if current_line_section /= Void then
-				Result := Result + current_line_section.destination.name	
+				Result := Result + current_line_section.destination.name
 			end
 		end
 
 feature {NONE} -- Implementation
-		
+
 		map: TRAFFIC_MAP
 				-- Map route is on.
 

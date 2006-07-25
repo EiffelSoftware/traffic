@@ -7,16 +7,16 @@ class
 	TRAFFIC_MAP_LOADER
 
 inherit
-	
+
 	KL_SHARED_FILE_SYSTEM
-	
+
 	TRAFFIC_SHARED_ERROR_HANDLER
-	
+
 	EXCEPTIONS
 
 create
 	make
-	
+
 feature -- Initialization
 
 	make (a_filename: STRING) is
@@ -32,7 +32,7 @@ feature -- Initialization
 				has_error := True
 			else
 				directory_name := file_system.dirname (a_filename)
-				xml_filename := a_filename 
+				xml_filename := a_filename
 				dump_filename := file_system.pathname (directory_name, file_system.basename (xml_filename).split('.')[1] + ".dump")
 				log_filename := file_system.pathname (directory_name, "dump.log")
 				has_error := False
@@ -40,7 +40,7 @@ feature -- Initialization
 		end
 
 	load_map is
-			-- Load map if available from dump file, else from xml file. 
+			-- Load map if available from dump file, else from xml file.
 			-- If map loading was unsuccessful, has_error will be set to `True'.
 		local
 			directory: DIRECTORY
@@ -52,7 +52,7 @@ feature -- Initialization
 				if not directory.has_entry (file_system.basename (log_filename)) then
 					create log_file.make_create_read_write (log_filename)
 				end
-			
+
 				-- Get map
 				if is_dump_up_to_date then
 					get_from_dump
@@ -70,17 +70,17 @@ feature -- Status report
 feature -- Access
 
 	map: TRAFFIC_MAP
-	
-	
-		
+
+
+
 feature {NONE} -- Implementation
 
 	log_filename: STRING
 			-- Location of the log-File for the dumps
-			
+
 	directory_name: STRING
 			-- Directory of all the map files
-			
+
 	xml_filename: STRING
 			-- Location of the xml-File
 
@@ -89,7 +89,7 @@ feature {NONE} -- Implementation
 
 	get_from_xml is
 			-- Initialize with map loaded from file with `a_filename'.
-			-- (either `a_filename' is an absolute path 
+			-- (either `a_filename' is an absolute path
 			--  or relative to current working directory)
 		require
 			xml_file_exists: xml_filename /= Void and then file_system.file_exists (xml_filename)
@@ -103,12 +103,13 @@ feature {NONE} -- Implementation
 			map_parser.parse
 			if map_parser.can_process then
 				map_parser.process
-			end			
+			end
 			if map_parser.has_error then
 				has_error := True
-				raise ("Error while parsing " + xml_filename + ": " + map_parser.error_description)	
+				raise ("Error while parsing " + xml_filename + ": " + map_parser.error_description)
 			else
 				map := factory.map
+				map.recalculate_weights
 				has_error := False
 				create_dump
 			end
@@ -120,7 +121,7 @@ feature {NONE} -- Implementation
 			dump_file_exists: dump_filename /= Void and then file_system.file_exists (dump_filename)
 		local
 			directory: DIRECTORY
-		do 
+		do
 			create directory.make_open_read (directory_name)
 			if directory.has_entry (file_system.basename (dump_filename)) then
 				map ?= (create {TRAFFIC_MAP}.make("temp")).retrieve_by_name (dump_filename)
@@ -160,11 +161,11 @@ feature {NONE} -- Implementation
 					log_file.read_character
 					log_file.read_integer
 					stamp := log_file.last_integer
-				end	
+				end
 				if name.is_equal (file_system.basename (xml_filename)) and stamp = xml_file.date then
 					Result := True
 				end
-				
+
 			end
 			log_file.close
 		end
@@ -185,5 +186,5 @@ feature {NONE} -- Implementation
 			log_file.putint (xml_file.date)
 			log_file.close
 		end
-		
+
 end

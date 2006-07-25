@@ -5,9 +5,9 @@ indexing
 
 class
 	TRAFFIC_LINE_SECTION
-	
+
 inherit
-		
+
 	TRAFFIC_CONNECTION
 		redefine
 			out
@@ -17,14 +17,15 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE; a_list: ARRAYED_LIST [EM_VECTOR_2D] ) is
-			-- Initialize `Current'. 
+	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE; a_list: ARRAYED_LIST [EM_VECTOR_2D] ) is
+			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
 		require
 			a_origin_exists: a_origin /= Void
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
+			no_void_elements: a_list /= Void implies not a_list.has (Void)
 		do
 			origin := a_origin
 			destination := a_destination
@@ -38,7 +39,7 @@ feature {NONE} -- Initialization
 				polypoints.extend (a_destination.position)
 			end
 			create roads.make (1)
-			
+
 		ensure
 			origin_set: origin = a_origin
 			destination_set: destination = a_destination
@@ -52,14 +53,16 @@ feature -- Access
 
 	line: TRAFFIC_LINE
 			-- Line this line section belongs to.
-		
+
+	state: TRAFFIC_LINE_SECTION_STATE
+			-- State of line section.
+
 
 	roads: ARRAYED_LIST [TRAFFIC_ROAD]
 			-- position representation of line section.
 
-
 feature -- Status setting
-		
+
 	set_state (a_state: TRAFFIC_LINE_SECTION_STATE ) is
 			-- Change state to `a_state'.
 		require
@@ -69,7 +72,6 @@ feature -- Status setting
 		ensure
 			state_set: state = a_state
 		end
-		
 
 	set_roads (a_roads: ARRAYED_LIST [TRAFFIC_ROAD]) is
 			-- Set roads to `a_roads'.
@@ -82,13 +84,13 @@ feature -- Status setting
 			roads_exists: roads /= Void
 			roads_equal: roads.count > 0 implies equal (roads, a_roads)
 		end
-		
+
 	remove_roads is
 			-- Remove roads.
 		do
 			roads.wipe_out
 		end
-		
+
 feature {TRAFFIC_LINE} -- Status setting
 
 	set_line (a_line: TRAFFIC_LINE) is
@@ -101,7 +103,7 @@ feature {TRAFFIC_LINE} -- Status setting
 		ensure
 			line_set: line = a_line
 		end
-		
+
 	remove_line is
 			-- Remove line section from line.
 		require
@@ -110,8 +112,20 @@ feature {TRAFFIC_LINE} -- Status setting
 			line := Void
 		ensure
 			line_void: line = Void
-		end		
+		end
 
+feature -- Comparasion
+
+--	is_equal (other: like Current): BOOLEAN is
+			-- Is `other' attached to an object considered
+			-- equal to current object?
+			-- (from ANY)
+--		do
+--			Result := equal (origin.name, other.origin.name) and
+--				equal (destination.name, other.destination.name) and
+--				equal (type, other.type) and
+--				equal (line, other.line)
+--		end
 
 feature -- Basic operation
 
@@ -134,13 +148,13 @@ feature -- Basic operation
 			line_name: STRING
 		do
 			if line /= Void then
-				line_name := " belonging to line " + line.name 
-			else 
-				line_name := "" 
+				line_name := " belonging to line " + line.name
+			else
+				line_name := ""
 			end
 			Result := "Traffic " + type.out + " line section, " +
-				state.out + 
-				", from " + origin.name + " to " + destination.name + 
+				state.out +
+				", from " + origin.name + " to " + destination.name +
 				line_name
 		end
 

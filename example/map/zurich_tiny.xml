@@ -6,11 +6,7 @@
 
 <places>
 
-	<place name="Bahnhof Stadelhofen" x="" y="">
-		<file name="some_file_name"/>
-		<file name="some_other_file_name"/>
-		<description text="one of many stations in zurich"/>
-	</place>
+	<place name="Bahnhof Stadelhofen"/>
 	<place name="Bellevue"/>
 	<place name="Boersenstrasse"/>
 	<place name="Buerkliplatz"/>

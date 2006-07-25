@@ -4,25 +4,25 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_LINE 
+	TRAFFIC_LINE
 
 inherit
 	HASHABLE
 		undefine
 			copy,
 			is_equal
-		redefine 
-		 	out 
-		select 
+		redefine
+		 	out
+		select
 			out
 		end
-		
+
 	LINKED_LIST [TRAFFIC_LINE_SECTION]
-		rename 
+		rename
 			make as make_linked_list,
 			out as linked_list_out,
 			extend as put_end
-		export 
+		export
 		{ANY} start, finish, after, before, off, forth, back, item, count, i_th, wipe_out, has
 		end
 
@@ -31,7 +31,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_name: STRING; a_type: TRAFFIC_TYPE) is 
+	make (a_name: STRING; a_type: TRAFFIC_TYPE) is
 			-- Create a line with name `a_name' of type `a_type'.
 		require
 			a_name_exists: a_name /= Void
@@ -41,34 +41,34 @@ feature {NONE} -- Initialization
 			make_linked_list -- create empty line_sections list
 			name := a_name
 			type := a_type
-			create places_one_direction.make -- create empty line_sections list for one direction
-			create places_other_direction.make -- create empty line_sections list for other direction
+			create stops_one_direction.make -- create empty line_sections list for one direction
+			create stops_other_direction.make -- create empty line_sections list for other direction
 		ensure
 			name_set: equal (name, a_name)
 			type_set: type = a_type -- have to be same object
 			count_line_section_not_void: count >= 0 -- List is initilalized.
-			places_one_direction_exists: places_one_direction /= Void
-			places_other_direction_exists: places_other_direction /= Void
+			stops_one_direction_exists: stops_one_direction /= Void
+			stops_other_direction_exists: stops_other_direction /= Void
 		end
-		
+
 feature -- Access
 
 	name: STRING
 			-- Name of line.
-		
+
 	type: TRAFFIC_TYPE
 			-- Type of line.
 
 	terminal_1: TRAFFIC_PLACE
 		-- Terminal of line in one direction.
-		
+
 	terminal_2: TRAFFIC_PLACE
 		-- Terminal of line in other direction.
-		
+
 	color: TRAFFIC_COLOR
 		-- Line color.
 		-- Used as color represenation.
-		
+
 	start_to_terminal (a_terminal: TRAFFIC_PLACE): TRAFFIC_PLACE is
 			-- The start place to existing terminal `a_terminal'.
 		require
@@ -76,14 +76,14 @@ feature -- Access
 			a_terminal_valid: is_terminal (a_terminal)
 		do
 			if equal (a_terminal, terminal_1) then -- terminal of one direction
-				Result := first.origin
+				Result := first.origin.place
 			else -- terminal of other direction
-				Result := start_other_direction.origin
+				Result := start_other_direction.origin.place
 			end
 		ensure
 			result_exists: Result /= Void
 		end
-		
+
 feature -- Element change
 
 	set_color (a_color: TRAFFIC_COLOR) is
@@ -99,7 +99,7 @@ feature -- Element change
 		ensure
 			color_set: equal(color, a_color)
 		end
-		
+
 feature -- Removal
 
 	remove_color is
@@ -109,7 +109,7 @@ feature -- Removal
 		ensure
 			color_removed: color = Void
 		end
-		
+
 
 feature -- Status report
 
@@ -126,7 +126,7 @@ feature -- Status report
 		do
 			Result := terminal_1 /= Void
 		end
-		
+
 	other_direction_exists: BOOLEAN is
 			-- Does line have line section(s) in other direction?
 		do
@@ -148,13 +148,13 @@ feature -- Status report
 			if a_line_section.line /= Void or has (a_line_section) then -- `a_line_section' is in other line or in this
 				Result := False
 			else
-				Result := is_valid_insertion_one_direction (a_line_section.origin, a_line_section.destination) or
-						is_valid_insertion_other_direction (a_line_section.origin, a_line_section.destination)
+				Result := is_valid_insertion_one_direction (a_line_section.origin.place, a_line_section.destination.place) or
+						is_valid_insertion_other_direction (a_line_section.origin.place, a_line_section.destination.place)
 			end
 		end
-	
+
 	is_valid_insertion (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
-			-- Can a line_section from `a_origin' to `a_destination' be added 
+			-- Can a line_section from `a_origin' to `a_destination' be added
 			-- in front or back of this line?
 		require
 			a_origin_exists: a_origin /= Void
@@ -181,17 +181,17 @@ feature -- Basic operations
 			a_line_section_valid_for_insertion: is_valid_for_insertion (a_line_section)
 		local
 			position: INTEGER
-			origin, destination: TRAFFIC_PLACE
+			origin, destination: TRAFFIC_STOP
 		do
 			origin := a_line_section.origin
 			destination := a_line_section.destination
 			if terminal_1 = Void then -- no direction exists yet
 				put_front (a_line_section)
-				terminal_1 := destination
-				places_one_direction.extend (origin)
-				places_one_direction.extend (destination)
+				terminal_1 := destination.place
+				stops_one_direction.extend (origin)
+				stops_one_direction.extend (destination)
 			else
-				if is_valid_insertion_one_direction_end (origin, destination) then
+				if is_valid_insertion_one_direction_end (origin.place, destination.place) then
 					if other_direction_exists then -- put left of other direction
 						position := index_of (start_other_direction, 1)
 						go_i_th (position)
@@ -199,30 +199,30 @@ feature -- Basic operations
 					else -- put at end of list
 						put_end (a_line_section)
 					end
-					terminal_1 := destination
-					places_one_direction.extend (destination)
+					terminal_1 := destination.place
+					stops_one_direction.extend (destination)
 				else
-					if is_valid_insertion_one_direction_front (origin, destination) then -- put front of list
+					if is_valid_insertion_one_direction_front (origin.place, destination.place) then -- put front of list
 						put_front (a_line_section)
-						places_one_direction.extend (origin)
+						stops_one_direction.extend (origin)
 					else
 						if terminal_2 = Void then -- start other direction
 							put_end (a_line_section)
 							start_other_direction := a_line_section
-							terminal_2 := destination
-							places_other_direction.extend (origin)
-							places_other_direction.extend (destination)
+							terminal_2 := destination.place
+							stops_other_direction.extend (origin)
+							stops_other_direction.extend (destination)
 						else
-							if is_valid_insertion_other_direction_end (origin, destination) then -- put end of list
+							if is_valid_insertion_other_direction_end (origin.place, destination.place) then -- put end of list
 								put_end (a_line_section)
-								terminal_2 := destination
-								places_other_direction.extend (destination)
+								terminal_2 := destination.place
+								stops_other_direction.extend (destination)
 							else --is_valid_insertion_other_direction_front
 								position := index_of (start_other_direction, 1)
 								go_i_th (position)
 								put_left (a_line_section)
 								start_other_direction := a_line_section
-								places_other_direction.extend (origin)
+								stops_other_direction.extend (origin)
 							end
 						end
 					end
@@ -233,7 +233,7 @@ feature -- Basic operations
 			a_line_section_in_line: has (a_line_section)
 			line_added_to_line_section: a_line_section.line = Current
 		end
-		
+
 	out: STRING is
 			-- Textual representation
 		local
@@ -248,7 +248,7 @@ feature -- Basic operations
 				"%N   one direction: " + one_direction_out +
 				"%N   other direction: " + other_direction_out
 		end
-		
+
 	road_points: ARRAYED_LIST[EM_VECTOR_2D] is
 			-- returns the polypoints retrieve by the roads
 			-- that belongs to this line
@@ -323,14 +323,25 @@ feature -- Basic operations
 		
 feature {NONE} -- Implementation
 
-	places_one_direction, places_other_direction: LINKED_LIST [TRAFFIC_PLACE]
+	--placess_one_direction, places_other_direction: LINKED_LIST [TRAFFIC_PLACE]
 			-- Places in each direction.
 			-- Used to omit circles.
+
+	stops_one_direction, stops_other_direction: LINKED_LIST [TRAFFIC_STOP]
+			-- stops in each direction
+
+	is_stop_of_place (a_stop: TRAFFIC_STOP; a_place: TRAFFIC_PLACE): BOOLEAN is
+			-- checks if the stop is at the given place and sevices the current line
+			do
+				Result := a_stop.place.name.is_equal (a_place.name) and then a_stop.line.name.is_equal (name)
+			end
+
+
 
 	start_other_direction: TRAFFIC_LINE_SECTION
 			-- Starting line section other direction.
 			-- Starting line section one direction is first element in list.
-			
+
 	is_valid_insertion_one_direction (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
 			-- Can line section from `a_origin' to `a_destination' be added in one direction?
 		require
@@ -354,12 +365,13 @@ feature {NONE} -- Implementation
 		do
 			Result := False
 			if equal (a_destination, start_to_terminal (terminal_1)) then
-				if not places_one_direction.has (a_origin) then -- no circle
+				--if not stops_one_direction.has (a_origin) then -- no circle
+				if not stops_one_direction.there_exists (agent is_stop_of_place (?, a_origin)) then
 					Result := True
-				end	
+				end
 			end
 		end
-		
+
 	is_valid_insertion_one_direction_end (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
 			-- Can line section from `a_origin' to `a_destination' be added at end of one direction?
 		require
@@ -369,12 +381,13 @@ feature {NONE} -- Implementation
 		do
 			Result := False
 			if equal (a_origin, terminal_1) then
-				if not places_one_direction.has (a_destination) then
+				--if not stops_one_direction.has (a_destination) then
+				if not stops_one_direction.there_exists (agent is_stop_of_place (?, a_destination)) then
 					Result := True
 				end
 			end
 		end
-		
+
 	is_valid_insertion_other_direction (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
 			-- Can line section from `a_origin' to `a_destination' be added in other direction?
 		require
@@ -398,12 +411,13 @@ feature {NONE} -- Implementation
 		do
 			Result := False
 			if equal (a_destination, start_to_terminal (terminal_2)) then
-				if not places_other_direction.has (a_origin) then
+				--if not stops_other_direction.has (a_origin) then
+				if not stops_other_direction.there_exists (agent is_stop_of_place (?, a_origin)) then
 					Result := True
 				end
 			end
 		end
-		
+
 	is_valid_insertion_other_direction_end (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
 			-- Can line section from `a_origin' to `a_destination' be added at end of other direction?
 		require
@@ -413,7 +427,8 @@ feature {NONE} -- Implementation
 		do
 			Result := False
 			if equal (a_origin, terminal_2) then
-				if not places_other_direction.has (a_destination) then
+				--if not stops_other_direction.has (a_destination) then
+				if not stops_one_direction.there_exists (agent is_stop_of_place (?, a_destination)) then
 					Result := True
 				end
 			end
@@ -462,17 +477,17 @@ feature {NONE} -- Implementation
 				end
 			end
 		end
-		
+
 invariant
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
 	count_line_section_not_void: count >= 0 -- List is initilalized.
 	type_exists: type /= Void -- Line has type.
-	places_one_direction_exists: places_one_direction /= Void -- List places one direction exists.
-	places_other_direction_exists: places_other_direction /= Void -- List places other direction exists.
+	stops_one_direction_exists: stops_one_direction /= Void -- List places one direction exists.
+	stops_other_direction_exists: stops_other_direction /= Void -- List places other direction exists.
 	terminal_1_exists_implies_one_direction_exists: terminal_1 /= Void implies one_direction_exists -- One direction exists if terminal_1 defined.
 	terminal_2_exists_implies_other_direction_exists: terminal_2 /= Void implies other_direction_exists -- Other direction exists if terminal_2 defined.
-	one_direction_exists_implies_places_in_places_one_direction: one_direction_exists implies places_one_direction.count >= 2 -- One direction exists if at least two places in places one direction.
-	other_direction_exists_implies_places_in_places_other_direction: other_direction_exists implies places_other_direction.count >= 2 -- Other direction exists if at least two places in places other direction.
+	one_direction_exists_implies_places_in_stops_one_direction: one_direction_exists implies stops_one_direction.count >= 2 -- One direction exists if at least two places in places one direction.
+	other_direction_exists_implies_places_in_stops_other_direction: other_direction_exists implies stops_other_direction.count >= 2 -- Other direction exists if at least two places in places other direction.
 
 end

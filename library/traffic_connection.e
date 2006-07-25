@@ -10,49 +10,37 @@ deferred class
 	inherit
 		HASHABLE
 
-
-
-
-
-
 feature -- Status setting
-		
-		
+
 	set_polypoints (a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]) is
 			-- Set polypoints to `a_polypoints'.
 		require
 			a_polypoints_exist: a_polypoints /= Void
 		do
-			polypoints.copy (a_polypoints)
+			polypoints := a_polypoints
 		ensure
 			equal (polypoints, a_polypoints)
 			polypoints_exists: polypoints /= Void
 			polypoints_equal: polypoints.count > 0 implies equal (polypoints, a_polypoints)
 		end
-		
+
 	remove_polypoints is
 			-- Remove polypoints.
 		do
 			polypoints.wipe_out
 		end
-		
-
-
 
 feature -- Access
-		
+
 	type: TRAFFIC_TYPE
 			-- Type of line section.
-		
-	origin: TRAFFIC_PLACE
+
+	origin: TRAFFIC_STOP
 			-- Place of origin.
-			
-	destination: TRAFFIC_PLACE
+
+	destination: TRAFFIC_STOP
 			-- Place of destination.
-	
-	state: TRAFFIC_LINE_SECTION_STATE
-			-- State of line section.
-			
+
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			-- position representation of line section.
 
@@ -76,5 +64,5 @@ feature -- Access
 				end
 			end
 		end
-	
-end	
+
+end

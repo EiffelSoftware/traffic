@@ -7,13 +7,13 @@ class
 	TRAFFIC_3D_PLACE_REPRESENTATION
 
 inherit
-	
+
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
-		
+
 	DOUBLE_MATH
 		export {NONE} all end
-		
+
 	EM_CONSTANTS
 		export {NONE} all end
 
@@ -21,13 +21,13 @@ inherit
 		export {NONE} all end
 
 	GLU_FUNCTIONS
-		export {NONE} all end	
-		
+		export {NONE} all end
+
 create
 	make
 
 feature -- Initialization
-	
+
 	make (a_map: TRAFFIC_MAP) is
 			-- Create a new object.
 		require
@@ -36,27 +36,27 @@ feature -- Initialization
 			map := a_map
 			create color.make_xyz(0,0,0)
 				-- default color black
-				
+
 			create place_factory.make
-			create collision_polygons.make (1)	
+			create collision_polygons.make (1)
 				-- Could be extended, if desired.
 			place_factory.add_place_type (agent create_square_rep, "square")
 			place_factory.add_place_type (agent create_circle_rep, "circle")
 			place_factory.add_gauger(agent decide_place_type_normal, decision_type_normal)
-			
+
 			create place_views.make (1)
 			add_places
-			
+
 			map.place_inserted_event.subscribe (agent process_item_inserted)
 			map.place_removed_event.subscribe (agent process_item_removed)
-			
+
 		ensure
 			place_factory_created: place_factory /= Void
 			places_created: place_views /= Void
 		end
-		
+
 feature -- Basic operations
-	
+
 	draw is
 			-- draw all places
 		do
@@ -83,13 +83,13 @@ feature -- Basic operations
 
 			place_bounding_box := update_place_bounding_box (a_place)
 			current_place := a_place
-				
+
 			-- place creation
 			place_factory.take_decision (decision_type_normal)
-			place_view := place_factory.create_object			
+			place_view := place_factory.create_object
 			place_views.replace (place_view, a_place)
-			
-			color := old_color	
+
+			color := old_color
 		end
 
 	unhighlight_place (a_place: TRAFFIC_PLACE) is
@@ -101,17 +101,17 @@ feature -- Basic operations
 		do
 			place_bounding_box := update_place_bounding_box (a_place)
 			current_place := a_place
-				
+
 			-- place creation
 			place_factory.take_decision (decision_type_normal)
-			place_view := place_factory.create_object			
+			place_view := place_factory.create_object
 			place_views.replace (place_view, a_place)
 		end
-			
+
 	add_places is
 			-- add all places from the map to the places array
 		local
-			all_places: HASH_TABLE [TRAFFIC_PLACE, STRING] 
+			all_places: HASH_TABLE [TRAFFIC_PLACE, STRING]
 			place_view: EM_3D_OBJECT
 		do
 			all_places := map.places
@@ -122,7 +122,7 @@ feature -- Basic operations
 			loop
 				place_bounding_box := update_place_bounding_box (all_places.item_for_iteration)
 				current_place := all_places.item_for_iteration
-				
+
 				-- place creation
 				place_factory.take_decision (decision_type_normal)
 				place_view := place_factory.create_object
@@ -130,7 +130,7 @@ feature -- Basic operations
 				all_places.forth
 			end
 		end
-			
+
 	add_place (a_place: TRAFFIC_PLACE) is
 			-- Add visualization for `a_place'.
 		local
@@ -138,12 +138,12 @@ feature -- Basic operations
 		do
 			place_bounding_box := update_place_bounding_box (a_place)
 			current_place := a_place
-				
+
 			-- place creation
 			place_factory.take_decision (decision_type_normal)
 			place_view := place_factory.create_object
 			place_views.force (place_view, a_place)
-		end			
+		end
 
 feature -- Access
 
@@ -174,8 +174,8 @@ feature -- Status report
 				places.forth
 			end
 		end
-		
-				
+
+
 feature -- Event handling
 
 	process_item_inserted (a_place: TRAFFIC_PLACE) is
@@ -185,14 +185,14 @@ feature -- Event handling
 		do
 			add_place (a_place)
 		end
-		
+
 	process_item_removed (a_place: TRAFFIC_PLACE) is
 			-- Update visualization to drop removed place `a_place'.
 		require
 			a_place_exists: a_place /= Void
 		do
 			place_views.remove (a_place)
-		end		
+		end
 
 feature {NONE} -- Implementation
 
@@ -203,7 +203,7 @@ feature {NONE} -- Implementation
 				Result := "square"
 			else
 				Result := "circle"
-			end			
+			end
 		end
 
 	create_square_rep is
@@ -240,7 +240,7 @@ feature {NONE} -- Implementation
 			create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (p3.x-(p3.x-p1.x)/2, p1.z-(p3.z-p1.z)/2), poly_points)
 			collision_polygons.force (collision_poly)
 		end
-		
+
 	create_circle_rep is
 			-- Create circle representation for place.
 		require
@@ -256,7 +256,7 @@ feature {NONE} -- Implementation
 			p1 := map_to_gl_coords (place_bounding_box.upper_left)
 			p2 := map_to_gl_coords (place_bounding_box.lower_right)
 			place_radius := 	(p1.distance (p2)/2).max (0.1)
-			
+
 			p := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (place_bounding_box.center).x, place_height, map_to_gl_coords (place_bounding_box.center).y)
 
 				gl_matrix_mode_external (Em_gl_modelview)
@@ -285,50 +285,63 @@ feature {NONE} -- Implementation
 		local
 			links: LIST [TRAFFIC_CONNECTION]
 			p: EM_VECTOR_2D
+			stops: LIST [TRAFFIC_STOP]
 		do
-			-- Calculate rectangle to include all outgoing links of `a_place'.
-			links := map.line_sections_of_place (a_place.name)			
-			from			
-				links.start
-			until
-				links.after
-			loop
-				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then   
-				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
-					p := links.item.polypoints.first
-					if Result = Void then
+			-- TODO: cleanup
+			from stops := a_place.stops; stops.start until stops.after loop
+
+				p := stops.item.position
+				if Result = Void then
 						create Result.make (p.twin, p.twin)
 					else
-						Result.extend (p)	
+						Result.extend (p)
 					end
-				end
-				links.forth
-			end			
+				stops.forth
+			end
+
+			-- Calculate rectangle to include all outgoing links of `a_place'.
+--			links := map.line_sections_of_place (a_place.name)			
+--			from			
+--				links.start
+--			until
+--				links.after
+--			loop
+--				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then
+--				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
+--					p := links.item.polypoints.first
+--					if Result = Void then
+--						create Result.make (p.twin, p.twin)
+--					else
+--						Result.extend (p)	
+--					end
+--				end
+--				links.forth
+--			end			
 			if Result = Void then
 				create Result.make_from_position_and_size (a_place.position.x, a_place.position.y, 0.1, 0.1)
 			else
 				Result.set_size_centered (Result.width + 5.0, Result.height + 5.0)
 			end
 		end
-		
+
 	tram_type: STRING is "tram_place"
-	 
+
 	decision_type_normal: STRING is "normal"
-		
+
 	place_views: HASH_TABLE [EM_3D_OBJECT, TRAFFIC_PLACE]
 		-- Container for all places
-	
+
 	place_factory: TRAFFIC_3D_PLACE_FACTORY
 		-- factory for places
 
 	color: GL_VECTOR_3D[DOUBLE]
 		-- color of the place	
-		
+
 	map: TRAFFIC_MAP
-	
+
 	place_bounding_box: EM_ORTHOGONAL_RECTANGLE
 			-- Bounding box of current place
-			
+
 	current_place: TRAFFIC_PLACE
 			-- Place currently being rendered
 
