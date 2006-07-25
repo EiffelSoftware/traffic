@@ -399,6 +399,9 @@ feature {NONE} -- Implementation
 			origin_place := a_map.place (a_origin)
 			destination_place := a_map.place (a_destination)
 
+			origin_stop := origin_place.dummy_stop
+			destination_stop := destination_place.dummy_stop
+
 --			if origin_place.has_stop (a_line) then
 --				origin_stop := origin_place.stop (a_line)
 --			else
