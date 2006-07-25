@@ -139,6 +139,7 @@ feature {NONE} -- Implementation
 				
 			Result.put (create {TRAFFIC_ROADS_NODE_PROCESSOR}.make, "roads")
 			Result.put (create {TRAFFIC_ROAD_NODE_PROCESSOR}.make, "road")
+			Result.put (create {TRAFFIC_ONROAD_NODE_PROCESSOR}.make, "onroad")
 			
 			Result.put (create {TRAFFIC_SCHEDULER_LINES_NODE_PROCESSOR}.make, "slines")
 			Result.put (create {TRAFFIC_SCHEDULER_LINE_NODE_PROCESSOR}.make, "sline")
@@ -174,7 +175,7 @@ feature {NONE} -- Implementation
 			a.compare_objects
 			Result.put (a, "point")
 			
---			line (new description)
+--			line
 			a := << "color", "line_section">>
 			a.compare_objects
 			Result.put (a, "line")
@@ -185,7 +186,7 @@ feature {NONE} -- Implementation
 
 			
 --			line_section
-			a := << "point", "road" >>
+			a := << "point", "onroad" >>
 			a.compare_objects
 			Result.put (a, "line_section")
 			

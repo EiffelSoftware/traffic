@@ -33,7 +33,7 @@ feature -- Status setting
 feature -- Access
 
 	type: TRAFFIC_TYPE
-			-- Type of line section.
+			-- Type of connection
 
 	origin: TRAFFIC_STOP
 			-- Place of origin.

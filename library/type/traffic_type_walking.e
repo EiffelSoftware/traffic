@@ -7,7 +7,7 @@ class
 	TRAFFIC_TYPE_WALKING
 
 inherit
-	TRAFFIC_TYPE
+	TRAFFIC_TYPE_ROAD
 
 create
 	make

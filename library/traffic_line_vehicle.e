@@ -251,9 +251,6 @@ feature{NONE} --Implementation
 				pp: ARRAYED_LIST[EM_VECTOR_2D]
 			do
 				pp:=a_line.road_points
-				polypoints.extend (pp.first)
-				polypoints.extend (pp.first)
-				polypoints.extend (pp.first)
 				-- Add the whole section item (origin and destination)
 				polypoints.append (pp)
 				-- Repetition of the las polypoint to stop also there for a short time.
@@ -271,10 +268,12 @@ feature{NONE} --Implementation
 			ensure
 				valid_polypoints: polypoints.count >= old polypoints.count
 			end		
-		
+			
 		
 		set_coordinates is
 			-- Set the positions to the corresponding ones of the line section.
+			
+			
 			do
 				-- Hopefully this will give a bit performance to the journey
 				-- otherwise just clear out the map_to_gl_coords

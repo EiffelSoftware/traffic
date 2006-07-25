@@ -131,6 +131,60 @@ feature {NONE} -- helper for journey
 				position /= Void
 				destination /= Void
 			end	
+
+
+	set_coordinates_with_angle is
+			-- Set the positions to the corresponding ones of the line section.
+			require
+				not polypoints.after
+				not polypoints.before
+			local
+				v,new_v:EM_VECTOR_2D
+				const: DOUBLE
+			do
+				-- hopefully this will give a bit performance to the journey
+				-- otherwise just clear out the map_to_gl_coords
+				origin :=  map_to_gl_coords (polypoints.item)
+				position := map_to_gl_coords (polypoints.item)
+				const:=5
+				if is_traveling_back then
+					polypoints.back
+					if polypoints.before then
+						is_traveling_back := False
+						polypoints.forth
+						set_coordinates
+					else
+						v:=polypoints.item
+						create new_v.make (v.x+const*sine(angle_x*Pi/180),v.y+const*cosine(angle_x*Pi/180))
+						destination := map_to_gl_coords (new_v)										
+					end
+
+				elseif is_reiterating then
+					polypoints.forth
+					if polypoints.after then
+						is_traveling_back := True
+						polypoints.back
+						set_coordinates
+					else
+							v:=polypoints.item
+						create new_v.make (v.x+const*sine(angle_x*Pi/180),v.y+const*cosine(angle_x*Pi/180))
+						destination := map_to_gl_coords (new_v)												
+					end				
+				else
+					polypoints.forth
+					if polypoints.after then
+						has_finished := True
+					else
+						destination := map_to_gl_coords (polypoints.item)										
+					end
+				end
+			
+			ensure
+				origin /= Void
+				position /= Void
+				destination /= Void
+			end	
+
 			
 	tour_helper is
 			-- Help during the tour to get the next destination if there is any.

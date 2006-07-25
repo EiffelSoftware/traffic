@@ -50,7 +50,7 @@ feature {NONE} -- Initialization
 		end
 
 feature -- Access
-
+			
 	line: TRAFFIC_LINE
 			-- Line this line section belongs to.
 

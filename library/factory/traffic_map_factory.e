@@ -200,8 +200,8 @@ feature -- Road section building
 			a_map.add_road (internal_road)
 		ensure
 			road_created: road /= Void
-			map_has_origin: road.origin = a_map.place (a_origin)
-			map_has_destination: road.destination = a_map.place (a_destination)
+			map_has_origin:a_map.has_stop (a_origin)
+			map_has_destination: a_map.has_stop (a_destination)
 			road_in_map: a_map.has_road (a_origin, a_destination,an_id.to_integer)
 		end
 
@@ -414,8 +414,7 @@ feature {NONE} -- Implementation
 --			end
 
 			create traffic_type_factory.make
-			--traffic_type_factory.build(a_type)
-			traffic_type_factory.build("street")
+			traffic_type_factory.build(a_type)
 			type:= traffic_type_factory.traffic_type
 			i:=an_id.to_integer
 			create a_road.make (origin_stop, destination_stop, type,i,a_direction)

@@ -255,7 +255,8 @@ feature -- Basic operations
 			local
 				roads:ARRAYED_LIST[TRAFFIC_ROAD]
 				pp: ARRAYED_LIST[EM_VECTOR_2D]
-				invert: BOOLEAN
+				invert, is_station: BOOLEAN
+				v: EM_VECTOR_2D
 			do
 				create Result.make(1)
 				-- loop on all the line sections
@@ -265,6 +266,7 @@ feature -- Basic operations
 					after
 				loop
 					roads:=item.roads
+					is_station:=true
 					-- loop on all the roads
 					
 					if item.origin=roads.first.origin and item.destination=roads.last.destination then
@@ -273,7 +275,7 @@ feature -- Basic operations
 						
 						invert:=true
 					else
-						-- problema!
+						-- problem!
 						io.putstring ("Error%N")
 					end
 					if invert then
@@ -289,7 +291,14 @@ feature -- Basic operations
 							until
 								pp.before
 							loop
-								Result.extend(pp.item)
+								v:=pp.item
+								if is_station then
+									Result.extend(v)
+									Result.extend(v)
+									Result.extend(v)
+									is_station:=false
+								end
+								Result.extend(v)
 								pp.back
 							end
 						
@@ -308,7 +317,14 @@ feature -- Basic operations
 							until
 								pp.after
 							loop
-								Result.extend(pp.item)
+								v:=pp.item
+								if is_station then
+									Result.extend(v)
+									Result.extend(v)
+									Result.extend(v)
+									is_station:=false
+								end
+								Result.extend(v)
 								pp.forth
 							end
 						

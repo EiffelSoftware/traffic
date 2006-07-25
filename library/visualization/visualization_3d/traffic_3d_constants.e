@@ -88,6 +88,8 @@ feature -- Constants
 			-- (669,718) are the coordinates of the HB, where the centre is.
 			create Result.make ((1350 - vec.x - 669)/30,(1420 - vec.y - 718)/30)
 		end
+	
+		
 
 	gl_to_map_coords (vec: EM_VECTOR_2D): EM_VECTOR_2D is
 			-- Transform coordinates used by OpenGL to map coordinates

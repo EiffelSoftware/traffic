@@ -7,7 +7,7 @@ class
 	TRAFFIC_TYPE_BUS
 	
 inherit
-	TRAFFIC_TYPE
+	TRAFFIC_TYPE_LINE
 	
 create
 	make

@@ -7,7 +7,7 @@ class
 	TRAFFIC_TYPE_RAIL
 
 inherit
-	TRAFFIC_TYPE
+	TRAFFIC_TYPE_LINE
 	
 create
 	make

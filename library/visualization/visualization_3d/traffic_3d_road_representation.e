@@ -41,6 +41,9 @@ feature -- Initialization
 			road_factory.add_road_type (agent create_road_normal, normal_type)
 			road_factory.add_gauger(agent decide_road_type, decision_type)
 			
+			road_factory.add_road_type (agent create_street, street_type)
+			road_factory.add_gauger(agent decide_street_type, street_decision_type)
+			
 			create road_views.make(1)
 			create collision_polygons.make (4)
 
@@ -48,7 +51,6 @@ feature -- Initialization
 
 			map.road_inserted_event.subscribe (agent process_item_inserted)
 			map.road_removed_event.subscribe (agent process_item_removed)
-
 			height := 1
 		ensure	
 			road_factory_created: road_factory /= Void
@@ -60,7 +62,7 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 	draw is
 			-- Draw all roads onto the screen.
 		do
-			-- draw all the roads in the hashtable.  					
+			-- draw all the roads in the hashtable.					
 			from 
 				road_views.start
 			until
@@ -80,17 +82,9 @@ feature -- Event handling
 			a_road: a_road /= Void
 		local
 			c: GL_VECTOR_3D [DOUBLE]
-			l: TRAFFIC_ROAD
 		do
-			l := a_road
---			if l /= Void then
---				c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (l.color.red/255, l.color.green/255, l.color.blue/255)			
---			else	
---				c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0, 0, 0)
---			end
-			-- color?
-			c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (255, 0, 0)
-			add_road (a_road, c)
+			c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.8, 0.6, 0.6)
+			add_road (a_road)
 		end
 		
 	process_item_removed (a_road: TRAFFIC_ROAD) is
@@ -116,215 +110,68 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			map_valid: a_map /= Void
 		local
 			all_roads: HASH_TABLE [TRAFFIC_ROAD, INTEGER]
-			c: GL_VECTOR_3D [DOUBLE]
 		do
---			if a_road.color /= Void then
---				c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (a_road.color.red/255, a_road.color.green/255, a_road.color.blue/255)
---			else	
---				c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0, 0, 0)				
---			end
-			c := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (255, 0, 0)	
-			road_color:=c
+
 			all_roads := map.roads
 			from
 				all_roads.start
 			until
 				all_roads.after
 			loop
-				add_road (all_roads.item_for_iteration,c)
+				add_road(all_roads.item_for_iteration)
 				all_roads.forth
 			end
 		end
 			
 
 		
-	add_road (a_road: TRAFFIC_ROAD; a_color: GL_VECTOR_3D[DOUBLE]) is
+	add_road (a_road: TRAFFIC_ROAD) is
 			-- Add view for `a_road'.
 		require
-			a_color_exists: a_color /= Void
 			a_road_exists: a_road /= Void
 		local
 			road_view: EM_3D_OBJECT
+			lightrail_type: TRAFFIC_TYPE_LIGHTRAIL
+			railroad_type: TRAFFIC_TYPE_RAILROAD
+			a_street_type: TRAFFIC_TYPE_STREET
 		do
-			road_color := a_color		
-			road := a_road
-			road_factory.take_decision (decision_type)
-			road_view := road_factory.create_object			
-			road_views.force (road_view, road)			
+			-- TODO: add different views for the different types of roads
+			road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.8, 0.6, 0.6)
+			lightrail_type?=a_road.type
+			if lightrail_type/=Void then
+				road := a_road
+				road_factory.take_decision (street_decision_type)
+				road_view := road_factory.create_object			
+				road_views.force (road_view, road)			
+			else
+			a_street_type?=a_road.type
+				if a_street_type/=Void then
+					road := a_road
+					road_factory.take_decision (street_decision_type)
+					road_view := road_factory.create_object			
+					road_views.force (road_view, road)
+				else
+					railroad_type?=a_road.type
+					if railroad_type/=Void then
+						road_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0, 0, 0)
+						road := a_road
+						road_factory.take_decision (decision_type)
+						road_view := road_factory.create_object			
+						road_views.force (road_view, road)
+					end
+				end
+			end
+				
+		ensure		
+			a_color_exists: road_color /= Void
 		end
 
 
 
-		
-feature -- Basic operations
-
---	highlight_path (a_route: TRAFFIC_ROUTE) is
---			-- Highlight `a_route' on the map.
---		require
---			a_route_exists: a_route /= Void
---		local 
---			road_view: EM_3D_OBJECT
---			roads: LINKED_LIST [TRAFFIC_ROAD]
---			old_is_highlighted: BOOLEAN
---		do
---			old_is_highlighted := is_highlighted
---			is_highlighted := False
---			from
---				roads := a_route.roads
---				roads.start
---			until
---				roads.off
---			loop
---				road_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1)
---
---				road := roads.item
---					
---				road_factory.take_decision (decision_type)
---				road_view := road_factory.create_object
---				
---				road_views.replace (road_view, road)			
---				roads.forth
---			end
---			is_highlighted := old_is_highlighted
---			
---		end
---
---	unhighlight_path (a_route: TRAFFIC_ROUTE) is
---			-- Unhighlight `a_route' on the map.
---		require
---			a_route_exists: a_route /= Void
---		local 
---			road_view: EM_3D_OBJECT
---			roads: LINKED_LIST [TRAFFIC_ROAD]
---			old_is_highlighted: BOOLEAN
---		do
---			old_is_highlighted := is_highlighted
---			is_highlighted := False
---			from
---				roads := a_route.roads
---				roads.start
---			until
---				roads.off
---			loop
---				road_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (roads.item.road.color.red/255, roads.item.road.color.green/255, roads.item.road.color.blue/255)
---
---				road := roads.item
---					
---				-- road creation
---				road_factory.take_decision (decision_type)
---				road_view := road_factory.create_object
---				
---				road_views.replace (road_view, road)			
---				roads.forth
---			end
---			is_highlighted := old_is_highlighted			
---		end
---
---	highlight_single_road(a_road: TRAFFIC_ROAD) is	
---			-- Highlight the road `a_road'. 
---		require
---			a_road_valid: a_road /= Void
---		local 
---			road_view: EM_3D_OBJECT
---			old_is_highlighted: BOOLEAN
---		do 
---			old_is_highlighted := is_highlighted
---			is_highlighted := True
---			from
---				a_road.start
---			until
---				a_road.off
---			loop
---				road_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (a_road.color.red/255, a_road.color.green/255, a_road.color.blue/255)
---
---				road := a_road.item
---					
---				-- road creation
---				road_factory.take_decision (decision_type)
---				road_view := road_factory.create_object
---				
---				road_views.replace (road_view, road)			
---				road_view := road_views.item (a_road.item)
---				a_road.forth
---			end
---			is_highlighted := old_is_highlighted
---		end				
---	
---	unhighlight_single_road(a_road:TRAFFIC_ROAD) is
---			-- Highlight the road `a_road'.
---		require 
---				a_road_valid: a_road /= Void
---		local 
---			road_view: EM_3D_OBJECT
---			old_is_highlighted: BOOLEAN
---		do 
---			old_is_highlighted := is_highlighted
---			is_highlighted := False
---			from
---				a_road.start
---			until
---				a_road.off
---			loop
---				road_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (a_road.color.red/255, a_road.color.green/255, a_road.color.blue/255)
---
---				road := a_road.item
---					
---				-- road creation
---				road_factory.take_decision (decision_type)
---				road_view := road_factory.create_object
---				
---				road_views.replace (road_view, road)			
---				road_view := road_views.item (a_road.item)
---				a_road.forth
---			end
---			is_highlighted := old_is_highlighted
---		end				
---				
---	unhighlight_all_roads is
---			-- Unhighlight all the roads.
---		local 
---			roads: HASH_TABLE [TRAFFIC_ROAD , STRING]
---		do 
---			from
---				roads := map.roads
---				roads.start
---			until
---				roads.off
---			loop
---				unhighlight_single_road (roads.item_for_iteration)
---				roads.forth
---			end
---			height := 1			
---		end
---		
---	highlight_all_roads is 
---			-- Highlight all the roads.
---		local 
---			roads: HASH_TABLE [TRAFFIC_ROAD , STRING]
---			i: INTEGER
---		do 
---			from
---				roads := map.roads
---				roads.start
---				i := 1
---			until
---				roads.off
---			loop
---				height := i
---				highlight_single_road (roads.item_for_iteration)
---				roads.forth
---				i := i + 1
---			end
---			height := 1
---		 end		
-
 feature -- Access
 
 	road_views: DS_HASH_TABLE [ EM_3D_OBJECT, TRAFFIC_ROAD]
-			--  Container for all road section representations
-
-	shortest_road: ARRAYED_LIST [EM_3D_OBJECT]
-			-- Container for shortest path road
+			--  Container for all road representations
 	
 	road_factory: TRAFFIC_3D_ROAD_FACTORY
 			-- Factory for road segments
@@ -335,95 +182,67 @@ feature -- Access
 feature {NONE} -- Implementation
 
 	road: TRAFFIC_ROAD	
-			-- Line section for which a representation should  be created
+			-- Road for which a representation should  be created
 		
 	road_color: GL_VECTOR_3D[DOUBLE]
 			-- Vector of RGB values for the road color 
 			
 	height: INTEGER
 			-- Level of highlighted road (starts with lowest at 1)
-			
-	is_highlighted: BOOLEAN
-			-- Is the road section highlighted?
-		
-	wait_time: INTEGER is 5000
-			-- Wait time before a highlighted road is reset when calling `highlight_single_road_for_5sec'
-		
-	highlighting_delta: DOUBLE is 2.0
-			-- Height difference between highlighted road representations
-
+	
 	decision_type: STRING is "road_type"
 			-- Name of the decision function
+		
+	street_decision_type: STRING is "street_type"
+			-- Name of the decision function	
+			
 	
 	normal_type: STRING is "normal"
 			-- Name of the type for normal road representations
 	
-	highlighted_type: STRING is "highlighted"
-			-- Name of the type for highlighted road representations
+	street_type: STRING is "street_type"
+			-- Name of the type for street representations
 	 
 feature {NONE} -- Implementation
 
 	decide_road_type: STRING is
 			-- Line type to be taken
 		do
-			if is_highlighted then
-				Result := highlighted_type
-			else
-				Result := normal_type
-			end
+			Result := normal_type
 		ensure
-			Result_is_valid: Result = highlighted_type or Result = normal_type
+			Result_is_valid: Result = normal_type
 		end
+		
 
 	create_road_normal is
 			-- Create a representation for a normal `road'.
 		do
 			create_road_rep_normal (road)
 		end
+	
+	decide_street_type: STRING is
+			-- Line type to be taken
+		do
+			Result := street_type
+		ensure
+			Result_is_valid: Result = street_type
+		end
+	
+	
+	create_street is
+			-- Create a representation for a street.
+		do
+			
+			create_street_rep(road)
+		end
 		
---	create_road_highlighted is
---			-- Create a representation for a highlighted `road'.
---		do
---			create_road_rep_highlighted (road)
---		end
-		
---	create_road_rep_highlighted (section: TRAFFIC_ROAD) is
---			-- Create a representation for a highlighted section `section'.
---		require
---			section_exists: section /= Void
---		local
---			i: INTEGER
---			org, dst: GL_VECTOR_3D[DOUBLE]
---			delta_x, delta_z, norm: DOUBLE
---		do
---			from
---				i := 1
---			until
---				i >= section.polypoints.count
---			loop
---				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i)).x, road_height, map_to_gl_coords (section.polypoints.i_th (i)).y)
---				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i+1)).x, road_height, map_to_gl_coords (section.polypoints.i_th (i+1)).y)
---				delta_x := dst.x - org.x
---				delta_z := dst.z - org.z
---				
---				norm := sqrt (delta_x*delta_x + delta_z*delta_z)
---				
---				if norm = 0 then
---					norm := 1
---				end
---				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*road_width/norm, org.y, org.z+delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*road_width/norm, org.y, org.z-delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*road_width/norm, dst.y, dst.z-delta_x*road_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*road_width/norm, dst.y, dst.z+delta_x*road_width/norm))
---				create_circle (org, road_color, road_width, road_height)
---				create_cube (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*road_width/norm, org.y + road_height + 0.4*height + highlighting_delta, org.z+delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*road_width/norm, org.y + road_height + 0.4*height + highlighting_delta, org.z-delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*road_width/norm, dst.y + road_height + 0.4*height + highlighting_delta, dst.z-delta_x*road_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*road_width/norm, dst.y + road_height + 0.4*height + highlighting_delta, dst.z+delta_x*road_width/norm))
---				create_cylinder (org, road_color, road_width, road_height + road_height + 0.4*height + highlighting_delta)
---
---				i := i + 1
---			end			
---		end		
+	
+	
 
-	create_road_rep_normal (section: TRAFFIC_ROAD) is
-			-- Create a representation for the road section `section'.
+	create_road_rep_normal (a_road: TRAFFIC_ROAD) is
+			-- Create a representation for the road `a_road'.
 		require
-			section_exists: section /= Void
+			road_exists: a_road /= Void
 		local
 			i: INTEGER
 			org, dst: GL_VECTOR_3D[DOUBLE]
@@ -435,10 +254,10 @@ feature {NONE} -- Implementation
 			from
 				i := 1
 			until
-				i >= section.polypoints.count
+				i >= a_road.polypoints.count
 			loop
-				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i)).x, road_height, map_to_gl_coords (section.polypoints.i_th (i)).y)
-				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (section.polypoints.i_th (i+1)).x, road_height, map_to_gl_coords (section.polypoints.i_th (i+1)).y)
+				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (a_road.polypoints.i_th (i)).x, road_height, map_to_gl_coords (a_road.polypoints.i_th (i)).y)
+				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (a_road.polypoints.i_th (i+1)).x, road_height, map_to_gl_coords (a_road.polypoints.i_th (i+1)).y)
 				delta_x := dst.x - org.x
 				delta_z := dst.z - org.z
 				
@@ -447,13 +266,13 @@ feature {NONE} -- Implementation
 				if norm = 0 then
 					norm := 1
 				end
-				
 				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*road_width/norm, org.y, org.z+delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*road_width/norm, org.y, org.z-delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*road_width/norm, dst.y, dst.z-delta_x*road_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*road_width/norm, dst.y, dst.z+delta_x*road_width/norm))
+
 				create_circle (org, road_color, road_width, road_height)
 				
 				-- Collision polygon
-				create start_point.make (section.polypoints.i_th (i).x, section.polypoints.i_th (i).y) 
-				create end_point.make (section.polypoints.i_th (i+1).x, section.polypoints.i_th (i+1).y)
+				create start_point.make (a_road.polypoints.i_th (i).x, a_road.polypoints.i_th (i).y) 
+				create end_point.make (a_road.polypoints.i_th (i+1).x, a_road.polypoints.i_th (i+1).y)
 				
 				start_point := map_to_gl_coords (start_point)
 				end_point := map_to_gl_coords (end_point)
@@ -481,6 +300,86 @@ feature {NONE} -- Implementation
 				i := i + 1
 			end
 		end
+		
+	
+	create_street_rep (a_road: TRAFFIC_ROAD) is
+			-- Create a representation for the road `a_road'.
+		require
+			road_exists: a_road /= Void
+		local
+			i: INTEGER
+			org, dst: GL_VECTOR_3D[DOUBLE]
+			delta_x, delta_y, delta_z, norm: DOUBLE
+			start_point, end_point, a_point, c_point: EM_VECTOR_2D 
+			polygon_points: DS_LINKED_LIST [EM_VECTOR_2D]
+			collidable: EM_POLYGON_CONVEX_COLLIDABLE
+			help_width: DOUBLE
+		do
+			from
+				i := 1
+			until
+				i >= a_road.polypoints.count
+			loop
+				org := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (a_road.polypoints.i_th (i)).x, road_height, map_to_gl_coords (a_road.polypoints.i_th (i)).y)
+				dst := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (map_to_gl_coords (a_road.polypoints.i_th (i+1)).x, road_height, map_to_gl_coords (a_road.polypoints.i_th (i+1)).y)
+				delta_x := dst.x - org.x
+				delta_z := dst.z - org.z
+				
+				norm := sqrt (delta_x*delta_x + delta_z*delta_z)
+
+				if norm = 0 then
+					norm := 1
+				end
+								
+--				road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (255, 255, 255)
+--				help_width:=0.15
+--				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*help_width/norm, org.y, org.z+delta_x*help_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*help_width/norm, org.y, org.z-delta_x*help_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*help_width/norm, dst.y, dst.z-delta_x*help_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*help_width/norm, dst.y, dst.z+delta_x*help_width/norm))
+--				road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0,0, 0)
+--				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*road_width/norm, org.y, org.z+delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*road_width/norm, org.y, org.z-delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*road_width/norm, dst.y, dst.z-delta_x*road_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*road_width/norm, dst.y, dst.z+delta_x*road_width/norm))
+				
+				road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.9,0.6, 0.6)
+				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*road_width/norm, org.y, org.z+delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*road_width/norm, org.y, org.z-delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*road_width/norm, dst.y, dst.z-delta_x*road_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*road_width/norm, dst.y, dst.z+delta_x*road_width/norm))
+				
+
+
+			
+				
+				
+				
+				create_circle (org, road_color, road_width, road_height)
+				
+				-- Collision polygon
+				create start_point.make (a_road.polypoints.i_th (i).x, a_road.polypoints.i_th (i).y) 
+				create end_point.make (a_road.polypoints.i_th (i+1).x, a_road.polypoints.i_th (i+1).y)
+				
+				start_point := map_to_gl_coords (start_point)
+				end_point := map_to_gl_coords (end_point)
+				
+				delta_x := end_point.x - start_point.x
+				delta_y := end_point.y - start_point.y
+				
+				norm := sqrt (delta_x*delta_x + delta_y*delta_y)
+
+				if norm = 0 then
+					norm := 1
+				end
+				
+				create a_point.make (start_point.x-delta_y*1.5*road_width/norm, start_point.y+delta_x*1.5*road_width/norm)
+				create c_point.make (end_point.x+delta_y*1.5*road_width/norm, end_point.y-delta_x*1.5*road_width/norm) 
+				
+				create polygon_points.make
+				polygon_points.force ((a_point),1)
+				polygon_points.force (create {EM_VECTOR_2D}.make (start_point.x+delta_y*1.5*road_width/norm, start_point.y-delta_x*1.5*road_width/norm), 2)
+				polygon_points.force ((c_point),3)
+				polygon_points.force (create {EM_VECTOR_2D}.make (end_point.x-delta_y*1.5*road_width/norm, end_point.y+delta_x*1.5*road_width/norm), 4)
+				create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2), polygon_points)
+				collision_polygons.force (collidable)
+
+				i := i + 1
+			end
+		end
+		
+		
 
 	create_circle (p, rgb: GL_VECTOR_3D[DOUBLE]; r, h: DOUBLE) is
 			-- Create a circle at point `p' with color `rgb' and radius `r' and height `h'.

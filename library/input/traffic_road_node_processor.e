@@ -25,8 +25,7 @@ feature -- Access
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		do
-			Result := << "id">>
-			-- , "from", "to", "direction", "type" 
+			Result := << "id", "from", "to", "direction", "type" >>
 			Result.compare_objects
 		end
 
@@ -36,15 +35,8 @@ feature -- Basic operations
 			-- Process node.
 		local
 			road: TRAFFIC_ROAD
-			a_map: TRAFFIC_MAP
 		do
-			if (has_attribute ("id") and not has_attribute("from") and not has_attribute("to") and not has_attribute("direction") and not has_attribute("type")) then
-				a_map:=map_factory.map
-				-- retrieve the corresponding instance of TRAFFIC_ROAD
-				if (a_map.has_road_with_id(attribute("id").to_integer)) then
-					parent.send_data (a_map.retrieve_road(attribute("id").to_integer))
-				end
-			else
+				io.putstring ("TRAFFIC_ROAD%N")
 				if not has_attribute ("id") then
 					set_error (Mandatory_attribute_missing, <<"id">>)
 				elseif not has_attribute ("from") then
@@ -73,7 +65,7 @@ feature -- Basic operations
 					 adjust_position (road, polypoints)
 				end
 			end
-		end	
+		
 	end
 		
 	zero_vector: EM_VECTOR_2D is

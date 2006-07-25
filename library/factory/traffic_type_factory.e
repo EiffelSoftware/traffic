@@ -84,12 +84,6 @@ feature {NONE} -- Implementation
 			create Result.make
 		end
 			
-	street_type: TRAFFIC_TYPE_STREET is
-			-- Street traffic type.
-		once
-			create Result.make
-		end
-			
 			
 	tram_type: TRAFFIC_TYPE_TRAM is
 			-- Tram traffic type.
@@ -103,14 +97,37 @@ feature {NONE} -- Implementation
 			create Result.make
 		end
 	
+	street_type: TRAFFIC_TYPE_STREET is
+			-- Street type.
+		once
+			create Result.make
+		end
+			
+	lightrail_type: TRAFFIC_TYPE_LIGHTRAIL is
+			-- Lightrail type.
+		once
+			create Result.make
+		end
+	
+	railroad_type: TRAFFIC_TYPE_RAILROAD is
+			-- Railroad type.
+		once
+			create Result.make
+		end	
+	
+	
 	type_table: HASH_TABLE [TRAFFIC_TYPE, STRING] is
 			-- Table with all types.
 		once
-			create Result.make (6)
+			create Result.make (9)
+			-- TRAFFIC_LINE_TYPEs
 			Result.extend (bus_type, bus_type.name)
 			Result.extend (rail_type, rail_type.name)
-			Result.extend (street_type, street_type.name)
 			Result.extend (tram_type, tram_type.name)
+			-- TRAFFIC_ROAD_TYPEs
+			Result.extend (lightrail_type, lightrail_type.name)
+			Result.extend (railroad_type, railroad_type.name)
+			Result.extend (street_type, street_type.name)
 			Result.extend (walking_type, walking_type.name)
 			Result.compare_objects
 		end
