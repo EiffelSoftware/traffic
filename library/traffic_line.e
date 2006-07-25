@@ -275,8 +275,7 @@ feature -- Basic operations
 						
 						invert:=true
 					else
-						-- problem!
-						io.putstring ("Error%N")
+						io.putstring ("Error in class TRAFFIC_LINE, feature road_points%N")
 					end
 					if invert then
 						from

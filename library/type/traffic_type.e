@@ -1,7 +1,5 @@
 indexing
-	description: "Types of objects."
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Describes types of TRAFFIC_ROADs and TRAFFIC_LINEs"
 
 deferred class
 	TRAFFIC_TYPE
@@ -32,6 +30,13 @@ feature -- Comparison
 				-- Is `other' equal to `Current'?
 			do
 				Result := name.is_equal (other.name)
+			end
+
+feature -- Basic
+		
+		is_allowed_type(a_moving: TRAFFIC_MOVING): BOOLEAN is
+			-- Is 'a_moving' allowed to go on a route?
+			deferred
 			end
 			
 invariant

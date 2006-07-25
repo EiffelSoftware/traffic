@@ -6,6 +6,9 @@ class
 
 inherit
 	TRAFFIC_TYPE_ROAD
+	redefine
+		is_allowed_type
+	end
 	
 create
 	make
@@ -18,12 +21,18 @@ feature -- Creation
 			name := "railroad"
 		end
 		
-feature -- Basic
 
-	is_allowed_to_use_road(a_traffic_moving: TRAFFIC_MOVING) is
-			-- do
+feature -- Basic 
+
+	is_allowed_type(a_moving: TRAFFIC_MOVING): BOOLEAN is
+			-- Is 'a_moving' allowed to go on a walk road?
+			local
+				line_vehicle: TRAFFIC_LINE_VEHICLE
 			do
-				
+				line_vehicle?=a_moving
+				if line_vehicle/=Void then
+					Result:=true
+				end
 			end
 		
 end
