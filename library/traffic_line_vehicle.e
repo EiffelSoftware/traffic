@@ -159,16 +159,12 @@ feature -- Basic operations
 						until
 							polypoints.after or was_found
 						loop
---							if polypoints.item = line.item.polypoints.first then
 								polypoints.forth
 								polypoints.forth
 								polypoints.forth
 								was_found := True
 								set_coordinates
 								set_angle
---							else
---								polypoints.forth
---							end
 						end
 					else
 						line.forth

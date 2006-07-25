@@ -1,8 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "A Road of the city."
 
 class
 	TRAFFIC_ROAD

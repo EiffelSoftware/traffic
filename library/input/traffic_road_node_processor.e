@@ -1,8 +1,6 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "XML processors for <road> nodes."
+
 
 class
 	TRAFFIC_ROAD_NODE_PROCESSOR

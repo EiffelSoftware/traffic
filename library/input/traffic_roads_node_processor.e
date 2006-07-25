@@ -1,8 +1,6 @@
 indexing
-	description: "XML processors for <places> elements."
-		 
-	date: "$Date: 2006-03-27 20:01:11 +0200 (lun, 27 mar 2006) $"
-	revision: "$Revision: 602 $"
+	description: "XML processors for <roads> elements."
+
 
 class
 	TRAFFIC_ROADS_NODE_PROCESSOR

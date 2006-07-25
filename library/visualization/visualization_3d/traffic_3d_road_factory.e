@@ -1,7 +1,6 @@
 indexing
 	description: "Factory for roads"
-	date: "$Date: 2005/09/26 11:22:45 $"
-	revision: "$Revision: 1.23 $"
+
 
 class
 	TRAFFIC_3D_ROAD_FACTORY
@@ -59,7 +58,7 @@ feature -- Decision process
 		end
 
 	add_road_type (procedure: PROCEDURE[ANY,TUPLE]; key: STRING) is
-			-- Add a type of line to `line_templates'.
+			-- Add a type of road to `road_templates'.
 		require
 			procedure_valid: procedure /= void 
 			key_valid: key /= void and then not key.is_empty
@@ -70,7 +69,7 @@ feature -- Decision process
 		end
 		
 	remove_road_type (key: STRING) is
-			-- Remove a type of line from `line_templates'.
+			-- Remove a type of road from `road_templates'.
 		require
 			key_valid: key /= void and then not key.is_empty
 		do

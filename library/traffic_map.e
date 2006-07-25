@@ -461,8 +461,6 @@ feature -- Element change
 			-- Remove road `a_road' from map
 			require
 				road_not_void: a_road /= Void
---				map_has_road: internal_roads.has_item(a_road)
-
 			do
 				from
 					internal_roads.start

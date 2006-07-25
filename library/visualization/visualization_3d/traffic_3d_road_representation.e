@@ -1,7 +1,5 @@
 indexing
 	description: "Representation for the traffic roads"
-	date: "$Date$"
-	revision: "$Revision: 1.90 $"
 
 class
 	TRAFFIC_3D_ROAD_REPRESENTATION
@@ -206,7 +204,7 @@ feature {NONE} -- Implementation
 feature {NONE} -- Implementation
 
 	decide_road_type: STRING is
-			-- Line type to be taken
+			-- Road type to be taken
 		do
 			Result := normal_type
 		ensure
@@ -221,7 +219,7 @@ feature {NONE} -- Implementation
 		end
 	
 	decide_street_type: STRING is
-			-- Line type to be taken
+			-- Road type to be taken
 		do
 			Result := street_type
 		ensure

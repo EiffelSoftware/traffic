@@ -1,5 +1,5 @@
 indexing
-	description: "Objects of type TRAFFIC_CONNECTION represents connections between TRAFFIC_STOPs"
+	description: "[Objects of type TRAFFIC_CONNECTION represents connections between TRAFFIC_STOPs"
 
 deferred class
 	TRAFFIC_CONNECTION
