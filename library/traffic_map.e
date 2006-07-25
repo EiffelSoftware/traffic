@@ -761,6 +761,7 @@ feature -- Basic operation
 
 	find_shortest_path (a_origin: TRAFFIC_PLACE; a_destination: TRAFFIC_PLACE) is
 			-- Find shortest path
+			-- TODO: remove the dummy connections afterwards!
 		do
 			graph.put_node (a_origin.dummy_stop)
 			from a_origin.stops.start until a_origin.stops.after loop
@@ -825,11 +826,18 @@ feature {TRAFFIC_MAP_LOADER}
 			end
 		end
 
+	test is
+			--
+		do
+			--graph.enable_user_defined_weight_function (a_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [G, L]], REAL_32])
+		end
+
 
 
 feature {NONE} -- Implementation
 
 	graph: LINKED_WEIGHTED_GRAPH [TRAFFIC_STOP, TRAFFIC_LINE_SECTION]
+			-- used for path finding
 
 	internal_places: HASH_TABLE [TRAFFIC_PLACE, STRING]
 			-- Places on map.
