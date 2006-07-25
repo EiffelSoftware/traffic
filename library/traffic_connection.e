@@ -1,8 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Objects of type TRAFFIC_CONNECTION represents connections between TRAFFIC_STOPs"
 
 deferred class
 	TRAFFIC_CONNECTION
@@ -42,7 +39,7 @@ feature -- Access
 			-- Place of destination.
 
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
-			-- position representation of line section.
+			-- position representation of the connection.
 
 	length: DOUBLE is
 			-- Length from start of polypoints to end.

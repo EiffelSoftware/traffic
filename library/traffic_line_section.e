@@ -59,7 +59,7 @@ feature -- Access
 
 
 	roads: ARRAYED_LIST [TRAFFIC_ROAD]
-			-- position representation of line section.
+			-- roads on which the line section goes on
 
 feature -- Status setting
 
