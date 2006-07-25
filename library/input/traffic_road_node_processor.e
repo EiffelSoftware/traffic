@@ -36,7 +36,6 @@ feature -- Basic operations
 		local
 			road: TRAFFIC_ROAD
 		do
-				io.putstring ("TRAFFIC_ROAD%N")
 				if not has_attribute ("id") then
 					set_error (Mandatory_attribute_missing, <<"id">>)
 				elseif not has_attribute ("from") then
