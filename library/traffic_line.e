@@ -268,11 +268,11 @@ feature -- Basic operations
 					roads:=item.roads
 					is_station:=true
 					-- loop on all the roads
-					
-					if item.origin=roads.first.origin and item.destination=roads.last.destination then
+
+					if item.origin.place=roads.first.origin.place and item.destination.place=roads.last.destination.place then
 						invert:=false
-					elseif item.origin=roads.last.destination and item.destination=roads.first.origin then
-						
+					elseif item.origin.place=roads.last.destination.place and item.destination.place=roads.first.origin.place then
+
 						invert:=true
 					else
 						io.putstring ("Error in class TRAFFIC_LINE, feature road_points%N")
@@ -281,7 +281,7 @@ feature -- Basic operations
 						from
 							roads.finish
 						until
-							roads.before				
+							roads.before
 						loop
 							pp:=roads.item.polypoints
 							-- loop on all the polypoints
@@ -300,14 +300,14 @@ feature -- Basic operations
 								Result.extend(v)
 								pp.back
 							end
-						
+
 							roads.back
 						end
 					else
 						from
 							roads.start
 						until
-							roads.after				
+							roads.after
 						loop
 							pp:=roads.item.polypoints
 							-- loop on all the polypoints
@@ -326,16 +326,16 @@ feature -- Basic operations
 								Result.extend(v)
 								pp.forth
 							end
-						
+
 							roads.forth
 						end
 					end
-					
+
 					forth
 				end
 			end
-		
-		
+
+
 feature {NONE} -- Implementation
 
 	--placess_one_direction, places_other_direction: LINKED_LIST [TRAFFIC_PLACE]
