@@ -56,7 +56,7 @@ feature -- Constants
 	Line_depth: DOUBLE is 0.2
 			-- Depth of the line representation on the map.
 			
-	road_width: DOUBLE is 0.1
+	road_width: DOUBLE is 0.15
 			-- Width of the line representation on the map.
 			
 	road_height: DOUBLE is 0.01

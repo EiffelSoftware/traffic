@@ -7,7 +7,7 @@ class
 	TRAFFIC_TYPE_WALKING
 
 inherit
-	TRAFFIC_TYPE_ROAD
+	TRAFFIC_TYPE_LINE
 	redefine
 		is_allowed_type
 	end

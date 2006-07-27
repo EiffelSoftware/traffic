@@ -42,7 +42,7 @@ feature -- Initialization
 			road_factory.add_road_type (agent create_street, street_type)
 			road_factory.add_gauger(agent decide_street_type, street_decision_type)
 			
-			create road_views.make(1)
+			create road_views.make(0)
 			create collision_polygons.make (4)
 
 			add_roads(map)	
@@ -60,7 +60,9 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 	draw is
 			-- Draw all roads onto the screen.
 		do
-			-- draw all the roads in the hashtable.					
+			-- draw all the roads in the hashtable.	
+			road_views.start
+			road_views.item_for_iteration.draw		
 			from 
 				road_views.start
 			until
@@ -134,7 +136,6 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			a_street_type: TRAFFIC_TYPE_STREET
 		do
 			-- TODO: add different views for the different types of roads
-			road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.8, 0.6, 0.6)
 			lightrail_type?=a_road.type
 			if lightrail_type/=Void then
 				road := a_road
@@ -151,7 +152,7 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 				else
 					railroad_type?=a_road.type
 					if railroad_type/=Void then
-						road_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0, 0, 0)
+						road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0,0,0)
 						road := a_road
 						road_factory.take_decision (decision_type)
 						road_view := road_factory.create_object			
@@ -328,14 +329,8 @@ feature {NONE} -- Implementation
 				if norm = 0 then
 					norm := 1
 				end
-								
---				road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (255, 255, 255)
---				help_width:=0.15
---				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*help_width/norm, org.y, org.z+delta_x*help_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*help_width/norm, org.y, org.z-delta_x*help_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*help_width/norm, dst.y, dst.z-delta_x*help_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*help_width/norm, dst.y, dst.z+delta_x*help_width/norm))
---				road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0,0, 0)
---				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*road_width/norm, org.y, org.z+delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*road_width/norm, org.y, org.z-delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*road_width/norm, dst.y, dst.z-delta_x*road_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*road_width/norm, dst.y, dst.z+delta_x*road_width/norm))
-				
-				road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.9,0.6, 0.6)
+		
+				road_color:=create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.4,0.4, 0.4)
 				create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*road_width/norm, org.y, org.z+delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*road_width/norm, org.y, org.z-delta_x*road_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*road_width/norm, dst.y, dst.z-delta_x*road_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*road_width/norm, dst.y, dst.z+delta_x*road_width/norm))
 				
 

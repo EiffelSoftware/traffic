@@ -10,7 +10,7 @@ inherit
 
 	TRAFFIC_CONNECTION
 		redefine
-			out
+			out, type
 		end
 create
 	make
@@ -26,11 +26,17 @@ feature {NONE} -- Initialization
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
 			no_void_elements: a_list /= Void implies not a_list.has (Void)
+		local
+			temp_type: TRAFFIC_TYPE_LINE
 		do
 			origin := a_origin
 			destination := a_destination
 			create state.make
-			type := a_type
+			temp_type ?= a_type
+			if a_type/=Void then
+				type:=temp_type
+			end
+			type ?= a_type
 			if a_list /= Void then
 				set_polypoints (a_list)
 			else
@@ -44,12 +50,16 @@ feature {NONE} -- Initialization
 			origin_set: origin = a_origin
 			destination_set: destination = a_destination
 			state_exists: state /= Void
+			has_type: type /=Void
 			type_set: type = a_type
 			polypoints_exists: polypoints /= Void
 			roads_created: roads/=Void
 		end
 
 feature -- Access
+
+	type: TRAFFIC_TYPE_LINE
+		-- Type of the line section
 			
 	line: TRAFFIC_LINE
 			-- Line this line section belongs to.

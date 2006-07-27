@@ -31,6 +31,9 @@
 				<link url="#traffic_color">TRAFFIC_COLOR</link>
 			</listitem>
 			<listitem>
+				<link url="#traffic_connection">TRAFFIC_CONNECTION</link>
+			</listitem>
+			<listitem>
 				<link url="#traffic_dispatcher_taxi">TRAFFIC_DISPATCHER_TAXI</link>
 			</listitem>
 			<listitem>
@@ -77,6 +80,9 @@
 			</listitem>
 			<listitem>
 				<link url="#traffic_place_information">TRAFFIC_PLACE_INFORMATION</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_road">TRAFFIC_ROAD</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_route">TRAFFIC_ROUTE</link>
@@ -209,6 +215,36 @@
 		<para>
 			<para>
 				<image src="image/sg_traffic_color.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	
+	<section id="traffic_connection">
+		<title>TRAFFIC_CONNECTION</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_place">TRAFFIC_PLACE</link>
+		</para>
+		<title>Description</title>
+		<para>
+			The deferred class <classname>TRAFFIC_CONNECTION</classname> represents a connection between two places.
+			These link can be of type <classname>TRAFFIC_ROAD</classname> or of
+			type <classname>TRAFFIC_LINE_SECTION</classname>. The connected places are called origin and destination
+			and are accessible with the features <featurename>origin</featurename> and <featurename>destination</featurename>.
+			Further a connection has a list of polypoints, used to display the link on the map and to allow the moving of 
+			vehicles on the link.
+			</para>
+		<para>
+			The feature <featurename>length</featurename> returns a calculated length of the connection.
+			To calculate the length the polypoints are used, and if no polypoints exists, the position 
+			of the origin and destination place are used to calculate a length. This length becomes 
+			especially important when starting to calculate routes on lines and even a whole map of lines.
+		</para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_connection.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -362,8 +398,7 @@
 		<title>TRAFFIC_LINE_SECTION</title>
 		<title>Requirements:</title>
 		<para>
-			<link url="#traffic_place">TRAFFIC_PLACE</link>, <link url="#traffic_line_section">
-    		TRAFFIC_LINE_SECTION</link>, <link url="#traffic_line_state">TRAFFIC_LINE_STATE</link>
+			<link url="#traffic_connection">TRAFFIC_CONNECTION</link><link url="#traffic_place">TRAFFIC_PLACE</link>
 		</para>
 		<title>Description</title>
 		<para>
@@ -371,12 +406,16 @@
 			from one place to another. Those places are called origin and destination. A line section 
 			is of some traffic type, e.g. <classname>TRAFFIC_BUS_TYPE</classname>. A line section can 
 			be added to a line, forming the lines connection. It can belong to at most one line. 
-			Additionally a line section can have different states.
     	</para>
 		<para>
 			To create a new line section an origin place, a destination place and a traffic type have 
 			to be defined. Such a line section will not belong to any line, its state will be set to
 			some normal state and the polypoints are empty.    	
+		</para>
+		<para>
+			A line section has a number of roads (at least one) associated to it. These roads are the physical link
+			on which <classname>TRAFFIC_MOVING</classname> objects move along. To set and remove these roads features
+			<featurename>set_roads</featurename> and <featurename>remove_roads</featurename> are provided.
 		</para>
 		<para>
 			The feature <featurename>length</featurename> returns a calculated length of the line section.
@@ -397,7 +436,7 @@
 		</para>
 		<toplink/>
 	</section>
-	<section id="traffic_line_section_state">
+		<section id="traffic_line_section_state">
 		<title>TRAFFIC_LINE_SECTION_STATE</title>
 		<title>Requirements:</title>
 		<para>
@@ -444,7 +483,7 @@
 		</para>
 		<toplink/>
 	</section>
-<section id="traffic_line_vehicle">
+	<section id="traffic_line_vehicle">
 		<title>TRAFFIC_LINE_VEHICLE</title>
 		<title>Requirements:</title>
 		<para>
@@ -696,6 +735,33 @@
 		</para>
 		<toplink/>
 	</section>
+		<section id="traffic_road">
+		<title>TRAFFIC_ROAD</title>
+		<title>Requirements:</title>
+		<para>
+			<link url="#traffic_connection">TRAFFIC_CONNECTION</link><link url="#traffic_place">TRAFFIC_PLACE</link>
+		</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TRAFFIC_ROAD</classname> represents a connection between two places.
+			In general only a road can connects the same two places, whereas more there can be more than
+			one line sections between this two places. The road has an associated type, e.g. <classname>
+			TRAFFIC_TRAM</classname>. Roads are displayed on the map and used for the moving of vehicles. 
+    	</para>
+    	<para>
+    		Each road has an associated id. Two roads with the same id cannot exists. The id is used to associate
+    		a particular road to one ore more line sections. To create a new road an origin place, a destination place,
+    		a traffic type and a direction have to be defined. 
+    	</para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_road.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+
 	<section id="traffic_route">
 		<title>TRAFFIC_ROUTE</title>
 		<title>Requirements:</title>

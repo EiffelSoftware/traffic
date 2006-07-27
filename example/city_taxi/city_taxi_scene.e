@@ -91,6 +91,7 @@ feature -- Interface
 			-- Default map hbzurich_mini.xml
 			map.load_map ("../map/zurich_mini.xml")
 			loaded_file_name := "../map/zurich_mini.xml"
+
 		end
 		
 feature -- Event handling

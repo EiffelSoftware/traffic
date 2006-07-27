@@ -109,6 +109,15 @@ feature -- Interface
 			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
 			toolbar_panel.add_widget (buildings_checkbox)
 
+			-- Lines checkbox
+			create lines_checkbox.make_from_text ("Show VBZ Lines")
+			lines_checkbox.set_position (20,375)
+			lines_checkbox.set_optimal_dimension (120, 20)
+			lines_checkbox.resize_to_optimal_dimension
+			lines_checkbox.checked_event.subscribe (agent lines_checked)
+			lines_checkbox.unchecked_event.subscribe (agent lines_unchecked)
+			toolbar_panel.add_widget (lines_checkbox)
+			
 			-- Time Checkbox
 			time_checkbox.set_position (17, (window_height * 0.91).rounded)
 			time_checkbox.set_background_color (bg_color)
@@ -118,7 +127,7 @@ feature -- Interface
 			time_checkbox.checked_event.subscribe (agent time_checked)
 			time_checkbox.unchecked_event.subscribe (agent time_unchecked)
 			toolbar_panel.add_widget (time_checkbox)
-
+			
 			-- Time slider
 			create time_slider.make_from_range_horizontal (1, 60)
 			time_slider.set_position (40, (window_height * 0.95).rounded)
@@ -376,6 +385,18 @@ feature -- Event handling
 		do
 			time_label.set_text (traffic_time.actual_hour.out + ":" + traffic_time.actual_minute.out)
 		end
+		
+	lines_unchecked is
+			-- Checkbox has been unchecked.
+		do
+			map.set_lines_shown (False)
+		end
+
+	lines_checked is
+			-- Checkbox has been checked.
+		do
+			map.set_lines_shown (True)
+		end
 
 feature -- Widgets
 
@@ -393,7 +414,10 @@ feature -- Widgets
 
 	time_checkbox: EM_CHECKBOX
 			-- Checkbox for time
-
+			
+	lines_checkbox: EM_CHECKBOX
+			-- Checkbox for visibility of lines
+			
 	zoom_in_button: EM_BUTTON
 			-- Botton to zoom in
 

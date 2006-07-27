@@ -48,15 +48,21 @@ feature {NONE} -- Initialization
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
 			a_type_exists: a_type /= Void
+		local
+			temp_type: TRAFFIC_TYPE_LINE
 		do
 			make_linked_list -- create empty line_sections list
 			name := a_name
-			type := a_type
+			temp_type ?= a_type
+			if a_type/=Void then
+				type:=temp_type
+			end
 			create stops_one_direction.make -- create empty line_sections list for one direction
 			create stops_other_direction.make -- create empty line_sections list for other direction
 		ensure
 			name_set: equal (name, a_name)
-			type_set: type = a_type -- have to be same object
+			has_type_set: type /=Void -- have to be same object
+			type_set: type=a_type
 			count_line_section_not_void: count >= 0 -- List is initilalized.
 			stops_one_direction_exists: stops_one_direction /= Void
 			stops_other_direction_exists: stops_other_direction /= Void
@@ -67,7 +73,7 @@ feature -- Access
 	name: STRING
 			-- Name of line.
 
-	type: TRAFFIC_TYPE
+	type: TRAFFIC_TYPE_LINE
 			-- Type of line.
 
 	terminal_1: TRAFFIC_PLACE

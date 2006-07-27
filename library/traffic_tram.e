@@ -32,8 +32,8 @@ feature -- Initialization
 				line := a_line
 				
 				
-				--set_line_route(line)
-				set_line_route_from_roads(line)				
+				set_line_route(line)
+				--set_line_route_from_roads(line)				
 				
 				--set_speed(1)
 

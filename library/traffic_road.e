@@ -57,10 +57,6 @@ feature -- Basic operation
 
 feature -- Access
 
-	road_type: TRAFFIC_TYPE
-
-	roads: ARRAYED_LIST[TRAFFIC_ROAD]
-
 	id: INTEGER
 
 	is_directed: BOOLEAN

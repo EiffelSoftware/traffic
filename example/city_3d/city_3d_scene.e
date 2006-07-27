@@ -43,6 +43,7 @@ feature -- Interface
 			create coordinates_checkbox.make_from_text ("Show coordinates")
 			create buildings_transparent_checkbox.make_from_text ("Transparent buildings")
 			create time_running_checkbox.make_from_text("Simulate Time")
+			create lines_checkbox.make_from_text ("Show VBZ Lines")
 			
 			-- Box and button for xml files
 			create combo_title.make_from_text ("Choose a map:")
@@ -213,6 +214,18 @@ feature -- Interface
 			time_running_checkbox.checked_event.subscribe (agent time_running_checked)
 			time_running_checkbox.unchecked_event.subscribe (agent time_running_unchecked)
 			toolbar_panel.add_widget (time_running_checkbox)
+			
+			
+			-- Lines Checkbox
+			lines_checkbox.set_position (10,430)
+			lines_checkbox.set_background_color (bg_color)
+			lines_checkbox.set_optimal_dimension (120, 20)
+			lines_checkbox.resize_to_optimal_dimension
+			lines_checkbox.checked_event.subscribe (agent lines_checked)
+			lines_checkbox.unchecked_event.subscribe (agent lines_unchecked)
+			toolbar_panel.add_widget (lines_checkbox)
+			
+			
 						
 			-- Zoom out Button
 			zoom_out_button.set_position (180-zoom_out_button.width, 170)
@@ -250,21 +263,21 @@ feature -- Interface
 			toolbar_panel.add_widget (buildings_slider)
 
 			-- Marked origin title
-			marked_origin_title.set_position (10, 430)
+			marked_origin_title.set_position (10, 450)
 			marked_origin_title.set_optimal_dimension (180, 20)
 			marked_origin_title.resize_to_optimal_dimension
 			marked_origin_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (marked_origin_title)
 
 			-- Marked destination title
-			marked_destination_title.set_position (10, 470)
+			marked_destination_title.set_position (10, 490)
 			marked_destination_title.set_optimal_dimension (180, 20)
 			marked_destination_title.resize_to_optimal_dimension
 			marked_destination_title.set_background_color (bg_color)
 			toolbar_panel.add_widget (marked_destination_title)
 
 			-- Marked origin label
-			marked_origin_label.set_position (15, 450)
+			marked_origin_label.set_position (15, 470)
 			marked_origin_label.set_optimal_dimension (180, 20)
 			marked_origin_label.resize_to_optimal_dimension
 			marked_origin_label.set_background_color (bg_color)
@@ -273,7 +286,7 @@ feature -- Interface
 			toolbar_panel.add_widget (marked_origin_label)
 
 			-- Marked destination label
-			marked_destination_label.set_position (15, 490)
+			marked_destination_label.set_position (15, 510)
 			marked_destination_label.set_optimal_dimension (180, 20)
 			marked_destination_label.resize_to_optimal_dimension
 			marked_destination_label.set_background_color (bg_color)
@@ -413,11 +426,25 @@ feature -- Event handling
 			map.set_buildings_shown (True)
 		end
 
+	lines_unchecked is
+			-- Checkbox has been unchecked.
+		do
+			map.set_lines_shown (False)
+		end
+		
+	lines_checked is
+			-- Checkbox has been checked.
+		do
+			map.set_lines_shown (True)
+		end
+
 	buildings_unchecked is
 			-- Checkbox has been unchecked.
 		do
 			map.set_buildings_shown (False)
 		end
+		
+		
 
 	sun_checked is
 			-- Checkbox has been checked.
@@ -574,6 +601,9 @@ feature -- Widgets
 
 	buildings_checkbox: EM_CHECKBOX
 			-- Checkbox for visibility of buildings
+			
+	lines_checkbox: EM_CHECKBOX
+			-- Checkbox for visibility of lines
 
 	shortest_path_checkbox: EM_CHECKBOX
 			-- Checkbox for shortest path calculation
