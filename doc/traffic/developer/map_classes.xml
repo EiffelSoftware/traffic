@@ -97,6 +97,12 @@
 				<link url="#traffic_type">TRAFFIC_TYPE</link>
 			</listitem>
 			<listitem>
+				<link url="#traffic_type_line">TRAFFIC_TYPE_LINE</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_type_road">TRAFFIC_TYPE_ROAD</link>
+			</listitem>
+			<listitem>
 				<link url="#traffic_type_factory">TRAFFIC_TYPE_FACTORY</link>
 			</listitem>
 			<listitem>
@@ -844,20 +850,66 @@
  	   	</para>
 		<title>Description</title>
 		<para>
-			The class <classname>TRAFFIC_TYPE</classname> is used to identify the type of a line 
-			or line_section. <classname>TRAFFIC_TYPE</classname> is the abstract class of all 
-			possible traffic types. Traffic types are mainly used to make sure that only line 
-			sections of a given type can be added to a line of some type. This is done to ensure 
-			that no bus drives on a rail way and so on.	
+			The class <classname>TRAFFIC_TYPE</classname> is used to identify the type of a road, a line 
+			or a line_section. <classname>TRAFFIC_TYPE</classname> is the abstract class of all 
+			possible traffic types while <classname>TRAFFIC_TYPE_LINE</classname> and <classname>TRAFFIC_ROAD_TYPE
+			</classname> represents the type of line and roads rispectively.
 		</para>
 		<para>
-			The traffic type classes have one interesting query: <featurename>name</featurename> 
-			returns a textual representation of the traffic type.
+			The traffic type classes have two interesting query: <featurename>name</featurename> 
+			returns a textual representation of the traffic type. 
 		</para>
 		<title>Class overview</title>
 		<para>
 			<para>
 				<image src="image/sg_traffic_type.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+
+		<section id="traffic_type_line">
+		<title>TRAFFIC_TYPE_LINE</title>
+		<title>Requirements:</title>
+		<para>
+   			<link url="#traffic_type">TRAFFIC_TYPE</link>
+ 	   	</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TRAFFIC_TYPE_LINE</classname> is used to identify the type of lines and line sections.
+			Traffic line types are mainly used to make sure that only line sections of a given type can be added to a line of some type.		</para>
+		<para>
+			The <classname>TRAFFIC_TYPE_LINE</classname> introduces an interesting query: <featurename>is_allowed_type
+			</featurename> that check if one object of type <classname>TRAFFIC_LINE_VEHICLE</classname> is allowed to move on the given line.
+		</para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_type_line.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_type_road">
+		<title>TRAFFIC_TYPE_ROAD</title>
+		<title>Requirements:</title>
+		<para>
+   			<link url="#traffic_type">TRAFFIC_TYPE</link>
+ 	   	</para>
+		<title>Description</title>
+		<para>
+			The deferred class <classname>TRAFFIC_TYPE_ROAD</classname> inherits from <classname>TRAFFIC_TYPE</classname> 
+			and is used to identify the type of a road. The type of the road is useful to ensure that vehicles can drives 
+			only on right medium (and for example no bus drives on a railway and so on).
+		</para>
+		<para>
+			The <classname>TRAFFIC_TYPE_ROAD</classname> introduces an interesting query: <featurename>is_allowed_type
+			</featurename> that check if one object of type <classname>TRAFFIC_MOVING</classname> is allowed to travel on the given road.
+		</para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_type_road.png"/>
 			</para>
 		</para>
 		<toplink/>

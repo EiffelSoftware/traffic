@@ -43,104 +43,105 @@ feature -- Basic operations
 			if not has_error and has_subnodes then
 				process_subnodes
 			end
-
-			line ?= parent.target
-			if not has_attribute ("from") then
-				set_error (Mandatory_attribute_missing, <<"from">>)
-			elseif not has_attribute ("to") then
-				set_error (Mandatory_attribute_missing, <<"to">>)
-			elseif not map.has_place (attribute ("from")) then
-				set_error (Unknown_source, <<attribute ("from")>>)
-			elseif not map.has_place (attribute ("to")) then
-				set_error (Unknown_destination, << attribute ("to")>> )
-			elseif line = Void then
-				set_error (Missing_line, << >> )
-			elseif not map.lines.has (line.name) then
-				set_error (Unknown_line, << line.name >>)
-			else
-				simple_line ?= line
-				if simple_line /= Void then
-					if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
-						if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
-							set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
-						else
-							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
-							line_section_one_direction := map_factory.line_section
-							-- line_section_other_direction is generated but not accessible
-							-- search for line section other direction
-							sections := map.line_sections_of_stop ( (attribute("to")), line)
-							from
-								sections.start
-							until
-								sections.after or else line_section_other_direction /= Void
-							loop
-								if sections.item.origin.name.is_equal (( attribute ("to"))) and then
-								   sections.item.destination.name.is_equal (( attribute ("from"))) then -- and then
-									line_section_other_direction := sections.item
+			if not has_error then
+				line ?= parent.target
+				if not has_attribute ("from") then
+					set_error (Mandatory_attribute_missing, <<"from">>)
+				elseif not has_attribute ("to") then
+					set_error (Mandatory_attribute_missing, <<"to">>)
+				elseif not map.has_place (attribute ("from")) then
+					set_error (Unknown_source, <<attribute ("from")>>)
+				elseif not map.has_place (attribute ("to")) then
+					set_error (Unknown_destination, << attribute ("to")>> )
+				elseif line = Void then
+					set_error (Missing_line, << >> )
+				elseif not map.lines.has (line.name) then
+					set_error (Unknown_line, << line.name >>)
+				else
+					simple_line ?= line
+					if simple_line /= Void then
+						if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
+							if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
+								set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
+							else
+								map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
+								line_section_one_direction := map_factory.line_section
+								-- line_section_other_direction is generated but not accessible
+								-- search for line section other direction
+								sections := map.line_sections_of_stop ( (attribute("to")), line)
+								from
+									sections.start
+								until
+									sections.after or else line_section_other_direction /= Void
+								loop
+									if sections.item.origin.name.is_equal (( attribute ("to"))) and then
+									   sections.item.destination.name.is_equal (( attribute ("from"))) then -- and then
+										line_section_other_direction := sections.item
+									end
+									sections.forth
 								end
-								sections.forth
+							end
+						else -- directed
+							set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
+						end
+						set_target (line_section_one_direction)
+					else
+						if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
+							if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
+								set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
+							else
+								map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
+								line_section_one_direction := map_factory.line_section
+							end
+							if not line.is_valid_insertion (map.places.item ( attribute ("to")), map.places.item (attribute ("from"))) then
+								set_error (Invalid_line_section, << line.name, attribute ("to"), attribute ("from") >>)
+							else
+								map_factory.build_line_section (( attribute ("to")), (attribute ("from")), polypoints, map, line)
+								line_section_other_direction := map_factory.line_section
+							end
+						else -- directed
+							if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
+								set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
+							else
+								map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
+								line_section_one_direction := map_factory.line_section
 							end
 						end
-					else -- directed
-						set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
+						set_target (line_section_one_direction)
 					end
-					set_target (line_section_one_direction)
-				else
-					if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
-						if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
-							set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
-						else
-							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
-							line_section_one_direction := map_factory.line_section
+	
+					if polypoints.count > 2 then
+						line_section_one_direction.set_polypoints (polypoints)
+	
+						if line_section_other_direction /= Void then
+							create pp.make (0)
+							from
+								polypoints.finish
+							until
+								polypoints.before
+							loop
+								pp.extend (polypoints.item.twin)
+								polypoints.back
+							end
+							line_section_other_direction.set_polypoints (pp)
 						end
-						if not line.is_valid_insertion (map.places.item ( attribute ("to")), map.places.item (attribute ("from"))) then
-							set_error (Invalid_line_section, << line.name, attribute ("to"), attribute ("from") >>)
-						else
-							map_factory.build_line_section (( attribute ("to")), (attribute ("from")), polypoints, map, line)
-							line_section_other_direction := map_factory.line_section
-						end
-					else -- directed
-						if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
-							set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
-						else
-							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
-							line_section_one_direction := map_factory.line_section
-						end
+	
 					end
-					set_target (line_section_one_direction)
-				end
-
-				if polypoints.count > 2 then
-					line_section_one_direction.set_polypoints (polypoints)
-
+	
+					adjust_position (line_section_one_direction, polypoints)
+	
 					if line_section_other_direction /= Void then
-						create pp.make (0)
-						from
-							polypoints.finish
-						until
-							polypoints.before
-						loop
-							pp.extend (polypoints.item.twin)
-							polypoints.back
-						end
-						line_section_other_direction.set_polypoints (pp)
+						adjust_position (line_section_other_direction, polypoints)
 					end
-
+	
 				end
-
-				adjust_position (line_section_one_direction, polypoints)
-
-				if line_section_other_direction /= Void then
-					adjust_position (line_section_other_direction, polypoints)
-				end
-
-			end
-
-
-			if not has_error and roads.count >= 1 then
-				line_section_one_direction.set_roads(roads)
-				if line_section_other_direction /= Void then
-					line_section_other_direction.set_roads(roads)
+	
+	
+				if not has_error and roads.count >= 1 then
+					line_section_one_direction.set_roads(roads)
+					if line_section_other_direction /= Void then
+						line_section_other_direction.set_roads(roads)
+					end
 				end
 			end
 		end

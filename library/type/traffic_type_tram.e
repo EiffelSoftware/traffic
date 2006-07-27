@@ -7,7 +7,8 @@ class
 	TRAFFIC_TYPE_TRAM
 
 inherit
-	TRAFFIC_TYPE
+	TRAFFIC_TYPE_LINE
+	redefine is_allowed_type end
 
 create
 	make

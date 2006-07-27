@@ -140,7 +140,7 @@ feature -- Basic operation
 		local
 			current_place, next_place: TRAFFIC_PLACE
 			shortest_path: LIST [TRAFFIC_LINE_SECTION]
-			current_connection: TRAFFIC_CONNECTION
+			current_connection: TRAFFIC_LINE_SECTION
 		do
 			places_on_route.wipe_out
 			connections.wipe_out

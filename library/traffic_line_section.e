@@ -114,18 +114,6 @@ feature {TRAFFIC_LINE} -- Status setting
 			line_void: line = Void
 		end
 
-feature -- Comparasion
-
---	is_equal (other: like Current): BOOLEAN is
-			-- Is `other' attached to an object considered
-			-- equal to current object?
-			-- (from ANY)
---		do
---			Result := equal (origin.name, other.origin.name) and
---				equal (destination.name, other.destination.name) and
---				equal (type, other.type) and
---				equal (line, other.line)
---		end
 
 feature -- Basic operation
 

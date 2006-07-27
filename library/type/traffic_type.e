@@ -31,13 +31,6 @@ feature -- Comparison
 			do
 				Result := name.is_equal (other.name)
 			end
-
-feature -- Basic
-		
-		is_allowed_type(a_moving: TRAFFIC_MOVING): BOOLEAN is
-			-- Is 'a_moving' allowed to go on a route?
-			deferred
-			end
 			
 invariant
 	name_not_empty: not name.is_empty

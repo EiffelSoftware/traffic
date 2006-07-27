@@ -296,6 +296,68 @@ feature{NONE} --Implementation
 					end
 				end
 			end
+			
+			
+--		set_coordinates_with_angle is
+--			-- Set the positions to the corresponding ones of the line section.
+--			local
+--				v,new_v: EM_VECTOR_2D
+--				angle:DOUBLE
+--				const: DOUBLE
+--			do
+--				-- Hopefully this will give a bit performance to the journey
+--				-- otherwise just clear out the map_to_gl_coords
+--				if angle_x>180 then
+--						angle:=angle_x-180
+--				else
+--						angle:=angle_x
+--				end
+--							
+--				v:=polypoints.item
+--				--create new_v.make (v.x,v.y)
+--				create new_v.make (v.x+const*sine(angle*Pi/180),v.y+const*cosine(angle*Pi/180))
+--				origin :=  map_to_gl_coords (new_v)
+--				position := map_to_gl_coords (new_v)
+--				const:=2
+--				io.putdouble (angle_x)
+--				io.putstring(".%N")
+--				if is_traveling_back then
+--					polypoints.back
+--					if polypoints.before then
+--						is_traveling_back := False
+--						polypoints.forth
+--						set_coordinates_with_angle
+--					else
+--						if angle_x>180 then
+--							angle:=angle_x-180
+--						else
+--							angle:=angle_x
+--						end
+--							
+--						v:=polypoints.item
+--						--create new_v.make (v.x,v.y)
+--						create new_v.make (v.x+const*sine(angle*Pi/180),v.y+const*cosine(angle*Pi/180))
+--						destination := map_to_gl_coords (new_v)
+--					end
+--				else
+--					polypoints.forth
+--					if polypoints.after then
+--						is_traveling_back := True
+--						polypoints.back
+--						set_coordinates_with_angle
+--					else
+--						if angle_x>180 then
+--							angle:=angle_x-180
+--						else
+--							angle:=angle_x
+--						end
+--						v:=polypoints.item
+--						--create new_v.make (v.x,v.y)
+--						create new_v.make (v.x+const*sine(angle*Pi/180),v.y+const*cosine(angle*Pi/180))
+--						destination := map_to_gl_coords (new_v)
+--					end
+--				end
+--			end			
 
 invariant
 	line_set: line /= void

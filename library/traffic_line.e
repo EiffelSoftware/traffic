@@ -22,9 +22,20 @@ inherit
 			make as make_linked_list,
 			out as linked_list_out,
 			extend as put_end
+		
 		export
 		{ANY} start, finish, after, before, off, forth, back, item, count, i_th, wipe_out, has
+		select copy,is_equal
 		end
+		
+	DOUBLE_MATH
+		rename copy as math_copy,
+				is_equal as math_equal,
+				out as math_out
+		end
+		
+--	MATH_CONST
+--		export {NONE} all end
 
 create
 	make
@@ -275,7 +286,8 @@ feature -- Basic operations
 
 						invert:=true
 					else
-						io.putstring ("Error in class TRAFFIC_LINE, feature road_points%N")
+						io.putstring ("Invalid roads for given line section%N")
+						io.putstring("Line section origin: "+item.origin.place.name+" - Line section destination:"+item.destination.place.name+"%N")
 					end
 					if invert then
 						from
@@ -334,7 +346,7 @@ feature -- Basic operations
 					forth
 				end
 			end
-
+			
 
 feature {NONE} -- Implementation
 
@@ -492,6 +504,63 @@ feature {NONE} -- Implementation
 				end
 			end
 		end
+		
+		
+		
+		angle(st,dest: EM_VECTOR_2D):DOUBLE is	
+			-- Set the angles to the x- and y-axis respectively.
+			local 
+				x_difference, y_difference, hypo, quad: DOUBLE
+				angle_x:DOUBLE
+			do
+				x_difference := st.x - dest.x
+				y_difference := st.y - dest.y
+				hypo := sqrt ((x_difference * x_difference) + (y_difference * y_difference))
+				
+				if hypo /= 0 then
+					-- arc_sine in radian
+					quad := 0
+					if  (x_difference >= 0) and (y_difference >= 0) then
+						angle_x := arc_sine (x_difference/hypo)
+							-- the same in degree
+						angle_x := angle_x * 180 / pi
+						angle_x := 180 + angle_x	
+					elseif (x_difference < 0) and (y_difference >= 0) then
+						x_difference := x_difference.abs
+						y_difference := y_difference.abs
+						angle_x := arc_sine (x_difference/hypo)
+							-- the same in degree
+						angle_x := angle_x * 180 / pi
+						angle_x := 180 - angle_x
+					elseif (x_difference < 0) and (y_difference < 0) then
+						x_difference := x_difference.abs
+						y_difference := y_difference.abs
+						angle_x := arc_sine (x_difference/hypo)
+							-- the same in degree
+						angle_x := angle_x * 180 / pi
+					elseif (x_difference >= 0) and (y_difference < 0) then
+						x_difference := x_difference.abs
+						y_difference := y_difference.abs
+						angle_x := arc_sine (x_difference/hypo)
+							-- the same in degree
+						angle_x := angle_x * 180 / pi
+						angle_x := 360 - angle_x
+					end
+					
+					if angle_x < 0 then
+						angle_x := 360 + angle_x
+					elseif angle_x > 360 then
+						angle_x := angle_x - 360
+					end
+				end
+				if angle_x>180 then
+					Result:=angle_x-180
+				else
+					Result:=angle_x
+				end
+			end
+	
+	
 
 invariant
 	name_not_void: name /= Void -- Line has name.

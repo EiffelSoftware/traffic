@@ -22,11 +22,21 @@
 				<link url="#traffic_building_parser">TRAFFIC_BUILDING_PARSER</link>
 			</listitem>
 			<listitem>
-				<link url="traffic_building_node_processor">TRAFFIC_BUILDING_NODE_PROCESSOR</link>
+				<link url="#traffic_building_node_processor">TRAFFIC_BUILDING_NODE_PROCESSOR</link>
 			</listitem>
 			<listitem>
-				<link url="traffic_buildings_node_processor">TRAFFIC_BUILDINGS_NODE_PROCESSOR</link>
+				<link url="#traffic_buildings_node_processor">TRAFFIC_BUILDINGS_NODE_PROCESSOR</link>
 			</listitem>
+			<listitem>
+				<link url="#traffic_roads_node_processor">TRAFFIC_ROADS_NODE_PROCESSOR</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_road_node_processor">TRAFFIC_ROAD_NODE_PROCESSOR</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_onroad_node_processor">TRAFFIC_ONROAD_NODE_PROCESSOR</link>
+			</listitem>
+
 		</itemizedlist>
     </section>
     <section id="traffic_building_parser">
@@ -109,4 +119,98 @@
     	</para>
     	<toplink/>
     </section>
+       
+     <section id="traffic_roads_node_processor">
+    	<title>TRAFFIC_ROADS_NODE_PROCESSOR</title>
+   		<title>Requirements:</title>
+    	<para>
+    		<link url="traffic_node_processor">TRAFFIC_NODE_PROCESSOR</link>
+    	</para>
+    	<title>Description</title>
+    	<para> In this class is specified how to process a &lt;roads&gt; element. The XML for the element road has to follow the following DTD structure:
+			
+			
+			<programlisting>
+			&lt;!ELEMENT roads (road*)&gt;
+
+			</programlisting>
+			The details for the element &lt;road&gt; are specified belove. In the case of a &lt;roads&gt; element, 
+			we only have to process its subnodes using the feature <featurename>process</featurename>
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/traffic_roads_node_processor.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+
+       <section id="traffic_road_node_processor">
+    	<title>TRAFFIC_ROAD_NODE_PROCESSOR</title>
+   		<title>Requirements:</title>
+    	<para>
+    		<link url="traffic_node_processor">TRAFFIC_NODE_PROCESSOR</link>
+    	</para>
+    	<title>Description</title>
+    	<para> In this class is specified how to process a &lt;road&gt; element. The XML for the element road has to follow the following DTD structure:
+			
+			
+			<programlisting>
+			&lt;!ELEMENT road EMPTY&gt;
+			&lt;!ATTLIST road
+				id CDATA #REQUIRED
+				from CDATA #REQUIRED
+				to CDATA #REQUIRED
+				direction CDATA #REQUIRED
+				type CDATA #REQUIRED
+			&gt;
+			</programlisting>
+
+			An element of this type has an id (<featurename>id</featurename>)  and other mandatory attributes (<featurename>mandatory_Attributes</featurename>). 
+			In the feature process is specified, what has to be done during processing. In the case of a road element, we have to check whether the required
+			attributes are supported and in this case one can creates a new instance of type TRAFFIC_ROAD. 
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/traffic_road_node_processor.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+    
+   <section id="traffic_onroad_node_processor">
+    	<title>TRAFFIC_ONROAD_NODE_PROCESSOR</title>
+   		<title>Requirements:</title>
+    	<para>
+    		<link url="traffic_node_processor">TRAFFIC_NODE_PROCESSOR</link>
+    	</para>
+    	<title>Description</title>
+    	<para> In this class is specified how to process a &lt;onroad&gt; element. The XML for the element road has to follow the following DTD structure:
+			
+			
+			<programlisting>
+			&lt;!ELEMENT onroad EMPTY&gt;
+			&lt;!ATTLIST onroad
+				id CDATA #REQUIRED
+			&gt;
+			</programlisting>
+
+			An element of this type has an id (<featurename>id</featurename>)  as only mandatory attribute. 
+			The element &lt;onroad&gt; is a subnode of the element &lt;line_section&gt;. When we process one &lt;onroad&gt; node we
+			we have first to check whether the required attribute is provided and then we can associate the road with the 
+			id we have just parsed with the corresponding line_section. 
+    	</para>
+    	<title>Class overview</title>
+    	<para>
+    	<para>
+    		<image src="image/traffic_onroad_node_processor.png"/>
+    	</para>
+    	</para>
+    	<toplink/>
+    </section>
+
+      
+ 
 </chapter>

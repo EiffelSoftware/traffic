@@ -38,11 +38,12 @@ feature -- Basic operations
 				if (a_map.has_road_with_id(attribute("id").to_integer)) then
 					parent.send_data (a_map.retrieve_road(attribute("id").to_integer))
 				else
-					-- boh
+					set_error(No_road_with_given_id_exists,<<"id">>)
+					parent.send_data(Void)
 				end
 			end
 
-			if has_subnodes then
+			if not has_error and has_subnodes then
 				process_subnodes
 			end
 		end

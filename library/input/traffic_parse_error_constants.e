@@ -63,6 +63,8 @@ feature {NONE} -- Access
 				Result := "Not enough points defined for line section"
 			when Mandatory_subnode_missing then
 				Result := "Mandatory subnode <$> missing"
+			when No_road_with_given_id_exists then
+				Result := "No road with given id exists"
 			else
 				Result := "Unknown error"
 			end
@@ -121,6 +123,8 @@ feature {NONE} -- Constants
 	Too_few_points: INTEGER is 25
 	
 	Mandatory_subnode_missing: INTEGER is 26
+	
+	No_road_with_given_id_exists: INTEGER is 27
 	
 end
 
