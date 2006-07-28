@@ -10,14 +10,14 @@ inherit
 
 	TRAFFIC_CONNECTION
 		redefine
-			out, type
+			out
 		end
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE; a_list: ARRAYED_LIST [EM_VECTOR_2D] ) is
+	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_LINE; a_list: ARRAYED_LIST [EM_VECTOR_2D] ) is
 			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -36,7 +36,7 @@ feature {NONE} -- Initialization
 			if a_type/=Void then
 				type:=temp_type
 			end
-			type ?= a_type
+			type := a_type
 			if a_list /= Void then
 				set_polypoints (a_list)
 			else

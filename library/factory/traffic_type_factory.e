@@ -45,8 +45,9 @@ feature -- Basic operation
 			a_name_valid: valid_name (a_name)
 			a_name_not_empty: not a_name.is_empty
 		do
-			internal_traffic_type := type_table.item (a_name)
+			internal_traffic_type ?= type_table.item (a_name)
 		ensure
+			type_created: internal_traffic_type/=Void
 			type_exists: has_type
 		end
 		
@@ -69,7 +70,7 @@ feature -- Status report
 		
 feature {NONE} -- Implementation
 
-	internal_traffic_type: TRAFFIC_TYPE
+	internal_traffic_type: TRAFFIC_TYPE_LINE
 			-- Traffic type last created.
 
 	bus_type: TRAFFIC_TYPE_BUS is

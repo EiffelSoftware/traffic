@@ -35,7 +35,7 @@ create
 	make
 
 feature {NONE} -- Initialization
-	make (a_name: STRING; a_type: TRAFFIC_TYPE; a_map: TRAFFIC_MAP) is
+	make (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_map: TRAFFIC_MAP) is
 			-- Create simple line.
 		require
 			a_name_exists: a_name /= Void

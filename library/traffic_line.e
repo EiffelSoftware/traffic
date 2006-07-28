@@ -42,7 +42,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_name: STRING; a_type: TRAFFIC_TYPE) is
+	make (a_name: STRING; a_type: TRAFFIC_TYPE_LINE) is
 			-- Create a line with name `a_name' of type `a_type'.
 		require
 			a_name_exists: a_name /= Void

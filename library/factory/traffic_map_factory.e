@@ -235,7 +235,7 @@ feature -- Traffic line building
 			a_map_exists: a_map /= Void
 			type_name_is_valid: valid_name (a_type_name)
 		local
-			actual_traffic_type: TRAFFIC_TYPE
+			actual_traffic_type: TRAFFIC_TYPE_LINE
 		do
 			build_traffic_type (a_type_name)
 			actual_traffic_type := internal_traffic_type
@@ -276,7 +276,7 @@ feature -- Traffic simple line building
 			a_map_exists: a_map /= Void
 			type_name_is_valid: valid_name (a_type_name)
 		local
-			actual_traffic_type: TRAFFIC_TYPE
+			actual_traffic_type: TRAFFIC_TYPE_LINE
 		do
 			build_traffic_type (a_type_name)
 			actual_traffic_type := internal_traffic_type
@@ -391,7 +391,7 @@ feature {NONE} -- Implementation
 			a_road: TRAFFIC_ROAD
 			origin_place: TRAFFIC_PLACE
 			destination_place: TRAFFIC_PLACE
-			type: TRAFFIC_TYPE
+			type: TRAFFIC_TYPE_ROAD
 			i: INTEGER
 			origin_stop: TRAFFIC_STOP
 			destination_stop: TRAFFIC_STOP
@@ -418,7 +418,7 @@ feature {NONE} -- Implementation
 
 			create traffic_type_factory.make
 			traffic_type_factory.build(a_type)
-			type:= traffic_type_factory.traffic_type
+			type?= traffic_type_factory.traffic_type
 			i:=an_id.to_integer
 			create a_road.make (origin_stop, destination_stop, type,i,a_direction)
 			Result := a_road
@@ -428,7 +428,7 @@ feature {NONE} -- Implementation
 
 
 
-	create_line (a_name: STRING; a_type: TRAFFIC_TYPE): TRAFFIC_LINE is
+	create_line (a_name: STRING; a_type: TRAFFIC_TYPE_LINE): TRAFFIC_LINE is
 			-- Create line named `a_name'.
 		require
 			a_name_exists: a_name /= Void
@@ -440,7 +440,7 @@ feature {NONE} -- Implementation
 			result_exists: Result /= Void
 		end
 
-	create_simple_line (a_name: STRING; a_type: TRAFFIC_TYPE; a_map: TRAFFIC_MAP): TRAFFIC_SIMPLE_LINE is
+	create_simple_line (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_map: TRAFFIC_MAP): TRAFFIC_SIMPLE_LINE is
 			-- Create line named `a_name'.
 		require
 			a_name_exists: a_name /= Void

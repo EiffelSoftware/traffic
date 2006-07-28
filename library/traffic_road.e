@@ -14,7 +14,7 @@ create
 
 feature{NONE} -- Creation
 
-	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE; an_id: INTEGER; a_direction:STRING) is
+	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER; a_direction:STRING) is
 			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -56,6 +56,9 @@ feature -- Basic operation
 		end
 
 feature -- Access
+
+	type: TRAFFIC_TYPE_ROAD
+		-- Type of the Road
 
 	id: INTEGER
 
