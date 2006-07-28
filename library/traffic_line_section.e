@@ -12,6 +12,7 @@ inherit
 		redefine
 			out
 		end
+
 create
 	make
 

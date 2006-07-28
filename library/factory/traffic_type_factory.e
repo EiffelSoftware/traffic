@@ -70,7 +70,7 @@ feature -- Status report
 		
 feature {NONE} -- Implementation
 
-	internal_traffic_type: TRAFFIC_TYPE_LINE
+	internal_traffic_type: TRAFFIC_TYPE
 			-- Traffic type last created.
 
 	bus_type: TRAFFIC_TYPE_BUS is

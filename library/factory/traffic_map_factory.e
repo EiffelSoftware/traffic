@@ -238,7 +238,7 @@ feature -- Traffic line building
 			actual_traffic_type: TRAFFIC_TYPE_LINE
 		do
 			build_traffic_type (a_type_name)
-			actual_traffic_type := internal_traffic_type
+			actual_traffic_type ?= internal_traffic_type
 			internal_line := create_line (a_name, actual_traffic_type)
 			a_map.add_line (internal_line)
 		ensure
@@ -279,7 +279,7 @@ feature -- Traffic simple line building
 			actual_traffic_type: TRAFFIC_TYPE_LINE
 		do
 			build_traffic_type (a_type_name)
-			actual_traffic_type := internal_traffic_type
+			actual_traffic_type ?= internal_traffic_type
 			internal_simple_line := create_simple_line (a_name, actual_traffic_type, a_map)
 			a_map.add_line (internal_simple_line)
 		ensure

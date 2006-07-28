@@ -229,7 +229,7 @@
 		<title>Description</title>
 		<para>
 			The deferred class <classname>TRAFFIC_CONNECTION</classname> represents a connection between two places.
-			These link can be of type <classname>TRAFFIC_ROAD</classname> or of
+			These links can be of type <classname>TRAFFIC_ROAD</classname> or of
 			type <classname>TRAFFIC_LINE_SECTION</classname>. The connected places are called origin and destination
 			and are accessible with the features <featurename>origin</featurename> and <featurename>destination</featurename>.
 			Further a connection has a list of polypoints, used to display the link on the map and to allow the moving of 
@@ -398,7 +398,7 @@
 		<title>TRAFFIC_LINE_SECTION</title>
 		<title>Requirements:</title>
 		<para>
-			<link url="#traffic_connection">TRAFFIC_CONNECTION</link><link url="#traffic_place">TRAFFIC_PLACE</link>
+			<link url="#traffic_connection">TRAFFIC_CONNECTION</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>
 		</para>
 		<title>Description</title>
 		<para>
@@ -416,12 +416,6 @@
 			A line section has a number of roads (at least one) associated to it. These roads are the physical link
 			on which <classname>TRAFFIC_MOVING</classname> objects move along. To set and remove these roads features
 			<featurename>set_roads</featurename> and <featurename>remove_roads</featurename> are provided.
-		</para>
-		<para>
-			The feature <featurename>length</featurename> returns a calculated length of the line section.
-			To calculate the length the polypoints are used, and if no polypoints exists, the position 
-			of the origin and destination place are used to calculate a length. This length becomes 
-			especially important when starting to calculate routes on lines and even a whole map of lines.
 		</para>
 		<para>
 			The changement of the attached line can only be carried out by a line. This is due to the fact, 
@@ -515,7 +509,9 @@
 		<title>Requirements:</title>
 		<para>
 			<link url="#traffic_line">TRAFFIC_LINE</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
-    		<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>
+    		<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>, <link url="#traffic_building">TRAFFIC_BUILDING</link>, 
+			<link url="#traffic_road">TRAFFIC_ROAD</link>
+
 		</para>
 		<title>Description</title>
 		<para>
@@ -533,7 +529,10 @@
 			such an element (<featurename>has_place</featurename>, <featurename>has_line</featurename>
 			and <featurename>has_line_section</featurename>). To add new elements to the map use the
 			features <featurename>add_place</featurename>, <featurename>add_line</featurename>, 
-			<featurename>add_line_section</featurename> or <featurename>add_building</featurename>. To remove all buildings from the map use <featurename>delete_buildings</featurename>.
+			<featurename>add_line_section</featurename>, <featurename>add_road</featurename> or 
+			<featurename>add_building</featurename>. Similar features are provided to remove elements from the map
+			(e.g. <featurename>delete_buildings</featurename> and <featurename>remove_road</featurename> to
+			remove buildings and roads respectively).
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -551,7 +550,9 @@
     		<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>, <link url="#traffic_simple_line">
     		TRAFFIC_SIMPLE_LINE</link>, <link url="#traffic_map">TRAFFIC_MAP</link>,
     		<link url="#traffic_type">TRAFFIC_TYPE</link>, <link url="#traffic_type_factory">
-    		TRAFFIC_TYPE_FACTORY</link>
+    		TRAFFIC_TYPE_FACTORY</link>, <link url="#traffic_building">TRAFFIC_BUILDING</link>, 
+			<link url="#traffic_road">TRAFFIC_ROAD</link>
+
 		</para>
 		<title>Description</title>
 		<para>
@@ -579,7 +580,7 @@
 			complicated with a long list of arguments, but the definition of a line section is quite
 			large. A line section has an origin and destination place and a type. Additionally it can 
 			have polypoints defining its appearance and a line it belongs to. Therefore all these arguments 
-			have to be given to the build features of the line section.
+			have to be given to the build features of the line section. The same observation is also valid for roads.
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -744,7 +745,7 @@
 		<title>Description</title>
 		<para>
 			The class <classname>TRAFFIC_ROAD</classname> represents a connection between two places.
-			In general only a road can connects the same two places, whereas more there can be more than
+			In general only a road can connect the same two places, whereas there can be more than
 			one line sections between this two places. The road has an associated type, e.g. <classname>
 			TRAFFIC_TRAM</classname>. Roads are displayed on the map and used for the moving of vehicles. 
     	</para>
@@ -919,10 +920,10 @@
 			The class <classname>TRAFFIC_TYPE</classname> is used to identify the type of a road, a line 
 			or a line_section. <classname>TRAFFIC_TYPE</classname> is the abstract class of all 
 			possible traffic types while <classname>TRAFFIC_TYPE_LINE</classname> and <classname>TRAFFIC_ROAD_TYPE
-			</classname> represents the type of line and roads rispectively.
+			</classname> represents the type of lineS and roads rispectively.
 		</para>
 		<para>
-			The traffic type classes have two interesting query: <featurename>name</featurename> 
+			The <classname>TRAFFIC_TYPE</classname> class has two interesting query: <featurename>name</featurename> 
 			returns a textual representation of the traffic type. 
 		</para>
 		<title>Class overview</title>
@@ -933,54 +934,7 @@
 		</para>
 		<toplink/>
 	</section>
-
-		<section id="traffic_type_line">
-		<title>TRAFFIC_TYPE_LINE</title>
-		<title>Requirements:</title>
-		<para>
-   			<link url="#traffic_type">TRAFFIC_TYPE</link>
- 	   	</para>
-		<title>Description</title>
-		<para>
-			The class <classname>TRAFFIC_TYPE_LINE</classname> is used to identify the type of lines and line sections.
-			Traffic line types are mainly used to make sure that only line sections of a given type can be added to a line of some type.		</para>
-		<para>
-			The <classname>TRAFFIC_TYPE_LINE</classname> introduces an interesting query: <featurename>is_allowed_type
-			</featurename> that check if one object of type <classname>TRAFFIC_LINE_VEHICLE</classname> is allowed to move on the given line.
-		</para>
-		<title>Class overview</title>
-		<para>
-			<para>
-				<image src="image/sg_traffic_type_line.png"/>
-			</para>
-		</para>
-		<toplink/>
-	</section>
-	<section id="traffic_type_road">
-		<title>TRAFFIC_TYPE_ROAD</title>
-		<title>Requirements:</title>
-		<para>
-   			<link url="#traffic_type">TRAFFIC_TYPE</link>
- 	   	</para>
-		<title>Description</title>
-		<para>
-			The deferred class <classname>TRAFFIC_TYPE_ROAD</classname> inherits from <classname>TRAFFIC_TYPE</classname> 
-			and is used to identify the type of a road. The type of the road is useful to ensure that vehicles can drives 
-			only on right medium (and for example no bus drives on a railway and so on).
-		</para>
-		<para>
-			The <classname>TRAFFIC_TYPE_ROAD</classname> introduces an interesting query: <featurename>is_allowed_type
-			</featurename> that check if one object of type <classname>TRAFFIC_MOVING</classname> is allowed to travel on the given road.
-		</para>
-		<title>Class overview</title>
-		<para>
-			<para>
-				<image src="image/sg_traffic_type_road.png"/>
-			</para>
-		</para>
-		<toplink/>
-	</section>
-	<section id="traffic_type_factory">
+		<section id="traffic_type_factory">
 		<title>TRAFFIC_TYPE_FACTORY</title>
 		<title>Requirements:</title>
 		<para>
@@ -1013,6 +967,53 @@
 		<para>
 			<para>
 				<image src="image/sg_traffic_type_factory.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+
+		<section id="traffic_type_line">
+		<title>TRAFFIC_TYPE_LINE</title>
+		<title>Requirements:</title>
+		<para>
+   			<link url="#traffic_type">TRAFFIC_TYPE</link>
+ 	   	</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TRAFFIC_TYPE_LINE</classname> is used to identify the type of lines and line sections.
+			Traffic line types are mainly used to make sure that only line sections of a given type can be added to a line of some type.		</para>
+		<para>
+			The <classname>TRAFFIC_TYPE_LINE</classname> class introduces an interesting query: <featurename>is_allowed_type
+			</featurename> that check if one object of type <classname>TRAFFIC_LINE_VEHICLE</classname> is allowed to move on the given line.
+		</para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_type_line.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_type_road">
+		<title>TRAFFIC_TYPE_ROAD</title>
+		<title>Requirements:</title>
+		<para>
+   			<link url="#traffic_type">TRAFFIC_TYPE</link>
+ 	   	</para>
+		<title>Description</title>
+		<para>
+			The deferred class <classname>TRAFFIC_TYPE_ROAD</classname> inherits from <classname>TRAFFIC_TYPE</classname> 
+			and is used to identify the type of a road. The type of the road is used to ensure that vehicles can drives 
+			only on right medium (and for example no bus drives on a railway and so on).
+		</para>
+		<para>
+			The <classname>TRAFFIC_TYPE_ROAD</classname> class introduces an interesting query: <featurename>is_allowed_type
+			</featurename> that check if one object of type <classname>TRAFFIC_MOVING</classname> is allowed to travel on the given road.
+		</para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/sg_traffic_type_road.png"/>
 			</para>
 		</para>
 		<toplink/>
