@@ -190,11 +190,11 @@ feature -- Drawing
 					gl_polygon_mode_external (em_gl_front_and_back, em_gl_fill)
 					gl_flush_external
 				end
---				if lines_shown then
+				if lines_shown then
 					traffic_lines.draw
---				else
---					traffic_roads.draw
---				end
+				else
+					traffic_roads.draw
+				end
 				
 				
 				-- here could also be traffic_places.draw, which would show all places in black

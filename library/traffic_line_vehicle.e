@@ -201,42 +201,7 @@ place (stop: INTEGER): TRAFFIC_PLACE is
 
 
 feature{NONE} --Implementation		
-
-		set_line_route(a_line: TRAFFIC_LINE) is
-				-- Set the polypoints to follow the route given by the line.
-			require
-				line_not_void: a_line /= void
-			do
-				from
-					a_line.start
-				until
-					a_line.after
-				loop
-					-- Add the first polypoint of the line item as it is a section containing a origin polypoint and a destination polypoint.
-					-- The repetition is done that a tram stops for a short time at each place
-					polypoints.extend (a_line.item.polypoints.first)
-					polypoints.extend (a_line.item.polypoints.first)
-					polypoints.extend (a_line.item.polypoints.first)
-					-- Add the whole section item (origin and destination)
-					polypoints.append (a_line.item.polypoints)
-					line.forth
-				end
-				-- Repetition of the las polypoint to stop also there for a short time.
-				polypoints.extend (polypoints.last)
-				polypoints.extend (polypoints.last)
-				polypoints.extend (polypoints.last)
-
-				polypoints.start
-
-				-- Not wait at starting point therefore omit first three points
-				polypoints.forth
-				polypoints.forth
-				polypoints.forth
-
-			ensure
-				valid_polypoints: polypoints.count >= old polypoints.count
-			end		
-			
+	
 		
 		set_line_route_from_roads(a_line: TRAFFIC_LINE) is
 				-- Set the polypoints to follow the route given by the line.
