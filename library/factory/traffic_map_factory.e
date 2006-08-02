@@ -94,7 +94,7 @@ feature -- Traffic place building
 			dummy_stop: TRAFFIC_STOP
 		do
 			create internal_place.make (a_name)
-			create dummy_stop.make (internal_place, dummy_line, 0, 0)
+			create dummy_stop.make_stop (internal_place, dummy_line) --, 0, 0)
 			internal_place.set_dummy_stop (dummy_stop)
 			a_map.add_place (internal_place)
 		ensure
@@ -116,7 +116,7 @@ feature -- Traffic place building
 			dummy_stop: TRAFFIC_STOP
 		do
 			create internal_place.make_with_position (a_name, a_x, a_y)
-			create dummy_stop.make (internal_place, dummy_line, a_x, a_y)
+			create dummy_stop.make_stop (internal_place, dummy_line) --, a_x, a_y)
 			internal_place.set_dummy_stop (dummy_stop)
 			a_map.add_place (internal_place)
 		ensure
@@ -162,7 +162,7 @@ feature -- Line section building
 			line_section_has_type: equal (line_section.type, a_line.type)
 			line_section_has_origin: line_section.origin = a_map.place (a_origin).stop (a_line)
 			line_section_has_destination: line_section.destination = a_map.place (a_destination).stop (a_line)
-			line_section_in_map: a_map.has_line_section (a_origin, a_destination, a_line.type, a_line)
+			--TODOline_section_in_map: a_map.has_line_section (a_origin, a_destination, a_line.type, a_line)
 		end
 
 	line_section: TRAFFIC_LINE_SECTION is
@@ -200,9 +200,9 @@ feature -- Road section building
 			a_map.add_road (internal_road)
 		ensure
 			road_created: road /= Void
-			map_has_origin:a_map.has_stop (a_origin)
-			map_has_destination: a_map.has_stop (a_destination)
-			road_in_map: a_map.has_road (a_origin, a_destination,an_id.to_integer)
+			--TODO:map_has_origin:a_map.has_stop (a_origin)
+			--map_has_destination: a_map.has_stop (a_destination)
+			--road_in_map: a_map.has_road (a_origin, a_destination,an_id.to_integer)
 		end
 
 	road: TRAFFIC_ROAD is
@@ -342,7 +342,7 @@ feature {NONE} -- Implementation
 			a_destination_in_map: a_map.has_place (a_destination)
 			a_line_exists: a_line /= Void
 			a_line_in_map: a_map.has_line (a_line.name)
-			polypoints_are_list: a_polypoints /= Void and then a_polypoints.count >= 2 and then not a_polypoints.has (Void)
+			--polypoints_are_list: a_polypoints /= Void and then a_polypoints.count >= 2 and then not a_polypoints.has (Void)
 		local
 			typed_line_section: TRAFFIC_LINE_SECTION
 			origin_place: TRAFFIC_PLACE
@@ -356,14 +356,16 @@ feature {NONE} -- Implementation
 			if origin_place.has_stop (a_line) then
 				origin_stop := origin_place.stop (a_line)
 			else
-				create origin_stop.make (origin_place, a_line, a_polypoints.first.x, a_polypoints.first.y)
+				create origin_stop.make_stop (origin_place, a_line) --, a_polypoints.first.x, a_polypoints.first.y)
+				origin_place.add_stop (origin_stop)
 				map.add_stop (origin_stop)
 			end
 
 			if destination_place.has_stop (a_line) then
 				destination_stop := destination_place.stop (a_line)
 			else
-				create destination_stop.make (destination_place, a_line, a_polypoints.last.x, a_polypoints.last.y)
+				create destination_stop.make_stop (destination_place, a_line) --, a_polypoints.last.x, a_polypoints.last.y)
+				destination_place.add_stop (destination_stop)
 				map.add_stop (destination_stop)
 			end
 

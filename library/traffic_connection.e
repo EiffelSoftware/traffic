@@ -1,11 +1,11 @@
 indexing
-	description: "[Objects of type TRAFFIC_CONNECTION represents connections between TRAFFIC_STOPs"
+	description: "Objects of type TRAFFIC_CONNECTION represents connections between TRAFFIC_PLACEs"
 
 deferred class
 	TRAFFIC_CONNECTION
 
-	inherit
-		HASHABLE
+inherit
+	HASHABLE
 
 feature -- Status setting
 
@@ -29,11 +29,17 @@ feature -- Status setting
 
 feature -- Access
 
-	origin: TRAFFIC_STOP
+	origin: TRAFFIC_PLACE is
 			-- Place of origin.
+		do
+			Result := origin_impl.place
+		end
 
-	destination: TRAFFIC_STOP
+	destination: TRAFFIC_PLACE is
 			-- Place of destination.
+		do
+			Result := destination_impl.place
+		end
 
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			-- position representation of the connection.
@@ -58,5 +64,11 @@ feature -- Access
 				end
 			end
 		end
+
+feature {TRAFFIC_MAP} -- Access
+
+	origin_impl: TRAFFIC_NODE
+
+	destination_impl: TRAFFIC_NODE
 
 end

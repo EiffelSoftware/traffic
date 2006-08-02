@@ -40,9 +40,6 @@ feature -- Basic operations
 
 			sections: LIST [TRAFFIC_LINE_SECTION]
 		do
-			if not has_error and has_subnodes then
-				process_subnodes
-			end
 			if not has_error then
 				line ?= parent.target
 				if not has_attribute ("from") then
@@ -109,10 +106,14 @@ feature -- Basic operations
 						end
 						set_target (line_section_one_direction)
 					end
-	
-					if polypoints.count > 2 then
+
+					if not has_error and has_subnodes then
+						process_subnodes
+					end
+
+					if polypoints.count >= 2 then
 						line_section_one_direction.set_polypoints (polypoints)
-	
+
 						if line_section_other_direction /= Void then
 							create pp.make (0)
 							from
@@ -125,18 +126,18 @@ feature -- Basic operations
 							end
 							line_section_other_direction.set_polypoints (pp)
 						end
-	
+
 					end
-	
-					adjust_position (line_section_one_direction, polypoints)
-	
-					if line_section_other_direction /= Void then
-						adjust_position (line_section_other_direction, polypoints)
-					end
-	
+
+					--adjust_position (line_section_one_direction, polypoints)
+
+--					if line_section_other_direction /= Void then
+--						adjust_position (line_section_other_direction, polypoints)
+--					end
+
 				end
-	
-	
+
+
 				if not has_error and roads.count >= 1 then
 					line_section_one_direction.set_roads(roads)
 					if line_section_other_direction /= Void then
@@ -154,21 +155,21 @@ feature -- Basic operations
 	adjust_position (a_line_section: TRAFFIC_LINE_SECTION; a_polypoints: LIST [EM_VECTOR_2D]) is
 			-- Adjust positions
 		do
-			if a_line_section.origin.place.position = Void or equal(a_line_section.origin.place.position, zero_vector) then
-				a_line_section.origin.place.set_position
+			if a_line_section.origin.position = Void or equal(a_line_section.origin.position, zero_vector) then
+				a_line_section.origin.set_position
 					(create {EM_VECTOR_2D}.make (a_polypoints.first.x, a_polypoints.first.y))
 			else
-				a_line_section.origin.place.set_position
-					(create {EM_VECTOR_2D}.make (	(a_line_section.origin.place.position.x + a_polypoints.first.x)/ 2.0,
-												(a_line_section.origin.place.position.y + a_polypoints.first.y)/ 2.0))
+				a_line_section.origin.set_position
+					(create {EM_VECTOR_2D}.make (	(a_line_section.origin.position.x + a_polypoints.first.x)/ 2.0,
+												(a_line_section.origin.position.y + a_polypoints.first.y)/ 2.0))
 			end
-			if a_line_section.destination.place.position = Void or equal(a_line_section.destination.place.position, zero_vector) then
-				a_line_section.destination.place.set_position
+			if a_line_section.destination.position = Void or equal(a_line_section.destination.position, zero_vector) then
+				a_line_section.destination.set_position
 					(create {EM_VECTOR_2D}.make (a_polypoints.last.x, a_polypoints.last.y))
 			else
-				a_line_section.destination.place.set_position
-					(create {EM_VECTOR_2D}.make (	(a_line_section.destination.place.position.x + a_polypoints.last.x)/ 2.0,
-												(a_line_section.destination.place.position.y + a_polypoints.last.y)/ 2.0))
+				a_line_section.destination.set_position
+					(create {EM_VECTOR_2D}.make (	(a_line_section.destination.position.x + a_polypoints.last.x)/ 2.0,
+												(a_line_section.destination.position.y + a_polypoints.last.y)/ 2.0))
 			end
 		end
 

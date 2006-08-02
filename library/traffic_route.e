@@ -139,8 +139,8 @@ feature -- Basic operation
 			-- Calculate the shortest path from one place to visit to the next.
 		local
 			current_place, next_place: TRAFFIC_PLACE
-			shortest_path: LIST [TRAFFIC_LINE_SECTION]
-			current_connection: TRAFFIC_LINE_SECTION
+			shortest_path: LIST [TRAFFIC_CONNECTION]
+			current_connection: TRAFFIC_CONNECTION
 		do
 			places_on_route.wipe_out
 			connections.wipe_out
@@ -164,11 +164,11 @@ feature -- Basic operation
 						loop
 							current_connection := shortest_path.item
 							connections.extend (current_connection)
-							places_on_route.extend (current_connection.origin.place)
+							places_on_route.extend (current_connection.origin)
 							shortest_path.forth
 						end
 						if shortest_path.count > 0 then
-							places_on_route.extend (current_connection.destination.place)
+							places_on_route.extend (current_connection.destination)
 						end
 					end
 				end

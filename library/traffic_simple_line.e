@@ -184,14 +184,17 @@ feature -- Basic operations
 	extend (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Add `a_line_section' at beginning or end of existing direction(s).
 		local
-			origin, destination: TRAFFIC_STOP
+			origin, destination: TRAFFIC_PLACE
+			origin_stop, destination_stop: TRAFFIC_STOP
 			other_line_section: TRAFFIC_LINE_SECTION
 			pp, polypoints:  ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			start_stop := Void
 
-			origin := a_line_section.origin
-			destination := a_line_section.destination
+			origin_stop := a_line_section.origin_impl
+			destination_stop := a_line_section.destination_impl
+			origin := origin_stop.place
+			destination := destination_stop.place
 
 
 			-- Copy polypoints reversed for other direction
@@ -206,10 +209,10 @@ feature -- Basic operations
 					pp.extend (polypoints.item.twin)
 					polypoints.back
 				end
-				create other_line_section.make (destination, origin, a_line_section.type, Void)
+				create other_line_section.make (destination_stop, origin_stop, a_line_section.type, Void)
 				other_line_section.set_polypoints (pp)
 			else
-				create other_line_section.make (destination, origin, a_line_section.type, Void)
+				create other_line_section.make (destination_stop, origin_stop, a_line_section.type, Void)
 			end
 
 			a_line_section.set_line (Current)
@@ -219,25 +222,25 @@ feature -- Basic operations
 
 			if terminal_1 = Void then -- no direction exists yet
 				put_front (a_line_section)
-				terminal_1 := destination.place
-				stops_one_direction.extend (origin)
-				stops_one_direction.extend (destination)
+				terminal_1 := destination
+				stops_one_direction.extend (origin_stop)
+				stops_one_direction.extend (destination_stop)
 
 				put_end (other_line_section)
 				start_other_direction := other_line_section
-				terminal_2 := origin.place
-				stops_other_direction.extend (destination)
-				stops_other_direction.extend (origin)
+				terminal_2 := origin
+				stops_other_direction.extend (destination_stop)
+				stops_other_direction.extend (origin_stop)
 			else
-				if is_valid_insertion_one_direction_end (origin.place, destination.place) then
+				if is_valid_insertion_one_direction_end (origin, destination) then
 					insert_one_direction_end (a_line_section)
 					insert_other_direction_front (other_line_section)
 				else
-					if is_valid_insertion_one_direction_front (origin.place, destination.place) then -- put front of list
+					if is_valid_insertion_one_direction_front (origin, destination) then -- put front of list
 						insert_one_direction_front (a_line_section)
 						insert_other_direction_end (other_line_section)
 					else
-						if is_valid_insertion_other_direction_end (origin.place, destination.place) then -- put end of list	
+						if is_valid_insertion_other_direction_end (origin, destination) then -- put end of list	
 							insert_other_direction_end (a_line_section)
 							insert_one_direction_front (other_line_section)
 						else --is_valid_insertion_other_direction_front
@@ -280,34 +283,34 @@ feature -- Basic operations
 			end
 		end
 
-	extend_stop (a_stop: TRAFFIC_STOP) is
-			-- Extend the simple line by a place.
-			-- Line sections in both directions are added to the line if there
-			-- is at least one place in the line
-		require
-			a_stop_not_void: a_stop /= Void
-			a_stop_not_last_stop: count > 0 implies a_stop /= i_th (count)
-			a_stop_not_in_stops_of_line: not has (a_stop)
-		local
-			line_section: TRAFFIC_LINE_SECTION
-			origin: TRAFFIC_STOP
-		do
-			if stops_one_direction.count = 0 and then start_stop = Void then
-				start_stop := a_stop
-			else
-				if stops_one_direction.count = 0 then
-					-- No line_section inserted yet
-					origin := start_stop
-					start_stop := Void
-				else
-					origin := stops_one_direction.last
-				end
-
-				create line_section.make (origin, a_stop, type, Void)
-				extend (line_section)
-				map.add_line_section (line_section)
-			end
-		end
+--	extend_stop (a_stop: TRAFFIC_STOP) is
+--			-- Extend the simple line by a place.
+--			-- Line sections in both directions are added to the line if there
+--			-- is at least one place in the line
+--		require
+--			a_stop_not_void: a_stop /= Void
+--			a_stop_not_last_stop: count > 0 implies a_stop /= i_th (count)
+--			a_stop_not_in_stops_of_line: not has (a_stop)
+--		local
+--			line_section: TRAFFIC_LINE_SECTION
+--			origin: TRAFFIC_STOP
+--		do
+--			if stops_one_direction.count = 0 and then start_stop = Void then
+--				start_stop := a_stop
+--			else
+--				if stops_one_direction.count = 0 then
+--					-- No line_section inserted yet
+--					origin := start_stop
+--					start_stop := Void
+--				else
+--					origin := stops_one_direction.last
+--				end
+--
+--				create line_section.make (origin, a_stop, type, Void)
+--				extend (line_section)
+--				map.add_line_section (line_section)
+--			end
+--		end
 
 feature {NONE} -- Implementation
 
@@ -325,10 +328,10 @@ feature {NONE} -- Implementation
 			not_yet_added: not has_line (a_line_section)
 		do
 			put_front (a_line_section)
-			stops_one_direction.put_front (a_line_section.origin)
+			stops_one_direction.put_front (a_line_section.origin_impl)
 		ensure
 			a_line_section_in_simple_line: has_line (a_line_section)
-			stops_one_direction_set: stops_one_direction.has (a_line_section.origin)
+			stops_one_direction_set: stops_one_direction.has (a_line_section.origin_impl)
 		end
 
 	insert_one_direction_end (a_line_section: TRAFFIC_LINE_SECTION) is
@@ -342,12 +345,12 @@ feature {NONE} -- Implementation
 			position := index_of (start_other_direction, 1)
 			go_i_th (position)
 			put_left (a_line_section)
-			terminal_1 := a_line_section.destination.place
-			stops_one_direction.extend (a_line_section.destination)
+			terminal_1 := a_line_section.destination
+			stops_one_direction.extend (a_line_section.destination_impl)
 		ensure
 			a_line_section_in_simple_line: has_line (a_line_section)
-			terminal_1_set: terminal_1 = a_line_section.destination.place
-			stops_one_direction_set: stops_one_direction.has (a_line_section.destination)
+			terminal_1_set: terminal_1 = a_line_section.destination
+			stops_one_direction_set: stops_one_direction.has (a_line_section.destination_impl)
 		end
 
 	insert_other_direction_front (a_line_section: TRAFFIC_LINE_SECTION) is
@@ -362,12 +365,12 @@ feature {NONE} -- Implementation
 			go_i_th (position)
 			put_left (a_line_section)
 			start_other_direction := a_line_section
-			stops_other_direction.put_front (a_line_section.origin)
+			stops_other_direction.put_front (a_line_section.origin_impl)
 
 		ensure
 			a_line_section_in_simple_line: has_line (a_line_section)
 			start_other_direction_set: start_other_direction = a_line_section
-			stops_other_direction_set: stops_other_direction.has (a_line_section.origin)
+			stops_other_direction_set: stops_other_direction.has (a_line_section.origin_impl)
 		end
 
 	insert_other_direction_end (a_line_section: TRAFFIC_LINE_SECTION) is
@@ -377,12 +380,12 @@ feature {NONE} -- Implementation
 			not_yet_added: not has_line (a_line_section)
 		do
 			put_end (a_line_section)
-			terminal_2 := a_line_section.destination.place
-			stops_other_direction.extend (a_line_section.destination)
+			terminal_2 := a_line_section.destination
+			stops_other_direction.extend (a_line_section.destination_impl)
 		ensure
 			a_line_section_in_simple_line: has_line (a_line_section)
-			terminal_2_set: terminal_2 = a_line_section.destination.place
-			stops_other_direction_set: stops_other_direction.has (a_line_section.destination)
+			terminal_2_set: terminal_2 = a_line_section.destination
+			stops_other_direction_set: stops_other_direction.has (a_line_section.destination_impl)
 		end
 
 invariant

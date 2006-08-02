@@ -193,21 +193,21 @@ place (stop: INTEGER): TRAFFIC_PLACE is
 			end
 			if i < stop then
 				line.back
-				Result := line.item.destination.place
+				Result := line.item.destination
 			else
-				Result := line.item.origin.place
+				Result := line.item.origin
 			end
 		end
 
 
 feature{NONE} --Implementation		
-	
-		
+
+
 		set_line_route_from_roads(a_line: TRAFFIC_LINE) is
 				-- Set the polypoints to follow the route given by the line.
 			require
 				line_not_void: a_line /= void
-			
+
 			local
 				pp: ARRAYED_LIST[EM_VECTOR_2D]
 			do
@@ -217,24 +217,24 @@ feature{NONE} --Implementation
 				-- Repetition of the las polypoint to stop also there for a short time.
 				polypoints.extend (pp.last)
 				polypoints.extend (pp.last)
-				polypoints.extend (pp.last)	
-				
+				polypoints.extend (pp.last)
+
 				polypoints.start
-				
+
 				-- Not wait at starting point therefore omit first three points
 				polypoints.forth
 				polypoints.forth
 				polypoints.forth
-				
+
 			ensure
 				valid_polypoints: polypoints.count >= old polypoints.count
-			end		
-			
-		
+			end
+
+
 		set_coordinates is
 			-- Set the positions to the corresponding ones of the line section.
-			
-			
+
+
 			do
 				-- Hopefully this will give a bit performance to the journey
 				-- otherwise just clear out the map_to_gl_coords
@@ -261,8 +261,8 @@ feature{NONE} --Implementation
 					end
 				end
 			end
-			
-			
+
+
 --		set_coordinates_with_angle is
 --			-- Set the positions to the corresponding ones of the line section.
 --			local

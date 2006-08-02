@@ -12,8 +12,7 @@ inherit
 		redefine
 			out
 		end
-
-create
+create {TRAFFIC_MAP_FACTORY, TRAFFIC_MAP}
 	make
 
 feature {NONE} -- Initialization
@@ -61,7 +60,7 @@ feature -- Access
 
 	type: TRAFFIC_TYPE_LINE
 		-- Type of the line section
-			
+
 	line: TRAFFIC_LINE
 			-- Line this line section belongs to.
 

@@ -97,14 +97,14 @@ feature -- Status report
 			Result := internal_places.has (a_name)
 		end
 
-	has_stop (a_name: STRING): BOOLEAN is
-			-- Does the traffic map have a place called `a_name'?
-		require
-			a_name_exists: a_name /= Void
-			a_name_not_empty: not a_name.is_empty
-		do
-			Result := internal_stops.has (a_name)
-		end
+--	has_stop (a_name: STRING): BOOLEAN is
+--			-- Does the traffic map have a place called `a_name'?
+--		require
+--			a_name_exists: a_name /= Void
+--			a_name_not_empty: not a_name.is_empty
+--		do
+--			Result := internal_stops.has (a_name)
+--		end
 
 --	has_line_section_between (a_origin_name, a_destination_name: STRING): BOOLEAN is
 --			-- Has traffic map line section between places with given names?
@@ -121,35 +121,35 @@ feature -- Status report
 --			end
 --		end
 
-	has_line_section (a_origin_name, a_destination_name: STRING; a_traffic_type: TRAFFIC_TYPE; a_line: TRAFFIC_LINE): BOOLEAN is
-			-- Has traffic map line section `a_line_section'?
-		require
-			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
-			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
-			a_traffic_type_exists: a_traffic_type /= Void
-		local
-			l_line_section: TRAFFIC_LINE_SECTION
-			l_origin, l_destination: TRAFFIC_STOP
-			found: BOOLEAN
-		do
-			l_origin := stops.item (a_origin_name)
-			l_destination := stops.item (a_destination_name)
-			found := False
-			from
-				internal_line_sections.start
-			until
-				internal_line_sections.after or found
-			loop
-				l_line_section := internal_line_sections.item
-				if equal (l_line_section.origin, l_origin) and
-					equal (l_line_section.destination, l_destination) and
-					l_line_section.line = a_line then
-					found := True
-				end
-				internal_line_sections.forth
-			end
-			Result := found
-		end
+--	has_line_section (a_origin_name, a_destination_name: STRING; a_traffic_type: TRAFFIC_TYPE; a_line: TRAFFIC_LINE): BOOLEAN is
+--			-- Has traffic map line section `a_line_section'?
+--		require
+--			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
+--			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
+--			a_traffic_type_exists: a_traffic_type /= Void
+--		local
+--			l_line_section: TRAFFIC_LINE_SECTION
+--			l_origin, l_destination: TRAFFIC_STOP
+--			found: BOOLEAN
+--		do
+--			l_origin := stops.item (a_origin_name)
+--			l_destination := stops.item (a_destination_name)
+--			found := False
+--			from
+--				internal_line_sections.start
+--			until
+--				internal_line_sections.after or found
+--			loop
+--				l_line_section := internal_line_sections.item
+--				if equal (l_line_section.origin, l_origin) and
+--					equal (l_line_section.destination, l_destination) and
+--					l_line_section.line = a_line then
+--					found := True
+--				end
+--				internal_line_sections.forth
+--			end
+--			Result := found
+--		end
 
 	has_line (a_name: STRING): BOOLEAN is
 			-- Does the traffic map contain line `a_name'?
@@ -167,37 +167,37 @@ feature -- Status report
 		end
 
 
-	has_road (a_origin_name, a_destination_name: STRING; an_id:INTEGER): BOOLEAN is
-			-- Does traffic the map contain road `a_road'?
-		require
-			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
-			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
-		local
-			l_road: TRAFFIC_ROAD
-			l_origin, l_destination: TRAFFIC_STOP
-			found: BOOLEAN
-		do
-			l_origin := stops.item (a_origin_name)
-			l_destination := stops.item (a_destination_name)
-			found := False
-			from
-				internal_roads.start
-			until
-				internal_roads.after or found
-			loop
-				l_road := internal_roads.item_for_iteration
-
-				if l_road.id=an_id and equal (l_road.origin, l_origin) and
-					equal (l_road.destination, l_destination) then
-					found := True
-				elseif l_road.id=an_id and equal (l_road.destination, l_origin) and
-					equal (l_road.origin, l_destination) then
-					found:=true
-				end
-				internal_roads.forth
-			end
-			Result := found
-		end
+--	has_road (a_origin_name, a_destination_name: STRING; an_id:INTEGER): BOOLEAN is
+--			-- Does traffic the map contain road `a_road'?
+--		require
+--			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
+--			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
+--		local
+--			l_road: TRAFFIC_ROAD
+--			l_origin, l_destination: TRAFFIC_STOP
+--			found: BOOLEAN
+--		do
+--			l_origin := stops.item (a_origin_name)
+--			l_destination := stops.item (a_destination_name)
+--			found := False
+--			from
+--				internal_roads.start
+--			until
+--				internal_roads.after or found
+--			loop
+--				l_road := internal_roads.item_for_iteration
+--
+--				if l_road.id=an_id and equal (l_road.origin, l_origin) and
+--					equal (l_road.destination, l_destination) then
+--					found := True
+--				elseif l_road.id=an_id and equal (l_road.destination, l_origin) and
+--					equal (l_road.origin, l_destination) then
+--					found:=true
+--				end
+--				internal_roads.forth
+--			end
+--			Result := found
+--		end
 
 	has_road_with_id (an_id: INTEGER): BOOLEAN is
 			-- Has traffic map road with `an_id'?
@@ -233,27 +233,17 @@ feature -- Element change
 			a_place_in_map: has_place (a_place.name)
 		end
 
-	add_stop (a_stop: TRAFFIC_STOP) is
-			-- Add `a_stop' to map.
-		require
-			a_stop_exists: a_stop /= Void
-			no_duplicates: not has_stop (a_stop.name)
-		do
-			internal_stops.force (a_stop, a_stop.name)
-			graph.put_node (a_stop)
-		end
-
 	add_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Add line section `a_line_section' to map.
 		require
 			a_line_section_exists: a_line_section /= Void
-			a_line_section_not_in_map: not has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
+			--a_line_section_not_in_map: not has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
 		do
 			internal_line_sections.extend (a_line_section)
-			graph.put_edge (a_line_section.origin, a_line_section.destination, a_line_section, a_line_section.length)
+			graph.put_edge (a_line_section.origin_impl, a_line_section.destination_impl, a_line_section, a_line_section.length)
 			line_section_inserted_event.publish ([a_line_section])
 		ensure
-			a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
+			--a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
 		end
 
 	add_line (a_line: TRAFFIC_LINE) is
@@ -279,11 +269,8 @@ feature -- Element change
 			-- put_edge (a_road.origin, a_road.destination, a_road, a_road.length)
 			road_inserted_event.publish ([a_road])
 		ensure
-			a_road_in_map: has_road (a_road.origin.name, a_road.destination.name,a_road.id)
+			--a_road_in_map: has_road (a_road.origin.name, a_road.destination.name,a_road.id)
 		end
-
-
-
 
 
 	add_building (a_building: TRAFFIC_BUILDING) is
@@ -517,7 +504,17 @@ feature -- Element change
 				traveler_index = old traveler_index + 1
 			end
 
+feature {TRAFFIC_MAP_FACTORY} -- Element change
 
+	add_stop (a_stop: TRAFFIC_STOP) is
+			-- Add `a_stop' to map.
+		require
+			a_stop_exists: a_stop /= Void
+			--no_duplicates: not has_stop (a_stop.name)
+		do
+			--internal_stops.force (a_stop, a_stop.name)
+			graph.put_node (a_stop)
+		end
 
 feature -- Access
 
@@ -536,15 +533,15 @@ feature -- Access
 				Result := internal_taxi_offices.twin
 			end
 
-	shortest_path: LIST [TRAFFIC_LINE_SECTION] is
+	shortest_path: LIST [TRAFFIC_CONNECTION] is
 			-- Shortest path, that has been found with find_shortest_path
 		require
 			path_found: path_found
 		local
-			temp_path: LIST [LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_STOP, TRAFFIC_LINE_SECTION]]
+			temp_path: LIST [LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]]
 		do
 			temp_path := graph.shortest_path
-			create {ARRAYED_LIST[TRAFFIC_LINE_SECTION]}Result.make (10)
+			create {ARRAYED_LIST[TRAFFIC_CONNECTION]}Result.make (10)
 
 			from temp_path.start until temp_path.after loop
 				Result.extend (temp_path.item.label)
@@ -625,18 +622,24 @@ feature -- Access
 			has_place (a_name) and then place (a_name).has_stop (a_line)
 		do
 			graph.search (place (a_name).stop (a_line))
-			Result := graph.incident_edge_labels
+			Result ?= graph.incident_edge_labels
 		end
 
---	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_LINE_SECTION] is
---			-- Line sections with origin or destination place `a_name'
---		require
---			place_in_map: has_place (a_name)
---		do
---			search (place (a_name))
---			Result := incident_edge_labels
---		end
--- TODO: replace in clients by using stops.position
+	connections_of_place (a_name: STRING): LIST [TRAFFIC_CONNECTION] is
+			-- Line sections with origin or destination place `a_name'
+		require
+			place_in_map: has_place (a_name)
+		local
+			nodes: LIST [TRAFFIC_NODE]
+		do
+			Result := create {ARRAYED_LIST [TRAFFIC_CONNECTION]}.make (8)
+			nodes := place (a_name).nodes
+			from nodes.start until nodes.after loop
+				graph.search (nodes.item)
+				Result.append (graph.incident_edge_labels)
+				nodes.forth
+			end
+		end
 
 --	place_events: TRAFFIC_ITEM_EVENTS  [TRAFFIC_PLACE]
 --	
@@ -789,7 +792,7 @@ feature {TRAFFIC_MAP_LOADER}
 	recalculate_weights is
 			-- Due to an error in processing the weights need to be recalculated
 		local
-			the_edges: LIST[WEIGHTED_EDGE[TRAFFIC_STOP, TRAFFIC_LINE_SECTION]]
+			the_edges: LIST[WEIGHTED_EDGE[TRAFFIC_NODE, TRAFFIC_CONNECTION]]
 			p: TRAFFIC_PLACE
 			s: TRAFFIC_STOP
 			one_edge: TRAFFIC_LINE_SECTION
@@ -834,7 +837,7 @@ feature {TRAFFIC_MAP_LOADER}
 
 feature {NONE} -- Implementation
 
-	graph: LINKED_WEIGHTED_GRAPH [TRAFFIC_STOP, TRAFFIC_LINE_SECTION]
+	graph: TRAFFIC_GRAPH
 			-- used for path finding
 
 	internal_places: HASH_TABLE [TRAFFIC_PLACE, STRING]

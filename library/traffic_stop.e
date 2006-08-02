@@ -7,17 +7,18 @@ class
 	TRAFFIC_STOP
 
 inherit
-	HASHABLE
+	TRAFFIC_NODE
 	redefine
+		hash_code,
 		out
 	end
 
 create
-	make
+	make_stop
 
 feature{NONE} -- Creation
 
-	make (a_place: TRAFFIC_PLACE; a_line: TRAFFIC_LINE; a_x, a_y: REAL) is
+	make_stop (a_place: TRAFFIC_PLACE; a_line: TRAFFIC_LINE) is --; a_x, a_y: REAL) is
 			-- Initialize `Current' with name `a_name' and position `a_x', `a_y'.
 		require
 			place_not_void: a_place /= Void
@@ -25,7 +26,7 @@ feature{NONE} -- Creation
 		do
 			place := a_place
 			line := a_line
-			create position.make (a_x, a_y)
+			--create position.make (a_x, a_y)
 
 			if not a_line.name.is_equal ("dummy") then
 				place.stops.extend (Current)
@@ -40,11 +41,9 @@ feature -- Access
 			Result := place.name + line.name
 		end
 
-	place: TRAFFIC_PLACE
-
 	line: TRAFFIC_LINE
 
-	position: EM_VECTOR_2D
+-- remove redundancy	position: EM_VECTOR_2D
 
 feature -- Measurement
 
@@ -56,22 +55,28 @@ feature -- Measurement
 
 feature -- Status setting
 
-	set_position (a_position: EM_VECTOR_2D) is
-			-- Set position to `a_position'.
-		require
-			a_position_exists: a_position /= Void
-		do
-			position := a_position
-		ensure
-			position_set: position = a_position
-		end
+--	set_position (a_position: EM_VECTOR_2D) is
+--			-- Set position to `a_position'.
+--		require
+--			a_position_exists: a_position /= Void
+--		do
+--			position := a_position
+--		ensure
+--			position_set: position = a_position
+--		end
 
 feature -- Status report
+
+	is_dummy_stop: BOOLEAN is
+			-- Is this a dummy stop?
+		do
+			Result := place.dummy_stop = Current
+		end
 
 	out: STRING is
 			-- info about the stop
 		do
-			Result := "Traffic stop:%NPlace: " + place.name + "%NLine: " + line.name + "%NPosition: " + position.out
+			Result := "Traffic stop:%NPlace: " + place.name + "%NLine: " + line.name --+ "%NPosition: " + position.out
 		end
 
 invariant

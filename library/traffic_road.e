@@ -14,7 +14,7 @@ create
 
 feature{NONE} -- Creation
 
-	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER; a_direction:STRING) is
+	make (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER; a_direction:STRING) is
 			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -25,8 +25,8 @@ feature{NONE} -- Creation
 			an_id_is_valid: an_id>=0
 			a_direction_exists: a_direction/=Void
 		do
-			origin := a_origin
-			destination := a_destination
+			origin_impl := a_origin
+			destination_impl := a_destination
 			id:=an_id
 			type := a_type
 			if a_direction.is_equal("directed") then
@@ -35,8 +35,8 @@ feature{NONE} -- Creation
 				is_directed:=false
 			end
 			create polypoints.make (2)
-			polypoints.extend (a_origin.position)
-			polypoints.extend (a_destination.position)
+			polypoints.extend (a_origin.place.position)
+			polypoints.extend (a_destination.place.position)
 		ensure
 			origin_set: origin = a_origin
 			destination_set: destination = a_destination

@@ -288,35 +288,35 @@ feature {NONE} -- Implementation
 			stops: LIST [TRAFFIC_STOP]
 		do
 			-- TODO: cleanup
-			from stops := a_place.stops; stops.start until stops.after loop
+--			from stops := a_place.stops; stops.start until stops.after loop
+--
+--				p := stops.item.position
+--				if Result = Void then
+--						create Result.make (p.twin, p.twin)
+--					else
+--						Result.extend (p)
+--					end
+--				stops.forth
+--			end
 
-				p := stops.item.position
-				if Result = Void then
+			-- Calculate rectangle to include all outgoing links of `a_place'.
+			links := map.connections_of_place (a_place.name)
+			from
+				links.start
+			until
+				links.after
+			loop
+				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then
+				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
+					p := links.item.polypoints.first
+					if Result = Void then
 						create Result.make (p.twin, p.twin)
 					else
 						Result.extend (p)
 					end
-				stops.forth
+				end
+				links.forth
 			end
-
-			-- Calculate rectangle to include all outgoing links of `a_place'.
---			links := map.line_sections_of_place (a_place.name)			
---			from			
---				links.start
---			until
---				links.after
---			loop
---				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then
---				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
---					p := links.item.polypoints.first
---					if Result = Void then
---						create Result.make (p.twin, p.twin)
---					else
---						Result.extend (p)	
---					end
---				end
---				links.forth
---			end			
 			if Result = Void then
 				create Result.make_from_position_and_size (a_place.position.x, a_place.position.y, 0.1, 0.1)
 			else

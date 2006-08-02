@@ -30,9 +30,9 @@ feature -- Initialization
 				traffic_type := create {TRAFFIC_TYPE_TRAM}.make
 				create polypoints.make (0)
 				line := a_line
-				
-				set_line_route_from_roads(line)				
-				
+
+				set_line_route_from_roads(line)
+
 				--set_speed(1)
 
 				engine_capacity := Default_engine_capacity
@@ -64,7 +64,7 @@ feature -- Initialization
 				register_in_place_schedule
 
 				-- Set position to first entry in schedule
-				set_to_place (schedule.first.line_section.origin.place)
+				set_to_place (schedule.first.line_section.origin)
 
 				-- Never reiterate
 				set_reiterate (False)
@@ -93,7 +93,7 @@ feature -- Initialization
 					time_with_offset.minute_add (schedule_offset_minutes)
 
 					-- Register the departure time at the origin place
-					schedule.item.line_section.origin.place.register_in_schedule (Current, time_with_offset, schedule.item.line_section.destination.place)
+					schedule.item.line_section.origin.register_in_schedule (Current, time_with_offset, schedule.item.line_section.destination)
 
 					schedule.forth
 				end

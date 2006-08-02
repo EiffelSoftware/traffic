@@ -65,9 +65,10 @@ feature -- Basic operations
 		local
 			line: TRAFFIC_LINE
 			origin, destination: TRAFFIC_PLACE
-			section,line_section: TRAFFIC_LINE_SECTION
-			shortest_path: LIST [TRAFFIC_LINE_SECTION]
-			
+			section: TRAFFIC_LINE_SECTION
+			line_section: TRAFFIC_CONNECTION
+			shortest_path: LIST [TRAFFIC_CONNECTION]
+
 		do
 			if marked_station_changed then
 				map.find_shortest_path (marked_origin, marked_destination)
@@ -84,7 +85,8 @@ feature -- Basic operations
 				until
 					shortest_path.after
 				loop
-					create section.make (shortest_path.item.origin, shortest_path.item.destination, line.type, Void)
+					create section.make (shortest_path.item.origin.dummy_stop, shortest_path.item.destination.dummy_stop,
+					  line.type, shortest_path.item.polypoints)
 
 					line.extend (section)
 					shortest_path.forth

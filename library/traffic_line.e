@@ -22,18 +22,18 @@ inherit
 			make as make_linked_list,
 			out as linked_list_out,
 			extend as put_end
-		
+
 		export
 		{ANY} start, finish, after, before, off, forth, back, item, count, i_th, wipe_out, has
 		select copy,is_equal
 		end
-		
+
 	DOUBLE_MATH
 		rename copy as math_copy,
 				is_equal as math_equal,
 				out as math_out
 		end
-		
+
 --	MATH_CONST
 --		export {NONE} all end
 
@@ -93,9 +93,9 @@ feature -- Access
 			a_terminal_valid: is_terminal (a_terminal)
 		do
 			if equal (a_terminal, terminal_1) then -- terminal of one direction
-				Result := first.origin.place
+				Result := first.origin
 			else -- terminal of other direction
-				Result := start_other_direction.origin.place
+				Result := start_other_direction.origin
 			end
 		ensure
 			result_exists: Result /= Void
@@ -165,8 +165,8 @@ feature -- Status report
 			if a_line_section.line /= Void or has (a_line_section) then -- `a_line_section' is in other line or in this
 				Result := False
 			else
-				Result := is_valid_insertion_one_direction (a_line_section.origin.place, a_line_section.destination.place) or
-						is_valid_insertion_other_direction (a_line_section.origin.place, a_line_section.destination.place)
+				Result := is_valid_insertion_one_direction (a_line_section.origin, a_line_section.destination) or
+						is_valid_insertion_other_direction (a_line_section.origin, a_line_section.destination)
 			end
 		end
 
@@ -198,17 +198,21 @@ feature -- Basic operations
 			a_line_section_valid_for_insertion: is_valid_for_insertion (a_line_section)
 		local
 			position: INTEGER
-			origin, destination: TRAFFIC_STOP
+			origin, destination: TRAFFIC_PLACE
+			origin_stop, destination_stop: TRAFFIC_STOP
 		do
-			origin := a_line_section.origin
-			destination := a_line_section.destination
+			origin_stop := a_line_section.origin_impl
+			destination_stop := a_line_section.destination_impl
+			origin := origin_stop.place
+			destination := destination_stop.place
+
 			if terminal_1 = Void then -- no direction exists yet
 				put_front (a_line_section)
-				terminal_1 := destination.place
-				stops_one_direction.extend (origin)
-				stops_one_direction.extend (destination)
+				terminal_1 := destination
+				stops_one_direction.extend (origin_stop)
+				stops_one_direction.extend (destination_stop)
 			else
-				if is_valid_insertion_one_direction_end (origin.place, destination.place) then
+				if is_valid_insertion_one_direction_end (origin, destination) then
 					if other_direction_exists then -- put left of other direction
 						position := index_of (start_other_direction, 1)
 						go_i_th (position)
@@ -216,30 +220,30 @@ feature -- Basic operations
 					else -- put at end of list
 						put_end (a_line_section)
 					end
-					terminal_1 := destination.place
-					stops_one_direction.extend (destination)
+					terminal_1 := destination
+					stops_one_direction.extend (destination_stop)
 				else
-					if is_valid_insertion_one_direction_front (origin.place, destination.place) then -- put front of list
+					if is_valid_insertion_one_direction_front (origin, destination) then -- put front of list
 						put_front (a_line_section)
-						stops_one_direction.extend (origin)
+						stops_one_direction.extend (origin_stop)
 					else
 						if terminal_2 = Void then -- start other direction
 							put_end (a_line_section)
 							start_other_direction := a_line_section
-							terminal_2 := destination.place
-							stops_other_direction.extend (origin)
-							stops_other_direction.extend (destination)
+							terminal_2 := destination
+							stops_other_direction.extend (origin_stop)
+							stops_other_direction.extend (destination_stop)
 						else
-							if is_valid_insertion_other_direction_end (origin.place, destination.place) then -- put end of list
+							if is_valid_insertion_other_direction_end (origin, destination) then -- put end of list
 								put_end (a_line_section)
-								terminal_2 := destination.place
-								stops_other_direction.extend (destination)
+								terminal_2 := destination
+								stops_other_direction.extend (destination_stop)
 							else --is_valid_insertion_other_direction_front
 								position := index_of (start_other_direction, 1)
 								go_i_th (position)
 								put_left (a_line_section)
 								start_other_direction := a_line_section
-								stops_other_direction.extend (origin)
+								stops_other_direction.extend (origin_stop)
 							end
 						end
 					end
@@ -286,14 +290,14 @@ feature -- Basic operations
 					is_station:=true
 					-- loop on all the roads
 
-					if item.origin.place=roads.first.origin.place and item.destination.place=roads.last.destination.place then
+					if item.origin=roads.first.origin and item.destination=roads.last.destination then
 						invert:=false
-					elseif item.origin.place=roads.last.destination.place and item.destination.place=roads.first.origin.place then
+					elseif item.origin=roads.last.destination and item.destination=roads.first.origin then
 
 						invert:=true
 					else
 						io.putstring ("Invalid roads for given line section%N")
-						io.putstring("Line section origin: "+item.origin.place.name+" - Line section destination:"+item.destination.place.name+"%N")
+						io.putstring("Line section origin: "+item.origin.name+" - Line section destination:"+item.destination.name+"%N")
 					end
 					if invert then
 						from
@@ -352,7 +356,7 @@ feature -- Basic operations
 					forth
 				end
 			end
-			
+
 
 feature {NONE} -- Implementation
 
@@ -510,19 +514,19 @@ feature {NONE} -- Implementation
 				end
 			end
 		end
-		
-		
-		
-		angle(st,dest: EM_VECTOR_2D):DOUBLE is	
+
+
+
+		angle(st,dest: EM_VECTOR_2D):DOUBLE is
 			-- Set the angles to the x- and y-axis respectively.
-			local 
+			local
 				x_difference, y_difference, hypo, quad: DOUBLE
 				angle_x:DOUBLE
 			do
 				x_difference := st.x - dest.x
 				y_difference := st.y - dest.y
 				hypo := sqrt ((x_difference * x_difference) + (y_difference * y_difference))
-				
+
 				if hypo /= 0 then
 					-- arc_sine in radian
 					quad := 0
@@ -530,7 +534,7 @@ feature {NONE} -- Implementation
 						angle_x := arc_sine (x_difference/hypo)
 							-- the same in degree
 						angle_x := angle_x * 180 / pi
-						angle_x := 180 + angle_x	
+						angle_x := 180 + angle_x
 					elseif (x_difference < 0) and (y_difference >= 0) then
 						x_difference := x_difference.abs
 						y_difference := y_difference.abs
@@ -552,7 +556,7 @@ feature {NONE} -- Implementation
 						angle_x := angle_x * 180 / pi
 						angle_x := 360 - angle_x
 					end
-					
+
 					if angle_x < 0 then
 						angle_x := 360 + angle_x
 					elseif angle_x > 360 then
@@ -565,8 +569,8 @@ feature {NONE} -- Implementation
 					Result:=angle_x
 				end
 			end
-	
-	
+
+
 
 invariant
 	name_not_void: name /= Void -- Line has name.

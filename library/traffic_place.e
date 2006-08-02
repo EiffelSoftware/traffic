@@ -29,6 +29,7 @@ feature {NONE} -- Initialize
 			create position.make (0.0, 0.0)
 			create schedule.make
 			create stops.make (5)
+			create nodes.make (5)
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -44,6 +45,7 @@ feature {NONE} -- Initialize
 			create position.make (a_x, a_y)
 			create schedule.make
 			create stops.make (5)
+			create nodes.make (5)
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -63,6 +65,8 @@ feature -- Access
 
 	schedule: LINKED_LIST[TUPLE[TRAFFIC_LINE_VEHICLE, TIME, TRAFFIC_PLACE]]
 			-- All departure times [tram, time, direction] of trams visiting this place
+
+	nodes: ARRAYED_LIST [TRAFFIC_NODE]
 
 	stops: ARRAYED_LIST[TRAFFIC_STOP]
 
@@ -108,7 +112,7 @@ feature -- Element change
 			a_position_exists: a_position /= Void
 		do
 			position := a_position
-			dummy_stop.set_position (a_position)
+			--dummy_stop.set_position (a_position)
 		ensure
 			position_set: position = a_position
 		end
@@ -133,6 +137,7 @@ feature -- Element change
 			-- add a traffic stop
 		do
 			stops.extend (a_stop)
+			nodes.extend (a_stop)
 		end
 
 feature{TRAFFIC_MAP_FACTORY} -- Element change
@@ -199,5 +204,7 @@ invariant
 	name_not_empty: not name.is_empty -- Name not empty.
 	position_not_void: position /= Void -- Position exists.
 	stops_not_void: stops /= Void
+	nodes_not_void: stops /= Void
+	--stops_in_nodes: stops.for_all (agent nodes.has)
 
 end

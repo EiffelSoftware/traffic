@@ -8,7 +8,7 @@ class
 	TRAFFIC_GRAPH
 
 inherit
-	LINKED_WEIGHTED_GRAPH [TRAFFIC_STOP, TRAFFIC_LINE_SECTION]
+	LINKED_WEIGHTED_GRAPH [TRAFFIC_NODE, TRAFFIC_CONNECTION]
 	redefine
 		find_shortest_path
 	end
@@ -72,8 +72,8 @@ feature {NONE} -- Implementation
 	regular_distance: INTEGER is 0
 	minimum_switches: INTEGER is 1
 
-	sp_origin: TRAFFIC_STOP
-	sp_destination: TRAFFIC_STOP
+	sp_origin: TRAFFIC_NODE
+	sp_destination: TRAFFIC_NODE
 
 invariant
 	invariant_clause: True -- Your invariant here
