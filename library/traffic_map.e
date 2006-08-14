@@ -36,6 +36,7 @@ feature {NONE} -- Initialization
 			default_size := 100
 			name := a_name
 			create graph.make_multi_graph
+			graph.set_minimum_switches
 			create internal_places.make (default_size * default_size)
 			create internal_lines.make (default_size)
 			create internal_line_sections.make (default_size)

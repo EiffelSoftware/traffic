@@ -10,9 +10,11 @@ inherit
 
 	TRAFFIC_CONNECTION
 		redefine
-			out
+			out,
+			origin_impl,
+			destination_impl
 		end
-create {TRAFFIC_MAP_FACTORY, TRAFFIC_MAP}
+create {TRAFFIC_MAP_FACTORY, TRAFFIC_MAP, TRAFFIC_MAP_WIDGET, TRAFFIC_SIMPLE_LINE}
 	make
 
 feature {NONE} -- Initialization
@@ -29,8 +31,8 @@ feature {NONE} -- Initialization
 		local
 			temp_type: TRAFFIC_TYPE_LINE
 		do
-			origin := a_origin
-			destination := a_destination
+			origin_impl := a_origin
+			destination_impl := a_destination
 			create state.make
 			temp_type ?= a_type
 			if a_type/=Void then
@@ -41,8 +43,8 @@ feature {NONE} -- Initialization
 				set_polypoints (a_list)
 			else
 				create polypoints.make (2)
-				polypoints.extend (a_origin.position)
-				polypoints.extend (a_destination.position)
+				polypoints.extend (a_origin.place.position)
+				polypoints.extend (a_destination.place.position)
 			end
 			create roads.make (1)
 
@@ -124,6 +126,11 @@ feature {TRAFFIC_LINE} -- Status setting
 			line_void: line = Void
 		end
 
+feature {TRAFFIC_MAP, TRAFFIC_LINE} -- Access
+
+	origin_impl: TRAFFIC_STOP
+
+	destination_impl: TRAFFIC_STOP
 
 feature -- Basic operation
 
