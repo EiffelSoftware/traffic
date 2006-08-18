@@ -58,7 +58,6 @@ feature -- Traffic map building
 			a_name_not_empty: not a_name.is_empty
 		do
 			create internal_map.make (a_name)
-			create dummy_line.make ("dummy", create {TRAFFIC_TYPE_WALKING}.make)
 		ensure
 			map_created: map /= Void
 			map_has_name: equal (map.name, a_name)
@@ -91,11 +90,11 @@ feature -- Traffic place building
 			map_exists: has_map
 			unique_name: not a_map.has_place (a_name)
 		local
-			dummy_stop: TRAFFIC_STOP
+			dummy_node: TRAFFIC_NODE
 		do
 			create internal_place.make (a_name)
-			create dummy_stop.make_stop (internal_place, dummy_line) --, 0, 0)
-			internal_place.set_dummy_stop (dummy_stop)
+			create dummy_node.make (internal_place)
+			internal_place.set_dummy_node (dummy_node)
 			a_map.add_place (internal_place)
 		ensure
 			place_created: place /= Void
@@ -113,11 +112,11 @@ feature -- Traffic place building
 			map_exists: has_map
 			unique_name: not a_map.has_place (a_name)
 		local
-			dummy_stop: TRAFFIC_STOP
+			dummy_node: TRAFFIC_NODE
 		do
 			create internal_place.make_with_position (a_name, a_x, a_y)
-			create dummy_stop.make_stop (internal_place, dummy_line) --, a_x, a_y)
-			internal_place.set_dummy_stop (dummy_stop)
+			create dummy_node.make (internal_place)
+			internal_place.set_dummy_node (dummy_node)
 			a_map.add_place (internal_place)
 		ensure
 			place_created: place /= Void
@@ -328,7 +327,7 @@ feature {NONE} -- Implementation
 	internal_map: TRAFFIC_MAP
 			-- Internal representation of last created traffic map.
 
-	dummy_line: TRAFFIC_LINE
+--	dummy_line: TRAFFIC_LINE
 			-- Line used for dummy stops.
 
 	create_line_section (a_origin, a_destination: STRING; a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]; a_line: TRAFFIC_LINE; a_map: TRAFFIC_MAP): TRAFFIC_LINE_SECTION is
@@ -395,14 +394,14 @@ feature {NONE} -- Implementation
 			destination_place: TRAFFIC_PLACE
 			type: TRAFFIC_TYPE_ROAD
 			i: INTEGER
-			origin_stop: TRAFFIC_STOP
-			destination_stop: TRAFFIC_STOP
+			origin_node: TRAFFIC_NODE
+			destination_node: TRAFFIC_NODE
 		do
 			origin_place := a_map.place (a_origin)
 			destination_place := a_map.place (a_destination)
 
-			origin_stop := origin_place.dummy_stop
-			destination_stop := destination_place.dummy_stop
+			origin_node := origin_place.dummy_node
+			destination_node := destination_place.dummy_node
 
 --			if origin_place.has_stop (a_line) then
 --				origin_stop := origin_place.stop (a_line)
@@ -422,7 +421,7 @@ feature {NONE} -- Implementation
 			traffic_type_factory.build(a_type)
 			type?= traffic_type_factory.traffic_type
 			i:=an_id.to_integer
-			create a_road.make (origin_stop, destination_stop, type,i,a_direction)
+			create a_road.make (origin_node, destination_node, type,i,a_direction)
 			Result := a_road
 		ensure
 			result_exists: Result /= Void

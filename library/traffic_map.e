@@ -161,12 +161,8 @@ feature -- Status report
 			Result := internal_lines.has (a_name)
 		end
 
-	path_found: BOOLEAN is
+	path_found: BOOLEAN
 			-- shortest path found on graph?
-		do
-			Result := graph.path_found
-		end
-
 
 --	has_road (a_origin_name, a_destination_name: STRING; an_id:INTEGER): BOOLEAN is
 --			-- Does traffic the map contain road `a_road'?
@@ -266,8 +262,8 @@ feature -- Element change
 			no_road_with_same_id: not has_road_with_id(a_road.id)
 		do
 			internal_roads.force (a_road, a_road.id)
-			-- TODO: insert roads into graph, in a way similar to this one:
-			-- put_edge (a_road.origin, a_road.destination, a_road, a_road.length)
+			--TODO possibly put it in graph
+			--graph.put_edge (a_road.origin_impl, a_road.destination_impl, a_road, a_road.length)
 			road_inserted_event.publish ([a_road])
 		ensure
 			--a_road_in_map: has_road (a_road.origin.name, a_road.destination.name,a_road.id)
@@ -440,6 +436,7 @@ feature -- Element change
 				index := internal_line_sections.index
 				internal_line_sections.prune (a_line_section)
 				line_section_removed_event.publish ([a_line_section])
+				path_found := False
 			ensure
 				-- we can assume, that the line_section was only once inserted
 				line_section_removed: not line_sections.has (a_line_section)
@@ -461,6 +458,7 @@ feature -- Element change
 					internal_roads.forth
 				end
 
+				path_found := False
 			ensure
 				-- we can assume, that the line_section was only once inserted
 				road_removed: not internal_roads.has_item (a_road)
@@ -538,17 +536,8 @@ feature -- Access
 			-- Shortest path, that has been found with find_shortest_path
 		require
 			path_found: path_found
-		local
-			temp_path: LIST [LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]]
 		do
-			temp_path := graph.shortest_path
-			create {ARRAYED_LIST[TRAFFIC_CONNECTION]}Result.make (10)
-
-			from temp_path.start until temp_path.after loop
-				Result.extend (temp_path.item.label)
-				temp_path.forth
-			end
-
+			Result := shortest_path_impl
 		ensure
 			path_not_void: Result /= Void
 		end
@@ -627,7 +616,7 @@ feature -- Access
 		end
 
 	connections_of_place (a_name: STRING): LIST [TRAFFIC_CONNECTION] is
-			-- Line sections with origin or destination place `a_name'
+			-- Connections with origin or destination place `a_name'
 		require
 			place_in_map: has_place (a_name)
 		local
@@ -639,6 +628,32 @@ feature -- Access
 				graph.search (nodes.item)
 				Result.append (graph.incident_edge_labels)
 				nodes.forth
+			end
+		end
+
+	line_sections_of_place (a_name: STRING): LIST[TRAFFIC_LINE_SECTION] is
+			-- Line sections with origin or destination place `a_name'
+		require
+			place_in_map: has_place (a_name)
+		local
+			a_stops: LIST [TRAFFIC_STOP]
+			connections: LIST [TRAFFIC_CONNECTION]
+			ls: TRAFFIC_LINE_SECTION
+		do
+			Result := create {ARRAYED_LIST [TRAFFIC_LINE_SECTION]}.make (8)
+			a_stops := place (a_name).stops
+			from a_stops.start until a_stops.after loop
+				graph.search (a_stops.item)
+				connections := graph.incident_edge_labels
+
+				from connections.start until connections.after loop
+					ls ?= connections.item
+					if ls /= Void then
+						Result.extend (ls)
+					end
+					connections.forth
+				end
+				a_stops.forth
 			end
 		end
 
@@ -763,28 +778,43 @@ feature -- Basic operation
 
 	find_shortest_path (a_origin: TRAFFIC_PLACE; a_destination: TRAFFIC_PLACE) is
 			-- Find shortest path
-			-- TODO: remove the dummy connections afterwards!
+		local
+			temp_path: LIST [LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]]
 		do
-			graph.put_node (a_origin.dummy_stop)
+			path_found := False
+			graph.put_node (a_origin.dummy_node)
 			from a_origin.stops.start until a_origin.stops.after loop
-				graph.put_edge (a_origin.dummy_stop, a_origin.stops.item,
-				create {TRAFFIC_LINE_SECTION}.make (a_origin.dummy_stop, a_origin.stops.item,
-				  create {TRAFFIC_TYPE_WALKING}.make, Void),
+				graph.put_edge (a_origin.dummy_node, a_origin.stops.item,
+				create {TRAFFIC_ROAD}.make (a_origin.dummy_node, a_origin.stops.item,
+				  create {TRAFFIC_TYPE_STREET}.make, (create {INTEGER_32_REF}).max_value, Void),
 				0)
 				a_origin.stops.forth
 			end
 
-			graph.put_node (a_destination.dummy_stop)
+			graph.put_node (a_destination.dummy_node)
 			from a_destination.stops.start until a_destination.stops.after loop
-				graph.put_edge (a_destination.stops.item, a_destination.dummy_stop,
-				  create {TRAFFIC_LINE_SECTION}.make (a_destination.stops.item, a_destination.dummy_stop,
-				    create {TRAFFIC_TYPE_WALKING}.make, Void),
+				graph.put_edge (a_destination.stops.item, a_destination.dummy_node,
+				  create {TRAFFIC_ROAD}.make (a_destination.stops.item, a_destination.dummy_node,
+				    create {TRAFFIC_TYPE_STREET}.make, (create {INTEGER_32_REF}).max_value, Void),
 				  0)
 				a_destination.stops.forth
 			end
-			graph.find_shortest_path (a_origin.dummy_stop, a_destination.dummy_stop)
-			--graph.search (a_origin.dummy_stop)
-			--graph.remove_node
+			graph.find_shortest_path (a_origin.dummy_node, a_destination.dummy_node)
+
+			if graph.path_found then
+				path_found := True
+				temp_path := graph.shortest_path
+				create shortest_path_impl.make (10)
+
+				from temp_path.start until temp_path.after loop
+					shortest_path_impl.extend (temp_path.item.label)
+					temp_path.forth
+				end
+			end
+			graph.search (a_origin.dummy_node)
+			graph.remove_node
+			graph.search (a_destination.dummy_node)
+			graph.remove_node
 		end
 
 
@@ -867,6 +897,8 @@ feature {NONE} -- Implementation
 
 	internal_taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE]
 			-- Taxi offices associated with this map
+
+	shortest_path_impl: ARRAYED_LIST[TRAFFIC_CONNECTION]
 
 	place_position (a_name: STRING): INTEGER is
 			-- Position of place `a_name' in places.

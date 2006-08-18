@@ -70,7 +70,7 @@ feature -- Status report
 	is_dummy_stop: BOOLEAN is
 			-- Is this a dummy stop?
 		do
-			Result := place.dummy_stop = Current
+			Result := place.dummy_node = Current
 		end
 
 	out: STRING is

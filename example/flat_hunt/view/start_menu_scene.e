@@ -11,13 +11,13 @@ inherit
 		redefine
 			initialize_scene, handle_key_down_event
 		end
-		
+
 	OPTION_CONSTANTS
-	
+
 
 create
 	make_scene
-	
+
 feature -- Initialization
 
 	initialize_scene is
@@ -30,7 +30,7 @@ feature -- Initialization
 			flathunt_hunter_number := 2
 			flathunt_map := "../map/zurich_little.xml"
 			flathunt_theme := "glass"
-			
+
 			-- Build menu.
 			menu.add_entry ("start game", agent start_callback, True)
 			menu.add_entry ("credits", agent credits_callback, False)
@@ -47,10 +47,10 @@ feature -- Initialization
 			fill_options
 
 			main_container.extend (option_panel)
-			
+
 			-- Set active menu to normal menu.
 			active_menu := option_panel.option_menus.count + 1
-			
+
 		ensure then
 			menu_displayed: main_container.has (menu)
 			menu_positioned: menu.x = Window_width - menu.width - Margin and menu.y = Window_height - menu.height
@@ -60,14 +60,14 @@ feature -- Event handling
 
 	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
 			-- Handle keyboard events.
-		do			
+		do
 			Precursor {MENU_SCENE} (a_keyboard_event)
 
 			-- Main menu event handling.
 			if active_menu = option_panel.option_menus.count + 1 then
 				menu.handle_key_down_event (a_keyboard_event)
 			end
-			
+
 			if option_panel.option_menus.count > 0 then
 				-- Toggle between main menu and option menus.
 				if a_keyboard_event.key = Sdlk_tab then
@@ -102,8 +102,8 @@ feature -- Event handling
 						option_panel.option_menus.i_th (active_menu).activate
 					end
 					option_panel.option_menus.i_th (active_menu).handle_key_down_event (a_keyboard_event)
-				end	
-			end	
+				end
+			end
 		end
 
 feature -- For the exercise
@@ -113,19 +113,19 @@ feature -- For the exercise
 		do
 			-- Do nothing.
 		end
-		
-		
+
+
 feature {NONE} -- Implementation
 
 	Flathunt_mode: INTEGER
 			-- Game mode (1: hunt, 2:escape, 3: versus, 4: demo)
-	
+
 	Flathunt_hunter_number: INTEGER
 			-- Number of hunters (between 1 and 8)
-	
+
 	Flathunt_map: STRING
 			-- Map name ("little" or "big")
-	
+
 	Flathunt_theme: STRING
 			-- Theme ("glass" or "white")
 
@@ -134,13 +134,17 @@ feature {NONE} -- Implementation
 
 	game: GAME
 			-- The game logic.
-			
+
 	game_scene: GAME_SCENE
 			-- Visualization of the game.
 
 	start_callback is
 			-- Callback for `start game' entry.
+		local
+			fs: KL_FILE_SYSTEM
+			s: STRING
 		do
+			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 			from
 				option_panel.option_menus.start
 			until
@@ -151,16 +155,18 @@ feature {NONE} -- Implementation
 				elseif option_panel.option_menus.item.title.is_equal (option_title_number_of_flathunters) then
 					flathunt_hunter_number := option_panel.option_menus.item.selected_entry
 				elseif option_panel.option_menus.item.title.is_equal (option_title_map_size) then
-					flathunt_map := "../map/zurich_" + option_panel.option_menus.item.item (option_panel.option_menus.item.selected_entry).text.value + ".xml"					
+					s := fs.pathname ("..", "map")
+					s := fs.pathname (s, "zurich_")
+					flathunt_map := s + option_panel.option_menus.item.item (option_panel.option_menus.item.selected_entry).text.value + ".xml"
 				elseif option_panel.option_menus.item.title.is_equal (option_title_characters) then
-					flathunt_theme := option_panel.option_menus.item.item (option_panel.option_menus.item.selected_entry).text.value	
+					flathunt_theme := option_panel.option_menus.item.item (option_panel.option_menus.item.selected_entry).text.value
 				end
 				option_panel.option_menus.forth
 			end
 
 			-- Create a `game' with the appropriate settings.
 			create game.make (flathunt_mode, flathunt_hunter_number, flathunt_map, False)
-			
+
 			-- Start the game.
 			start_game
 		end
@@ -172,7 +178,7 @@ feature {NONE} -- Implementation
 		do
 			-- Since we didn't create the map at creation of `game', we need to do that now.
 			game.create_map
-			
+
 			-- Create scene that displays the game.
 			game_scene := create {GAME_SCENE}.make_scene (game.traffic_map, flathunt_hunter_number)
 
@@ -186,16 +192,16 @@ feature {NONE} -- Implementation
 
 			-- Go to the above created game scene.			
 			next_scene := game_scene
-			event_loop.stop			
+			event_loop.stop
 		end
-		
+
 	credits_callback is
 			-- Callback for `credits' entry.
 		do
 			next_scene := create {CREDITS_SCENE}.make_scene
-			event_loop.stop				
+			event_loop.stop
 		end
-		
+
 	quit_callback is
 			-- Callback for `quit' entry.
 		do

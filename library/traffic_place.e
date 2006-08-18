@@ -70,8 +70,8 @@ feature -- Access
 
 	stops: ARRAYED_LIST[TRAFFIC_STOP]
 
-	dummy_stop: TRAFFIC_STOP
-			-- stop used for shortest path calculation
+	dummy_node: TRAFFIC_NODE
+			-- node used for shortest path calculation
 
 	stop (a_line: TRAFFIC_LINE): TRAFFIC_STOP is
 			-- get the stop corresponding to `a_line'
@@ -142,10 +142,10 @@ feature -- Element change
 
 feature{TRAFFIC_MAP_FACTORY} -- Element change
 
-	set_dummy_stop (a_stop: TRAFFIC_STOP) is
+	set_dummy_node (a_node: TRAFFIC_NODE) is
 			-- used for shortest path
 		do
-			dummy_stop := a_stop
+			dummy_node := a_node
 		end
 
 feature -- Measurement
