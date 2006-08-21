@@ -6,11 +6,7 @@
 
 <places>
 
-	<place name="Bahnhof Stadelhofen" x="" y="">
-		<file name="some_file_name"/>
-		<file name="some_other_file_name"/>
-		<description text="one of many stations in zurich"/>
-	</place>
+	<place name="Bahnhof Stadelhofen"/>
 	<place name="Bellevue"/>
 	<place name="Boersenstrasse"/>
 	<place name="Buerkliplatz"/>
@@ -30,37 +26,37 @@
 
 <!--roads-->
 
-	<road id="1" from="Paradeplatz" to="Boersenstrasse" direction="undirected">
+	<road id="1" from="Paradeplatz" to="Boersenstrasse" direction="undirected" type="lightrail">
 		        <point x="660" y="235"/> 
 		        <point x="740" y="315"/>
 	</road>
-	<road id="2" from="Boersenstrasse" to="Buerkliplatz" direction="undirected">
+	<road id="2" from="Boersenstrasse" to="Buerkliplatz" direction="undirected" type="lightrail">
 		        <point x="740" y="315"/>
 		        <point x="744" y="320"/>
 		        <point x="750" y="320"/> 
 	</road>
-	<road id="3" from="Buerkliplatz" to="Bellevue" direction="undirected">
+	<road id="3" from="Buerkliplatz" to="Bellevue" direction="undirected" type="lightrail">
 		        <point x="750" y="320"/> 
 		        <point x="820" y="320"/>
 		        <point x="843" y="295"/>	   
 	</road>
-	<road id="4" from="Bellevue" to="Kunsthaus" direction="undirected">
+	<road id="4" from="Bellevue" to="Kunsthaus" direction="undirected" type="lightrail">
 		        <point x="843" y="295"/> 
 		        <point x="940" y="197"/> 
 	</road>
-	<road id="5" from="Kunsthaus" to="Neumarkt" direction="undirected">
+	<road id="5" from="Kunsthaus" to="Neumarkt" direction="undirected" type="street">
 			<point x="934" y="218"/>
 			<point x="880" y="164"/>
 	</road>
-	<road id="6" from="Neumarkt" to="Central" direction="undirected">
+	<road id="6" from="Neumarkt" to="Central" direction="undirected" type="street">
 			<point x="880" y="164"/>
 			<point x="833" y="117"/>
 	</road>
-	<road id="7" from="Central" to="Hauptbahnhof" direction="undirected">
+	<road id="7" from="Central" to="Hauptbahnhof" direction="undirected" type="street">
 			<point x="833" y="117"/>
 			<point x="681" y="117"/>
 	</road>
-	<road id="8" from="Hauptbahnhof" to="Bahnhof Stadelhofen" direction="undirected">
+	<road id="8" from="Hauptbahnhof" to="Bahnhof Stadelhofen" direction="undirected" type="railroad">
 			<point x="693" y="2"/>
 			<point x="811" y="2"/>
 			<point x="822" y="4"/>

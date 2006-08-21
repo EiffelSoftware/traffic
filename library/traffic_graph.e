@@ -10,7 +10,8 @@ class
 inherit
 	LINKED_WEIGHTED_GRAPH [TRAFFIC_NODE, TRAFFIC_CONNECTION]
 	redefine
-		find_shortest_path
+		find_shortest_path,
+		writable
 	end
 
 create
@@ -40,6 +41,14 @@ feature -- Status Setting
 			shortest_path_mode := minimum_switches
 		end
 
+feature -- Status Report
+
+	writable: BOOLEAN is
+			-- Is there a current item that may be modified?
+		do
+			Result := not off
+		end
+		
 feature {NONE} -- Implementation
 
 	calculate_weight (a_edge: WEIGHTED_EDGE [TRAFFIC_PLACE, TRAFFIC_LINE_SECTION]): DOUBLE is

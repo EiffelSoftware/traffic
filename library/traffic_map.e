@@ -9,7 +9,6 @@ class
 inherit
 	STORABLE
 		export
-
 			{TRAFFIC_MAP_LOADER} all
 		undefine
 			out
@@ -783,19 +782,21 @@ feature -- Basic operation
 		do
 			path_found := False
 			graph.put_node (a_origin.dummy_node)
+			--connect the dummy node with the stops
 			from a_origin.stops.start until a_origin.stops.after loop
 				graph.put_edge (a_origin.dummy_node, a_origin.stops.item,
 				create {TRAFFIC_ROAD}.make (a_origin.dummy_node, a_origin.stops.item,
-				  create {TRAFFIC_TYPE_STREET}.make, (create {INTEGER_32_REF}).max_value, Void),
+				  create {TRAFFIC_TYPE_STREET}.make, (create {INTEGER_32_REF}).max_value, "undirected"),
 				0)
 				a_origin.stops.forth
 			end
 
+			--connect the stops with the dummy node
 			graph.put_node (a_destination.dummy_node)
 			from a_destination.stops.start until a_destination.stops.after loop
 				graph.put_edge (a_destination.stops.item, a_destination.dummy_node,
 				  create {TRAFFIC_ROAD}.make (a_destination.stops.item, a_destination.dummy_node,
-				    create {TRAFFIC_TYPE_STREET}.make, (create {INTEGER_32_REF}).max_value, Void),
+				    create {TRAFFIC_TYPE_STREET}.make, (create {INTEGER_32_REF}).max_value, "undirected"),
 				  0)
 				a_destination.stops.forth
 			end
@@ -812,6 +813,9 @@ feature -- Basic operation
 				end
 			end
 			graph.search (a_origin.dummy_node)
+			if graph.off then
+				io.put_string ("%Ndummy node not found")
+			end
 			graph.remove_node
 			graph.search (a_destination.dummy_node)
 			graph.remove_node

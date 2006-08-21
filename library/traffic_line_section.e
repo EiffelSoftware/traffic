@@ -61,14 +61,14 @@ feature {NONE} -- Initialization
 			origin_stop: TRAFFIC_STOP
 			destination_stop: TRAFFIC_STOP
 		do
-			if not a_origin.stops.empty then
+			if not a_origin.stops.is_empty then
 				origin_stop := a_origin.stops.first
 			else
 				-- maybe this should always be done?
 				create origin_stop.make_non_insertable (a_origin, a_type)
 			end
 
-			if not a_destination.stops.empty then
+			if not a_destination.stops.is_empty then
 				destination_stop := a_destination.stops.first
 			else
 				create destination_stop.make_non_insertable (a_destination, a_type)

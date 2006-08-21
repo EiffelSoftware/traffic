@@ -85,8 +85,10 @@ feature -- Basic operations
 				until
 					shortest_path.after
 				loop
-					create section.make (shortest_path.item.origin.dummy_stop, shortest_path.item.destination.dummy_stop,
-					  line.type, shortest_path.item.polypoints)
+					create section.make_non_insertable (shortest_path.item.origin, shortest_path.item.destination, line.type,
+					  shortest_path.item.polypoints)
+--					create section.make (shortest_path.item.origin.dummy_stop, shortest_path.item.destination.dummy_stop,
+--					  line.type, shortest_path.item.polypoints)
 
 					line.extend (section)
 					shortest_path.forth
