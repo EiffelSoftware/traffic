@@ -38,8 +38,8 @@ feature{NONE} -- Creation
 			polypoints.extend (a_origin.place.position)
 			polypoints.extend (a_destination.place.position)
 		ensure
-			origin_set: origin = a_origin
-			destination_set: destination = a_destination
+			origin_set: origin_impl = a_origin
+			destination_set: destination_impl = a_destination
 			type_set: type = a_type
 			polypoints_exists: polypoints /= Void
 		end

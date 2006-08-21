@@ -830,9 +830,9 @@ feature {TRAFFIC_MAP_LOADER}
 			other_edge: TRAFFIC_LINE_SECTION
 		do
 			from internal_place_array.start until internal_place_array.after loop
-				if internal_place_array.item.position.distance (create {EM_VECTOR_2D}.make (0, 0)) < 10 then
-					--io.put_string ("%NPlace by 0,0 found: " + internal_place_array.item.name)
-				end
+--				if internal_place_array.item.position.distance (create {EM_VECTOR_2D}.make (0, 0)) < 10 then
+--					io.put_string ("%NPlace by 0,0 found: " + internal_place_array.item.name)
+--				end
 				internal_place_array.forth
 			end
 

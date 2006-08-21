@@ -17,6 +17,9 @@ inherit
 create {TRAFFIC_MAP_FACTORY, TRAFFIC_MAP, TRAFFIC_MAP_WIDGET, TRAFFIC_SIMPLE_LINE}
 	make
 
+create
+	make_non_insertable
+
 feature {NONE} -- Initialization
 
 	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_LINE; a_list: ARRAYED_LIST [EM_VECTOR_2D] ) is
@@ -28,16 +31,10 @@ feature {NONE} -- Initialization
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
 			no_void_elements: a_list /= Void implies not a_list.has (Void)
-		local
-			temp_type: TRAFFIC_TYPE_LINE
 		do
 			origin_impl := a_origin
 			destination_impl := a_destination
 			create state.make
-			temp_type ?= a_type
-			if a_type/=Void then
-				type:=temp_type
-			end
 			type := a_type
 			if a_list /= Void then
 				set_polypoints (a_list)
@@ -49,6 +46,47 @@ feature {NONE} -- Initialization
 			create roads.make (1)
 
 		ensure
+			origin_set: origin_impl = a_origin
+			destination_set: destination_impl = a_destination
+			state_exists: state /= Void
+			has_type: type /=Void
+			type_set: type = a_type
+			polypoints_exists: polypoints /= Void
+			roads_created: roads/=Void
+		end
+
+	make_non_insertable (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE_LINE; a_list: ARRAYED_LIST [EM_VECTOR_2D]) is
+			-- Make a temporary line_section which shouldn't be inserted into a `TRAFFIC_MAP'
+		local
+			origin_stop: TRAFFIC_STOP
+			destination_stop: TRAFFIC_STOP
+		do
+			if not a_origin.stops.empty then
+				origin_stop := a_origin.stops.first
+			else
+				-- maybe this should always be done?
+				create origin_stop.make_non_insertable (a_origin, a_type)
+			end
+
+			if not a_destination.stops.empty then
+				destination_stop := a_destination.stops.first
+			else
+				create destination_stop.make_non_insertable (a_destination, a_type)
+			end
+
+			origin_impl := origin_stop
+			destination_impl := destination_stop
+			create state.make
+			type := a_type
+
+			if a_list /= Void then
+				set_polypoints (a_list)
+			else
+				create polypoints.make (2)
+				polypoints.extend (a_origin.position)
+				polypoints.extend (a_destination.position)
+			end
+		ensure
 			origin_set: origin = a_origin
 			destination_set: destination = a_destination
 			state_exists: state /= Void
@@ -57,6 +95,7 @@ feature {NONE} -- Initialization
 			polypoints_exists: polypoints /= Void
 			roads_created: roads/=Void
 		end
+
 
 feature -- Access
 

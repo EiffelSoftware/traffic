@@ -5,7 +5,7 @@ indexing
 
 class
 	GAME
-	
+
 inherit
 	GAME_CONSTANTS
 
@@ -15,18 +15,18 @@ inherit
 		undefine
 			default_create
 		end
-		
+
 	SHARED_KNOWLEDGE
 
-create 
+create
 	make
-	
+
 feature -- Initialization
 
 	make (a_game_mode: like game_mode; a_hunter_count: like hunter_count; a_map_name: like map_name; open_map: BOOLEAN) is
 			-- Create with given game settings.
 		require
-			a_game_mode_valid: a_game_mode >= 1 and a_game_mode <= 4			
+			a_game_mode_valid: a_game_mode >= 1 and a_game_mode <= 4
 			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)
 			a_map_name_exists: a_map_name /= Void
 		do
@@ -34,7 +34,7 @@ feature -- Initialization
 			game_mode := a_game_mode
 			hunter_count := a_hunter_count
 			map_name := a_map_name
-			
+
 			-- Create `traffic_map'.
 			if open_map then
 				create_map
@@ -42,40 +42,40 @@ feature -- Initialization
 
 			-- Create `players'.
 			create players.make (hunter_count + 1)
-			
+
 			-- Build checkpoints.
 			create checkpoints.make
 			checkpoints.fill (<< 3, 8, 13, 18, 23 >>)
-			
+
 		ensure
 			game_mode_set: game_mode = a_game_mode
 			hunter_count_set: hunter_count = a_hunter_count
 			map_name_set: map_name = a_map_name
 		end
-		
+
 feature -- Access
 
 	traffic_map: TRAFFIC_MAP
 			-- The game's map including all the places, line_sections etc.
-	
+
 	map_name: STRING
 			-- Name of the map to be loaded for the game.
-				
+
 	estate_agent: ESTATE_AGENT
 			-- Estate agent, the guy who rents the flat.
-			
+
 	players: ARRAYED_LIST [PLAYER]
 			-- List of all the players (estate agent is first).
-			
-	last_player: PLAYER 
+
+	last_player: PLAYER
 			-- Last player that moved.
 
-	current_player: PLAYER 
+	current_player: PLAYER
 			-- Player whose turn it is.
-			
-	current_player_index: INTEGER 
+
+	current_player_index: INTEGER
 			-- Index of `current_player' in `players'.
-	
+
 	current_round_number: INTEGER
 			-- Count from 1 to `default_number_of_rounds'.
 
@@ -92,7 +92,7 @@ feature -- Status Setting
 			map_name := a_map_name
 		ensure
 			map_name_set: map_name = a_map_name
-		end		
+		end
 
 	set_traffic_map (a_traffic_map: like traffic_map) is
 			-- Set `traffic_map' to `a_traffic_map'.
@@ -102,8 +102,8 @@ feature -- Status Setting
 			traffic_map := a_traffic_map
 		ensure
 			traffic_map_set: traffic_map = a_traffic_map
-		end	
-		
+		end
+
 	set_game_mode (a_game_mode: like game_mode) is
 			-- Set `game_mode' to `a_game_mode'.
 		require
@@ -113,7 +113,7 @@ feature -- Status Setting
 		ensure
 			game_mode_set: game_mode = a_game_mode
 		end
-		
+
 	set_number_of_hunters (a_hunter_count: like hunter_count) is
 			-- Set hunter count to `a_hunter_count'.
 		require
@@ -122,8 +122,8 @@ feature -- Status Setting
 			hunter_count := a_hunter_count
 		ensure
 			hunter_count_set: hunter_count = a_hunter_count
-		end	
-		
+		end
+
 	set_selected_place (a_place: TRAFFIC_PLACE) is
 			-- Set place being passed to player.
 			-- Can have `Void' as an argument.
@@ -138,7 +138,7 @@ feature -- Basic Operations
 	create_map is
 			-- Open map with name `map_name'.
 		local
-			loader: TRAFFIC_MAP_LOADER			
+			loader: TRAFFIC_MAP_LOADER
 		do
 			create loader.make (map_name)
 			if not loader.has_error then
@@ -146,13 +146,13 @@ feature -- Basic Operations
 				if not loader.has_error then
 					traffic_map := loader.map
 					-- Build knowledge
-					knowledge.set_map (traffic_map)								
+					knowledge.set_map (traffic_map)
 				end
 			end
 		ensure
 			traffic_map_exits: traffic_map /= Void
 			knowledge_knows_map: knowledge.map = traffic_map
-		end	
+		end
 
 	create_players is
 			-- Create and prepare players.
@@ -161,8 +161,8 @@ feature -- Basic Operations
 		local
 			player_factory: PLAYER_FACTORY
 		do
-			create player_factory.make (traffic_map)			
-	
+			create player_factory.make (traffic_map)
+
 			-- Build players.
 			if game_mode = Hunt then
 				player_factory.build_players (True, False, hunter_count)
@@ -174,11 +174,11 @@ feature -- Basic Operations
 				player_factory.build_players (True, True, hunter_count)
 			end
 			players := player_factory.players
-			
+
 			-- Estate agent special handling.
 			estate_agent ?= players.first
-			check 
-				estate_agent /= Void 
+			check
+				estate_agent /= Void
 			end
 		ensure
 			estate_agent_exists: estate_agent /= Void
@@ -191,13 +191,13 @@ feature -- Basic Operations
 			current_round_number := 0
 			current_player_index := 0
 			state := Prepare_state
-			
+
 			-- Begin.
 			next_turn
 		ensure
 			correct_round_number: current_round_number = 1
 		end
-	
+
 feature {MAIN_CONTROLLER} -- Game operations
 
 	prepare is
@@ -219,9 +219,9 @@ feature {MAIN_CONTROLLER} -- Game operations
 				end
 			else
 				state := Play_state
-			end				
+			end
 		end
-	
+
 	play is
 			-- Give player possibility to make a move.
 		require
@@ -230,7 +230,7 @@ feature {MAIN_CONTROLLER} -- Game operations
 			current_player.play (selected_place)
 			set_selected_place (Void)
 			if current_player.next_move /= Void then
-				state := Move_state			
+				state := Move_state
 			end
 		ensure
 			state_set: current_player.next_move /= Void implies state = Move_state
@@ -243,25 +243,25 @@ feature {MAIN_CONTROLLER} -- Game operations
 		do
 			if current_player = estate_agent then
 				update_agent_visibility
-			end		
+			end
 			current_player.move
 			if current_player.location = estate_agent.location and current_player /= estate_agent then
 				state := Agent_caught
 				update_agent_visibility
 			else
-				state := Prepare_state			
+				state := Prepare_state
 				next_turn
 			end
 		end
 
 	next_turn is
 			-- Change the player's state before the next game loop.
-		require 
+		require
 			prepare_state: state = Prepare_state
 		do
 			last_player := current_player
 			current_player_index := (current_player_index \\ players.count) + 1
-			current_player := players.i_th (current_player_index)		
+			current_player := players.i_th (current_player_index)
 			if current_player_index = 1 then
 				current_round_number := current_round_number + 1
 				update_agent_visibility
@@ -270,7 +270,7 @@ feature {MAIN_CONTROLLER} -- Game operations
 				end
 			end
 			if current_player.possible_moves /= Void then
-				current_player.possible_moves.wipe_out				
+				current_player.possible_moves.wipe_out
 			end
 		ensure
 			current_player_index_set: current_player_index = (old current_player_index \\ players.count) + 1
@@ -288,7 +288,7 @@ feature {MAIN_CONTROLLER} -- Game operations
 				estate_agent.set_visibility (False)
 			end
 		end
-		
+
 feature {NONE} -- Status report
 
 	is_occupied (a_location: TRAFFIC_PLACE): BOOLEAN is
@@ -296,12 +296,12 @@ feature {NONE} -- Status report
 		require
 			a_location_exists: a_location /= Void
 		local
-			old_cursor: CURSOR			
+			old_cursor: CURSOR
 		do
 			Result := False
-			
+
 			-- Remember old cursor position.
-			old_cursor := players.cursor		
+			old_cursor := players.cursor
 
 			-- Loop over all players to check if one occupies `a_location'.
 			from
@@ -315,9 +315,9 @@ feature {NONE} -- Status report
 				end
 				players.forth
 			end
-			
+
 			-- Restore old cursor position.
-			players.go_to (old_cursor)						
+			players.go_to (old_cursor)
 		end
 
 feature {NONE} -- Implementation
@@ -382,7 +382,7 @@ feature {NONE} -- Implementation
 		local
 			destination: TRAFFIC_PLACE
 			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
-		do				
+		do
 			create Result.make
 			outgoing_line_sections := traffic_map.line_sections_of_place (a_line_section.destination.name)
 			from
@@ -390,10 +390,10 @@ feature {NONE} -- Implementation
 			until
 				outgoing_line_sections.after
 			loop
-				if (outgoing_line_sections.item.type = Tram_type and then outgoing_line_sections.item.destination /= a_line_section.origin) then 
+				if (outgoing_line_sections.item.type = Tram_type and then outgoing_line_sections.item.destination /= a_line_section.origin) then
 				-- TODO: and then outgoing_line_sections.item.line = a_line_section.line ??
 					destination := outgoing_line_sections.item.destination
-					Result.extend (create {TRAFFIC_LINE_SECTION}.make (a_line_section.origin, destination, Tram_type, Void))
+					Result.extend (create {TRAFFIC_LINE_SECTION}.make_non_insertable (a_line_section.origin, destination, Tram_type, Void))
 				end
 				outgoing_line_sections.forth
 			end
@@ -401,10 +401,10 @@ feature {NONE} -- Implementation
 
 	update_knowledge is
 			-- Update what current_player should know about the other players.
-		do		
+		do
 			knowledge.flathunter_positions.wipe_out
-			from	
-				players.start 
+			from
+				players.start
 				-- Skip first player (estate_agent)
 				players.forth
 			until
@@ -414,11 +414,11 @@ feature {NONE} -- Implementation
 				players.forth
 			end
 		end
-		
+
 invariant
 	checkpoints_exist: checkpoints /= Void
-	game_mode_valid: game_mode >= 1 and game_mode <= 4			
+	game_mode_valid: game_mode >= 1 and game_mode <= 4
 	hunter_count_valid: (1 <= hunter_count) and (hunter_count <= 8)
 	players_exist: players /= Void
-	
+
 end

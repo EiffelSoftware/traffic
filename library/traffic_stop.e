@@ -13,13 +13,16 @@ inherit
 		out
 	end
 
-create
+create {TRAFFIC_MAP_FACTORY}
 	make_stop
+
+create {TRAFFIC_LINE_SECTION}
+	make_non_insertable
 
 feature{NONE} -- Creation
 
 	make_stop (a_place: TRAFFIC_PLACE; a_line: TRAFFIC_LINE) is --; a_x, a_y: REAL) is
-			-- Initialize `Current' with name `a_name' and position `a_x', `a_y'.
+			-- Initialize `Current'
 		require
 			place_not_void: a_place /= Void
 			line_not_void: a_line /= Void
@@ -28,9 +31,16 @@ feature{NONE} -- Creation
 			line := a_line
 			--create position.make (a_x, a_y)
 
-			if not a_line.name.is_equal ("dummy") then
-				place.stops.extend (Current)
-			end
+			place.stops.extend (Current)
+		end
+
+	make_non_insertable (a_place: TRAFFIC_PLACE; a_line_type: TRAFFIC_TYPE_LINE ) is
+			-- Initialize `Current'
+		require
+			place_not_void: a_place /= Void
+		do
+			place := a_place
+			create line.make ("dummy", a_line_type)
 		end
 
 feature -- Access
@@ -67,11 +77,11 @@ feature -- Status setting
 
 feature -- Status report
 
-	is_dummy_stop: BOOLEAN is
-			-- Is this a dummy stop?
-		do
-			Result := place.dummy_node = Current
-		end
+--	is_dummy_stop: BOOLEAN is
+--			-- Is this a dummy stop?
+--		do
+--			Result := place.dummy_node = Current
+--		end
 
 	out: STRING is
 			-- info about the stop

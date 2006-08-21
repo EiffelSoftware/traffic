@@ -159,8 +159,8 @@ feature -- Line section building
 			line_section_created: line_section /= Void
 			line_section_has_line: line_section.line = a_line
 			line_section_has_type: equal (line_section.type, a_line.type)
-			line_section_has_origin: line_section.origin = a_map.place (a_origin).stop (a_line)
-			line_section_has_destination: line_section.destination = a_map.place (a_destination).stop (a_line)
+			line_section_has_origin: line_section.origin = a_map.place (a_origin)
+			line_section_has_destination: line_section.destination = a_map.place (a_destination)
 			--TODOline_section_in_map: a_map.has_line_section (a_origin, a_destination, a_line.type, a_line)
 		end
 
