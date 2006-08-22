@@ -1,0 +1,208 @@
+
+map_editor: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACE_RENDERER
+                    render @5              start:
+<0000000006445BE4>                         Feature call on void target.  Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACE_RENDERER
+                    render @5              
+<0000000006445BE4>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACES_CONTAINER
+                    render_item @10        
+<0000000006445C34>  (From TRAFFIC_2D_DRAWABLE_CONTAINER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACES_CONTAINER
+                    render @5              
+<0000000006445C34>  (From TRAFFIC_2D_DRAWABLE_CONTAINER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    render @2              
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    set_map @15            
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    make_with_map @3       
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    build_map_widget @8                                 
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    load_and_build_map @9                               
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    make @4                                             
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ROOT_CLASS          make @11                                            
+<000000000643002C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ROOT_CLASS          root's creation                                     
+<000000000643002C>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+map_editor: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACE_RENDERER
+                    render @5              start:
+<0000000006445BE4>                         Feature call on void target.  Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACE_RENDERER
+                    render @5              
+<0000000006445BE4>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACES_CONTAINER
+                    render_item @10        
+<0000000006445C34>  (From TRAFFIC_2D_DRAWABLE_CONTAINER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACES_CONTAINER
+                    render @5              
+<0000000006445C34>  (From TRAFFIC_2D_DRAWABLE_CONTAINER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    render @2              
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    set_map @15            
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    make_with_map @3       
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    build_map_widget @8                                 
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    load_and_build_map @9                               
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    make @4                                             
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ROOT_CLASS          make @11                                            
+<000000000643002C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ROOT_CLASS          root's creation                                     
+<000000000643002C>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+map_editor: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACE_RENDERER
+                    render @5              start:
+<0000000006445BE4>                         Feature call on void target.  Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACE_RENDERER
+                    render @5              
+<0000000006445BE4>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACES_CONTAINER
+                    render_item @10        
+<0000000006445C34>  (From TRAFFIC_2D_DRAWABLE_CONTAINER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACES_CONTAINER
+                    render @5              
+<0000000006445C34>  (From TRAFFIC_2D_DRAWABLE_CONTAINER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    render @2              
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    set_map @15            
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    make_with_map @3       
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    build_map_widget @8                                 
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    load_and_build_map @9                               
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    make @4                                             
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ROOT_CLASS          make @11                                            
+<000000000643002C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ROOT_CLASS          root's creation                                     
+<000000000643002C>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
+
+map_editor: system execution failed.
+Following is the set of recorded exceptions:
+
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACE_RENDERER
+                    render @5              start:
+<0000000006445BE4>                         Feature call on void target.  Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACE_RENDERER
+                    render @5              
+<0000000006445BE4>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACES_CONTAINER
+                    render_item @10        
+<0000000006445C34>  (From TRAFFIC_2D_DRAWABLE_CONTAINER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_PLACES_CONTAINER
+                    render @5              
+<0000000006445C34>  (From TRAFFIC_2D_DRAWABLE_CONTAINER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    render @2              
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    set_map @15            
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+TRAFFIC_2D_MAP_WIDGET
+                    make_with_map @3       
+<000000000644504C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    build_map_widget @8                                 
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    load_and_build_map @9                               
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+MAP_EDITOR_SCENE    make @4                                             
+<00000000064335DC>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ROOT_CLASS          make @11                                            
+<000000000643002C>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+ROOT_CLASS          root's creation                                     
+<000000000643002C>                         Routine failure.              Exit
+-------------------------------------------------------------------------------
