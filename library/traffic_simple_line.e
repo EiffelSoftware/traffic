@@ -140,6 +140,18 @@ feature -- Status report
 			Result := stops_one_direction.off
 		end
 
+	is_valid_extension (a_place: TRAFFIC_PLACE): BOOLEAN is
+			-- may a_place be inserted?
+		do
+			if count > 0 then
+				Result := a_place /= i_th (count).place
+			else
+				Result := True
+			end
+			Result := Result and not stops_one_direction.there_exists (agent is_stop_of_place (?, a_place))
+		end
+
+
 feature -- Measurement
 
 	count: INTEGER is
@@ -283,34 +295,35 @@ feature -- Basic operations
 			end
 		end
 
---	extend_stop (a_stop: TRAFFIC_STOP) is
---			-- Extend the simple line by a place.
---			-- Line sections in both directions are added to the line if there
---			-- is at least one place in the line
---		require
---			a_stop_not_void: a_stop /= Void
---			a_stop_not_last_stop: count > 0 implies a_stop /= i_th (count)
---			a_stop_not_in_stops_of_line: not has (a_stop)
---		local
---			line_section: TRAFFIC_LINE_SECTION
---			origin: TRAFFIC_STOP
---		do
---			if stops_one_direction.count = 0 and then start_stop = Void then
---				start_stop := a_stop
---			else
---				if stops_one_direction.count = 0 then
---					-- No line_section inserted yet
---					origin := start_stop
---					start_stop := Void
---				else
---					origin := stops_one_direction.last
---				end
---
---				create line_section.make (origin, a_stop, type, Void)
---				extend (line_section)
---				map.add_line_section (line_section)
---			end
---		end
+	extend_place (a_place: TRAFFIC_PLACE) is
+			-- Extend the simple line by a place.
+			-- Line sections in both directions are added to the line if there
+			-- is at least one place in the line
+		require
+			a_place_not_void: a_place /= Void
+			valid_extension: is_valid_extension (a_place)
+		local
+			line_section: TRAFFIC_LINE_SECTION
+			origin: TRAFFIC_STOP
+			a_stop: TRAFFIC_STOP
+		do
+			create a_stop.make_stop (a_place, Current)
+			if stops_one_direction.count = 0 and then start_stop = Void then
+				start_stop := a_stop
+			else
+				if stops_one_direction.count = 0 then
+					-- No line_section inserted yet
+					origin := start_stop
+					start_stop := Void
+				else
+					origin := stops_one_direction.last
+				end
+
+				create line_section.make (origin, a_stop, type, Void)
+				extend (line_section)
+				map.add_line_section (line_section)
+			end
+		end
 
 feature {NONE} -- Implementation
 

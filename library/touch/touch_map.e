@@ -6,13 +6,13 @@ indexing
 class TOUCH_MAP
 
 inherit
-	
+
 	ANY
-		redefine 
-			out 
+		redefine
+			out
 		end
-		
-create 
+
+create
 	make
 
 feature -- Initialization
@@ -37,7 +37,7 @@ feature -- Status report
 		do
 			Result := internal_map.has_place (a_name)
 		end
-		
+
 	has_line_section_between (a_origin_name, a_destination_name: STRING): BOOLEAN is
 			-- Has traffic map line section between places with given names?
 		require
@@ -65,7 +65,7 @@ feature -- Status report
 		do
 			Result := internal_map.has_line (a_name)
 		end
-		
+
 feature -- Element change
 
 	set_description (a_description: STRING) is
@@ -74,7 +74,7 @@ feature -- Element change
 			internal_map.set_description (a_description)
 		ensure
 			description_set: description = a_description
-		end		
+		end
 
 	add_place (a_place: TRAFFIC_PLACE) is
 			-- Add place `a_place' to map.
@@ -86,7 +86,7 @@ feature -- Element change
 		ensure
 			a_place_in_map: has_place (a_place.name)
 		end
-		
+
 	add_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Add line section `a_line_section' to map.
 		require
@@ -97,7 +97,7 @@ feature -- Element change
 		ensure
 			a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
 		end
-		
+
 	add_line (a_line: TRAFFIC_LINE) is
 			-- Add line `a_line' to map.
 		require
@@ -108,7 +108,7 @@ feature -- Element change
 		ensure
 			a_line_in_map: has_line (a_line.name)
 		end
-		
+
 	add_building (a_building: TRAFFIC_BUILDING) is
 			-- Add building `a_building' to map.
 		require
@@ -116,7 +116,7 @@ feature -- Element change
 		do
 			internal_map.add_building (a_building)
 		end
-		
+
 	make_building_at_place (a_place: TRAFFIC_PLACE): TOUCH_BUILDING is
 			-- Make a building at a defined place.
 		require
@@ -124,33 +124,33 @@ feature -- Element change
 		do
 			create Result.make_at_place(a_place, internal_map_widget)
 		end
-		
+
 	make_route1(): TOUCH_ROUTE is
 			-- Make a route with places form 'a_places_list'.
 		local
 				temp_places: LINKED_LIST [TRAFFIC_PLACE]
-		do					
+		do
  			create temp_places.make
 			temp_places.force (internal_map_widget.map.place ("place Concorde"))
 			temp_places.force (internal_map_widget.map.place ("place Republique"))
-						
+
 			create Result.make_route(temp_places, internal_map_widget)
 		end
-		
+
 	make_empty_route(a_map: TRAFFIC_MAP): TOUCH_ROUTE is
 			-- Make an empty touch route.
-		do			
+		do
 			create Result.make_empty_route(a_map)
-		end	
-		
+		end
+
 	add_traveler (a_traveler: TRAFFIC_MOVING) is
 			-- Add traveler 'a_traveler' to map.
 			require
 				a_traveler_exists: a_traveler /= Void
 			do
 				internal_map.add_traveler (a_traveler)
-			end	
-	
+			end
+
 	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Remove line_section `a_line_section' from map (bad implementation)
 			require
@@ -158,7 +158,7 @@ feature -- Element change
 			do
 				internal_map.remove_line_section (a_line_section)
 			end
-	
+
 	remove_traveler (index: INTEGER) is
 			-- Remove traveler at position index
 			require
@@ -166,41 +166,41 @@ feature -- Element change
 			do
 				internal_map.remove_traveler (index)
 			end
-	
-	change_traveler_speed (divisor: DOUBLE) is	
+
+	change_traveler_speed (divisor: DOUBLE) is
 			-- Divide the speed of each traveler by divisor
 			require
 				divisor >= 2
 			do
 				internal_map.change_traveler_speed (divisor)
 			end
-	
+
 	increment_index is
 			-- Increment the traveler index
 		do
 			internal_map.increment_index
 		end
-				
+
 feature -- Access
-	
+
 	traveler_index: INTEGER is
 			-- Index of travelers
 		do
 			Result := internal_map.traveler_index
 		end
-			
+
 	name: STRING is
 			-- Name of region this map represents.
 		do
 			Result := internal_map.name
 		end
-			
+
 	description: STRING is
 			-- Textual description.
 		do
 			Result := internal_map.description
 		end
-			
+
 	place (a_name: STRING): TRAFFIC_PLACE is
 			-- Place named `a_name'.
 		require
@@ -211,13 +211,13 @@ feature -- Access
 		ensure
 			result_exists: Result /= Void
 		end
-		
+
 	places: HASH_TABLE [TRAFFIC_PLACE, STRING] is
 			-- All places in map.
 		do
 			Result := internal_map.places
 		end
-		
+
 	line (a_name: STRING): TOUCH_LINE is
 			-- Line named `a_name'
 		require
@@ -226,7 +226,7 @@ feature -- Access
 		do
 			create Result.make_with_line_and_representation(internal_map.line (a_name), internal_map_widget.traffic_lines)
 		end
-		
+
 	simple_line (a_name: STRING): TOUCH_SIMPLE_LINE is
 			-- Simple line named `a_name'
 		require
@@ -234,25 +234,25 @@ feature -- Access
 			line_in_map: has_line (a_name)
 		local
 			a_line: TRAFFIC_SIMPLE_LINE
-		do		
+		do
 			a_line ?= internal_map.line (a_name)
 			if a_line /= Void then
-				create Result.make_with_line_and_representation(a_line, internal_map_widget.traffic_lines)			
+				create Result.make_with_line_and_representation(a_line, internal_map_widget.traffic_lines)
 			end
-		end		
-		
+		end
+
 	line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION] is
 			-- All line sections in map
 		do
 			Result := internal_map.line_sections
 		end
-		
+
 	lines: HASH_TABLE [TRAFFIC_LINE, STRING] is
 			-- All lines in map.
 		do
 			Result := internal_map.lines
 		end
-	
+
 	buildings: LINKED_LIST [TRAFFIC_BUILDING] is
 			-- All buildings on map.
 		local
@@ -270,13 +270,13 @@ feature -- Access
 				i := i + 1
 			end
 		end
-		
+
 	travelers: HASH_TABLE [TRAFFIC_MOVING, INTEGER] is
 			-- All travelers on the map
 		do
 			Result := internal_map.travelers
 		end
-		
+
 	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_LINE_SECTION] is
 			-- Line sections with origin or destination place `a_name'.
 		require
@@ -293,7 +293,7 @@ feature -- Basic operation
 		do
 			Result := internal_map.out
 		end
-			
+
 feature -- Basic operations
 
 	display is
@@ -301,25 +301,25 @@ feature -- Basic operations
 		do
 			internal_map_widget.disable_map_hidden
 		end
-		
+
 feature {NONE} -- Implementation
 
-	internal_map: TRAFFIC_MAP is 
+	internal_map: TRAFFIC_MAP is
 			-- Map to which calls are forwarded
 		do
 			Result := internal_map_widget.map
 		end
-		
+
 	internal_map_widget: TOUCH_3D_MAP_WIDGET
 			-- Map widget that allows graphical changes
-	
+
 invariant
 
 	name_not_void: name /= Void
-	name_not_empty: not name.is_empty 
+	name_not_empty: not name.is_empty
 	places_not_void: places /= Void
-	lines_not_void: lines /= Void 
-	line_sections_not_void: line_sections /= Void 
+	lines_not_void: lines /= Void
+	line_sections_not_void: line_sections /= Void
 	travelers_not_void: travelers /= Void
 
 end

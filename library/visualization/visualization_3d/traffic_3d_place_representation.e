@@ -45,6 +45,7 @@ feature -- Initialization
 			place_factory.add_gauger(agent decide_place_type_normal, decision_type_normal)
 
 			create place_views.make (1)
+			create place_bounding_boxes.make (0)
 			add_places
 
 			map.place_inserted_event.subscribe (agent process_item_inserted)
@@ -120,8 +121,9 @@ feature -- Basic operations
 			until
 				all_places.off
 			loop
-				place_bounding_box := update_place_bounding_box (all_places.item_for_iteration)
 				current_place := all_places.item_for_iteration
+				place_bounding_box := update_place_bounding_box (current_place)
+				place_bounding_boxes.force (place_bounding_box, current_place)
 
 				-- place creation
 				place_factory.take_decision (decision_type_normal)
@@ -158,20 +160,18 @@ feature -- Status report
 		require
 			a_point_exists: a_point /= Void
 		local
-			places: HASH_TABLE [TRAFFIC_PLACE, STRING]
 			bb: EM_ORTHOGONAL_RECTANGLE
 		do
 			from
-				places := map.places
-				places.start
+				place_bounding_boxes.start
 			until
-				places.off or Result /= Void
+				place_bounding_boxes.after or Result /= Void
 			loop
-				bb := update_place_bounding_box (places.item_for_iteration)
+				bb := place_bounding_boxes.item_for_iteration
 				if bb.has (a_point) then
-					Result := places.item_for_iteration
+					Result := place_bounding_boxes.key_for_iteration
 				end
-				places.forth
+				place_bounding_boxes.forth
 			end
 		end
 
@@ -285,20 +285,7 @@ feature {NONE} -- Implementation
 		local
 			links: LIST [TRAFFIC_CONNECTION]
 			p: EM_VECTOR_2D
-			stops: LIST [TRAFFIC_STOP]
 		do
-			-- TODO: cleanup
---			from stops := a_place.stops; stops.start until stops.after loop
---
---				p := stops.item.position
---				if Result = Void then
---						create Result.make (p.twin, p.twin)
---					else
---						Result.extend (p)
---					end
---				stops.forth
---			end
-
 			-- Calculate rectangle to include all outgoing links of `a_place'.
 			links := map.connections_of_place (a_place.name)
 			from
@@ -330,6 +317,8 @@ feature {NONE} -- Implementation
 
 	place_views: HASH_TABLE [EM_3D_OBJECT, TRAFFIC_PLACE]
 		-- Container for all places
+
+	place_bounding_boxes: HASH_TABLE [EM_ORTHOGONAL_RECTANGLE, TRAFFIC_PLACE]
 
 	place_factory: TRAFFIC_3D_PLACE_FACTORY
 		-- factory for places

@@ -65,7 +65,7 @@ feature -- Access
 			end
 		end
 
-feature {TRAFFIC_MAP} -- Access
+feature {TRAFFIC_MAP, TRAFFIC_PATH} -- Access
 
 	origin_impl: TRAFFIC_NODE
 

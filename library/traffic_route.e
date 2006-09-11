@@ -156,7 +156,7 @@ feature -- Basic operation
 					next_place := places_to_visit.item
 					map.find_shortest_path (current_place, next_place)
 					if map.path_found then
-						shortest_path := map.shortest_path
+						shortest_path := map.shortest_path.connections
 						from
 							shortest_path.start
 						until

@@ -1264,7 +1264,7 @@
 		</line_section>
 	</line>
 
-	<line name="RER A" type="train" simple="true">
+	<line name="RER A" type="rail" simple="true">
 		<color red="243" green="116" blue="72"/>
 		<line_section from="place Cergy" to="place Charles de Gaulle - Etoile" direction="undirected">
 			<onroad id="67"/>
@@ -1304,7 +1304,7 @@
 			<point x="1220" y="733"/>
 		</line_section>
 	</line>
-	<line name="RER B" type="train" simple="true">
+	<line name="RER B" type="rail" simple="true">
 		<color red="93" green="166" blue="204"/>
 		<line_section from="place Aeroport Charles de Gaulle" to="place Gare du Nord" direction="undirected">
 			<onroad id="72"/>
@@ -1351,7 +1351,7 @@
 			<point x="518" y="1221"/>
 		</line_section>
 	</line>
-	<line name="RER C(a)" type="train" simple="true">
+	<line name="RER C(a)" type="rail" simple="true">
 		<color red="242" green="201" blue="52"/>
 		<line_section from="place Dourdan" to="place Gare d'Austerlitz" direction="undirected">
 			<onroad id="77"/>
@@ -1388,7 +1388,7 @@
 			<point x="41" y="1202"/>
 		</line_section>
 	</line>
-	<line name="RER C(b)" type="train" simple="true">
+	<line name="RER C(b)" type="rail" simple="true">
 		<color red="242" green="201" blue="52"/>
 		<line_section from="place Champs de Mars, Tour Eiffel, Bir-Hakeim" to="place Kennedy Radio France" direction="undirected">
 			<onroad id="82"/>
@@ -1410,7 +1410,7 @@
 			<point x="440" y="20"/>
 		</line_section>
 	</line>
-	<line name="RER D" type="train" simple="true">
+	<line name="RER D" type="rail" simple="true">
 		<color red="3" green="179" blue="135"/>
 		<line_section from="place Orry-la-Ville - Coye" to="place Gare du Nord" direction="undirected">
 			<onroad id="85"/>

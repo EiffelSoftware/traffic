@@ -81,7 +81,7 @@ feature -- Basic operations
 --				end
 
 				from
-					shortest_path := map.shortest_path; shortest_path.start
+					shortest_path := map.shortest_path.connections; shortest_path.start
 				until
 					shortest_path.after
 				loop
@@ -110,6 +110,7 @@ feature -- Basic operations
 
 				traffic_lines.add_shortest_line(line)
 				marked_station_changed := False
+				io.put_string (map.shortest_path.textual_description)
 			end
 		end
 
@@ -250,8 +251,6 @@ feature {NONE} -- Event handling
 						marked_station_changed := True
 					end
 				end
-			elseif event.is_middle_button then
-				io.put_string (map.out)
 			end
 		end
 

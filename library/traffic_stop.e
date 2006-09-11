@@ -13,7 +13,7 @@ inherit
 		out
 	end
 
-create {TRAFFIC_MAP_FACTORY}
+create {TRAFFIC_MAP_FACTORY, TRAFFIC_SIMPLE_LINE}
 	make_stop
 
 create {TRAFFIC_LINE_SECTION}

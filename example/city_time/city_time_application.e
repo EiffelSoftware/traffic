@@ -8,16 +8,16 @@ class CITY_TIME_APPLICATION
 inherit
 
 	EM_APPLICATION
-	
+
 	EM_SHARED_THEME
 		export {NONE} all end
-	
+
 	EM_SHARED_WIDGET_OPTIONS
 		export {NONE} all end
-		
+
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
-	
+
 create
 	make
 
@@ -27,7 +27,10 @@ feature -- Initialization
 			-- Initialize subsystems of em and start first scene.
 		local
 			keyboard: EM_KEYBOARD
+			at: ACTION_TIMER
 		do
+			create at
+			at.application_start_setup
 			-- Initialise screen
 			video_subsystem.set_video_surface_width (window_width)
 			video_subsystem.set_video_surface_height (window_height)
@@ -36,20 +39,20 @@ feature -- Initialization
 			video_subsystem.set_opengl (True)
 			video_subsystem.enable
 			initialize_screen
-			
+
 			-- Enable unicode characters and repeating keyboard events
 			create keyboard.make_snapshot
 			keyboard.enable_unicode_characters
 			keyboard.enable_repeating_key_down_events (200, 100)
-			
+
 			set_window_icon ("../image/traffic_icon.png")
 			set_window_title ("City TIME")
 			set_application_id ("city_time")
-			
+
 			-- Set widget theme and options
 			widget_options.disable_transparency_refresh
 			load_eclipse_theme
-			
+
 			set_scene (create {CITY_TIME_SCENE}.make)
 			launch
 			full_collect

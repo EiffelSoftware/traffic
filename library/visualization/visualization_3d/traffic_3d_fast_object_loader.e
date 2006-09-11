@@ -24,12 +24,14 @@ create
 feature {NONE} -- Initialization
 
 	make is
+		-- Initialize `Current'
 		do
 			create obj_cache.make (5)
 			Precursor
 		end
 
 	make_with_color (a_r: DOUBLE; a_g: DOUBLE; a_b: DOUBLE) is
+		-- Initialize `Current' with the given color
 		do
 			create obj_cache.make (5)
 			Precursor (a_r, a_g, a_b)
@@ -38,6 +40,7 @@ feature {NONE} -- Initialization
 feature -- Attribute Setting
 
 	set_em_color (a_r: DOUBLE; a_g: DOUBLE; a_b: DOUBLE) is
+		-- Set the given color
 		do
 			Precursor (a_r, a_g, a_b)
 			ignore_changed := False
@@ -83,7 +86,7 @@ feature {NONE} -- Implementation
 			-- so load_file's postcondition doesn't have to be changed
 
 	compile is
-			-- see if the file is in the cache first
+		-- see if the file is in the cache first
 		do
 			if not ignore_changed then
 				Precursor
@@ -100,8 +103,5 @@ feature {NONE} -- Implementation
 			Precursor (a_r, a_g, a_b, a_a)
 			ignore_changed := False
 		end
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end

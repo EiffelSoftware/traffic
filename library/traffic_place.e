@@ -22,8 +22,6 @@ feature {NONE} -- Initialize
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
-		local
-			line: TRAFFIC_LINE
 		do
 			name := a_name
 			create position.make (0.0, 0.0)

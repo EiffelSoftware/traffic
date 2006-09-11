@@ -6,28 +6,28 @@ indexing
 class TOUCH_SIMPLE_LINE
 
 inherit
-	
+
 	ANY
-		redefine 
-			out 
+		redefine
+			out
 		end
-		
+
 	TOUCH_TIMING
 		undefine
 			out
 		end
 
-create 
+create
 	make_with_line_and_representation
-	
+
 feature -- Initialization
-	
-	make_with_line_and_representation(a_line: TRAFFIC_SIMPLE_LINE; a_rep: TRAFFIC_3D_LINE_REPRESENTATION) is 
+
+	make_with_line_and_representation(a_line: TRAFFIC_SIMPLE_LINE; a_rep: TRAFFIC_3D_LINE_REPRESENTATION) is
 			-- Set `internal_line' to `a_line' (line for which this proxy is built) and allow access via `a_rep' to the visuals of the line.
 		require
 			a_line /= Void
-			a_rep /= Void		
-		do 
+			a_rep /= Void
+		do
 			internal_line := a_line
 			internal_rep := a_rep
 		ensure
@@ -42,10 +42,10 @@ feature -- Access
 		do
 			Result := internal_line.start_to_terminal (a_terminal)
 		end
-		
-	name: STRING is 
+
+	name: STRING is
 			-- Name of the line
-		do 
+		do
 			Result := internal_line.name
 		end
 
@@ -55,48 +55,55 @@ feature -- Access
 			Result := internal_line.type
 		end
 
-	has (a_place: TRAFFIC_PLACE): BOOLEAN is
+	has (a_stop: TRAFFIC_STOP): BOOLEAN is
 			-- Does line include `a_line_section'?
 		do
-			Result := internal_line.has (a_place)	
+			Result := internal_line.has (a_stop)
 		end
 
-	item: TRAFFIC_PLACE is
+	item: TRAFFIC_STOP is
 			-- Current place
 		do
-			Result := internal_line.item			
-		end		
+			Result := internal_line.item
+		end
 
-	i_th (i: INTEGER): TRAFFIC_PLACE is
+	i_th (i: INTEGER): TRAFFIC_STOP is
 			-- Place at `i'-th position
 		require
 			i_correct_index: i >= 1 and then i <= count
 		do
-			Result := internal_line.i_th (i)			
+			Result := internal_line.i_th (i)
 		ensure
 			result_not_void: Result /= Void
-		end		
-		
-	one_end: TRAFFIC_PLACE is
+		end
+
+	one_end: TRAFFIC_STOP is
 			-- One end of the line
 		do
 			Result := internal_line.one_end
 		end
-		
-	other_end: TRAFFIC_PLACE is
+
+	other_end: TRAFFIC_STOP is
 			-- Other end of the line
 		do
 			Result := internal_line.other_end
-		end	
-				
+		end
+
 feature -- Status report
+
+	is_valid_extension (a_place: TRAFFIC_PLACE): BOOLEAN is
+			-- may `a_place' be inserted
+		do
+			Result := internal_line.is_valid_extension (a_place)
+		end
+
 
 	after: BOOLEAN is
 			-- Is there no valid cursor position to the right of cursor?
 		do
 			Result := internal_line.after
 		end
-		
+
 	before: BOOLEAN is
 			-- Is there no valid cursor position to the left of cursor?
 		do
@@ -110,13 +117,13 @@ feature -- Status report
 		end
 
 feature -- Measurement
-		
+
 	count: INTEGER is
 			-- Number of places
 		do
 			Result := internal_line.count
 		end
-		
+
 feature -- Cursor movement
 
 	forth is
@@ -124,7 +131,7 @@ feature -- Cursor movement
 		do
 			internal_line.forth
 		end
-		
+
 	back is
 			-- Move to previous item.
 		do
@@ -136,7 +143,7 @@ feature -- Cursor movement
 		do
 			internal_line.start
 		end
-		
+
 	finish is
 			-- Move cursor to last position.
 			-- (Go before if empty)
@@ -151,7 +158,7 @@ feature -- Basic operations
 		do
 			internal_line.remove_all_sections
 		end
-		
+
 	extend (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Add `a_line_section' at beginning or end of existing direction(s).
 		do
@@ -164,40 +171,40 @@ feature -- Basic operations
 			-- is at least one place in the line
 		require
 			a_place_not_void: a_place /= Void
-			a_place_not_in_places_of_line: not has (a_place)
+			valid_extension: is_valid_extension (a_place)
 		do
 			internal_line.extend_place (a_place)
 		end
 
-	highlight is 
+	highlight is
 			-- Highlight the line.
-		do 
+		do
 			internal_rep.highlight_single_line(internal_line)
 		end
-		
+
 	unhighlight is
 			-- Unhighlight the line.
 		do
 			internal_rep.unhighlight_single_line (internal_line)
-		end		
-		
-	highlight_for_5_seconds is 
+		end
+
+	highlight_for_5_seconds is
 			-- Highlight the line for five seconds.
 		do
 --			internal_rep.highlight_single_line_for_5sec(internal_line)
 			highlight
 			wait(5000)
 			unhighlight
-		end	
+		end
 
 feature -- Output
-		
+
 	out: STRING is
 			-- Textual representation
 		do
 			Result := internal_line.out
 		end
-		
+
 feature {NONE} -- Implementation
 
 	internal_line: TRAFFIC_SIMPLE_LINE
@@ -205,11 +212,11 @@ feature {NONE} -- Implementation
 
 	internal_rep: TRAFFIC_3D_LINE_REPRESENTATION
 			-- Visualization of `internal_line' that gets calls concerning visualization changes
-		
+
 invariant
 
-	name_not_void: name /= Void 
-	name_not_empty: not name.is_empty 
+	name_not_void: name /= Void
+	name_not_empty: not name.is_empty
 	type_exists: type /= Void
 	stations_at_right_place: count >= 2 implies one_end = i_th(1) and other_end = i_th(count)
 
