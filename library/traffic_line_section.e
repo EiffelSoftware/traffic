@@ -36,6 +36,7 @@ feature {NONE} -- Initialization
 			destination_impl := a_destination
 			create state.make
 			type := a_type
+			create polypoints.make (2)
 			if a_list /= Void then
 				set_polypoints (a_list)
 			else
@@ -79,10 +80,11 @@ feature {NONE} -- Initialization
 			create state.make
 			type := a_type
 
+			create roads.make (1)
+			create polypoints.make (2)
 			if a_list /= Void then
 				set_polypoints (a_list)
 			else
-				create polypoints.make (2)
 				polypoints.extend (a_origin.position)
 				polypoints.extend (a_destination.position)
 			end

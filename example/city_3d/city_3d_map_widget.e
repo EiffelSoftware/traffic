@@ -30,6 +30,7 @@ feature -- Initialization
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
 			building_clicked_event.subscribe (agent building_clicked(?,?))
+			create shortest_path_calculated_event
 		end
 
 feature -- Access
@@ -40,8 +41,11 @@ feature -- Access
 	marked_destination: TRAFFIC_PLACE
 			-- Currently marked destination
 
-	shortest_path_line: TRAFFIC_LINE
-			-- Artificial traffic line for the shortest path
+	shortest_path_connections: LIST[TRAFFIC_CONNECTION]
+			-- connections of shortest path
+
+	shortest_path_description: STRING
+			-- textual description of the shortest path
 
 feature -- Basic operations
 
@@ -59,73 +63,41 @@ feature -- Basic operations
 
 	calculate_shortest_path is
 			-- Calculate the shortest path.
-			-- TODO: revise heavily
 		require
 			map /= Void
 		local
-			line: TRAFFIC_LINE
 			origin, destination: TRAFFIC_PLACE
 			section: TRAFFIC_LINE_SECTION
 			line_section: TRAFFIC_CONNECTION
-			shortest_path: LIST [TRAFFIC_CONNECTION]
+			shortest_path: TRAFFIC_PATH
 
 		do
 			if marked_station_changed then
 				map.find_shortest_path (marked_origin, marked_destination)
-				create line.make ("Shortest path", create {TRAFFIC_TYPE_WALKING}.make)
 
---				if not map.shortest_path.is_empty and then not map.shortest_path.first.place.is_equal (marked_origin) then				
---					create origin.make_with_position (marked_origin.name, marked_origin.position.x.rounded, marked_origin.position.y.rounded)
---					create destination.make_with_position (map.shortest_path.first.label.origin.name, map.shortest_path.first.label.polypoints.first.x.rounded, map.shortest_path.first.label.polypoints.first.y.rounded)
---					line.force (create {TRAFFIC_LINE_SECTION}.make (origin.dummy_stop, destination.dummy_stop, create {TRAFFIC_TYPE_WALKING}.make, void))
---				end
-
-				from
-					shortest_path := map.shortest_path.connections; shortest_path.start
-				until
-					shortest_path.after
-				loop
-					create section.make_non_insertable (shortest_path.item.origin, shortest_path.item.destination, line.type,
-					  shortest_path.item.polypoints)
---					create section.make (shortest_path.item.origin.dummy_stop, shortest_path.item.destination.dummy_stop,
---					  line.type, shortest_path.item.polypoints)
-
-					line.extend (section)
-					shortest_path.forth
---					if not map.shortest_path.after and then not line.last.polypoints.last.is_equal (map.shortest_path.item.label.polypoints.first) then
---						create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
---						create destination.make_with_position (map.shortest_path.item.label.origin.name, map.shortest_path.item.label.polypoints.first.x.rounded, map.shortest_path.item.label.polypoints.first.y.rounded)
---						create section.make (origin.dummy_stop, destination.dummy_stop, create {TRAFFIC_TYPE_WALKING}.make, void)
---						line.force (section)
---					end
-				end
-
---				if not line.is_empty and then not line.last.polypoints.last.is_equal (marked_destination.position) then
---					create origin.make_with_position (line.last.destination.name, line.last.polypoints.last.x.rounded, line.last.polypoints.last.y.rounded)
---					create destination.make_with_position (marked_destination.name, marked_destination.position.x.rounded, marked_destination.position.y.rounded)
---					line.force (create {TRAFFIC_LINE_SECTION}.make (origin.dummy_stop, destination.dummy_stop, create {TRAFFIC_TYPE_WALKING}.make, void))
---				end
-
-				shortest_path_line := line
-
-				traffic_lines.add_shortest_line(line)
 				marked_station_changed := False
-				io.put_string (map.shortest_path.textual_description)
+
+				if map.path_found then
+					shortest_path := map.shortest_path
+					traffic_path_representation.add_shortest_path (shortest_path)
+					shortest_path_connections := shortest_path.connections
+					shortest_path_calculated_event.publish ([shortest_path.textual_description])
+				end
 			end
 		end
 
 	take_traffic_line_ride is
 			-- Take a traffic line ride.
 		require
-			shortest_path_line /= Void
+			shortest_path_connections /= Void
 		do
 			traffic_line_ride := True
 			create last_polypoint.make (0, 0)
-			shortest_path_line.start
-			if not shortest_path_line.after then
-				shortest_path_line.item.polypoints.start
-				last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
-				shortest_path_line.item.polypoints.forth
+			shortest_path_connections.start
+			if not shortest_path_connections.after then
+				shortest_path_connections.item.polypoints.start
+				last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.first)
+				shortest_path_connections.item.polypoints.forth
 			end
 			create position.make (0, 0)
 		ensure
@@ -143,7 +115,8 @@ feature -- Drawing
 						-- Draw marked stations
 			if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
 				calculate_shortest_path
-				traffic_lines.draw_shortest_path
+				--traffic_lines.draw_shortest_path
+				traffic_path_representation.draw
 			end
 		end
 
@@ -152,7 +125,8 @@ feature -- Drawing
 		do
 			Precursor
 			-- Traffic line rides
-			if traffic_line_ride and then show_shortest_path and then shortest_path_line /= Void and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_line.after then
+			if traffic_line_ride and then show_shortest_path and then shortest_path_connections /= Void
+			  and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_connections.after then
 				prepare_for_traffic_line_ride
 			else
 				traffic_line_ride := False
@@ -165,6 +139,11 @@ feature -- Drawing
 				gl_rotated_external (y_rotation, 0, 1, 0)
 			end
 		end
+
+feature -- Events
+
+	shortest_path_calculated_event: EM_EVENT_CHANNEL [TUPLE[STRING]]
+			-- Event for shortest path calculation complete
 
 feature {NONE} -- Event handling
 
@@ -222,8 +201,8 @@ feature {NONE} -- Event handling
 						end
 						marked_origin := Void
 						marked_destination := Void
-						shortest_path_line := void
-						traffic_lines.remove_shortest_path
+						shortest_path_connections := Void
+						traffic_path_representation.remove_shortest_path
 						marked_station_changed := True
 					end
 				end
@@ -247,7 +226,7 @@ feature {NONE} -- Event handling
 						end
 						marked_destination := Void
 						marked_origin := Void
-						shortest_path_line := void
+						shortest_path_connections := Void
 						marked_station_changed := True
 					end
 				end
@@ -352,7 +331,7 @@ feature {NONE} -- Implementation
 			start_point, end_point, direction: EM_VECTOR_2D
 		do
 			start_point := last_polypoint
-			end_point := map_to_gl_coords (shortest_path_line.item.polypoints.item)
+			end_point := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
 
 			direction := end_point - start_point
 
@@ -370,15 +349,15 @@ feature {NONE} -- Implementation
 			gl_translated_external (-start_point.x, 0, -start_point.y)
 
 			if (position-direction).length < speed then
-				last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.item)
-				shortest_path_line.item.polypoints.forth
+				last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
+				shortest_path_connections.item.polypoints.forth
 
-				if shortest_path_line.item.polypoints.after and then not shortest_path_line.after then
-					shortest_path_line.forth
-					if not shortest_path_line.after then
-						shortest_path_line.item.polypoints.start
-						last_polypoint := map_to_gl_coords (shortest_path_line.item.polypoints.first)
-						shortest_path_line.item.polypoints.forth
+				if shortest_path_connections.item.polypoints.after and then not shortest_path_connections.after then
+					shortest_path_connections.forth
+					if not shortest_path_connections.after then
+						shortest_path_connections.item.polypoints.start
+						last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.first)
+						shortest_path_connections.item.polypoints.forth
 					end
 				end
 				position.set_x (0)

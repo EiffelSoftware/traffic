@@ -44,10 +44,7 @@ feature{NONE} -- Creation
 			polypoints_exists: polypoints /= Void
 		end
 
-
-
 feature -- Basic operation
-
 
 	hash_code: INTEGER is
 			-- Hash code value

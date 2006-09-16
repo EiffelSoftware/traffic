@@ -35,7 +35,6 @@ feature {NONE} -- Initialization
 			default_size := 100
 			name := a_name
 			create graph.make_multi_graph
-			graph.set_minimum_switches
 			create internal_places.make (default_size * default_size)
 			create internal_lines.make (default_size)
 			create internal_line_sections.make (default_size)
@@ -198,6 +197,9 @@ feature -- Status report
 	path_found: BOOLEAN
 			-- shortest path found on graph?
 
+	shortest_path_mode: INTEGER
+
+
 --	has_road (a_origin_name, a_destination_name: STRING; an_id:INTEGER): BOOLEAN is
 --			-- Does traffic the map contain road `a_road'?
 --		require
@@ -236,6 +238,25 @@ feature -- Status report
 			valid_id: an_id>=0
 		do
 			Result := internal_roads.has (an_id)
+		end
+
+	is_valid_shortest_path_mode (a_mode: INTEGER): BOOLEAN is
+			-- is `a_mode' valid?
+		do
+			Result := a_mode = shortest_path_mode_minimal_switches or
+					  a_mode = shortest_path_mode_normal_distance
+		end
+
+
+feature -- Status setting
+
+	set_shortest_path_mode (a_mode: INTEGER) is
+			-- set the shortest path mode
+		require
+			valide_mode: is_valid_shortest_path_mode (a_mode)
+		do
+			shortest_path_mode := a_mode
+			graph.set_shortest_path_mode (a_mode)
 		end
 
 
@@ -537,6 +558,12 @@ feature -- Element change
 				traveler_index = old traveler_index + 1
 			end
 
+	set_scale_factor (a_scale_factor: DOUBLE) is
+				-- set `a_factor'
+			do
+				scale_factor_impl := a_scale_factor
+			end
+
 feature {TRAFFIC_MAP_FACTORY} -- Element change
 
 	add_stop (a_stop: TRAFFIC_STOP) is
@@ -559,6 +586,18 @@ feature -- Access
 
 	description: STRING
 			-- Textual description.
+
+	shortest_path_mode_normal_distance: INTEGER is
+			-- calculate shortest path based on regular distance
+		do
+			Result := graph.normal_distance
+		end
+
+	shortest_path_mode_minimal_switches: INTEGER is
+			-- calculate shortest path based on minimal number of switches
+		do
+			Result := graph.minimal_switches
+		end
 
 	taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE] is
 			-- All taxi offices associated with this map.
@@ -702,6 +741,13 @@ feature -- Access
 			end
 		end
 
+		scale_factor: DOUBLE is
+				-- multiply with this to receive real-world distances
+			do
+				Result := scale_factor_impl
+			end
+
+
 --	place_events: TRAFFIC_ITEM_EVENTS  [TRAFFIC_PLACE]
 --	
 --	line_section_events: TRAFFIC_ITEM_EVENTS [TRAFFIC_LINE_SECTION]
@@ -825,25 +871,39 @@ feature -- Basic operation
 			-- Find shortest path
 		local
 			temp_path: LIST [LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]]
+			a_road: TRAFFIC_ROAD
+			a_type: TRAFFIC_TYPE_STREET
+			road_id: INTEGER
+			pp: ARRAYED_LIST [EM_VECTOR_2D]
 		do
+			create pp.make (2)
+			road_id := road_id.max_value
 			path_found := False
+			create a_type.make
 			graph.put_node (a_origin.dummy_node)
 			--connect the dummy node with the stops
+			pp.extend (a_origin.position)
+			pp.extend (Void)
 			from a_origin.stops.start until a_origin.stops.after loop
-				graph.put_edge (a_origin.dummy_node, a_origin.stops.item,
-				create {TRAFFIC_ROAD}.make (a_origin.dummy_node, a_origin.stops.item,
-				  create {TRAFFIC_TYPE_STREET}.make, (create {INTEGER_REF}).max_value, "undirected"),
-				0)
+				create a_road.make (a_origin.dummy_node, a_origin.stops.item,
+				  a_type, road_id, "undirected")
+				graph.search (a_origin.stops.item)
+				pp.put_i_th (graph.incident_edge_labels.first.polypoints.first, 2)
+				a_road.set_polypoints (pp)
+				graph.put_edge (a_origin.dummy_node, a_origin.stops.item, a_road, 0)
 				a_origin.stops.forth
 			end
 
 			--connect the stops with the dummy node
 			graph.put_node (a_destination.dummy_node)
+			pp.put_i_th (a_destination.position, 1)
 			from a_destination.stops.start until a_destination.stops.after loop
-				graph.put_edge (a_destination.stops.item, a_destination.dummy_node,
-				  create {TRAFFIC_ROAD}.make (a_destination.stops.item, a_destination.dummy_node,
-				    create {TRAFFIC_TYPE_STREET}.make, (create {INTEGER_REF}).max_value, "undirected"),
-				  0)
+				create a_road.make (a_destination.stops.item, a_destination.dummy_node,
+				    a_type, road_id, "undirected")
+				graph.search (a_destination.stops.item)
+				pp.put_i_th (graph.incident_edge_labels.first.polypoints.first, 2)
+				a_road.set_polypoints (pp)
+				graph.put_edge (a_destination.stops.item, a_destination.dummy_node, a_road , 0)
 				a_destination.stops.forth
 			end
 			graph.find_shortest_path (a_origin.dummy_node, a_destination.dummy_node)
@@ -851,7 +911,7 @@ feature -- Basic operation
 			if graph.path_found then
 				path_found := True
 				temp_path := graph.shortest_path
-				create shortest_path_impl.make
+				create shortest_path_impl.make (scale_factor)
 
 				from temp_path.start until temp_path.after loop
 					shortest_path_impl.extend (temp_path.item.label)
@@ -876,41 +936,59 @@ feature {TRAFFIC_MAP_LOADER}
 			the_edges: LIST[WEIGHTED_EDGE[TRAFFIC_NODE, TRAFFIC_CONNECTION]]
 			p: TRAFFIC_PLACE
 			s: TRAFFIC_STOP
-			a_edge: TRAFFIC_LINE_SECTION
+			a_edge: TRAFFIC_ROAD
+			total_weight: DOUBLE
+			average_weight: DOUBLE
+			w: DOUBLE
+			edge_count: INTEGER
+			type: TRAFFIC_TYPE_STREET
+			pp: ARRAYED_LIST [EM_VECTOR_2D]
+			a: EM_VECTOR_2D
+			b: EM_VECTOR_2D
 		do
 			the_edges := graph.edges
 			from the_edges.start until the_edges.after loop
-				the_edges.item.set_weight (the_edges.item.label.length)
+				w := the_edges.item.label.length
+				the_edges.item.set_weight (w)
+				total_weight := total_weight + w
+				edge_count := edge_count + 1
 				the_edges.forth
 			end
 
-			-- connect stops
+			if edge_count > 0 then
+				average_weight := total_weight / edge_count
+			end
+
+			create type.make
+			-- connect stops TODO: connect nodes?
+			create pp.make (2)
+			pp.extend (Void)
+			pp.extend (Void)
+
 			from internal_place_array.start until internal_place_array.after loop
 				from p := internal_place_array.item; p.stops.start until p.stops.after loop
 					s := p.stops.item
+					graph.search (s)
+					pp.put_i_th (position_from_connections(graph.incident_edge_labels, s), 1) --.first.polypoints.first, 1)
 					p.stops.forth
 					if not p.stops.after then
-						create a_edge.make (s, p.stops.item, create {TRAFFIC_TYPE_WALKING}.make, Void)
-						graph.put_edge (s, p.stops.item, a_edge, 0)
---						internal_line_sections.extend (one_edge)
---						line_section_inserted_event.publish ([one_edge])
-						create a_edge.make (p.stops.item, s, create {TRAFFIC_TYPE_WALKING}.make, Void)
-						graph.put_edge (p.stops.item, s, a_edge , 0)
---						internal_line_sections.extend (one_edge)
---						line_section_inserted_event.publish ([one_edge])
+						--create a_edge.make (s, p.stops.item, create {TRAFFIC_TYPE_WALKING}.make, Void)
+						graph.search (p.stops.item)
+						pp.put_i_th (position_from_connections (graph.incident_edge_labels, p.stops.item), 2) --.first.polypoints.first, 2)
+						create a_edge.make (s, p.stops.item, type, (create {INTEGER_REF}).max_value, "undirected")
+						a_edge.set_polypoints (pp)
+						graph.put_edge (s, p.stops.item, a_edge, average_weight / 2)
+						--add_road (a_edge)
+						a := pp.first
+						pp.put_i_th (pp.last, 1)
+						pp.put_i_th (a, 2)
+						a_edge.set_polypoints (pp)
+						graph.put_edge (p.stops.item, s, a_edge , average_weight / 2)
 					end
 				end
 				internal_place_array.forth
 			end
 		end
-
-	test is
-			--
-		do
-			--graph.enable_user_defined_weight_function (a_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [G, L]], REAL_32])
-		end
-
-
 
 feature {NONE} -- Implementation
 
@@ -945,6 +1023,8 @@ feature {NONE} -- Implementation
 			-- Taxi offices associated with this map
 
 	shortest_path_impl: TRAFFIC_PATH
+
+	scale_factor_impl: DOUBLE
 
 	place_position (a_name: STRING): INTEGER is
 			-- Position of place `a_name' in places.
@@ -1064,6 +1144,18 @@ feature {NONE} -- Implementation
 				end
 			end
 		end
+
+	position_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): EM_VECTOR_2D is
+			-- get the position of `a_node'
+		do
+
+			if a_connections.first.origin_impl = a_node then
+				Result := a_connections.first.polypoints.first
+			else
+				Result := a_connections.first.polypoints.last
+			end
+		end
+
 
 invariant
 	name_not_void: name /= Void -- Map name exists.

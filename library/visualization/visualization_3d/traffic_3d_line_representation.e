@@ -42,7 +42,6 @@ feature -- Initialization
 			line_factory.add_line_type (agent create_line_section_highlighted, highlighted_type)
 			line_factory.add_gauger(agent decide_line_type, decision_type)
 
-			create shortest_line.make (1)
 			create line_section_lookup.make (map.line_sections.count)
 			create line_section_views.make (map.line_sections.count)
 			create collision_polygons.make (4)
@@ -55,7 +54,6 @@ feature -- Initialization
 			height := 1
 		ensure
 			line_factory_created: line_factory /= Void
-			shortest_line_created: shortest_line /= Void
 			line_objects_created: line_section_views /= Void and line_section_lookup /= Void
 		end
 
@@ -73,27 +71,6 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 				line_section_views.item.draw
 				line_section_views.forth
 			end
-		end
-
-	draw_shortest_path is
-			-- Draw the shortest line if it exists.
-		do
-			from
-				shortest_line.start
-			until
-				shortest_line.after
-			loop
-				shortest_line.item.draw
-				shortest_line.forth
-			end
-		end
-
-	remove_shortest_path is
-			-- Remove the shortest path from the map.
-		do
-			shortest_line.wipe_out
-		ensure
-			shortest_line_empty: shortest_line.is_empty
 		end
 
 feature -- Event handling
@@ -189,34 +166,6 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			line_section_view := line_factory.create_object
 			line_section_views.extend (line_section_view)
 			line_section_lookup.force (line_section_views.count, line_section)
-		end
-
-	add_shortest_line(a_line: TRAFFIC_LINE) is
-		-- Add one line to the map, e.g. the shortest path line.
-		require
-			a_line_exists: a_line /= Void
-		local
-			i: INTEGER
-			a_line_section: EM_3D_OBJECT
-		do
-			shortest_line.wipe_out
-			line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1,1,1)
-			from
-				a_line.start
-				i := 0
-			until
-				a_line.after
-			loop
-				line_section := a_line.item
-				-- line creation
-
-				line_factory.take_decision (decision_type)
-				a_line_section := line_factory.create_object
-				a_line_section.set_origin (0, line_height + 0.01, 0)
-				shortest_line.force(a_line_section)
-				i := i+1
-				a_line.forth
-			end
 		end
 
 feature -- Basic operations
@@ -392,9 +341,6 @@ feature -- Access
 
 	line_section_lookup: DS_HASH_TABLE [INTEGER, TRAFFIC_LINE_SECTION]
 			--  lookup for line_section_views
-
-	shortest_line: ARRAYED_LIST [EM_3D_OBJECT]
-			-- Container for shortest path line
 
 	line_factory: TRAFFIC_3D_LINE_FACTORY
 			-- Factory for line segments

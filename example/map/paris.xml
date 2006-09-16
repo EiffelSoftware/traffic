@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE city SYSTEM "map.dtd"> 
-<map name="Paris"> 
+<map name="Paris" scale_factor="5.52"> 
 
 <places>
 	<place name="place Chateau de Vincennes"/>

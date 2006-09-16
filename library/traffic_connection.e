@@ -14,11 +14,11 @@ feature -- Status setting
 		require
 			a_polypoints_exist: a_polypoints /= Void
 		do
-			polypoints := a_polypoints
+			polypoints.copy (a_polypoints)
 		ensure
-			equal (polypoints, a_polypoints)
+			--equal (polypoints, a_polypoints)
 			polypoints_exists: polypoints /= Void
-			polypoints_equal: polypoints.count > 0 implies equal (polypoints, a_polypoints)
+			--polypoints_equal: polypoints.count > 0 implies equal (polypoints, a_polypoints)
 		end
 
 	remove_polypoints is
@@ -71,4 +71,6 @@ feature {TRAFFIC_MAP, TRAFFIC_PATH} -- Access
 
 	destination_impl: TRAFFIC_NODE
 
+invariant
+	polypoints /= Void
 end

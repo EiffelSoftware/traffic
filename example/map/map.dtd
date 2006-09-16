@@ -16,6 +16,7 @@
 <!ELEMENT map (description, places, lines)> 
 <!ATTLIST map
 	name   CDATA #IMPLIED
+	scale_factor CDATA #REQUIRED
     >   
  
 <!--- A Point must have two coordinates: x and y. --> 

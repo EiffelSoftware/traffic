@@ -27,10 +27,7 @@ feature -- Initialization
 			-- Initialize subsystems of em and start first scene.
 		local
 			keyboard: EM_KEYBOARD
-			at: ACTION_TIMER
 		do
-			create at
-			at.application_start_setup
 			-- Initialise screen
 			video_subsystem.set_video_surface_width (window_width)
 			video_subsystem.set_video_surface_height (window_height)

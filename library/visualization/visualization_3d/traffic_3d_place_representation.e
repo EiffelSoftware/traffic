@@ -293,17 +293,32 @@ feature {NONE} -- Implementation
 			until
 				links.after
 			loop
-				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then
-				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
+
+				if links.item.origin = a_place then
 					p := links.item.polypoints.first
-					if Result = Void then
-						create Result.make (p.twin, p.twin)
-					else
-						Result.extend (p)
-					end
+				else
+					p := links.item.polypoints.last
+				end
+
+				if Result = Void then
+					create Result.make (p.twin, p.twin)
+				else
+					Result.extend (p)
 				end
 				links.forth
 			end
+
+--				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then
+--				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
+--					p := links.item.polypoints.first
+--					if Result = Void then
+--						create Result.make (p.twin, p.twin)
+--					else
+--						Result.extend (p)
+--					end
+--				end
+--				links.forth
+--			end
 			if Result = Void then
 				create Result.make_from_position_and_size (a_place.position.x, a_place.position.y, 0.1, 0.1)
 			else

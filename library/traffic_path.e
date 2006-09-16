@@ -94,16 +94,16 @@ feature -- Status report
 
 			Result.append ("Arriving at: " + destination.name + "%N%NTotal:")
 			if walking_length > 0 then
-				Result.append ("%NWalking: " + scale (walking_length).rounded.out + "m")
+				Result.append ("%NWalking: " + scale (walking_length).rounded.out + " m")
 			end
 			if tram_length > 0 then
-				Result.append ("%NTram: " + scale (tram_length).rounded.out + " Km")
+				Result.append ("%NTram: " + scale (tram_length).rounded.out + " m")
 			end
 			if bus_length > 0 then
-				Result.append ("%NBus: " + scale (bus_length).rounded.out + " Km")
+				Result.append ("%NBus: " + scale (bus_length).rounded.out + " m")
 			end
 			if train_length > 0 then
-				Result.append ("%NTrain: " + scale (train_length).rounded.out + " Km")
+				Result.append ("%NTrain: " + scale (train_length).rounded.out + " m")
 			end
 		end
 

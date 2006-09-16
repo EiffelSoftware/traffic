@@ -44,7 +44,7 @@ feature -- Interface
 			create buildings_transparent_checkbox.make_from_text ("Transparent buildings")
 			create time_running_checkbox.make_from_text("Simulate Time")
 			create lines_checkbox.make_from_text ("Show VBZ Lines")
-			
+
 			-- Box and button for xml files
 			create combo_title.make_from_text ("Choose a map:")
 			create combo_box.make_from_list (search_for_xml("../map"))
@@ -78,6 +78,9 @@ feature -- Interface
 			create building_combo_box.make_from_list (search_for_xml("buildings"))
 			create delete_buildings_button.make_from_text("Delete buildings")
 
+			create path_description.make_empty
+			create minimal_switches_checkbox.make_from_text ("Min Sw")
+
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
@@ -88,6 +91,7 @@ feature -- Interface
 				io.put_string ("OpenGL disabled: Map not loaded%N")
 			end
 			map.building_clicked_event.subscribe (agent show_building_information(?,?))
+			map.shortest_path_calculated_event.subscribe (agent update_shortest_path_description)
 
 
 			-- Toolbar Panel
@@ -129,6 +133,14 @@ feature -- Interface
 			building_combo_box.selection_changed_event.subscribe (agent building_combo_selection_changed(?))
 			toolbar_panel_left.add_widget (building_combo_box)
 
+			-- Path description
+			path_description.set_position (5, 325)
+			path_description.set_optimal_dimension (185, 250)
+			path_description.resize_to_optimal_dimension
+			--path_description.set_background (bg_color)
+			path_description.set_enabled (False)
+			path_description.hide
+			toolbar_panel_left.add_widget (path_description)
 
 			-- Combobox title
 			combo_title.set_position (10,50)
@@ -206,16 +218,27 @@ feature -- Interface
 			shortest_path_checkbox.unchecked_event.subscribe (agent shortest_path_unchecked)
 			toolbar_panel.add_widget (shortest_path_checkbox)
 
+			minimal_switches_checkbox.set_position (120, 390)
+			minimal_switches_checkbox.set_background_color (bg_color)
+			minimal_switches_checkbox.set_optimal_dimension (60, 20)
+			minimal_switches_checkbox.resize_to_optimal_dimension
+			minimal_switches_checkbox.checked_event.subscribe (agent minimal_switches_checked)
+			minimal_switches_checkbox.unchecked_event.subscribe (agent minimal_switches_unchecked)
+			minimal_switches_checkbox.set_tooltip ("Minimal switches")
+			minimal_switches_checkbox.hide
+			toolbar_panel.add_widget (minimal_switches_checkbox)
+
+
 			-- Time Running Checkbox
 			time_running_checkbox.set_position (10, 410)
-			time_running_checkbox.set_background_color (bg_color)
+			--time_running_checkbox.set_background_color (bg_color)
 			time_running_checkbox.set_optimal_dimension (120,20)
 			time_running_checkbox.resize_to_optimal_dimension
 			time_running_checkbox.checked_event.subscribe (agent time_running_checked)
 			time_running_checkbox.unchecked_event.subscribe (agent time_running_unchecked)
 			toolbar_panel.add_widget (time_running_checkbox)
-			
-			
+
+
 			-- Lines Checkbox
 			lines_checkbox.set_position (10,430)
 			lines_checkbox.set_background_color (bg_color)
@@ -224,9 +247,9 @@ feature -- Interface
 			lines_checkbox.checked_event.subscribe (agent lines_checked)
 			lines_checkbox.unchecked_event.subscribe (agent lines_unchecked)
 			toolbar_panel.add_widget (lines_checkbox)
-			
-			
-						
+
+
+
 			-- Zoom out Button
 			zoom_out_button.set_position (180-zoom_out_button.width, 170)
 			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
@@ -333,12 +356,12 @@ feature -- Event handling
 		end
 
 	traffic_line_ride_button_clicked is
-			-- "Zoom out" button has been clicked.
+			-- "Take traffic line ride" button has been clicked.
 		require
 			traffic_line_ride_button /= Void
 		do
 			traffic_line_ride_button.set_pressed (False)
-			if map.shortest_path_line /= Void then
+			if map.shortest_path_connections /= Void then
 				map.take_traffic_line_ride
 			end
 		end
@@ -364,8 +387,13 @@ feature -- Event handling
 
 			if map.marked_origin /= Void and then map.marked_destination /= void and then map.show_shortest_path then
 				traffic_line_ride_button.show
+				path_description.show
+				minimal_switches_checkbox.show
 			else
 				traffic_line_ride_button.hide
+				path_description.set_text ("")
+				path_description.hide
+				minimal_switches_checkbox.hide
 			end
 		end
 
@@ -399,6 +427,7 @@ feature -- Event handling
 			map.set_show_shortest_path (True)
 			marked_destination_title.set_text ("Marked destination:")
 			marked_origin_title.set_text ("Marked origin:")
+			minimal_switches_checkbox.show
 			if map.marked_destination /= Void then
 				marked_destination_label.set_text (map.marked_destination.name)
 			end
@@ -407,6 +436,7 @@ feature -- Event handling
 			end
 			if map.marked_origin /= Void and then map.marked_destination /= Void then
 				traffic_line_ride_button.show
+				path_description.show
 			end
 		end
 
@@ -418,6 +448,8 @@ feature -- Event handling
 			marked_destination_label.set_text ("")
 			marked_origin_title.set_text ("Marked station:")
 			traffic_line_ride_button.hide
+			path_description.hide
+			minimal_switches_checkbox.hide
 		end
 
 	buildings_checked is
@@ -431,7 +463,7 @@ feature -- Event handling
 		do
 			map.set_lines_shown (False)
 		end
-		
+
 	lines_checked is
 			-- Checkbox has been checked.
 		do
@@ -443,8 +475,8 @@ feature -- Event handling
 		do
 			map.set_buildings_shown (False)
 		end
-		
-		
+
+
 
 	sun_checked is
 			-- Checkbox has been checked.
@@ -579,7 +611,25 @@ feature -- Event handling
 			buildings_slider.set_current_value (0)
 		end
 
+	minimal_switches_checked is
+			-- set shortest path mode to minimal switches
+		do
+			map.set_shortest_path_mode (map.shortest_path_mode_minimal_switches)
+		end
+
+	minimal_switches_unchecked is
+			-- set shortest path mode to normal distance
+		do
+			map.set_shortest_path_mode (map.shortest_path_mode_normal_distance)
+		end
+
 feature -- Widgets
+
+	path_description: EM_TEXTAREA
+			-- textual description of shortest path
+
+	minimal_switches_checkbox: EM_CHECKBOX
+			-- checkbox for specifying shortest path mode
 
 	toolbar_panel: EM_PANEL
 			-- Panel, in which all option widgets are displayed.
@@ -601,7 +651,7 @@ feature -- Widgets
 
 	buildings_checkbox: EM_CHECKBOX
 			-- Checkbox for visibility of buildings
-			
+
 	lines_checkbox: EM_CHECKBOX
 			-- Checkbox for visibility of lines
 
@@ -610,7 +660,7 @@ feature -- Widgets
 
 	time_running_checkbox: EM_CHECKBOX
 			-- Checkbox to start/stop time simulation
-			
+
 	combo_title: EM_LABEL
 			-- Title for combo box
 
@@ -690,7 +740,13 @@ feature {NONE} -- Implementation
 
 	map: CITY_3D_MAP_WIDGET
 			-- The 3 dimensional representation of the map
-	
+
+	update_shortest_path_description (a_description: STRING) is
+			-- Update the shortest path description
+		do
+			path_description.set_text (a_description)
+		end
+
 
 	number_of_buildings: INTEGER
 			-- Number of buildings on the map
