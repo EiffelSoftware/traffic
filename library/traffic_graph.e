@@ -9,7 +9,6 @@ class
 inherit
 	LINKED_WEIGHTED_GRAPH [TRAFFIC_NODE, TRAFFIC_CONNECTION]
 	redefine
-		find_shortest_path,
 		writable,
 		put_edge,
 		prune_node,
@@ -32,14 +31,6 @@ feature {NONE} -- Creation
 		end
 
 feature -- Basic operations
-
-	find_shortest_path (a_start_node, a_end_node: like item) is
-			-- Remember start and end
-		do
-			sp_origin := a_start_node
-			sp_destination := a_end_node
-			Precursor (a_start_node, a_end_node)
-		end
 
 	put_edge (a_start_node, a_end_node: like item; a_label: TRAFFIC_CONNECTION; a_weight: REAL) is
 			-- redefined to record weight
@@ -94,12 +85,6 @@ feature -- Status Report
 			-- Is there a current item that may be modified?
 		do
 			Result := not off
-		end
-
-	is_normal_distance: BOOLEAN is
-			-- is the shortest path calculated for normal distance (false for minimum stops)
-		do
-			Result := shortest_path_mode = normal_distance
 		end
 
 feature -- Removal
@@ -190,9 +175,6 @@ feature {NONE} -- Implementation
 		end
 
 	shortest_path_mode: INTEGER
-
-	sp_origin: TRAFFIC_NODE
-	sp_destination: TRAFFIC_NODE
 
 	total_weight: DOUBLE
 		-- this is the total length of all TRAFFIC_CONNECTIONs added
