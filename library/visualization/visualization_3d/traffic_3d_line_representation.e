@@ -99,8 +99,7 @@ feature -- Event handling
 		do
 			line_section_lookup.search (a_line_section)
 			if line_section_lookup.found then
-				line_section_views.go_i_th (line_section_lookup.found_item)
-				line_section_views.remove
+				line_section_views.put_i_th (Void, line_section_lookup.found_item)
 				line_section_lookup.remove_found_item
 			end
 		end
