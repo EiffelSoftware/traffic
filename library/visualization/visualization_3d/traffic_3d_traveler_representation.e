@@ -24,6 +24,11 @@ inherit
 
 	TRAFFIC_SHARED_TIME
 
+--new
+	EM_SHARED_BITMAP_FACTORY
+		export {NONE} all end
+
+
 create
 	make
 
@@ -39,7 +44,7 @@ feature -- Initialization
 
 			create collision_polygons.make (1)
 
-			create traveler_factory.make_with_color (0, 0, 0)
+			create traveler_factory
 
 			create travelers.make
 			traveler_key := 0
@@ -103,6 +108,10 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					a_map /= Void
 				local
 					traveler: EM_3D_OBJECT
+					texture_ids: ARRAY[INTEGER]
+					building: EM_3D_OBJECT
+					traffic_model: NEW_TRAFFIC_MODEL
+					bitmap: EM_BITMAP
 				do
 
 					a_traveler.set_index (traveler_key)
@@ -111,39 +120,77 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 
 					if a_traveler.traffic_type.name.is_equal ("walking") then
 						if person_toggle = 0 then
-							traveler_factory.set_em_color (255, 0, 0)
+							--traveler_factory.set_em_color (255, 0, 0)						
 							traveler_factory.load_file ("objects/man.obj")
 							person_toggle := 1
 						else
-							traveler_factory.set_em_color (200, 0, 100)
+							--traveler_factory.set_em_color (200, 0, 100)					
 							traveler_factory.load_file ("objects/woman.obj")
 							person_toggle := 0
 						end
 						traveler := traveler_factory.create_object
-						traveler.set_scale (0.3, 0.3, 0.3)
+--						traveler.set_scale (0.2, 0.2, 0.2)
+
+						create traffic_model.make
+						traffic_model.set_model(traveler)
+						traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
 					elseif a_traveler.traffic_type.name.is_equal ("tram") then
-						traveler_factory.set_em_color (0, 0, 255)
-						traveler_factory.load_file ("objects/tram.obj")
+						--traveler_factory.set_em_color (0, 0, 255)
+
+
+						bitmap_factory.create_bitmap_from_image("objects/tram2000.tga")
+						bitmap := bitmap_factory.last_bitmap
+						create texture_ids.make (0,0)
+						texture_ids.force (bitmap.texture.id, 0)
+						traveler_factory.set_texture_id (texture_ids)
+
+						traveler_factory.load_file("objects/tram2000_small.obj")
 						traveler := traveler_factory.create_object
-						traveler.set_scale (0.3, 0.3, 0.3)
+--						traveler.set_scale (0.3, 0.3, 0.3)
 					--TODO: Change this to color associated with a taxi office. Each taxi office has a
 					--different color.
 					--Current situation: only different colors for different types of taxi.
-					elseif a_traveler.traffic_type.name.is_equal("event taxi") then
-						traveler_factory.set_em_color (255, 255, 0)
-						traveler_factory.load_file ("objects/woman.obj")
+--					elseif a_traveler.traffic_type.name.is_equal("event taxi") then
+--						traveler_factory.set_em_color (255, 255, 0)
+--						traveler_factory.load_file ("objects/woman.obj")
+--						traveler := traveler_factory.create_object
+--						traveler.set_scale (0.3, 0.3, 0.3)
+--					elseif a_traveler.traffic_type.name.is_equal("dispatcher taxi") then
+--						traveler_factory.set_em_color (0, 255 , 255)
+--						traveler_factory.load_file ("objects/woman.obj")
+--						traveler := traveler_factory.create_object
+--						traveler.set_scale (0.3, 0.3, 0.3)
+
+						create traffic_model.make
+						traffic_model.set_model(traveler)
+						traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
+						traffic_model.set_texture_id (texture_ids)
+						traffic_model.add_texture (bitmap)
+
+					elseif a_traveler.traffic_type.name.is_equal ("dispatcher taxi") or a_traveler.traffic_type.name.is_equal ("event taxi") then
+
+						bitmap_factory.create_bitmap_from_image("objects/taxi.tga")
+						bitmap := bitmap_factory.last_bitmap
+						create texture_ids.make (0,0)
+						texture_ids.force (bitmap.texture.id, 0)
+						traveler_factory.set_texture_id (texture_ids)
+
+						traveler_factory.load_file("objects/taxi.obj")
 						traveler := traveler_factory.create_object
-						traveler.set_scale (0.3, 0.3, 0.3)
-					elseif a_traveler.traffic_type.name.is_equal("dispatcher taxi") then
-						traveler_factory.set_em_color (0, 255 , 255)
-						traveler_factory.load_file ("objects/woman.obj")
-						traveler := traveler_factory.create_object
-						traveler.set_scale (0.3, 0.3, 0.3)
+
+						create traffic_model.make
+						traffic_model.set_model(traveler)
+						traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
+						traffic_model.set_texture_id (texture_ids)
+						traffic_model.add_texture (bitmap)
 					end
-					traveler.set_origin (a_traveler.position.x, traveler_offset, a_traveler.position.y)
-					traveler.set_rotation (0, a_traveler.angle_x, 0)
+
+
+
+					traffic_model.set_origin (a_traveler.position.x, traveler_offset, a_traveler.position.y)
+					traffic_model.set_rotation (0, a_traveler.angle_x, 0)
 					time.add_callback_tour (agent a_traveler.take_tour)
-					travelers.force ([traveler, a_traveler])
+					travelers.force ([traffic_model, a_traveler])
 					a_map.add_traveler (a_traveler)
 
 				end
@@ -283,7 +330,7 @@ feature{NONE} -- Attributes
 	traveler_key: INTEGER
 		-- key for travelers.
 
-	traveler_factory: TRAFFIC_3D_FAST_OBJECT_LOADER
+	traveler_factory: TRAFFIC_3D_OBJ_LOADER
 		-- factory for travelers.
 
 	color: GL_VECTOR_3D[DOUBLE]
@@ -303,6 +350,10 @@ feature{NONE} -- Attributes
 
 	scheduler: TRAFFIC_SCHEDULE_LOADER
 		-- timetable from xml file
+
+	model_ressources: ARRAYED_LIST[NEW_TRAFFIC_MODEL]
+		-- besser hier bei creation alle models reinladen und dann
+		-- von hier per twin kopieren, anstatt obj jedesmal neu laden
 
 invariant
 	TR_TR_REP_centre_set: centre /= Void

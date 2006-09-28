@@ -48,7 +48,7 @@ feature -- Initialisation
 				focus := 0.156*plane_size - 0.1875
 				x_coord := 0
 				y_coord := -1
-				z_coord := -9
+				z_coord := -8
 				y_rotation := 180
 				x_rotation := 40
 

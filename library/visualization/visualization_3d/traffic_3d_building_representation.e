@@ -25,6 +25,10 @@ inherit
 	DOUBLE_MATH
 		export {NONE} all end
 
+--new
+	EM_SHARED_BITMAP_FACTORY
+		export {NONE} all end
+
 creation
 	make
 
@@ -32,15 +36,54 @@ feature -- Initialization
 
 	make is
 			-- Create a new object and set the representation method for the factory
+		local
+			texture_ids: ARRAY[INTEGER]
+			building: EM_3D_OBJECT
+			traffic_model: NEW_TRAFFIC_MODEL
+			bitmap: EM_BITMAP
+			i: INTEGER
 		do
 			create building_factory.make
 			create buildings.make (1)
 			create wall_color.make_xyz (0.5,0.5,0.5)
 			create roof_color.make_xyz (1.0,0,0)
+			create random.make
+			random.start
 			id_counter := 1
 			building_factory.add_building_type (agent create_building_type, building_type)
 			building_factory.add_gauger(agent decide_building_type, decision_type)
 			building_factory.take_decision(decision_type)
+			
+			--new
+			
+			create model_ressources.make (0)
+			
+			from
+				i := 1
+			until
+				i > building_count
+			loop
+				bitmap_factory.create_bitmap_from_image("buildings/building" + i.out +".tga")
+				bitmap := bitmap_factory.last_bitmap
+				create texture_ids.make (0,0)
+				texture_ids.force (bitmap.texture.id, 0)
+				building_factory.set_texture_id (texture_ids)
+				
+				building_factory.load_file("buildings/building" + i.out + ".obj")
+				building := building_factory.create_object
+				
+				create traffic_model.make
+				traffic_model.set_model(building)
+				traffic_model.set_bounding_box (building.width, building.height, building.depth)
+				traffic_model.set_texture_id (texture_ids)
+				traffic_model.add_texture (bitmap)
+				
+				model_ressources.extend (traffic_model)
+				
+				i := i + 1
+			end
+		
+			
 		end
 		
 feature	-- Drawing
@@ -124,9 +167,12 @@ feature -- Options
 		require
 			building_valid: a_building /= Void
 		local
-			building: EM_3D_OBJECT
+			building: NEW_TRAFFIC_MODEL
 		do
-			building := building_factory.create_object
+			random.forth
+			
+			building := model_ressources.i_th((random.double_item*(building_count-1).to_double).rounded +1).twin
+			
 			building.set_scale (a_building.width, a_building.height, a_building.breadth)
 			building.set_rotation (0, a_building.angle, 0)
 			building.set_origin (a_building.center.x, 0, a_building.center.y)
@@ -281,7 +327,7 @@ feature {NONE} -- Attributes
 	buildings: ARRAYED_LIST [EM_3D_OBJECT]
 			-- Buildings in the representation
 	
-	building_factory: TRAFFIC_BUILDING_FACTORY
+	building_factory: NEW_TRAFFIC_BUILDING_FACTORY
 			-- Factory for buildings
 
 	wall_color: GL_VECTOR_3D[DOUBLE]
@@ -295,5 +341,13 @@ feature {NONE} -- Attributes
 
 	id_counter: INTEGER
 			-- Counter for the ids
+	
+	model_ressources: ARRAYED_LIST[NEW_TRAFFIC_MODEL]
+	
+	random: RANDOM
+			-- randomizer
+			
+	building_count: INTEGER is 5
+			-- how many differnt building models are available
 	
 end
