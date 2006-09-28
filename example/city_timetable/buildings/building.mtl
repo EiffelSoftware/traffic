@@ -1,0 +1,16 @@
+newmtl material29
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ns 50.000000
+Tr 0.000000
+illum 1
+map_Kd E:\Projektdaten\3D\XSI\new scene\Pictures\buildings\texture\building1\building1.tga
+newmtl material30
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ns 50.000000
+Tr 0.000000
+illum 1
+map_Kd E:\Projektdaten\3D\XSI\new scene\Pictures\buildings\texture\building1\building1.tga
