@@ -1,0 +1,9 @@
+city_taxi.exe
+*.ace
+Diagrams
+EIFGEN
+EIFGENs
+arguments.wb
+city_taxi.epr
+city_taxi.rc
+preferences.wb

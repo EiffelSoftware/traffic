@@ -293,6 +293,7 @@ feature -- Element change
 		do
 			internal_line_sections.extend (a_line_section)
 			graph.put_edge (a_line_section.origin_impl, a_line_section.destination_impl, a_line_section, a_line_section.length)
+			-- TODO: connect nodes at origin and destination with their peers (stops of other lines)
 			line_section_inserted_event.publish ([a_line_section])
 		ensure
 			--a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
@@ -930,8 +931,10 @@ feature -- Basic operation
 
 feature {TRAFFIC_MAP_LOADER}
 
-	recalculate_weights is
-			-- Due to an error in processing the weights need to be recalculated
+	recalculate_weights_and_connect_stops is
+			-- Due to an error in processing the weights need to be recalculated.
+			-- In addition, the stops of different lines are connected at nodes.
+			-- TODO: this processing could be done in the xml processing code
 		local
 			the_edges: LIST[WEIGHTED_EDGE[TRAFFIC_NODE, TRAFFIC_CONNECTION]]
 			p: TRAFFIC_PLACE
@@ -975,15 +978,15 @@ feature {TRAFFIC_MAP_LOADER}
 						--create a_edge.make (s, p.stops.item, create {TRAFFIC_TYPE_WALKING}.make, Void)
 						graph.search (p.stops.item)
 						pp.put_i_th (position_from_connections (graph.incident_edge_labels, p.stops.item), 2) --.first.polypoints.first, 2)
-						create a_edge.make (s, p.stops.item, type, (create {INTEGER_REF}).max_value, "undirected")
+						create a_edge.make (s, p.stops.item, type, (create {INTEGER}).max_value, "undirected")
 						a_edge.set_polypoints (pp)
-						graph.put_edge (s, p.stops.item, a_edge, average_weight / 2)
+						graph.put_edge (s, p.stops.item, a_edge, a_edge.length)
 						--add_road (a_edge)
 						a := pp.first
 						pp.put_i_th (pp.last, 1)
 						pp.put_i_th (a, 2)
 						a_edge.set_polypoints (pp)
-						graph.put_edge (p.stops.item, s, a_edge , average_weight / 2)
+						graph.put_edge (p.stops.item, s, a_edge , a_edge.length)
 					end
 				end
 				internal_place_array.forth

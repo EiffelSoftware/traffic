@@ -109,7 +109,7 @@ feature {NONE} -- Implementation
 				raise ("Error while parsing " + xml_filename + ": " + map_parser.error_description)
 			else
 				map := factory.map
-				map.recalculate_weights
+				map.recalculate_weights_and_connect_stops
 				has_error := False
 				create_dump
 			end

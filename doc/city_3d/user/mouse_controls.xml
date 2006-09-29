@@ -84,7 +84,16 @@
 			is marked by clicking on the place with the left mouse button and the destination with the right mouse button.
 		</para>
 		<para>
-			x) When two stations are selected, a new button appears. If you press it, you can take a traffic 
+			x) Calculate the shortest path based changing the means of transportation as little as possible (Minimal Switches).
+		</para>
+		<para>
+			xi) Change the lighting as if the scene was lighted by a sun.
+		</para>
+		<para>
+			xii) Show the transportation lines instead of the roads.
+		</para>
+		<para>
+			xiii) When two stations are selected, a new button appears. If you press it, you can take a traffic 
 			line ride in a first-person perspective between the two marked stations.
 	 	</para>
 	</para>
@@ -103,6 +112,9 @@
 		</para>
 		<para>
 		iv) Delete all buildings.
+		</para>
+		<para>
+		v) Description of the shortest path.
 		</para>
     </para>
 <toplink/>

@@ -166,7 +166,7 @@ feature {NONE} -- Implementation
 		do
 			inspect shortest_path_mode
 			when normal_distance then
-				Result := average_weight / 2
+				Result := a_edge.label.length --average_weight / 2
 			when minimal_switches then
 				Result := total_weight
 			else

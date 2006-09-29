@@ -12,18 +12,6 @@ create {TRAFFIC_PATH}
 
 feature {NONE} -- Creation
 
---	make (a_origin, a_destination: TRAFFIC_PLACE; a_line: TRAFFIC_LINE) is
---			-- Initialize `Current'
---		require
---			a_origin /= Void
---			a_destination /= Void
---			leaves_origin: a_origin /= a_destination
---		do
---			origin := a_origin
---			destination := a_destination
---			line := a_line
---		end
-
 	make (a_connection: TRAFFIC_CONNECTION) is
 			-- Initialize `Current'
 		local
@@ -52,13 +40,13 @@ feature -- Access
 feature -- Status report
 
 	has_line: BOOLEAN is
-			-- does this path section use a line?
+			-- Does this path section use a line?
 		do
 			Result := line /= Void
 		end
 
 	is_insertable (a_connection: TRAFFIC_CONNECTION): BOOLEAN is
-			-- can `a_connection' be inserted?
+			-- Can `a_connection' be inserted?
 		local
 			ls: TRAFFIC_LINE_SECTION
 		do
@@ -74,20 +62,12 @@ feature -- Status report
 feature -- Basic operations
 
 	extend (a_connection: TRAFFIC_CONNECTION) is
-			-- extend `Current'
+			-- Extend `Current'.
 		require
 			is_insertable (a_connection)
 		do
 			destination := a_connection.destination
 			length := length + a_connection.length
 		end
-
-feature -- Status setting
-
---	set_destination (a_destination: TRAFFIC_PLACE) is
---			-- change destination (extend the section)
---		do
---			destination := a_destination
---		end
 
 end

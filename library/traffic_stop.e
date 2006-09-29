@@ -21,7 +21,7 @@ create {TRAFFIC_LINE_SECTION}
 
 feature{NONE} -- Creation
 
-	make_stop (a_place: TRAFFIC_PLACE; a_line: TRAFFIC_LINE) is --; a_x, a_y: REAL) is
+	make_stop (a_place: TRAFFIC_PLACE; a_line: TRAFFIC_LINE) is
 			-- Initialize `Current'
 		require
 			place_not_void: a_place /= Void
@@ -29,7 +29,6 @@ feature{NONE} -- Creation
 		do
 			place := a_place
 			line := a_line
-			--create position.make (a_x, a_y)
 
 			place.stops.extend (Current)
 		end
@@ -53,8 +52,6 @@ feature -- Access
 
 	line: TRAFFIC_LINE
 
--- remove redundancy	position: EM_VECTOR_2D
-
 feature -- Measurement
 
 	hash_code: INTEGER is
@@ -63,25 +60,6 @@ feature -- Measurement
 			Result := ([place.name, line.name]).hash_code
 		end
 
-feature -- Status setting
-
---	set_position (a_position: EM_VECTOR_2D) is
---			-- Set position to `a_position'.
---		require
---			a_position_exists: a_position /= Void
---		do
---			position := a_position
---		ensure
---			position_set: position = a_position
---		end
-
-feature -- Status report
-
---	is_dummy_stop: BOOLEAN is
---			-- Is this a dummy stop?
---		do
---			Result := place.dummy_node = Current
---		end
 
 	out: STRING is
 			-- info about the stop

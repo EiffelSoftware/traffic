@@ -218,9 +218,9 @@ feature -- Interface
 			shortest_path_checkbox.unchecked_event.subscribe (agent shortest_path_unchecked)
 			toolbar_panel.add_widget (shortest_path_checkbox)
 
-			minimal_switches_checkbox.set_position (120, 390)
+			minimal_switches_checkbox.set_position (115, 390)
 			minimal_switches_checkbox.set_background_color (bg_color)
-			minimal_switches_checkbox.set_optimal_dimension (60, 20)
+			minimal_switches_checkbox.set_optimal_dimension (70, 20)
 			minimal_switches_checkbox.resize_to_optimal_dimension
 			minimal_switches_checkbox.checked_event.subscribe (agent minimal_switches_checked)
 			minimal_switches_checkbox.unchecked_event.subscribe (agent minimal_switches_unchecked)

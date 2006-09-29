@@ -66,11 +66,7 @@ feature -- Basic operations
 		require
 			map /= Void
 		local
-			origin, destination: TRAFFIC_PLACE
-			section: TRAFFIC_LINE_SECTION
-			line_section: TRAFFIC_CONNECTION
 			shortest_path: TRAFFIC_PATH
-
 		do
 			if marked_station_changed then
 				map.find_shortest_path (marked_origin, marked_destination)

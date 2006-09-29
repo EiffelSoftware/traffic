@@ -46,6 +46,9 @@
 				<link url="#traffic_event_taxi_office">TRAFFIC_EVENT_TAXI_OFFICE</link>
 			</listitem>
 			<listitem>
+				<link url="#traffic_graph">TRAFFIC_GRAPH</link>
+			</listitem>
+			<listitem>
 				<link url="#traffic_line">TRAFFIC_LINE</link>
 			</listitem>
 			<listitem>
@@ -71,6 +74,12 @@
 			</listitem>
 			<listitem>
 				<link url="#traffic_moving">TRAFFIC_MOVING</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_path">TRAFFIC_PATH</link>
+			</listitem>
+			<listitem>
+				<link url="#traffic_path_section">TRAFFIC_PATH_SECTION</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_passenger">TRAFFIC_PASSENGER</link>
@@ -232,7 +241,9 @@
 			These links can be of type <classname>TRAFFIC_ROAD</classname> or of
 			type <classname>TRAFFIC_LINE_SECTION</classname>. The connected places are called origin and destination
 			and are accessible with the features <featurename>origin</featurename> and <featurename>destination</featurename>.
-			Further a connection has a list of polypoints, used to display the link on the map and to allow the moving of 
+			The origin and destination places are the interface which should be used to work with connections. The implementation
+			can be either a <classname>TRAFFIC_NODE</classname> or <classname>TRAFFIC_STOP</classname> depending on the type
+			of instance. Furthermore, a connection has a list of polypoints, used to display the link on the map and to allow the moving of 
 			vehicles on the link.
 			</para>
 		<para>
@@ -338,6 +349,27 @@
 			<para>
 				<image src="image/traffic_event_taxi_office.jpg"/>
 			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_graph">
+		<title>TRAFFIC_GRAPH</title>
+		<title>Requirements:</title>
+		<para>
+			None
+		</para>
+		<title>Description</title>
+		<para>
+				The class <classname>TRAFFIC_GRAPH</classname> holds the transportation lines and the places of a city
+				in a graph. It calculates paths through the city. The class is intended to be used as an implementation detail
+				of <classname>TRAFFIC_MAP</classname> and should not be used by other classes. To add more path finding
+				variations (e.g. preferring trains), change the <featurename>calculate_weight</featurename> and depending
+				on whether the function must be applied to all connections, change <featurename>put_edge</featurename> and
+				<featurename>enable_user_defined_weight_function</featurename>.
+		</para>
+		<title>Class overview</title>
+		<para>
+				<image src="image/traffic_graph.jpg"/>
 		</para>
 		<toplink/>
 	</section>
@@ -508,6 +540,7 @@
 		<title>TRAFFIC_MAP</title>
 		<title>Requirements:</title>
 		<para>
+			<link url="#traffic_graph">TRAFFIC_GRAPH</link>,
 			<link url="#traffic_line">TRAFFIC_LINE</link>, <link url="#traffic_place">TRAFFIC_PLACE</link>,
     		<link url="#traffic_line_section">TRAFFIC_LINE_SECTION</link>, <link url="#traffic_building">TRAFFIC_BUILDING</link>, 
 			<link url="#traffic_road">TRAFFIC_ROAD</link>
@@ -678,6 +711,61 @@
 		</para>
 		<toplink/>
 	</section>
+	<section id="traffic_node">
+		<title>TRAFFIC_NODE</title>
+		<title>Requirements:</title>
+		<para>
+   			<link url="#traffic_place">TRAFFIC_PLACE</link>
+				<link url="#traffic_connection">TRAFFIC_CONNECTION</link>
+ 	  </para>
+		<title>Description</title>
+		<para>
+			A <classname>TRAFFIC_NODE</classname> is part of a place's representation in the <classname>TRAFFIC_GRAPH</classname>.
+		</para>
+	<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/traffic_node.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_path">
+		<title>TRAFFIC_PATH</title>
+		<title>Requirements:</title>
+		<para>
+   			<link url="#traffic_path_section">TRAFFIC_PATH_SECTION</link> 
+ 	  </para>
+		<title>Description</title>
+		<para>
+			A <classname>TRAFFIC_PATH</classname> is a path from an origin to a destination. It is the result of a shortest
+			path calculation and keeps track of the different means of transportation. It can be used to print a textual
+			description of the trip.
+		</para>
+	<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/traffic_path.jpg"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_path_section">
+		<title>TRAFFIC_PATH_SECTION</title>
+		<title>Description</title>
+		<para>
+			A <classname>TRAFFIC_PATH_SECTION</classname> is part of <link url="#traffic_path">TRAFFIC_PATH</link>.
+			It has a common means of transport and consists of one or more connections. The total length can be accessed through
+			<featurename>length</featurename>. The feature <featurename>extend</featurename> requires the given
+			<classname>TRAFFIC_CONNECTION</classname> to either have the same <featurename>line</featurename> as
+			the path section or have not be a line section. This can be checked with <featurename>is_insertable</featurename>.
+		</para>
+		<toplink/>
+	</section>
+
+	
+	
+	
 	<section id="traffic_place">
 		<title>TRAFFIC_PLACE</title>
 		<title>Requirements:</title>
@@ -817,7 +905,30 @@
 		</para>
 		<toplink/>
 	</section>
-<section id="traffic_taxi">
+	<section id="traffic_stop">
+		<title>TRAFFIC_STOP</title>
+		<title>Requirements:</title>
+		<para>
+   			  <link url="#traffic_node">TRAFFIC_NODE</link>
+ 	   	</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TRAFFIC_STOP</classname> represents a special node in the <classname>TRAFFIC_GRAPH</classname>.
+			is the equivalent of a public transportation stop; it is the location where a transport vehicle halts at a given place,
+			to allow passengers to board or deboard.
+		</para>
+		<para>
+			The feature <featurename>line</featurename> is the <classname>TRAFFIC_LINE</classname> the stop belongs to.
+		</para>
+		<title>Class overview</title>
+		<para>
+			<para>
+				<image src="image/traffic_stop.png"/>
+			</para>
+		</para>
+		<toplink/>
+	</section>
+	<section id="traffic_taxi">
 		<title>TRAFFIC_TAXI</title>
 		<title>Requirements:</title>
 		<para>
