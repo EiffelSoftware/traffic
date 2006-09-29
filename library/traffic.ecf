@@ -15,7 +15,7 @@
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf"/>
 		<cluster name="traffic" location=".\">
 			<option>
-				<assertions precondition="true" postcondition="false" check="true" invariant="false" loop="false"/>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="false"/>
 			</option>
 			<cluster name="factory" location="$|factory\"/>
 			<cluster name="traffic_input" location="$|input\"/>
