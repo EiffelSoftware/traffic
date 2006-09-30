@@ -23,7 +23,7 @@ create {TRAFFIC_MAP}
 feature {NONE} -- Creation
 
 	make_multi_graph is
-			-- Initialize `Current'
+			-- Initialize `Current'.
 		do
 			Precursor
 			shortest_path_mode := normal_distance
@@ -33,7 +33,7 @@ feature {NONE} -- Creation
 feature -- Basic operations
 
 	put_edge (a_start_node, a_end_node: like item; a_label: TRAFFIC_CONNECTION; a_weight: REAL) is
-			-- redefined to record weight
+			-- Redefined to record weight.
 		do
 			total_weight := total_weight + a_label.length
 			Precursor (a_start_node, a_end_node, a_label, a_weight)
@@ -148,10 +148,10 @@ feature -- Removal
 feature {NONE} -- Implementation
 
 	weight_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]], REAL_32]
-		-- holds the weight function, if Void, no weight function is used.
+		-- Weight function for edges, if Void, no weight function is used.
 
 	prune_edge_impl (a_edge: EDGE [like item, TRAFFIC_CONNECTION]) is
-			-- Redefined to subtract the length of the connection from the total
+			-- Redefined to subtract the length of the connection from the total.
 		do
 			total_weight := total_weight - a_edge.label.length
 			Precursor (a_edge)
@@ -159,14 +159,14 @@ feature {NONE} -- Implementation
 
 
 	calculate_weight (a_edge: WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]): REAL is
-			-- calculate the edge based on the current status
-			-- this is only used for "dummy" connections
+			-- Calculate the edge based on the current status.
+			-- This is only used for "dummy" connections.
 		local
 			section: TRAFFIC_CONNECTION
 		do
 			inspect shortest_path_mode
 			when normal_distance then
-				Result := a_edge.label.length --average_weight / 2
+				Result := a_edge.label.length
 			when minimal_switches then
 				Result := total_weight
 			else
@@ -177,13 +177,13 @@ feature {NONE} -- Implementation
 	shortest_path_mode: INTEGER
 
 	total_weight: DOUBLE
-		-- this is the total length of all TRAFFIC_CONNECTIONs added
-		-- it is usually less then the total weight of the edges because
-		-- the "dummy" connections have a higher weight than their length
+		-- Total length of all TRAFFIC_CONNECTIONs added.
+		-- Usually less then the total weight of the edges because
+		-- the "dummy" connections have a higher weight than their length.
 
 	average_weight: DOUBLE is
-			-- average weight of an edge used for "dummy" connections
-			-- between nodes of the same place
+			-- Average weight of an edge used for "dummy" connections
+			-- between nodes of the same place.
 		do
 			Result := total_weight / internal_edges.count
 		end

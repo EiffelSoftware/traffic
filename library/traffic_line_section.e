@@ -57,7 +57,7 @@ feature {NONE} -- Initialization
 		end
 
 	make_non_insertable (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE_LINE; a_list: ARRAYED_LIST [EM_VECTOR_2D]) is
-			-- Make a temporary line_section which shouldn't be inserted into a `TRAFFIC_MAP'
+			-- Make a temporary line_section which shouldn't be inserted into a `TRAFFIC_MAP'.
 		local
 			origin_stop: TRAFFIC_STOP
 			destination_stop: TRAFFIC_STOP
@@ -65,7 +65,6 @@ feature {NONE} -- Initialization
 			if not a_origin.stops.is_empty then
 				origin_stop := a_origin.stops.first
 			else
-				-- maybe this should always be done?
 				create origin_stop.make_non_insertable (a_origin, a_type)
 			end
 
@@ -112,7 +111,7 @@ feature -- Access
 
 
 	roads: ARRAYED_LIST [TRAFFIC_ROAD]
-			-- roads on which the line section goes on
+			-- Roads on which the line section lies.
 
 feature -- Status setting
 
@@ -176,7 +175,7 @@ feature {TRAFFIC_MAP, TRAFFIC_LINE} -- Access
 feature -- Basic operation
 
 	hash_code: INTEGER is
-			-- Hash code value
+			-- Hash code value.
 		local
 			line_name: STRING
 		do

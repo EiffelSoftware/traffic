@@ -15,7 +15,9 @@ create
 feature {NONE} -- Create
 
 	make (a_place: TRAFFIC_PLACE) is
-			-- Initialize `Current'
+			-- Initialize `Current'.
+		require
+			place_not_void: a_place /= Void
 		do
 			place := a_place
 		end
@@ -31,37 +33,8 @@ feature -- Measurement
 		do
 			Result := place.hash_code
 		end
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
-feature {NONE} -- Implementation
-
-
 
 invariant
-	invariant_clause: True -- Your invariant here
+	place_not_void: place /= Void
 
 end

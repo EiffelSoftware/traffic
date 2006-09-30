@@ -5,7 +5,6 @@ all:
 
 Travelers:
 - Improve EM_OBJ_LOADER for more advanced file versions
-- improve *.obj file loading to be faster for travelers
 - First person view walks
 - Real itineraries and delays for trams
 - Tram depots where all the trams start until they are on their route.
@@ -15,10 +14,9 @@ Buildings:
 - improve speed of randomly generated buildings
 - randomize buildings along lines more
 - randomize look and feel of buildings
+- Fix surface normals of buildings (for lighting)
 
 Shortest path:
-- Fix buggy algorithm
-- improve path algorithm
 - improve drawing of shortest_path (city 3d)
 
 Map_widgets:
@@ -28,6 +26,12 @@ Map_widgets:
 - Remove plane_size to be a constant and adapt map_to_gl_coords accordingly
 - Design a better method of generating representations -->either reading 3D objects from a file or getting an OpenGL function generating a displaylist
 
+Performance:
+- All representations should be stored in an arrayed list, keep the hash table for lookup
+  iterating is faster this way, which is done every frame.
+
+Visualization:
+- Possibly refactor the representation factories into one class.
 
 Map loading:
 - improve error handling and messages

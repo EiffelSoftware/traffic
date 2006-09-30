@@ -2,7 +2,7 @@
 	<target name="city_3d">
 		<root class="CITY_3D_APPLICATION" feature="make"/>
 		<option trace="false" profile="true" debug="false" warning="true">
-			<assertions precondition="false" postcondition="false" check="false" invariant="false" loop="false"/>
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="false"/>
 		</option>
 		<setting name="address_expression" value="false"/>
 		<setting name="array_optimization" value="false"/>
@@ -23,10 +23,11 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="false"/>
 		<library name="em" location="$EM\library\em.ecf" readonly="false"/>
 		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf" readonly="false"/>
-		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false"/>
+		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false">
+		</library>
 		<cluster name="city_3d" location=".\">
 			<option>
-				<assertions precondition="false" postcondition="false" check="false" invariant="false" loop="false"/>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="false"/>
 			</option>
 			<class_option class="CITY_3D_MAP_WIDGET">
 				<assertions precondition="true" postcondition="false" check="false" invariant="true" loop="false"/>

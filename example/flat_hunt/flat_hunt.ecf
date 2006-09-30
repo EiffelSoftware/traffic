@@ -26,10 +26,10 @@
 		<setting name="msil_generation_type" value="exe"/>
 		<setting name="multithreaded" value="false"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="em" location="C:\masters\em\library\em.ecf"/>
+		<library name="em" location="$EM\library\em.ecf"/>
 		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
-		<library name="traffic" location="C:\masters\traffic\library\traffic.ecf" readonly="false"/>
+		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false"/>
 		<cluster name="flat_hunt" location=".\">
 			<cluster name="controller" location=".\controller\"/>
 			<cluster name="model" location=".\model\">

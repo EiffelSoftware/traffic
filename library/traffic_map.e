@@ -71,9 +71,6 @@ feature {NONE} -- Initialization
 			create place_inserted_event
 			create place_removed_event
 
-			create internal_stops.make (50)
-
-
 			create unspecified_road_changed_event
 			create road_changed_event
 			create road_inserted_event
@@ -95,15 +92,6 @@ feature -- Status report
 		do
 			Result := internal_places.has (a_name)
 		end
-
---	has_stop (a_name: STRING): BOOLEAN is
---			-- Does the traffic map have a place called `a_name'?
---		require
---			a_name_exists: a_name /= Void
---			a_name_not_empty: not a_name.is_empty
---		do
---			Result := internal_stops.has (a_name)
---		end
 
 	has_connection_between (a_origin_name, a_destination_name: STRING): BOOLEAN is
 			-- Does the traffic map have a connection between places with given names?
@@ -318,7 +306,7 @@ feature -- Element change
 			no_road_with_same_id: not has_road_with_id(a_road.id)
 		do
 			internal_roads.force (a_road, a_road.id)
-			--TODO possibly put it in graph
+			--TODO: if a road is the only connection (has no line sections) it should be put in the graph.
 			--graph.put_edge (a_road.origin_impl, a_road.destination_impl, a_road, a_road.length)
 			road_inserted_event.publish ([a_road])
 		ensure
@@ -499,7 +487,7 @@ feature -- Element change
 			end
 
 		remove_road (a_road: TRAFFIC_ROAD) is
-			-- Remove road `a_road' from map
+			-- Remove road `a_road' from map.
 			require
 				road_not_void: a_road /= Void
 			do
@@ -532,7 +520,7 @@ feature -- Element change
 			end
 
 	change_traveler_speed (divisor: DOUBLE) is
-			-- divise the speed of each traveler by divisor
+			-- Divide the speed of each traveler by divisor.
 			require
 				divisor > 0
 			local
@@ -552,7 +540,7 @@ feature -- Element change
 			end
 
 	increment_index is
-			-- increment the traveler index
+			-- Increment the traveler index.
 			do
 				traveler_index := traveler_index+1
 			ensure
@@ -560,7 +548,7 @@ feature -- Element change
 			end
 
 	set_scale_factor (a_scale_factor: DOUBLE) is
-				-- set `a_factor'
+				-- Set `a_factor'.
 			do
 				scale_factor_impl := a_scale_factor
 			end
@@ -571,9 +559,7 @@ feature {TRAFFIC_MAP_FACTORY} -- Element change
 			-- Add `a_stop' to map.
 		require
 			a_stop_exists: a_stop /= Void
-			--no_duplicates: not has_stop (a_stop.name)
 		do
-			--internal_stops.force (a_stop, a_stop.name)
 			graph.put_node (a_stop)
 		end
 
@@ -632,14 +618,6 @@ feature -- Access
 		do
 			Result := internal_places.twin
 		end
-
-	stops: HASH_TABLE [TRAFFIC_STOP, STRING] is
-			-- All stops
-		do
-			Result := internal_stops.twin
-		end
-
-	--stop (a_place: STRING; a_line: TRAFFIC_LINE)
 
 	line (a_name: STRING): TRAFFIC_LINE is
 			-- Line named `a_name'.
@@ -856,7 +834,6 @@ feature -- Basic operation
 		do
 			Result := "Traffic map%Nnamed: " + name + "%Ndescription: " + description_out +
 				"%N%Nplaces:%N" + places_out +
-				"%N%Nstops:%N" + stops_out +
 				"%N%Nlines:%N" + lines_out
 		end
 
@@ -869,7 +846,7 @@ feature -- Basic operation
 
 
 	find_shortest_path (a_origin: TRAFFIC_PLACE; a_destination: TRAFFIC_PLACE) is
-			-- Find shortest path
+			-- Find shortest path.
 		local
 			temp_path: LIST [LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]]
 			a_road: TRAFFIC_ROAD
@@ -882,7 +859,7 @@ feature -- Basic operation
 			path_found := False
 			create a_type.make
 			graph.put_node (a_origin.dummy_node)
-			--connect the dummy node with the stops
+			-- Connect the dummy node of the origin with the stops.
 			pp.extend (a_origin.position)
 			pp.extend (Void)
 			from a_origin.stops.start until a_origin.stops.after loop
@@ -895,7 +872,7 @@ feature -- Basic operation
 				a_origin.stops.forth
 			end
 
-			--connect the stops with the dummy node
+			-- Connect the stops with the dummy node of the destination
 			graph.put_node (a_destination.dummy_node)
 			pp.put_i_th (a_destination.position, 1)
 			from a_destination.stops.start until a_destination.stops.after loop
@@ -923,6 +900,7 @@ feature -- Basic operation
 			if graph.off then
 				raise ("This shouldn't happen: dummy node not found")
 			end
+			-- Remove the dummy connections again.
 			graph.remove_node
 			graph.search (a_destination.dummy_node)
 			graph.remove_node
@@ -934,7 +912,6 @@ feature {TRAFFIC_MAP_LOADER}
 	recalculate_weights_and_connect_stops is
 			-- Due to an error in processing the weights need to be recalculated.
 			-- In addition, the stops of different lines are connected at nodes.
-			-- TODO: this processing could be done in the xml processing code
 		local
 			the_edges: LIST[WEIGHTED_EDGE[TRAFFIC_NODE, TRAFFIC_CONNECTION]]
 			p: TRAFFIC_PLACE
@@ -949,6 +926,7 @@ feature {TRAFFIC_MAP_LOADER}
 			a: EM_VECTOR_2D
 			b: EM_VECTOR_2D
 		do
+			-- Recalculate edge weights.
 			the_edges := graph.edges
 			from the_edges.start until the_edges.after loop
 				w := the_edges.item.label.length
@@ -963,7 +941,8 @@ feature {TRAFFIC_MAP_LOADER}
 			end
 
 			create type.make
-			-- connect stops TODO: connect nodes?
+			-- Connect stops.
+			-- TODO: If the roads should be used for transport, the nodes must be connected as well.
 			create pp.make (2)
 			pp.extend (Void)
 			pp.extend (Void)
@@ -972,16 +951,15 @@ feature {TRAFFIC_MAP_LOADER}
 				from p := internal_place_array.item; p.stops.start until p.stops.after loop
 					s := p.stops.item
 					graph.search (s)
-					pp.put_i_th (position_from_connections(graph.incident_edge_labels, s), 1) --.first.polypoints.first, 1)
+					pp.put_i_th (position_from_connections(graph.incident_edge_labels, s), 1)
 					p.stops.forth
 					if not p.stops.after then
-						--create a_edge.make (s, p.stops.item, create {TRAFFIC_TYPE_WALKING}.make, Void)
 						graph.search (p.stops.item)
-						pp.put_i_th (position_from_connections (graph.incident_edge_labels, p.stops.item), 2) --.first.polypoints.first, 2)
+						pp.put_i_th (position_from_connections (graph.incident_edge_labels, p.stops.item), 2)
 						create a_edge.make (s, p.stops.item, type, (create {INTEGER}).max_value, "undirected")
 						a_edge.set_polypoints (pp)
 						graph.put_edge (s, p.stops.item, a_edge, a_edge.length)
-						--add_road (a_edge)
+
 						a := pp.first
 						pp.put_i_th (pp.last, 1)
 						pp.put_i_th (a, 2)
@@ -1003,9 +981,6 @@ feature {NONE} -- Implementation
 
 	internal_place_array: ARRAYED_LIST [TRAFFIC_PLACE]
 			-- Array with all places for performant map model implementation.
-
-	internal_stops: HASH_TABLE [TRAFFIC_STOP, STRING]
-			-- traffic stops, e.g. Stadelhofen, Tram 15
 
 	internal_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
 			-- Lines on map.
@@ -1085,24 +1060,6 @@ feature {NONE} -- Implementation
 				end
 			end
 		end
-
-	stops_out: STRING is
-			-- Textual representation of places.
-		do
-			Result := ""
-			from
-				internal_stops.start
-			until
-				internal_stops.after
-			loop
-				Result := Result + internal_stops.item_for_iteration.out
-				internal_stops.forth
-				if not internal_stops.after then
-					Result := Result + "%N"
-				end
-			end
-		end
-
 
 	lines_out: STRING is
 			-- Textual representation of places.

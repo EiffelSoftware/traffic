@@ -16,9 +16,7 @@ feature -- Status setting
 		do
 			polypoints.copy (a_polypoints)
 		ensure
-			--equal (polypoints, a_polypoints)
 			polypoints_exists: polypoints /= Void
-			--polypoints_equal: polypoints.count > 0 implies equal (polypoints, a_polypoints)
 		end
 
 	remove_polypoints is
@@ -42,7 +40,7 @@ feature -- Access
 		end
 
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
-			-- position representation of the connection.
+			-- Position representation of the connection.
 
 	length: DOUBLE is
 			-- Length from start of polypoints to end.

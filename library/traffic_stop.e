@@ -45,7 +45,7 @@ feature{NONE} -- Creation
 feature -- Access
 
 	name: STRING is
-			-- return name of place
+			-- "Unique" name
 		do
 			Result := place.name + line.name
 		end
@@ -62,13 +62,12 @@ feature -- Measurement
 
 
 	out: STRING is
-			-- info about the stop
+			-- Info about stop.
 		do
-			Result := "Traffic stop:%NPlace: " + place.name + "%NLine: " + line.name --+ "%NPosition: " + position.out
+			Result := "Traffic stop:%NPlace: " + place.name + "%NLine: " + line.name
 		end
 
 invariant
-	place_not_void: place /= Void
 	line_not_void: line /= Void
 
 end
