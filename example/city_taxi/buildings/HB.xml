@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE buildings SYSTEM "building.dtd"> 
-
-<buildings>
-	<building name = "Hauptbahnhof" x1="2" x2="-2" y1="2" y2 = "-2" height = "4" angle="0"/>
-</buildings>
