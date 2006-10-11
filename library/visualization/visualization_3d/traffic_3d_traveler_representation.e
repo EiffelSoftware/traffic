@@ -112,20 +112,26 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 					building: EM_3D_OBJECT
 					traffic_model: NEW_TRAFFIC_MODEL
 					bitmap: EM_BITMAP
+					s: STRING
+					fs: KL_FILE_SYSTEM
 				do
 
 					a_traveler.set_index (traveler_key)
 					traveler_key := traveler_key + 1
 						-- set the key for the traveler here
+					fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 
 					if a_traveler.traffic_type.name.is_equal ("walking") then
 						if person_toggle = 0 then
-							--traveler_factory.set_em_color (255, 0, 0)						
-							traveler_factory.load_file ("objects/man.obj")
+							s := fs.pathname ("..", "objects")
+							s := fs.pathname (s, "man.obj")
+							traveler_factory.load_file (s)
 							person_toggle := 1
 						else
 							--traveler_factory.set_em_color (200, 0, 100)					
-							traveler_factory.load_file ("objects/woman.obj")
+							s := fs.pathname ("..", "objects")
+							s := fs.pathname (s, "woman.obj")
+							traveler_factory.load_file (s)
 							person_toggle := 0
 						end
 						traveler := traveler_factory.create_object
@@ -135,16 +141,17 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 						traffic_model.set_model(traveler)
 						traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
 					elseif a_traveler.traffic_type.name.is_equal ("tram") then
-						--traveler_factory.set_em_color (0, 0, 255)
-
-
-						bitmap_factory.create_bitmap_from_image("objects/tram2000.tga")
+						s := fs.pathname ("..", "objects")
+						s := fs.pathname (s, "tram2000.tga")
+						bitmap_factory.create_bitmap_from_image(s)
 						bitmap := bitmap_factory.last_bitmap
 						create texture_ids.make (0,0)
 						texture_ids.force (bitmap.texture.id, 0)
 						traveler_factory.set_texture_id (texture_ids)
 
-						traveler_factory.load_file("objects/tram2000_small.obj")
+						s := fs.pathname ("..", "objects")
+						s := fs.pathname (s, "tram2000.obj")
+						traveler_factory.load_file(s)
 						traveler := traveler_factory.create_object
 --						traveler.set_scale (0.3, 0.3, 0.3)
 					--TODO: Change this to color associated with a taxi office. Each taxi office has a
@@ -168,14 +175,18 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 						traffic_model.add_texture (bitmap)
 
 					elseif a_traveler.traffic_type.name.is_equal ("dispatcher taxi") or a_traveler.traffic_type.name.is_equal ("event taxi") then
+						s := fs.pathname ("..", "objects")
+						s := fs.pathname (s, "taxi.tga")
 
-						bitmap_factory.create_bitmap_from_image("objects/taxi.tga")
+						bitmap_factory.create_bitmap_from_image(s)
 						bitmap := bitmap_factory.last_bitmap
 						create texture_ids.make (0,0)
 						texture_ids.force (bitmap.texture.id, 0)
 						traveler_factory.set_texture_id (texture_ids)
 
-						traveler_factory.load_file("objects/taxi.obj")
+						s := fs.pathname ("..", "objects")
+						s := fs.pathname (s, "taxi.obj")
+						traveler_factory.load_file(s)
 						traveler := traveler_factory.create_object
 
 						create traffic_model.make
