@@ -2,7 +2,7 @@
 	<target name="flat_hunt">
 		<root class="FLAT_HUNT" feature="make_and_launch"/>
 		<option trace="false" profile="false" debug="false" warning="true">
-			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="false"/>
+			<assertions precondition="true" postcondition="false" check="false" invariant="false" loop="false"/>
 			<warning name="export_class_missing" enabled="false"/>
 			<warning name="old_verbatim_strings" enabled="false"/>
 			<warning name="syntax" enabled="false"/>
@@ -25,23 +25,63 @@
 		<setting name="msil_generation" value="false"/>
 		<setting name="msil_generation_type" value="exe"/>
 		<setting name="multithreaded" value="false"/>
-		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="em" location="$EM\library\em.ecf"/>
-		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf"/>
-		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
-		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
+		<library name="em" location="$EM\library\em.ecf" readonly="true"/>
+		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf" readonly="true"/>
+		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
+		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false">
+			<option>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+			</option>
+		</library>
 		<cluster name="flat_hunt" location=".\">
-			<cluster name="controller" location=".\controller\"/>
+			<option>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+			</option>
+			<cluster name="controller" location=".\controller\">
+				<option>
+					<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+				</option>
+			</cluster>
 			<cluster name="model" location=".\model\">
-				<cluster name="brain" location=".\model\brain\"/>
-				<cluster name="player" location=".\model\player\"/>
+				<option>
+					<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+				</option>
+				<cluster name="brain" location=".\model\brain\">
+					<option>
+						<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+					</option>
+				</cluster>
+				<cluster name="player" location=".\model\player\">
+					<option>
+						<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+					</option>
+				</cluster>
 			</cluster>
 			<cluster name="util" location=".\util\">
-				<cluster name="menu" location=".\util\menu\"/>
-				<cluster name="musicplayer" location=".\util\musicplayer\"/>
+				<option>
+					<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+				</option>
+				<cluster name="menu" location=".\util\menu\">
+					<option>
+						<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+					</option>
+				</cluster>
+				<cluster name="musicplayer" location=".\util\musicplayer\">
+					<option>
+						<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+					</option>
+				</cluster>
 			</cluster>
 			<cluster name="view" location=".\view\">
-				<cluster name="displayers" location=".\view\displayers\"/>
+				<option>
+					<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+				</option>
+				<cluster name="displayers" location=".\view\displayers\">
+					<option>
+						<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+					</option>
+				</cluster>
 			</cluster>
 		</cluster>
 	</target>

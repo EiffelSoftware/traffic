@@ -1,8 +1,13 @@
-<?xml version="1.0" encoding="ISO-8859-1"?><system xmlns="http://www.eiffel.com/developers/xml/configuration-1-0-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-0-0 http://www.eiffel.com/developers/xml/configuration-1-0-0.xsd" name="city_3d" uuid="0C262FB9-8F89-4615-8D94-EA4D490C47A5">
+<?xml version="1.0" encoding="ISO-8859-1"?><system xmlns="http://www.eiffel.com/developers/xml/configuration-1-0-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-0-0 http://www.eiffel.com/developers/xml/configuration-1-0-0.xsd" name="city_3d" uuid="0C262FB9-8F89-4615-8D94-EA4D490C47A1">
 	<target name="city_3d">
 		<root class="CITY_3D_APPLICATION" feature="make"/>
 		<option trace="false" profile="true" debug="false" warning="true">
-			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="false"/>
+			<assertions precondition="true" postcondition="false" check="false" invariant="false" loop="false"/>
+			<warning name="export_class_missing" enabled="false"/>
+			<warning name="old_verbatim_strings" enabled="false"/>
+			<warning name="syntax" enabled="false"/>
+			<warning name="vjrv" enabled="false"/>
+			<warning name="vweq" enabled="false"/>
 		</option>
 		<setting name="address_expression" value="false"/>
 		<setting name="array_optimization" value="false"/>
@@ -20,18 +25,19 @@
 		<setting name="msil_generation" value="false"/>
 		<setting name="msil_generation_type" value="exe"/>
 		<setting name="multithreaded" value="false"/>
-		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="false"/>
-		<library name="em" location="$EM\library\em.ecf" readonly="false"/>
-		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf" readonly="false"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
+		<library name="em" location="$EM\library\em.ecf" readonly="true"/>
+		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf" readonly="true"/>
+		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
 		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false">
+			<option>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+			</option>
 		</library>
 		<cluster name="city_3d" location=".\">
 			<option>
-				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="false"/>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
 			</option>
-			<class_option class="CITY_3D_MAP_WIDGET">
-				<assertions precondition="true" postcondition="false" check="false" invariant="true" loop="false"/>
-			</class_option>
 		</cluster>
 	</target>
 </system>

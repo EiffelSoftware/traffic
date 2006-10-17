@@ -305,18 +305,18 @@ feature {NONE} -- Implementation
 	Speed: DOUBLE is 0.05
 			-- Speed of the traffic line rides
 
-	place_highlight_color1: GL_VECTOR_3D [DOUBLE] is
+	place_highlight_color1: EM_COLOR is
 			-- Highlight color for marked origins
 		once
-			create Result.make_xyz (0, 255, 0)
+			create Result.make_with_rgb (0, 255, 0)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	place_highlight_color2: GL_VECTOR_3D [DOUBLE] is
+	place_highlight_color2: EM_COLOR is
 			-- Highlight color for marked origins
 		once
-			create Result.make_xyz (0, 0, 255)
+			create Result.make_with_rgb (0, 0, 255)
 		ensure
 			Result_exists: Result /= Void
 		end

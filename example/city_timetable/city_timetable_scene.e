@@ -17,12 +17,12 @@ inherit
 
 	EXCEPTIONS
 		export {NONE} all end
-		
-	TRAFFIC_SHARED_TIME		
-		rename 
+
+	TRAFFIC_SHARED_TIME
+		rename
 			time as traffic_time
 		end
-		
+
 creation
 	make
 
@@ -34,10 +34,12 @@ feature -- Interface
 			loader: TRAFFIC_MAP_LOADER
 			s: STRING
 			fs: KL_FILE_SYSTEM
+			traveler: TRAFFIC_PASSENGER
+			list: ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			make_component_scene
 
-			set_frame_counter_visibility (False)
+			set_frame_counter_visibility (True)
 
 			create bg_color.make_with_rgb (211,211,211)
 			-- Toolbar
@@ -45,10 +47,10 @@ feature -- Interface
 
 			-- Checkboxes
 			create sun_checkbox.make_from_text ("Show sun")
-			create buildings_checkbox.make_from_text ("Show buildings")			
+			create buildings_checkbox.make_from_text ("Show buildings")
 			create vehicles_checkbox.make_from_text ("Show vehicles")
-			create time_checkbox.make_from_text ("Simulate time")			
-			
+			create time_checkbox.make_from_text ("Simulate time")
+
 			-- 'Zoom in' and 'Zoom out' buttons
 			create zoom_in_button.make_from_text ("Zoom in")
 			create zoom_out_button.make_from_text ("Zoom out")
@@ -117,7 +119,7 @@ feature -- Interface
 			lines_checkbox.checked_event.subscribe (agent lines_checked)
 			lines_checkbox.unchecked_event.subscribe (agent lines_unchecked)
 			toolbar_panel.add_widget (lines_checkbox)
-			
+
 			-- Time Checkbox
 			time_checkbox.set_position (17, (window_height * 0.91).rounded)
 			time_checkbox.set_background_color (bg_color)
@@ -127,7 +129,7 @@ feature -- Interface
 			time_checkbox.checked_event.subscribe (agent time_checked)
 			time_checkbox.unchecked_event.subscribe (agent time_unchecked)
 			toolbar_panel.add_widget (time_checkbox)
-			
+
 			-- Time slider
 			create time_slider.make_from_range_horizontal (1, 60)
 			time_slider.set_position (40, (window_height * 0.95).rounded)
@@ -135,7 +137,7 @@ feature -- Interface
 			time_slider.resize_to_optimal_dimension
 			time_slider.set_tooltip ("Day simulation minutes")
 			time_slider.position_changed_event.subscribe (agent number_of_minutes_changed)
-			toolbar_panel.add_widget (time_slider)			
+			toolbar_panel.add_widget (time_slider)
 
 			-- Zoom out Button
 			zoom_out_button.set_position (180-zoom_out_button.width, (window_height * 0.78).rounded)
@@ -149,20 +151,20 @@ feature -- Interface
 			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
 			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (zoom_in_button)
-			
+
 			-- Time label
 			time_label.set_position(15, 20)
 			time_label.set_optimal_dimension(160,40)
 			time_label.resize_to_optimal_dimension
 			time_label.align_center
-			toolbar_panel.add_widget (time_label)			
+			toolbar_panel.add_widget (time_label)
 
 			-- Station label
 			station_label.set_position(0, 50)
 			station_label.set_optimal_dimension(200, 40)
 			station_label.resize_to_optimal_dimension
 			station_label.align_center
-			toolbar_panel.add_widget (station_label)	
+			toolbar_panel.add_widget (station_label)
 
 			-- Station lines combobox
 			station_lines_combobox.set_position(15, 70)
@@ -174,8 +176,8 @@ feature -- Interface
 			create station_schedule_scrollpanel.make_from_dimension (160, 250)
 			station_schedule_scrollpanel.set_position (15, 110)
 			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
-			toolbar_panel.add_widget (station_schedule_scrollpanel)				
-			
+			toolbar_panel.add_widget (station_schedule_scrollpanel)
+
 
 			-- adding zurich_big.xml as default using platform independent paths
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
@@ -183,10 +185,29 @@ feature -- Interface
 			s := fs.pathname (s, "zurich_big.xml")
 
 			create loader.make (s)
+			loader.enable_dump_loading
 			loader.load_map
 			map.set_map (loader.map)
 			map.add_vehicles
 			loaded_file_name := s
+
+--			create list.make (2)
+--			list.extend (map.map.place ("Wipkingerplatz").position)
+--			list.extend (create {EM_VECTOR_2D}.make (100, 100))
+--			create traveler.make_directed (list, .5)
+--			traveler.set_reiterate (True)
+--			map.add_traveler (traveler)
+----			map.map.add_traveler (traveler)
+--			traveler.take_tour
+
+--			create list.make (2)
+--			list.extend (map.map.place ("Rosengartenstrasse").position)
+--			list.extend (create {EM_VECTOR_2D}.make (50, 100))
+--			create traveler.make_directed (list, .5)
+--			traveler.set_reiterate (True)
+--			map.add_traveler (traveler)
+----			map.map.add_traveler (traveler)
+--			traveler.take_tour
 
 		end
 
@@ -198,7 +219,7 @@ feature -- Event handling
 			update
 			Precursor
 		end
-		
+
 
 	zoom_in_button_clicked is
 			-- "Zoom in" button has been clicked.
@@ -235,7 +256,7 @@ feature -- Event handling
 				station_label.set_text (map.marked_station.name)
 
 				-- Add the lines that travel trough the station to the combobox
-				from 
+				from
 					map.marked_station.schedule.start
 				until
 					map.marked_station.schedule.after
@@ -244,19 +265,19 @@ feature -- Event handling
 
 					if not station_lines_combobox.has (traveler.line.name) then
 						station_lines_combobox.put (traveler.line.name)
-					end					
-					
+					end
+
 					map.marked_station.schedule.forth
 				end
-				
+
 				-- Select the first line if there is one
 				if station_lines_combobox.count > 0 then
 					station_lines_combobox.set_selected_index (1)
 				end
 			end
 		end
-		
-		
+
+
 	station_lines_selection_changed (selection: STRING) is
 			-- The selection of the combobox of the lines of the selected station has changed
 		local
@@ -269,13 +290,13 @@ feature -- Event handling
 		do
 			-- Clear all times
 			station_schedule_textlist.elements.wipe_out
-			
+
 			-- Create a hash table which we use to sort the schedule entrys by target
 			create schedule.make (2)
 
 			if map.marked_station /= Void and station_lines_combobox.has_selected_element then
 				-- Add all times when a tram of this line departs at the station
-				from 
+				from
 					map.marked_station.schedule.start
 				until
 					map.marked_station.schedule.after
@@ -283,7 +304,7 @@ feature -- Event handling
 					traveler ?= map.marked_station.schedule.item @ 1
 					departure_time ?= map.marked_station.schedule.item @ 2
 					target ?= map.marked_station.schedule.item @ 3
-					
+
 					if traveler.line.name.is_equal (station_lines_combobox.selected_element) then
 						direction_name := "To " + target.name
 						if schedule.has (direction_name) then
@@ -292,12 +313,12 @@ feature -- Event handling
 							create list.make
 							list.extend (departure_time)
 							schedule.put (list, direction_name)
-						end					
-					end					
-					
+						end
+					end
+
 					map.marked_station.schedule.forth
 				end
-				
+
 				-- Display
 				from
 					schedule.start
@@ -305,21 +326,21 @@ feature -- Event handling
 					schedule.after
 				loop
 					station_schedule_textlist.put (schedule.key_for_iteration)
-					
-					from 
+
+					from
 						schedule.item_for_iteration.start
 					until
 						schedule.item_for_iteration.after
 					loop
 						station_schedule_textlist.put ("  " + schedule.item_for_iteration.item.out)
-						
+
 						schedule.item_for_iteration.forth
 					end
-					
+
 					schedule.forth
 				end
 			end
-			
+
 			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
 		end
 
@@ -358,7 +379,7 @@ feature -- Event handling
 		do
 			map.delete_buildings
 		end
-		
+
 	time_checked is
 			-- Checkbox has been checked.
 		do
@@ -371,12 +392,12 @@ feature -- Event handling
 		do
 			map.time.pause_time
 		end
-		
+
 	number_of_minutes_changed (number: INTEGER) is
 			-- The time slider was used.
 			do
 			traffic_time.change_simulated_time (number)
-		end		
+		end
 
 	update is
 			-- Set clock corresponding to time
@@ -385,7 +406,7 @@ feature -- Event handling
 		do
 			time_label.set_text (traffic_time.actual_hour.out + ":" + traffic_time.actual_minute.out)
 		end
-		
+
 	lines_unchecked is
 			-- Checkbox has been unchecked.
 		do
@@ -414,31 +435,31 @@ feature -- Widgets
 
 	time_checkbox: EM_CHECKBOX
 			-- Checkbox for time
-			
+
 	lines_checkbox: EM_CHECKBOX
 			-- Checkbox for visibility of lines
-			
+
 	zoom_in_button: EM_BUTTON
 			-- Botton to zoom in
 
 	zoom_out_button: EM_BUTTON
 			-- Botton to zoom out
-			
+
 	time_label: EM_LABEL
 			-- Clock
 
 	time_slider: EM_SLIDER
 			-- Scrollbar for the time			
-			
+
 	station_label: EM_LABEL
 			-- Selected station
-			
+
 	station_lines_combobox: EM_COMBOBOX[STRING]
 			-- The available lines in the selected station			
-	
+
 	station_schedule_textlist: EM_TEXTLIST[STRING]
 			-- Schedule of selected station
-	
+
 	station_schedule_scrollpanel: EM_SCROLLPANEL
 			-- Scrollpanel for station_schedule_textlist
 

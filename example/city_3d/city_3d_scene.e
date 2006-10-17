@@ -28,6 +28,7 @@ feature -- Interface
 			fs: KL_FILE_SYSTEM
 		do
 			make_component_scene
+			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 
 			set_frame_counter_visibility (False)
 
@@ -47,7 +48,8 @@ feature -- Interface
 
 			-- Box and button for xml files
 			create combo_title.make_from_text ("Choose a map:")
-			create combo_box.make_from_list (search_for_xml("../map"))
+			s := fs.pathname ("..", "map")
+			create combo_box.make_from_list (search_for_xml(s))
 			create load_button.make_from_text ("Load map")
 
 			-- Slider and label for number of buildings
@@ -75,7 +77,8 @@ feature -- Interface
 			create load_buildings_button.make_from_text("Load buildings from file")
 			create load_buildings_along_lines_button.make_from_text("Load buildings along lines")
 			create building_combo_title.make_from_text ("Choose building file:")
-			create building_combo_box.make_from_list (search_for_xml("buildings"))
+			s := fs.pathname ("..", "buildings")
+			create building_combo_box.make_from_list (search_for_xml(s))
 			create delete_buildings_button.make_from_text("Delete buildings")
 
 			create path_description.make_empty
@@ -324,7 +327,6 @@ feature -- Interface
 			traffic_line_ride_button.hide
 
 			-- adding zurich_big.xml as default using platform independent paths
-			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 			s := fs.pathname ("..", "map")
 			s := fs.pathname (s, "zurich_tiny.xml")
 
@@ -757,17 +759,17 @@ feature {NONE} -- Implementation
 			directory_name_valid: directory_name /= void and then not directory_name.is_empty
 		local
 			directory: DIRECTORY
-			s: STRING
+--			s: STRING
 			fs: KL_FILE_SYSTEM
 		do
 			create Result.make
 
 			-- use platform independent paths
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
-			s := fs.pathname (".", directory_name)
+--			s := fs.pathname (".", directory_name)
 
-			create directory.make_open_read (s)
-			if directory.is_readable and not directory.is_empty then
+			create directory.make_open_read (directory_name)
+			if directory.exists and then directory.is_readable and not directory.is_empty then
 				from
 					directory.start
 					directory.readentry

@@ -2,7 +2,7 @@
 	<target name="city_timetable">
 		<root class="CITY_TIMETABLE_APPLICATION" feature="make"/>
 		<option trace="false" profile="false" debug="false" warning="true">
-			<assertions precondition="false" postcondition="false" check="false" invariant="false" loop="false"/>
+			<assertions precondition="true" postcondition="false" check="false" invariant="false" loop="false"/>
 			<warning name="export_class_missing" enabled="false"/>
 			<warning name="old_verbatim_strings" enabled="false"/>
 			<warning name="syntax" enabled="false"/>
@@ -25,12 +25,19 @@
 		<setting name="msil_generation" value="false"/>
 		<setting name="msil_generation_type" value="exe"/>
 		<setting name="multithreaded" value="false"/>
-		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
-		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
-		<library name="gobo" location="$ISE_LIBRARY/library/gobo/gobo.ecf" readonly="false"/>
-		<library name="em" location="$EM/library/em.ecf" readonly="false"/>
-		<library name="traffic" location="../../library/traffic.ecf" readonly="false"/>
-		<cluster name="city_timetable" location=".\"/>
-
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
+		<library name="em" location="$EM\library\em.ecf" readonly="true"/>
+		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf" readonly="true"/>
+		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
+		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false">
+			<option>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+			</option>
+		</library>
+		<cluster name="city_timetable" location=".\">
+			<option>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+			</option>
+		</cluster>
 	</target>
 </system>
