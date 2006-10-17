@@ -37,6 +37,9 @@ feature -- Initialization
 				log_filename := file_system.pathname (directory_name, "dump.log")
 				has_error := False
 			end
+			enable_dump_loading
+		ensure
+			dump_loading_enabled: is_dump_loading_enabled
 		end
 
 	load_map is
@@ -47,15 +50,19 @@ feature -- Initialization
 			log_file: RAW_FILE
 		do
 			if not has_error then
-				-- Check whether there is a dump.log file and create it if there is none
-				create directory.make_open_read (directory_name)
-				if not directory.has_entry (file_system.basename (log_filename)) then
-					create log_file.make_create_read_write (log_filename)
-				end
+				if is_dump_loading_enabled then
+					-- Check whether there is a dump.log file and create it if there is none
+					create directory.make_open_read (directory_name)
+					if not directory.has_entry (file_system.basename (log_filename)) then
+						create log_file.make_create_read_write (log_filename)
+					end
 
-				-- Get map
-				if is_dump_up_to_date then
-					get_from_dump
+					-- Get map
+					if is_dump_up_to_date then
+						get_from_dump
+					else
+						get_from_xml
+					end
 				else
 					get_from_xml
 				end
@@ -64,8 +71,29 @@ feature -- Initialization
 
 feature -- Status report
 
+	is_dump_loading_enabled: BOOLEAN
+			-- Can the map be loaded from the dump?
+
 	has_error: BOOLEAN
 			-- Did the map loading succeed?
+
+feature -- Status setting
+
+	enable_dump_loading is
+			-- Set `is_dump_loading_enabled' to `True'.
+		do
+			is_dump_loading_enabled := True
+		ensure
+			dump_loading_enabled: is_dump_loading_enabled
+		end
+
+	disable_dump_loading is
+			-- Set `is_dump_loading_enabled' to `False'.
+		do
+			is_dump_loading_enabled := False
+		ensure
+			dump_loading_disabled: not is_dump_loading_enabled
+		end
 
 feature -- Access
 

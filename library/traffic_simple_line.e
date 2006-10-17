@@ -221,10 +221,9 @@ feature -- Basic operations
 					pp.extend (polypoints.item.twin)
 					polypoints.back
 				end
-				create other_line_section.make (destination_stop, origin_stop, a_line_section.type, Void)
-				other_line_section.set_polypoints (pp)
-			else
-				create other_line_section.make (destination_stop, origin_stop, a_line_section.type, Void)
+				create other_line_section.make (destination_stop, origin_stop, a_line_section.type, pp)
+--			else
+--				create other_line_section.make (destination_stop, origin_stop, a_line_section.type, Void)
 			end
 
 			a_line_section.set_line (Current)
@@ -306,8 +305,10 @@ feature -- Basic operations
 			line_section: TRAFFIC_LINE_SECTION
 			origin: TRAFFIC_STOP
 			a_stop: TRAFFIC_STOP
+			pp: ARRAYED_LIST [EM_VECTOR_2D]
 		do
-			create a_stop.make_stop (a_place, Current)
+			create a_stop.make_stop (a_place, Current, a_place.position)
+			map.add_stop (a_stop)
 			if stops_one_direction.count = 0 and then start_stop = Void then
 				start_stop := a_stop
 			else
@@ -318,8 +319,10 @@ feature -- Basic operations
 				else
 					origin := stops_one_direction.last
 				end
-
-				create line_section.make (origin, a_stop, type, Void)
+				create pp.make (2)
+				pp.extend (origin.position)
+				pp.extend (a_stop.position)
+				create line_section.make (origin, a_stop, type, pp)
 				extend (line_section)
 				map.add_line_section (line_section)
 			end

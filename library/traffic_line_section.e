@@ -31,21 +31,15 @@ feature {NONE} -- Initialization
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
 			no_void_elements: a_list /= Void implies not a_list.has (Void)
+			a_list_exists: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
 		do
 			origin_impl := a_origin
 			destination_impl := a_destination
 			create state.make
 			type := a_type
 			create polypoints.make (2)
-			if a_list /= Void then
-				set_polypoints (a_list)
-			else
-				create polypoints.make (2)
-				polypoints.extend (a_origin.place.position)
-				polypoints.extend (a_destination.place.position)
-			end
+			set_polypoints (a_list)
 			create roads.make (1)
-
 		ensure
 			origin_set: origin_impl = a_origin
 			destination_set: destination_impl = a_destination
@@ -58,6 +52,11 @@ feature {NONE} -- Initialization
 
 	make_non_insertable (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE_LINE; a_list: ARRAYED_LIST [EM_VECTOR_2D]) is
 			-- Make a temporary line_section which shouldn't be inserted into a `TRAFFIC_MAP'.
+		require
+			a_origin_exists: a_origin /= Void
+			a_destination_exists: a_destination /= Void
+			a_type_exists: a_type /= Void
+			a_list_exists: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
 		local
 			origin_stop: TRAFFIC_STOP
 			destination_stop: TRAFFIC_STOP
@@ -65,13 +64,13 @@ feature {NONE} -- Initialization
 			if not a_origin.stops.is_empty then
 				origin_stop := a_origin.stops.first
 			else
-				create origin_stop.make_non_insertable (a_origin, a_type)
+				create origin_stop.make_non_insertable (a_origin, a_type, a_origin.position)
 			end
 
 			if not a_destination.stops.is_empty then
 				destination_stop := a_destination.stops.first
 			else
-				create destination_stop.make_non_insertable (a_destination, a_type)
+				create destination_stop.make_non_insertable (a_destination, a_type, a_destination.position)
 			end
 
 			origin_impl := origin_stop
@@ -81,12 +80,7 @@ feature {NONE} -- Initialization
 
 			create roads.make (1)
 			create polypoints.make (2)
-			if a_list /= Void then
-				set_polypoints (a_list)
-			else
-				polypoints.extend (a_origin.position)
-				polypoints.extend (a_destination.position)
-			end
+			set_polypoints (a_list)
 		ensure
 			origin_set: origin = a_origin
 			destination_set: destination = a_destination
@@ -207,8 +201,7 @@ invariant
 	line_has_same_type: line /= Void implies equal (line.type, type) -- Only line with same type can be assigned.
 	origin_set: origin /= Void -- Origin place exists.
 	destination_set: origin /= Void -- Destination place exists.
-	polypoints_exist: polypoints /= Void
-	polypoints_imply_at_least_two_elements: polypoints /= Void implies polypoints.count >= 2
+	polypoints_valid: polypoints /= Void and then polypoints.count >= 2
 	state_set: state /= Void -- State exists.
 	type_set: type /= Void -- Type exists.
 

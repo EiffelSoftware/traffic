@@ -3,12 +3,12 @@ indexing
 	date: "$Date$"
 	revision: "$Revision"
 
-class
+obsolete class
 	TRAFFIC_BUILDING_FACTORY
 
 inherit
 	EM_3D_OBJECT_FACTORY
-	
+
 creation
 	make
 
@@ -20,30 +20,30 @@ feature -- Initialization
 				create building_templates.make(1)
 				create gaugers.make(1)
 			end
-	
+
 	object_width: DOUBLE is 2.0
 			-- The size of the bounding box in x direction of created objects
-			
+
 	object_height: DOUBLE is 2.0
 			-- The size of the bounding box in y direction of created objects
-			
+
 	object_depth: DOUBLE is 2.0
 			-- The size of the bounding box in z direction of created objects		
-	
-			
+
+
 feature -- Decision process
-	
+
 	add_gauger (procedure: FUNCTION [ANY, TUPLE, STRING]; key: STRING) is
 			-- Add a gauger to `gaugers'.
 		require
-			procedure_valid: procedure /= void 
+			procedure_valid: procedure /= void
 			key_valid: key /= void and then not key.is_empty
 		do
 			gaugers.force (procedure, key)
 		ensure
 			procedure = gaugers.item (key)
 		end
-		
+
 	remove_gauger (key: STRING) is
 			-- Remove a gauger from `gaugers'.
 		require
@@ -53,18 +53,18 @@ feature -- Decision process
 		ensure
 			gaugers.removed
 		end
-	
+
 	add_building_type (procedure: PROCEDURE[ANY,TUPLE]; key: STRING) is
 			-- Add a type of building to `building_templates'.
 		require
-			procedure_valid: procedure /= void 
+			procedure_valid: procedure /= void
 			key_valid: key /= void and then not key.is_empty
 		do
 			building_templates.force (procedure, key)
 		ensure
 			building_templates.item (key) = procedure
 		end
-		
+
 	remove_building_type (key: STRING) is
 			-- Remove a type of building from `building_templates'.
 		require
@@ -72,9 +72,9 @@ feature -- Decision process
 		do
 			building_templates.remove (key)
 		ensure
-			building_templates.removed	
+			building_templates.removed
 		end
-	
+
 	take_decision (gauger: STRING) is
 			-- Let `gauger' decide.
 		require
@@ -83,15 +83,15 @@ feature -- Decision process
 			decision := gaugers.item(gauger).item([1])
 			unchanged := False
 		end
-		
+
 feature {NONE} -- Implementation
-			
+
 	decision: STRING
 			-- The decision the gauger has taken
-			
+
 	gaugers: HASH_TABLE[FUNCTION [ANY, TUPLE, STRING], STRING]
 			-- Helps to decide the kind of place to draw		
-			
+
 	building_templates: HASH_TABLE[PROCEDURE[ANY,TUPLE], STRING]
 			-- Containter of all types of places
 
@@ -103,9 +103,9 @@ feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessibl
 		do
 			building_templates.item(decision).apply
 		end
-		
+
 invariant
 	building_templates_valid: building_templates /= void
 	gaugers_valid: gaugers /= void
-	
+
 end

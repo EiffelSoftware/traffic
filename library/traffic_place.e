@@ -24,7 +24,8 @@ feature {NONE} -- Initialize
 			a_name_not_empty: not a_name.is_empty
 		do
 			name := a_name
-			create position.make (0.0, 0.0)
+			create dummy_node.make (Current, create {EM_VECTOR_2D}.make (0.0, 0.0))
+			set_dummy_node (dummy_node)
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
@@ -40,7 +41,8 @@ feature {NONE} -- Initialize
 			a_name_not_empty: not a_name.is_empty
 		do
 			name := a_name
-			create position.make (a_x, a_y)
+			create dummy_node.make (Current, create {EM_VECTOR_2D}.make (a_x, a_y))
+			set_dummy_node (dummy_node)
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
@@ -55,8 +57,11 @@ feature -- Access
 	name: STRING
 			-- Name of place.	
 
-	position: EM_VECTOR_2D
-			-- Position on map.
+	position: EM_VECTOR_2D is
+			-- Position on map
+		do
+			Result := dummy_node.position
+		end
 
 	information: TRAFFIC_PLACE_INFORMATION
 			-- Additional information.
@@ -82,6 +87,11 @@ feature -- Access
 			end
 		end
 
+	width: DOUBLE
+			-- Width of the place (enclosing all stops)
+
+	breadth: DOUBLE
+			-- Breadth of the place (enclosing all stops)
 
 feature -- Status report
 
@@ -109,8 +119,8 @@ feature -- Element change
 		require
 			a_position_exists: a_position /= Void
 		do
-			position := a_position
-			--dummy_stop.set_position (a_position)
+--			position := a_position
+			dummy_node.set_position (a_position)
 		ensure
 			position_set: position = a_position
 		end
@@ -134,8 +144,12 @@ feature -- Element change
 	add_stop (a_stop: TRAFFIC_STOP) is
 			-- add a traffic stop
 		do
+			if a_stop.line.name.is_equal ("Dolderbahn") then
+				io.put_string ("Test")
+			end
 			stops.extend (a_stop)
 			nodes.extend (a_stop)
+			update_position
 		end
 
 feature{TRAFFIC_MAP_FACTORY} -- Element change
@@ -197,6 +211,37 @@ feature {NONE} -- Implementation
 			Result := a_stop.line.name.is_equal (a_line.name)
 		end
 
+	update_position is
+			--
+		do
+			if name.is_equal ("Quellenstrasse") then
+				io.put_string ("Action")
+			end
+			if stops.count = 1 then
+				width := 0
+				breadth := 0
+				set_position (stops.first.position)
+			else
+				if stops.last.position.x > position.x + width/2 then
+					set_position (create {EM_VECTOR_2D}.make ((stops.last.position.x + position.x - width/2)/2, position.y))
+					width := (stops.last.position.x - position.x)*2
+				elseif stops.last.position.x < position.x - width/2 then
+					set_position (create {EM_VECTOR_2D}.make ((stops.last.position.x + position.x + width/2)/2, position.y))
+					width := (position.x - stops.last.position.x)*2
+				end
+				if stops.last.position.y > position.y + breadth/2 then
+					set_position (create {EM_VECTOR_2D}.make (position.x, (stops.last.position.y + position.y - breadth/2)/2))
+					breadth := (stops.last.position.y - position.y)*2
+				elseif stops.last.position.y < position.y - breadth/2 then
+					set_position (create {EM_VECTOR_2D}.make (position.x, (stops.last.position.y + position.y + breadth/2)/2))
+					breadth := (position.y - stops.last.position.y)*2
+				end
+			end
+			if breadth > 50  then
+				io.put_string ("Action")
+			end
+		end
+
 invariant
 	name_not_void: name /= Void -- Name exists.
 	name_not_empty: not name.is_empty -- Name not empty.
@@ -204,5 +249,6 @@ invariant
 	stops_not_void: stops /= Void
 	nodes_not_void: stops /= Void
 	--stops_in_nodes: stops.for_all (agent nodes.has)
+	dummy_node_not_void: dummy_node /= Void
 
 end

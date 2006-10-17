@@ -35,7 +35,7 @@ feature -- Basic operations
 		local
 			line: TRAFFIC_LINE
 			simple_line: TRAFFIC_SIMPLE_LINE
-			pp: ARRAYED_LIST [EM_VECTOR_2D]
+			polypoints_other_direction: ARRAYED_LIST [EM_VECTOR_2D]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_SECTION
 
 			sections: LIST [TRAFFIC_LINE_SECTION]
@@ -55,6 +55,23 @@ feature -- Basic operations
 				elseif not map.lines.has (line.name) then
 					set_error (Unknown_line, << line.name >>)
 				else
+					if not has_error and has_subnodes then
+						process_subnodes
+					end
+					if polypoints.count >= 2 then
+						create polypoints_other_direction.make (0)
+						from
+							polypoints.finish
+						until
+							polypoints.before
+						loop
+							polypoints_other_direction.extend (polypoints.item.twin)
+							polypoints.back
+						end
+					else
+						polypoints := Void
+						polypoints_other_direction := Void
+					end
 					simple_line ?= line
 					if simple_line /= Void then
 						if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
@@ -93,7 +110,7 @@ feature -- Basic operations
 							if not line.is_valid_insertion (map.places.item ( attribute ("to")), map.places.item (attribute ("from"))) then
 								set_error (Invalid_line_section, << line.name, attribute ("to"), attribute ("from") >>)
 							else
-								map_factory.build_line_section (( attribute ("to")), (attribute ("from")), polypoints, map, line)
+								map_factory.build_line_section (( attribute ("to")), (attribute ("from")), polypoints_other_direction, map, line)
 								line_section_other_direction := map_factory.line_section
 							end
 						else -- directed
@@ -107,33 +124,12 @@ feature -- Basic operations
 						set_target (line_section_one_direction)
 					end
 
-					if not has_error and has_subnodes then
-						process_subnodes
-					end
-
-					if polypoints.count >= 2 then
-						line_section_one_direction.set_polypoints (polypoints)
-
-						if line_section_other_direction /= Void then
-							create pp.make (0)
-							from
-								polypoints.finish
-							until
-								polypoints.before
-							loop
-								pp.extend (polypoints.item.twin)
-								polypoints.back
-							end
-							line_section_other_direction.set_polypoints (pp)
-						end
-
-					end
-
 					--adjust_position (line_section_one_direction, polypoints)
 
 --					if line_section_other_direction /= Void then
 --						adjust_position (line_section_other_direction, polypoints)
 --					end
+
 
 				end
 
@@ -153,7 +149,7 @@ feature -- Basic operations
 	end
 
 	adjust_position (a_line_section: TRAFFIC_LINE_SECTION; a_polypoints: LIST [EM_VECTOR_2D]) is
-			-- Adjust positions
+			-- Adjust positions.
 		do
 			if a_line_section.origin.position = Void or equal(a_line_section.origin.position, zero_vector) then
 				a_line_section.origin.set_position

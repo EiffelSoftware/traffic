@@ -5,71 +5,71 @@ indexing
 
 deferred class
 	TRAFFIC_MOVING
-	
-inherit	
+
+inherit
 	MATH_CONST
 		export {NONE} all end
-		
+
 	DOUBLE_MATH
 		export {NONE} all end
-		
+
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
-		
+
 feature -- Attributes
-	
+
 	traffic_type: TRAFFIC_TYPE
 		-- Type of traffic
-	
+
 	traffic_info: STRING
 		-- Some info on moving
 
 	position: EM_VECTOR_2D
 		-- Current position on map
-	
+
 	origin: EM_VECTOR_2D
 		-- Origin position on map
-	
+
 	destination: EM_VECTOR_2D
 		-- Destination position on map
-	
+
 	speed: DOUBLE
 		-- Speed on the map TODO: speed := distance(take-tour) / time(from one point to another)
-		
+
 	index: INTEGER
 		-- Index of moving
-		
+
 	time: DOUBLE
 		-- Time for one minute
-			
+
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 		-- All points to be traveled through
-	
+
 	is_reiterating: BOOLEAN
 		-- if the destination is reached it turns around
-		
+
 	is_traveling_back: BOOLEAN
 		-- Is 'Current' traveling back through polypoints?
-	
+
 	has_finished: BOOLEAN
 		-- Has the moving finished his journey?	
 
 	virtual_speed: DOUBLE
 		-- Virtual speed of the object on the map
-		
+
 	angle_x: DOUBLE
 		-- Angle in respect to the x-axis
-		
+
 	is_marked: BOOLEAN
 		-- Is the moving marked, highlighted?
 
 feature -- Procedures
-	
+
 	take_tour is deferred end
 			-- Take a tour on the map.
-			
+
 feature {NONE} -- helper for journey	
-	
+
 	move is
 			-- Move 'Current' from origin to destination.
 			local
@@ -77,8 +77,8 @@ feature {NONE} -- helper for journey
 			do
 				direction := destination - origin
 				if not has_finished then
-					
-					if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) then
+
+					if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) or direction.length <= 0 then
 						set_coordinates
 						set_angle
 					else
@@ -86,7 +86,7 @@ feature {NONE} -- helper for journey
 					end
 				end
 			end
-			
+
 	set_coordinates is
 			-- Set the positions to the corresponding ones of the line section.
 			require
@@ -105,7 +105,7 @@ feature {NONE} -- helper for journey
 						polypoints.forth
 						set_coordinates
 					else
-						destination := map_to_gl_coords (polypoints.item)										
+						destination := map_to_gl_coords (polypoints.item)
 					end
 
 				elseif is_reiterating then
@@ -115,22 +115,22 @@ feature {NONE} -- helper for journey
 						polypoints.back
 						set_coordinates
 					else
-						destination := map_to_gl_coords (polypoints.item)										
-					end				
+						destination := map_to_gl_coords (polypoints.item)
+					end
 				else
 					polypoints.forth
 					if polypoints.after then
 						has_finished := True
 					else
-						destination := map_to_gl_coords (polypoints.item)										
+						destination := map_to_gl_coords (polypoints.item)
 					end
 				end
-			
+
 			ensure
 				origin /= Void
 				position /= Void
 				destination /= Void
-			end	
+			end
 
 
 --	set_coordinates_with_angle is
@@ -202,12 +202,12 @@ feature {NONE} -- helper for journey
 --				destination /= Void
 --			end	
 
-			
+
 	tour_helper is
 			-- Help during the tour to get the next destination if there is any.
 			do
 				if not polypoints.after and not polypoints.before then
-					
+
 					if not is_traveling_back then
 						polypoints.forth
 						origin := destination
@@ -218,14 +218,14 @@ feature {NONE} -- helper for journey
 						origin := destination
 						position := destination
 						destination := polypoints.item
-					end	
-						
+					end
+
 				elseif polypoints.after and is_reiterating then
 					is_traveling_back := True
 					polypoints.back
 					origin := destination
 					position := destination
-					
+
 				elseif polypoints.before and is_reiterating and is_traveling_back then
 					is_traveling_back := False
 					polypoints.forth
@@ -236,10 +236,10 @@ feature {NONE} -- helper for journey
 					has_finished := True
 				end
 			end
-		
-	set_angle is	
+
+	set_angle is
 			-- Set the angles to the x- and y-axis respectively.
-			local 
+			local
 				x_difference, y_difference, hypo, quad: DOUBLE
 			do
 				-- as the x-axis is turned by 180° we have to take this into account
@@ -247,7 +247,7 @@ feature {NONE} -- helper for journey
 				x_difference := origin.x - destination.x
 				y_difference := origin.y - destination.y
 				hypo := sqrt ((x_difference * x_difference) + (y_difference * y_difference))
-				
+
 				if hypo /= 0 then
 					-- arc_sine in radian
 					quad := 0
@@ -255,7 +255,7 @@ feature {NONE} -- helper for journey
 						angle_x := arc_sine (x_difference/hypo)
 							-- the same in degree
 						angle_x := angle_x * 180 / pi
-						angle_x := 180 + angle_x	
+						angle_x := 180 + angle_x
 					elseif (x_difference < 0) and (y_difference >= 0) then
 						x_difference := x_difference.abs
 						y_difference := y_difference.abs
@@ -277,17 +277,17 @@ feature {NONE} -- helper for journey
 						angle_x := angle_x * 180 / pi
 						angle_x := 360 - angle_x
 					end
-					
+
 					if angle_x < 0 then
 						angle_x := 360 + angle_x
 					elseif angle_x > 360 then
 						angle_x := angle_x - 360
 					end
 				end
-				
+
 			end
-		
-		
+
+
 feature -- Attributes settings	
 
 	set_index (an_index: INTEGER) is
@@ -297,9 +297,9 @@ feature -- Attributes settings
 			ensure
 				index = an_index
 			end
-		
-	
-	set_traffic_info (a_type: STRING) is	
+
+
+	set_traffic_info (a_type: STRING) is
 			-- Set the traffic info.
 			require
 				a_type /= Void
@@ -308,7 +308,7 @@ feature -- Attributes settings
 			ensure
 				traffic_info = a_type
 			end
-		
+
 	set_speed (a_speed: DOUBLE) is
 			-- Set the speed to 'a_speed'.
 			require
@@ -318,7 +318,7 @@ feature -- Attributes settings
 			ensure
 				speed = a_speed
 			end
-					
+
 	set_time (a_time: DOUBLE) is
 			-- Set time to 'a_time'.
 			require
@@ -328,7 +328,7 @@ feature -- Attributes settings
 			ensure
 				time = a_time
 			end
-		
+
 	set_reiterate (a_boolean: BOOLEAN) is
 			-- Set the moving reiterating his itinerary.
 			do
@@ -336,8 +336,8 @@ feature -- Attributes settings
 			ensure
 				is_reiterating = a_boolean
 			end
-		
-			
+
+
 feature {NONE} -- Random
 
 	random_number: RANDOM
@@ -362,12 +362,12 @@ feature {NONE} -- Random
 				destination.y < 1468
 				destination.y > -32
 			end
-			
+
 	add_random_polypoints(num: INTEGER) is
 		--  Add to the polypoints 'num' random destinations.
 		require
 			random_number_not_void: random_number /= void
-		local 
+		local
 			i: INTEGER
 		do
 			random_number.forth
@@ -380,15 +380,15 @@ feature {NONE} -- Random
 				give_random_direction
 				polypoints.extend (destination)
 				random_number.forth
-				polypoints.extend (destination)	
+				polypoints.extend (destination)
 				i := i+1
 			end
 			polypoints.start
 		ensure
 			polypoints_extended: polypoints.count = old polypoints.count + (2* (num-1))
 		end
-		
-	
+
+
 invariant
 	polypoints /= Void
 	origin /= Void

@@ -3,7 +3,7 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
+obsolete class
 	TRAFFIC_3D_FAST_OBJECT_LOADER
 
 inherit

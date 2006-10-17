@@ -3,108 +3,57 @@ indexing
 	date: "$Date: 2005/09/26 11:22:45 $"
 	revision: "$Revision: 1.23 $"
 
-class
+deferred class
 	TRAFFIC_3D_PLACE_FACTORY
-	
+
 inherit
 	EM_3D_OBJECT_FACTORY
-	
+
 	EM_SHARED_BITMAP_FACTORY
 		export {NONE} all end
 
-create
-	make
-	
-feature -- Creation
-	make is
-			-- set up the factory
-			do
-				create place_templates.make(1)
-				create gaugers.make(1)
-			end
-		
-			
-	object_width: DOUBLE is 2.0
-			-- The size of the bounding box in x direction of created objects.
-			
-	object_height: DOUBLE is 2.0
-			-- The size of the bounding box in y direction of created objects.
-			
-	object_depth: DOUBLE is 2.0
-			-- The size of the bounding box in z direction of created objects.
-			
-feature -- Decision process
+feature -- Access
 
-	add_gauger (procedure: FUNCTION [ANY, TUPLE, STRING]; key: STRING) is
-			-- Add a gauger to `gaugers'.
-		require
-			procedure_valid: procedure /= void 
-			key_valid: key /= void and then not key.is_empty
-		do
-			gaugers.force (procedure, key)
-		ensure
-			procedure = gaugers.item (key)
-		end
-		
-	remove_gauger (key: STRING) is
-			-- Remove a gauger from `gaugers'.
-		require
-			key_valid: key /= void and then not key.is_empty
-		do
-			gaugers.remove (key)
-		ensure
-			gaugers.removed
-		end
+	place: TRAFFIC_PLACE
+			-- Place for which the 3d object is created
 
-	add_place_type (procedure: PROCEDURE[ANY,TUPLE]; key: STRING) is
-			-- Add a type of place to `place_templates'.
-		require
-			procedure_valid: procedure /= void 
-			key_valid: key /= void and then not key.is_empty
-		do
-			place_templates.force (procedure, key)
-		ensure
-			place_templates.item (key) = procedure
-		end
-		
-	remove_place_type (key: STRING) is
-			-- Remove a type of place from `place_templates'.
-		require
-			key_valid: key /= void and then not key.is_empty
-		do
-			place_templates.remove (key)
-		ensure
-			place_templates.removed	
-		end
+	collision_polygon: EM_POLYGON_CONVEX_COLLIDABLE
+			-- Collision polygon for the generated object
 
-	take_decision (gauger: STRING) is
-			-- Let `gauger' decide.
+	color: EM_COLOR
+			-- Color used for drawing places
+
+feature -- Element change
+
+	set_place (a_place: TRAFFIC_PLACE) is
+			-- Set the place to generate a representation for to `a_place'.
 		require
-			gauger_valid: gauger /= void and then not gauger.is_empty
+			a_place_exists: a_place /= Void
 		do
-			decision := gaugers.item(gauger).item([1])
+			place := a_place
 			unchanged := False
+		ensure
+			place_set: a_place = place
 		end
-		
-feature {NONE} -- Implementation
-			
-	decision: STRING
-			-- The decision the gauger has taken
-			
-	gaugers: HASH_TABLE[FUNCTION [ANY, TUPLE, STRING], STRING]
-			-- Helps to decide the kind of place to draw.		
-			
-	place_templates: HASH_TABLE[PROCEDURE[ANY,TUPLE], STRING]
-			-- Containter of all types of places.
-			
-feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessible from the outside
+
+	set_color (a_color: EM_COLOR) is
+			-- Set `color' to `a_color'.
+		require
+			a_color_exists: a_color /= Void
+		do
+			color := a_color
+			unchanged := False
+		ensure
+			color_set: color = a_color
+		end
+
+feature -- Basic operations
 
 	specify_object is
-			-- Specify an object that can be drawn in the origin
-			-- (front, left, lower corner of bounding box = 0,0,0)
-		do
-			place_templates.item(decision).apply
+			-- Specify an object.
+		deferred
+		ensure then
+			collision_polygon_exists: collision_polygon /= Void
 		end
-		
-		
+
 end

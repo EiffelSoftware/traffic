@@ -6,10 +6,10 @@ indexing
 
 class
 	TOUCH_ROUTE
-	
+
 inherit
 	TOUCH_TIMING
-	
+
 create
 	make, make_route, make_empty_route
 
@@ -21,7 +21,7 @@ feature  -- Initialization
 		do
 			internal_route.make_empty (a_map)
 		end
-		
+
 
 	make_route (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]; a_map_widget: TOUCH_3D_MAP_WIDGET) is
 			-- Create route on map `a_map'.
@@ -33,12 +33,12 @@ feature  -- Initialization
 			internal_map := a_map_widget.map
 			create internal_route.make (a_places_to_visit, a_map_widget.map)
 
-			calculate_shortest_path
+--			calculate_shortest_path
 			make_itinerary
 
-			
+
 		end
-		
+
 	make (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]; a_map_widget: TOUCH_3D_MAP_WIDGET) is
 			-- Create shortest path route through all places in `a_places_to_visit'.
 		do
@@ -51,17 +51,17 @@ feature  -- Initialization
 		do
 			create traveler.make_directed (itinerary, 0.5)
 			traveler.set_reiterate (False)
-			internal_map_widget.add_traveler (traveler)  
+			internal_map_widget.add_traveler (traveler)
 			traveler.take_tour
-		
-			internal_map_widget.traffic_time.reset_time		
-			internal_map_widget.traffic_time.change_simulated_time (5)		
-			internal_map_widget.map.change_traveler_speed (3)			
+
+			internal_map_widget.traffic_time.reset_time
+			internal_map_widget.traffic_time.change_simulated_time (5)
+			internal_map_widget.map.change_traveler_speed (3)
 			internal_map_widget.traffic_time.resume_time
-			
+
 			wait(6500)
 		end
-		
+
 	end_animate is
 			-- The traveler is removed from the map.
 		do
@@ -69,7 +69,7 @@ feature  -- Initialization
 			internal_map_widget.delete_traveler (traveler)
 			internal_map_widget.traffic_time.pause_time
 		end
-		
+
 
 feature -- Element change
 
@@ -89,7 +89,7 @@ feature -- Basic operation
 		do
 			internal_route.calculate_shortest_path
 		end
-	
+
 	make_itinerary is
 			-- Convert the places on route to an 'itinerary' of type ARRAYED_LIST [EM_VECTOR_2D].
 		do
@@ -103,22 +103,22 @@ feature -- Basic operation
 				places_on_route.forth
 			end
 		end
-		
+
 
 feature -- Access
 
 	places_to_visit: LINKED_LIST [TRAFFIC_PLACE] is
 			-- Places to visit on route.
 		do
-			Result := internal_route.places_to_visit	
+			Result := internal_route.places_to_visit
 		end
-		
+
 	places_on_route: LINKED_LIST [TRAFFIC_PLACE] is
 			-- All Places on route of last call to `calculate_shortest_path'.
-		do		
+		do
 			Result := internal_route.places_on_route
 		end
-		
+
 	line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION] is
 			-- Line sections to be used to visit `places_to_visit'
 			-- of last call to `calculate_shortest_path'.

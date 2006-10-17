@@ -3,7 +3,7 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
+obsolete class
 	TRAFFIC_3D_OBJECT_LOADER
 
 inherit
@@ -13,26 +13,26 @@ inherit
 	{TRAFFIC_3D_TRAVELER_REPRESENTATION}
 		create_object
 	redefine
-		make, specify_object, read_face, load_file 
+		make, specify_object, read_face, load_file
 	end
-	
-	
-create	
-	make, make_with_color 
-	
+
+
+create
+	make, make_with_color
+
 feature -- Initialization
-	
+
 	make is
-			-- 
+			--
 		do
 			create em_color.make_xyz (0, 0, 0)
 		end
-		
+
 
 	make_with_color (a_r: DOUBLE; a_g: DOUBLE; a_b: DOUBLE) is
 		do
-			create em_color.make_xyz (a_r, a_g, a_b) 
-		end	
+			create em_color.make_xyz (a_r, a_g, a_b)
+		end
 
 feature -- Attribute Setting
 
@@ -47,7 +47,7 @@ feature -- Attribute Setting
 		end
 
 	em_color: GL_VECTOR_3D [DOUBLE]
-	
+
 feature  -- Commands
 
 	load_file (a_filename: STRING) is
@@ -101,7 +101,7 @@ feature  -- Commands
 				else
 					-- unknown => ignore line and print line as output
 					if not obj_file.off then
-						obj_file.read_line					
+						obj_file.read_line
 					end
 --					print ("Unknown line:")
 --					print (obj_file.last_string + "%N")	
@@ -116,7 +116,7 @@ feature  -- Commands
 
 feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessible from the outside
 
-	
+
 
 	specify_object is
 			-- Specify an object that can be drawn in the origin

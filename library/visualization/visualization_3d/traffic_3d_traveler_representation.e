@@ -109,7 +109,6 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 				local
 					traveler: EM_3D_OBJECT
 					texture_ids: ARRAY[INTEGER]
-					building: EM_3D_OBJECT
 					traffic_model: NEW_TRAFFIC_MODEL
 					bitmap: EM_BITMAP
 					s: STRING
@@ -123,31 +122,33 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 
 					if a_traveler.traffic_type.name.is_equal ("walking") then
 						if person_toggle = 0 then
+							traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0, 0, .7))
 							s := fs.pathname ("..", "objects")
 							s := fs.pathname (s, "man.obj")
 							traveler_factory.load_file (s)
 							person_toggle := 1
 						else
-							--traveler_factory.set_em_color (200, 0, 100)					
+							traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0.7, 0, .2))
 							s := fs.pathname ("..", "objects")
 							s := fs.pathname (s, "woman.obj")
 							traveler_factory.load_file (s)
 							person_toggle := 0
 						end
 						traveler := traveler_factory.create_object
---						traveler.set_scale (0.2, 0.2, 0.2)
+						traveler.set_scale (2, 2, 2)
 
 						create traffic_model.make
 						traffic_model.set_model(traveler)
 						traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
 					elseif a_traveler.traffic_type.name.is_equal ("tram") then
+						traveler_factory.set_color (traveler_factory.default_color)
 						s := fs.pathname ("..", "objects")
 						s := fs.pathname (s, "tram2000.tga")
 						bitmap_factory.create_bitmap_from_image(s)
 						bitmap := bitmap_factory.last_bitmap
 						create texture_ids.make (0,0)
 						texture_ids.force (bitmap.texture.id, 0)
-						traveler_factory.set_texture_id (texture_ids)
+--test						traveler_factory.set_texture_id (texture_ids)
 
 						s := fs.pathname ("..", "objects")
 						s := fs.pathname (s, "tram2000.obj")
@@ -182,7 +183,8 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 						bitmap := bitmap_factory.last_bitmap
 						create texture_ids.make (0,0)
 						texture_ids.force (bitmap.texture.id, 0)
-						traveler_factory.set_texture_id (texture_ids)
+--test						traveler_factory.set_texture_id (texture_ids)
+						traveler_factory.set_color (traveler_factory.default_color)
 
 						s := fs.pathname ("..", "objects")
 						s := fs.pathname (s, "taxi.obj")

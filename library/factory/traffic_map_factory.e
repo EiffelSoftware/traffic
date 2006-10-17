@@ -93,8 +93,6 @@ feature -- Traffic place building
 			dummy_node: TRAFFIC_NODE
 		do
 			create internal_place.make (a_name)
-			create dummy_node.make (internal_place)
-			internal_place.set_dummy_node (dummy_node)
 			a_map.add_place (internal_place)
 		ensure
 			place_created: place /= Void
@@ -115,8 +113,8 @@ feature -- Traffic place building
 			dummy_node: TRAFFIC_NODE
 		do
 			create internal_place.make_with_position (a_name, a_x, a_y)
-			create dummy_node.make (internal_place)
-			internal_place.set_dummy_node (dummy_node)
+--			create dummy_node.make (internal_place, )
+--			internal_place.set_dummy_node (dummy_node)
 			a_map.add_place (internal_place)
 		ensure
 			place_created: place /= Void
@@ -152,8 +150,17 @@ feature -- Line section building
 			a_destination_exists: a_map.has_place (a_destination)
 --			a_polypoints_exists: a_polypoints /= Void
 			a_line_exists: a_line /= Void
+		local
+			pps: ARRAYED_LIST [EM_VECTOR_2D]
 		do
-			internal_line_section := create_line_section (a_origin, a_destination, a_polypoints, a_line, a_map)
+			if a_polypoints = Void or else a_polypoints.count < 2 then
+				create pps.make (2)
+				pps.extend (a_map.place (a_origin).position)
+				pps.extend (a_map.place (a_destination).position)
+			else
+				pps := a_polypoints
+			end
+			internal_line_section := create_line_section (a_origin, a_destination, pps, a_line, a_map)
 			a_map.add_line_section (internal_line_section)
 		ensure
 			line_section_created: line_section /= Void
@@ -341,13 +348,14 @@ feature {NONE} -- Implementation
 			a_destination_in_map: a_map.has_place (a_destination)
 			a_line_exists: a_line /= Void
 			a_line_in_map: a_map.has_line (a_line.name)
-			--polypoints_are_list: a_polypoints /= Void and then a_polypoints.count >= 2 and then not a_polypoints.has (Void)
+			polypoints_are_list: a_polypoints /= Void and then (a_polypoints.count >= 2 and not a_polypoints.has (Void))
 		local
 			typed_line_section: TRAFFIC_LINE_SECTION
 			origin_place: TRAFFIC_PLACE
 			destination_place: TRAFFIC_PLACE
 			origin_stop: TRAFFIC_STOP
 			destination_stop: TRAFFIC_STOP
+			stop_pos: EM_VECTOR_2D
 		do
 			origin_place := a_map.place (a_origin)
 			destination_place := a_map.place (a_destination)
@@ -355,16 +363,18 @@ feature {NONE} -- Implementation
 			if origin_place.has_stop (a_line) then
 				origin_stop := origin_place.stop (a_line)
 			else
-				create origin_stop.make_stop (origin_place, a_line) --, a_polypoints.first.x, a_polypoints.first.y)
-				origin_place.add_stop (origin_stop)
+				create stop_pos.make_from_other (a_polypoints.first)
+				create origin_stop.make_stop (origin_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+--				origin_place.add_stop (origin_stop)
 				map.add_stop (origin_stop)
 			end
 
 			if destination_place.has_stop (a_line) then
 				destination_stop := destination_place.stop (a_line)
 			else
-				create destination_stop.make_stop (destination_place, a_line) --, a_polypoints.last.x, a_polypoints.last.y)
-				destination_place.add_stop (destination_stop)
+				create stop_pos.make_from_other (a_polypoints.last)
+				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+--				destination_place.add_stop (destination_stop)
 				map.add_stop (destination_stop)
 			end
 

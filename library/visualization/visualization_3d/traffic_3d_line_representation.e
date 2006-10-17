@@ -68,7 +68,9 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			until
 				line_section_views.after
 			loop
-				line_section_views.item.draw
+				if line_section_views.item /= Void then
+					line_section_views.item.draw
+				end
 				line_section_views.forth
 			end
 		end

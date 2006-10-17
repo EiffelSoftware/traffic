@@ -72,7 +72,7 @@ feature -- Initialization
 				bitmap := bitmap_factory.last_bitmap
 				create texture_ids.make (0,0)
 				texture_ids.force (bitmap.texture.id, 0)
-				building_factory.set_texture_id (texture_ids)
+--test				building_factory.set_texture_id (texture_ids)
 
 				s := fs.pathname ("..", "buildings")
 				s := fs.pathname (s, "building" + i.out + ".obj")
