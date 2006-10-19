@@ -22,6 +22,9 @@ feature {NONE} -- Create
 		do
 			place := a_place
 			position := a_position
+		ensure
+			place_set: place = a_place
+			position_set: position = a_position
 		end
 
 feature -- Access
@@ -35,6 +38,8 @@ feature -- Element change
 
 	set_position (a_position: EM_VECTOR_2D) is
 			-- Set position to `a_position'.
+		require
+			position_exists: a_position /= Void
 		do
 			position := a_position
 		ensure

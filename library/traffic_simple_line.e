@@ -308,7 +308,6 @@ feature -- Basic operations
 			pp: ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			create a_stop.make_stop (a_place, Current, a_place.position)
-			map.add_stop (a_stop)
 			if stops_one_direction.count = 0 and then start_stop = Void then
 				start_stop := a_stop
 			else
@@ -320,8 +319,8 @@ feature -- Basic operations
 					origin := stops_one_direction.last
 				end
 				create pp.make (2)
-				pp.extend (origin.position)
-				pp.extend (a_stop.position)
+				pp.extend (origin.place.position)
+				pp.extend (a_place.position)
 				create line_section.make (origin, a_stop, type, pp)
 				extend (line_section)
 				map.add_line_section (line_section)

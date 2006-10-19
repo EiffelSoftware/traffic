@@ -22,7 +22,7 @@ create {TRAFFIC_LINE_SECTION}
 feature{NONE} -- Creation
 
 	make_stop (a_place: TRAFFIC_PLACE; a_line: TRAFFIC_LINE; a_position: EM_VECTOR_2D) is
-			-- Initialize `Current'
+			-- Initialize `Current'.
 		require
 			place_not_void: a_place /= Void
 			line_not_void: a_line /= Void
@@ -32,13 +32,13 @@ feature{NONE} -- Creation
 			line := a_line
 			position := a_position
 
-			place.add_stop (Current)
+			place.stops.extend (Current)
 		ensure
 			stop_added: place.stops.has (Current)
 		end
 
 	make_non_insertable (a_place: TRAFFIC_PLACE; a_line_type: TRAFFIC_TYPE_LINE; a_position: EM_VECTOR_2D ) is
-			-- Initialize `Current'
+			-- Initialize `Current'.
 		require
 			place_not_void: a_place /= Void
 			position_not_void: a_position /= Void

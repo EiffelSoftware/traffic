@@ -365,7 +365,7 @@ feature {NONE} -- Implementation
 			else
 				create stop_pos.make_from_other (a_polypoints.first)
 				create origin_stop.make_stop (origin_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
---				origin_place.add_stop (origin_stop)
+				origin_place.add_stop (origin_stop)
 				map.add_stop (origin_stop)
 			end
 
@@ -374,7 +374,7 @@ feature {NONE} -- Implementation
 			else
 				create stop_pos.make_from_other (a_polypoints.last)
 				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
---				destination_place.add_stop (destination_stop)
+				destination_place.add_stop (destination_stop)
 				map.add_stop (destination_stop)
 			end
 

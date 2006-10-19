@@ -130,7 +130,6 @@ feature -- Basic operations
 --						adjust_position (line_section_other_direction, polypoints)
 --					end
 
-
 				end
 
 
