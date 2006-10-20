@@ -1,7 +1,8 @@
 indexing
-	description: 	"[ 	Factory generating 3d representations for connections consisting of a polyline (same as TRAFFIC_3D_CONNECTION_LINE_REP_FACTORY) 
-						and a polycubus floating in the air
-					]"
+	description:  "[
+						Factory generating 3d representations for connections consisting of a polyline (same as TRAFFIC_3D_CONNECTION_LINE_REP_FACTORY) 
+						and a polycubus floating in the air 
+				   ]"
 	date: "$Date$"
 	revision: "$Revision$"
 

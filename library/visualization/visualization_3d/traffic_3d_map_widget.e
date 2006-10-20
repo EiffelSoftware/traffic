@@ -206,13 +206,13 @@ feature -- Drawing
 
 feature{EM_3D_OBJECT} -- Collision
 
-	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE] is
+	collision_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE] is
 			-- return all the collidables.
 			local
-				all_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+				all_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 			do
-				create all_polygons.make_from_array (traffic_lines_polygons)
-				all_polygons.append (traffic_places_polygons)
+				create all_polygons.make_from_linear (traffic_lines_polygons)
+				all_polygons.append (traffic_places_polygons, all_polygons.count)
 				Result := all_polygons
 			end
 
@@ -551,7 +551,7 @@ feature -- Options
 			until
 				traffic_lines_polygons.after or Result
 			loop
-				if a_poly.collides_with (traffic_lines_polygons.item) then
+				if traffic_lines_polygons.item_for_iteration /= Void and then a_poly.collides_with (traffic_lines_polygons.item_for_iteration) then
 					Result := True
 				end
 				traffic_lines_polygons.forth
@@ -563,7 +563,7 @@ feature -- Options
 			until
 				buildings_polygons.after or Result
 			loop
-				if a_poly.collides_with (buildings_polygons.item) then
+				if buildings_polygons.item_for_iteration /= Void and then a_poly.collides_with (buildings_polygons.item_for_iteration) then
 					Result := True
 				end
 				buildings_polygons.forth
@@ -655,7 +655,7 @@ feature -- Options
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
 								if not has_collision (collision_poly) then
 									add_building (building)
-									buildings_polygons.extend(collision_poly)
+									buildings_polygons.force_last (collision_poly)
 								end
 
 								--builiding on the left hand sinde of the line
@@ -674,7 +674,7 @@ feature -- Options
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
 								if not has_collision (collision_poly) then
 									add_building (building)
-									buildings_polygons.extend(collision_poly)
+									buildings_polygons.force_last (collision_poly)
 								end
 								start_point.set_y (end_point.y-0.01)
 								end_point.set_y (end_point.y-0.51)
@@ -720,7 +720,7 @@ feature -- Options
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
 									if not has_collision (collision_poly) then
 										add_building (building)
-										buildings_polygons.extend(collision_poly)
+										buildings_polygons.force_last(collision_poly)
 									end
 
 									--builiding underneath the line
@@ -743,7 +743,7 @@ feature -- Options
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
 									if not has_collision (collision_poly) then
 										add_building (building)
-										buildings_polygons.extend(collision_poly)
+										buildings_polygons.force_last (collision_poly)
 									end
 									start_point.set_x (end_point.x-0.01)
 									end_point.set_x (end_point.x-0.51)
@@ -960,16 +960,16 @@ feature -- Representations
 
 feature {NONE} -- Implementation
 
-	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+	traffic_lines_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic lines.
 
 	traffic_roads_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic roads.
 
-	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+	traffic_places_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic places.
 
-	buildings_polygons: ARRAYED_LIST [EM_POLYGON_CONVEX_COLLIDABLE]
+	buildings_polygons: DS_ARRAYED_LIST [EM_POLYGON_CONVEX_COLLIDABLE]
 			-- Building collision polygons
 
 	constant_light: GL_LIGHT

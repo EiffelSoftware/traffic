@@ -37,7 +37,7 @@ feature -- Initialization
 			create color.make_with_rgb (0,0,0)
 				-- default color black
 
-			create {TRAFFIC_3D_PLACE_CIRCLE_REP_FACTORY} place_factory
+			create {TRAFFIC_3D_PLACE_SQUARE_REP_FACTORY} place_factory
 			place_factory.set_color (color)
 			create collision_polygons.make (1)
 
@@ -47,6 +47,7 @@ feature -- Initialization
 
 			map.place_inserted_event.subscribe (agent process_item_inserted)
 			map.place_removed_event.subscribe (agent process_item_removed)
+
 		ensure
 			place_factory_created: place_factory /= Void
 			place_3d_objects_created: place_3d_objects /= Void
@@ -65,9 +66,9 @@ feature -- Basic operations
 			loop
 				if place_3d_objects.item_for_iteration /= Void then
 					place_3d_objects.item_for_iteration.draw
-				end
-				place_3d_objects.forth
 			end
+				place_3d_objects.forth
+		end
 		end
 
 	highlight_place (a_place: TRAFFIC_PLACE; a_color: EM_COLOR) is
@@ -120,7 +121,7 @@ feature -- Basic operations
 				place_view := place_factory.create_object
 				place_3d_objects.force_last (place_view)
 				place_lookup.force (place_3d_objects.count, place)
-				collision_polygons.force (place_factory.collision_polygon)
+				collision_polygons.force (place_factory.collision_polygon, place_3d_objects.count)
 				all_places.forth
 			end
 		end
@@ -136,7 +137,7 @@ feature -- Basic operations
 			place_view := place_factory.create_object
 			place_3d_objects.force_last (place_view)
 			place_lookup.force (place_3d_objects.count, a_place)
-			collision_polygons.force (place_factory.collision_polygon)
+			collision_polygons.force (place_factory.collision_polygon, place_3d_objects.count)
 		ensure
 			a_place_has_view: place_lookup.has (a_place)
 		end
@@ -148,6 +149,7 @@ feature -- Basic operations
 		do
 			place_3d_objects.put (Void, place_lookup.item (a_place))
 			place_lookup.remove (a_place)
+			collision_polygons.put (Void, place_lookup.item (a_place))
 		ensure
 			a_place_has_no_view: not place_lookup.has (a_place)
 		end
@@ -155,7 +157,7 @@ feature -- Basic operations
 
 feature -- Access
 
-	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+	collision_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic lines
 
 	place_3d_objects: DS_ARRAYED_LIST [EM_3D_OBJECT]
@@ -206,6 +208,7 @@ feature -- Status report
 			end
 		end
 
+
 feature -- Event handling
 
 	process_item_inserted (a_place: TRAFFIC_PLACE) is
@@ -221,8 +224,7 @@ feature -- Event handling
 		require
 			a_place_exists: a_place /= Void
 		do
-			place_3d_objects.put (Void, place_lookup.item (a_place))
-			place_lookup.remove (a_place)
+			remove_place (a_place)
 		end
 
 feature {NONE} -- Implementation
