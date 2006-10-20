@@ -30,16 +30,15 @@ feature {NONE} -- Initialization
 			a_origin_exists: a_origin /= Void
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
-			no_void_elements: a_list /= Void implies not a_list.has (Void)
 			a_list_exists: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
 		do
 			origin_impl := a_origin
 			destination_impl := a_destination
 			create state.make
 			type := a_type
-			create polypoints.make (2)
 			set_polypoints (a_list)
 			create roads.make (1)
+
 		ensure
 			origin_set: origin_impl = a_origin
 			destination_set: destination_impl = a_destination
@@ -79,7 +78,6 @@ feature {NONE} -- Initialization
 			type := a_type
 
 			create roads.make (1)
-			create polypoints.make (2)
 			set_polypoints (a_list)
 		ensure
 			origin_set: origin = a_origin

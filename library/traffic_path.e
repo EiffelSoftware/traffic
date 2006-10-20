@@ -113,7 +113,7 @@ feature -- Basic operations
 			-- add the connection
 		require
 			a_connection /= Void
-			is_valid_for_insertion (a_connection)
+--			is_valid_for_insertion (a_connection)
 		local
 			ls: TRAFFIC_LINE_SECTION
 			last_path_section: TRAFFIC_PATH_SECTION

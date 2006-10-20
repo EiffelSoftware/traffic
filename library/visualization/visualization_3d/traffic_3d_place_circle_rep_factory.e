@@ -77,6 +77,10 @@ feature {NONE} -- Implementation
 			p3 := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q3.x , place_height, q3.y)
 			p4 := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (q4.x , place_height, q4.y)
 
+			object_width := (q3.x - q1.x).abs
+			object_height := 2.0
+			object_depth := (q2.y - q1.y).abs
+
 			create poly_points.make
 			poly_points.force (create {EM_VECTOR_2D}.make (p1.x, p1.z), 1) -- left bottom corner
 			poly_points.force (create {EM_VECTOR_2D}.make (p2.x, p2.z), 2) -- left upper corner

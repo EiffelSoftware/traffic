@@ -8,9 +8,9 @@ indexing
 
 deferred class
 	TOURISM
-
+	
 inherit
-
+	
 	TOUCH_PARIS_OBJECTS
 
 feature -- Access
@@ -20,34 +20,34 @@ feature -- Access
 		require
 			a_map_widget_exists: a_map_widget /= Void
 			a_console_exists: a_console /= Void
-		do
+		do  		
 			map_widget := a_map_widget
 			console := a_console
-
+			
 			explore
 
 		end
-
+		
 feature  -- Example main feature
 
 	explore is
 			-- Executed on startup.
 		deferred
 		end
-
+		
 	explore_on_button_click is
 			-- Executed when the button is clicked.
 		deferred
 		end
-
+		
 feature -- Access
 
 	map_widget: TOUCH_3D_MAP_WIDGET
 			-- Map widget that also contains all 3d objects for displaying the map
-
+			
 	console: TOUCH_CONSOLE
 			-- Console for output
-
+			
 feature -- Status report
 
 	is_zurich_loaded: BOOLEAN
@@ -55,7 +55,7 @@ feature -- Status report
 
 feature -- Access (Paris)
 
-	Paris: TOUCH_MAP is
+	Paris: TOUCH_MAP is		
 			-- Object representing the city of Paris
 		require else
 			map_widget_exists: map_widget /= Void
@@ -75,12 +75,12 @@ feature -- Access (Paris)
 					create Result.make (map_widget)
 					map_widget.enable_map_hidden
 					is_paris_loaded := True
-					is_zurich_loaded := False
+					is_zurich_loaded := False									
 				end
 			end
 		end
 
-	Zurich: TOUCH_MAP is
+	Zurich: TOUCH_MAP is		
 			-- Object representing the city of Zurich
 		require else
 			map_widget_exists: map_widget /= Void
@@ -100,7 +100,7 @@ feature -- Access (Paris)
 					create Result.make (map_widget)
 					map_widget.enable_map_hidden
 					is_paris_loaded := True
-					is_zurich_loaded := False
+					is_zurich_loaded := False									
 				end
 			end
 		end

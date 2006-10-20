@@ -75,7 +75,8 @@ feature -- Basic operations
 
 				if map.path_found then
 					shortest_path := map.shortest_path
-					traffic_path_representation.add_shortest_path (shortest_path)
+					traffic_path_representation.remove_all
+					traffic_path_representation.add_path (shortest_path)
 					shortest_path_connections := shortest_path.connections
 					shortest_path_calculated_event.publish ([shortest_path.textual_description])
 				end
@@ -198,7 +199,7 @@ feature {NONE} -- Event handling
 						marked_origin := Void
 						marked_destination := Void
 						shortest_path_connections := Void
-						traffic_path_representation.remove_shortest_path
+						traffic_path_representation.remove_all
 						marked_station_changed := True
 					end
 				end
@@ -222,6 +223,7 @@ feature {NONE} -- Event handling
 						end
 						marked_destination := Void
 						marked_origin := Void
+						traffic_path_representation.remove_all
 						shortest_path_connections := Void
 						marked_station_changed := True
 					end
