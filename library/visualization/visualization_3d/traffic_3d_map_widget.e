@@ -963,7 +963,7 @@ feature {NONE} -- Implementation
 	traffic_lines_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic lines.
 
-	traffic_roads_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+	traffic_roads_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 		-- Collision polygons to check for collisions with traffic roads.
 
 	traffic_places_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
