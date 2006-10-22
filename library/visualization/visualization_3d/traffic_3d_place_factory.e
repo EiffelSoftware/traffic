@@ -14,6 +14,15 @@ inherit
 
 feature -- Access
 
+	object_width: DOUBLE
+			-- The size of the bounding box in x direction of created objects.
+
+	object_height: DOUBLE
+			-- The size of the bounding box in y direction of created objects.
+
+	object_depth: DOUBLE
+			-- The size of the bounding box in z direction of created objects.
+
 	place: TRAFFIC_PLACE
 			-- Place for which the 3d object is created
 

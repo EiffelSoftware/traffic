@@ -144,9 +144,6 @@ feature -- Element change
 	add_stop (a_stop: TRAFFIC_STOP) is
 			-- add a traffic stop
 		do
-			if a_stop.line.name.is_equal ("Dolderbahn") then
-				io.put_string ("Test")
-			end
 			stops.extend (a_stop)
 			nodes.extend (a_stop)
 			update_position
