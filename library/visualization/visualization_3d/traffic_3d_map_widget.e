@@ -54,7 +54,7 @@ feature -- Initialisation
 
 				-- Create the Sun Representation and Sun Light
 				-- Sunlight will have em_gl_light0
-				create traffic_sun_representation.make
+				create sun_representation.make
 
 				-- various creations
 				create constant_light.make (em_gl_light1)
@@ -66,7 +66,7 @@ feature -- Initialisation
 				mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 				create building_clicked_event.default_create
 				create place_clicked_event
-				create traffic_buildings.make
+				create buildings_representation.make
 
 				create randomizer.set_seed (42)
 				create angle_randomizer.set_seed(45)
@@ -74,7 +74,7 @@ feature -- Initialisation
 				building_id:= 1
 
 			ensure
-				sun_repr_created: traffic_sun_representation /= Void
+				sun_repr_created: sun_representation /= Void
 				constant_light_created: constant_light /= Void
 			end
 
@@ -163,11 +163,11 @@ feature -- Drawing
 			if sun_shown then
 				-- Enable Sunlight and draw Sun
 				constant_light.disable
-				traffic_sun_representation.enable_sunlight
-				traffic_sun_representation.draw
+				sun_representation.enable_sunlight
+				sun_representation.draw
 			else
 				-- Enable Constant Light
-				traffic_sun_representation.disable_sunlight
+				sun_representation.disable_sunlight
 				constant_light.enable
 			end
 
@@ -186,21 +186,21 @@ feature -- Drawing
 						gl_polygon_mode_external (em_gl_front_and_back, em_gl_line)
 						gl_flush_external
 					end
-					traffic_buildings.draw
+					buildings_representation.draw
 					gl_polygon_mode_external (em_gl_front, em_gl_fill)
 					gl_flush_external
 				end
 				if lines_shown then
-					traffic_lines.draw
+					lines_representation.draw
 				else
-					traffic_roads.draw
+					roads_representation.draw
 				end
 
 
 				-- here could also be traffic_places.draw, which would show all places in black
-				traffic_places.draw
+				places_representation.draw
 
-				traffic_traveler.draw
+				travelers_representation.draw
 			end
 	end
 
@@ -320,21 +320,21 @@ feature -- Traffic map loading
 			if map /= Void then
 				is_map_displayed := True
 				number_of_buildings := 0
-				traffic_buildings.delete_buildings
-				create traffic_places.make (map)
-				traffic_places_polygons := traffic_places.collision_polygons
-				create traffic_lines.make (map)
-				traffic_lines_polygons := traffic_lines.collision_polygons
+				buildings_representation.delete_buildings
+				create places_representation.make (map)
+				traffic_places_polygons := places_representation.collision_polygons
+				create lines_representation.make (map)
+				traffic_lines_polygons := lines_representation.collision_polygons
 
-				create traffic_roads.make (map)
-				traffic_roads_polygons := traffic_roads.collision_polygons
+				create roads_representation.make (map)
+				traffic_roads_polygons := roads_representation.collision_polygons
 
-				create traffic_traveler.make (map)
+				create travelers_representation.make (map)
 				number_of_passengers := 0
 
-				create traffic_path_representation.make (map)
+				create paths_representation.make (map)
 
-				traffic_buildings.set_map(a_map)
+				buildings_representation.set_map(a_map)
 --				traffic_buildings.set_collision_polygons(collision_polygons)
 				marked_station_changed := True
 			else
@@ -345,8 +345,8 @@ feature -- Traffic map loading
 	is_map_displayed: BOOLEAN
 			-- Is there a loaded map?
 
-	last_loading_successful: BOOLEAN
-			-- Was last map loading successful?
+--	last_loading_successful: BOOLEAN
+--			-- Was last map loading successful?
 
 	number_of_buildings: INTEGER
 			-- How many buildings should be displayed?
@@ -412,7 +412,7 @@ feature -- Options
 				else
 					number_of_buildings := n
 				end
-				traffic_buildings.set_building_number (number_of_buildings)
+				buildings_representation.set_building_number (number_of_buildings)
 			end
 		ensure
 			number_of_buildings = n
@@ -426,28 +426,28 @@ feature -- Options
 			buildings_transparent = b
 		end
 
-	set_lines_highlighted (b: BOOLEAN) is
-			-- If `b' then all traffic lines are highlighted.
-		do
-			if b = True then
-				traffic_lines.highlight_all_lines
-			else
-				traffic_lines.unhighlight_all_lines
-			end
+--	set_lines_highlighted (b: BOOLEAN) is
+--			-- If `b' then all traffic lines are highlighted.
+--		do
+--			if b = True then
+--				lines_representation.highlight_all_lines
+--			else
+--				lines_representation.unhighlight_all_lines
+--			end
 
-		end
+--		end
 
-	set_single_line_highlighted(a_line: TRAFFIC_LINE) is
-			-- a_line is highlighted
-		do
-			traffic_lines.highlight_single_line (a_line)
-		end
+--	set_single_line_highlighted(a_line: TRAFFIC_LINE) is
+--			-- a_line is highlighted
+--		do
+--			lines_representation.highlight_single_line (a_line)
+--		end
 
-	set_single_line_unhighlighted(a_line: TRAFFIC_LINE) is
-			-- a_line is unhighlighted
-		do
-			traffic_lines.unhighlight_single_line (a_line)
-		end
+--	set_single_line_unhighlighted(a_line: TRAFFIC_LINE) is
+--			-- a_line is unhighlighted
+--		do
+--			lines_representation.unhighlight_single_line (a_line)
+--		end
 
 	set_show_shortest_path (b: BOOLEAN) is
 			-- Set `show_shortest_path'.
@@ -530,7 +530,7 @@ feature -- Options
 					create building.make(p1, p2, p3, p4, 0.25, "building " + building_id.out)
 					building_id := building_id + 1
 					building.set_angle (angle)
-					traffic_buildings.add_building (building)
+					buildings_representation.add_building (building)
 					i := i + 1
 		end
 				-- we need to random j's per round
@@ -545,16 +545,29 @@ feature -- Options
 			a_poly /= void
 		do
 			-- Check if there is a collision with a line
+--			from
+--				traffic_lines_polygons.start
+--				Result := False
+--			until
+--				traffic_lines_polygons.after or Result
+--			loop
+--				if traffic_lines_polygons.item_for_iteration /= Void and then a_poly.collides_with (traffic_lines_polygons.item_for_iteration) then
+--					Result := True
+--				end
+--				traffic_lines_polygons.forth
+--			end
+
+			-- Check if there is a collision with a line
 			from
-				traffic_lines_polygons.start
+				traffic_roads_polygons.start
 				Result := False
 			until
-				traffic_lines_polygons.after or Result
+				traffic_roads_polygons.after or Result
 			loop
-				if traffic_lines_polygons.item_for_iteration /= Void and then a_poly.collides_with (traffic_lines_polygons.item_for_iteration) then
+				if traffic_roads_polygons.item_for_iteration /= Void and then a_poly.collides_with (traffic_roads_polygons.item_for_iteration) then
 					Result := True
 				end
-				traffic_lines_polygons.forth
+				traffic_roads_polygons.forth
 			end
 
 			-- Check if there is a collsion with a building
@@ -571,17 +584,17 @@ feature -- Options
 		end
 
 
-	add_building(a_building: TRAFFIC_BUILDING) is
-			-- Add `a_building' to map.
-		do
-			traffic_buildings.add_building (a_building)
-		end
+--	add_building(a_building: TRAFFIC_BUILDING) is
+--			-- Add `a_building' to map.
+--		do
+--			buildings_representation.add_building (a_building)
+--		end
 
-	delete_one_building(a_building: TRAFFIC_BUILDING) is
-			-- Delete 'a_building' from map.
-		do
-			traffic_buildings.delete_one_building (a_building)
-		end
+--	delete_one_building(a_building: TRAFFIC_BUILDING) is
+--			-- Delete 'a_building' from map.
+--		do
+--			buildings_representation.delete_one_building (a_building)
+--		end
 
 	add_buildings_along_lines is
 			-- Add buildings along all lines (expect railway).
@@ -633,15 +646,15 @@ feature -- Options
 									temp:=start_point
 									start_point:=temp_destination
 									temp_destination:=temp
-		end
+								end
 								end_point.set_y (start_point.y-0.5)
 								end_point.set_x(start_point.x)
 							until
 								end_point.y<= temp_destination.y
 							loop
 								--buildings on the right hand side of the line
-								create p1.make (start_point.x-0.25, start_point.y)
-								create p2.make (end_point.x-0.25, end_point.y)
+								create p1.make (start_point.x-0.5, start_point.y)
+								create p2.make (end_point.x-0.5, end_point.y)
 								create p3.make (p2.x-0.5,p2.y)
 								create p4.make (p1.x-0.5,p1.y)
 								create building.make (p1,p2,p3,p4, building_height, "building " + building_id.out)
@@ -654,13 +667,13 @@ feature -- Options
 								poly_points.force (p4, 4)
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
 								if not has_collision (collision_poly) then
-									add_building (building)
+									buildings_representation.add_building (building)
 									buildings_polygons.force_last (collision_poly)
 								end
 
 								--builiding on the left hand sinde of the line
-								create p4.make (start_point.x+0.25, start_point.y)
-								create p3.make (end_point.x+0.25, end_point.y)
+								create p4.make (start_point.x+0.5, start_point.y)
+								create p3.make (end_point.x+0.5, end_point.y)
 								create p2.make (p3.x+0.5,p3.y)
 								create p1.make (p4.x+0.5,p4.y)
 								create building.make (p1,p2,p3,p4, building_height, "building " + building_id.out)
@@ -673,7 +686,7 @@ feature -- Options
 								poly_points.force (p4, 4)
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
 								if not has_collision (collision_poly) then
-									add_building (building)
+									buildings_representation.add_building (building)
 									buildings_polygons.force_last (collision_poly)
 								end
 								start_point.set_y (end_point.y-0.01)
@@ -701,9 +714,9 @@ feature -- Options
 									end_point.x<= temp_destination.x
 								loop
 									--building above the line
-									create p2.make (start_point.x,start_point.y+0.25)
+									create p2.make (start_point.x,start_point.y+0.5)
 									create p1.make (p2.x,p2.y+0.5)
-									create p3.make (end_point.x,end_point.y+0.25)
+									create p3.make (end_point.x,end_point.y+0.5)
 									create p4.make (p3.x,p3.y+0.5)
 									p1:= p1.rotation (gl_origin, -angle)
 									p2:= p2.rotation (gl_origin, -angle)
@@ -719,14 +732,14 @@ feature -- Options
 									poly_points.force (p4, 4)
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
 									if not has_collision (collision_poly) then
-										add_building (building)
+										buildings_representation.add_building (building)
 										buildings_polygons.force_last(collision_poly)
 									end
 
 									--builiding underneath the line
-									create p1.make (start_point.x,start_point.y-0.25)
+									create p1.make (start_point.x,start_point.y-0.5)
 									create p2.make (p1.x,p1.y-0.5)
-									create p4.make (end_point.x,end_point.y-0.25)
+									create p4.make (end_point.x,end_point.y-0.5)
 									create p3.make(p4.x,p4.y-0.5)
 									p1:= p1.rotation (gl_origin, -angle)
 									p2:= p2.rotation (gl_origin, -angle)
@@ -742,7 +755,7 @@ feature -- Options
 									poly_points.force (p4, 4)
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
 									if not has_collision (collision_poly) then
-										add_building (building)
+										buildings_representation.add_building (building)
 										buildings_polygons.force_last (collision_poly)
 									end
 									start_point.set_x (end_point.x-0.01)
@@ -759,27 +772,37 @@ feature -- Options
 			end
 		end
 
+	add_buildings_in_squares is
+			--
+		do
+			-- 1. Step: get size of map
+			-- 2. Step: produce squares on this area plus a border around it
+			-- 3. Step: test for each square whether it collides with a road or a place
+			-- 4. Step: create buildings that fill the square
+		end
+
+
 	delete_buildings is
 			-- Delete all buildings from representation.
 		do
-			traffic_buildings.delete_buildings
+			buildings_representation.delete_buildings
 			buildings_polygons.wipe_out
 			number_of_buildings := 0
 			building_id:= 1
 		end
 
 
-	add_traveler (a_traveler: TRAFFIC_MOVING) is
-			-- Add a traveler to the map.
-			do
-				traffic_traveler.add_traveler (a_traveler, map)
-			end
+--	add_traveler (a_traveler: TRAFFIC_MOVING) is
+--			-- Add a traveler to the map.
+--			do
+--				travelers_representation.add_traveler (a_traveler, map)
+--			end
 
-	delete_traveler (a_traveler: TRAFFIC_MOVING) is
-			-- Remove 'a_traveler' form the map.
-			do
-				traffic_traveler.remove_specific_traveler (a_traveler)
-			end
+--	delete_traveler (a_traveler: TRAFFIC_MOVING) is
+--			-- Remove 'a_traveler' form the map.
+--			do
+--				travelers_representation.remove_specific_traveler (a_traveler)
+--			end
 
 
 	sun_shown: BOOLEAN
@@ -853,7 +876,7 @@ feature -- Mousevents
 		local
 			place: TRAFFIC_PLACE
 		do
-			place := traffic_places.place_at_position (gl_to_map_coords (create {EM_VECTOR_2D}.make (a_point.x, a_point.z)))
+			place := places_representation.place_at_position (gl_to_map_coords (create {EM_VECTOR_2D}.make (a_point.x, a_point.z)))
 			if place /= Void then
 					place_clicked_event.publish([place,event])
 			end
@@ -867,29 +890,29 @@ feature -- Mousevents
 
 feature -- Access
 
-	traffic_time: TRAFFIC_TIME is
-			-- Return the current simulated time object
-			-- Only here for compatibility Reasons!
-			-- For access to time inherit TRAFFIC_SHARED_TIME.
-		obsolete
-			"Inherit TRAFFIC_SHARED_TIME instead."
-		do
-			Result := time
-		ensure
-			time_set: Result = time
-		end
+--	traffic_time: TRAFFIC_TIME is
+--			-- Return the current simulated time object
+--			-- Only here for compatibility Reasons!
+--			-- For access to time inherit TRAFFIC_SHARED_TIME.
+--		obsolete
+--			"Inherit TRAFFIC_SHARED_TIME instead."
+--		do
+--			Result := time
+--		ensure
+--			time_set: Result = time
+--		end
 
-	shortest_path_mode_minimal_switches: INTEGER is
-			-- calculate shortest path based on minimal number of switches
-		do
-			Result := map.shortest_path_mode_minimal_switches
-		end
+--	shortest_path_mode_minimal_switches: INTEGER is
+--			-- calculate shortest path based on minimal number of switches
+--		do
+--			Result := map.shortest_path_mode_minimal_switches
+--		end
 
-	shortest_path_mode_normal_distance: INTEGER is
-			-- calculate shortest path based on regular distance
-		do
-			Result := map.shortest_path_mode_normal_distance
-		end
+--	shortest_path_mode_normal_distance: INTEGER is
+--			-- calculate shortest path based on regular distance
+--		do
+--			Result := map.shortest_path_mode_normal_distance
+--		end
 
 feature {NONE} -- Attributes
 
@@ -923,8 +946,8 @@ feature {NONE} -- Attributes
 	y_translation: DOUBLE
 			-- Translation of the map's origin in y direction.
 
-	highlighting_delta: DOUBLE
-			-- Height difference between highlighted and normal line representation.
+--	highlighting_delta: DOUBLE
+--			-- Height difference between highlighted and normal line representation.
 
 	building_id: INTEGER
 			-- Number to specify the building name.
@@ -937,26 +960,26 @@ feature {NONE} -- Attributes
 
 feature -- Representations
 
-	traffic_traveler: TRAFFIC_3D_TRAVELER_REPRESENTATION
-		-- container for all travelers.
+	travelers_representation: TRAFFIC_3D_TRAVELER_REPRESENTATION
+		-- Representation for all travelers
 
-	traffic_lines: TRAFFIC_3D_LINE_REPRESENTATION
-		-- container for the lines
+	lines_representation: TRAFFIC_3D_LINE_REPRESENTATION
+		-- Representation for all lines
 
-	traffic_roads: TRAFFIC_3D_ROAD_REPRESENTATION
-		-- container for the roads
+	roads_representation: TRAFFIC_3D_ROAD_REPRESENTATION
+		-- Representation for all roads
 
-	traffic_places: TRAFFIC_3D_PLACE_REPRESENTATION
-		-- container for the places.
+	places_representation: TRAFFIC_3D_PLACE_REPRESENTATION
+		-- Representation for all places
 
-	traffic_buildings: TRAFFIC_3D_BUILDING_REPRESENTATION
-		-- container for the buildings.				
+	buildings_representation: TRAFFIC_3D_BUILDING_REPRESENTATION
+		-- Representation for all buildings				
 
-	traffic_sun_representation: TRAFFIC_3D_SUN_REPRESENTATION
-		-- The Sun & Sunlight Representation
+	sun_representation: TRAFFIC_3D_SUN_REPRESENTATION
+		-- Representation for the sun & sunlight
 
-	traffic_path_representation: TRAFFIC_3D_PATH_REPRESENTATION
-		-- paths (including shortest path)
+	paths_representation: TRAFFIC_3D_PATH_REPRESENTATION
+		-- Representation for all paths
 
 feature {NONE} -- Implementation
 

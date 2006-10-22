@@ -36,6 +36,7 @@ feature {NONE} -- Initialization
 			destination_impl := a_destination
 			create state.make
 			type := a_type
+			create polypoints.make (2)
 			set_polypoints (a_list)
 			create roads.make (1)
 
@@ -77,6 +78,7 @@ feature {NONE} -- Initialization
 			create state.make
 			type := a_type
 
+			create polypoints.make (2)
 			create roads.make (1)
 			set_polypoints (a_list)
 		ensure

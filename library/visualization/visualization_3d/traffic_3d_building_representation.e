@@ -25,7 +25,6 @@ inherit
 	DOUBLE_MATH
 		export {NONE} all end
 
---new
 	EM_SHARED_BITMAP_FACTORY
 		export {NONE} all end
 
@@ -39,65 +38,60 @@ feature -- Initialization
 		local
 			texture_ids: ARRAY[INTEGER]
 			building: EM_3D_OBJECT
-			traffic_model: NEW_TRAFFIC_MODEL
+			traffic_model: TRAFFIC_3D_TEXTURE_OBJECT
 			bitmap: EM_BITMAP
 			i: INTEGER
 			s: STRING
 			fs: KL_FILE_SYSTEM
 		do
-			create building_factory.make
+			create {TRAFFIC_3D_BUILDING_FANCY_FACTORY} building_factory
 			create buildings.make (1)
 			create wall_color.make_xyz (0.5,0.5,0.5)
 			create roof_color.make_xyz (1.0,0,0)
 			create random.make
 			random.start
 			id_counter := 1
-			building_factory.add_building_type (agent create_building_type, building_type)
-			building_factory.add_gauger(agent decide_building_type, decision_type)
-			building_factory.take_decision(decision_type)
+--			building_factory.add_building_type (agent create_building_type, building_type)
+--			building_factory.add_gauger(agent decide_building_type, decision_type)
+--			building_factory.take_decision(decision_type)
 
-			--new
-			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
+--			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 
-			create model_ressources.make (0)
+--			create model_ressources.make (0)
 
-			from
-				i := 1
-			until
-				i > building_count
-			loop
-				s := fs.pathname ("..", "buildings")
-				s := fs.pathname (s, "building" + i.out + ".tga")
-				bitmap_factory.create_bitmap_from_image(s)
-				bitmap := bitmap_factory.last_bitmap
-				create texture_ids.make (0,0)
-				texture_ids.force (bitmap.texture.id, 0)
---test				building_factory.set_texture_id (texture_ids)
+--			from
+--				i := 1
+--			until
+--				i > building_count
+--			loop
+--				s := fs.pathname ("..", "buildings")
+--				s := fs.pathname (s, "building" + i.out + ".tga")
+--				bitmap_factory.create_bitmap_from_image(s)
+--				bitmap := bitmap_factory.last_bitmap
+--				create texture_ids.make (0,0)
+--				texture_ids.force (bitmap.texture.id, 0)
 
-				s := fs.pathname ("..", "buildings")
-				s := fs.pathname (s, "building" + i.out + ".obj")
-				building_factory.load_file(s)
-				building := building_factory.create_object
+--				s := fs.pathname ("..", "buildings")
+--				s := fs.pathname (s, "building" + i.out + ".obj")
+--				building_factory.load_file(s)
+--				building := building_factory.create_object
 
-				create traffic_model.make
-				traffic_model.set_model(building)
-				traffic_model.set_bounding_box (building.width, building.height, building.depth)
-				traffic_model.set_texture_id (texture_ids)
-				traffic_model.add_texture (bitmap)
+--				create traffic_model.make
+--				traffic_model.set_model(building)
+--				traffic_model.set_bounding_box (building.width, building.height, building.depth)
+--				traffic_model.set_texture_id (texture_ids)
+--				traffic_model.add_texture (bitmap)
 
-				model_ressources.extend (traffic_model)
+--				model_ressources.extend (traffic_model)
 
-				i := i + 1
-			end
-
-
+--				i := i + 1
+--			end
 		end
 
 feature	-- Drawing
 
 	draw is
 			-- Draw all buildings.
-
 		local
 			i:INTEGER
 		do
@@ -115,8 +109,7 @@ feature	-- Drawing
 
 
 	highlight_building(a_building: TRAFFIC_BUILDING) is
-			-- highlight `a_building'
-
+			-- Highlight `a_building'.
 		require
 			building_valid: a_building /= void
 		local
@@ -126,7 +119,7 @@ feature	-- Drawing
 			wall_color.set_xyz (1.0,1.0,0)
 			roof_color.set_xyz (0,1.0,1.0)
 			-- display list is changed
-			building_factory.take_decision (decision_type)
+--			building_factory.take_decision (decision_type)
 
 			-- creat new temporary building with same attributes as a_building
 			temp := building_factory.create_object
@@ -142,13 +135,12 @@ feature	-- Drawing
 			wall_color.set_xyz (0.5,0.5,0.5)
 			roof_color.set_xyz (1.0,0,0)
 --			building_factory.changed
-			building_factory.take_decision (decision_type)
+--			building_factory.take_decision (decision_type)
 		end
 
 
 	un_highlight_building(a_building: TRAFFIC_BUILDING) is
 			-- unhighlight `a_building'
-
 		require
 			building_valid: a_building /= void
 		local
@@ -174,24 +166,30 @@ feature -- Options
 		require
 			building_valid: a_building /= Void
 		local
-			building: NEW_TRAFFIC_MODEL
+			building: EM_3D_OBJECT
+			scale: DOUBLE
 		do
 			random.forth
 
-			building := model_ressources.i_th((random.double_item*(building_count-1).to_double).rounded +1).twin
+			building_factory.set_template ((random.double_item*(building_factory.template_count-1).to_double).rounded +1)
 
-			building.set_scale (a_building.width, a_building.height, a_building.breadth)
-			building.set_rotation (0, a_building.angle, 0)
+			building := building_factory.create_object --model_ressources.i_th((random.double_item*(building_count-1).to_double).rounded +1).twin
+
+			if building_factory.object_width > a_building.width or building_factory.object_depth > a_building.breadth then
+--				scale := (a_building.width/building_factory.object_width-0.05).min (a_building.breadth/building_factory.object_depth-.05)
+--				building.set_scale (scale, scale, scale)
+			end
+--			building.set_scale (a_building.width, a_building.height, a_building.breadth)
+--			building.set_rotation (0, a_building.angle, 0)
 			building.set_origin (a_building.center.x, 0, a_building.center.y)
-
 			a_building.set_id(id_counter)
 			id_counter := id_counter + 1
 			buildings.force (building)
 			map.add_building (a_building)
 			number_of_buildings := number_of_buildings + 1
 
-		end
 
+		end
 
 	delete_buildings is
 			-- Delete buildings from representation.
@@ -334,7 +332,7 @@ feature {NONE} -- Attributes
 	buildings: ARRAYED_LIST [EM_3D_OBJECT]
 			-- Buildings in the representation
 
-	building_factory: NEW_TRAFFIC_BUILDING_FACTORY
+	building_factory: TRAFFIC_3D_BUILDING_FACTORY
 			-- Factory for buildings
 
 	wall_color: GL_VECTOR_3D[DOUBLE]
@@ -349,7 +347,7 @@ feature {NONE} -- Attributes
 	id_counter: INTEGER
 			-- Counter for the ids
 
-	model_ressources: ARRAYED_LIST[NEW_TRAFFIC_MODEL]
+	model_ressources: ARRAYED_LIST [TRAFFIC_3D_TEXTURE_OBJECT]
 
 	random: RANDOM
 			-- randomizer

@@ -7,13 +7,13 @@ indexing
 	date: "$Date: 2005/06/21 15:16:28 $"
 	revision: "$Revision: 1.4 $"
 
-class 
+class
 	Q_GL_3D_GEOMOBJ
 
-create 
+create
 	default_create
 
-feature 
+feature -- Access
 
 	frame_count: INTEGER
 
@@ -42,5 +42,5 @@ feature
 	texture_coordinates: ARRAY [ARRAY [DOUBLE]]
 
 	faces: ARRAY [TUPLE [ARRAY [INTEGER], ARRAY [INTEGER], ARRAY [INTEGER]]]
-	
+
 end -- class Q_GL_3D_GEOMOBJ

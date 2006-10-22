@@ -224,7 +224,7 @@ feature -- Access
 			a_name_exists: a_name /= Void
 			line_in_map: has_line (a_name)
 		do
-			create Result.make_with_line_and_representation(internal_map.line (a_name), internal_map_widget.traffic_lines)
+			create Result.make_with_line_and_representation(internal_map.line (a_name), internal_map_widget.lines_representation)
 		end
 
 	simple_line (a_name: STRING): TOUCH_SIMPLE_LINE is
@@ -237,7 +237,7 @@ feature -- Access
 		do
 			a_line ?= internal_map.line (a_name)
 			if a_line /= Void then
-				create Result.make_with_line_and_representation(a_line, internal_map_widget.traffic_lines)
+				create Result.make_with_line_and_representation(a_line, internal_map_widget.lines_representation)
 			end
 		end
 

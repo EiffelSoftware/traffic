@@ -16,9 +16,11 @@ Buildings:
 - randomize buildings along lines more
 - randomize look and feel of buildings
 - Fix surface normals of buildings (for lighting)
+- Make building generation along lines faster
 
 Shortest path:
 - improve drawing of shortest_path (city 3d)
+- make shortest path calculation faster
 
 Map_widgets:
 - 3d_widget: publish mouse events

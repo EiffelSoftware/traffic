@@ -87,7 +87,6 @@ feature {NONE} -- Event handling
 			else
 				focus := focus + 0.1
 			end
-			test_factor := test_factor - .05
 		ensure then
 			focus_incremented: focus > old focus
 		end
@@ -100,7 +99,6 @@ feature {NONE} -- Event handling
 			elseif focus > 0.1 then
 				focus := focus - 0.1
 			end
-			test_factor := test_factor + .05
 		ensure then
 			focus_decremented: focus > 0.1 implies focus < old focus
 		end

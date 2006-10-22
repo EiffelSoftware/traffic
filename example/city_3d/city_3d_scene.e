@@ -335,7 +335,33 @@ feature -- Interface
 			map.set_map (loader.map)
 			loaded_file_name := s
 
+			map.travelers_representation.add_tram_per_line (map.map, 2)
+
+			included_for_compilation
+
 		end
+
+	included_for_compilation is
+			--
+		local
+			bus: TRAFFIC_BUS
+			cablecar: TRAFFIC_CABLECAR
+			d_taxi: TRAFFIC_DISPATCHER_TAXI
+			d_office: TRAFFIC_DISPATCHER_TAXI_OFFICE
+			e_taxi: TRAFFIC_EVENT_TAXI
+			e_office: TRAFFIC_EVENT_TAXI_OFFICE
+			trolley: TRAFFIC_TROLLEYBUS
+			place_rep: TRAFFIC_3D_PLACE_CIRCLE_REP_FACTORY
+			map_widget_2d: TRAFFIC_2D_MAP_WIDGET
+			map_renderer: TRAFFIC_2D_MAP_RENDERER
+			touch_scene: TOUCH_3D_SCENE
+			touch_3d_app: TOUCH_3D_APPLICATION
+			touch_map: TOUCH_MAP
+			tourism: TOURISM
+		do
+
+		end
+
 
 feature -- Event handling
 
@@ -507,13 +533,13 @@ feature -- Event handling
 	highlighting_checked is
 			-- Checkbox has been checked.
 		do
-			map.set_lines_highlighted (True)
+			map.lines_representation.highlight_all_lines
 		end
 
 	highlighting_unchecked is
 			-- Checkbox has been unchecked.
 		do
-			map.set_lines_highlighted (False)
+			map.lines_representation.unhighlight_all_lines
 		end
 
 	coordinates_checked is
@@ -616,13 +642,13 @@ feature -- Event handling
 	minimal_switches_checked is
 			-- set shortest path mode to minimal switches
 		do
-			map.set_shortest_path_mode (map.shortest_path_mode_minimal_switches)
+			map.map.set_shortest_path_mode (map.map.shortest_path_mode_minimal_switches)
 		end
 
 	minimal_switches_unchecked is
 			-- set shortest path mode to normal distance
 		do
-			map.set_shortest_path_mode (map.shortest_path_mode_normal_distance)
+			map.map.set_shortest_path_mode (map.map.shortest_path_mode_normal_distance)
 		end
 
 feature -- Widgets

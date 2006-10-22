@@ -8,7 +8,7 @@ class
 
 inherit
 	TRAFFIC_NODE_PROCESSOR
-	
+
 	MATH_CONST
 			export{NONE} all end
 
@@ -19,21 +19,21 @@ feature -- Access
 
 	Name: STRING is "building"
 			-- Name of element to process
-		
+
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		do
 			Result := << "name", "x1", "x2", "y1", "y2", "height", "angle" >>
 			Result.compare_objects
 		end
-		
+
 feature -- Basic operations
 
 	process is
 			-- Process node.
 		local
 			building: TRAFFIC_BUILDING
-			
+
 			x1,x2: DOUBLE
 			y1,y2: DOUBLE
 			height: DOUBLE
@@ -50,7 +50,7 @@ feature -- Basic operations
 			elseif not has_attribute("x2") then
 				set_error (Mandatory_attribute_missing, << "x2" >>)
 			elseif not has_attribute ("y1") then
-				set_error (Mandatory_attribute_missing, << "y1" >>)			
+				set_error (Mandatory_attribute_missing, << "y1" >>)
 			elseif not has_attribute ("y2") then
 				set_error (Mandatory_attribute_missing, << "y2" >>)
 			elseif not (is_attribute_integer ("x1") and is_attribute_integer ("x2") and
@@ -87,11 +87,11 @@ feature -- Basic operations
 				p1 := p1.rotation (center, -angle*pi/180)
 				p2 := p2.rotation (center, -angle*pi/180)
 				p3 := p3.rotation (center, -angle*pi/180)
-				p4 := p4.rotation (center, -angle*pi/180) 
+				p4 := p4.rotation (center, -angle*pi/180)
 				create building.make (p1,p2,p3,p4, height, building_name)
-				
+
 				building.set_angle (angle)
-				internal_map.add_building (building)
+				internal_map.buildings_representation.add_building (building)
 			end
 		end
 end

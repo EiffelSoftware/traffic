@@ -75,8 +75,8 @@ feature -- Basic operations
 
 				if map.path_found then
 					shortest_path := map.shortest_path
-					traffic_path_representation.remove_all
-					traffic_path_representation.add_path (shortest_path)
+					paths_representation.remove_all
+					paths_representation.add_path (shortest_path)
 					shortest_path_connections := shortest_path.connections
 					shortest_path_calculated_event.publish ([shortest_path.textual_description])
 				end
@@ -113,7 +113,7 @@ feature -- Drawing
 			if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
 				calculate_shortest_path
 				--traffic_lines.draw_shortest_path
-				traffic_path_representation.draw
+				paths_representation.draw
 			end
 		end
 
@@ -181,49 +181,49 @@ feature {NONE} -- Event handling
 			if event.is_left_button then
 				if map /= Void then
 					if marked_origin /= Void then
-						traffic_places.unhighlight_place (marked_origin)
+						places_representation.unhighlight_place (marked_origin)
 					end
-					place := traffic_places.place_at_position (clicked_point)
+					place := places_representation.place_at_position (clicked_point)
 					if place /= Void then
 						marked_origin := place
-						traffic_places.highlight_place(marked_origin, place_highlight_color1)
+						places_representation.highlight_place(marked_origin, place_highlight_color1)
 						is_found := True
 						marked_station_changed := True
 					else
 						if marked_origin /= Void then
-							traffic_places.unhighlight_place (marked_origin)
+							places_representation.unhighlight_place (marked_origin)
 						end
 						if marked_destination /= Void then
-							traffic_places.unhighlight_place (marked_destination)
+							places_representation.unhighlight_place (marked_destination)
 						end
 						marked_origin := Void
 						marked_destination := Void
 						shortest_path_connections := Void
-						traffic_path_representation.remove_all
+						paths_representation.remove_all
 						marked_station_changed := True
 					end
 				end
 			elseif event.is_right_button then
 				if map /= Void then
 					if marked_destination /= Void then
-						traffic_places.unhighlight_place (marked_destination)
+						places_representation.unhighlight_place (marked_destination)
 					end
-					place := traffic_places.place_at_position (clicked_point)
+					place := places_representation.place_at_position (clicked_point)
 					if place /= Void then
 						marked_destination := place
-						traffic_places.highlight_place(marked_destination, place_highlight_color2)
+						places_representation.highlight_place(marked_destination, place_highlight_color2)
 						is_found := True
 						marked_station_changed := True
 					else
 						if marked_origin /= Void then
-							traffic_places.unhighlight_place (marked_origin)
+							places_representation.unhighlight_place (marked_origin)
 						end
 						if marked_destination /= Void then
-							traffic_places.unhighlight_place (marked_destination)
+							places_representation.unhighlight_place (marked_destination)
 						end
 						marked_destination := Void
 						marked_origin := Void
-						traffic_path_representation.remove_all
+						paths_representation.remove_all
 						shortest_path_connections := Void
 						marked_station_changed := True
 					end
@@ -238,9 +238,9 @@ feature {NONE} -- Event handling
 			event_valid: an_event /= void
 		do
 			if an_event.is_left_button then
-				traffic_buildings.highlight_building(a_building)
+				buildings_representation.highlight_building(a_building)
 			elseif an_event.is_right_button then
-				traffic_buildings.un_highlight_building(a_building)
+				buildings_representation.un_highlight_building(a_building)
 			end
 		end
 
@@ -330,22 +330,23 @@ feature {NONE} -- Implementation
 		do
 			start_point := last_polypoint
 			end_point := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
-
 			direction := end_point - start_point
 
-			position := position + (direction / direction.length) * speed
+			if start_point.distance (end_point) > 0 then
 
-			glu_look_at_external
-			(	position.x - (position.x/position.length),
-				0.5,
-				position.y - (position.y/position.length),
-				position.x + 0.1*(position.x/position.length),
-				0.5,
-				position.y + 0.1*(position.y/position.length),
-				0, 1, 0
-			)
-			gl_translated_external (-start_point.x, 0, -start_point.y)
+				position := position + (direction / direction.length) * speed
 
+				glu_look_at_external
+				(	position.x - (position.x/position.length),
+					0.5,
+					position.y - (position.y/position.length),
+					position.x + 0.1*(position.x/position.length),
+					0.5,
+					position.y + 0.1*(position.y/position.length),
+					0, 1, 0
+				)
+				gl_translated_external (-start_point.x, 0, -start_point.y)
+			end
 			if (position-direction).length < speed then
 				last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
 				shortest_path_connections.item.polypoints.forth

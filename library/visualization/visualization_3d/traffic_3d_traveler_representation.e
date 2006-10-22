@@ -109,7 +109,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 				local
 					traveler: EM_3D_OBJECT
 					texture_ids: ARRAY[INTEGER]
-					traffic_model: NEW_TRAFFIC_MODEL
+					traffic_model: TRAFFIC_3D_TEXTURE_OBJECT
 					bitmap: EM_BITMAP
 					s: STRING
 					fs: KL_FILE_SYSTEM
@@ -135,7 +135,7 @@ feature --{TRAFFIC_3D_MAP_WIDGET} -- Implemenation
 							person_toggle := 0
 						end
 						traveler := traveler_factory.create_object
-						traveler.set_scale (2, 2, 2)
+						traveler.set_scale (2.0, 2.0, 2.0)
 
 						create traffic_model.make
 						traffic_model.set_model(traveler)
@@ -364,7 +364,7 @@ feature{NONE} -- Attributes
 	scheduler: TRAFFIC_SCHEDULE_LOADER
 		-- timetable from xml file
 
-	model_ressources: ARRAYED_LIST[NEW_TRAFFIC_MODEL]
+	model_ressources: ARRAYED_LIST[TRAFFIC_3D_TEXTURE_OBJECT]
 		-- besser hier bei creation alle models reinladen und dann
 		-- von hier per twin kopieren, anstatt obj jedesmal neu laden
 

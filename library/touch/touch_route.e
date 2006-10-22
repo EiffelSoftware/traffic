@@ -51,13 +51,13 @@ feature  -- Initialization
 		do
 			create traveler.make_directed (itinerary, 0.5)
 			traveler.set_reiterate (False)
-			internal_map_widget.add_traveler (traveler)
+			internal_map_widget.travelers_representation.add_traveler (traveler, internal_map)
 			traveler.take_tour
 
-			internal_map_widget.traffic_time.reset_time
-			internal_map_widget.traffic_time.change_simulated_time (5)
+			internal_map_widget.time.reset_time
+			internal_map_widget.time.change_simulated_time (5)
 			internal_map_widget.map.change_traveler_speed (3)
-			internal_map_widget.traffic_time.resume_time
+			internal_map_widget.time.resume_time
 
 			wait(6500)
 		end
@@ -66,8 +66,8 @@ feature  -- Initialization
 			-- The traveler is removed from the map.
 		do
 			traveler.set_reiterate (False)
-			internal_map_widget.delete_traveler (traveler)
-			internal_map_widget.traffic_time.pause_time
+			internal_map_widget.travelers_representation.remove_specific_traveler (traveler)
+			internal_map_widget.time.pause_time
 		end
 
 

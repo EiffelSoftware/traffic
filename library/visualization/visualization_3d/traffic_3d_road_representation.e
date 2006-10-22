@@ -114,8 +114,6 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			end
 		end
 
-
-
 	add_road (a_road: TRAFFIC_ROAD) is
 			-- Add view for `a_road'.
 		require

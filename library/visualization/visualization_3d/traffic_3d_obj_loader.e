@@ -13,7 +13,7 @@ class
 	TRAFFIC_3D_OBJ_LOADER
 
 inherit
-	TRAFFIC_3D_LOADER
+	EM_3D_OBJECT_FACTORY
 		redefine
 			default_create,
 			compile
@@ -43,12 +43,12 @@ inherit
 			default_create
 		end
 
-	EM_SHARED_BITMAP_FACTORY
-		export
-			{NONE} all
-		undefine
-			default_create
-		end
+--	EM_SHARED_BITMAP_FACTORY
+--		export
+--			{NONE} all
+--		undefine
+--			default_create
+--		end
 
 create
 	default_create
