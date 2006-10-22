@@ -44,10 +44,10 @@ feature -- Interface
 			create zoom_out_button.make_from_text ("Zoom out")
 			create time_button.make_from_text("start time")
 			create passenger_button.make_from_text ("update passengers")
-			
+
 			-- Lines checkbox
 			create lines_checkbox.make_from_text ("Show VBZ Lines")
-			
+
 			-- Zoom out Button
 			zoom_out_button.set_position (180-zoom_out_button.width, 170)
 			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
@@ -128,9 +128,9 @@ feature -- Interface
 			end
 
 			-- get time from map
-			traffic_time := map.traffic_time
+			traffic_time := map.time
 			traffic_time.add_callback_procedure (agent time_count)
-			
+
 			-- Lines Checkbox
 			lines_checkbox.set_position (10,430)
 --			lines_checkbox.set_background_color (bg_color)
@@ -139,7 +139,7 @@ feature -- Interface
 			lines_checkbox.checked_event.subscribe (agent lines_checked)
 			lines_checkbox.unchecked_event.subscribe (agent lines_unchecked)
 			toolbar_panel.add_widget (lines_checkbox)
-			
+
 			-- Toolbar Panel
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
 			add_component (toolbar_panel)
@@ -275,13 +275,13 @@ feature -- Event handling
 			passenger_number := number
 			label.set_text (passenger_number.out)
 		end
-		
+
 	lines_unchecked is
 			-- Checkbox has been unchecked.
 		do
 			map.set_lines_shown (False)
 		end
-		
+
 	lines_checked is
 			-- Checkbox has been checked.
 		do
@@ -330,7 +330,7 @@ feature -- Widgets
 
 	time_slider: EM_SLIDER
 			-- Scrollbar for the time
-			
+
 	lines_checkbox: EM_CHECKBOX
 			-- Checkbox for visibility of lines
 

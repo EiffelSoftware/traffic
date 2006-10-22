@@ -85,7 +85,7 @@ feature -- Interface
 			end
 
 			-- Time from map
-			traffic_time := map.traffic_time
+			traffic_time := map.time
 
 			-- Toolbar Panel
 			toolbar_panel.set_position ((window_width*0.75).rounded, 0)

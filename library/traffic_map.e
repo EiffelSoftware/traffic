@@ -453,105 +453,105 @@ feature -- Element change
 
 	add_traveler (a_traveler: TRAFFIC_MOVING) is
 			-- Add traveler 'a_traveler' to map.
-		require
-			a_traveler_exists: a_traveler /= Void
-		do
-			internal_travelers.force (a_traveler, a_traveler.index)
-		end
+			require
+				a_traveler_exists: a_traveler /= Void
+			do
+				internal_travelers.force (a_traveler, a_traveler.index)
+			end
 
 	add_taxi_office( a_taxi_office: TRAFFIC_TAXI_OFFICE) is
 			-- Add taxi office 'a_taxi_office' to map.
-		require
-			a_taxi_office_exists: a_taxi_office /= void
-		do
-			internal_taxi_offices.force(a_taxi_office)
-		end
+			require
+				a_taxi_office_exists: a_taxi_office /= void
+			do
+				internal_taxi_offices.force(a_taxi_office)
+			end
 
 
 	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Remove line_section `a_line_section' from map (bad implementation)
-		require
-			has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
-		local
-			index: INTEGER
-		do
-			internal_line_sections.start
-			internal_line_sections.search (a_line_section)
-			index := internal_line_sections.index
-			internal_line_sections.prune (a_line_section)
-			line_section_removed_event.publish ([a_line_section])
-			path_found := False
-		ensure
-			-- we can assume, that the line_section was only once inserted
-			line_section_removed: not line_sections.has (a_line_section)
-		end
-
-	remove_road (a_road: TRAFFIC_ROAD) is
-			-- Remove road `a_road' from map.
-		require
-			road_not_void: a_road /= Void
-		do
-			from
-				internal_roads.start
-			until
-				internal_roads.after
-			loop
-				if equal(internal_roads.item_for_iteration,a_road) then
-					internal_roads.remove (internal_roads.key_for_iteration)
-				end
-				internal_roads.forth
+			require
+				has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
+			local
+				index: INTEGER
+			do
+				internal_line_sections.start
+				internal_line_sections.search (a_line_section)
+				index := internal_line_sections.index
+				internal_line_sections.prune (a_line_section)
+				line_section_removed_event.publish ([a_line_section])
+				path_found := False
+			ensure
+				-- we can assume, that the line_section was only once inserted
+				line_section_removed: not line_sections.has (a_line_section)
 			end
 
-			path_found := False
-		ensure
-			-- we can assume, that the line_section was only once inserted
-			road_removed: not internal_roads.has_item (a_road)
-		end
+		remove_road (a_road: TRAFFIC_ROAD) is
+			-- Remove road `a_road' from map.
+			require
+				road_not_void: a_road /= Void
+			do
+				from
+					internal_roads.start
+				until
+					internal_roads.after
+				loop
+					if equal(internal_roads.item_for_iteration,a_road) then
+						internal_roads.remove (internal_roads.key_for_iteration)
+					end
+					internal_roads.forth
+				end
+
+				path_found := False
+			ensure
+				-- we can assume, that the line_section was only once inserted
+				road_removed: not internal_roads.has_item (a_road)
+			end
 
 
 	remove_traveler (index: INTEGER) is
 			-- -- Remove traveler at position index
-		require
-			index_valid: index >= 0
-		do
-			internal_travelers.remove (index)
-		ensure
-			not internal_travelers.has (index)
-		end
+			require
+				index_valid: index >= 0
+			do
+				internal_travelers.remove (index)
+			ensure
+				not internal_travelers.has (index)
+			end
 
 	change_traveler_speed (divisor: DOUBLE) is
 			-- Divide the speed of each traveler by divisor.
-		require
-			divisor > 0
-		local
-			a_traveler: TRAFFIC_MOVING
-		do
-			from
-				internal_travelers.start
-			until
-				internal_travelers.after
-			loop
-				a_traveler := internal_travelers.item_for_iteration
+			require
+				divisor > 0
+			local
+				a_traveler: TRAFFIC_MOVING
+			do
+				from
+					internal_travelers.start
+				until
+					internal_travelers.after
+				loop
+					a_traveler := internal_travelers.item_for_iteration
 --					if a_traveler /= Void then
-					a_traveler.set_speed (a_traveler.virtual_speed / divisor)
+						a_traveler.set_speed (a_traveler.virtual_speed / divisor)
 --					end
-				internal_travelers.forth
+					internal_travelers.forth
+				end
 			end
-		end
 
 	increment_index is
 			-- Increment the traveler index.
-		do
-			traveler_index := traveler_index+1
-		ensure
-			traveler_index = old traveler_index + 1
-		end
+			do
+				traveler_index := traveler_index+1
+			ensure
+				traveler_index = old traveler_index + 1
+			end
 
 	set_scale_factor (a_scale_factor: DOUBLE) is
 				-- Set `a_factor'.
-		do
-			scale_factor_impl := a_scale_factor
-		end
+			do
+				scale_factor_impl := a_scale_factor
+			end
 
 feature -- Element change
 
@@ -566,7 +566,7 @@ feature -- Element change
 feature -- Access
 
 	traveler_index: INTEGER
-			-- index of travelers.
+		-- index of travelers.
 
 	name: STRING
 			-- Name of region this map represents.
@@ -840,9 +840,9 @@ feature -- Basic operation
 
 	retrieve_road(i: INTEGER): TRAFFIC_ROAD is
 			-- retrieve road with given id
-		do
-			Result:=internal_roads.item (i)
-		end
+			do
+				Result:=internal_roads.item (i)
+			end
 
 
 	find_shortest_path (a_origin: TRAFFIC_PLACE; a_destination: TRAFFIC_PLACE) is
@@ -901,9 +901,9 @@ feature -- Basic operation
 				raise ("This shouldn't happen: dummy node not found")
 			end
 			-- Remove the dummy connections again.
-			graph.remove_node
-			graph.search (a_destination.dummy_node)
-			graph.remove_node
+--			graph.remove_node
+--			graph.search (a_destination.dummy_node)
+--			graph.remove_node
 		end
 
 

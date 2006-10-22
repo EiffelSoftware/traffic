@@ -4,24 +4,24 @@ indexing
 	revision: "$Revision: 1.90 $"
 
 class CITY_TIME_MAP_WIDGET
-	
+
 inherit
-	
+
 	TRAFFIC_3D_MAP_WIDGET
 		redefine
 			make,
 			prepare_drawing
 		end
-		
-create	
+
+create
 	make
-	
+
 feature -- Initialization
 
 	make is
 			-- Subscribe to events.
 		do
-			Precursor	
+			Precursor
 
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
@@ -29,7 +29,7 @@ feature -- Initialization
 			mouse_wheel_up_event.subscribe (agent wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 		end
-			
+
 feature -- Basic operations
 
 	zoom_in is
@@ -37,7 +37,7 @@ feature -- Basic operations
 		do
 			wheel_up
 		end
-	
+
 	zoom_out is
 			-- Zoom in.
 		do
@@ -60,20 +60,20 @@ feature -- Basic operations
 
 --				update_passenger_number (0)
 				update_passenger_number (number_of_passengers)
-				
-				traffic_traveler.add_tram_per_line (map, 2)
+
+				travelers_representation.add_tram_per_line (map, 2)
 			end
 		ensure then
-			travelers_created: map /= Void implies traffic_traveler /= Void
+			travelers_created: map /= Void implies travelers_representation /= Void
 		end
 
 	adjust_speed is
 			-- Double the speed of the travelers.
 		do
-			map.change_traveler_speed (traffic_time.simulated_minutes /2)
+			map.change_traveler_speed (time.simulated_minutes /2)
 		end
 
-	update_passenger_number (number: INTEGER) is	
+	update_passenger_number (number: INTEGER) is
 			-- Update the number of the passengers on the map.
 		require
 			number >= 0
@@ -87,18 +87,18 @@ feature -- Basic operations
 				until
 					i <= number
 				loop
-					traffic_traveler.remove_traveler
+					travelers_representation.remove_traveler
 					i := i - 1
 				end
 			else
-				from 
+				from
 					i := 0
 				until
 					i >= number - number_of_passengers
 				loop
-					create traveler.make_random (7, traffic_time.time.ticks)
+					create traveler.make_random (7, time.time.ticks)
 					traveler.set_reiterate (True)
-					add_traveler (traveler)				
+					travelers_representation.add_traveler (traveler, map)
 					i := i + 1
 				end
 			end
@@ -111,11 +111,11 @@ feature -- Drawing
 			-- Prepare the drawing.
 		do
 			Precursor
-			
+
 			-- Translation
 			gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
 			gl_translated_external (x_translation, -y_translation, 0)
-			
+
 			-- Rotation
 			gl_rotated_external (x_rotation, 1, 0, 0)
 			gl_rotated_external (y_rotation, 0, 1, 0)
@@ -126,10 +126,10 @@ feature -- Access
 	simulated_time: INTEGER is
 			-- Minutes in real time
 		require
-			traffic_time_exists: traffic_time /= Void
+			traffic_time_exists: time /= Void
 		do
-			Result := traffic_time.simulated_minutes
-		end		
+			Result := time.simulated_minutes
+		end
 
 feature {NONE} -- Event handling
 
@@ -144,7 +144,7 @@ feature {NONE} -- Event handling
 		ensure then
 			focus_incremented: focus > old focus
 		end
-		
+
 	wheel_up is
 			-- Handle mouse wheel up event.
 		do
@@ -163,7 +163,7 @@ feature {NONE} -- Event handling
 			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
 			delta_x, delta_y, delta, mouse_delta: DOUBLE
 		do
-			if event.button_state_right then				
+			if event.button_state_right then
 				y_rotation := y_rotation + event.x_motion
 				x_rotation := x_rotation + event.y_motion
 				if x_rotation <= 15 then
@@ -171,24 +171,24 @@ feature {NONE} -- Event handling
 				elseif x_rotation >= 90 then
 					x_rotation := 90
 				end
-				
+
 			elseif event.button_state_left then
 				start_vec := transform_coords (event.x, event.y)
 				end_vec := transform_coords (event.x + event.x_motion, event.y + event.y_motion)
-				
+
 				delta_x := end_vec.x - start_vec.x
 				delta_y := end_vec.z - start_vec.z
-				
+
 				delta := sqrt (delta_x^2 + delta_y^2)
 				mouse_delta := sqrt (event.x_motion^2 + event.y_motion^2)
-				
+
 				if mouse_delta > 0 and then delta/mouse_delta <= 3 and then sqrt (start_vec.x^2 + start_vec.y^2) < plane_size/2 then
 					x_translation := x_translation + event.x_motion*(delta/mouse_delta)
 					y_translation := y_translation + event.y_motion*(delta/mouse_delta)
 				end
 			end
 		end
-		
+
 	key_down (event: EM_KEYBOARD_EVENT) is
 			-- Handle key events.
 		do
@@ -222,8 +222,8 @@ feature -- {CITY_3D_SCENE}	-- Travelere objects
 			temp_list.force (create {EM_VECTOR_2D}.make (-10, 30))
 
 			create traveler.make_directed (temp_list, 0.5)
-			
-			add_traveler (traveler)
+
+			travelers_representation.add_traveler (traveler, map)
 		end
-		
+
 end

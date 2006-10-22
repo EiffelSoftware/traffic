@@ -344,20 +344,20 @@ feature -- Interface
 	included_for_compilation is
 			--
 		local
-			bus: TRAFFIC_BUS
-			cablecar: TRAFFIC_CABLECAR
-			d_taxi: TRAFFIC_DISPATCHER_TAXI
-			d_office: TRAFFIC_DISPATCHER_TAXI_OFFICE
-			e_taxi: TRAFFIC_EVENT_TAXI
-			e_office: TRAFFIC_EVENT_TAXI_OFFICE
-			trolley: TRAFFIC_TROLLEYBUS
-			place_rep: TRAFFIC_3D_PLACE_CIRCLE_REP_FACTORY
-			map_widget_2d: TRAFFIC_2D_MAP_WIDGET
-			map_renderer: TRAFFIC_2D_MAP_RENDERER
-			touch_scene: TOUCH_3D_SCENE
-			touch_3d_app: TOUCH_3D_APPLICATION
-			touch_map: TOUCH_MAP
-			tourism: TOURISM
+--			bus: TRAFFIC_BUS
+--			cablecar: TRAFFIC_CABLECAR
+--			d_taxi: TRAFFIC_DISPATCHER_TAXI
+--			d_office: TRAFFIC_DISPATCHER_TAXI_OFFICE
+--			e_taxi: TRAFFIC_EVENT_TAXI
+--			e_office: TRAFFIC_EVENT_TAXI_OFFICE
+--			trolley: TRAFFIC_TROLLEYBUS
+--			place_rep: TRAFFIC_3D_PLACE_CIRCLE_REP_FACTORY
+--			map_widget_2d: TRAFFIC_2D_MAP_WIDGET
+--			map_renderer: TRAFFIC_2D_MAP_RENDERER
+--			touch_scene: TOUCH_3D_SCENE
+--			touch_3d_app: TOUCH_3D_APPLICATION
+--			touch_map: TOUCH_MAP
+--			tourism: TOURISM
 		do
 
 		end

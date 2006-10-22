@@ -321,6 +321,7 @@ feature -- Basic operations
 				create pp.make (2)
 				pp.extend (origin.place.position)
 				pp.extend (a_place.position)
+				map.add_stop (a_stop)
 				create line_section.make (origin, a_stop, type, pp)
 				extend (line_section)
 				map.add_line_section (line_section)

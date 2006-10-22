@@ -4,24 +4,24 @@ indexing
 	revision: "$Revision: 1.90 $"
 
 class CITY_TAXI_WIDGET
-	
+
 inherit
-	
+
 	TRAFFIC_3D_MAP_WIDGET
 		redefine
 			make,
 			prepare_drawing
 		end
-		
-create	
+
+create
 	make
-	
+
 feature -- Initialization
 
 	make is
 			-- Subscribe to events
 		do
-			Precursor	
+			Precursor
 
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
@@ -32,27 +32,27 @@ feature -- Initialization
 			create event_taxi_offices.make(0)
 			create dispatcher_taxi_offices.make(0)
 			create random.make
-			random.set_seed(traffic_time.time.ticks)
+			random.set_seed(time.time.ticks)
 		end
 
 feature -- Access
 	event_taxi_offices: ARRAYED_LIST[TRAFFIC_EVENT_TAXI_OFFICE]
 		-- Event taxi offices list
-		
+
 	dispatcher_taxi_offices: ARRAYED_LIST[TRAFFIC_DISPATCHER_TAXI_OFFICE]
 		-- Dispatcher taxi offices list
-		
+
 	marked_origin: TRAFFIC_PLACE
 		-- Currently marked origin
-	
+
 	simulated_time: INTEGER is
 			-- Minutes in real time
 		require
-			traffic_time_exists: traffic_time /= Void
+			traffic_time_exists: time /= Void
 		do
-			Result := traffic_time.simulated_minutes
-		end	
-			
+			Result := time.simulated_minutes
+		end
+
 feature -- Basic operations
 
 	zoom_in is
@@ -60,7 +60,7 @@ feature -- Basic operations
 		do
 			wheel_up
 		end
-	
+
 	zoom_out is
 			-- Zoom out.
 		do
@@ -79,7 +79,7 @@ feature -- Basic operations
 			bus: TRAFFIC_BUS
 			tram: TRAFFIC_TRAM
 			cable: TRAFFIC_CABLECAR
-			
+
 		do
 			create loader.make (filename)
 			if not loader.has_error then
@@ -87,54 +87,54 @@ feature -- Basic operations
 				set_map (loader.map)
 				add_event_taxi_office(5)
 				add_dispatcher_taxi_office(5)
-				traffic_traveler.add_tram_per_line (map, 2)
+				travelers_representation.add_tram_per_line (map, 2)
 			end
 		ensure then
-			travelers_created: map /= Void implies traffic_traveler /= Void
+			travelers_created: map /= Void implies travelers_representation /= Void
 		end
 
 	adjust_speed is
 			-- Double the speed of the travelers.
 		do
-			map.change_traveler_speed (traffic_time.simulated_minutes / 2)
+			map.change_traveler_speed (time.simulated_minutes / 2)
 		end
-	
-	
-	add_dispatcher_taxi_office(number_of_taxis: INTEGER) is	
+
+
+	add_dispatcher_taxi_office(number_of_taxis: INTEGER) is
 			-- Add a new taxi_office to the map. The taxi_office has 'number_of_taxis' taxis.
-			-- Set the seed on the office to time.tick. 
-			-- This seed is for random generating the positions of the taxis associated with the office. 
+			-- Set the seed on the office to time.tick.
+			-- This seed is for random generating the positions of the taxis associated with the office.
 		local
 			taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE
-		do	
+		do
 			create taxi_office.make(number_of_taxis, time.time.ticks)
 			dispatcher_taxi_offices.extend(taxi_office)
 			map.add_taxi_office (taxi_office)
 			add_taxis(taxi_office.taxi_list)
 		end
-		
-	add_event_taxi_office(number_of_taxis: INTEGER) is	
+
+	add_event_taxi_office(number_of_taxis: INTEGER) is
 			-- Add an event_taxi_office to the map.
 		local
 			taxi_office: TRAFFIC_EVENT_TAXI_OFFICE
 		do
-			-- set seed for random generating the positions of the taxis 
+			-- set seed for random generating the positions of the taxis
 			-- associated with the office to time.tick
 			create taxi_office.make(number_of_taxis, time.time.ticks)
 			event_taxi_offices.extend(taxi_office)
 			map.add_taxi_office (taxi_office)
 			add_taxis(taxi_office.taxi_list)
 		end
-		
-	add_taxis (taxis: ARRAYED_LIST[TRAFFIC_MOVING]) is	
+
+	add_taxis (taxis: ARRAYED_LIST[TRAFFIC_MOVING]) is
 			-- Add taxis to the map.
 		require
 			taxis_not_void: taxis /= void
-		
+
 		do
-			taxis.do_all (agent add_traveler(?))				
+			taxis.do_all (agent travelers_representation.add_traveler(?, map))
 		end
-		
+
 	set_taxi_office_type(type: STRING) is
 			-- Set type of the current taxi office to be used.
 		do
@@ -147,18 +147,18 @@ feature -- Drawing
 			-- Prepare the drawing.
 		do
 			Precursor
-			
+
 			-- Translation
 			gl_translated_external (x_coord*focus, y_coord, z_coord*focus)
 			gl_translated_external (x_translation, -y_translation, 0)
-			
+
 			-- Rotation
 			gl_rotated_external (x_rotation, 1, 0, 0)
 			gl_rotated_external (y_rotation, 0, 1, 0)
 		end
 
 feature {NONE} -- Event handling
-	
+
 	wheel_down is
 			-- Handle mouse wheel down event.
 		do
@@ -170,7 +170,7 @@ feature {NONE} -- Event handling
 		ensure then
 			focus_incremented: focus > old focus
 		end
-		
+
 	wheel_up is
 			-- Handle mouse wheel up event.
 		do
@@ -189,7 +189,7 @@ feature {NONE} -- Event handling
 			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
 			delta_x, delta_y, delta, mouse_delta: DOUBLE
 		do
-			if event.button_state_right then				
+			if event.button_state_right then
 				y_rotation := y_rotation + event.x_motion
 				x_rotation := x_rotation + event.y_motion
 				if x_rotation <= 15 then
@@ -197,24 +197,24 @@ feature {NONE} -- Event handling
 				elseif x_rotation >= 90 then
 					x_rotation := 90
 				end
-				
+
 			elseif event.button_state_left then
 				start_vec := transform_coords (event.x, event.y)
 				end_vec := transform_coords (event.x + event.x_motion, event.y + event.y_motion)
-				
+
 				delta_x := end_vec.x - start_vec.x
 				delta_y := end_vec.z - start_vec.z
-				
+
 				delta := sqrt (delta_x^2 + delta_y^2)
 				mouse_delta := sqrt (event.x_motion^2 + event.y_motion^2)
-				
+
 				if mouse_delta > 0 and then delta/mouse_delta <= 3 and then sqrt (start_vec.x^2 + start_vec.y^2) < plane_size/2 then
 					x_translation := x_translation + event.x_motion*(delta/mouse_delta)
 					y_translation := y_translation + event.y_motion*(delta/mouse_delta)
 				end
 			end
 		end
-		
+
 	mouse_click (event: EM_MOUSEBUTTON_EVENT) is
 			-- Handle mouse clicked event.
 			-- Mouse_click on a place simulates a taxi call.
@@ -223,36 +223,36 @@ feature {NONE} -- Event handling
 			clicked_point: EM_VECTOR_2D
 			place: TRAFFIC_PLACE
 		do
-			result_vec := transform_coords(event.screen_x, event.screen_y)				
+			result_vec := transform_coords(event.screen_x, event.screen_y)
 			clicked_point := gl_to_map_coords (create {EM_VECTOR_2D}.make (result_vec.x, result_vec.z))
-			if event.is_left_button then				
+			if event.is_left_button then
 				if map /= Void then
-					place := traffic_places.place_at_position (clicked_point)
+					place := places_representation.place_at_position (clicked_point)
 					if place /= Void then
 						marked_origin := place
 						if current_taxi_office.is_equal ("Event Taxi Office") then
-							
-							-- Request event on the TAXI_EVENT_OFFICE. 
+
+							-- Request event on the TAXI_EVENT_OFFICE.
 							-- Publish orders a taxi to the place
 							-- Request to go from the place where the user clicked on to a random destination.
-		
+
 							event_taxi_offices.go_i_th (1)
 							event_taxi_offices.item.request.publish([place.position, random_destination])
 							marked_station_changed := True
 						else
 							--Call on taxi office to order a taxi.
 							--Order to go from the place where the user clicked on to a random destination.
-							
+
 							dispatcher_taxi_offices.go_i_th (1)
 							dispatcher_taxi_offices.item.call (place.position, random_destination)
-							marked_station_changed := True	
+							marked_station_changed := True
 						end
-												
-					end				
-				end				
+
+					end
+				end
 			end
 		end
-		
+
 	key_down (event: EM_KEYBOARD_EVENT) is
 			-- Handle key events.
 		do
@@ -274,13 +274,13 @@ feature {NONE} -- Event handling
 		end
 
 feature{NONE} --Implementation
-		
+
 		current_taxi_office: STRING
 			-- Taxi office to serve requests.
 
 		random: RANDOM
 			-- Random number used for taxi request destination.
-			
+
 		place_highlight_color1: GL_VECTOR_3D [DOUBLE] is
 			-- Highlight color for marked origins
 		once
@@ -288,7 +288,7 @@ feature{NONE} --Implementation
 		ensure
 			Result_exists: Result /= Void
 		end
-		
+
 		random_destination: EM_VECTOR_2D is
 			-- give a random destination
 			require
@@ -304,7 +304,7 @@ feature{NONE} --Implementation
 				create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
 				-- approximated places so that they are on the map
 				random.forth
-				Result := destination		
+				Result := destination
 			end
 
 end

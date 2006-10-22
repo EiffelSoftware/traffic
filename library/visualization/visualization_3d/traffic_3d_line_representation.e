@@ -246,6 +246,7 @@ feature -- Basic operations
 				a_line.off
 			loop
 				line_factory.set_connection (a_line.item)
+				line_factory.set_height (5)
 				line_section_view := line_factory.create_object
 
 				line_section_views.go_i_th (line_section_lookup.item (a_line.item))

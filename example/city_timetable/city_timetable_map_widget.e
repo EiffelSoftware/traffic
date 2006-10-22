@@ -55,9 +55,9 @@ feature -- Basic operations
 	add_vehicles is
 			-- Add trams to lines
 		require
-			factory_exists: traffic_traveler /= Void
+			factory_exists: travelers_representation /= Void
 		do
---			traffic_traveler.add_tram_per_line_with_schedule (map, 1)
+			travelers_representation.add_tram_per_line_with_schedule (map, 1)
 		end
 
 feature -- Drawing
@@ -115,12 +115,12 @@ feature {NONE} -- Event handling
 			if event.is_left_button then
 				if map /= Void then
 					if marked_station /= Void then
-						traffic_places.unhighlight_place (marked_station)
+						places_representation.unhighlight_place (marked_station)
 					end
-					place := traffic_places.place_at_position (clicked_point)
+					place := places_representation.place_at_position (clicked_point)
 					if place /= Void then
 						marked_station := place
-						traffic_places.highlight_place(marked_station, place_highlight_color1)
+						places_representation.highlight_place(marked_station, place_highlight_color1)
 						marked_station_changed := True
 					end
 				end
