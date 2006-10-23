@@ -35,14 +35,6 @@ feature -- Initialization
 
 	make is
 			-- Create a new object and set the representation method for the factory
-		local
-			texture_ids: ARRAY[INTEGER]
-			building: EM_3D_OBJECT
-			traffic_model: TRAFFIC_3D_TEXTURE_OBJECT
-			bitmap: EM_BITMAP
-			i: INTEGER
-			s: STRING
-			fs: KL_FILE_SYSTEM
 		do
 			create {TRAFFIC_3D_BUILDING_FANCY_FACTORY} building_factory
 			create buildings.make (1)
@@ -167,7 +159,6 @@ feature -- Options
 			building_valid: a_building /= Void
 		local
 			building: EM_3D_OBJECT
-			scale: DOUBLE
 		do
 			random.forth
 

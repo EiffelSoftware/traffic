@@ -115,7 +115,6 @@ feature -- Basic operations
 			a_connection /= Void
 --			is_valid_for_insertion (a_connection)
 		local
-			ls: TRAFFIC_LINE_SECTION
 			last_path_section: TRAFFIC_PATH_SECTION
 			ps: TRAFFIC_PATH_SECTION
 		do

@@ -161,8 +161,6 @@ feature {NONE} -- Implementation
 	calculate_weight (a_edge: WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]): REAL is
 			-- Calculate the edge based on the current status.
 			-- This is only used for "dummy" connections.
-		local
-			section: TRAFFIC_CONNECTION
 		do
 			inspect shortest_path_mode
 			when normal_distance then

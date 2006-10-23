@@ -89,8 +89,6 @@ feature -- Traffic place building
 			a_name_not_empty: not a_name.is_empty
 			map_exists: has_map
 			unique_name: not a_map.has_place (a_name)
-		local
-			dummy_node: TRAFFIC_NODE
 		do
 			create internal_place.make (a_name)
 			a_map.add_place (internal_place)
@@ -109,8 +107,6 @@ feature -- Traffic place building
 			a_name_not_empty: not a_name.is_empty
 			map_exists: has_map
 			unique_name: not a_map.has_place (a_name)
-		local
-			dummy_node: TRAFFIC_NODE
 		do
 			create internal_place.make_with_position (a_name, a_x, a_y)
 --			create dummy_node.make (internal_place, )

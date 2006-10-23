@@ -86,7 +86,7 @@ feature -- Access
 		local
 			attr: STRING
 		do
-			attr := clone (attribute (a_name))
+			attr := (attribute (a_name)).twin
 			if attr.is_integer then
 				attr.append (".0")
 			end
@@ -242,7 +242,7 @@ feature -- Status report
 		local
 			n: STRING
 		do
-			n := clone (an_element.name)
+			n := (an_element.name).twin
 			n.to_lower
 			Result := equal (n, name)
 		end

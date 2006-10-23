@@ -45,8 +45,6 @@ feature -- Texture and binding
 
 	bind_texture is
 			-- bindet die textur an das objekt
-			local
-				i: INTEGER
 		do
 			if texture_id /= void and then texture_id.item(0) /= 0 then
 				gl_enable(Em_gl_texture_2d)

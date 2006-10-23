@@ -17,10 +17,10 @@ feature  -- Access
 
 	file_name: STRING
 			-- Name of file where error occurred.
-			
+
 	directory_name: STRING
-			-- Directory where file is located. 
-			
+			-- Directory where file is located.
+
 	error_description: STRING is
 			-- Textual description of error.
 		require
@@ -66,7 +66,7 @@ feature {NONE} -- Status report
 				Result := (an_error_string_array.count >= slot_count (error_text (a_code)))
 			end
 		end
-		
+
 feature {NONE} -- Status setting
 
 	set_error (a_code: INTEGER; an_error_string_array: ARRAY [STRING]) is
@@ -102,7 +102,7 @@ feature {TRAFFIC_ERROR_CONSTANTS} -- Implementation
 
 	slots: ARRAY [STRING]
 			-- Slots for additional information.
-			
+
 feature {NONE} -- Implementation
 
 	slot_count (a_string: STRING): INTEGER is
@@ -114,7 +114,7 @@ feature {NONE} -- Implementation
 		ensure
 			Result_positive: Result > 0
 		end
-		
+
 	full_message: STRING is
 			-- Full error message with filled in information slots.
 		require
@@ -125,12 +125,12 @@ feature {NONE} -- Implementation
 			c: INTEGER
 			s: STRING
 		do
-			Result := clone (error_text (error_code))
+			Result := (error_text (error_code)).twin
 			c := slot_count (Result)
 			if file_name /= Void then
 				Result.prepend (File_system.basename (file_name) + ": ")
 			end
-			
+
 			from
 				i := slots.lower
 			until
@@ -142,7 +142,7 @@ feature {NONE} -- Implementation
 							-- Because there is still an unfilled information
 							-- slot
 					end
-				s := clone (slots @ i)
+				s := (slots @ i).twin
 				s.left_adjust
 				s.right_adjust
 				Result.replace_substring (s, pos, pos)
@@ -157,12 +157,12 @@ feature {NONE} -- Implementation
 invariant
 
 	error_constraint: error_code > 0 implies has_error
-	slot_constraint:  error_code > 0 implies 
+	slot_constraint:  error_code > 0 implies
 			(slots /= Void and then is_complete (error_code, slots))
 	error_code_positive: error_code >= 0
 	non_empty_description: has_error implies (error_description /= Void and
 			not error_description.is_empty)
-	
+
 end
 
 --|--------------------------------------------------------

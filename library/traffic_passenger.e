@@ -55,8 +55,6 @@ feature -- Initialization
 			require
 				a_seed_not_negative: a_seed >= 0
 				valid_number_of_stops: stops >= 2
-			local
-				i: INTEGER
 			do
 				traffic_type := create {TRAFFIC_TYPE_WALKING}.make
 				create polypoints.make (0)

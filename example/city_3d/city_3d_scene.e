@@ -569,6 +569,7 @@ feature -- Event handling
 			marked_origin_label.set_text ("")
 			marked_destination_label.set_text ("")
 			traffic_line_ride_button.hide
+			map.travelers_representation.add_tram_per_line (map.map, 2)
 		rescue
 			catch(24)
 			catch(8)

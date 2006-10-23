@@ -924,7 +924,6 @@ feature {TRAFFIC_MAP_LOADER}
 			type: TRAFFIC_TYPE_STREET
 			pp: ARRAYED_LIST [EM_VECTOR_2D]
 			a: EM_VECTOR_2D
-			b: EM_VECTOR_2D
 		do
 			-- Recalculate edge weights.
 			the_edges := graph.edges

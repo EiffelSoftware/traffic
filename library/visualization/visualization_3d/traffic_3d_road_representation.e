@@ -121,7 +121,6 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			road_factory_set: road_factory /= Void
 		local
 			road_view: EM_3D_OBJECT
-			poly: DS_LINKED_LIST [EM_POLYGON_CONVEX_COLLIDABLE]
 		do
 			road_factory.set_connection (a_road)
 			road_view := road_factory.create_object

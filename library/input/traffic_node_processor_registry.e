@@ -16,7 +16,7 @@ feature {NONE} -- Access
 			name_not_empty: not a_name.is_empty
 			element_exists: has_processor (a_name)
 		do
-			Result := clone (Processor_registry @ a_name)
+			Result := (Processor_registry @ a_name).twin
 			Result.make
 		ensure
 			Result_exists: Result /= Void
@@ -41,7 +41,7 @@ feature -- Status setting
 		ensure
 			schedule_factory_set: schedule_factory = a_factory
 		end
-		
+
 	set_map_factory (a_factory: TRAFFIC_MAP_FACTORY) is
 			-- Set map reference.
 		do
@@ -55,7 +55,7 @@ feature -- Status setting
 		do
 			Result := Processor_registry.has_item (a_processor)
 		end
-	
+
 	set_map (a_map: TRAFFIC_3D_MAP_WIDGET) is
 			-- Set buildings reference.
 		require
@@ -65,11 +65,11 @@ feature -- Status setting
 		ensure
 			internal_map_set: internal_map = a_map
 		end
-		
+
 	internal_map: TRAFFIC_3D_MAP_WIDGET
-			-- Reference to internal map 
-		
-		
+			-- Reference to internal map
+
+
 feature -- Basic operations
 
 	register_processor (a_processor: TRAFFIC_NODE_PROCESSOR) is
@@ -85,7 +85,7 @@ feature -- Basic operations
 
 	register_allowed_subnode (a_parent_name: STRING; a_subnode_name: STRING) is
 			-- Register processor with name `a_subnode_name' as allowed subnode of processor with name `a_parent_name'.
-			-- Use `register_processor' for new node types and 
+			-- Use `register_processor' for new node types and
 			-- `register_allowed_subnode' for registering their subnode types.
 		local
 			a: ARRAY [STRING]
@@ -98,7 +98,7 @@ feature -- Basic operations
 				Allowed_subnode_registry.force ( a, a_parent_name)
 			end
 		end
-			
+
 feature {NONE} -- Status report
 
 	has_processor (a_name: STRING): BOOLEAN is
@@ -109,20 +109,20 @@ feature {NONE} -- Status report
 		do
 			Result := Processor_registry.has (a_name)
 		end
-		
+
 feature {NONE} -- Constants
 
 	Default_registry_capacity: INTEGER is 100
 			-- Default capacity of registry
-		
+
 feature {NONE} -- Implementation
 
 	Processor_registry: DS_HASH_TABLE [TRAFFIC_NODE_PROCESSOR, STRING] is
 			-- System-wide registry for known map node processors
-			-- Use `register_processor' for new node types and 
+			-- Use `register_processor' for new node types and
 			-- `register_allowed_subnode' for registering their subnode types.
 		once
-			
+
 			create Result.make (Default_registry_capacity)
 			Result.put (create {TRAFFIC_MAP_NODE_PROCESSOR}.make, "map")
 			Result.put (create {TRAFFIC_PLACES_NODE_PROCESSOR}.make, "places")
@@ -130,17 +130,17 @@ feature {NONE} -- Implementation
 			Result.put (create {TRAFFIC_LINES_NODE_PROCESSOR}.make, "lines")
 			Result.put (create {TRAFFIC_LINE_NODE_PROCESSOR}.make, "line")
 			Result.put (create {TRAFFIC_POINT_NODE_PROCESSOR}.make, "point")
-			Result.put (create {TRAFFIC_LINE_SECTION_NODE_PROCESSOR}.make, "line_section")	
+			Result.put (create {TRAFFIC_LINE_SECTION_NODE_PROCESSOR}.make, "line_section")
 			Result.put (create {TRAFFIC_DESCRIPTION_NODE_PROCESSOR}.make, "description")
 			Result.put (create {TRAFFIC_FILE_NODE_PROCESSOR}.make, "file")
 			Result.put (create {TRAFFIC_COLOR_NODE_PROCESSOR}.make, "color")
 			Result.put (create {TRAFFIC_BUILDINGS_NODE_PROCESSOR}.make, "buildings")
 			Result.put (create {TRAFFIC_BUILDING_NODE_PROCESSOR}.make, "building")
-				
+
 			Result.put (create {TRAFFIC_ROADS_NODE_PROCESSOR}.make, "roads")
 			Result.put (create {TRAFFIC_ROAD_NODE_PROCESSOR}.make, "road")
 			Result.put (create {TRAFFIC_ONROAD_NODE_PROCESSOR}.make, "onroad")
-			
+
 			Result.put (create {TRAFFIC_SCHEDULER_LINES_NODE_PROCESSOR}.make, "slines")
 			Result.put (create {TRAFFIC_SCHEDULER_LINE_NODE_PROCESSOR}.make, "sline")
 			Result.put (create {TRAFFIC_SCHEDULER_NODE_PROCESSOR}.make, "entry")
@@ -152,7 +152,7 @@ feature {NONE} -- Implementation
 
 	Allowed_subnode_registry: DS_HASH_TABLE [ARRAY [STRING], STRING] is
 			-- System-wide registry for known map node processors
-			-- Use `register_processor' for new node types and 
+			-- Use `register_processor' for new node types and
 			-- `register_allowed_subnode' for registering their subnode types.
 		local
 			a: ARRAY [STRING]
@@ -174,7 +174,7 @@ feature {NONE} -- Implementation
 			a := <<  >>
 			a.compare_objects
 			Result.put (a, "point")
-			
+
 --			line
 			a := << "color", "line_section">>
 			a.compare_objects
@@ -184,12 +184,12 @@ feature {NONE} -- Implementation
 			a.compare_objects
 			Result.put (a, "lines")
 
-			
+
 --			line_section
 			a := << "point", "onroad" >>
 			a.compare_objects
 			Result.put (a, "line_section")
-			
+
 --			file
 			a := <<  >>
 			a.compare_objects
@@ -198,7 +198,7 @@ feature {NONE} -- Implementation
 			a := <<  >>
 			a.compare_objects
 			Result.put (a, "color")
-			
+
 --			roads
 			a := << "road">>
 			a.compare_objects
@@ -217,12 +217,12 @@ feature {NONE} -- Implementation
 			a := << "entry" >>
 			a.compare_objects
 			Result.put (a, "sline")
-			
+
 --			buildings
 			a := << "building" >>
 			a.compare_objects
 			Result.put (a, "buildings")
-			
+
 --			building
 			a := << >>
 			a.compare_objects
@@ -230,5 +230,5 @@ feature {NONE} -- Implementation
 
 
 		end
-		
+
 end

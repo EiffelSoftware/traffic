@@ -166,15 +166,15 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 
 feature -- Basic operations
 
-	highlight_path (a_route: TRAFFIC_ROUTE) is
-			-- Highlight `a_route' on the map.
-		require
-			a_route_exists: a_route /= Void
-		local
-			line_section_view: EM_3D_OBJECT
-			line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
-			old_is_highlighted: BOOLEAN
-		do
+--	highlight_path (a_route: TRAFFIC_ROUTE) is
+--			-- Highlight `a_route' on the map.
+--		require
+--			a_route_exists: a_route /= Void
+--		local
+--			line_section_view: EM_3D_OBJECT
+--			line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
+--			old_is_highlighted: BOOLEAN
+--		do
 --			old_is_highlighted := is_highlighted
 --			is_highlighted := False
 --			from
@@ -196,17 +196,17 @@ feature -- Basic operations
 --			end
 --			is_highlighted := old_is_highlighted
 
-		end
+--		end
 
-	unhighlight_path (a_route: TRAFFIC_ROUTE) is
-			-- Unhighlight `a_route' on the map.
-		require
-			a_route_exists: a_route /= Void
-		local
-			line_section_view: EM_3D_OBJECT
-			line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
-			old_is_highlighted: BOOLEAN
-		do
+--	unhighlight_path (a_route: TRAFFIC_ROUTE) is
+--			-- Unhighlight `a_route' on the map.
+--		require
+--			a_route_exists: a_route /= Void
+--		local
+--			line_section_view: EM_3D_OBJECT
+--			line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
+--			old_is_highlighted: BOOLEAN
+--		do
 --			old_is_highlighted := is_highlighted
 --			is_highlighted := False
 --			from
@@ -228,7 +228,7 @@ feature -- Basic operations
 --				line_sections.forth
 --			end
 --			is_highlighted := old_is_highlighted
-		end
+--		end
 
 	highlight_single_line(a_line: TRAFFIC_LINE) is
 			-- Highlight the line `a_line'.
