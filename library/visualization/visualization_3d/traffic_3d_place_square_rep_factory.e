@@ -27,7 +27,7 @@ feature {NONE} -- Implementation
 
 	specify_object is
 			-- Specify an object that can be drawn in the origin
-			-- (front, left, lower corner of bounding box = 0,0,0)
+			-- (front, left, lower corner of bounding box = 0,0,0).
 		local
 			p1, p2, p3, p4: GL_VECTOR_3D[DOUBLE]
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
@@ -116,6 +116,5 @@ feature {NONE} -- Implementation
 
 			end
 		end
-
 
 end

@@ -1,6 +1,5 @@
 indexing
 	description: "Object that puts a building at a place."
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -104,14 +103,14 @@ feature -- Element change
 	spotlight is
 			-- Spotlight the building.
 		do
-			internal_map_widget.set_buildings_shown (true)
+			internal_map_widget.enable_buildings_shown
 			internal_map_widget.buildings_representation.add_building (internal_building)
 		end
 
 	spotlight_for_5_seconds is
 			-- Spotlight the building and undo the spotlighting after 5 seconds.
 		do
-			internal_map_widget.set_buildings_shown (true)
+			internal_map_widget.enable_buildings_shown
 			internal_map_widget.buildings_representation.add_building (internal_building)
 			wait(5000)
 			undo_spotlight

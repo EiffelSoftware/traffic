@@ -4,28 +4,26 @@ indexing
 	revision: "$Revision: 1.57 $"
 
 class PREVIEW_3D_SCENE
-	
+
 inherit
-	
+
 	TOUCH_3D_SCENE
-		rename 
-			make as make_touch_scene
+		redefine
+			initialize_scene
 		end
-	
+
 create
-	make
+	make_component_scene
 
 feature -- Interface
-	
-	make is
-			-- Create all gui elements.			
-		do
-			make_touch_scene
 
+	initialize_scene is
+			-- Initialize scene.
+		do
+			Precursor
 			create preview
-			preview.run (map_widget, console)	
-	
-			click_here_button.clicked_event.subscribe (agent button_click)	
+			preview.run (map_widget, console)
+			click_here_button.clicked_event.subscribe (agent button_click)
 		end
 
 	button_click is
@@ -36,6 +34,6 @@ feature -- Interface
 			click_here_button.enable
 		end
 
-	preview: PREVIEW		
-		
+	preview: PREVIEW
+
 end

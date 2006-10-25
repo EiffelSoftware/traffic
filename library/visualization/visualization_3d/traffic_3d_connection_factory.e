@@ -1,6 +1,7 @@
 indexing
 	description: "Factory for connections (either line_sections, roads or connections in a path)"
-
+	date: "$Date$"
+	revision: "$Revision$"
 
 deferred class
 	TRAFFIC_3D_CONNECTION_FACTORY
@@ -24,13 +25,13 @@ inherit
 feature -- Access
 
 	object_width: DOUBLE is 2.0
-			-- The size of the bounding box in x direction of created objects.
+			-- The size of the bounding box in x direction of created objects
 
 	object_height: DOUBLE is 2.0
-			-- The size of the bounding box in y direction of created objects.
+			-- The size of the bounding box in y direction of created objects
 
 	object_depth: DOUBLE is 2.0
-			-- The size of the bounding box in z direction of created objects.
+			-- The size of the bounding box in z direction of created objects
 
 	connection: TRAFFIC_CONNECTION
 			-- Connection for which the 3d object is created
@@ -83,10 +84,13 @@ feature -- Element change
 
 	set_height (a_height: DOUBLE) is
 			-- Set the level (`height') of where the connection is drawn to `a_height'.
+		require
+			height_valid: a_height > 0.0
 		do
 			height := a_height
+		ensure
+			height_set: height = a_height
 		end
-
 
 feature {EM_3D_OBJECT_FACTORY} -- Deferred features that should not be accessible from the outside
 

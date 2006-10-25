@@ -5,20 +5,20 @@ indexing
 
 class
 	TRAFFIC_COLOR
-	
+
 inherit
 	ANY
 		redefine
 			out
 		end
 
-create 
+create
 	make
-	
+
 feature {NONE} -- Initialisation
 
 	make (a_red, a_green, a_blue: INTEGER) is
-			-- Create a rgb-color.
+			-- Initialize with `red' as `a_red', `green' as `a_green' and `blue' as `a_blue'.
 		require
 			a_red_valid: is_valid_rgb_part (a_red)
 			a_green_valid: is_valid_rgb_part (a_green)
@@ -36,13 +36,13 @@ feature {NONE} -- Initialisation
 feature -- Access
 
 	red: INTEGER
-		-- Red part of rgb-color.
-		
+		-- Red part of rgb-color
+
 	green: INTEGER
-		-- Green part of rgb-color.
-		
+		-- Green part of rgb-color
+
 	blue: INTEGER
-		-- Blue part of rgb-color.
+		-- Blue part of rgb-color
 
 feature -- Element change
 
@@ -55,7 +55,7 @@ feature -- Element change
 		ensure
 			red_set: red = a_red
 		end
-	
+
 	set_green (a_green: INTEGER) is
 			-- Set green to `a_green'.
 		require
@@ -65,7 +65,7 @@ feature -- Element change
 		ensure
 			green_set: green = a_green
 		end
-		
+
 	set_blue (a_blue: INTEGER) is
 			-- Set blue to `a_blue'.
 		require
@@ -75,7 +75,6 @@ feature -- Element change
 		ensure
 			blue_set: blue = a_blue
 		end
-		
 
 feature -- Status report
 
@@ -85,15 +84,16 @@ feature -- Status report
 			Result := a_part >= 0 and a_part < 256
 		end
 
-feature -- Basic operation.
+feature -- Output
 
 	out: STRING is
 			-- Textual representation.
 		do
 			Result := "RGB(" + red.out + ", " + green.out + ", " + blue.out + ")"
 		end
-		
+
 invariant
+
 	red_valid: is_valid_rgb_part (red)
 	green_valid: is_valid_rgb_part (green)
 	blue_valid: is_valid_rgb_part (blue)

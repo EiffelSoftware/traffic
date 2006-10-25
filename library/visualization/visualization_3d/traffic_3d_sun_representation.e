@@ -1,7 +1,6 @@
 indexing
 	description: "A 3D Representation of the Sun and Sunlight"
-	author: "Lars Krapf <lkrapf@student.ethz.ch>"
-	date: "30.05.2006"
+	date: "$Date$"
 	revision: "$Revision$"
 
 class
@@ -10,18 +9,18 @@ class
 inherit
 	EM_CONSTANTS
 		 export {NONE} all end
-	
+
 	GL_FUNCTIONS
-		export {NONE} all end	
-		
+		export {NONE} all end
+
 	GLU_FUNCTIONS
 		export {NONE} all end
-	
+
 	MATH_CONST
 		export {NONE} all end
 
 	TRAFFIC_SHARED_TIME
-		
+
 create
 	make
 
@@ -39,35 +38,34 @@ feature {NONE} -- Initialization
 			traffic_sun_light.specular.set_xyzt (0, 0, 0, 1)
 			traffic_sun_light.diffuse.set_xyzt (1, 1, 0.8, 1)
 			traffic_sun_light.apply_values
-			
+
 			-- Create Color
 			create traffic_sun_color.make_xyzt (1,1,0.5,1)
-			
+
 		ensure
 			color_created: traffic_sun_color /= Void
 			sun_created: traffic_sun /= Void
 			sun_light_created: traffic_sun_light /= Void
 		end
 
-feature -- Basic Operation
+feature -- Status setting
 
-	
 	enable_sunlight is
-			-- Enable the Sunlight
-		do		
+			-- Enable the Sunlight.
+		do
 			traffic_sun_light.enable
 		end
 
 	disable_sunlight is
-			-- Disable the Sunlight
+			-- Disable the Sunlight.
 		do
 			traffic_sun_light.disable
 		end
-		
-feature -- Drawing
-	
+
+feature -- Basic operations
+
 	draw is
-			-- Draw the Sun
+			-- Draw the sun.
 		local
 			sun_pos: GL_VECTOR_3D[DOUBLE]
 		do
@@ -76,13 +74,13 @@ feature -- Drawing
 				-- using the simulated time				
 				traffic_sun.update
 			end
-			
+
 			sun_pos := traffic_sun.position
-			
+
 			-- Set Lightposition
 			traffic_sun_light.position.set_xyz (sun_pos.x,sun_pos.y,sun_pos.z)
 			traffic_sun_light.apply_values
-			
+
 			-- Draw "Sun"
 			gl_matrix_mode_external (em_gl_modelview_matrix)
 			gl_push_matrix_external
@@ -94,12 +92,12 @@ feature -- Drawing
 			gl_pop_matrix_external
 
 		end
-		
+
 feature {NONE} -- Implementation
 
 	traffic_sun: TRAFFIC_SUN
 		-- The Sun Object
-		
+
 	traffic_sun_light: GL_LIGHT
 		-- The Sun Light
 

@@ -1,11 +1,10 @@
 indexing
 	description: "[
 		An object loader for the wavefront obj 3d file format.
-		This object loader acts as ESDL 3D object factory (see ESDL_3D_OBJECT_FACTORY).
+		This object loader acts as EM_3D_OBJECT_FACTORY (see EM_3D_OBJECT_FACTORY).
 		This loader supports vertex vectors, vertex normals, texture coordinates - multiple meshs not yet supported		
 		For details about the obj file format see: http://www.robthebloke.org/source/obj.html.
 	]"
-	author: "Matthias Bühlmann"
 	date: "$Date: 2006/09/10 15:16:28 $"
 	revision: "$Revision: 1.4 $"
 
@@ -13,15 +12,11 @@ class
 	TRAFFIC_3D_OBJ_LOADER
 
 inherit
+
 	EM_3D_OBJECT_FACTORY
 		redefine
 			default_create,
 			compile
-		end
-
-	Q_GL_3D_GEOMOBJ
-		undefine
-			default_create
 		end
 
 	EM_CONSTANTS
@@ -43,13 +38,6 @@ inherit
 			default_create
 		end
 
---	EM_SHARED_BITMAP_FACTORY
---		export
---			{NONE} all
---		undefine
---			default_create
---		end
-
 create
 	default_create
 
@@ -63,13 +51,15 @@ feature -- Initialization
 			color := default_color
 		ensure then
 			caching_enabled: is_caching_enabled = True
+			color_set: color /= Void
 		end
 
 feature -- Basic operations
 
 	load_file (a_filename: STRING) is
 			-- Load an object file `a_filename'. Texture files can be added by set_texture but will not be available from the caching mechanism.
-		-- TODO ADD requires for filenames!!!
+		require
+			a_filename_exists: a_filename /= Void and then not a_filename.is_empty
 		local
 			itm: TUPLE[INTEGER, DOUBLE, DOUBLE, DOUBLE]
 		do
@@ -112,15 +102,7 @@ feature -- Basic operations
 			color_set: a_color = color
 		end
 
---test	set_texture_id (id: ARRAY[INTEGER]) is
---		do
---			texture_id := id
---			unchanged := False
---		ensure
---			id_set: texture_id = id
---		end
-
-
+feature -- Status setting
 
 	enable_caching is
 			-- Enable caching of objects.
@@ -149,12 +131,6 @@ feature -- Access
 	object_depth: DOUBLE
 			-- Depth of the object loaded from file
 
---test	texture_id: ARRAY[INTEGER]
-			-- Texture ids of current texture to be used for the object
-
-	is_caching_enabled: BOOLEAN
-			-- Are the loaded files cached?
-
 	color: GL_VECTOR_3D [REAL]
 			-- Color to be used for the displaylist
 
@@ -164,11 +140,15 @@ feature -- Access
 			create Result.make_xyz (1, 1, 1)
 		end
 
+feature -- Status report
+
+	is_caching_enabled: BOOLEAN
+			-- Are the loaded files cached?
 
 feature {NONE} -- Implementation
 
 	compile is
-			-- Compile the object
+			-- Compile the object.
 		do
 			if is_caching_enabled and unchanged then
 				-- Do nothing all values are set correctly
@@ -178,6 +158,7 @@ feature {NONE} -- Implementation
 		end
 
 	specify_object is
+			-- Specify a 3d object.
 		local
 			i, j: INTEGER
 			index: INTEGER
@@ -269,7 +250,7 @@ feature {NONE} -- Implementation
 			-- Read the object file `a_filename'.
 		local
 			obj_file_: PLAIN_TEXT_FILE
-			tokenizer_: Q_TEXT_SCANNER
+			tokenizer_: TRAFFIC_3D_TEXT_SCANNER
 		do
 			unchanged := False
 			create vectors.make (0, 2)
@@ -317,7 +298,8 @@ feature {NONE} -- Implementation
 		end
 
 
-	read_vector (input: Q_TEXT_SCANNER): ARRAY [DOUBLE] is
+	read_vector (input: TRAFFIC_3D_TEXT_SCANNER): ARRAY [DOUBLE] is
+			-- Read a vector from `input'.
 		local
 			i: INTEGER
 		do
@@ -333,9 +315,10 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	read_face (input: Q_TEXT_SCANNER): TUPLE [ARRAY [INTEGER], ARRAY [INTEGER], ARRAY [INTEGER]] is
+	read_face (input: TRAFFIC_3D_TEXT_SCANNER): TUPLE [ARRAY [INTEGER], ARRAY [INTEGER], ARRAY [INTEGER]] is
+			-- Read a face from `input'.
 		local
-			tokenizer_: Q_TEXT_SCANNER
+			tokenizer_: TRAFFIC_3D_TEXT_SCANNER
 			vectors_: ARRAY [INTEGER]
 			vectors_index_: INTEGER
 			normals_: ARRAY [INTEGER]
@@ -377,5 +360,33 @@ feature {NONE} -- Implementation
 		end
 
 	cache: DS_HASH_TABLE [TUPLE[INTEGER, DOUBLE, DOUBLE, DOUBLE], STRING]
+
+	frame_count: INTEGER
+
+	vector_count: INTEGER
+
+	normal_count: INTEGER
+
+	texture_coordinate_count: INTEGER
+
+	has_vectors: BOOLEAN
+
+	has_normals: BOOLEAN
+
+	has_texture_cooridnates: BOOLEAN
+
+	face_count: INTEGER
+
+	vectors: ARRAY [ARRAY [DOUBLE]]
+
+	normals: ARRAY [ARRAY [DOUBLE]]
+
+	frame_vectors: ARRAY [ARRAY [ARRAY [DOUBLE]]]
+
+	frame_normals: ARRAY [ARRAY [ARRAY [DOUBLE]]]
+
+	texture_coordinates: ARRAY [ARRAY [DOUBLE]]
+
+	faces: ARRAY [TUPLE [ARRAY [INTEGER], ARRAY [INTEGER], ARRAY [INTEGER]]]
 
 end -- class traffic_3D_OBJ_LOADER

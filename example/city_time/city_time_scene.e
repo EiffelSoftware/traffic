@@ -23,7 +23,6 @@ feature -- Interface
 	make is
 			-- Create all gui elements.
 		local
-			op_env: OPERATING_ENVIRONMENT
 			fs: KL_FILE_SYSTEM
 			s: STRING
 		do
@@ -279,13 +278,13 @@ feature -- Event handling
 	lines_unchecked is
 			-- Checkbox has been unchecked.
 		do
-			map.set_lines_shown (False)
+			map.disable_lines_shown
 		end
 
 	lines_checked is
 			-- Checkbox has been checked.
 		do
-			map.set_lines_shown (True)
+			map.enable_lines_shown
 		end
 
 feature	 -- Basic operations

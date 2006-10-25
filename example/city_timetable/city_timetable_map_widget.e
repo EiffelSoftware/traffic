@@ -28,6 +28,10 @@ feature -- Initialization
 			mouse_wheel_up_event.subscribe (agent wheel_up)
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
+			create event_taxi_offices.make(0)
+			create dispatcher_taxi_offices.make(0)
+			create random.make
+			random.set_seed(time.time.ticks)
 		end
 
 feature -- Access
@@ -37,6 +41,12 @@ feature -- Access
 
 	shortest_path_line: TRAFFIC_LINE
 			-- Artificial traffic line for the shortest path
+
+	event_taxi_offices: ARRAYED_LIST[TRAFFIC_EVENT_TAXI_OFFICE]
+		-- Event taxi offices list
+
+	dispatcher_taxi_offices: ARRAYED_LIST[TRAFFIC_DISPATCHER_TAXI_OFFICE]
+		-- Dispatcher taxi offices list
 
 feature -- Basic operations
 
@@ -58,6 +68,47 @@ feature -- Basic operations
 			factory_exists: travelers_representation /= Void
 		do
 			travelers_representation.add_tram_per_line_with_schedule (map, 1)
+		end
+
+	add_dispatcher_taxi_office(number_of_taxis: INTEGER) is
+			-- Add a new taxi_office to the map. The taxi_office has 'number_of_taxis' taxis.
+			-- Set the seed on the office to time.tick.
+			-- This seed is for random generating the positions of the taxis associated with the office.
+		local
+			taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE
+		do
+			create taxi_office.make(number_of_taxis, time.time.ticks)
+			dispatcher_taxi_offices.extend(taxi_office)
+			map.add_taxi_office (taxi_office)
+			add_taxis(taxi_office.taxi_list)
+		end
+
+	add_event_taxi_office(number_of_taxis: INTEGER) is
+			-- Add an event_taxi_office to the map.
+		local
+			taxi_office: TRAFFIC_EVENT_TAXI_OFFICE
+		do
+			-- set seed for random generating the positions of the taxis
+			-- associated with the office to time.tick
+			create taxi_office.make(number_of_taxis, time.time.ticks)
+			event_taxi_offices.extend(taxi_office)
+			map.add_taxi_office (taxi_office)
+			add_taxis(taxi_office.taxi_list)
+		end
+
+	add_taxis (taxis: ARRAYED_LIST[TRAFFIC_MOVING]) is
+			-- Add taxis to the map.
+		require
+			taxis_not_void: taxis /= void
+
+		do
+			taxis.do_all (agent travelers_representation.add_traveler(?, map))
+		end
+
+	set_taxi_office_type(type: STRING) is
+			-- Set type of the current taxi office to be used.
+		do
+			current_taxi_office := type
 		end
 
 feature -- Drawing
@@ -124,6 +175,30 @@ feature {NONE} -- Event handling
 						marked_station_changed := True
 					end
 				end
+			elseif event.is_right_button then
+				if map /= Void then
+					place := places_representation.place_at_position (clicked_point)
+					if place /= Void then
+						taxi_place := place
+						if current_taxi_office.is_equal ("Event Taxi Office") then
+
+							-- Request event on the TAXI_EVENT_OFFICE.
+							-- Publish orders a taxi to the place
+							-- Request to go from the place where the user clicked on to a random destination.
+
+							event_taxi_offices.go_i_th (1)
+							event_taxi_offices.item.request.publish([place.position, random_destination])
+							marked_station_changed := True
+						else
+							--Call on taxi office to order a taxi.
+							--Order to go from the place where the user clicked on to a random destination.
+
+							dispatcher_taxi_offices.go_i_th (1)
+							dispatcher_taxi_offices.item.call (place.position, random_destination)
+							marked_station_changed := True
+						end
+					end
+				end
 			end
 		end
 
@@ -181,6 +256,14 @@ feature {NONE} -- Event handling
 
 feature {NONE} -- Implementation
 
+	taxi_place: TRAFFIC_PLACE
+
+	random: RANDOM
+			-- Random number used for taxi request destination.
+
+	current_taxi_office: STRING
+			-- Taxi office to serve requests.
+
 	last_polypoint: EM_VECTOR_2D
 			-- The last polypoint visited
 
@@ -204,6 +287,26 @@ feature {NONE} -- Implementation
 			create Result.make_with_rgb (0, 0, 255)
 		ensure
 			Result_exists: Result /= Void
+		end
+
+	marked_station_changed: BOOLEAN
+
+	random_destination: EM_VECTOR_2D is
+			-- Random destination for taxi
+		require
+			random /= Void
+		local
+			temp_x, temp_y: DOUBLE
+			destination: EM_VECTOR_2D
+		do
+			random.forth
+			temp_x := random.double_item
+			random.forth
+			temp_y := random.double_item
+			create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
+			-- approximated places so that they are on the map
+			random.forth
+			Result := destination
 		end
 
 invariant

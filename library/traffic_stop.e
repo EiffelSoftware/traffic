@@ -57,18 +57,18 @@ feature -- Access
 		end
 
 	line: TRAFFIC_LINE
-
-feature -- Measurement
+			-- Line this stop belongs to
 
 	hash_code: INTEGER is
-			-- Hash code value.
+			-- Hash code value
 		do
 			Result := ([place.name, line.name]).hash_code
 		end
 
+feature -- Output
 
 	out: STRING is
-			-- Info about stop.
+			-- Info about stop
 		do
 			Result := "Traffic stop:%NPlace: " + place.name + "%NLine: " + line.name
 		end

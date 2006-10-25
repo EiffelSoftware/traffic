@@ -6,10 +6,10 @@ indexing
 class
 	TRAFFIC_LINE_SECTION_STATE_CONSTANTS
 
-feature -- Access
+feature -- Constants
 
 	State_normal, State_collision: INTEGER is unique
-			-- State constants.
+			-- State constants
 
 feature -- Status report
 
@@ -17,16 +17,16 @@ feature -- Status report
 			-- Is `a_state_value' a state constants?
 		do
 			Result := False
-			
-			inspect 
+
+			inspect
 				a_state_value
-			when State_normal then 
+			when State_normal then
 				Result := True
-			when State_collision then 
+			when State_collision then
 				Result := True
 			end
 		end
-		
+
 feature -- Basic operation
 
 	value_to_string (a_state_value: INTEGER): STRING is
@@ -44,5 +44,5 @@ feature -- Basic operation
 				Result := "not defined"
 			end
 		end
-		
+
 end

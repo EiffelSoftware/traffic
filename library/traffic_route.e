@@ -175,6 +175,7 @@ feature -- Basic operation
 			end
 		end
 
+feature -- Output
 
 	out: STRING is
 			-- Textual Representation
@@ -230,10 +231,11 @@ feature -- Basic operation
 
 feature {NONE} -- Implementation
 
-		map: TRAFFIC_MAP
-				-- Map route is on.
+	map: TRAFFIC_MAP
+			-- Map route is on.
 
 invariant
+
 	map_exists: map /= Void -- map exists
 
 end

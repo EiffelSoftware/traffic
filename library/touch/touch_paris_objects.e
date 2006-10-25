@@ -6,7 +6,7 @@ indexing
 deferred class TOUCH_PARIS_OBJECTS
 
 feature -- Access
-	
+
 	Paris: TOUCH_MAP is
 			-- Map of Paris
 		deferred
@@ -18,49 +18,49 @@ feature -- Status report
 
 	is_paris_loaded: BOOLEAN
 			-- Is the Paris map loaded?
-					
+
 feature -- Access (Lines)
 
-	Line1: TOUCH_SIMPLE_LINE is 
+	Line1: TOUCH_SIMPLE_LINE is
 			-- Line 1 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 1")  
+			Result := Paris.simple_line("tram 1")
 		end
-	
-	Line2: TOUCH_SIMPLE_LINE is 
+
+	Line2: TOUCH_SIMPLE_LINE is
 			-- Line 2 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 2")  
+			Result := Paris.simple_line("tram 2")
 		end
-	
-	Line3: TOUCH_SIMPLE_LINE is 
+
+	Line3: TOUCH_SIMPLE_LINE is
 			-- Line 3 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 3")  
+			Result := Paris.simple_line("tram 3")
 		end
 
-	Line7_a: TOUCH_SIMPLE_LINE is 
+	Line7_a: TOUCH_SIMPLE_LINE is
 			-- Line 7 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 7(a)")  
+			Result := Paris.simple_line("tram 7(a)")
 		end
-							
-	Line8: TOUCH_SIMPLE_LINE is 
+
+	Line8: TOUCH_SIMPLE_LINE is
 			-- Line 8 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 8")  
+			Result := Paris.simple_line("tram 8")
 		end
-				
+
 feature  -- Predefined objects (Places)
 
 	Place_Balard: TRAFFIC_PLACE is
@@ -72,7 +72,7 @@ feature  -- Predefined objects (Places)
 		ensure
 			Result_exists: Result /= Void
 		end
-		
+
 	Place_Issy: TRAFFIC_PLACE is
 			-- Place Issy
 		require
@@ -82,7 +82,7 @@ feature  -- Predefined objects (Places)
 		ensure
 			Result_exists: Result /= Void
 		end
-		
+
 	Place_Montrouge: TRAFFIC_PLACE is
 			-- Place Montrouge
 		require
@@ -91,8 +91,8 @@ feature  -- Predefined objects (Places)
 			Result := Paris.place ("place Chatillon - Montrouge")
 		ensure
 			Result_exists: Result /= Void
-		end		
-		
+		end
+
 	Place_Gare_de_Lyon: TRAFFIC_PLACE is
 			-- PLACE Gare de Lyon
 		require
@@ -102,7 +102,7 @@ feature  -- Predefined objects (Places)
 		ensure
 			Result_exists: Result /= Void
 		end
-		
+
 	Place_Invalides: TRAFFIC_PLACE is
 			-- Place Invalides
 		require
@@ -152,7 +152,7 @@ feature  -- Predefined objects (Places)
 		ensure
 			Result_exists: Result /= Void
 		end
-		
+
 	Place_Concorde: TRAFFIC_PLACE is
 			-- Place Concorde
 		require
@@ -162,7 +162,7 @@ feature  -- Predefined objects (Places)
 		ensure
 			Result_exists: Result /= Void
 		end
-		
+
 	Place_Republique: TRAFFIC_PLACE is
 			-- Place Republique
 		require
@@ -182,22 +182,46 @@ feature  -- Predefined objects (Places)
 		ensure
 			Result_exists: Result /= Void
 		end
-		
+
+feature -- Predefined objects (Buildings)
+
 	Louvre_Building: TOUCH_BUILDING is
 			-- The building at the place of Louvre
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.make_building_at_place(Paris.place ("place Palais Royal Musee du Louvre"))
+			Result := Paris.new_building_at_place(Paris.place ("place Palais Royal Musee du Louvre"))
 		end
-		
+
+feature -- Predefined objects (Routes)
+
 	Route1: TOUCH_ROUTE is
-			-- The route
+			-- Route one
 		require
 			Paris_exists: is_paris_loaded
+		local
+				temp_places: LINKED_LIST [TRAFFIC_PLACE]
 		once
-			Result := Paris.make_route1 ()
+ 			create temp_places.make
+			temp_places.force (Paris.place ("place Concorde"))
+			temp_places.force (Paris.place ("place Republique"))
+
+			Result := Paris.new_route (temp_places)
+		end
+
+	Route2: TOUCH_ROUTE is
+			-- Route 2
+		require
+			Paris_exists: is_paris_loaded
+		local
+				temp_places: LINKED_LIST [TRAFFIC_PLACE]
+		once
+ 			create temp_places.make
+			temp_places.force (Paris.place ("place Bastille"))
+			temp_places.force (Paris.place ("place La Motte - Picquet - Grenelle"))
+
+			Result := Paris.new_route (temp_places)
 		end
 
 end
-		
+

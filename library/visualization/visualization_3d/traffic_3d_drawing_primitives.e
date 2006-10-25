@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Drawing primitives for OpenGL Drawing"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,7 +24,11 @@ inherit
 feature -- Basic operations
 
 	create_circle (a_color: GL_VECTOR_3D [DOUBLE]; a_center: GL_VECTOR_3D [DOUBLE]; a_radius: REAL) is
-			--
+			-- Draw a circle with color `a_color' at center `a_center' and with radius `a_radius'.
+		require
+			a_color_exists: a_color /= Void
+			a_center_exists: a_center /= Void
+			a_radius_valid: a_radius > 0.0
 		do
 			gl_matrix_mode_external (Em_gl_modelview)
 			gl_push_matrix_external
@@ -39,9 +42,14 @@ feature -- Basic operations
 			gl_flush_external
 		end
 
-
 	create_rectangle (a_color: GL_VECTOR_3D [DOUBLE]; p1, p2, p3, p4: GL_VECTOR_3D [DOUBLE]) is
-			--
+			-- Create a plane defined by the four points `p1', `p2', `p3', and `p4' with color `a_color'.
+		require
+			p1_exists: p1 /= Void
+			p2_exists: p2 /= Void
+			p3_exists: p3 /= Void
+			p4_exists: p4 /= Void
+			a_color_exists: a_color /= Void
 		do
 			gl_begin_external (em_gl_quads)
 				gl_color3dv_external (a_color.pointer)
@@ -55,37 +63,6 @@ feature -- Basic operations
 				gl_vertex3d_external (p4.x, p4.y, p4.z)
 			gl_end
 			gl_flush_external
-		end
-
-	create_polyline (a_color: GL_VECTOR_3D [DOUBLE]; a_polypoints: ARRAYED_LIST [GL_VECTOR_3D [DOUBLE]]; a_height: DOUBLE) is
-			--
-		local
-			i: INTEGER
-			org, dst: GL_VECTOR_3D[DOUBLE]
-			delta_x, delta_z, norm: DOUBLE
-		do
-			from
-				i := 1
-			until
-				i >= a_polypoints.count
-			loop
-				org := a_polypoints.i_th (i)
-				dst := a_polypoints.i_th (i+1)
-				delta_x := dst.x - org.x
-				delta_z := dst.z - org.z
-
-				norm := sqrt (delta_x*delta_x + delta_z*delta_z)
-
-				if norm = 0 then
-					norm := 1
-				end
-				create_rectangle (a_color, create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*a_height/norm, org.y, org.z+delta_x*a_height/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*a_height/norm, org.y, org.z-delta_x*a_height/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*a_height/norm, dst.y, dst.z-delta_x*a_height/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*a_height/norm, dst.y, dst.z+delta_x*a_height/norm))
-				create_circle (a_color, org, a_height)
-------				create_cube (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x-delta_z*line_width/norm, org.y + line_height + 0.4*height + highlighting_delta, org.z+delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (org.x+delta_z*line_width/norm, org.y + line_height + 0.4*height + highlighting_delta, org.z-delta_x*line_width/norm), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x+delta_z*line_width/norm, dst.y + line_height + 0.4*height + highlighting_delta, dst.z-delta_x*line_width/norm) ,create {GL_VECTOR_3D[DOUBLE]}.make_xyz (dst.x-delta_z*line_width/norm, dst.y + line_height + 0.4*height + highlighting_delta, dst.z+delta_x*line_width/norm))
-------				create_cylinder (org, line_color, line_width, line_height + line_height + 0.4*height + highlighting_delta)
-
-				i := i + 1
-			end
 		end
 
 	create_cylinder (a_color: GL_VECTOR_3D [DOUBLE]; a_center: GL_VECTOR_3D [DOUBLE]; a_radius, a_height: DOUBLE) is
@@ -119,6 +96,7 @@ feature -- Basic operations
 			p2_exists: p2 /= Void
 			p3_exists: p3 /= Void
 			p4_exists: p4 /= Void
+			a_color_exists: a_color /= Void
 		do
 			gl_begin_external (em_gl_quads)
 				gl_color3dv_external (a_color.pointer)

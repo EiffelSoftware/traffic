@@ -22,35 +22,37 @@ feature {NONE} -- Creation
 feature -- Access
 
 	connections: LIST[TRAFFIC_CONNECTION] is
-			-- don't allow them to be changed
+			-- Connections
 		do
 			Result := connections_impl.twin
 		end
 
-feature -- Status report
-
 	origin: TRAFFIC_PLACE is
-			-- get origin
+			-- Origin of the path
 		do
 			Result := connections.first.origin
 		end
 
 	destination: TRAFFIC_PLACE is
-			-- get destination
+			-- Destination of the path
 		do
 			Result := connections.last.destination
 		end
 
+feature -- Status report
+
 	is_valid_for_insertion (a_connection: TRAFFIC_CONNECTION): BOOLEAN is
-			-- is `a_connection' valid for insertion?
+			-- Is `a_connection' valid for insertion?
 		require
 			a_connection /= Void
 		do
 			Result := last_inserted_node = Void or else last_inserted_node = a_connection.origin_impl
 		end
 
+feature -- Output
+
 	textual_description: STRING is
-			-- a description providing information about the path
+			-- Description providing information about the path
 		local
 			section: TRAFFIC_PATH_SECTION
 			i: INTEGER
@@ -110,7 +112,7 @@ feature -- Status report
 feature -- Basic operations
 
 	extend (a_connection: TRAFFIC_CONNECTION) is
-			-- add the connection
+			-- Add the connection `a_connection' to the path.
 		require
 			a_connection /= Void
 --			is_valid_for_insertion (a_connection)
@@ -142,15 +144,19 @@ feature -- Basic operations
 feature {NONE} -- Implementation
 
 	last_inserted_node: TRAFFIC_NODE
+			-- Node inserted as last
 
 	connections_impl: ARRAYED_LIST [TRAFFIC_CONNECTION]
+			-- Connections of the path
 
 	path_sections: ARRAYED_LIST [TRAFFIC_PATH_SECTION]
+			-- Line sections over which the path goes
 
 	scale_factor: DOUBLE
+			-- Scale factor for real world distances
 
 	scale (a_distance: DOUBLE): DOUBLE is
-			-- compute real-world distance
+			-- Real-world distance 
 		do
 			Result := a_distance * scale_factor
 		end

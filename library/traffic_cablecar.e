@@ -1,5 +1,5 @@
 indexing
-	description: "cablecar"
+	description: "Vehicles of type cablecar"
 	date: "$Date: 6/6/2006$"
 	revision: "$Revision$"
 
@@ -9,12 +9,9 @@ class
 inherit
 	TRAFFIC_TRAM
 
-	
-feature -- Basic operations 
-
-
-
 invariant
-	wagon_limitation = 0
+
+	wagon_limited: wagon_limitation = 0
+
 end
 

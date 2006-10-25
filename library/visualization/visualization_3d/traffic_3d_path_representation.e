@@ -31,7 +31,7 @@ create
 feature -- Initialization
 
 	make (a_map: TRAFFIC_MAP) is
-			-- Create a new object.
+			-- Initialize the representation and set `map' to `a_map'.
 		require
 			map_exists: a_map /= void
 		do
@@ -44,9 +44,10 @@ feature -- Initialization
 		ensure
 			path_factory_created: path_factory /= Void
 			path_objects_created: connection_views /= Void
+			map_set: map = a_map
 		end
 
-feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
+feature -- Basic operations
 
 	draw is
 			-- Draw all paths onto the screen.
@@ -63,10 +64,8 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			end
 		end
 
-feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
-
 	add_path (a_path: TRAFFIC_PATH) is
-			-- Add `a_path'
+			-- Generate representation for `a_path'.
 		require
 			path_exists: a_path /= Void
 		local

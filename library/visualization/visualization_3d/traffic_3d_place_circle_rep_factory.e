@@ -1,6 +1,5 @@
 indexing
 	description: "Factory generating 3d representations of places as circles for each stop"
-	author: ""
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -91,6 +90,5 @@ feature {NONE} -- Implementation
 		ensure then
 			collision_polygon_exists: collision_polygon /= Void
 		end
-
 
 end

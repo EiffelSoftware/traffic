@@ -8,16 +8,16 @@ class
 	TRAFFIC_SCHEDULE_LOADER
 
 inherit
-	
+
 	KL_SHARED_FILE_SYSTEM
-	
+
 	TRAFFIC_SHARED_ERROR_HANDLER
-	
+
 	EXCEPTIONS
 
 create
 	make
-	
+
 feature -- Initialization
 
 	make (a_filename: STRING) is
@@ -33,7 +33,7 @@ feature -- Initialization
 				has_error := True
 			else
 				directory_name := file_system.dirname (a_filename)
-				xml_filename := a_filename 
+				xml_filename := a_filename
 				dump_filename := file_system.pathname (directory_name, file_system.basename (xml_filename).split('.')[1] + ".dump")
 				log_filename := file_system.pathname (directory_name, "dump.log")
 				has_error := False
@@ -41,8 +41,10 @@ feature -- Initialization
 			end
 		end
 
+feature -- Basic operations
+
 	load_schedule is
-			-- Load map  from xml file. 
+			-- Load map  from xml file.
 			-- If map loading was unsuccessful, has_error will be set to `True'.
 		local
 			directory: DIRECTORY
@@ -54,7 +56,7 @@ feature -- Initialization
 				if not directory.has_entry (file_system.basename (log_filename)) then
 					create log_file.make_create_read_write (log_filename)
 				end
-					get_from_xml
+				get_from_xml
 			end
 		end
 
@@ -66,14 +68,16 @@ feature -- Status report
 feature -- Access
 
 	schedule: TRAFFIC_SCHEDULE_FACTORY
-		
+			-- Generated schedule
+
 feature {NONE} -- Implementation
 
 	log_filename: STRING
-			
+			-- Log filename
+
 	directory_name: STRING
 			-- Directory of all the map files
-			
+
 	xml_filename: STRING
 			-- Location of the xml-File
 
@@ -82,7 +86,7 @@ feature {NONE} -- Implementation
 
 	get_from_xml is
 			-- Initialize with schedule loaded from file with `a_filename'.
-			-- (either `a_filename' is an absolute path 
+			-- (either `a_filename' is an absolute path
 			--  or relative to current working directory)
 		require
 			xml_file_exists: xml_filename /= Void and then file_system.file_exists (xml_filename)
@@ -96,10 +100,10 @@ feature {NONE} -- Implementation
 			schedule_parser.parse
 			if schedule_parser.can_process then
 				schedule_parser.process
-			end			
+			end
 			if schedule_parser.has_error then
 				has_error := True
-				raise ("Error while parsing " + xml_filename + ": " + schedule_parser.error_description)	
+				raise ("Error while parsing " + xml_filename + ": " + schedule_parser.error_description)
 			else
 				schedule := factory
 				has_error := False

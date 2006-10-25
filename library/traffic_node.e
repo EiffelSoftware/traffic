@@ -30,9 +30,16 @@ feature {NONE} -- Create
 feature -- Access
 
 	place: TRAFFIC_PLACE
+			-- Place that it belongs to
 
 	position: EM_VECTOR_2D
 			-- Position of the node in the map
+
+	hash_code: INTEGER is
+			-- Hash code value
+		do
+			Result := place.hash_code
+		end
 
 feature -- Element change
 
@@ -44,14 +51,6 @@ feature -- Element change
 			position := a_position
 		ensure
 			position_set: position = a_position
-		end
-
-feature -- Measurement
-
-	hash_code: INTEGER is
-			-- Hash code value.
-		do
-			Result := place.hash_code
 		end
 
 invariant

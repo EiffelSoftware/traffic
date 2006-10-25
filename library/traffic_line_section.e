@@ -14,10 +14,9 @@ inherit
 			origin_impl,
 			destination_impl
 		end
-create {TRAFFIC_MAP_FACTORY, TRAFFIC_MAP, TRAFFIC_MAP_WIDGET, TRAFFIC_SIMPLE_LINE}
-	make
 
 create
+	make,
 	make_non_insertable
 
 feature {NONE} -- Initialization
@@ -91,23 +90,34 @@ feature {NONE} -- Initialization
 			roads_created: roads/=Void
 		end
 
-
 feature -- Access
 
 	type: TRAFFIC_TYPE_LINE
-		-- Type of the line section
+			-- Type of the line section
 
 	line: TRAFFIC_LINE
-			-- Line this line section belongs to.
+			-- Line this line section belongs to
 
 	state: TRAFFIC_LINE_SECTION_STATE
-			-- State of line section.
-
+			-- State of line section
 
 	roads: ARRAYED_LIST [TRAFFIC_ROAD]
-			-- Roads on which the line section lies.
+			-- Roads on which the line section lies
 
-feature -- Status setting
+	hash_code: INTEGER is
+			-- Hash code value
+		local
+			line_name: STRING
+		do
+			if line = Void then
+				line_name := ""
+			else
+				line_name := line.name
+			end
+			Result := ([origin, destination, type.name, line_name]).hash_code
+		end
+
+feature -- Element change
 
 	set_state (a_state: TRAFFIC_LINE_SECTION_STATE ) is
 			-- Change state to `a_state'.
@@ -130,6 +140,8 @@ feature -- Status setting
 			roads_exists: roads /= Void
 			roads_equal: roads.count > 0 implies equal (roads, a_roads)
 		end
+
+feature -- Basic operations
 
 	remove_roads is
 			-- Remove roads.
@@ -166,23 +178,10 @@ feature {TRAFFIC_MAP, TRAFFIC_LINE} -- Access
 
 	destination_impl: TRAFFIC_STOP
 
-feature -- Basic operation
-
-	hash_code: INTEGER is
-			-- Hash code value.
-		local
-			line_name: STRING
-		do
-			if line = Void then
-				line_name := ""
-			else
-				line_name := line.name
-			end
-			Result := ([origin, destination, type.name, line_name]).hash_code
-		end
+feature -- Output
 
 	out: STRING is
-			-- Textual representation.
+			-- Textual representation
 		local
 			line_name: STRING
 		do

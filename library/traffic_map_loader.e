@@ -42,6 +42,8 @@ feature -- Initialization
 			dump_loading_enabled: is_dump_loading_enabled
 		end
 
+feature -- Basic operations
+
 	load_map is
 			-- Load map if available from dump file, else from xml file.
 			-- If map loading was unsuccessful, has_error will be set to `True'.
@@ -98,8 +100,7 @@ feature -- Status setting
 feature -- Access
 
 	map: TRAFFIC_MAP
-
-
+			-- Map retrieved from loading
 
 feature {NONE} -- Implementation
 

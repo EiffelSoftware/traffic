@@ -34,9 +34,6 @@ inherit
 				out as math_out
 		end
 
---	MATH_CONST
---		export {NONE} all end
-
 create
 	make
 
@@ -71,23 +68,23 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	name: STRING
-			-- Name of line.
+			-- Name of line
 
 	type: TRAFFIC_TYPE_LINE
-			-- Type of line.
+			-- Type of line
 
 	terminal_1: TRAFFIC_PLACE
-		-- Terminal of line in one direction.
+			-- Terminal of line in one direction
 
 	terminal_2: TRAFFIC_PLACE
-		-- Terminal of line in other direction.
+			-- Terminal of line in other direction
 
 	color: TRAFFIC_COLOR
-		-- Line color.
-		-- Used as color represenation.
+			-- Line color
+			-- Used as color represenation
 
 	start_to_terminal (a_terminal: TRAFFIC_PLACE): TRAFFIC_PLACE is
-			-- The start place to existing terminal `a_terminal'.
+			-- Start place to existing terminal `a_terminal'
 		require
 			a_terminal_exists: a_terminal /= Void
 			a_terminal_valid: is_terminal (a_terminal)
@@ -126,7 +123,6 @@ feature -- Removal
 		ensure
 			color_removed: color = Void
 		end
-
 
 feature -- Status report
 
@@ -184,7 +180,7 @@ feature -- Status report
 feature -- Measurement
 
 	hash_code: INTEGER is
-			-- Hash code value.
+			-- Hash code value
 		do
 			Result := (name + type.name).hash_code
 		end
@@ -255,6 +251,95 @@ feature -- Basic operations
 			line_added_to_line_section: a_line_section.line = Current
 		end
 
+	road_points: ARRAYED_LIST[EM_VECTOR_2D] is
+			-- returns the polypoints retrieve by the roads
+			-- that belongs to this line
+		local
+			roads:ARRAYED_LIST[TRAFFIC_ROAD]
+			pp: ARRAYED_LIST[EM_VECTOR_2D]
+			invert, is_station: BOOLEAN
+			v: EM_VECTOR_2D
+		do
+			create Result.make(1)
+			-- loop on all the line sections
+			from
+				start
+			until
+				after
+			loop
+				roads:=item.roads
+				is_station:=true
+				-- loop on all the roads
+
+				if item.origin=roads.first.origin and item.destination=roads.last.destination then
+					invert:=false
+				elseif item.origin=roads.last.destination and item.destination=roads.first.origin then
+
+					invert:=true
+				else
+					io.putstring ("Invalid roads for given line section%N")
+					io.putstring("Line section origin: "+item.origin.name+" - Line section destination:"+item.destination.name+"%N")
+				end
+				if invert then
+					from
+						roads.finish
+					until
+						roads.before
+					loop
+						pp:=roads.item.polypoints
+						-- loop on all the polypoints
+						from
+							pp.finish
+						until
+							pp.before
+						loop
+							v:=pp.item
+							if is_station then
+								Result.extend(v)
+								Result.extend(v)
+								Result.extend(v)
+								is_station:=false
+							end
+							Result.extend(v)
+							pp.back
+						end
+
+						roads.back
+					end
+				else
+					from
+						roads.start
+					until
+						roads.after
+					loop
+						pp:=roads.item.polypoints
+						-- loop on all the polypoints
+						from
+							pp.start
+						until
+							pp.after
+						loop
+							v:=pp.item
+							if is_station then
+								Result.extend(v)
+								Result.extend(v)
+								Result.extend(v)
+								is_station:=false
+							end
+							Result.extend(v)
+							pp.forth
+						end
+
+						roads.forth
+					end
+				end
+
+				forth
+			end
+		end
+
+feature -- Output
+
 	out: STRING is
 			-- Textual representation
 		local
@@ -270,114 +355,67 @@ feature -- Basic operations
 				"%N   other direction: " + other_direction_out
 		end
 
-	road_points: ARRAYED_LIST[EM_VECTOR_2D] is
-			-- returns the polypoints retrieve by the roads
-			-- that belongs to this line
-			local
-				roads:ARRAYED_LIST[TRAFFIC_ROAD]
-				pp: ARRAYED_LIST[EM_VECTOR_2D]
-				invert, is_station: BOOLEAN
-				v: EM_VECTOR_2D
-			do
-				create Result.make(1)
-				-- loop on all the line sections
+	one_direction_out: STRING is
+			-- Textual representation of one direction
+		local
+			l_line_section: TRAFFIC_LINE_SECTION
+		do
+			if terminal_1 = Void then
+				Result := ""
+			else
+				Result := first.origin.name
 				from
 					start
 				until
-					after
+					after or equal (item, start_other_direction)
 				loop
-					roads:=item.roads
-					is_station:=true
-					-- loop on all the roads
-
-					if item.origin=roads.first.origin and item.destination=roads.last.destination then
-						invert:=false
-					elseif item.origin=roads.last.destination and item.destination=roads.first.origin then
-
-						invert:=true
-					else
-						io.putstring ("Invalid roads for given line section%N")
-						io.putstring("Line section origin: "+item.origin.name+" - Line section destination:"+item.destination.name+"%N")
-					end
-					if invert then
-						from
-							roads.finish
-						until
-							roads.before
-						loop
-							pp:=roads.item.polypoints
-							-- loop on all the polypoints
-							from
-								pp.finish
-							until
-								pp.before
-							loop
-								v:=pp.item
-								if is_station then
-									Result.extend(v)
-									Result.extend(v)
-									Result.extend(v)
-									is_station:=false
-								end
-								Result.extend(v)
-								pp.back
-							end
-
-							roads.back
-						end
-					else
-						from
-							roads.start
-						until
-							roads.after
-						loop
-							pp:=roads.item.polypoints
-							-- loop on all the polypoints
-							from
-								pp.start
-							until
-								pp.after
-							loop
-								v:=pp.item
-								if is_station then
-									Result.extend(v)
-									Result.extend(v)
-									Result.extend(v)
-									is_station:=false
-								end
-								Result.extend(v)
-								pp.forth
-							end
-
-							roads.forth
-						end
-					end
-
+					l_line_section := item
+					Result := Result + ", " + l_line_section.destination.name
 					forth
 				end
 			end
+		end
 
+	other_direction_out: STRING is
+			-- Textual representation of other direction
+		local
+			position: INTEGER
+			l_line_section: TRAFFIC_LINE_SECTION
+		do
+			if terminal_2 = Void then
+				Result := ""
+			else
+				Result := start_other_direction.origin.name
+				position := index_of (start_other_direction, 1)
+				from
+					go_i_th (position)
+				until
+					after
+				loop
+					l_line_section := item
+					Result := Result + ", " + l_line_section.destination.name
+					forth
+				end
+			end
+		end
 
 feature {NONE} -- Implementation
 
-	--placess_one_direction, places_other_direction: LINKED_LIST [TRAFFIC_PLACE]
-			-- Places in each direction.
-			-- Used to omit circles.
-
 	stops_one_direction, stops_other_direction: LINKED_LIST [TRAFFIC_STOP]
-			-- stops in each direction
+			-- Stops in each direction
 
 	is_stop_of_place (a_stop: TRAFFIC_STOP; a_place: TRAFFIC_PLACE): BOOLEAN is
-			-- checks if the stop is at the given place and sevices the current line
-			do
-				Result := a_stop.place.name.is_equal (a_place.name) and then a_stop.line.name.is_equal (name)
-			end
-
-
+			--Is `a_stop' at the given place `a_place' and sevices the current line?
+		require
+			a_stop_exists: a_stop /= Void
+			a_place_exists: a_place /= Void
+		do
+			Result := a_stop.place.name.is_equal (a_place.name) and then a_stop.line.name.is_equal (name)
+		end
 
 	start_other_direction: TRAFFIC_LINE_SECTION
-			-- Starting line section other direction.
-			-- Starting line section one direction is first element in list.
+			-- Starting line section other direction
+			-- Starting line section one direction is first element in list
 
 	is_valid_insertion_one_direction (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
 			-- Can line section from `a_origin' to `a_destination' be added in one direction?
@@ -471,108 +509,65 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	one_direction_out: STRING is
-			-- Textual representation of one direction.
-		local
-			l_line_section: TRAFFIC_LINE_SECTION
-		do
-			if terminal_1 = Void then
-				Result := ""
-			else
-				Result := first.origin.name
-				from
-					start
-				until
-					after or equal (item, start_other_direction)
-				loop
-					l_line_section := item
-					Result := Result + ", " + l_line_section.destination.name
-					forth
-				end
-			end
-		end
-
-	other_direction_out: STRING is
-			-- Textual representation of other direction.
-		local
-			position: INTEGER
-			l_line_section: TRAFFIC_LINE_SECTION
-		do
-			if terminal_2 = Void then
-				Result := ""
-			else
-				Result := start_other_direction.origin.name
-				position := index_of (start_other_direction, 1)
-				from
-					go_i_th (position)
-				until
-					after
-				loop
-					l_line_section := item
-					Result := Result + ", " + l_line_section.destination.name
-					forth
-				end
-			end
-		end
 
 
-
-		angle(st,dest: EM_VECTOR_2D):DOUBLE is
+	angle(st,dest: EM_VECTOR_2D):DOUBLE is
 			-- Set the angles to the x- and y-axis respectively.
-			local
-				x_difference, y_difference, hypo, quad: DOUBLE
-				angle_x:DOUBLE
-			do
-				x_difference := st.x - dest.x
-				y_difference := st.y - dest.y
-				hypo := sqrt ((x_difference * x_difference) + (y_difference * y_difference))
+		local
+			x_difference, y_difference, hypo, quad: DOUBLE
+			angle_x:DOUBLE
+		do
+			x_difference := st.x - dest.x
+			y_difference := st.y - dest.y
+			hypo := sqrt ((x_difference * x_difference) + (y_difference * y_difference))
 
-				if hypo /= 0 then
-					-- arc_sine in radian
-					quad := 0
-					if  (x_difference >= 0) and (y_difference >= 0) then
-						angle_x := arc_sine (x_difference/hypo)
-							-- the same in degree
-						angle_x := angle_x * 180 / pi
-						angle_x := 180 + angle_x
-					elseif (x_difference < 0) and (y_difference >= 0) then
-						x_difference := x_difference.abs
-						y_difference := y_difference.abs
-						angle_x := arc_sine (x_difference/hypo)
-							-- the same in degree
-						angle_x := angle_x * 180 / pi
-						angle_x := 180 - angle_x
-					elseif (x_difference < 0) and (y_difference < 0) then
-						x_difference := x_difference.abs
-						y_difference := y_difference.abs
-						angle_x := arc_sine (x_difference/hypo)
-							-- the same in degree
-						angle_x := angle_x * 180 / pi
-					elseif (x_difference >= 0) and (y_difference < 0) then
-						x_difference := x_difference.abs
-						y_difference := y_difference.abs
-						angle_x := arc_sine (x_difference/hypo)
-							-- the same in degree
-						angle_x := angle_x * 180 / pi
-						angle_x := 360 - angle_x
-					end
-
-					if angle_x < 0 then
-						angle_x := 360 + angle_x
-					elseif angle_x > 360 then
-						angle_x := angle_x - 360
-					end
+			if hypo /= 0 then
+				-- arc_sine in radian
+				quad := 0
+				if  (x_difference >= 0) and (y_difference >= 0) then
+					angle_x := arc_sine (x_difference/hypo)
+						-- the same in degree
+					angle_x := angle_x * 180 / pi
+					angle_x := 180 + angle_x
+				elseif (x_difference < 0) and (y_difference >= 0) then
+					x_difference := x_difference.abs
+					y_difference := y_difference.abs
+					angle_x := arc_sine (x_difference/hypo)
+						-- the same in degree
+					angle_x := angle_x * 180 / pi
+					angle_x := 180 - angle_x
+				elseif (x_difference < 0) and (y_difference < 0) then
+					x_difference := x_difference.abs
+					y_difference := y_difference.abs
+					angle_x := arc_sine (x_difference/hypo)
+						-- the same in degree
+					angle_x := angle_x * 180 / pi
+				elseif (x_difference >= 0) and (y_difference < 0) then
+					x_difference := x_difference.abs
+					y_difference := y_difference.abs
+					angle_x := arc_sine (x_difference/hypo)
+						-- the same in degree
+					angle_x := angle_x * 180 / pi
+					angle_x := 360 - angle_x
 				end
-				if angle_x>180 then
-					Result:=angle_x-180
-				else
-					Result:=angle_x
+
+				if angle_x < 0 then
+					angle_x := 360 + angle_x
+				elseif angle_x > 360 then
+					angle_x := angle_x - 360
 				end
 			end
+			if angle_x>180 then
+				Result:=angle_x-180
+			else
+				Result:=angle_x
+			end
+		end
 
 
 
 invariant
+
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
 	count_line_section_not_void: count >= 0 -- List is initilalized.

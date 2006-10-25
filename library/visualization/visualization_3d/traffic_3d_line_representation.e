@@ -31,7 +31,7 @@ create
 feature -- Initialization
 
 	make (a_map: TRAFFIC_MAP) is
-			-- Create a new object.
+			-- Initialize the factory to be used.
 		require
 			map_exists: a_map /= void
 		do
@@ -49,16 +49,32 @@ feature -- Initialization
 			map.line_section_removed_event.subscribe (agent process_item_removed)
 
 		ensure
-			line_factory_created: line_factory /= Void
-			line_objects_created: line_section_views /= Void and line_section_lookup /= Void
+			line_factory_set: line_factory /= Void
+			line_objects_set: line_section_views /= Void and line_section_lookup /= Void
 		end
 
-feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
+feature -- Access
+
+	line_section_views: ARRAYED_LIST [EM_3D_OBJECT]
+			-- Container for all line section representations
+
+	line_section_lookup: DS_HASH_TABLE [INTEGER, TRAFFIC_LINE_SECTION]
+			-- Lookup for line_section_views
+
+	line_factory: TRAFFIC_3D_CONNECTION_FACTORY
+			-- Factory for line segments
+
+	map: TRAFFIC_MAP
+			-- Map where lines are stored
+
+	collision_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+			-- Collision polygons to check for collisions with traffic lines
+
+feature -- Basic operations
 
 	draw is
 			-- Draw all lines onto the screen.
 		do
-			-- draw all the lines in the hashtable.  					
 			from
 				line_section_views.start
 			until
@@ -71,45 +87,7 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			end
 		end
 
-feature -- Event handling
-
-	process_item_inserted (a_line_section: TRAFFIC_LINE_SECTION) is
-			-- Add view for `a_line_section'.
-		require
-			a_line_section: a_line_section /= Void
-		local
-			c: EM_COLOR
-			l: TRAFFIC_LINE
-		do
-			l := a_line_section.line
-			if l /= Void and then l.color /= Void then
-				create c.make_with_rgb (l.color.red, l.color.green, l.color.blue)
-			else
-				create c.make_black
-			end
-			add_line_section (a_line_section, c)
-		end
-
-	process_item_removed (a_line_section: TRAFFIC_LINE_SECTION) is
-			-- Remove view for `a_line_section'.
-		require
-			a_line_section_exists: a_line_section /= Void
-		do
-			line_section_lookup.search (a_line_section)
-			if line_section_lookup.found then
-				line_section_views.put_i_th (Void, line_section_lookup.found_item)
-				line_section_lookup.remove_found_item
-			end
-		end
-
-feature {TRAFFIC_3D_MAP_WIDGET} -- Collision detection
-
-	collision_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-			-- Collision polygons to check for collisions with traffic lines
-
-feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
-
-	add_lines(a_map: TRAFFIC_MAP) is
+	add_lines (a_map: TRAFFIC_MAP) is
 			-- Add views for all lines of `a_map'.
 		require
 			map_valid: a_map /= Void
@@ -163,72 +141,6 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			line_section_lookup.force (line_section_views.count, a_line_section)
 			collision_polygons.append_last (line_factory.collision_polygons)
 		end
-
-feature -- Basic operations
-
---	highlight_path (a_route: TRAFFIC_ROUTE) is
---			-- Highlight `a_route' on the map.
---		require
---			a_route_exists: a_route /= Void
---		local
---			line_section_view: EM_3D_OBJECT
---			line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
---			old_is_highlighted: BOOLEAN
---		do
---			old_is_highlighted := is_highlighted
---			is_highlighted := False
---			from
---				line_sections := a_route.line_sections
---				line_sections.start
---			until
---				line_sections.off
---			loop
---				line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (1, 1, 1)
-
---				line_section := line_sections.item
-
-----				line_factory.take_decision (decision_type)
---				line_section_view := line_factory.create_object
-
---				line_section_views.go_i_th (line_section_lookup.item (line_section))
---				line_section_views.replace (line_section_view)
---				line_sections.forth
---			end
---			is_highlighted := old_is_highlighted
-
---		end
-
---	unhighlight_path (a_route: TRAFFIC_ROUTE) is
---			-- Unhighlight `a_route' on the map.
---		require
---			a_route_exists: a_route /= Void
---		local
---			line_section_view: EM_3D_OBJECT
---			line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
---			old_is_highlighted: BOOLEAN
---		do
---			old_is_highlighted := is_highlighted
---			is_highlighted := False
---			from
---				line_sections := a_route.line_sections
---				line_sections.start
---			until
---				line_sections.off
---			loop
---				line_color := create {GL_VECTOR_3D[DOUBLE]}.make_xyz (line_sections.item.line.color.red/255, line_sections.item.line.color.green/255, line_sections.item.line.color.blue/255)
-
---				line_section := line_sections.item
-
---				-- line creation
-----				line_factory.take_decision (decision_type)
---				line_section_view := line_factory.create_object
-
---				line_section_views.go_i_th (line_section_lookup.item (line_section))
---				line_section_views.replace (line_section_view)
---				line_sections.forth
---			end
---			is_highlighted := old_is_highlighted
---		end
 
 	highlight_single_line(a_line: TRAFFIC_LINE) is
 			-- Highlight the line `a_line'.
@@ -293,7 +205,6 @@ feature -- Basic operations
 				unhighlight_single_line (lines.item_for_iteration)
 				lines.forth
 			end
---			height := 1
 		end
 
 	highlight_all_lines is
@@ -336,20 +247,6 @@ feature -- Basic operations
 			set_factory (old_factory)
 		 end
 
-feature -- Access
-
-	line_section_views: ARRAYED_LIST [EM_3D_OBJECT]
-			-- Container for all line section representations
-
-	line_section_lookup: DS_HASH_TABLE [INTEGER, TRAFFIC_LINE_SECTION]
-			--  lookup for line_section_views
-
-	line_factory: TRAFFIC_3D_CONNECTION_FACTORY
-			-- Factory for line segments
-
-	map: TRAFFIC_MAP
-			-- Map where lines are stored
-
 feature -- Element change
 
 	set_factory (a_factory: TRAFFIC_3D_CONNECTION_FACTORY) is
@@ -361,5 +258,41 @@ feature -- Element change
 		ensure
 			factory_set: line_factory = a_factory
 		end
+
+feature -- Event handling
+
+	process_item_inserted (a_line_section: TRAFFIC_LINE_SECTION) is
+			-- Add view for `a_line_section'.
+		require
+			a_line_section: a_line_section /= Void
+		local
+			c: EM_COLOR
+			l: TRAFFIC_LINE
+		do
+			l := a_line_section.line
+			if l /= Void and then l.color /= Void then
+				create c.make_with_rgb (l.color.red, l.color.green, l.color.blue)
+			else
+				create c.make_black
+			end
+			add_line_section (a_line_section, c)
+		end
+
+	process_item_removed (a_line_section: TRAFFIC_LINE_SECTION) is
+			-- Remove view for `a_line_section'.
+		require
+			a_line_section_exists: a_line_section /= Void
+		do
+			line_section_lookup.search (a_line_section)
+			if line_section_lookup.found then
+				line_section_views.put_i_th (Void, line_section_lookup.found_item)
+				line_section_lookup.remove_found_item
+			end
+		end
+
+invariant
+
+	line_factory_set: line_factory /= Void
+	line_objects_set: line_section_views /= Void and line_section_lookup /= Void
 
 end

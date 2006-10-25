@@ -1,5 +1,7 @@
 indexing
 	description: "Objects of type TRAFFIC_CONNECTION represents connections between TRAFFIC_PLACEs"
+	date: "$Date: 2006-03-27 19:42:12 +0200 (Mon, 27 Mar 2006) $"
+	revision: "$Revision: 601 $"
 
 deferred class
 	TRAFFIC_CONNECTION
@@ -7,7 +9,7 @@ deferred class
 inherit
 	HASHABLE
 
-feature -- Status setting
+feature -- Element change
 
 	set_polypoints (a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]) is
 			-- Set polypoints to `a_polypoints'.
@@ -70,5 +72,7 @@ feature {TRAFFIC_MAP, TRAFFIC_PATH} -- Access
 	destination_impl: TRAFFIC_NODE
 
 invariant
-	polypoints /= Void
+
+	polypoints_exist: polypoints /= Void
+
 end

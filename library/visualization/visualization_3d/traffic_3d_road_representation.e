@@ -1,5 +1,7 @@
 indexing
 	description: "Representation for the traffic roads"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	TRAFFIC_3D_ROAD_REPRESENTATION
@@ -30,7 +32,7 @@ create
 feature -- Initialization
 
 	make (a_map: TRAFFIC_MAP) is
-			-- Create a new object.
+			-- Initialize to use road_factory for generating 3d objects for roads of the map `a_map'.
 		require
 			map_exists: a_map /= void
 		do
@@ -48,14 +50,14 @@ feature -- Initialization
 		ensure
 			road_factory_created: road_factory /= Void
 			road_objects_created: road_3d_objects /= Void
+			map_set: a_map = map
 		end
 
-feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
+feature -- Basic operations
 
 	draw is
 			-- Draw all roads onto the screen.
 		do
-			-- draw all the roads in the hashtable.	
 			road_3d_objects.start
 			from
 				road_3d_objects.start
@@ -64,36 +66,10 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			loop
 				if road_3d_objects.item_for_iteration /= Void then
 					road_3d_objects.item_for_iteration.draw
-			end
+				end
 				road_3d_objects.forth
-		end
-		end
-
-
-feature -- Event handling
-
-	process_item_inserted (a_road: TRAFFIC_ROAD) is
-			-- Add view for `a_road'.
-		require
-			a_road: a_road /= Void
-		do
-			add_road (a_road)
-		end
-
-	process_item_removed (a_road: TRAFFIC_ROAD) is
-			-- Remove view for `a_road'.
-		require
-			a_road_exists: a_road /= Void
-		do
-			remove_road (a_road)
 			end
-
-feature {TRAFFIC_3D_MAP_WIDGET} -- Collision detection
-
-	collision_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-			-- Collision polygons to check for collisions with traffic roads
-
-feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
+		end
 
 	add_roads(a_map: TRAFFIC_MAP) is
 			-- Add views for all roads of `a_map'.
@@ -143,9 +119,28 @@ feature {TRAFFIC_3D_MAP_WIDGET} -- Interface
 			roads_deleted: not road_lookup.has (a_road)
 		end
 
+feature -- Event handling
 
+	process_item_inserted (a_road: TRAFFIC_ROAD) is
+			-- Add view for `a_road'.
+		require
+			a_road: a_road /= Void
+		do
+			add_road (a_road)
+		end
+
+	process_item_removed (a_road: TRAFFIC_ROAD) is
+			-- Remove view for `a_road'.
+		require
+			a_road_exists: a_road /= Void
+		do
+			remove_road (a_road)
+			end
 
 feature -- Access
+
+	collision_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
+			-- Collision polygons to check for collisions with traffic roads
 
 	road_factory: TRAFFIC_3D_CONNECTION_FACTORY
 			-- Factory for road segments
@@ -157,8 +152,7 @@ feature -- Access
 			-- Container for all line section representations
 
 	road_lookup: DS_HASH_TABLE [INTEGER, TRAFFIC_ROAD]
-			--  lookup for line_section_views
+			-- Lookup for line_section_views
 
-
-		end
+end
 

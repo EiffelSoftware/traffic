@@ -22,7 +22,6 @@ feature  -- Initialization
 			internal_route.make_empty (a_map)
 		end
 
-
 	make_route (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]; a_map_widget: TOUCH_3D_MAP_WIDGET) is
 			-- Create route on map `a_map'.
 		require
@@ -46,8 +45,12 @@ feature  -- Initialization
 			create internal_route.make (a_places_to_visit, a_map_widget.map)
 		end
 
+feature -- Basic operations
+
 	animate is
 			-- A traveler is traveling along the shortest path of the route
+		require
+			scene_running: running_scene /= Void
 		do
 			create traveler.make_directed (itinerary, 0.5)
 			traveler.set_reiterate (False)
@@ -60,16 +63,8 @@ feature  -- Initialization
 			internal_map_widget.time.resume_time
 
 			wait(6500)
+			end_animate
 		end
-
-	end_animate is
-			-- The traveler is removed from the map.
-		do
-			traveler.set_reiterate (False)
-			internal_map_widget.travelers_representation.remove_specific_traveler (traveler)
-			internal_map_widget.time.pause_time
-		end
-
 
 feature -- Element change
 
@@ -132,16 +127,24 @@ feature -- Access
 
 feature {NONE} -- Implementation
 
-internal_route: TRAFFIC_ROUTE
+	internal_route: TRAFFIC_ROUTE
 
-itinerary: ARRAYED_LIST [EM_VECTOR_2D]
+	itinerary: ARRAYED_LIST [EM_VECTOR_2D]
 
-traveler: TRAFFIC_PASSENGER
+	traveler: TRAFFIC_PASSENGER
 
-internal_map_widget: TOUCH_3D_MAP_WIDGET
+	internal_map_widget: TOUCH_3D_MAP_WIDGET
 
-internal_map: TRAFFIC_MAP
+	internal_map: TRAFFIC_MAP
 
-traveler_rep: TRAFFIC_3D_TRAVELER_REPRESENTATION
+	traveler_rep: TRAFFIC_3D_TRAVELER_REPRESENTATION
+
+	end_animate is
+			-- The traveler is removed from the map.
+		do
+			traveler.set_reiterate (False)
+			internal_map_widget.travelers_representation.remove_specific_traveler (traveler)
+			internal_map_widget.time.pause_time
+		end
 
 end

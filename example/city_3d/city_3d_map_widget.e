@@ -41,13 +41,28 @@ feature -- Access
 	marked_destination: TRAFFIC_PLACE
 			-- Currently marked destination
 
+	marked_station_changed: BOOLEAN
+			-- Has the marked station changed?
+
 	shortest_path_connections: LIST[TRAFFIC_CONNECTION]
 			-- connections of shortest path
 
 	shortest_path_description: STRING
 			-- textual description of the shortest path
 
+	traffic_line_ride: BOOLEAN
+			-- Are you just taking a traffic line ride?
+
 feature -- Basic operations
+
+	reset is
+			-- Reset everything when new map is loaded
+		do
+			marked_destination := Void
+			marked_origin := Void
+			marked_station_changed := True
+		end
+
 
 	zoom_in is
 			-- Zoom in.
@@ -68,7 +83,7 @@ feature -- Basic operations
 		local
 			shortest_path: TRAFFIC_PATH
 		do
-			if marked_station_changed then
+			if marked_station_changed and marked_origin /= Void and marked_destination /= Void then
 				map.find_shortest_path (marked_origin, marked_destination)
 
 				marked_station_changed := False
@@ -110,7 +125,7 @@ feature -- Drawing
 		do
 			Precursor
 						-- Draw marked stations
-			if show_shortest_path and then marked_origin /= Void and then marked_destination /= Void then
+			if is_shortest_path_shown and then marked_origin /= Void and then marked_destination /= Void then
 				calculate_shortest_path
 				--traffic_lines.draw_shortest_path
 				paths_representation.draw
@@ -122,7 +137,7 @@ feature -- Drawing
 		do
 			Precursor
 			-- Traffic line rides
-			if traffic_line_ride and then show_shortest_path and then shortest_path_connections /= Void
+			if traffic_line_ride and then is_shortest_path_shown and then shortest_path_connections /= Void
 			  and then marked_destination /= Void and then marked_origin /= Void and then not shortest_path_connections.after then
 				prepare_for_traffic_line_ride
 			else
@@ -240,7 +255,7 @@ feature {NONE} -- Event handling
 			if an_event.is_left_button then
 				buildings_representation.highlight_building(a_building)
 			elseif an_event.is_right_button then
-				buildings_representation.un_highlight_building(a_building)
+				buildings_representation.unhighlight_building(a_building)
 			end
 		end
 
@@ -329,38 +344,41 @@ feature {NONE} -- Implementation
 			start_point, end_point, direction: EM_VECTOR_2D
 		do
 			start_point := last_polypoint
-			end_point := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
-			direction := end_point - start_point
+			if shortest_path_connections.item /= Void then
+				end_point := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
+				direction := end_point - start_point
 
-			if start_point.distance (end_point) > 0 then
+				if start_point.distance (end_point) > 0 then
 
-				position := position + (direction / direction.length) * speed
+					position := position + (direction / direction.length) * speed
 
-				glu_look_at_external
-				(	position.x - (position.x/position.length),
-					0.5,
-					position.y - (position.y/position.length),
-					position.x + 0.1*(position.x/position.length),
-					0.5,
-					position.y + 0.1*(position.y/position.length),
-					0, 1, 0
-				)
-				gl_translated_external (-start_point.x, 0, -start_point.y)
-			end
-			if (position-direction).length < speed then
-				last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
-				shortest_path_connections.item.polypoints.forth
-
-				if shortest_path_connections.item.polypoints.after and then not shortest_path_connections.after then
-					shortest_path_connections.forth
-					if not shortest_path_connections.after then
-						shortest_path_connections.item.polypoints.start
-						last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.first)
-						shortest_path_connections.item.polypoints.forth
-					end
+					glu_look_at_external
+					(	position.x - (position.x/position.length),
+						0.5,
+						position.y - (position.y/position.length),
+						position.x + 0.1*(position.x/position.length),
+						0.5,
+						position.y + 0.1*(position.y/position.length),
+						0, 1, 0
+					)
+					gl_translated_external (-start_point.x, 0, -start_point.y)
 				end
-				position.set_x (0)
-				position.set_y (0)
+				if (position-direction).length < speed then
+					last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
+					shortest_path_connections.item.polypoints.forth
+
+					if shortest_path_connections.item.polypoints.after and then not shortest_path_connections.after then
+						shortest_path_connections.forth
+						if not shortest_path_connections.after then
+							shortest_path_connections.item.polypoints.start
+							last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.first)
+							shortest_path_connections.item.polypoints.forth
+						end
+					end
+					position.set_x (0)
+					position.set_y (0)
+				end
+
 			end
 		end
 

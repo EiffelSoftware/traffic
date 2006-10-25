@@ -7,32 +7,34 @@ deferred class
 
 inherit
 	TRAFFIC_MOVING
-	
+
 feature --Access
-	current_load: INTEGER 
+
+	current_load: INTEGER
 			-- Current amount of load
 
 	capacity:INTEGER is
 			-- Maximum possible load
-		do		
+		do
 			Result := unit_capacity
 		end
-			
+
 feature -- Basic operations
-	load(a_quantity: INTEGER) is 
+
+	load(a_quantity: INTEGER) is
 			-- Load cargo or a passenger.
-		require 
-			a_quantity_non_negative: a_quantity >= 0 
+		require
+			a_quantity_non_negative: a_quantity >= 0
 			valid_quantity: capacity >= current_load + a_quantity
-    	do 
+    	do
 			current_load := current_load + a_quantity
-    	ensure 
+    	ensure
     		loaded: current_load = old current_load + a_quantity
     	end
-    	
+
 	unload(a_quantity: INTEGER) is
 			-- Unload cargo or a passenger.
-		require 
+		require
 			  a_quantity_non_negative: a_quantity >= 0
 			  valid_quantity: current_load >= a_quantity
 		do
@@ -42,8 +44,10 @@ feature -- Basic operations
     	end
 
 feature{NONE} -- Implementation			
+
 	unit_capacity: INTEGER
 			-- Maximum load this vehicle unit can carry
+
 invariant
 	unit_capacity_non_negative: unit_capacity >= 0
 	load_smaller_or_equal_than_capacity: current_load <= capacity

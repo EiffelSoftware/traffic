@@ -79,6 +79,16 @@ feature -- Interface
 			toolbar_panel.set_position (city_timetable_window_width-200, 0)
 			add_component (toolbar_panel)
 
+			-- Taxi office type combobox
+			create taxi_office_type_combobox.make_empty
+			taxi_office_type_combobox.put ("Event Taxi Office")
+			taxi_office_type_combobox.put ("Dispatcher Taxi Office")
+			taxi_office_type_combobox.set_selected_element ("Event Taxi Office")
+			taxi_office_type_combobox.set_position (15, 10)
+			taxi_office_type_combobox.set_dimension (160,20)
+			taxi_office_type_combobox.selection_changed_event.subscribe (agent taxi_office_type_changed(?))
+			toolbar_panel.add_widget (taxi_office_type_combobox)
+
 			-- Building buttons
 			load_buildings_button.set_position(20,(window_height * 0.68).rounded)
 			load_buildings_button.set_dimension (160, load_buildings_button.height)
@@ -153,28 +163,28 @@ feature -- Interface
 			toolbar_panel.add_widget (zoom_in_button)
 
 			-- Time label
-			time_label.set_position(15, 20)
+			time_label.set_position(15, 35)
 			time_label.set_optimal_dimension(160,40)
 			time_label.resize_to_optimal_dimension
 			time_label.align_center
 			toolbar_panel.add_widget (time_label)
 
 			-- Station label
-			station_label.set_position(0, 50)
+			station_label.set_position(0, 60)
 			station_label.set_optimal_dimension(200, 40)
 			station_label.resize_to_optimal_dimension
 			station_label.align_center
 			toolbar_panel.add_widget (station_label)
 
 			-- Station lines combobox
-			station_lines_combobox.set_position(15, 70)
+			station_lines_combobox.set_position(15, 80)
 			station_lines_combobox.set_dimension (160,20)
 			station_lines_combobox.selection_changed_event.subscribe (agent station_lines_selection_changed)
 			toolbar_panel.add_widget (station_lines_combobox)
 
 			-- Station schedue scrollpanel			
-			create station_schedule_scrollpanel.make_from_dimension (160, 250)
-			station_schedule_scrollpanel.set_position (15, 110)
+			create station_schedule_scrollpanel.make_from_dimension (160, 230)
+			station_schedule_scrollpanel.set_position (15, 120)
 			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
 			toolbar_panel.add_widget (station_schedule_scrollpanel)
 
@@ -190,25 +200,11 @@ feature -- Interface
 			map.set_map (loader.map)
 			map.add_vehicles
 			loaded_file_name := s
-
---			create list.make (2)
---			list.extend (map.map.place ("Wipkingerplatz").position)
---			list.extend (create {EM_VECTOR_2D}.make (100, 100))
---			create traveler.make_directed (list, .5)
---			traveler.set_reiterate (True)
---			map.add_traveler (traveler)
-----			map.map.add_traveler (traveler)
---			traveler.take_tour
-
---			create list.make (2)
---			list.extend (map.map.place ("Rosengartenstrasse").position)
---			list.extend (create {EM_VECTOR_2D}.make (50, 100))
---			create traveler.make_directed (list, .5)
---			traveler.set_reiterate (True)
---			map.add_traveler (traveler)
-----			map.map.add_traveler (traveler)
---			traveler.take_tour
-
+			if not loader.has_error then
+				map.add_event_taxi_office(5)
+				map.add_dispatcher_taxi_office(5)
+--				travelers_representation.add_tram_per_line (map, 2)
+			end
 		end
 
 feature -- Event handling
@@ -347,25 +343,25 @@ feature -- Event handling
 	sun_checked is
 			-- Checkbox has been checked.
 		do
-			map.set_sun_shown (True)
+			map.enable_sun_shown
 		end
 
 	sun_unchecked is
 			-- Checkbox has been unchecked.
 		do
-			map.set_sun_shown (False)
+			map.disable_sun_shown
 		end
 
 	buildings_checked is
 			-- Checkbox has been checked.
 		do
-			map.set_buildings_shown (True)
+			map.enable_buildings_shown
 		end
 
 	buildings_unchecked is
 			-- Checkbox has been unchecked.
 		do
-			map.set_buildings_shown (False)
+			map.disable_buildings_shown
 		end
 
 	load_buildings_clicked is
@@ -383,6 +379,7 @@ feature -- Event handling
 	time_checked is
 			-- Checkbox has been checked.
 		do
+			map.map.change_traveler_speed (map.time.simulated_minutes / 2)
 			map.time.change_simulated_time (1)
 			map.time.start_time
 		end
@@ -410,16 +407,32 @@ feature -- Event handling
 	lines_unchecked is
 			-- Checkbox has been unchecked.
 		do
-			map.set_lines_shown (False)
+			map.disable_lines_shown
 		end
 
 	lines_checked is
 			-- Checkbox has been checked.
 		do
-			map.set_lines_shown (True)
+			map.enable_lines_shown
+		end
+
+	taxi_office_type_changed(type: STRING) is
+			-- Selection on "taxi_office_type_combobox" changed.
+		do
+			if type.is_equal ("Event Taxi Office")  then
+				-- Event Taxis in yellow
+				taxi_office_type_combobox.set_background_color(create {EM_COLOR}.make_with_rgb(255, 255, 0))
+			else
+				-- Dispatcher Taxis in ozean
+				taxi_office_type_combobox.set_background_color (create {EM_COLOR}.make_with_rgb(255, 0, 0))
+			end
+			map.set_taxi_office_type(type)
 		end
 
 feature -- Widgets
+
+	taxi_office_type_combobox: EM_COMBOBOX[STRING]
+			-- Requests will be sent to the selected taxi office.
 
 	toolbar_panel: EM_PANEL
 			-- Panel, in which all option widgets are displayed.

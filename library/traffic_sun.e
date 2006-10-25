@@ -1,24 +1,23 @@
 indexing
 	description: "The Sun"
-	author: "Lars Krapf <lkrapf@student.ethz.ch>"
-	date: "22.05.06"
+	date: "$Date$"
 	revision: "$Revision$"
 
 class
 	TRAFFIC_SUN
 inherit
 	DOUBLE_MATH
-		export {NONE} all end	
-	
+		export {NONE} all end
+
 	MATH_CONST
-		export 
-			{NONE} all 
+		export
+			{NONE} all
 			{ANY} pi
 		end
-		
+
 	TRAFFIC_SHARED_TIME
-	
-	
+
+
 create
 	make
 
@@ -27,65 +26,65 @@ feature {NONE} -- Initialization
 	make is
 			-- Initialize `Current'.
 		do
-			-- Initialize Coordinates
 			theta := 0.6
 			phi := 1.0
 			radius := 50.0
 		ensure
-			Coordinates_Initialized : (theta = 0.6) and (phi = 1.0) and (radius = 50.0)
+			coordinates_initialized : (theta = 0.6) and (phi = 1.0) and (radius = 50.0)
 		end
 
 
 feature -- Access
-	-- Spherical Coordinates of the Sun
+
 	theta: DOUBLE
-		-- Longitude (rad)
+			-- Longitude (rad)
+
 	phi: DOUBLE
-		-- Colatitude (rad)
+			-- Colatitude (rad)
+
 	radius: DOUBLE
-		-- Radius
-	
+			-- Radius
+
 	position : GL_VECTOR_3D[DOUBLE] is
-			-- The Position of the Sun in Carthesian Coordinates
+			-- Position of the sun in carthesian coordinates
 		do
 			create Result.make_xyz (radius*sine(theta)*cosine(phi),
 									radius*sine(theta)*sine(phi),
 									radius*cosine(theta))
 		ensure
-			Result_Set: Result /= Void
+			result_set: Result /= Void
 		end
-		
-	
+
 feature -- Element change
 
-	set_theta(new_theta: DOUBLE) is	
-			-- Set Longitude
+	set_theta (new_theta: DOUBLE) is
+			-- Set longitude to `new_theta'.
 		require
-			New_Theta_Valid: new_theta >= 0 and new_theta < 2*pi
+			new_theta_valid: new_theta >= 0 and new_theta < 2*pi
 		do
 			theta := new_theta
 		ensure
-			New_Theta_Set: theta = new_theta
+			new_theta_set: theta = new_theta
 		end
-		
-	set_phi(new_phi: DOUBLE) is	
-			-- Set Colatitude
+
+	set_phi (new_phi: DOUBLE) is
+			-- Set colatitude to `new_phi'.
 		require
-			New_Phi_Valid: new_phi >= 0 and new_phi < pi
+			new_phi_valid: new_phi >= 0 and new_phi < pi
 		do
 			phi := new_phi
 		ensure
-			New_Phi_Set: phi = new_phi
+			new_phi_set: phi = new_phi
 		end
 
 	set_radius(new_radius: DOUBLE) is
-			-- Set Radius
+			-- Set radius to `new_radius'.
 		require
-			New_Radius_Valid: new_radius >= 0
+			new_radius_valid: new_radius >= 0
 		do
 			radius := new_radius
 		ensure
-			New_Radius_Set: radius = new_radius
+			new_radius_set: radius = new_radius
 		end
 
 	update is
@@ -94,17 +93,15 @@ feature -- Element change
 			time_exists: time /= Void
 		do
 			theta := (3*pi/2.0 + (2.0*pi*(time.actual_hour*3600.0 + time.actual_minute*60.0 + time.actual_second))/(24.0*60.0*60.0))
-			if theta >= 2*pi then 
+			if theta >= 2*pi then
 				theta := theta - 2*pi
 			end
 		ensure
-			Theta_Valid: theta >= 0 and theta < 2*pi
+			theta_valid: theta >= 0 and theta < 2*pi
 		end
-		
-feature {NONE} -- Implementation
 
 invariant
-	Longitude_Valid: theta >= 0 and theta < 2*pi
-	Colatitude_Valid: phi >= 0 and phi < pi
-	Radius_Valid: radius >= 0
+	longitude_valid: theta >= 0 and theta < 2*pi
+	colatitude_valid: phi >= 0 and phi < pi
+	radius_valid: radius >= 0
 end

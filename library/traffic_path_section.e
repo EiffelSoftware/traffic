@@ -1,6 +1,6 @@
 indexing
 	description: "Part of a TRAFFIC_PATH,%
-		% goes from `origin' to `destination' using a single line or walking"
+		% goes from `origin' to `destination' using a SINGLE line or walking"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -13,7 +13,7 @@ create {TRAFFIC_PATH}
 feature {NONE} -- Creation
 
 	make (a_connection: TRAFFIC_CONNECTION) is
-			-- Initialize `Current'
+			-- Initialize `Current'.
 		local
 			ls: TRAFFIC_LINE_SECTION
 		do
@@ -30,12 +30,16 @@ feature {NONE} -- Creation
 feature -- Access
 
 	origin: TRAFFIC_PLACE
+			-- Start place
 
 	destination: TRAFFIC_PLACE
+			-- End place
 
 	line: TRAFFIC_LINE
+			-- Line used
 
 	length: DOUBLE
+			-- Length of section
 
 feature -- Status report
 
@@ -58,11 +62,10 @@ feature -- Status report
 			end
 		end
 
-
 feature -- Basic operations
 
 	extend (a_connection: TRAFFIC_CONNECTION) is
-			-- Extend `Current'.
+			-- Extend with `a_connection'.
 		require
 			is_insertable (a_connection)
 		do

@@ -68,6 +68,19 @@ feature -- Status report
 
 feature -- Element change
 
+	add_trams (a_number: INTEGER) is
+			-- Add `a_number' trams per line.
+		do
+			internal_map_widget.travelers_representation.add_tram_per_line (internal_map, a_number)
+		end
+
+	add_buildings is
+			-- Add buildings along traffic lines.
+		do
+			internal_map_widget.add_buildings_along_lines
+			internal_map_widget.enable_buildings_shown
+		end
+
 	set_description (a_description: STRING) is
 			-- Set map description.
 		do
@@ -117,32 +130,6 @@ feature -- Element change
 			internal_map.add_building (a_building)
 		end
 
-	make_building_at_place (a_place: TRAFFIC_PLACE): TOUCH_BUILDING is
-			-- Make a building at a defined place.
-		require
-			a_traffic_place_exists: a_place /= Void
-		do
-			create Result.make_at_place(a_place, internal_map_widget)
-		end
-
-	make_route1(): TOUCH_ROUTE is
-			-- Make a route with places form 'a_places_list'.
-		local
-				temp_places: LINKED_LIST [TRAFFIC_PLACE]
-		do
- 			create temp_places.make
-			temp_places.force (internal_map_widget.map.place ("place Concorde"))
-			temp_places.force (internal_map_widget.map.place ("place Republique"))
-
-			create Result.make_route(temp_places, internal_map_widget)
-		end
-
-	make_empty_route(a_map: TRAFFIC_MAP): TOUCH_ROUTE is
-			-- Make an empty touch route.
-		do
-			create Result.make_empty_route(a_map)
-		end
-
 	add_traveler (a_traveler: TRAFFIC_MOVING) is
 			-- Add traveler 'a_traveler' to map.
 			require
@@ -175,18 +162,26 @@ feature -- Element change
 				internal_map.change_traveler_speed (divisor)
 			end
 
-	increment_index is
-			-- Increment the traveler index
-		do
-			internal_map.increment_index
-		end
-
 feature -- Access
 
-	traveler_index: INTEGER is
-			-- Index of travelers
+	new_building_at_place (a_place: TRAFFIC_PLACE): TOUCH_BUILDING is
+			-- New building at a defined place
+		require
+			a_traffic_place_exists: a_place /= Void
 		do
-			Result := internal_map.traveler_index
+			create Result.make_at_place(a_place, internal_map_widget)
+		end
+
+	new_route (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]): TOUCH_ROUTE is
+			-- New route with places from `a_places_list'
+		do
+			create Result.make_route (a_places_to_visit, internal_map_widget)
+		end
+
+	new_empty_route(a_map: TRAFFIC_MAP): TOUCH_ROUTE is
+			-- New empty touch route
+		do
+			create Result.make_empty_route(a_map)
 		end
 
 	name: STRING is

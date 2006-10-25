@@ -130,7 +130,7 @@ feature -- Comparison
 			-- Start and end node must be equal.
 			Result := start_node.is_equal (other.start_node) and
 					  end_node.is_equal (other.end_node)
-			
+
 			-- Consider also flipped edges in undirected graphs.
 			if not is_directed then
 				Result := Result or
@@ -141,6 +141,7 @@ feature -- Comparison
 			Result := Result and equal (label, other.label)
 			-- Weight must be equal.
 			Result := Result and weight = other.weight
+			Result := Result or standard_is_equal (other)
 		end
 
 feature -- Cursor movement

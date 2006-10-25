@@ -4,29 +4,28 @@ indexing
 	revision: "$Revision$"
 
 class COMMANDS_3D_SCENE
-	
+
 inherit
-	
+
 	TOUCH_3D_SCENE
-		rename 
-			make as make_touch_scene
+		redefine
+			initialize_scene
 		end
-	
+
 creation
-	make
+	make_component_scene
 
 feature -- Interface
-	
-	make is
+
+	initialize_scene is
 			-- Creation procedure
 		local
 			commands: COMMANDS
 		do
-			make_touch_scene
-
+			Precursor
 			create commands
-			commands.run (map_widget, console)	
-			click_here_button.clicked_event.subscribe (agent commands.explore_on_button_click)		
+			commands.run (map_widget, console)
+			click_here_button.clicked_event.subscribe (agent commands.explore_on_button_click)
 		end
-		
-end 
+
+end

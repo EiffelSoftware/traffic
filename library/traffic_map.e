@@ -42,7 +42,6 @@ feature {NONE} -- Initialization
 			create internal_place_array.make (200)
 			create internal_travelers.make (1)
 			create internal_taxi_offices.make(0)
-			traveler_index := 1
 			internal_line_sections.compare_objects -- use equal for object comparision
 			internal_roads.compare_objects -- use equal for object comparision
 			create internal_buildings.make (1,4)
@@ -182,44 +181,6 @@ feature -- Status report
 			Result := internal_lines.has (a_name)
 		end
 
-	path_found: BOOLEAN
-			-- shortest path found on graph?
-
-	shortest_path_mode: INTEGER
-
-
---	has_road (a_origin_name, a_destination_name: STRING; an_id:INTEGER): BOOLEAN is
---			-- Does traffic the map contain road `a_road'?
---		require
---			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
---			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
---		local
---			l_road: TRAFFIC_ROAD
---			l_origin, l_destination: TRAFFIC_STOP
---			found: BOOLEAN
---		do
---			l_origin := stops.item (a_origin_name)
---			l_destination := stops.item (a_destination_name)
---			found := False
---			from
---				internal_roads.start
---			until
---				internal_roads.after or found
---			loop
---				l_road := internal_roads.item_for_iteration
---
---				if l_road.id=an_id and equal (l_road.origin, l_origin) and
---					equal (l_road.destination, l_destination) then
---					found := True
---				elseif l_road.id=an_id and equal (l_road.destination, l_origin) and
---					equal (l_road.origin, l_destination) then
---					found:=true
---				end
---				internal_roads.forth
---			end
---			Result := found
---		end
-
 	has_road_with_id (an_id: INTEGER): BOOLEAN is
 			-- Has traffic map road with `an_id'?
 		require
@@ -229,14 +190,16 @@ feature -- Status report
 		end
 
 	is_valid_shortest_path_mode (a_mode: INTEGER): BOOLEAN is
-			-- is `a_mode' valid?
+			-- Is `a_mode' valid?
 		do
 			Result := a_mode = shortest_path_mode_minimal_switches or
 					  a_mode = shortest_path_mode_normal_distance
 		end
 
+	path_found: BOOLEAN
+			-- Was a shortest path found on graph?
 
-feature -- Status setting
+feature -- Element change
 
 	set_shortest_path_mode (a_mode: INTEGER) is
 			-- set the shortest path mode
@@ -247,9 +210,6 @@ feature -- Status setting
 			graph.set_shortest_path_mode (a_mode)
 		end
 
-
-feature -- Element change
-
 	set_description (a_description: STRING) is
 			-- Set map description.
 		do
@@ -258,6 +218,33 @@ feature -- Element change
 			description_set: description = a_description
 		end
 
+	change_traveler_speed (divisor: DOUBLE) is
+			-- Divide the speed of each traveler by divisor.
+		require
+			divisor > 0
+		local
+			a_traveler: TRAFFIC_MOVING
+		do
+			from
+				internal_travelers.start
+			until
+				internal_travelers.after
+			loop
+				a_traveler := internal_travelers.item_for_iteration
+--					if a_traveler /= Void then
+					a_traveler.set_speed (a_traveler.virtual_speed / divisor)
+--					end
+				internal_travelers.forth
+			end
+		end
+
+	set_scale_factor (a_scale_factor: DOUBLE) is
+			-- Set `a_scale_factor'.
+		do
+			scale_factor_impl := a_scale_factor
+		end
+
+feature -- Insertion
 
 	add_place (a_place: TRAFFIC_PLACE) is
 			-- Add place `a_place' to map.
@@ -350,7 +337,33 @@ feature -- Element change
 
 		end
 
-	delete_buildings () is
+	add_traveler (a_traveler: TRAFFIC_MOVING) is
+			-- Add traveler 'a_traveler' to map.
+		require
+			a_traveler_exists: a_traveler /= Void
+		do
+			internal_travelers.force (a_traveler, a_traveler.index)
+		end
+
+	add_taxi_office( a_taxi_office: TRAFFIC_TAXI_OFFICE) is
+			-- Add taxi office 'a_taxi_office' to map.
+		require
+			a_taxi_office_exists: a_taxi_office /= void
+		do
+			internal_taxi_offices.force(a_taxi_office)
+		end
+
+	add_stop (a_stop: TRAFFIC_STOP) is
+			-- Add `a_stop' to map.
+		require
+			a_stop_exists: a_stop /= Void
+		do
+			graph.put_node (a_stop)
+		end
+
+feature -- Removal
+
+	delete_buildings is
 			-- Delete all buildings from map.
 		do
 			internal_buildings.item (1).wipe_out
@@ -450,147 +463,85 @@ feature -- Element change
 			end
 		end
 
-
-	add_traveler (a_traveler: TRAFFIC_MOVING) is
-			-- Add traveler 'a_traveler' to map.
-			require
-				a_traveler_exists: a_traveler /= Void
-			do
-				internal_travelers.force (a_traveler, a_traveler.index)
-			end
-
-	add_taxi_office( a_taxi_office: TRAFFIC_TAXI_OFFICE) is
-			-- Add taxi office 'a_taxi_office' to map.
-			require
-				a_taxi_office_exists: a_taxi_office /= void
-			do
-				internal_taxi_offices.force(a_taxi_office)
-			end
-
-
 	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
-			-- Remove line_section `a_line_section' from map (bad implementation)
-			require
-				has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
-			local
-				index: INTEGER
-			do
-				internal_line_sections.start
-				internal_line_sections.search (a_line_section)
-				index := internal_line_sections.index
-				internal_line_sections.prune (a_line_section)
-				line_section_removed_event.publish ([a_line_section])
-				path_found := False
-			ensure
-				-- we can assume, that the line_section was only once inserted
-				line_section_removed: not line_sections.has (a_line_section)
-			end
+			-- Remove line_section `a_line_section' from map (bad implementation).
+		require
+			has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
+		local
+			index: INTEGER
+		do
+			internal_line_sections.start
+			internal_line_sections.search (a_line_section)
+			index := internal_line_sections.index
+			internal_line_sections.prune (a_line_section)
+			line_section_removed_event.publish ([a_line_section])
+			path_found := False
+		ensure
+			-- we can assume, that the line_section was only once inserted
+			line_section_removed: not line_sections.has (a_line_section)
+		end
 
-		remove_road (a_road: TRAFFIC_ROAD) is
+	remove_road (a_road: TRAFFIC_ROAD) is
 			-- Remove road `a_road' from map.
-			require
-				road_not_void: a_road /= Void
-			do
-				from
-					internal_roads.start
-				until
-					internal_roads.after
-				loop
-					if equal(internal_roads.item_for_iteration,a_road) then
-						internal_roads.remove (internal_roads.key_for_iteration)
-					end
-					internal_roads.forth
+		require
+			road_not_void: a_road /= Void
+		do
+			from
+				internal_roads.start
+			until
+				internal_roads.after
+			loop
+				if equal(internal_roads.item_for_iteration,a_road) then
+					internal_roads.remove (internal_roads.key_for_iteration)
 				end
-
-				path_found := False
-			ensure
-				-- we can assume, that the line_section was only once inserted
-				road_removed: not internal_roads.has_item (a_road)
+				internal_roads.forth
 			end
+
+			path_found := False
+		ensure
+			-- we can assume, that the line_section was only once inserted
+			road_removed: not internal_roads.has_item (a_road)
+		end
 
 
 	remove_traveler (index: INTEGER) is
-			-- -- Remove traveler at position index
-			require
-				index_valid: index >= 0
-			do
-				internal_travelers.remove (index)
-			ensure
-				not internal_travelers.has (index)
-			end
-
-	change_traveler_speed (divisor: DOUBLE) is
-			-- Divide the speed of each traveler by divisor.
-			require
-				divisor > 0
-			local
-				a_traveler: TRAFFIC_MOVING
-			do
-				from
-					internal_travelers.start
-				until
-					internal_travelers.after
-				loop
-					a_traveler := internal_travelers.item_for_iteration
---					if a_traveler /= Void then
-						a_traveler.set_speed (a_traveler.virtual_speed / divisor)
---					end
-					internal_travelers.forth
-				end
-			end
-
-	increment_index is
-			-- Increment the traveler index.
-			do
-				traveler_index := traveler_index+1
-			ensure
-				traveler_index = old traveler_index + 1
-			end
-
-	set_scale_factor (a_scale_factor: DOUBLE) is
-				-- Set `a_factor'.
-			do
-				scale_factor_impl := a_scale_factor
-			end
-
-feature -- Element change
-
-	add_stop (a_stop: TRAFFIC_STOP) is
-			-- Add `a_stop' to map.
+			-- Remove traveler at position index.
 		require
-			a_stop_exists: a_stop /= Void
+			index_valid: index >= 0
 		do
-			graph.put_node (a_stop)
+			internal_travelers.remove (index)
+		ensure
+			not internal_travelers.has (index)
 		end
 
 feature -- Access
 
-	traveler_index: INTEGER
-		-- index of travelers.
+	shortest_path_mode: INTEGER
+			-- Mode used for shortest path calculation (either normal or minimal switches)
 
 	name: STRING
-			-- Name of region this map represents.
+			-- Name of region this map represents
 
 	description: STRING
-			-- Textual description.
+			-- Textual description of the map
 
 	shortest_path_mode_normal_distance: INTEGER is
-			-- calculate shortest path based on regular distance
+			-- Number representing path calculation mode based on regular distance
 		do
 			Result := graph.normal_distance
 		end
 
 	shortest_path_mode_minimal_switches: INTEGER is
-			-- calculate shortest path based on minimal number of switches
+			-- Number representing path calculation mode based on regular distance
 		do
 			Result := graph.minimal_switches
 		end
 
 	taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE] is
-			-- All taxi offices associated with this map.
-			do
-				Result := internal_taxi_offices.twin
-			end
+			-- All taxi offices associated with this map
+		do
+			Result := internal_taxi_offices.twin
+		end
 
 	shortest_path: TRAFFIC_PATH is
 			-- Shortest path, that has been found with `find_shortest_path'
@@ -603,7 +554,7 @@ feature -- Access
 		end
 
 	place (a_name: STRING): TRAFFIC_PLACE is
-			-- Place named `a_name'.
+			-- Place named `a_name'
 		require
 			a_name_exists: a_name /= Void
 			place_in_map: has_place (a_name)
@@ -614,13 +565,13 @@ feature -- Access
 		end
 
 	places: HASH_TABLE [TRAFFIC_PLACE, STRING] is
-			-- All places in map.
+			-- All places in map
 		do
 			Result := internal_places.twin
 		end
 
 	line (a_name: STRING): TRAFFIC_LINE is
-			-- Line named `a_name'.
+			-- Line named `a_name'
 		require
 			a_name_exists: a_name /= Void
 			line_in_map: has_line (a_name)
@@ -629,25 +580,25 @@ feature -- Access
 		end
 
 	line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION] is
-			-- All line sections in map.
+			-- All line sections in map
 		do
 			Result := internal_line_sections.twin
 		end
 
 	lines: HASH_TABLE [TRAFFIC_LINE, STRING] is
-			-- All lines in map.
+			-- All lines in map
 		do
 			Result := internal_lines.twin
 		end
 
 	roads: HASH_TABLE [TRAFFIC_ROAD, INTEGER] is
-			-- All lines in map.
+			-- All roads in map
 		do
 			Result := internal_roads.twin
 		end
 
 	buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]] is
-			-- All buildings on map.
+			-- All buildings on map
 		do
 			Result := internal_buildings.twin
 		end
@@ -659,7 +610,7 @@ feature -- Access
 		end
 
 	line_sections_of_stop (a_name: STRING; a_line: TRAFFIC_LINE): LIST [TRAFFIC_LINE_SECTION] is
-			-- get the sections (2 or 1) of the stop specified by `a_name' for the line `a_line'
+			-- Line sections (2 or 1) of the stop specified by `a_name' for the line `a_line'
 		require
 			has_place (a_name) and then place (a_name).has_stop (a_line)
 		local
@@ -720,17 +671,19 @@ feature -- Access
 			end
 		end
 
-		scale_factor: DOUBLE is
-				-- multiply with this to receive real-world distances
-			do
-				Result := scale_factor_impl
-			end
+	scale_factor: DOUBLE is
+			-- Scale factor to reach real world distances
+			-- Multiply with this to receive real-world distances
+		do
+			Result := scale_factor_impl
+		end
 
+	retrieve_road (i: INTEGER): TRAFFIC_ROAD is
+			-- Road with given id `i'
+		do
+			Result:=internal_roads.item (i)
+		end
 
---	place_events: TRAFFIC_ITEM_EVENTS  [TRAFFIC_PLACE]
---	
---	line_section_events: TRAFFIC_ITEM_EVENTS [TRAFFIC_LINE_SECTION]
---
 feature -- Events
 
 	unspecified_place_changed_event: EM_EVENT_CHANNEL [TUPLE []]
@@ -815,6 +768,7 @@ feature -- Events
 			-- at index passed as argument
 
 feature {TRAFFIC_MAP_MODEL} -- Access
+
 	map_places: ARRAYED_LIST [TRAFFIC_PLACE] is
 			--
 		do
@@ -827,7 +781,7 @@ feature {TRAFFIC_MAP_MODEL} -- Access
 			Result := internal_line_sections
 		end
 
-feature -- Basic operation
+feature -- Output
 
 	out: STRING is
 			-- Textual representation.
@@ -837,13 +791,7 @@ feature -- Basic operation
 				"%N%Nlines:%N" + lines_out
 		end
 
-
-	retrieve_road(i: INTEGER): TRAFFIC_ROAD is
-			-- retrieve road with given id
-			do
-				Result:=internal_roads.item (i)
-			end
-
+feature -- Basic operations
 
 	find_shortest_path (a_origin: TRAFFIC_PLACE; a_destination: TRAFFIC_PLACE) is
 			-- Find shortest path.
@@ -1013,11 +961,13 @@ feature {NONE} -- Implementation
 			-- Taxi offices associated with this map
 
 	shortest_path_impl: TRAFFIC_PATH
+			-- Traffic path last calculated
 
 	scale_factor_impl: DOUBLE
+			-- Scale factor used to get real world distances
 
 	place_position (a_name: STRING): INTEGER is
-			-- Position of place `a_name' in places.
+			-- Position of place `a_name' in places
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_exmpa: not a_name.is_empty
@@ -1039,7 +989,7 @@ feature {NONE} -- Implementation
 
 
 	description_out: STRING is
-			-- Textual representation of description.
+			-- Textual representation of description
 		do
 			if description = Void then
 				Result := ""
@@ -1050,9 +1000,8 @@ feature {NONE} -- Implementation
 			Result_exists: Result /= Void
 		end
 
-
 	places_out: STRING is
-			-- Textual representation of places.
+			-- Textual representation of places
 		local
 			current_place: TRAFFIC_PLACE
 		do
@@ -1074,7 +1023,7 @@ feature {NONE} -- Implementation
 		end
 
 	lines_out: STRING is
-			-- Textual representation of places.
+			-- Textual representation of places
 		local
 			current_line: TRAFFIC_LINE
 		do
@@ -1096,7 +1045,7 @@ feature {NONE} -- Implementation
 		end
 
 	line_sections_out: STRING is
-			-- Textual representation of line sections.
+			-- Textual representation of line sections
 		local
 			current_line_section: TRAFFIC_LINE_SECTION
 		do
@@ -1118,7 +1067,7 @@ feature {NONE} -- Implementation
 		end
 
 	position_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): EM_VECTOR_2D is
-			-- get the position of `a_node'
+			-- Position of `a_node'
 		do
 
 			if a_connections.first.origin_impl = a_node then
@@ -1127,7 +1076,6 @@ feature {NONE} -- Implementation
 				Result := a_connections.first.polypoints.last
 			end
 		end
-
 
 invariant
 	name_not_void: name /= Void -- Map name exists.

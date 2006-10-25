@@ -7,15 +7,16 @@ class
 	TRAFFIC_GRAPH
 
 inherit
+
 	LINKED_WEIGHTED_GRAPH [TRAFFIC_NODE, TRAFFIC_CONNECTION]
-	redefine
-		writable,
-		put_edge,
-		prune_node,
-		prune_edge_impl,
-		make_multi_graph,
-		enable_user_defined_weight_function
-	end
+		redefine
+			writable,
+			put_edge,
+			prune_node,
+			prune_edge_impl,
+			make_multi_graph,
+			enable_user_defined_weight_function
+		end
 
 create {TRAFFIC_MAP}
 	make_multi_graph
@@ -45,14 +46,21 @@ feature -- Basic operations
 feature {TRAFFIC_MAP} -- Access
 
 	normal_distance: INTEGER is 0
+			-- Use normal path calculation
+
 	minimal_switches: INTEGER is 1
+			-- Use minimal switches path calculation
 
 feature {TRAFFIC_MAP} -- Status Setting
 
 	set_shortest_path_mode (a_mode: INTEGER) is
-			-- set path mode a_mode
+			-- Set path mode to `a_mode'.
+		require
+			a_mode_valid: a_mode = normal_distance or a_mode = minimal_switches
 		do
 			shortest_path_mode := a_mode
+		ensure
+			path_mode_set: shortest_path_mode = a_mode
 		end
 
 feature -- Status Setting
@@ -77,7 +85,6 @@ feature -- Status Setting
 				edge_list.forth
 			end
 		end
-
 
 feature -- Status Report
 
@@ -148,7 +155,7 @@ feature -- Removal
 feature {NONE} -- Implementation
 
 	weight_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]], REAL_32]
-		-- Weight function for edges, if Void, no weight function is used.
+			-- Weight function for edges, if Void, no weight function is used.
 
 	prune_edge_impl (a_edge: EDGE [like item, TRAFFIC_CONNECTION]) is
 			-- Redefined to subtract the length of the connection from the total.
@@ -156,7 +163,6 @@ feature {NONE} -- Implementation
 			total_weight := total_weight - a_edge.label.length
 			Precursor (a_edge)
 		end
-
 
 	calculate_weight (a_edge: WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]): REAL is
 			-- Calculate the edge based on the current status.

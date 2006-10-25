@@ -35,6 +35,7 @@ create
 	make
 
 feature {NONE} -- Initialization
+
 	make (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_map: TRAFFIC_MAP) is
 			-- Create simple line.
 		require
@@ -85,19 +86,13 @@ feature -- Access
 		end
 
 	start_to_terminal (a_terminal: TRAFFIC_PLACE): TRAFFIC_PLACE is
-			-- The start place to existing terminal `a_terminal'.
+			-- Start place to existing terminal `a_terminal'
 		do
 			if equal (a_terminal, terminal_1) then -- terminal of one direction
 				Result := terminal_2
 			else -- terminal of other direction
 				Result := terminal_1
 			end
-		end
-
-	has (a_stop: TRAFFIC_STOP): BOOLEAN is
-			-- Does line include `a_stop'?
-		do
-			Result := stops_one_direction.has (a_stop)
 		end
 
 	i_th (i: INTEGER): TRAFFIC_STOP is
@@ -122,6 +117,12 @@ feature -- Access
 
 feature -- Status report
 
+	has (a_stop: TRAFFIC_STOP): BOOLEAN is
+			-- Does line include `a_stop'?
+		do
+			Result := stops_one_direction.has (a_stop)
+		end
+
 	after: BOOLEAN is
 			-- Is there no valid cursor position to the right of cursor?
 		do
@@ -141,7 +142,7 @@ feature -- Status report
 		end
 
 	is_valid_extension (a_place: TRAFFIC_PLACE): BOOLEAN is
-			-- may a_place be inserted?
+			-- May a_place be inserted?
 		do
 			if count > 0 then
 				Result := a_place /= i_th (count).place
@@ -191,7 +192,7 @@ feature -- Cursor movement
 			stops_one_direction.finish
 		end
 
-feature -- Basic operations
+feature -- Insertion
 
 	extend (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Add `a_line_section' at beginning or end of existing direction(s).
@@ -263,37 +264,6 @@ feature -- Basic operations
 			end
 		end
 
-	remove_all_sections is
-			-- Remove all line sections but keep the first place
-		do
-			from
-				start_line
-			until
-				off_line
-			loop
-				if map.line_sections.has (item_line) then
-					map.remove_line_section (item_line)
-				end
-				forth_line
-			end
-
-			wipe_out_line
-
-			if stops_one_direction.count > 0 then
-				start_stop := stops_one_direction.first
-
-				--remove all places		
-				stops_one_direction.wipe_out
-				stops_other_direction.wipe_out
-
-
-				terminal_1 := Void
-				terminal_2 := Void
-
-				start_other_direction := Void
-			end
-		end
-
 	extend_place (a_place: TRAFFIC_PLACE) is
 			-- Extend the simple line by a place.
 			-- Line sections in both directions are added to the line if there
@@ -325,6 +295,39 @@ feature -- Basic operations
 				create line_section.make (origin, a_stop, type, pp)
 				extend (line_section)
 				map.add_line_section (line_section)
+			end
+		end
+
+feature -- Removal
+
+	remove_all_sections is
+			-- Remove all line sections but keep the first place
+		do
+			from
+				start_line
+			until
+				off_line
+			loop
+				if map.line_sections.has (item_line) then
+					map.remove_line_section (item_line)
+				end
+				forth_line
+			end
+
+			wipe_out_line
+
+			if stops_one_direction.count > 0 then
+				start_stop := stops_one_direction.first
+
+				--remove all places		
+				stops_one_direction.wipe_out
+				stops_other_direction.wipe_out
+
+
+				terminal_1 := Void
+				terminal_2 := Void
+
+				start_other_direction := Void
 			end
 		end
 

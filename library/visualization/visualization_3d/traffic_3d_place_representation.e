@@ -66,13 +66,13 @@ feature -- Basic operations
 			loop
 				if place_3d_objects.item_for_iteration /= Void then
 					place_3d_objects.item_for_iteration.draw
-			end
+				end
 				place_3d_objects.forth
-		end
+			end
 		end
 
 	highlight_place (a_place: TRAFFIC_PLACE; a_color: EM_COLOR) is
-			-- Highlight the marked place
+			-- Highlight the marked place.
 		require
 			place_valid: a_place /= Void
 		local
@@ -92,7 +92,7 @@ feature -- Basic operations
 		end
 
 	unhighlight_place (a_place: TRAFFIC_PLACE) is
-			-- Unhighlight the marked place
+			-- Unhighlight the marked place.
 		require
 			place_valid: a_place /= Void
 		local
@@ -104,7 +104,7 @@ feature -- Basic operations
 		end
 
 	add_places is
-			-- add all places from the map to the places array
+			-- Add all places from the map to the places array.
 		local
 			all_places: HASH_TABLE [TRAFFIC_PLACE, STRING]
 			place_view: EM_3D_OBJECT
@@ -158,19 +158,25 @@ feature -- Basic operations
 feature -- Access
 
 	collision_polygons: DS_ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
-		-- Collision polygons to check for collisions with traffic lines
+			-- Collision polygons to check for collisions with traffic lines
 
 	place_3d_objects: DS_ARRAYED_LIST [EM_3D_OBJECT]
 			-- Container for all line section representations
 
 	place_lookup: DS_HASH_TABLE [INTEGER, TRAFFIC_PLACE]
-			--  lookup for line_section_views
+			-- Lookup for line_section_views
 
 	tolerance: DOUBLE is 2.0
 			-- Tolerance `place_at_position'
 
 	place_factory: TRAFFIC_3D_PLACE_FACTORY
-		-- Factory for places
+			-- Factory for places
+
+	color: EM_COLOR
+			-- Default color for places
+
+	map: TRAFFIC_MAP
+			-- Map that is displayed
 
 feature -- Element change
 
@@ -208,7 +214,6 @@ feature -- Status report
 			end
 		end
 
-
 feature -- Event handling
 
 	process_item_inserted (a_place: TRAFFIC_PLACE) is
@@ -226,13 +231,5 @@ feature -- Event handling
 		do
 			remove_place (a_place)
 		end
-
-feature {NONE} -- Implementation
-
-	color: EM_COLOR
-		-- Default color for places
-
-	map: TRAFFIC_MAP
-		-- Map that is displayed
 
 end

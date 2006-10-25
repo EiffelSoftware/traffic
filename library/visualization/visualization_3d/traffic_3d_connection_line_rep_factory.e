@@ -15,7 +15,7 @@ inherit
 	TRAFFIC_3D_DRAWING_PRIMITIVES
 
 
-feature -- Basic operations
+feature {NONE} -- Implementation
 
 	prepare is
 			-- Prepare color, width etc. to be correct for the item to draw.

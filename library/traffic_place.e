@@ -55,7 +55,7 @@ feature {NONE} -- Initialize
 feature -- Access
 
 	name: STRING
-			-- Name of place.	
+			-- Name of place
 
 	position: EM_VECTOR_2D is
 			-- Position on map
@@ -70,14 +70,16 @@ feature -- Access
 			-- All departure times [tram, time, direction] of trams visiting this place
 
 	nodes: ARRAYED_LIST [TRAFFIC_NODE]
+			-- Nodes that belong to this place
 
 	stops: ARRAYED_LIST[TRAFFIC_STOP]
+			-- All stops of lines stoping at this place
 
 	dummy_node: TRAFFIC_NODE
-			-- node used for shortest path calculation
+			-- Node used for shortest path calculation
 
 	stop (a_line: TRAFFIC_LINE): TRAFFIC_STOP is
-			-- get the stop corresponding to `a_line'
+			-- Stop belonging to `a_line'
 		do
 			from stops.start until stops.after or stops.item.line.name.is_equal (a_line.name) loop
 				stops.forth
@@ -93,14 +95,21 @@ feature -- Access
 	breadth: DOUBLE
 			-- Breadth of the place (enclosing all stops)
 
+	hash_code: INTEGER is
+			-- Hash code value.
+		do
+			Result := name.hash_code
+		end
+
 feature -- Status report
 
 	has_stop (a_line: TRAFFIC_LINE): BOOLEAN is
 			-- Does the place have a stop for `a_line'?
+		require
+			a_line_exists: a_line /= Void
 		do
-			Result := stops.there_exists (agent is_stop_of_line(?, a_line))
+			Result := stops.there_exists (agent is_stop_of_line (?, a_line))
 		end
-
 
 feature -- Element change
 
@@ -119,14 +128,15 @@ feature -- Element change
 		require
 			a_position_exists: a_position /= Void
 		do
---			position := a_position
 			dummy_node.set_position (a_position)
 		ensure
 			position_set: position = a_position
 		end
 
-	register_in_schedule(an_object: TRAFFIC_LINE_VEHICLE; time: TIME; target: TRAFFIC_PLACE) is
-			-- Register a visiting tram in the schedule
+feature -- Basic operations
+
+	register_in_schedule (an_object: TRAFFIC_LINE_VEHICLE; time: TIME; target: TRAFFIC_PLACE) is
+			-- Register a visiting tram in the schedule.
 		require
 			valid_object: an_object /= Void
 			valid_time: time /= Void
@@ -141,6 +151,8 @@ feature -- Element change
 			schedule.extend (entry)
 		end
 
+feature -- Insertion
+
 	add_stop (a_stop: TRAFFIC_STOP) is
 			-- add a traffic stop
 		do
@@ -149,7 +161,7 @@ feature -- Element change
 			update_position
 		end
 
-feature{TRAFFIC_MAP_FACTORY} -- Element change
+feature {TRAFFIC_MAP_FACTORY} -- Element change
 
 	set_dummy_node (a_node: TRAFFIC_NODE) is
 			-- used for shortest path
@@ -157,15 +169,7 @@ feature{TRAFFIC_MAP_FACTORY} -- Element change
 			dummy_node := a_node
 		end
 
-feature -- Measurement
-
-	hash_code: INTEGER is
-			-- Hash code value.
-		do
-			Result := name.hash_code
-		end
-
-feature -- Basic operation
+feature -- Output
 
 	out: STRING is
 			-- Textual representation of place.

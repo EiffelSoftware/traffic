@@ -4,28 +4,27 @@ indexing
 	revision: "$Revision$"
 
 class QUERIES_3D_SCENE
-	
+
 inherit
-	
+
 	TOUCH_3D_SCENE
-		rename 
-			make as make_touch_scene
+		redefine
+			initialize_scene
 		end
-	
+
 creation
-	make
+	make_component_scene
 
 feature -- Interface
-	
-	make is
+
+	initialize_scene is
 			-- Creation procedure
 		local
 			queries: QUERIES
 		do
-			make_touch_scene
-
+			Precursor
 			create queries
-			queries.run (map_widget, console)			
+			queries.run (map_widget, console)
 		end
-		
-end 
+
+end

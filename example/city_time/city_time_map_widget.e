@@ -49,8 +49,6 @@ feature -- Basic operations
 		require
 			filename_exists: filename /= Void
 		local
-			traveler: TRAFFIC_MOVING
-			temp_list: ARRAYED_LIST [EM_VECTOR_2D]
 			loader: TRAFFIC_MAP_LOADER
 		do
 			create loader.make (filename)
@@ -130,6 +128,8 @@ feature -- Access
 		do
 			Result := time.simulated_minutes
 		end
+
+	number_of_passengers: INTEGER
 
 feature {NONE} -- Event handling
 

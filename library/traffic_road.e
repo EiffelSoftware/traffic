@@ -1,5 +1,7 @@
 indexing
 	description: "A Road of the city."
+	date: "$Date: 2006-03-27 19:42:12 +0200 (Mon, 27 Mar 2006) $"
+	revision: "$Revision: 601 $"
 
 class
 	TRAFFIC_ROAD
@@ -44,7 +46,7 @@ feature{NONE} -- Creation
 			polypoints_exists: polypoints /= Void
 		end
 
-feature -- Basic operation
+feature -- Access
 
 	hash_code: INTEGER is
 			-- Hash code value
@@ -52,14 +54,15 @@ feature -- Basic operation
 			Result := ([origin, destination, id]).hash_code
 		end
 
-feature -- Access
-
 	type: TRAFFIC_TYPE_ROAD
-		-- Type of the Road
+			-- Road type
 
 	id: INTEGER
+			-- Id of road
+
+feature -- Status report
 
 	is_directed: BOOLEAN
-
+			-- Is the road directed?
 
 end

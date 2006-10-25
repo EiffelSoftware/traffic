@@ -1,56 +1,68 @@
 indexing
 	description: "A tokenzier suited for iterated scanning."
-	author: "Basil Fierz, bfierz@student.ethz.ch"
 	date: "$Date: 2005/06/21 15:16:28 $"
 	revision: "$Revision: 1.4 $"
 
-class 
-	Q_TEXT_SCANNER
+class
+	TRAFFIC_3D_TEXT_SCANNER
 
-create 
+create
 	make_from_string_with_delimiters
 
-feature {NONE} 
+feature {NONE} -- Initialization
 
 	make_from_string_with_delimiters (a_string: STRING; the_delimiters: STRING) is
+			-- Initialize with `a_string' as source and `the_delimiters' as delimiters.
 		require
-			a_string /= Void
-			the_delimiters /= Void
+			a_string_exists: a_string /= Void
+			delimiters_exists: the_delimiters /= Void
 		do
 			source := a_string
 			delimiters := the_delimiters
 			start_idx := next_start (1)
 			create last_string.make_empty
+		ensure
+			source_set: source = a_string
+			delimiters_set: delimiters = the_delimiters
+			last_string_exists: last_string /= Void
 		end
-	
-feature 
+
+feature -- Basic operations
 
 	set_source_string (a_string: STRING) is
+			-- Set `source' to `a_string'.
 		require
-			a_string /= Void
+			a_string_exists: a_string /= Void
 		do
 			source := a_string
 			start_idx := next_start (1)
 		ensure
-			source = a_string
+			source_set: source = a_string
 		end
 
 	read_token is
+			-- Read next token and make it available through `last_string'.
 		local
 			finish_idx: INTEGER
 		do
 			finish_idx := next_finish (start_idx)
 			last_string.set (source, start_idx, finish_idx)
 			start_idx := next_start (finish_idx + 1)
+		ensure
+			last_string_exists: last_string /= Void
 		end
-	
-feature 
+
+feature -- Access
 
 	last_string: STRING
-	
-feature {NONE} 
+			-- Last token read
+
+feature {NONE} -- Implementation
 
 	next_start (start_ix: INTEGER): INTEGER is
+			-- Start of next token starting search at `start_ix'
+		require
+			start_ix_valid: start_ix > 0
 		do
 			from
 				Result := start_ix
@@ -62,6 +74,9 @@ feature {NONE}
 		end
 
 	next_finish (start_ix: INTEGER): INTEGER is
+			-- End of next token starting search at `start_ix'
+		require
+			start_ix_valid: start_ix > 0
 		do
 			from
 				Result := start_ix
@@ -74,8 +89,9 @@ feature {NONE}
 		end
 
 	find_next_delim (start: INTEGER): INTEGER is
+			-- Position of next delimiter starting search at `start'
 		require
-			start > 0
+			start_valid: start > 0
 		local
 			curr_delim: INTEGER
 			curr_index: INTEGER
@@ -98,12 +114,16 @@ feature {NONE}
 		end
 
 	source: STRING
+			-- Source to search
 
 	delimiters: STRING
+			-- Delimiters identifying tokens
 
 	start_idx: INTEGER
-	
-invariant
-	source /= Void
+			-- Current index
 
-end -- class Q_TEXT_SCANNER
+invariant
+
+	source_exists: source /= Void
+
+end

@@ -5,13 +5,13 @@ indexing
 
 class
 	TRAFFIC_PLACE_INFORMATION
-	
+
 inherit
 	ANY
 		redefine
 			out
 		end
-	
+
 create
 	make
 
@@ -28,11 +28,11 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	pictures: LINKED_LIST [STRING]
-		-- Path to picture.
-		
+		-- Path to picture
+
 	description: STRING
-		-- Description.
-		
+		-- Description
+
 feature -- Element change
 
 	extend_picture (a_picture_path: STRING) is
@@ -44,7 +44,7 @@ feature -- Element change
 		ensure
 			picture_set: pictures.has (a_picture_path)
 		end
-		
+
 	set_description (a_description: STRING) is
 			-- Set description to `a_desciption'.
 		require
@@ -54,9 +54,9 @@ feature -- Element change
 		ensure
 			description_set: description = a_description
 		end
-		
+
 feature -- Removal
-	
+
 	remove_picture (a_picture_path: STRING) is
 			-- Remove picture path from pictures.
 		require
@@ -74,8 +74,8 @@ feature -- Removal
 		ensure
 			description_removed: description = Void
 		end
-		
-feature -- Basic operation
+
+feature -- Output
 
 	out: STRING is
 			-- Textual representation.
@@ -102,7 +102,7 @@ feature -- Basic operation
 				Result := Result + "description: " + description
 			end
 		end
-		
+
 invariant
 	pictures_exists: pictures /= Void
 

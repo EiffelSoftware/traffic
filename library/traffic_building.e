@@ -20,6 +20,7 @@ create
 	make
 
 feature -- Initialization
+
 	make (a_p1, a_p2, a_p3, a_p4: EM_VECTOR_2D; an_height: DOUBLE; a_name: STRING) is
 			-- Sets the corner to `a_p1', `a_p2', `a_p3', `a_p4' and the name to `a_name'.
 			-- Calculates the breadth, width and center.
@@ -71,9 +72,9 @@ feature -- Status report
 
 		end
 
-feature -- Options
+feature -- Element change
 
-	set_id(an_id: INTEGER) is
+	set_id (an_id: INTEGER) is
 			-- Set id to `an_id'.
 		require
 			valid_id: an_id > 0
@@ -83,7 +84,7 @@ feature -- Options
 			id_set: id = an_id
 		end
 
-	set_angle(an_angle: DOUBLE) is
+	set_angle (an_angle: DOUBLE) is
 			-- Set angle to `a_angle'.
 		require
 			angle_valid: an_angle >= -70 and an_angle <=70
@@ -104,7 +105,7 @@ feature -- Options
 			angle_set: angle = an_angle
 		end
 
-	 set_information(a_information: TRAFFIC_BUILDING_INFORMATION) is
+	 set_information (a_information: TRAFFIC_BUILDING_INFORMATION) is
 	 		-- Set information to `a_information'.
 	 	require
 	 		information_valid: a_information /= void
@@ -128,8 +129,6 @@ feature -- Options
 	 		corner3.move_by (center - old_center)
 	 		corner4.move_by (center - old_center)
 	 	end
-
-
 
 feature -- Attributes
 
@@ -170,6 +169,7 @@ feature -- Attributes
 			-- Additional information.
 
 invariant
+
 	angle_valid: angle >= -70 and angle <= 70
 	breadth_valid: breadth > 0
 	width_valid: width > 0
