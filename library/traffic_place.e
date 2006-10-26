@@ -215,9 +215,6 @@ feature {NONE} -- Implementation
 	update_position is
 			--
 		do
-			if name.is_equal ("Quellenstrasse") then
-				io.put_string ("Action")
-			end
 			if stops.count = 1 then
 				width := 0
 				breadth := 0

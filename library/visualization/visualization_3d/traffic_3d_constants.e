@@ -34,13 +34,13 @@ feature -- Constants
 	Plane_size: DOUBLE is 50.0
 			-- Length, resp. width, of plane.
 
-	Window_width: INTEGER is 800 -- 1000 -- 1024
+	Traffic_window_width: INTEGER is 800 -- 1000 -- 1024
 			-- Window width.
 
-	Window_height: INTEGER is 600 -- 768
+	Traffic_window_height: INTEGER is 600 -- 768
 			-- Window height.
 
-	Screen_resolution: INTEGER is 32
+	Traffic_screen_resolution: INTEGER is 32
 			-- Screen resolution.
 
 	Fullscreen: BOOLEAN is False

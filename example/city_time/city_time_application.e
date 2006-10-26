@@ -29,9 +29,9 @@ feature -- Initialization
 			keyboard: EM_KEYBOARD
 		do
 			-- Initialise screen
-			video_subsystem.set_video_surface_width (window_width)
-			video_subsystem.set_video_surface_height (window_height)
-			video_subsystem.set_video_bpp (Screen_resolution)
+			video_subsystem.set_video_surface_width (Traffic_window_width)
+			video_subsystem.set_video_surface_height (Traffic_window_height)
+			video_subsystem.set_video_bpp (Traffic_screen_resolution)
 			video_subsystem.set_fullscreen (Fullscreen)
 			video_subsystem.set_opengl (True)
 			video_subsystem.enable

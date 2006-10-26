@@ -18,6 +18,7 @@
 		<echo message="   geant clean"/>
 		<echo message="   geant compile"/>
 		<echo message="   geant compile_debug"/>
+		<echo message="   geant release"/>
 	</target>
 
 	<target name="install" depend="init">
@@ -50,6 +51,19 @@
 
 	<target name="compile_debug" depend="init">
 		<geant file="build.eant" target="compile_debug" dir="example"/>
+	</target>
+	
+	<target name="release" depend="init">
+		<mkdir directory="release"/>
+		<geant file="build.eant" target="release_no_doc" dir="doc"/>
+		<geant file="build.eant" target="release" dir="example"/>
+		<copy to_directory="release/library">
+	   		<fileset directory="library" include="@(**/*.e|**/*.ecf)"/>
+		</copy>
+		<copy to_directory="release">
+	   		<fileset include="@(*.txt)"/>
+		</copy>
+		
 	</target>
 		
 <!-- Implementation -->

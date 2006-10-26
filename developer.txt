@@ -1,6 +1,6 @@
                             Traffic
-                            Version 3.0
-                            http://se.inf.ethz.ch/traffic
+                            Version 3.1
+                            http://traffic.origo.ethz.ch
 
 1. Requirements
 2. Build environment
@@ -12,21 +12,20 @@ ____________________________________________________________
 
 1.1 Traffic relies on
 
-EiffelMedia 0.8.0 that in turn needs GOBO, EWG and SDL. See http://eiffelmedia.origo.ethz.ch 
+EiffelStudio 5.7 and EiffelMedia 0.8.1 that in turn needs GOBO, EWG and SDL. See http://eiffelmedia.origo.ethz.ch 
 for further instructions.
 
 2. Build environment
 ____________________________________________________________
 
-Traffic relies on the GOBO tools for its build process. See readme.txt for further information.
+Traffic relies on ecf files (and gobo tools for svn version) for its build process. See readme.txt for further information.
 
 3. Directory layout
 ____________________________________________________________
 
-doc			: Contains Traffic's User and developer documantation
+doc			: Contains a URL to Traffic user and developer documentation
 example		: The applications
 library		: Traffic library you can use in your application
-build.eant		: The main build file
 developer.txt	: This file
 forum.txt		: The Eiffel Forum License II
 readme.txt		: Installation instructions for users

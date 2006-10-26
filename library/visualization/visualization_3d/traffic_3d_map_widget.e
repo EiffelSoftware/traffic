@@ -28,6 +28,9 @@ inherit
 
 	TRAFFIC_SHARED_TIME
 
+	GL_FUNCTIONS
+		export {NONE} all end
+
 create
 	make
 

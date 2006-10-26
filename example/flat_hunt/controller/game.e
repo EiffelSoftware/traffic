@@ -382,6 +382,7 @@ feature {NONE} -- Implementation
 		local
 			destination: TRAFFIC_PLACE
 			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
+			list: ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			create Result.make
 			outgoing_line_sections := traffic_map.line_sections_of_place (a_line_section.destination.name)
@@ -393,7 +394,10 @@ feature {NONE} -- Implementation
 				if (outgoing_line_sections.item.type = Tram_type and then outgoing_line_sections.item.destination /= a_line_section.origin) then
 				-- TODO: and then outgoing_line_sections.item.line = a_line_section.line ??
 					destination := outgoing_line_sections.item.destination
-					Result.extend (create {TRAFFIC_LINE_SECTION}.make_non_insertable (a_line_section.origin, destination, Tram_type, Void))
+					create list.make (2)
+					list.extend (a_line_section.origin.position)
+					list.extend (destination.position)
+					Result.extend (create {TRAFFIC_LINE_SECTION}.make_non_insertable (a_line_section.origin, destination, Tram_type, list))
 				end
 				outgoing_line_sections.forth
 			end

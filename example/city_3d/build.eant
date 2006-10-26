@@ -24,4 +24,10 @@
     <set name="system_dir" value="."/>
   </target>
 
+  <target name="release" depend="init">
+	<copy to_directory="../../release/example/city_3d">
+   		<fileset include="@(**/*.e|*.ecf)" exclude="@(EIFGENs)"/>
+	</copy>
+  </target>
+
 </project>

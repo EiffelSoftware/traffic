@@ -12,7 +12,7 @@ inherit
 
 	EM_GL_CONSTANTS
 
-	GLEXT_FUNCTIONS
+--	GLEXT_FUNCTIONS
 
 	EM_GLEXT_CONSTANTS
 
@@ -125,7 +125,7 @@ feature {NONE} -- Implementation
 invariant
 
 	textures_exists: textures /= Void
-	
+
 end
 
 

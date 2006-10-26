@@ -17,6 +17,7 @@
 		<echo message="   geant install"/>
 		<echo message="   geant install_develop"/>
 		<echo message="   geant compile"/>
+		<echo message="   geant release"/>
 	</target>
 
 	<target name="clean" depend="init">
@@ -64,6 +65,28 @@
 		<set name="target" value="compile_debug"/>
 		<geant target="do_all"/>
 	</target>
+	
+	<target name="release" depend="init">
+		<description>
+			Move xml files, 3d obj files, and all examples to release.
+		</description>
+		
+		<mkdir directory="../release/example"/>
+		<copy to_directory="../release/example/map">
+    		<fileset directory="map" include="@(**/*.dtd|**/*.xml)"/>
+  		</copy>
+		<copy to_directory="../release/example/buildings">
+    		<fileset directory="buildings" include="@(**/*.obj|**/*.tga|**/*.dtd|**/*.xml)"/>
+  		</copy>
+		<copy to_directory="../release/example/image">
+    		<fileset directory="image" include="@(**/*.png)"/>
+  		</copy>
+		<copy to_directory="../release/example/objects">
+    		<fileset directory="objects" include="@(**/*.obj|**/*.tga)"/>
+  		</copy>
+		<set name="target" value="release"/>
+		<geant target="do_all"/>
+	</target>
 
 <!-- Implementation -->
 
@@ -84,6 +107,7 @@
 	<target name="do_all">
 		<geant target="do_one" arguments="flat_hunt"/>
 		<geant target="do_one" arguments="city_3d"/>
+		<geant target="do_one" arguments="city_timetable"/>
 		<geant target="do_one" arguments="city_time"/>
 		<geant target="do_one" arguments="chapter2_preview"/>
 		<geant target="do_one" arguments="chapter3_queries"/>

@@ -24,4 +24,10 @@
     <set name="system_dir" value="."/>
   </target>
 
+  <target name="release" depend="init">
+	<copy to_directory="../../release/example/chapter3_queries">
+   		<fileset include="@(**/*.e|*.ecf)"/>
+	</copy>
+  </target>
+
 </project>

@@ -34,8 +34,6 @@ feature -- Interface
 			loader: TRAFFIC_MAP_LOADER
 			s: STRING
 			fs: KL_FILE_SYSTEM
-			traveler: TRAFFIC_PASSENGER
-			list: ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			make_component_scene
 
@@ -43,7 +41,7 @@ feature -- Interface
 
 			create bg_color.make_with_rgb (211,211,211)
 			-- Toolbar
-			create toolbar_panel.make_from_dimension (200, window_height)
+			create toolbar_panel.make_from_dimension (200, traffic_window_height)
 
 			-- Checkboxes
 			create sun_checkbox.make_from_text ("Show sun")
@@ -90,17 +88,17 @@ feature -- Interface
 			toolbar_panel.add_widget (taxi_office_type_combobox)
 
 			-- Building buttons
-			load_buildings_button.set_position(20,(window_height * 0.68).rounded)
+			load_buildings_button.set_position(20,(traffic_window_height * 0.68).rounded)
 			load_buildings_button.set_dimension (160, load_buildings_button.height)
 			load_buildings_button.clicked_event.subscribe (agent load_buildings_clicked)
 			toolbar_panel.add_widget (load_buildings_button)
-			delete_buildings_button.set_position (20, (window_height * 0.73).rounded)
+			delete_buildings_button.set_position (20, (traffic_window_height * 0.73).rounded)
 			delete_buildings_button.set_dimension (160, delete_buildings_button.height)
 			delete_buildings_button.clicked_event.subscribe (agent delete_buildings_clicked)
 			toolbar_panel.add_widget (delete_buildings_button)
 
 			-- Sun Checkbox
-			sun_checkbox.set_position (17, (window_height * 0.83).rounded)
+			sun_checkbox.set_position (17, (traffic_window_height * 0.83).rounded)
 			sun_checkbox.set_background_color (bg_color)
 			sun_checkbox.set_optimal_dimension (110, 20)
 			sun_checkbox.resize_to_optimal_dimension
@@ -111,7 +109,7 @@ feature -- Interface
 			toolbar_panel.add_widget (sun_checkbox)
 
 			-- Buildings Checkbox
-			buildings_checkbox.set_position (17, (window_height * 0.87).rounded)
+			buildings_checkbox.set_position (17, (traffic_window_height * 0.87).rounded)
 			buildings_checkbox.set_background_color (bg_color)
 			buildings_checkbox.set_optimal_dimension (110, 20)
 			buildings_checkbox.resize_to_optimal_dimension
@@ -131,7 +129,7 @@ feature -- Interface
 			toolbar_panel.add_widget (lines_checkbox)
 
 			-- Time Checkbox
-			time_checkbox.set_position (17, (window_height * 0.91).rounded)
+			time_checkbox.set_position (17, (traffic_window_height * 0.91).rounded)
 			time_checkbox.set_background_color (bg_color)
 			time_checkbox.set_optimal_dimension (110, 20)
 			time_checkbox.resize_to_optimal_dimension
@@ -142,7 +140,7 @@ feature -- Interface
 
 			-- Time slider
 			create time_slider.make_from_range_horizontal (1, 60)
-			time_slider.set_position (40, (window_height * 0.95).rounded)
+			time_slider.set_position (40, (traffic_window_height * 0.95).rounded)
 			time_slider.set_optimal_dimension (120, 20)
 			time_slider.resize_to_optimal_dimension
 			time_slider.set_tooltip ("Day simulation minutes")
@@ -150,13 +148,13 @@ feature -- Interface
 			toolbar_panel.add_widget (time_slider)
 
 			-- Zoom out Button
-			zoom_out_button.set_position (180-zoom_out_button.width, (window_height * 0.78).rounded)
+			zoom_out_button.set_position (180-zoom_out_button.width, (traffic_window_height * 0.78).rounded)
 			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
 			zoom_out_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
 			toolbar_panel.add_widget (zoom_out_button)
 
 			-- Zoom in Button
-			zoom_in_button.set_position (20, (window_height * 0.78).rounded)
+			zoom_in_button.set_position (20, (traffic_window_height * 0.78).rounded)
 			zoom_in_button.set_dimension (zoom_out_button.width, zoom_out_button.height)
 			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
 			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))

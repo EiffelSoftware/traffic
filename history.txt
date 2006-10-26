@@ -1,3 +1,11 @@
+Version 3.1		25.10.2006
+
+	* Taxis, trams, passengers, and other vehicles
+	* Improved 3d visualization with 3d obj models and textures
+	* Improved performance of display
+	* Roads and stops of transportation lines
+	* Extended path calculation
+
 Version 3.0		31.3.2006
 
 	* Buildings included in the library

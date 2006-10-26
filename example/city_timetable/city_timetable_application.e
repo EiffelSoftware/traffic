@@ -27,12 +27,11 @@ feature -- Initialization
 			-- Initialize all subsystems of em and launch the first scene.
 		local
 			keyboard: EM_KEYBOARD
-			fs: KL_FILE_SYSTEM
 		do
 			-- Initialise screen
 			video_subsystem.set_video_surface_width (800)
-			video_subsystem.set_video_surface_height (window_height)
-			video_subsystem.set_video_bpp (Screen_resolution)
+			video_subsystem.set_video_surface_height (traffic_window_height)
+			video_subsystem.set_video_bpp (traffic_screen_resolution)
 			video_subsystem.set_fullscreen (Fullscreen)
 			video_subsystem.set_opengl (True)
 			video_subsystem.enable

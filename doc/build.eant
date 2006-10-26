@@ -14,6 +14,7 @@
 		<echo message="usage:"/>
 		<echo message="   geant install"/>
 		<echo message="   geant clobber"/>
+		<echo message="   geant release_no_doc"/>
 	</target>
 
 	<target name="install">
@@ -42,6 +43,14 @@
 		<geant target="do_all"/>
 		
 		<geant target="delete_file" arguments="index"/>
+	</target>
+	
+	<target name="release_no_doc">
+		<description>
+			Move redirect.html to release/doc/index.html
+		</description>
+		<mkdir directory="../release/doc"/>
+		<copy file="redirect.html" to_file="../release/doc/index.html"/>
 	</target>
 
 <!-- Implementation -->

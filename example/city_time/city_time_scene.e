@@ -31,7 +31,7 @@ feature -- Interface
 			set_frame_counter_visibility (True)
 
 			-- Toolbar
-			create toolbar_panel.make_from_dimension ((window_width*0.25).rounded, window_height)
+			create toolbar_panel.make_from_dimension ((Traffic_window_width*0.25).rounded, Traffic_window_height)
 
 			-- Box and button for xml files
 			create combo_title.make_from_text ("Choose a map:")
@@ -140,7 +140,7 @@ feature -- Interface
 			toolbar_panel.add_widget (lines_checkbox)
 
 			-- Toolbar Panel
-			toolbar_panel.set_position ((window_width*0.75).rounded, 0)
+			toolbar_panel.set_position ((Traffic_window_width*0.75).rounded, 0)
 			add_component (toolbar_panel)
 
 			-- Combobox title

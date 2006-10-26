@@ -257,7 +257,7 @@ feature {NONE} -- Implementation
 			create normals.make (0, 2)
 			create texture_coordinates.make (0, 1)
 			create faces.make (0, 0)
-			create tokenizer_.make_from_string_with_delimiters ("", " %T")
+			create tokenizer_.make_from_string_with_delimiters ("", " %T%R")
 			create obj_file_.make_open_read (a_filename)
 			from
 				vector_count := 0

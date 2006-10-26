@@ -34,7 +34,6 @@ feature -- Interface
 			buildings_checkbox: EM_CHECKBOX
 			lines_checkbox: EM_CHECKBOX
 			shortest_path_checkbox: EM_CHECKBOX
-			time_running_checkbox: EM_CHECKBOX
 			combo_title: EM_LABEL
 			combo_box: EM_COMBOBOX[STRING]
 			traffic_building_label: EM_LABEL
@@ -54,8 +53,8 @@ feature -- Interface
 			create bg_color.make_with_rgb (211,211,211)
 
 			-- Toolbar
-			create toolbar_panel.make_from_dimension (200, window_height)
-			create toolbar_panel_left.make_from_dimension (200, window_height)
+			create toolbar_panel.make_from_dimension (200, Traffic_window_height)
+			create toolbar_panel_left.make_from_dimension (200, Traffic_window_height)
 
 			-- Checkboxes
 			create highlighting_checkbox.make_from_text ("Highlight lines")
@@ -63,7 +62,6 @@ feature -- Interface
 			create sun_checkbox.make_from_text ("Show sun")
 			create coordinates_checkbox.make_from_text ("Show coordinates")
 			create buildings_transparent_checkbox.make_from_text ("Transparent buildings")
-			create time_running_checkbox.make_from_text("Simulate Time")
 			create lines_checkbox.make_from_text ("Show VBZ Lines")
 
 			-- Box and button for xml files
@@ -71,11 +69,6 @@ feature -- Interface
 			s := fs.pathname ("..", "map")
 			create combo_box.make_from_list (search_for_xml (s))
 			create load_button.make_from_text ("Load map")
-
-			-- Slider and label for number of buildings
---			create buildings_title.make_from_text ("Number of buildings:")
---			create buildings_label.make_from_text ("0")
---			create buildings_slider.make_from_range_horizontal (0, 100)
 
 			-- 'Zoom in' and 'Zoom out' buttons
 			create zoom_in_button.make_from_text ("Zoom in")
@@ -250,17 +243,6 @@ feature -- Interface
 			minimal_switches_checkbox.set_tooltip ("Minimal switches")
 			minimal_switches_checkbox.hide
 			toolbar_panel.add_widget (minimal_switches_checkbox)
-
-
-			-- Time Running Checkbox
-			time_running_checkbox.set_position (10, 410)
-			--time_running_checkbox.set_background_color (bg_color)
-			time_running_checkbox.set_optimal_dimension (120,20)
-			time_running_checkbox.resize_to_optimal_dimension
-			time_running_checkbox.checked_event.subscribe (agent time_running_checked)
-			time_running_checkbox.unchecked_event.subscribe (agent time_running_unchecked)
-			toolbar_panel.add_widget (time_running_checkbox)
-
 
 			-- Lines Checkbox
 			lines_checkbox.set_position (10,430)
@@ -463,18 +445,6 @@ feature -- Event handling
 			traffic_line_ride_button.hide
 			path_description.hide
 			minimal_switches_checkbox.hide
-		end
-
-	time_running_checked is
-			-- Checkbox has been checked.
-		do
-			map_widget.time.start_time
-		end
-
-	time_running_unchecked is
-			-- Checkbox has been unchecked.
-		do
-			map_widget.time.pause_time
 		end
 
 	highlighting_checked is

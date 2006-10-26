@@ -31,7 +31,7 @@ feature -- Initialization
 			set_frame_counter_visibility (True)
 
 			-- Toolbar
-			 create toolbar_panel.make_from_dimension ((window_width*0.25).rounded, (window_height*0.8).rounded)
+			 create toolbar_panel.make_from_dimension ((touch_window_width*0.25).rounded, (touch_window_height*0.8).rounded)
 
 			-- 'Zoom in' and 'Zoom out' buttons
 			create zoom_in_button.make_from_text ("Zoom in")
@@ -49,7 +49,7 @@ feature -- Initialization
 
 			-- Toolbar Panel
 			toolbar_panel.set_background_color (create {EM_COLOR}.make_with_rgb(180, 180, 180))
-			toolbar_panel.set_position ((Window_width*0.75).rounded, 0)
+			toolbar_panel.set_position ((touch_window_width*0.75).rounded, 0)
 			add_component (toolbar_panel)
 
 			-- Zoom out Button
@@ -72,17 +72,17 @@ feature -- Initialization
 			toolbar_panel.add_widget (click_here_button)
 
 			-- Console
-			create console_panel.make_from_dimension ((window_width*0.25).rounded, (window_height*0.25).rounded)
+			create console_panel.make_from_dimension ((touch_window_width*0.25).rounded, (touch_window_height*0.25).rounded)
 			console_panel.set_border (create {EM_NAMED_BORDER}.make_from_text ("Console"))
 
 			console_panel.set_background_color (create {EM_COLOR}.make_with_rgb(180, 180, 180))
-			console_panel.set_position((window_width*0.75).rounded, (window_height*0.75).rounded)
+			console_panel.set_position((touch_window_width*0.75).rounded, (touch_window_height*0.75).rounded)
 			add_component(console_panel)
 
 			create console.make_empty
 			console.set_position(8, 12)
 			console.set_background_color (create {EM_COLOR}.make_with_rgb(200, 200, 200))
-			console.set_dimension ((window_width*0.25).rounded - 16, (window_height*0.25).rounded - 20)
+			console.set_dimension ((touch_window_width*0.25).rounded - 16, (touch_window_height*0.25).rounded - 20)
 			console.disable
 
 			console_panel.add_widget (console)

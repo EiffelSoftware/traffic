@@ -24,4 +24,10 @@
     <set name="system_dir" value="."/>
   </target>
 
+  <target name="release" depend="init">
+	<copy to_directory="../../release/example/flat_hunt">
+   		<fileset include="@(**/*.e|*.ecf|**/*.png|**/*.ttf|**/*.ogg|**/*.ico)" exclude="@(EIFGENs)"/>
+	</copy>
+  </target>
+
 </project>
