@@ -28,6 +28,8 @@ feature	 -- Example
 			Line8.highlight_for_5_seconds
 			Paris.add_buildings
 			Paris.add_trams (5)
+			Console.show (Line8)
+			Console.show (place_balard)
 		end
 
 end
