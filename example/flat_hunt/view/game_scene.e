@@ -56,7 +56,7 @@ feature -- Initialization
 			create navigation_widget.make (little_map_widget, big_map_widget)	
 			
 			-- Build status box.
-			create status_box.make_from_coordinates (Map_area_width + 2 * Margin, Window_width - Map_area_width - 2 * Margin, Window_width - Margin, Map_area_height, "Status")
+			create status_box.make_from_coordinates (Map_area_width + 2 * Margin, flathunt_window_width - Map_area_width - 2 * Margin, flathunt_window_width - Margin, Map_area_height, "Status")
 			status_box.set_font (theme.Status_font)
 			status_box.set_title_font (theme.Medium_game_widget_font)
 			status_box.set_color (theme.Status_color)
@@ -104,7 +104,7 @@ feature -- Initialization
 			tmp_player_displayer: PLAYER_DISPLAYER
 		do
 			cur_button_x := Margin
-			cur_button_y := Window_height - Margin - theme.Estate_agent_button_pic.height
+			cur_button_y := flathunt_window_height - Margin - theme.Estate_agent_button_pic.height
 			from
 				i := 1
 			until
@@ -286,7 +286,7 @@ feature {NONE} -- Menu Handling
 			pause_menu.set_alignment (theme.Centered)
 			pause_menu.set_x_y (20, 90)
 
-			create pause_menu_container.make_from_position_and_size ((Window_width - pause_menu.width) // 2 - 25, (Window_height - pause_menu.height) // 2 - 10, pause_menu.width + 50, pause_menu.height + 20, " ")
+			create pause_menu_container.make_from_position_and_size ((flathunt_window_width - pause_menu.width) // 2 - 25, (flathunt_window_height - pause_menu.height) // 2 - 10, pause_menu.width + 50, pause_menu.height + 20, " ")
 			pause_menu_container.set_font (theme.Black_status_font)
 			pause_menu_container.set_color (theme.dialog_color)
 			pause_menu_container.set_auto_resize (False)
@@ -303,7 +303,7 @@ feature {NONE} -- Menu Handling
 			game_over_menu.set_alignment (theme.Centered)
 			game_over_menu.set_x_y (20, 90)
 
-			create game_over_menu_container.make_from_position_and_size ((window_width - game_over_menu.width) // 2 - 25, (window_height - game_over_menu.height) // 2 - 10, game_over_menu.width + 50, game_over_menu.height + 20, " ")
+			create game_over_menu_container.make_from_position_and_size ((flathunt_window_width - game_over_menu.width) // 2 - 25, (flathunt_window_height - game_over_menu.height) // 2 - 10, game_over_menu.width + 50, game_over_menu.height + 20, " ")
 			game_over_menu_container.set_font (theme.black_status_font)
 			game_over_menu_container.set_color (theme.dialog_color)
 			game_over_menu_container.set_auto_resize (False)
@@ -431,7 +431,7 @@ feature {NONE} -- Implementation
 		local
 			tmp_place_renderer: TRAFFIC_2D_PLACE_RENDERER
 		do	
-			create little_map_widget.make_with_map (Window_width - Map_area_width - 3 * Margin , Window_width - Map_area_width - 3 * Margin, traffic_map)
+			create little_map_widget.make_with_map (flathunt_window_width - Map_area_width - 3 * Margin , flathunt_window_width - Map_area_width - 3 * Margin, traffic_map)
 			little_map_widget.set_x_y (map_area_width + 2 * margin, margin)
 			little_map_widget.set_background_color (create {EM_COLOR}.make_white)
 			little_map_widget.calculate_object_area

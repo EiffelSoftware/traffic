@@ -31,7 +31,7 @@ feature -- Initialization
 			-- Create status box with default values at position (`an_x', `a_y').
 		require
 			a_title_exists: a_title /= Void
-			position_valid: an_x >= 0 and an_x <= Window_width and a_y >= 0 and a_y <= Window_height
+			position_valid: an_x >= 0 and an_x <= flathunt_window_width and a_y >= 0 and a_y <= flathunt_window_height
 		do
 			make
 			set_default_values
@@ -47,8 +47,8 @@ feature -- Initialization
 			-- Create status box from coordinates (`x1', `y1') to (`x2', `y2').
 		require
 			a_title_exists: a_title /= Void
-			position1_valid: x1 >= 0 and x1 <= Window_width and y1 >= 0 and y1 <= Window_height
-			position2_valid: x2 >= 0 and x2 <= Window_width and y2 >= 0 and y2 <= Window_height			
+			position1_valid: x1 >= 0 and x1 <= flathunt_window_width and y1 >= 0 and y1 <= flathunt_window_height
+			position2_valid: x2 >= 0 and x2 <= flathunt_window_width and y2 >= 0 and y2 <= flathunt_window_height			
 		do
 			make
 			set_default_values
@@ -66,7 +66,7 @@ feature -- Initialization
 			a_title_exists: a_title /= Void
 			a_width_positive: a_width >= 0
 			a_height_positive: a_height >= 0
-			position_valid: an_x >= 0 and an_x <= Window_width and a_y >= 0 and a_y <= Window_height
+			position_valid: an_x >= 0 and an_x <= flathunt_window_width and a_y >= 0 and a_y <= flathunt_window_height
 		do
 			make
 			set_default_values

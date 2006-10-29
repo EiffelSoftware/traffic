@@ -25,7 +25,7 @@
   </target>
   
   <target name="release" depend="init">
-	<copy to_directory="../../release/example/chapter1_preview">
+	<copy to_directory="../../release/example/chapter2_preview">
    		<fileset include="@(**/*.e|*.ecf)" exclude="@(EIFGENs)"/>
 	</copy>
   </target>

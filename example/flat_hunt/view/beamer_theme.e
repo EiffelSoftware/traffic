@@ -246,7 +246,7 @@ feature -- Images
 		once
 			bitmap_factory.create_bitmap_from_image (Image_directory + "flat_hunt_logo.png")
 			Result := bitmap_factory.last_bitmap
-			Result.set_x_y ((Window_width - Result.width) //2, 0)
+			Result.set_x_y ((flathunt_window_width - Result.width) //2, 0)
 		end	
 	
 	Background_picture: EM_DRAWABLE is

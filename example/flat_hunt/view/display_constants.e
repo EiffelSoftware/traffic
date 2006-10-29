@@ -106,10 +106,10 @@ feature -- Constants (Numbers)
 	Left, Right, Centered: INTEGER is unique
 			-- Alignment constants.
 
-	Window_width: INTEGER is 800
+	flathunt_window_width: INTEGER is 800
 			-- Initial width for this window.
 
-	Window_height: INTEGER is 600
+	flathunt_window_height: INTEGER is 600
 			-- Initial height for this window.
 
 	Map_area_width: INTEGER is  500

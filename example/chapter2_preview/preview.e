@@ -29,7 +29,7 @@ feature	 -- Example
 			Paris.add_buildings
 			Paris.add_trams (5)
 			Console.show (Line8)
-			Console.show (place_balard)
+			Console.show (Place_balard)
 		end
 
 end

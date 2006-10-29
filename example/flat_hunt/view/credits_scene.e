@@ -26,11 +26,11 @@ feature -- Initialization
 			
 			-- Build menu.
 			menu.add_entry ("back", agent back_callback, True)
-			menu.set_x_y ((Window_width - 100) // 2, Window_height - 70)
+			menu.set_x_y ((flathunt_window_width - 100) // 2, flathunt_window_height - 70)
 			main_container.extend (menu)
 
 			-- Build big background box.
-			create background_box.make_from_coordinates (Margin, 120, Window_width - Margin, Window_height - 120, "credits")
+			create background_box.make_from_coordinates (Margin, 120, flathunt_window_width - Margin, flathunt_window_height - 120, "credits")
 			background_box.set_title_font (theme.Menu_font)
 			background_box.set_color (theme.Menu_color)
 			main_container.extend (background_box)			

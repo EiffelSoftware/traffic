@@ -9,6 +9,7 @@
 			<warning name="vjrv" enabled="false"/>
 			<warning name="vweq" enabled="false"/>
 		</option>
+		<setting name="automatic_backup" value="true"/>
 		<setting name="address_expression" value="false"/>
 		<setting name="array_optimization" value="false"/>
 		<setting name="check_vape" value="true"/>

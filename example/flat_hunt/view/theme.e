@@ -292,7 +292,7 @@ feature -- Images
 		deferred
 		ensure
 			pic_exists: Result /= Void
-			pic_positioned: Result.x = (Window_width - Result.width) // 2 and Result.y = 0
+			pic_positioned: Result.x = (flathunt_window_width - Result.width) // 2 and Result.y = 0
 		end
 	
 	Background_picture: EM_DRAWABLE is

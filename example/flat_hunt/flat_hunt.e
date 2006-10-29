@@ -31,8 +31,8 @@ feature -- Initialization
 		do
 			-- Video subsystem settings.
 			video_subsystem.set_doublebuffered (True)			
-			video_subsystem.set_video_surface_width (Window_width)			
-			video_subsystem.set_video_surface_height (Window_height)
+			video_subsystem.set_video_surface_width (flathunt_window_width)			
+			video_subsystem.set_video_surface_height (flathunt_window_height)
 			video_subsystem.enable
 		
 			-- Initialize the screen.

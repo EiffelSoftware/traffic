@@ -36,11 +36,11 @@ feature -- Initialization
 			menu.add_entry ("credits", agent credits_callback, False)
 			menu.add_entry ("quit", agent quit_callback, False)
 			menu.set_alignment (Right)
-			menu.set_x_y (Window_width - menu.width - Margin, Window_height - menu.height)
+			menu.set_x_y (flathunt_window_width - menu.width - Margin, flathunt_window_height - menu.height)
 			main_container.extend (menu)
 
 			-- Build option panel.
-			create option_panel.make_at_position (Window_width - 2* Margin, 220, "", "use tab to toggle between main menu and option settings")
+			create option_panel.make_at_position (flathunt_window_width - 2* Margin, 220, "", "use tab to toggle between main menu and option settings")
 			option_panel.set_x_y (Margin, 120)
 
 			-- Fill the option panel
@@ -53,7 +53,7 @@ feature -- Initialization
 
 		ensure then
 			menu_displayed: main_container.has (menu)
-			menu_positioned: menu.x = Window_width - menu.width - Margin and menu.y = Window_height - menu.height
+			menu_positioned: menu.x = flathunt_window_width - menu.width - Margin and menu.y = flathunt_window_height - menu.height
 		end
 
 feature -- Event handling
