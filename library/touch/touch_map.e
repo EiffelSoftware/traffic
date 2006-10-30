@@ -68,13 +68,13 @@ feature -- Status report
 
 feature -- Element change
 
-	add_trams (a_number: INTEGER) is
+	equip is
 			-- Add `a_number' trams per line.
 		do
-			internal_map_widget.travelers_representation.add_tram_per_line (internal_map, a_number)
+			internal_map_widget.travelers_representation.add_tram_per_line (internal_map, 2)
 		end
 
-	add_buildings is
+	build is
 			-- Add buildings along traffic lines.
 		do
 			internal_map_widget.add_buildings_along_lines

@@ -107,7 +107,7 @@ feature -- Element change
 			internal_map_widget.buildings_representation.add_building (internal_building)
 		end
 
-	spotlight_for_5_seconds is
+	lighten is
 			-- Spotlight the building and undo the spotlighting after 5 seconds.
 		do
 			internal_map_widget.enable_buildings_shown

@@ -185,7 +185,7 @@ feature  -- Predefined objects (Places)
 
 feature -- Predefined objects (Buildings)
 
-	Louvre_Building: TOUCH_BUILDING is
+	Louvre: TOUCH_BUILDING is
 			-- The building at the place of Louvre
 		require
 			Paris_exists: is_paris_loaded

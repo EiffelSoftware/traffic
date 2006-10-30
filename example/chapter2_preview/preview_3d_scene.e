@@ -30,7 +30,7 @@ feature -- Interface
 			-- Disable the button for the execution of preview.explore.
 		do
 			click_here_button.disable
-			preview.explore_on_button_click
+			preview.explore_on_click
 			click_here_button.enable
 		end
 

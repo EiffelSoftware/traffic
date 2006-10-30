@@ -6,23 +6,18 @@ indexing
 class QUERIES
 
 inherit
-	
+
 	TOURISM
-	
+
 feature -- Example
-	
-	explore is
-			-- Try some queries.
+
+	explore_on_click is
+			-- Show some queries.
 		do
 			Paris.display
 			Console.show (line8.count)
 			Console.show (line8.i_th (1))
 			Console.show (line8.i_th (line8.count))
 		end
-		
-	explore_on_button_click is
-			-- Do nothing. 
-		do
-		end
-		
+
 end

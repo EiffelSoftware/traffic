@@ -188,7 +188,7 @@ feature -- Basic operations
 			internal_rep.unhighlight_single_line (internal_line)
 		end
 
-	highlight_for_5_seconds is
+	spotlight is
 			-- Highlight the line for five seconds.
 		do
 --			internal_rep.highlight_single_line_for_5sec(internal_line)

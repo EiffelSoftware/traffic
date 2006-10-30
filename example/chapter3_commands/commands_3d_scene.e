@@ -25,7 +25,7 @@ feature -- Interface
 			Precursor
 			create commands
 			commands.run (map_widget, console)
-			click_here_button.clicked_event.subscribe (agent commands.explore_on_button_click)
+			click_here_button.clicked_event.subscribe (agent commands.explore_on_click)
 		end
 
 end

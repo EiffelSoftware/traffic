@@ -11,23 +11,15 @@ inherit
 
 feature	 -- Example
 
-	explore is
-			-- Show some city info.
-			-- Note that the objects are not of the type you may think.
-			-- See 'TOURSIM' and 'TOUCH_PARIS_OBJECTS for the predefined
-			-- objects and classes.
-		do
-			Paris.display
-		end
-
-	explore_on_button_click is
+	explore_on_click is
 			-- Execute preview example.
 		do
-			Louvre_Building.spotlight_for_5_seconds
+			Paris.display
+			Louvre.lighten
 			Route1.animate
-			Line8.highlight_for_5_seconds
-			Paris.add_buildings
-			Paris.add_trams (5)
+			Line8.spotlight
+			Paris.build
+			Paris.equip
 			Console.show (Line8)
 			Console.show (Place_balard)
 		end

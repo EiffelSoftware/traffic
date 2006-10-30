@@ -25,6 +25,7 @@ feature -- Interface
 			Precursor
 			create queries
 			queries.run (map_widget, console)
+			click_here_button.clicked_event.subscribe (agent queries.explore_on_click)
 		end
 
 end
