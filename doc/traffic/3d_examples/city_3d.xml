@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="city_3d">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date: 2006-09-29 14:50:49 +0200 (Fri, 29 Sep 2006) $</date>
+</chapterinfo>
+
+<title>City 3D example</title>
+<section id="Screenshot">
+	<para>
+	The <projectname>City3D</projectname> application displays traffic lines as
+	colored polygons on a plane, adds buildings and provides 
+	mouse and keyboard support such that changing the viewpoint (zooming, rotation, 
+	different centers) and interaction with the buildings is possible. Moreover it provides different light settings
+	and visualizes shortest paths in the city.
+	</para>
+    <para>
+        <image src="image/city3d.png"/>
+    </para>
+</section>
+<section id="Mouse controls">
+	<title>Mouse controls</title>
+	<para>
+	 i) Mouse wheel:
+	Controls the zooming factor, whereas the position stays invariant. 
+	There are two different zooming speeds depending on the distance to the plane.
+	</para>
+	<para>
+	 ii) Mouse click:
+	Is used to mark stations on the map. The origin can be marked with the 
+	left mouse button, the destination with the right one. If the user clicks 
+	on an empty spot, the marked stations are revoked.
+	</para>
+	<para>
+	 iii) Mouse dragging:
+        <itemizedlist>
+            <listitem><para>
+                Left mouse button: By dragging the mouse while pressing the left 
+                button one is able to translate the position of the map in the 
+                window, i.e. move the plane.
+            </para></listitem>
+            <listitem><para>
+                Right mouse button: By dragging the mouse while pressing the right 
+                button one is able to rotate the map around the the origin.
+            </para></listitem>
+        </itemizedlist>
+	</para>
+	<para>
+	 iv) Keyboard:
+        <itemizedlist>
+            <listitem><para>
+                By pressing the up-/down- or left-/right- arrow keys the map will be rotated around the x- or y-axis respectively.
+            </para></listitem>
+            <listitem><para>
+                By pressing the enter key the translation will be reset to its initial value. However, zoom as well as rotation are not affected.
+            </para></listitem>
+        </itemizedlist>
+	</para>
+	<title>Options</title>
+    <para>
+        <image src="image/right_options.png"/>
+    </para>
+	
+	<para>
+		<para>
+			i) Choose the map to be loaded and load it.
+		</para>
+		<para>
+			ii) Zoom in and out.
+		</para>
+		<para>
+	 		iii) Change the number of buildings to be randomly displayed on the map: The number of buildings can be varied from 0 up to 4900. 
+	 	</para>
+	 	<para>
+			iv) Make the buildings transparent in order to achieve a better overview.
+		</para>
+		<para>
+			v) Change lighting of the map: Initially, the scene is lit by a constant light coming down the y axis. 
+			However, this can be changed to a variable light that tries to imitate the effect of the sun.
+		</para>
+		<para>
+			vi) Show a coordinate system: This shows a coordinate system at the origin for better orientation.
+		</para>
+		<para>
+			vii) Highlight the traffic lines by drawing them with different height on the map, in order to achieve a better overview.
+		</para>
+		<para>
+			viii) The buildings can be hidden or shown by enabling/disabling the "show buildings" option.
+		</para>
+		<para>	
+			ix) Show the shortest path between two marked stations and display it as a white line. The origin for the route 
+			is marked by clicking on the place with the left mouse button and the destination with the right mouse button.
+		</para>
+		<para>
+			x) Calculate the shortest path based changing the means of transportation as little as possible (Minimal Switches).
+		</para>
+		<para>
+			xi) Change the lighting as if the scene was lighted by a sun.
+		</para>
+		<para>
+			xii) Show the transportation lines instead of the roads.
+		</para>
+		<para>
+			xiii) When two stations are selected, a new button appears. If you press it, you can take a traffic 
+			line ride in a first-person perspective between the two marked stations.
+	 	</para>
+	</para>
+	<para>
+        <image src="image/left_options.png"/>
+    </para>
+    <para>
+		<para>
+		i) Shows the name of the most recently marked building.
+		</para>
+		<para>
+		ii) Choose the XML file for building loading and load them.
+		</para>
+		<para>
+		iii) Load buildings along all traffic lines (expect railway).
+		</para>
+		<para>
+		iv) Delete all buildings.
+		</para>
+		<para>
+		v) Description of the shortest path.
+		</para>
+    </para>
+<toplink/>
+</section>
+</chapter>

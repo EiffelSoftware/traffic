@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<project name="user_guide" default="help">
+
+	<description>
+		description: "Traffic 3D examples"
+		date: "$Date: 2005-11-10 08:31:43 +0100 (Thu, 10 Nov 2005) $"
+		revision: "$Revision: 407 $"
+	</description>
+
+	<inherit>
+		<parent location="../../misc/build_function.eant">
+			<redefine target="init"/>
+			<redefine target="do_all"/>
+		</parent>
+	</inherit>
+
+	<target name="init" export="NONE">
+		<description>
+			Init all needed Projectvariables
+		</description>
+		<set name="root_path" value="../../"/>
+		<set name="doc_section" value="traffic 3d examples"/>
+	</target>
+
+	<target name="do_all" export="NONE">
+		<description>
+			Call 'geant' with the same target ${target}
+			without subdirectories.
+		</description>
+		
+		<geant target="${target}" arguments="city_3d"/>
+		<geant target="${target}" arguments="city_time"/>
+		<geant target="${target}" arguments="city_timetable"/>		
+        <geant target="${target}" arguments="index"/>
+	</target>
+
+
+</project>
