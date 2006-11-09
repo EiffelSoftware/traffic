@@ -12,6 +12,7 @@
 		<echo message="usage:"/>
 		<echo message="   geant install : generate part of documentation"/>
 		<echo message="   geant clobber : delete generated *.html files"/>
+		<echo message="   geant release : copy generated html files and png"/>"
 	</target>
 
 	<target name="install">
@@ -38,7 +39,6 @@
 		<set name="target" value="delete_file"/>
 		<geant target="do_all_with_msg" arguments="successfully clobbered: section, ${doc_section}"/>
 	</target>
-
 
 <!-- Implementation -->
 

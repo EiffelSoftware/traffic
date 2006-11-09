@@ -15,6 +15,7 @@
 <xsl:param name="next"/>
 <xsl:param name="current_file"/>
 <xsl:param name="doc_section"/>
+<xsl:param name="doc_section_title"/>
 <xsl:param name="is_index"/>
 <xsl:param name="root_path">
   <xsl:choose>
@@ -28,7 +29,7 @@
 <xsl:param name="images" select="concat($root_path,'misc/image/')"/>
 <xsl:param name="srcdoc" select="concat($root_path,'src/')"/>
 <xsl:param name="toc" select="'index.html'"/>
-<xsl:param name="web" select="'http://wiki.se.inf.ethz.ch/traffic/index.php/Main_Page'"/>
+<xsl:param name="web" select="'http://traffic.origo.ethz.ch'"/>
 
 <xsl:output
 	method="xhtml"
@@ -63,6 +64,10 @@
 	<html xml:lang="en">
 	<head>
 		<title>
+			<xsl:if test="$doc_section_title">
+				<xsl:value-of select="$doc_section_title"/>
+				<xsl:text>: </xsl:text>
+			</xsl:if>
 			<xsl:value-of select="trafficdoc:title"/>
 		</title>
 		<link rel="stylesheet" type="text/css" href="{$root_path}misc/style.css" />
@@ -70,6 +75,11 @@
 	<body>
 		<xsl:apply-templates select="." mode="header"/>
 		<div id="content">
+		<xsl:if test="$doc_section_title">
+			<xsl:if test="trafficdoc:title">
+				<h1><xsl:value-of select="trafficdoc:title"/></h1>
+			</xsl:if>
+		</xsl:if>
 		<xsl:apply-templates select="trafficdoc:variablelist|trafficdoc:itemizedlist|trafficdoc:orderedlist|trafficdoc:para|trafficdoc:programlisting|trafficdoc:section|trafficdoc:synopsis|trafficdoc:table"/>
 		</div>
 		<xsl:apply-templates select="." mode="footer"/>
@@ -86,7 +96,14 @@
 			</a>
 		</td>
 		<td class="left_bottom">
-			<h1><xsl:value-of select="trafficdoc:title"/></h1>
+			<xsl:choose>
+				<xsl:when test="$doc_section_title">
+					<h1><xsl:value-of select="$doc_section_title"/></h1>
+				</xsl:when>
+				<xsl:otherwise>
+					<h1><xsl:value-of select="trafficdoc:title"/></h1>
+				</xsl:otherwise>
+			</xsl:choose>
 		</td>
 		<td class="right_bottom">
 			<!-- NAVBAR -->
@@ -173,13 +190,14 @@
 							<xsl:when test="$current_file='index'">
 								     <xsl:text>Overview</xsl:text>
 							</xsl:when>
+							<xsl:when test="$doc_section_title">
+								<xsl:value-of select="trafficdoc:title"/>
+							</xsl:when>
+							<xsl:when test="contains(trafficdoc:title, ':')">
+								<xsl:value-of select="substring-after(trafficdoc:title, ':')"/>
+							</xsl:when>
 							<xsl:otherwise>
-								<xsl:if test="contains(trafficdoc:title, ':')">
-									<xsl:value-of select="substring-after(trafficdoc:title, ':')"/>
-								</xsl:if>
-								<xsl:if test="not(contains(trafficdoc:title, ':'))">
 									<xsl:value-of select="$current_file"/>
-								</xsl:if>
 							</xsl:otherwise>
 						</xsl:choose>
 				</xsl:when>
@@ -192,27 +210,27 @@
 <xsl:template name="navbar">
 			<xsl:choose>
 				<xsl:when test="$previous=concat($current_file,'.html')">
-					<img src="{$images}no_previous.gif" alt=""/>
+					<img src="{$images}no_previous.png" alt=""/>
 				</xsl:when>
 				<xsl:when test="$previous!=''">
 					<a>
 						<xsl:attribute name="href">
 							<xsl:value-of select="$previous"/>
 						</xsl:attribute>
-						<img src="{$images}previous.gif" alt="Previous"/>
+						<img src="{$images}previous.png" alt="Previous"/>
 					</a>
 				</xsl:when>
 			</xsl:choose>
 			<xsl:choose>
 				<xsl:when test="$next=concat($current_file,'.html')">
-					<img src="{$images}no_next.gif" alt=""/>
+					<img src="{$images}no_next.png" alt=""/>
 				</xsl:when>
 				<xsl:when test="$next!=''">
 					<a>
 						<xsl:attribute name="href">
 							<xsl:value-of select="$next"/>
 						</xsl:attribute>
-						<img src="{$images}next.gif" alt="Next"/>
+						<img src="{$images}next.png" alt="Next"/>
 					</a>
 				</xsl:when>
 			</xsl:choose>
@@ -237,7 +255,7 @@
 					<xsl:text>.html</xsl:text>
 				</xsl:attribute>
 				<xsl:apply-templates/>
-<!--				<img src="{$images}external.gif" alt=""/> -->
+<!--				<img src="{$images}external.png" alt=""/> -->
 			</a>
 		</xsl:when>
 		<xsl:otherwise>
@@ -486,6 +504,25 @@
 
 <xsl:template match="trafficdoc:featurename">
 	<xsl:choose>
+		<!-- bherlig -->
+		<xsl:when test="@infix">
+			<a>
+				<xsl:attribute name="class">
+					<xsl:text>feature-name</xsl:text>
+				</xsl:attribute>
+				<xsl:attribute name="href">
+					<xsl:value-of select="$srcdoc"/>
+					<xsl:value-of select="translate(@class,'ABCDEFGHIJKLMNOPQRSTUVWXYZ.','abcdefghijklmnopqrstuvwxyz/')"/>
+					<xsl:text>.html#infix__quot_</xsl:text>
+    					<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+        					<xsl:with-param name="string" select="."/>
+    					</xsl:call-template>
+					<xsl:text>_quot_</xsl:text>
+				</xsl:attribute>
+				<xsl:apply-templates/>
+			</a>
+		</xsl:when>
+		<!-- end bherlig -->
 	    <xsl:when test="@class">
 	    	<a>
 				<xsl:attribute name="class">
@@ -498,7 +535,7 @@
 					<xsl:value-of select="translate(.,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
 				</xsl:attribute>
 				<xsl:apply-templates/>
-<!--				<img src="{$images}external.gif" alt=""/> -->
+<!--				<img src="{$images}external.png" alt=""/> -->
 			</a>
 	    </xsl:when>
 		<xsl:otherwise>
@@ -1186,7 +1223,7 @@
 					<xsl:value-of select="translate(@feature,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
 				</xsl:attribute>
 				<xsl:apply-templates/>
-				<img src="{$images}external.gif" alt=""/>
+				<img src="{$images}external.png" alt=""/>
 			</a>
 		</xsl:when>
 		<xsl:when test="@class">
@@ -1197,7 +1234,7 @@
 					<xsl:text>.html</xsl:text>
 				</xsl:attribute>
 				<xsl:apply-templates/>
-				<img src="{$images}external.gif" alt=""/>
+				<img src="{$images}external.png" alt=""/>
 			</a>
 		</xsl:when>
 		<xsl:otherwise>
@@ -1207,7 +1244,7 @@
 				</xsl:attribute>
 				<xsl:apply-templates/>
 				<xsl:if test="contains(@url,'http://')">
-					<img src="{$images}external.gif" alt=""/>
+					<img src="{$images}external.png" alt=""/>
 				</xsl:if>
 			</a>
 		</xsl:otherwise>
@@ -1267,12 +1304,23 @@
 		<xsl:attribute name="alt">
 			<xsl:value-of select="@alt"/>
 		</xsl:attribute>
+		<xsl:if test="@align">
+			<xsl:attribute name="align">
+				<xsl:value-of select="@align"/>
+			</xsl:attribute>
+		</xsl:if>
 	</img>
 </xsl:template>
 
 <xsl:template match="trafficdoc:keyword">
 	<span class="keyword"><xsl:apply-templates/></span>
 </xsl:template>
+
+<!-- bherlig -->
+<xsl:template match="trafficdoc:code">
+<pre class="code"><xsl:apply-templates/></pre>
+</xsl:template>
+<!-- end bherlig -->
 
 <xsl:template match="trafficdoc:clustername">
 	<xsl:choose>
@@ -1304,4 +1352,98 @@
 		</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
+<!-- bherlig -->
+
+<!-- taken from: http://www.xslt.com/html/xsl-list/2002-03/msg01000.html -->
+<xsl:template name="replace_xhtml_compatible_anchor_characters">
+
+<!--
+	TODO
+			Result := STRING_.replaced_all_substrings (Result, "<", "_lt_")
+			Result := STRING_.replaced_all_substrings (Result, ">", "_gt_")
+			Result := STRING_.replaced_all_substrings (Result, "%"", "_quot_")
+			Result := STRING_.replaced_all_substrings (Result, "&", "_amp_")
+-->
+
+    <xsl:param name="string"/>
+	<xsl select="translate($string,'ABCDEFGHIJKLMNOPQRSTUVWXYZ ','abcdefghijklmnopqrstuvwxyz_')"/>
+    <xsl:choose>
+		<!-- @ -->
+		<xsl:when test="contains($string,'@')">
+            <xsl:value-of select="substring-before($string,'@')"/>_at_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'@')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end @ -->
+		<!-- + -->
+		<xsl:when test="contains($string,'+')">
+            <xsl:value-of select="substring-before($string,'+')"/>_plus_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'+')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end + -->
+		<!-- - -->
+		<xsl:when test="contains($string,'-')">
+            <xsl:value-of select="substring-before($string,'-')"/>_minus_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'-')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end - -->
+		<!-- / -->
+		<xsl:when test="contains($string,'/')">
+            <xsl:value-of select="substring-before($string,'/')"/>_slash_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'/')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end / -->
+		<!-- \ -->
+		<xsl:when test="contains($string,'\')">
+            <xsl:value-of select="substring-before($string,'\')"/>_backslash_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'\')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end \ -->
+		<!-- = -->
+		<xsl:when test="contains($string,'=')">
+            <xsl:value-of select="substring-before($string,'=')"/>_equal_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'=')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end = -->
+		<!-- * -->
+		<xsl:when test="contains($string,'*')">
+            <xsl:value-of select="substring-before($string,'*')"/>_asterix_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'*')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end * -->
+		<!-- pipe -->
+		<xsl:when test="contains($string,'|')">
+            <xsl:value-of select="substring-before($string,'|')"/>_pipe_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'|')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end pipe -->
+		<!-- caret -->
+		<xsl:when test="contains($string,'^')">
+            <xsl:value-of select="substring-before($string,'^')"/>_caret_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'^')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end caret -->
+		<!-- # -->
+		<xsl:when test="contains($string,'#')">
+            <xsl:value-of select="substring-before($string,'#')"/>_grid_<xsl:call-template name="replace_xhtml_compatible_anchor_characters">
+                <xsl:with-param name="string" select="substring-after($string,'#')"/>
+            </xsl:call-template>
+        </xsl:when>
+		<!-- end # -->
+        <xsl:otherwise>
+            <xsl:value-of select="$string"/>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
+
+<!-- end bherlig -->
 </xsl:stylesheet>
