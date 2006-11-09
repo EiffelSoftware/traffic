@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="flathunt/developer/states">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date: 2005-11-10 16:48:02 +0100 (Thu, 10 Nov 2005) $</date>
+</chapterinfo>
+    <title>The States of the Game</title>
+    <para> This chapter is structured as follows: </para>
+    <para>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    <indexlink url="#overview">Overview</indexlink>
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <indexlink url="#gameloop">Game Loop</indexlink>
+                </para>
+            </listitem>
+        </itemizedlist>
+    </para>
+    <section id="overview">
+        <title>Overview</title>
+        <para> Every game has at least two states: playing and game over. <projectname>Flathunt</projectname> 
+            has six states in total; three playing states and three game over
+            states (<emphasis>see Figure 7</emphasis>). These game states are defined in class
+                <classname>GAME_CONSTANTS</classname>:
+            <programlisting>Agent_stuck, Agent_caught, Agent_escapes, Prepare_state, Play_state, Move_state: <classname>INTEGER</classname> <keyword>is unique</keyword>
+                <comment>Possible states of the game.</comment></programlisting>
+        </para>
+        <para>
+            <image src="image/gameloop_sm.png"/>
+        </para>
+        <para>
+            <emphasis>Figure 7: Game states and loop</emphasis>
+        </para>
+    </section>
+    <section id="gameloop">
+        <title>Game Loop</title>
+        <para> For each player in each round in <projectname>Flathunt</projectname>, the game goes
+            through the following states: <keyword>Prepare</keyword>, <keyword>Play</keyword> and
+                <keyword>Move</keyword>. In addition, there are three game over states:
+                <keyword>Agent_stuck</keyword>, <keyword>Agent_caught</keyword> and
+                <keyword>Agent_escaped</keyword>. </para>
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        <keyword>Prepare</keyword>: If the game is in this state, the current player
+                        gets a red circle and the possible moves are calculated and displayed. If
+                        the current player is the estate agent, and there are no possible moves, the
+                        agent is stuck and thus the game is over (state
+                        <keyword>Agent_stuck</keyword>). If that is not the case, the game goes in
+                        state <keyword>Play</keyword>. </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <keyword>Play</keyword>: In this state, if the current player is played by a
+                        human, the game waits until the human player clicks on one of the places
+                        that are highlighted. If the player is controlled by an artificial
+                        intelligence, then the best of the possible moves is calculated. The game
+                        then goes in state <keyword>Move</keyword>. </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <keyword>Move</keyword>: In this state, the move selected in state
+                            <keyword>Play</keyword> is performed. After the move, the game checks if
+                        the player hits the place of the estate agent. If that is the case, the game
+                        goes into state <keyword>Agent_caught</keyword>. If the agent did not get
+                        caught, and the round number is greater than 23, then the estate agent is
+                        the winner and the game goes into state <keyword>Agent_escaped</keyword>. If
+                        none of the above is the case, then it's the next player's turn and the game
+                        loop starts again in state <keyword>Prepare</keyword>. </para>
+                </listitem>
+            </itemizedlist>
+        </para>
+        <para> In the classes <classname>MAIN_CONTROLLER</classname>, <classname>GAME</classname>
+            and <classname>PLAYER</classname>, you can find the features
+            <featurename>prepare</featurename>, <featurename>play</featurename> and
+                <featurename>move</featurename> that deal with these game states. As an example,
+            let’s have a look at feature <featurename>move</featurename> in class
+            <classname>GAME</classname>: </para>
+        <para>
+            <programlisting>
+<text>    </text>move <keyword>is</keyword>
+<text>            </text><comment>Make the chosen move.</comment>
+<text>        </text><keyword>do</keyword>
+<text>            </text><keyword>if</keyword> current_player = estate_agent <keyword>then</keyword>
+<text>                </text>update_agent_visibility
+<text>            </text><keyword>end</keyword>		
+<text>            </text>current_player.move
+<text>            </text><keyword>if</keyword> current_player.location = estate_agent.location and current_player /= estate_agent <keyword>then</keyword>
+<text>                </text>state := Agent_caught
+<text>                </text>update_agent_visibility
+<text>            </text><keyword>else</keyword>
+<text>                </text>state := Prepare_state			
+<text>                </text>next_turn
+<text>            </text><keyword>end</keyword>    
+<text>        </text><keyword>end</keyword> 
+            </programlisting>
+        </para>
+    </section>
+</chapter>

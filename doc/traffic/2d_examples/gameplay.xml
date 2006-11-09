@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="flathunt/user/gameplay">
+<chapterinfo>
+	<copyright>
+		<year>2005</year>
+		<holder>Michela Pedroni</holder>
+	</copyright>
+    <email>michela.pedroni@inf.ethz.ch</email>
+	<date>$Date: 2005-11-10 16:48:02 +0100 (Thu, 10 Nov 2005) $</date>
+</chapterinfo>
+    <title>Gameplay</title>
+    <section id="general_rules">
+        <title>General Rules</title>
+        <para> The game lasts for at most 23 rounds. In these 23 rounds, the flat hunters try to
+            find the estate agent, while he tries to avoid them (this is because he would rather
+            rent the flats to elderly couples, since presumably they make fewer parties in the
+            middle of the night...). </para>
+        <para> In each round, every player can make one move on the public transport system. The
+            estate agent is the first, then it's the hunters' turn. One move is either </para>
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para> one or two stops by tram (colored lines), </para>
+                </listitem>
+                <listitem>
+                    <para> one stop by train (thick orange lines), </para>
+                </listitem>
+                <listitem>
+                    <para> or one stop by bus (thin light blue lines). </para>
+                </listitem>
+            </itemizedlist>
+        </para>
+        <para> A move with a certain transport can only be made if one has still enough tickets
+                (<emphasis>see Figure 4</emphasis>), if there is a connection (obviously), and if
+            there is no other player at that destination (and in the case of tram lines, if there is
+            no hunter in between). </para>
+        <para>
+            <note> Attention! If you are at a bus-only stop (or tram-only stop for that matter), and
+                you run out of bus tickets (or tram tickets respectively), you will get stuck there
+                forever, so be careful...</note>
+        </para>
+        <newline/>
+        <para>
+            <image src="image/ticket_status.png"/>
+        </para>
+        <para>
+            <emphasis>Figure 4: Ticket status</emphasis>
+        </para>
+        <para> The possible places you can move to are colored yellow (<emphasis>see Figure
+            5</emphasis>). To make a move, just click on one of those highlighted places. The red
+            circle centers on the player whose turn it is, and in the status box at the right, the
+            game status and information about the current player get displayed. If you want to know
+            the status of another player just click on his picture at the bottom. Click again to
+            close the just opened status box.</para>
+        <para>
+            <image src="image/highlighted_places.png"/>
+        </para>
+        <para>
+            <emphasis>Figure 5: Highlighted places</emphasis>
+        </para>
+        <para> The game is over when <blockquote>
+                <variablelist>
+                    <varlistentry>
+                        <term> a) the hunters could not find the estate agent within 23 rounds,
+                        </term>
+                    </varlistentry>
+                    <varlistentry>
+                        <term> b) one flat hunter moves onto the place where the agent currently is,
+                        </term>
+                    </varlistentry>
+                    <varlistentry>
+                        <term> c) or the hunters encircle the estate agent so that he cannot move
+                            anymore. </term>
+                    </varlistentry>
+                </variablelist>
+            </blockquote>
+        </para>
+        <para> In case a), the winner is the estate agent (he does not have to rent his flat to
+            students), whereas in b) and c) it is the hunters that win, as they get to meet the
+            estate agent on time and thus manage to find a flat. </para>
+    </section>
+    <section id="game_modes">
+        <title>Game Modes</title>
+        <para> There are four modes to play <projectname>Flathunt</projectname>:
+            <keyword>Hunt</keyword>, <keyword>Escape</keyword>, <keyword>Versus</keyword> and
+                <keyword>Demo</keyword>. Depending on the mode, zero (<keyword>Versus</keyword>),
+            one (<keyword>Hunt</keyword>/<keyword>Escape</keyword>) or two (<keyword>Demo</keyword>)
+            parts are taken over by the computer.</para>
+        <para>
+            <keyword>Hunt</keyword>: This is probably the most typical situation; the player tries
+            to find the agent, which is played by the computer. Thus, the player only knows about
+            every fifth move where the agent just was... The agent shows himself only in rounds
+            number 3, 8, 13, 18, and 23. In these rounds, the exact route of the agent is displayed
+            under <keyword>History</keyword> in the status box at the bottom right corner and in
+            the estate agent's own status box if opened. In all other rounds you only see the
+            detailed history up to the round the estate agent last showed himself. As soon as the
+            agent has come out of hiding for the first time, a dimmed version of his picture will
+            always be shown at the location he was last sighted.</para>
+        <para>
+            <keyword>Escape</keyword>: This is the exact opposite of <keyword>Hunt</keyword> mode:
+            The agent is played by you, and the hunters are played by the computer. The hunters
+            always move as close in your direction as possible, as they somehow manage to decode
+            your transponder signal, and thus always know your precise location (so much for
+            privacy...). You just have to try to avoid them as long as possible... </para>
+        <para>
+            <keyword>Versus</keyword>: This is the multiplayer mode. One of the players is the
+            agent; the other plays all the hunters. While the player of the agent is making a move,
+            the player of the hunters is supposed to look away... </para>
+        <para>
+            <keyword>Demo</keyword>: This mode is more or less the opposite of the buzzword
+            "interactive", but is about as entertaining as watching fish in an aquarium. The
+            computer is playing against himself, trying to catch the agent as fast as possible.
+        </para>
+    </section>
+</chapter>
