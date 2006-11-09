@@ -15,6 +15,7 @@
 		<echo message="   geant install"/>
 		<echo message="   geant clobber"/>
 		<echo message="   geant release_no_doc"/>
+		<echo message="   geant release"/>
 	</target>
 
 	<target name="install">
@@ -52,6 +53,19 @@
 		<mkdir directory="../release/doc"/>
 		<copy file="redirect.html" to_file="../release/doc/index.html"/>
 	</target>
+	
+	<target name="release">
+		<description>
+			Release the documentation into release_doc.
+		</description>
+		<delete directory="../release_doc"/>
+		<geant target="clobber"/>
+		<geant target="install"/>
+		<mkdir directory="../release_doc"/>
+		<copy to_directory="../release_doc">
+	   		<fileset include="@(**/*.html|**/*.png|**/*.css)"/>
+		</copy>
+	</target>
 
 <!-- Implementation -->
 
@@ -72,11 +86,8 @@
 		<!-- Please enter foldername correctly! -->
 		<geant file="build.eant" target="${target}" dir="general/installation"/>
 		<geant file="build.eant" target="${target}" dir="traffic/developer"/>
-		<geant file="build.eant" target="${target}" dir="city_3d/user"/>
-		<geant file="build.eant" target="${target}" dir="city_time/user"/>		
-		<geant file="build.eant" target="${target}" dir="city_time/developer"/>	
-		<geant file="build.eant" target="${target}" dir="flat_hunt/user"/>
-		<geant file="build.eant" target="${target}" dir="flat_hunt/developer"/>
+		<geant file="build.eant" target="${target}" dir="traffic/3d_examples"/>
+		<geant file="build.eant" target="${target}" dir="traffic/2d_examples"/>		
 		<geant file="build.eant" target="${target}" dir="touch/user"/>
 		<geant file="build.eant" target="${target}" dir="touch/developer"/>
 		<geant file="build.eant" target="${target}" dir="general/references"/>

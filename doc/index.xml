@@ -42,71 +42,54 @@
 	</itemizedlist>
 </section>
 
-<section id="city_3d">
-	<title>City3D Documentation</title>
-	<itemizedlist>
-		<listitem>
-			<link url="city_3d/user/index.html">User Documentation</link>
-			<para>
-				User documentation of the <projectname>City3D</projectname> application
-			</para>
-		</listitem>
-	</itemizedlist>
-</section>
-
-<section id="city_time">
-	<title>City_Time Documentation</title>
-	<itemizedlist>
-		<listitem>
-			<link url="city_time/user/index.html">User Documentation</link>
-			<para>
-				User documentation of the <projectname>City_Time</projectname> application
-			</para>
-		</listitem>
-		<listitem>
-			<link url="city_time/developer/index.html">Developer Documentation</link>
-			<para>
-				Developer documentation of the <projectname>City_Time</projectname> application
-			</para>
-		</listitem>
-	</itemizedlist>
-</section>
-
-<section id="flat_hunt">
-	<title>Flathunt Documentation</title>
-	<itemizedlist>
-		<listitem>
-			<link url="flat_hunt/user/index.html">User Documentation</link>
-			<para>
-				User documentation of the <projectname>Flathunt</projectname> application
-			</para>
-		</listitem>
-		<listitem>
-			<link url="flat_hunt/developer/index.html">Developer Documentation</link>
-			<para>
-				Developer documentation of the <projectname>Flathunt</projectname> application
-			</para>
-		</listitem>
-	</itemizedlist>
-</section>
-
 <section id="touch">
-	<title>Touch Documentation</title>
+	<title>Touch library</title>
 	<itemizedlist>
-		<listitem>
-			<link url="touch/user/index.html">User Documentation</link>
-			<para>
-				User documentation of the Touch application
-			</para>
-		</listitem>
 		<listitem>
 			<link url="touch/developer/index.html">Developer Documentation</link>
 			<para>
-				Developer documentation of the Touch application
+				Descriptions of the classes found in the <projectname>Touch library</projectname>
 			</para>
 		</listitem>
 	</itemizedlist>
 </section>
+
+<section id="touch_examples">
+	<title>Touch examples</title>
+	<itemizedlist>
+		<listitem>
+			<link url="touch/user/index.html">Preview, Queries, Commands</link>
+			<para>
+				Description of the available examples found in Touch of Class
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
+<section id="3d_examples">
+	<title>Traffic 3D example applications</title>
+	<itemizedlist>
+		<listitem>
+			<link url="traffic/3d_examples/index.html">Traffic 3D examples</link>
+			<para>
+				Description of the 3d example applications such as <projectname>City_3D, City_time, City_timetable</projectname>
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
+<section id="2d_examples">
+	<title>Traffic 2D example application</title>
+	<itemizedlist>
+		<listitem>
+			<link url="traffic/2d_examples/index.html">Traffic 2d example: Flathunt</link>
+			<para>
+				User and developer documentation of the <projectname>Flathunt</projectname> application
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
 <section id="references">
 	<title>References</title>
 	<itemizedlist>
