@@ -20,7 +20,7 @@
 			Init all needed Projectvariables
 		</description>
 		<set name="root_path" value="../../"/>
-		<set name="doc_section" value="touch developer"/>
+		<set name="doc_section" value="touch library"/>
 	</target>
 
 	<target name="do_all" export="NONE">
@@ -28,12 +28,7 @@
 			Call 'geant' with the same target ${target}
 			without subdirectories.
 		</description>
-		<geant target="${target}" arguments="classes"/>
-		<geant target="${target}" arguments="new_example"/>
-		<geant target="${target}" arguments="build_example"/>
 		<geant target="${target}" arguments="index"/>
-
-
 	</target>
 
 </project>

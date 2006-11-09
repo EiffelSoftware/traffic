@@ -10,27 +10,372 @@
         <date>$Date: 2006/03/26 10:54:24 $</date>
     </chapterinfo>
 
-    <title>Touch-Examples Developer Guide</title>
-    <para>
-        <projectname>TOUCH_EXAMPLES</projectname> is the application that comes with the textbook 
-        <emphasis>A Touch of Class</emphasis>. It is the framework for the examples and exercises
-        that you find in the book. <emphasis>A Touch of Class</emphasis> is used to teach programming to
-        students in the first semester. The examples are based on <libraryname>TRAFFIC</libraryname>,
-         a library that models a city and its
-        transportation connections. The visual presentation is done using <libraryname>EiffelMedia</libraryname> 
-        (which is a further development of <libraryname>ESDL</libraryname>).
-    </para>
-    <para> This documentation will guide you through the source code of <projectname>Touch</projectname>
+<title>Touch Library Classes</title>
+ <section id="top_of_page">
+	<title>Overview over the classes</title>
+	<para>
+		In the following sections, the classes of the <emphasis>Touch Library</emphasis> are described. 
+		Each class description consists of:
+		Requirements, Description and Class Overview. In the Requirements, the name of classes you need 
+		to know, in order to understand the described class is given. Description is a short description 
+		of what the class does. It is more detailed than just the class description that you find in 
+		the class header. The Class Overview provides a class diagram. 
+	</para>
+
+	<toplink/>
+	<title>Most important classes for developers</title>
+
 	<itemizedlist>
+		
 		<listitem>
-			<link url="classes.html">Touch Library Classes</link>
+			<link url="#touch_building">TOUCH_BUILDING</link>
 		</listitem>
 		<listitem>
-            <link url="new_example.html">Classes Needed for a New Example</link>
-			<para>
-				
-			</para>
+			<link url="#touch_console">TOUCH_CONSOLE</link>
 		</listitem>
+		<listitem>
+			<link url="#touch_line">TOUCH_LINE</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_map">TOUCH_MAP</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_paris_objects">TOUCH_PARIS_OBJECTS</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_route">TOUCH_ROUTE</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_simple_line">TOUCH_SIMPLE_LINE</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_3d_application">TOUCH_3D_APPLICATION</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_3d_constants">TOUCH_3D_CONTSTANTS</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_3d_map_widget">TOUCH_3D_MAP_WIDGET</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_3d_scene">TOUCH_3D_SCENE</link>
+		</listitem>
+		<listitem>
+			<link url="#tourism">TOURISM</link>
+		</listitem>
+
 	</itemizedlist>
-    </para>
+</section>
+
+	<section id="touch_building">
+		<title>TOUCH_BUILDING</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TOUCH_BUILDING</classname> is a <classname>TRAFFIC_BUILDING</classname> 
+			which can be spotlighted and is created at a specific place. 
+		</para>
+		<para>
+			The features <featurename>make_at_place</featurename> takes a trafic_place and the 
+			touch_3d_map_widget and creates a building at the location of the place. The center of
+			the building is at (place_position.x, place_position.y + 1). 
+		</para>
+		<para>
+			The other calls are forwarded to the <classname>TRAFFIC_BUILDING</classname>. 
+		</para>
+
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_building_clients.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+	<section id="touch_console">
+		<title>TOUCH_CONSOLE</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+			The console displays results of feature calls or ordinary text. It inherits from EM_TEXTAREA 
+			which itself is inheriting from EM_TEXTBOX.  
+		</para>
+		<para>
+			The features <featurename>append_text</featurename> and <featurename>put_string</featurename>
+			append the new text which is passed as string-argument at the end of the text already 
+			existing in the console. 
+			The feature <featurename>prepend_text</featurename> inserts the new text at the beginning of 
+			the already present text. Feature <featurename>show</featurename> displays the text in the 
+			area specified as console. 
+		</para>
+		<para>
+			The console is created in the <classname>TOUCH_3D_SCENE</classname> and is disabled, that nobody 
+			can write into it. 
+		</para>
+
+		
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_console.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+	<section id="touch_line">
+		<title>TOUCH_LINE</title>
+		<title>Requirements</title>
+		<para>
+			TRAFFIC_LINE, TRAFFIC_LINE_REPRESENTATION
+		</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TOUCH_LINE</classname> represents a touch line. 
+		</para>
+		<para>
+			The touch line connects the <classname>TRAFFIC_LINE</classname> with its <classname>TRAFFIC_3D_LINE_REPRESENTATION</classname>. The calls are 
+			forwarded to the corresponding class.  			
+
+		</para>
+		
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_line.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+	<section id="touch_map">
+		<title>TOUCH_MAP</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+			This class forwards calls to the <classname>TRAFFIC_MAP</classname> and the 
+			<classname>TOUCH_3D_MAP_WIDGET</classname>. 
+		</para>
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_map.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+	<section id="touch_paris_objects">
+		<title>TOUCH_PARIS_OBJECTS</title>
+		<title>Requirements</title>
+		<para>
+			None
+		</para>
+		<title>Description</title>
+		<para>
+			This class <classname>TOUCH_PARIS_OBJECTS</classname> is a collection of all 
+			predefined objects used by the examples of touch. 
+		</para>
+		<para>
+			The lines and places are created using once. 
+		</para>
+		<para>
+			The information, if paris is loaded can be retrieved by invoking the feature 
+			<featurename>is_paris_loaded</featurename>.
+		</para>
+
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_paris_objects.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+		<section id="touch_route">
+		<title>TOUCH_ROUTE</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+				This class forwards calls to the class <classname>TRAFFIC_ROUTE</classname> 
+				and provides a traveler which travels along the route. 
+		</para>
+		<para>
+				The feature <featurename>animate</featurename> triggers the traveler to travel
+				along the route. After reaching its destination, the traveler is removed again. 
+		</para>
+
+		<title>Class overview</title>
+		<para>
+				<image src="image/touch_route.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+
+	<section id="touch_simple_line">
+		<title>TOUCH_SIMPLE_LINE</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+				This class forwards calls to the class <classname>TRAFFIC_SIMPLE_LINE</classname> 
+				and its representation. 
+		</para>
+		<para>
+			The creation feature <featurename>make_with_line_and_represenation</featurename> takes a 
+			<classname>TRAFFIC_SIMPLE_LINE</classname> and a <classname>TRAFFIC_LINE_REPRESENTATION</classname>
+			to set the internal implementation features. 
+		</para>
+		<para>
+			The connection from the line to ist representation is needed for the highlighting of the line. 
+		</para>
+		<title>Class overview</title>
+		<para>
+			Suppliers:
+		</para>
+		<para>
+			<image src="image/touch_simple_line.png"/>
+		</para>
+		<para>
+			Clients:
+		</para>
+		<para>
+			<image src="image/touch_simple_line_clients.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+	<section id="touch_3d_application">
+		<title>TOUCH_3D_APPLICATION</title>
+		<title>Requirements</title>
+		<para>
+			TOUCH_3D_CONSTANTS
+		</para>
+		<title>Description</title>
+		<para>
+			The <classname>TOUCH_3D_APPLICATION</classname> sets the first scene of the example. Feature 
+			<featurename>make</featurename> initializes the screen and sets the scene.  
+			All the individual examples are inheriting from this class to set the specific "example_3d_application".
+		</para>
+		
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_3d_application.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+	<section id="touch_3d_constants">
+		<title>TOUCH_3D_CONSTANTS</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+			Here are all the widgets defined which are used for the main window. The size of the main 
+			window is specified as well as properties for the objects which are drawn on the map 
+			(For example the line width, the place height, the plane size etc.).							
+		</para>
+		<para>
+			The feature <featurename>map_to_gl_coords</featurename> transforms the coordinates 
+			specified in the xml file to the coordinates of the plane. The Louvre has for example 
+			the xml-coordinates around (530, 640). Transformed to the plane which has coordinates between 
+			-25 and 25 in both axix, the Louvre has gl-coordinates of around (4.9, -1.6). 
+		</para>
+
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_3d_constants.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+	<section id="touch_3d_map_widget">
+		<title>TOUCH_3D_MAP_WIDGET</title>
+		<title>Requirements</title>
+		<para>
+			TRAFFIC_3D_MAP_WIDGET
+		</para>
+		<title>Description</title>
+		<para>
+			The class <classname>TOUCH_3d_MAP_WIDGET</classname> adds events and their handlers to the
+			map from  <classname>TRAFFIC_3d_MAP_WIDGET</classname>. 
+		</para>
+		<para>
+			The following event handlers are added: 
+			The <featurename>wheel_down</featurename> and <featurename>wheel_up</featurename> zoom into, 
+			respectively out of the map. The <featurename>mouse_drag</featurename> rotated the map. 
+		</para>
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_3d_map_widget.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+	<section id="touch_3d_scene">
+		<title>TOUCH_3D_SCENE</title>
+		<title>Requirements</title>
+		<para>
+			TOUCH_3D_CONSTANTS, EXCEPTIONS, EM_COMPONENT_SCENE
+		</para>
+		<title>Description</title>
+		<para>
+			Here are all the widgets which are used for the main window created. The feature 
+			<featurename>make</featurename> creates all buttons and subscribes its event handlers. It 
+			furthermore combines the buttons and the console to the panel at the right side. 									
+		</para>
+		<para>
+			From this class, all the examples have to inherit from in order to define its individual scene. 
+			For example, the <classname>PREVIEW_3D_SCENE</classname> from the preview example 
+			inherits from this class to subscribe the click_here_button and to create and invoke the
+			example code of preview.  
+		</para>
+
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_3d_scene.png"/>
+		</para>
+		<toplink/>
+	</section>
+
+	<section id="tourism">
+		<title>TOURISM</title>
+		<title>Requirements</title>
+		<para>
+			TOUCH_PARIS_OBJECTS
+		</para>
+		<title>Description</title>
+		<para>
+			In this class, the <classname>TOUCH_MAP</classname> "Paris" is loaded. 
+			Features which are used in the individual examples (<featurename>explore</featurename> and 
+			<featurename>explore_on_button_click</featurename>) are defined as deferred. 
+		</para>
+		<para>
+			 The information, which map has been loaded can be retrieved by invoking the feature 
+			 <featurename>is_zurich_loaded</featurename> or <featurename>is_paris_loaded</featurename>. 
+		</para>
+		<para>
+			Access to the touch_3d_map_widget is given through the <featurename>map_widget</featurename> 
+			and to the touch_console through the feature <featurename>console</featurename>.
+		</para>
+		<para>
+			The feature <featurename>run</featurename> sets the <featurename>map_widget</featurename> and the 
+			<featurename>console</featurename> and invokes explore. 
+		</para>
+
+		<title>Class overview</title>
+		<para>
+			<image src="image/tourism.png"/>
+		</para>
+		<toplink/>
+	</section>
 </chapter>
