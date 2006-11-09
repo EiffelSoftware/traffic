@@ -14,13 +14,40 @@
 			<variablelist>
 				<varlistentry>
 					<term>
+						Alan Fehr. <emphasis>Traffic 3.1 - Enhancing Visualization and Performance of Traffic</emphasis>. ETH Zurich, 2006. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/alan_fehr">
+						http://se.inf.ethz.ch/projects/alan_fehr</link>
+					</listitem>
+        		</varlistentry>
+				<varlistentry>
+					<term>
+						Michele Croci. <emphasis>Traffic 3.1 - Introducing roads</emphasis>. ETH Zurich, 2006. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/michele_croci">
+						http://se.inf.ethz.ch/projects/michele_croci</link>
+					</listitem>
+        		</varlistentry>
+				<varlistentry>
+					<term>
+						Sarah Hauser. <emphasis>Traffic 3.1 - Designing Suitable Examples</emphasis>. ETH Zurich, 2006. 
+					</term>
+					<listitem>
+						<link url="http://se.inf.ethz.ch/projects/sarah_hauser">
+						http://se.inf.ethz.ch/projects/sarah_hauser</link>
+					</listitem>
+        		</varlistentry>
+				<varlistentry>
+					<term>
 						Susanne Kasper. <emphasis>Traffic 3.0 - Extracting Software Examples for Pedagogical Effectiveness</emphasis>. ETH Zurich, 2005/2006. 
 					</term>
 					<listitem>
 						<link url="http://se.inf.ethz.ch/projects/susanne_kasper">
 						http://se.inf.ethz.ch/projects/susanne_kasper</link>
 					</listitem>
-        </varlistentry>
+        		</varlistentry>
 				<varlistentry>
 					<term>
 						Florian Geldmacher. <emphasis>Traffic 3.0 - Introducing time into a city model</emphasis>. ETH Zurich, 2005/2006. 
@@ -29,7 +56,7 @@
 						<link url="http://se.inf.ethz.ch/projects/florian_geldmacher">
 						http://se.inf.ethz.ch/projects/florian_geldmacher</link>
 					</listitem>
-        </varlistentry>
+        		</varlistentry>
 				<varlistentry>
 					<term>
 						Fabian Wüst. <emphasis>Traffic 3.0 – Realistic buildings and performance</emphasis>. ETH Zurich, 2005/2006. 
@@ -38,7 +65,7 @@
 						<link url="http://se.inf.ethz.ch/projects/fabian_wueest">
 						http://se.inf.ethz.ch/projects/fabian_wueest</link>
 					</listitem>
-        </varlistentry>
+        		</varlistentry>
 				<varlistentry>
 					<term>
 						Roger Küng. <emphasis>Redesign of Touch</emphasis>. ETH Zurich, 2005. 
@@ -121,8 +148,8 @@
 						Download page for <projectname>Traffic</projectname>.
 					</term>
 					<listitem>
-						<link url="http://se.inf.ethz.ch/traffic"
-						>http://se.inf.ethz.ch/traffic</link>
+						<link url="http://traffic.origo.ethz.ch"
+						>http://traffic.origo.ethz.ch</link>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
