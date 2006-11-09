@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="traffic/developer/map_classes">
 	<chapterinfo>
 		<copyright>
@@ -19,7 +19,7 @@
 		</para>
 		<itemizedlist>
 			<listitem>
-				<link url="#">TRAFFIC_BUILDING</link>
+				<link url="#traffic_building">TRAFFIC_BUILDING</link>
 			</listitem>
 			<listitem>
 				<link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link>
@@ -136,21 +136,40 @@
 		</para>
 		<title>Description</title>
 		<para>
-			The class <classname>TRAFFIC_BUILDING</classname> represents a building. A building is always a rectangle and is specified by its four corners (corner 1 is always the upper left, corner 2 the lower left, corner 3 the lower right and corner 4 the upper right one) and the three dimensions width, breadth and height. Furthermore, an angle (in range -70 to 70 degrees) can be specified by which the building is rotated.
+			The class <classname>TRAFFIC_BUILDING</classname> represents a building. A building is 
+			always a rectangle and is specified by its four corners (corner 1 is always the upper left, 
+			corner 2 the lower left, corner 3 the lower right and corner 4 the upper right one) and the 
+			three dimensions width, breadth and height. Furthermore, an angle (in range -70 to 70 degrees) 
+			can be specified by which the building is rotated.
 		</para>
 		<para>
-			A new building is created through the feature <featurename>make</featurename>, which needs the four corners of the building, its height and its name. The creation feature then calculates the width, the breadth and the center and sets the angle to zero. <newline/>
-			In case the angle has to be changed after creation, this can be done through <featurename>set_angle</featurename>. <newline/>
-			If the building has to be drawn, then it needs also a unique identification number which can be set through <featurename>set_id</featurename>. 
+			A new building is created through the feature <featurename>make</featurename>, which needs 
+			the four corners of the building, its height and its name. The creation feature then calculates 
+			the width, the breadth and the center and sets the angle to zero. <newline/>
+			In case the angle has to be changed after creation, this can be done through 
+			<featurename>set_angle</featurename>. <newline/>
+			If the building has to be drawn, then it needs also a unique identification number which 
+			can be set through <featurename>set_id</featurename>. 
 		</para>
 		<para>
-			The four corners can be accessed through the four features: <featurename>corner1</featurename> (upper left corner), <featurename>corner2</featurename> (lower left corner), <featurename>corner3</featurename> (lower right corner) and <featurename>corner4</featurename> (upper right corner), whereas the three dimensions can be accessed through the tree features: <featurename>width</featurename>, <featurename>breadth</featurename> and <featurename>height</featurename>. Finally, the angle can be accessed through <featurename>angle</featurename>
+			The four corners can be accessed through the four features: <featurename>corner1</featurename> 
+			(upper left corner), <featurename>corner2</featurename> (lower left corner), 
+			<featurename>corner3</featurename> (lower right corner) and <featurename>corner4</featurename> 
+			(upper right corner), whereas the three dimensions can be accessed through the tree features: 
+			<featurename>width</featurename>, <featurename>breadth</featurename> and 
+			<featurename>height</featurename>. Finally, the angle can be accessed through 
+			<featurename>angle</featurename>
 		</para>
 		<para>
-		There exists also the possibility to attach <link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link> through <featurename>set_information</featurename>, which can afterwards be accessed through <featurename>information</featurename>.
+		There exists also the possibility to attach 
+		<link url="#traffic_building_information">TRAFFIC_BUILDING_INFORMATION</link> through 
+		<featurename>set_information</featurename>, which can afterwards be accessed through 
+		<featurename>information</featurename>.
 		</para>
 		<para>
-			A quite important feature is <featurename>contains_point</featurename>, which allows to check whether a point is inside a building. It is mainly used to check whether a building has been clicked.
+			A quite important feature is <featurename>contains_point</featurename>, which allows 
+			to check whether a point is inside a building. It is mainly used to check whether a building 
+			has been clicked.
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -158,7 +177,7 @@
 		</para>
 		<toplink/>
 	</section>
-	<section>
+	<section id="traffic_building_information">
 		<title>TRAFFIC_BUILDING_INFORMATION</title>
 		<title>Requirements:</title>
 		<para>
@@ -166,11 +185,14 @@
 		</para>
 		<title>Description</title>
 		<para>
-			The class <classname>TRAFFIC_3D_BUILDING_REPRESENTATION</classname> is a collection of additional 
-			information for a building. This can be a street, a house number and a textual description.
+			The class <classname>TRAFFIC_3D_BUILDING_REPRESENTATION</classname> is a collection of 
+			additional information for a building. This can be a street, a house number, and a textual 
+			description.
 		</para>
 		<para>	
-			A street can be added by <featurename>set_street</featurename>, a house number by <featurename>set_house_number</featurename> and description by <featurename>set_description</featurename>.
+			A street can be added by <featurename>set_street</featurename>, a house number by 
+			<featurename>set_house_number</featurename> and description by 
+			<featurename>set_description</featurename>.
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -196,7 +218,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_bus.jpg"/>
+				<image src="image/traffic_bus.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -209,7 +231,8 @@
     	</para>
 		<title>Description</title>
 		<para>
-    		The class <classname>TRAFFIC_COLOR</classname> represents a RGB-Color. A RGB-Color is a color composed of the
+    		The class <classname>TRAFFIC_COLOR</classname> represents a RGB-Color. A RGB-Color is a color 
+    		composed of the
     		three additive components: red, green, blue. The three color parts can be accessed 
     		through the three features: <featurename>red</featurename>, <featurename>green</featurename>, 
     		<featurename>blue</featurename>. An important feature is <featurename>is_valid_color_part
@@ -223,7 +246,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_color.png"/>
+				<image src="image/traffic_color.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -237,7 +260,8 @@
 		</para>
 		<title>Description</title>
 		<para>
-			The deferred class <classname>TRAFFIC_CONNECTION</classname> represents a connection between two places.
+			The deferred class <classname>TRAFFIC_CONNECTION</classname> represents a connection between 
+			two places.
 			These links can be of type <classname>TRAFFIC_ROAD</classname> or of
 			type <classname>TRAFFIC_LINE_SECTION</classname>. The connected places are called origin and destination
 			and are accessible with the features <featurename>origin</featurename> and <featurename>destination</featurename>.
@@ -269,16 +293,19 @@
  	   	</para>
 		<title>Description</title>
 		<para>
-				The class <classname>TRAFFIC_DISPATCHER_TAXI</classname> represents taxis that use client feature call communication.			
+				The class <classname>TRAFFIC_DISPATCHER_TAXI</classname> represents taxis that 
+				use client feature call communication.			
 		</para>
 		<para>
-			This class effects the attribute <featurename>office</featurename> to use a <classname>TRAFFIC_DISPATCHER_TAXI_OFFICE</classname>.
-			It effects the deferred feature <featurename>take</featurename> to use method call communication to inform the office about its
+			This class effects the attribute <featurename>office</featurename> to use a 
+			<classname>TRAFFIC_DISPATCHER_TAXI_OFFICE</classname>.
+			It effects the deferred feature <featurename>take</featurename> to use method call 
+			communication to inform the office about its
 			state.
 		</para>
 		<title>Class overview</title>
 		<para>
-			<image src="image/traffic_dispatcher_taxi.jpg"/>
+			<image src="image/traffic_dispatcher_taxi.png"/>
 		</para>
 		<toplink/>
 	</section>
@@ -291,14 +318,15 @@
  	   	</para>
 		<title>Description</title>
 		<para>
-				The class <classname>TRAFFIC_DISPATCHER_TAXI_OFFICE</classname> represents taxi offices that clients and taxis communicate with by feature call.			
+				The class <classname>TRAFFIC_DISPATCHER_TAXI_OFFICE</classname> represents taxi offices 
+				that clients and taxis communicate with by feature call.			
 		</para>
 		<para>
 		</para>
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_dispatcher_taxi_office.jpg"/>
+				<image src="image/traffic_dispatcher_taxi_office.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -312,17 +340,20 @@
  	   	</para>
 		<title>Description</title>
 		<para>
-				The class <classname>TRAFFIC_EVENT_TAXI</classname> represents taxis that use event based communication.			
+				The class <classname>TRAFFIC_EVENT_TAXI</classname> represents taxis that use event based 
+				communication.			
 		</para>
 		<para>
-			This class effects the attribute <featurename>office</featurename> to use a <classname>TRAFFIC_EVENT_TAXI_OFFICE</classname>.
-			It effects the deferred feature <featurename>take</featurename> to use event based communication to inform the office about its
+			This class effects the attribute <featurename>office</featurename> to use a 
+			<classname>TRAFFIC_EVENT_TAXI_OFFICE</classname>.
+			It effects the deferred feature <featurename>take</featurename> to use event based 
+			communication to inform the office about its
 			state.
 		</para>
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_event_taxi.jpg"/>
+				<image src="image/traffic_event_taxi.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -340,14 +371,15 @@
 		</para>
 		<para>
 				The <classname>TRAFFIC_EVENT_TAXI_OFFICE</classname> defines four events and subscribes itself to these events.
-				The  event <featurename>request</featurename>, which customers fire when a taxi is needed. The <featurename>taxi_busy</featurename> event, that taxis fire when they get busy. 
+				The  event <featurename>request</featurename>, which customers fire when a taxi is needed. The 
+				<featurename>taxi_busy</featurename> event, that taxis fire when they get busy. 
 				The <featurename>taxi_available</featurename> event, which taxis fire when they get available again and
 				the <featurename>reject_request</featurename> event, that taxis fire when they reject to fulfill a request.
 		</para>
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_event_taxi_office.jpg"/>
+				<image src="image/traffic_event_taxi_office.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -369,7 +401,7 @@
 		</para>
 		<title>Class overview</title>
 		<para>
-				<image src="image/traffic_graph.jpg"/>
+				<image src="image/traffic_graph.png"/>
 		</para>
 		<toplink/>
 	</section>
@@ -421,7 +453,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_line.png"/>
+				<image src="image/traffic_line.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -457,7 +489,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_line_section.png"/>
+				<image src="image/traffic_line_section.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -483,7 +515,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_line_section_state.png"/>
+				<image src="image/traffic_line_section_state.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -504,7 +536,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_line_section_state_constants.png"/>
+				<image src="image/traffic_line_section_state_constants.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -531,7 +563,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-					<image src="image/traffic_line_vehicle.jpg"/>
+					<image src="image/traffic_line_vehicle.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -570,7 +602,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_map.png"/>
+				<image src="image/traffic_map.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -618,7 +650,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_map_factory.png"/>
+				<image src="image/traffic_map_factory.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -634,7 +666,11 @@
 			The class <classname>TRAFFIC_MAP_LOADER</classname> is used to load maps, specifed by its name.
 		</para>
 		<para>
-			A new instance of <classname>TRAFFIC_MAP_LOADER</classname> is create by calling <featurename>make</featurename>. It takes as input the name of the map to be loaded. The map is then loaded by <featurename>load_map</featurename>, which is either loaded from a dump file or, if this is not available or outdated, parsed from the specified XML file. If the map had to be parsed, a new dump is created, which can be used next time. Afterwards, the map can be access through <featurename>map</featurename>.
+			A new instance of <classname>TRAFFIC_MAP_LOADER</classname> is create by calling <featurename>make</featurename>. 
+			It takes as input the name of the map to be loaded. The map is then loaded by <featurename>load_map</featurename>, 
+			which is either loaded from a dump file or, if this is not available or outdated, parsed from the specified XML file. 
+			If the map had to be parsed, a new dump is created, which can be used next time. Afterwards, the map can be accessed through 
+			<featurename>map</featurename>.
 		</para>
 		<para>
 			To detect changes in the XML file, a log file containing the XML file names and their timestamps is maintained.
@@ -678,7 +714,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-					<image src="image/traffic_moving.jpg"/>
+					<image src="image/traffic_moving.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -706,7 +742,7 @@
 	<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_passenger.jpg"/>
+				<image src="image/traffic_passenger.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -745,7 +781,7 @@
 	<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_path.jpg"/>
+				<image src="image/traffic_path.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -792,7 +828,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_place.jpg"/>
+				<image src="image/traffic_place.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -819,7 +855,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_place_information.png"/>
+				<image src="image/traffic_place_information.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -845,7 +881,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_road.png"/>
+				<image src="image/traffic_road.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -873,7 +909,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_route.png"/>
+				<image src="image/traffic_route.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -900,7 +936,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_simple_line.png"/>
+				<image src="image/traffic_simple_line.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -946,7 +982,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_taxi.jpg"/>
+				<image src="image/traffic_taxi.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -972,7 +1008,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_taxi_office.jpg"/>
+				<image src="image/traffic_taxi_office.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -1015,7 +1051,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-			<image src="image/traffic_tram.jpg"/>
+			<image src="image/traffic_tram.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -1040,7 +1076,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_type.png"/>
+				<image src="image/traffic_type.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -1077,7 +1113,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_type_factory.png"/>
+				<image src="image/traffic_type_factory.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -1100,7 +1136,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_type_line.png"/>
+				<image src="image/traffic_type_line.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -1124,7 +1160,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/sg_traffic_type_road.png"/>
+				<image src="image/traffic_type_road.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -1146,7 +1182,7 @@
 	<title>Class overview</title>
 		<para>
 			<para>
-					<image src="image/traffic_vehicle.jpg"/>
+					<image src="image/traffic_vehicle.png"/>
 			</para>
 		</para>
 		<toplink/>
@@ -1168,7 +1204,7 @@
 		<title>Class overview</title>
 		<para>
 			<para>
-				<image src="image/traffic_wagon.jpg"/>
+				<image src="image/traffic_wagon.png"/>
 			</para>
 		</para>
 		<toplink/>

@@ -20,7 +20,7 @@
 			Init all needed Projectvariables
 		</description>
 		<set name="root_path" value="../../"/>
-		<set name="doc_section" value="traffic library developer"/>
+		<set name="doc_section" value="traffic library"/>
 	</target>
 
 	<target name="do_all" export="NONE">
