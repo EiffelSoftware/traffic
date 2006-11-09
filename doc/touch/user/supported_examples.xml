@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="supported_examples">
+    <chapterinfo>
+        <copyright>
+            <year>2005</year>
+            <holder>Michela Pedroni</holder>
+        </copyright>
+        <email>michela.pedroni@inf.ethz.ch</email>
+        <date>$Date: 2006/03/26 10:54:24 $</date>
+    </chapterinfo>
+
+    <title>Supported Touch examples</title>
+	<section>
+    <para>
+		<itemizedlist>
+			<listitem>
+				<para>
+					Preview example 
+		        </para>
+		    </listitem>
+	        <listitem>
+				<para> 
+					Queries example
+	        	</para>
+		    </listitem>
+		    <listitem>
+				<para>
+					Commands example 
+		        </para>
+		    </listitem>
+      	</itemizedlist>
+    </para>
+	</section>
+	<section id="preview">
+		<title>
+			Preview example
+		</title>
+		<para>
+		<programlisting>
+<keyword>class</keyword> PREVIEW
+
+<keyword>inherit</keyword>
+
+	TOURISM
+
+<keyword>feature</keyword>	 <comment>Example</comment>
+
+	explore_on_click <keyword>is</keyword>
+			<comment>Execute preview example.</comment>
+		<keyword>do</keyword>
+			Paris.display
+			Louvre.lighten
+			Route1.animate
+			Line8.spotlight
+			Paris.build
+			Paris.equip
+			Console.show (Line8)
+			Console.show (Place_balard)
+		<keyword>end</keyword>
+
+<keyword>end</keyword>
+		</programlisting>
+			
+		</para>
+	</section>
+
+	<section id="queries">
+		<title>
+			Queries example
+		</title>
+	    <para>
+		<programlisting>
+<keyword>class</keyword> QUERIES
+
+<keyword>inherit</keyword>
+
+	TOURISM
+
+<keyword>feature</keyword> <comment>Example</comment>
+
+	explore_on_click <keyword>is</keyword>
+			<comment>Show some queries.</comment>
+		<keyword>do</keyword>
+			Paris.display
+			Console.show (line8.count)
+			Console.show (line8.i_th (1))
+			Console.show (line8.i_th (line8.count))
+		<keyword>end</keyword>
+
+<keyword>end</keyword>
+		</programlisting>
+	    </para>
+	</section>    
+	<section id="commands">
+		<title>
+			Commands example
+		</title>
+	    <para>
+		<programlisting>
+<keyword>class</keyword> COMMANDS
+
+<keyword>inherit</keyword>
+
+	TOURISM
+
+<keyword>feature</keyword> <comment>Example</comment>
+
+	explore_on_click <keyword>is</keyword>
+			<comment>Try some commands.</comment>
+		<keyword>do</keyword>
+			Paris.display
+			Line8.remove_all_sections
+			Line8.extend_place (Place_la_motte_picquet_grenelle)
+			Line8.extend_place (Place_invalides)
+			Line8.highlight
+		<keyword>end</keyword>
+
+<keyword>end</keyword>
+		</programlisting>
+	    </para>
+	</section>    
+</chapter>

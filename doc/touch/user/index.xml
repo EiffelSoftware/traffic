@@ -12,19 +12,25 @@
 
     <title>Touch-Examples User Guide</title>
 
-    <para> This document describes how to use the <projectname>Touch-Examples</projectname> and is structured
+    <para> This document describes how to use the <projectname>Touch examples</projectname> and is structured
         as follows: 
 	  <itemizedlist>
 		<listitem>
-			<link url="introduction.html">Introduction</link>
+			<link url="new_example.html">How to build a new example</link>
 			<para>
-				Welcome to the example applications for <projectname>A Touch of Class</projectname>!
+				Description of how a new Touch example can be built
 			</para>
 		</listitem>
 		<listitem>
-			<link url="userguide_main.html">Touch Userguide</link>
+			<link url="userguide_main.html">Mouse and keyboard handling of Touch examples</link>
 			<para>
-				Explanation of mouse and keyboard usage
+				Explanation of mouse and keyboard usage in the Touch examples
+			</para>
+		</listitem>
+		<listitem>
+			<link url="supported_examples.html">Supported examples</link>
+			<para>
+				List of supported examples covering differences between the software and the book <projectname>Touch of Class</projectname>
 			</para>
 		</listitem>
 	  </itemizedlist>
