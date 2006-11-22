@@ -250,7 +250,7 @@ feature {NONE} -- Implementation
 			-- Read the object file `a_filename'.
 		local
 			obj_file_: PLAIN_TEXT_FILE
-			tokenizer_: TRAFFIC_3D_TEXT_SCANNER
+			tokenizer_: TE_3D_TEXT_SCANNER
 		do
 			unchanged := False
 			create vectors.make (0, 2)
@@ -298,7 +298,7 @@ feature {NONE} -- Implementation
 		end
 
 
-	read_vector (input: TRAFFIC_3D_TEXT_SCANNER): ARRAY [DOUBLE] is
+	read_vector (input: TE_3D_TEXT_SCANNER): ARRAY [DOUBLE] is
 			-- Read a vector from `input'.
 		local
 			i: INTEGER
@@ -315,10 +315,10 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	read_face (input: TRAFFIC_3D_TEXT_SCANNER): TUPLE [ARRAY [INTEGER], ARRAY [INTEGER], ARRAY [INTEGER]] is
+	read_face (input: TE_3D_TEXT_SCANNER): TUPLE [ARRAY [INTEGER], ARRAY [INTEGER], ARRAY [INTEGER]] is
 			-- Read a face from `input'.
 		local
-			tokenizer_: TRAFFIC_3D_TEXT_SCANNER
+			tokenizer_: TE_3D_TEXT_SCANNER
 			vectors_: ARRAY [INTEGER]
 			vectors_index_: INTEGER
 			normals_: ARRAY [INTEGER]

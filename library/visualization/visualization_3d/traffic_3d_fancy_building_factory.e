@@ -182,7 +182,7 @@ feature -- Basic operations
 		local
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 		do
-			Result ?= building_templates.item (template).item (1).twin
+			Result ?= building_templates.item(template).item (1).twin
 			object_width := building_templates.item (template).double_item (2)
 			object_depth := building_templates.item (template).double_item (3)
 			object_height := building_templates.item (template).double_item (4)

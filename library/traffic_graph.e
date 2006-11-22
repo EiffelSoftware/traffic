@@ -65,7 +65,7 @@ feature {TRAFFIC_MAP} -- Status Setting
 
 feature -- Status Setting
 
-	enable_user_defined_weight_function (a_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]], REAL_32]) is
+	enable_user_defined_weight_function (a_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]], REAL]) is
 			-- Use `a_function' to compute edge weight instead of stored value.
 		local
 			edge_list: like edges
@@ -154,7 +154,7 @@ feature -- Removal
 
 feature {NONE} -- Implementation
 
-	weight_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]], REAL_32]
+	weight_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]], REAL]
 			-- Weight function for edges, if Void, no weight function is used.
 
 	prune_edge_impl (a_edge: EDGE [like item, TRAFFIC_CONNECTION]) is

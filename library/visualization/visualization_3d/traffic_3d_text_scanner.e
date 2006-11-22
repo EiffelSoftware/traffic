@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision: 1.4 $"
 
 class
-	TRAFFIC_3D_TEXT_SCANNER
+	TE_3D_TEXT_SCANNER
 
 create
 	make_from_string_with_delimiters
@@ -58,7 +58,6 @@ feature -- Access
 			-- Last token read
 
 feature {NONE} -- Implementation
-
 	next_start (start_ix: INTEGER): INTEGER is
 			-- Start of next token starting search at `start_ix'
 		require

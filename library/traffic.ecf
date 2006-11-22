@@ -39,7 +39,10 @@
 			<cluster name="type" location="$|type\"/>
 			<cluster name="visualization" location="$|visualization\">
 				<cluster name="visualization_2d" location="$|visualization_2d\"/>
-				<cluster name="visualization_3d" location="$|visualization_3d\"/>
+				<cluster name="visualization_3d" location="$|visualization_3d\">
+					<cluster name="em_9_datastructures" location="E:\Projektdaten\Traffic\library\visualization\visualization_3d\em_9_datastructures\"/>
+					<cluster name="new" location="E:\Projektdaten\Traffic\library\visualization\visualization_3d\new\"/>
+				</cluster>
 			</cluster>
 		</cluster>
 	</target>

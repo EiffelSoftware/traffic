@@ -12,10 +12,10 @@ inherit
 
 	TRAFFIC_MAP_WIDGET
 
-	EM_3D_COMPONENT
-		redefine
-			prepare_drawing
-		end
+	EM_COMPONENT
+		--redefine
+			--prepare_drawing
+		--end
 
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
@@ -31,6 +31,14 @@ inherit
 	GL_FUNCTIONS
 		export {NONE} all end
 
+	GLU_FUNCTIONS
+		export {NONE} all end
+
+	EM_GL_CONSTANTS
+		export {NONE} all end
+
+	TE_3D_SHARED_GLOBALS
+
 create
 	make
 
@@ -38,34 +46,31 @@ feature -- Initialisation
 
 	make is
 			-- Initialize the map widget.
+		local
+			green_material: TE_MATERIAL_SIMPLE
+			primitive_factory: TE_3D_MEMBER_FACTORY_PRIMITIVE
 		do
-			make_3d_component
+			make_component
 
 			set_keyboard_sensitive (True)
-			set_field_of_view (60)
 			set_width (600)
 			set_height (600)
-			set_min_view_distance (1.0)
-			set_max_view_distance (10000)
 
 			-- Variable initialization
-			focus := 0.156*plane_size - 0.1875
 			x_coord := 0
 			y_coord := -1
-			z_coord := -8
-			y_rotation := 180
-			x_rotation := 40
 
 			-- Create the Sun Representation and Sun Light
-			-- Sunlight will have em_gl_light0
 			create sun_representation.make
 
-			-- various creations
-			create constant_light.make (em_gl_light1)
-
-			plane := create_plane (create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,-plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (-plane_size/2,0,plane_size/2), create {GL_VECTOR_3D[DOUBLE]}.make_xyz (0.1,0.6,0.1))
-			create_coord_system
-
+			--create the plane
+			create green_material.make
+			green_material.set_color(0.45,0.9,0.16) --(0.45,0.9,0.16)
+			create primitive_factory.make
+			primitive_factory.set_material(green_material)
+			primitive_factory.create_simple_plane(plane_size, plane_size)
+			plane := primitive_factory.last_3d_member; --<- I NEED A `;' HAHA :D
+			(create{TE_3D_SHARED_GLOBALS}).root.add_child(plane)
 
 			mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 			create building_clicked_event.default_create
@@ -76,7 +81,6 @@ feature -- Initialisation
 
 		ensure
 			sun_repr_created: sun_representation /= Void
-			constant_light_created: constant_light /= Void
 		end
 
 feature -- Status report
@@ -87,17 +91,11 @@ feature -- Status report
 	is_sun_shown: BOOLEAN
 			-- Is the sun displayed?
 
-	are_coordinates_shown: BOOLEAN
-			-- Is the coordinate system displayed?
-
 	are_buildings_shown: BOOLEAN
 			-- Are the buildings displayed?
 
 	are_lines_shown: BOOLEAN
 			-- Are the lines displayed?
-
-	are_buildings_transparent: BOOLEAN
-			-- Are the buildings drawn transparently?
 
 	is_shortest_path_shown: BOOLEAN
 			-- Is the shortest path shown?
@@ -121,22 +119,6 @@ feature -- Status setting
 			is_map_hidden := False
 		ensure
 			map_not_hidden: not is_map_hidden
-		end
-
-	enable_coordinates_shown is
-			-- Set `are_coordinates_shown' to `True'.
-		do
-			are_coordinates_shown := True
-		ensure
-			coordinates_shown: are_coordinates_shown = True
-		end
-
-	disable_coordinates_shown is
-			-- Set `are_coordinates_shown' to `False'.
-		do
-			are_coordinates_shown := False
-		ensure
-			coordinates_not_shown: are_coordinates_shown = False
 		end
 
 	enable_sun_shown is
@@ -185,22 +167,6 @@ feature -- Status setting
 			are_lines_shown := False
 		ensure
 			lines_not_shown: are_lines_shown = False
-		end
-
-	enable_buildings_transparent is
-			-- Set `are_buildings_transparent' to `True'.
-		do
-			are_buildings_transparent := True
-		ensure
-			buildings_transpartent: are_buildings_transparent = True
-		end
-
-	disable_buildings_transparent is
-			-- Set `are_buildings_transparent' to `False'.
-		do
-			are_buildings_transparent := False
-		ensure
-			buildings_not_transparent: are_buildings_transparent = False
 		end
 
 	enable_shortest_path_shown is
@@ -252,50 +218,6 @@ feature -- Basic operations
 				gl_tex_envi (Em_gl_texture_env, Em_gl_texture_env_mode, Em_gl_modulate)
 			end
 			gl_viewport_external (x, Video_subsystem.video_surface.height - height - y, width, height)
-
-			-- Reset depth buffer
-			gl_clear_external (Em_gl_depth_buffer_bit)
-
-			-- Opengl settings
-			gl_enable_external (Em_gl_depth_test)
-
-			-- Enable antialiasing
-			gl_enable_external (Em_gl_line_smooth)
-			gl_hint_external (Em_gl_line_smooth, Em_gl_nicest)
-
-			-- Setup the projection matrix
-			gl_matrix_mode_external (Em_gl_projection)
-			gl_load_identity_external
-			glu_perspective_external (field_of_view, width/height, 0.1, focus*max_view_distance)
-
-			-- Setup the model view matrix
-			gl_matrix_mode_external (Em_gl_modelview)
-			gl_load_identity_external
-
-			-- Clearing background color to a nice blue
-			gl_clear_color_external (0.1, 0.4, 0.5,0)
-			gl_clear_external (em_gl_color_buffer_bit)
-
-			-- Do viewing transformations
-			gl_matrix_mode_external (em_gl_modelview_matrix)
-			gl_load_identity_external
-
-
-			-- Light settings
-			gl_enable_external (em_gl_lighting)
-			gl_enable_external (em_gl_color_material)
-			gl_color_material_external (Em_gl_front, Em_gl_ambient_and_diffuse)
-			gl_depth_func_external (em_gl_lequal)
-			gl_enable_external (em_gl_depth_test)
-
-			constant_light.ambient.set_xyzt (0, 0, 0, 1)
-			constant_light.specular.set_xyzt (0, 0, 0, 1)
-			constant_light.diffuse.set_xyzt (1, 1, 1, 1) -- White
-			constant_light.position.set_xyz (0, 1, 0)
-			constant_light.apply_values
-
-			gl_enable_external(Em_gl_normalize)
-
 		end
 
 	draw is
@@ -303,43 +225,33 @@ feature -- Basic operations
 		do
 			if is_sun_shown then
 				-- Enable Sunlight and draw Sun
-				constant_light.disable
 				sun_representation.enable_sunlight
-				sun_representation.draw
+				sun_representation.update
 			else
 				-- Enable Constant Light
 				sun_representation.disable_sunlight
-				constant_light.enable
-			end
-
-			-- Draw plane
-			plane.draw
-
-			-- Show coordinate system
-			if are_coordinates_shown then
-				gl_call_list_external (2)
 			end
 
 			-- Display buildings and lines and places
 			if is_map_loaded and then not is_map_hidden then
-				if are_buildings_shown then
-					if are_buildings_transparent then
-						gl_polygon_mode_external (em_gl_front_and_back, em_gl_line)
-						gl_flush_external
-					end
-					buildings_representation.draw
-					gl_polygon_mode_external (em_gl_front_and_back, em_gl_fill)
-					gl_flush_external
-				end
 				if are_lines_shown then
-					lines_representation.draw
+					--lines_representation.draw
 				else
-					roads_representation.draw
+					--roads_representation.draw
 				end
-				places_representation.draw
-				travelers_representation.draw
+				--places_representation.draw
+				travelers_representation.update
 			end
+
+			renderpass_manager.render
 		end
+
+	finish_drawing is
+			-- finish drawing
+		do
+			--nothing
+		end
+
 
 	set_map (a_map: TRAFFIC_MAP) is
 			-- Use `a_map' to be displayed.
@@ -466,6 +378,7 @@ feature -- Basic operations
 				line_sections.after
 				--line_sections.index > line_sections.count
 			loop
+
 				line_section := line_sections.item
 				-- railways are not taken into account
 				if not line_section.type.name.is_equal ("rail") then
@@ -507,6 +420,13 @@ feature -- Basic operations
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
 								if not has_collision (collision_poly) then
 									buildings_representation.add_building (building)
+
+									--DEBUG
+										--io.put_string("building added %N")
+										renderpass_manager.render
+										--gl_finish
+									--/DEBUG
+
 									buildings_representation.collision_polygons.force_last (collision_poly)
 								end
 
@@ -629,37 +549,16 @@ feature -- Event channels
 
 feature {NONE} -- Implementation
 
-	focus: DOUBLE
-			-- Used to zoom in or out
-
 	x_coord: DOUBLE
 			-- X coordinate of the viewer
 
 	y_coord: DOUBLE
 			-- Y coordinate of the viewer
 
-	z_coord: DOUBLE
-			-- Z coordinate of the viewer
-
-	x_rotation: DOUBLE
-			-- Rotation around the x axis
-
-	y_rotation: DOUBLE
-			-- Rotation around the y axis
-
-	x_translation: DOUBLE
-			-- Translation of the map's origin in x direction
-
-	y_translation: DOUBLE
-			-- Translation of the map's origin in y direction
-
 	building_id: INTEGER
 			-- Number to specify the building name
 
-	constant_light: GL_LIGHT
-			-- Constant white light from one direction
-
-	plane: EM_3D_OBJECT
+	plane: TE_3D_MEMBER
 			-- Plane on which the map is displayed
 
 	has_collision (a_poly: EM_COLLIDABLE): BOOLEAN is
@@ -747,63 +646,6 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	create_plane (p1, p2, p3, p4, rgb: GL_VECTOR_3D[DOUBLE]): EM_3D_OBJECT is
-			-- OpenGL display list Nr. `1' for a plane.
-		require
-			p1 /= Void
-			p2 /= Void
-			p3 /= Void
-			p4 /= Void
-			rgb /= Void
-		local
-			displaylist: INTEGER
-		do
-			displaylist := gl_gen_lists (1)
-			gl_new_list (displaylist, EM_GL_COMPILE)
-				gl_begin_external (em_gl_quads)
-					gl_color3dv_external (rgb.pointer)
-					gl_normal3d_external (0,1,0)
-					gl_vertex3dv_external (p1.pointer)
-					gl_normal3d_external (0,1,0)
-					gl_vertex3dv_external (p2.pointer)
-					gl_normal3d_external (0,1,0)
-					gl_vertex3dv_external (p3.pointer)
-					gl_normal3d_external (0,1,0)
-					gl_vertex3dv_external (p4.pointer)
-				gl_flush_external
-				gl_end_external
-			gl_end_list
-			create {EM_3D_OBJECT_DISPLAYLIST} Result.make (displaylist, (p3.x-p1.x).abs, (p3.y-p1.y).abs, (p3.z-p1.z).abs)
-		end
-
-	create_coord_system is
-			-- OpenGL display list Nr `2' for coordinate system.
-		do
-			gl_new_list_external (2, em_gl_compile)
-				gl_line_width_external (2)
-				gl_begin_external (em_gl_lines)
-					-- x axis
-					gl_color3d_external (1,0,0)
-					gl_vertex3d_external (0,0,0)
-					gl_vertex3d_external (1,0,0)
-				gl_end_external
-
-				gl_begin_external (em_gl_lines)
-					-- y axis
-					gl_color3d_external (0,1,0)
-					gl_vertex3d_external (0,0,0)
-					gl_vertex3d_external (0,1,0)
-				gl_end_external
-
-				gl_begin_external (em_gl_lines)
-					-- z axis
-					gl_color3d_external (0,0,1)
-					gl_vertex3d_external (0,0,0)
-					gl_vertex3d_external (0,0,1)
-				gl_end_external
-				gl_line_width_external (1)
-			gl_end_list_external
-		end
 
 	transform_coords (screen_x, screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
 			-- Transform mouse coordinates with gl_un_project to 3D coordinates.

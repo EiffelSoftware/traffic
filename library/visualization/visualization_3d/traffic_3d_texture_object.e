@@ -96,11 +96,11 @@ feature {NONE} -- Implementation
 			-- Draw current.
 		do
 			bind_texture
-			gl_enable(EM_GL_CULL_FACE)
+			--gl_enable(EM_GL_CULL_FACE)
 			gl_enable(EM_GL_ALPHA_TEST)
 			gl_alpha_func(EM_GL_GREATER, 0.5)
 			model.draw_object
-			gl_disable(EM_GL_CULL_FACE)
+			--gl_disable(EM_GL_CULL_FACE)
 			gl_disable(EM_GL_ALPHA_TEST)
 			unbind_texture
 		end

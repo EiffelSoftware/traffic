@@ -36,11 +36,12 @@ feature -- Initialization
 	make is
 			-- Initialize and set building factory to be used.
 		do
-			create {TRAFFIC_3D_BUILDING_FANCY_FACTORY} building_factory
-			create {TRAFFIC_3D_BUILDING_FANCY_FACTORY} highlighting_factory.make_with_color (create {EM_COLOR}.make_with_rgb (255, 0, 0))
-			create buildings.make (1)
-			create random.make
-			random.start
+			create building_factory.make
+			--create {TRAFFIC_3D_BUILDING_FANCY_FACTORY} highlighting_factory.make_with_color (create {EM_COLOR}.make_with_rgb (255, 0, 0))
+			create buildings.make_as_child((create {TE_3D_SHARED_GLOBALS}).root)
+			buildings.set_name("buildings")
+			--create random.make
+			--random.start
 			id_counter := 1
 			create collision_polygons.make (1)
 		end
@@ -55,66 +56,21 @@ feature -- Access
 
 feature	-- Basic operations
 
-	draw is
-			-- Draw all buildings.
-		local
-			i:INTEGER
-		do
-			if not (buildings = void and number_of_buildings <= 0) then
-				from
-					i := 1
-				until
-					i > number_of_buildings
-				loop
-					buildings.i_th(i).draw
-					i := i+1
-				end
-			end
-		end
-
-	highlight_building(a_building: TRAFFIC_BUILDING) is
-			-- Highlight `a_building'.
-		require
-			building_valid: a_building /= void
-		local
-			temp: EM_3D_OBJECT
-		do
-			temp := highlighting_factory.create_object
-			temp.set_rotation (0, a_building.angle, 0)
-			temp.set_origin (a_building.center.x, 0, a_building.center.y)
-			buildings.go_i_th (a_building.id)
-			buildings.replace (temp)
-		end
-
-	unhighlight_building(a_building: TRAFFIC_BUILDING) is
-			-- Unhighlight `a_building'.
-		require
-			building_valid: a_building /= void
-		local
-			temp: EM_3D_OBJECT
-		do
-			temp := building_factory.create_object
-			temp.set_rotation (0, a_building.angle, 0)
-			temp.set_origin (a_building.center.x, 0, a_building.center.y)
-			buildings.go_i_th (a_building.id)
-			buildings.replace (temp)
-		end
-
 	add_building (a_building: TRAFFIC_BUILDING) is
 			-- Add `a_building' to representation.
 		require
 			building_valid: a_building /= Void
 		local
-			building: EM_3D_OBJECT
+			building: TE_3D_NODE
+			setting_vector : EM_VECTOR3D
 		do
-			random.forth
-			building_factory.set_template ((random.double_item*(building_factory.template_count-1).to_double).rounded +1)
-			building := building_factory.create_object
-			building.set_rotation (0, a_building.angle, 0)
-			building.set_origin (a_building.center.x, 0, a_building.center.y)
+			building_factory.randomize_next_building
+			building := building_factory.create_building
+			building.transform.rotate (0,1,0,a_building.angle)
+			building.transform.set_position (a_building.center.x,0,a_building.center.y)
 			a_building.set_id (id_counter)
 			id_counter := id_counter + 1
-			buildings.force (building)
+			buildings.add_child (building)
 			map.add_building (a_building)
 			number_of_buildings := number_of_buildings + 1
 		end
@@ -122,7 +78,7 @@ feature	-- Basic operations
 	delete_buildings is
 			-- Delete buildings from representation.
 		do
-			buildings.wipe_out
+			buildings.children.wipe_out
 			number_of_buildings:= 0
 			id_counter:=1
 			if map /= void then
@@ -133,22 +89,22 @@ feature	-- Basic operations
 	delete_one_building(a_building: TRAFFIC_BUILDING) is
 			-- Delete the building 'a_building' from the building list.
 		local
-			a_building_origin: EM_3D_VECT
+			a_building_origin: EM_VECTOR3D
 		do
 			a_building_origin.set (a_building.center.x, 0, a_building.center.y)
 
 			from
-				buildings.start
+				buildings.children.start
 			until
-				buildings.after
+				buildings.children.after
 			loop
 				if
-					a_building_origin = buildings.item.origin
+					a_building_origin = buildings.children.item.transform.position
 				then
-					buildings.remove
-					buildings.back
+					buildings.children.remove
+					buildings.children.back
 				end
-				buildings.forth
+				buildings.children.forth
 			end
 
 			map.remove_one_building (a_building)
@@ -163,7 +119,7 @@ feature	-- Basic operations
 			number_of_buildings:= n
 		ensure
 			number_of_buildings = n
-			buildings.count >= number_of_buildings
+			buildings.children.count >= number_of_buildings
 		end
 
 	set_map (a_map: TRAFFIC_MAP) is
@@ -179,13 +135,16 @@ feature	-- Basic operations
 
 feature {NONE} -- Implementation
 
-	buildings: ARRAYED_LIST [EM_3D_OBJECT]
+	--buildings: ARRAYED_LIST [EM_3D_OBJECT]
 			-- Buildings in the representation
 
-	building_factory: TRAFFIC_3D_BUILDING_FACTORY
+	buildings: TE_3D_NODE
+			-- TE_3D_NODE which is parent of all buildings of this representation and child of the scene_root
+
+	building_factory: TRAFFIC_3D_BUILDING_FACTORY_NEW
 			-- Factory for buildings
 
-	highlighting_factory: TRAFFIC_3D_BUILDING_FACTORY
+	--highlighting_factory: TRAFFIC_3D_BUILDING_FACTORY
 			-- Factory used to generate representations for highlighted buildings
 
 	map: TRAFFIC_MAP
@@ -194,7 +153,7 @@ feature {NONE} -- Implementation
 	id_counter: INTEGER
 			-- Counter for the ids
 
-	random: RANDOM
+	--random: RANDOM
 			-- randomizer
 
 end

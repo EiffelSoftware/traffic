@@ -65,7 +65,7 @@ feature {NONE} -- Implementation
 					gl_normal3d_external (0,1,0)
 					gl_vertex3d_external (p4.x, p4.y, p4.z)
 				gl_end
-				gl_flush_external
+				--gl_flush_external
 
 				object_width := (q3.x - q1.x).abs
 				object_height := 2.0
@@ -88,7 +88,7 @@ feature {NONE} -- Implementation
 					gl_color3dv_external(color_3d.pointer)
 					gl_translated_external (p1.x, p1.y, p1.z)
 					gl_rotated_external (90, 1, 0, 0)
-					gl_disable_external (em_gl_lighting)
+					--gl_disable_external (em_gl_lighting)
 					glu_disk_external (glu_new_quadric, 0, place_radius, 72, 1)
 					gl_pop_matrix_external
 					gl_flush_external

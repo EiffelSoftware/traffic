@@ -36,10 +36,10 @@ feature -- Basic operations
 				-- a little bit higher than the line
 				gl_translated_external (a_center.x, a_center.y, a_center.z)
 				gl_rotated_external (90, 1, 0, 0)
-				gl_disable_external (em_gl_lighting)
+				--gl_disable_external (em_gl_lighting)
 				glu_disk_external (glu_new_quadric, 0, a_radius, 72, 1)
 			gl_pop_matrix_external
-			gl_flush_external
+			--gl_flush_external
 		end
 
 	create_rectangle (a_color: GL_VECTOR_3D [DOUBLE]; p1, p2, p3, p4: GL_VECTOR_3D [DOUBLE]) is
@@ -62,7 +62,7 @@ feature -- Basic operations
 				gl_normal3d_external (0,1,0)
 				gl_vertex3d_external (p4.x, p4.y, p4.z)
 			gl_end
-			gl_flush_external
+			--gl_flush_external
 		end
 
 	create_cylinder (a_color: GL_VECTOR_3D [DOUBLE]; a_center: GL_VECTOR_3D [DOUBLE]; a_radius, a_height: DOUBLE) is
@@ -80,10 +80,10 @@ feature -- Basic operations
 			-- a little bit higher than the line
 			gl_translated_external (a_center.x, a_center.y, a_center.z)
 			gl_rotated_external (90, 1, 0, 0)
-			gl_disable_external (em_gl_lighting)
+			--gl_disable_external (em_gl_lighting)
 			glu_cylinder_external (glu_new_quadric_external, a_radius, a_radius, a_height, 8, 8)
 			gl_pop_matrix_external
-			gl_flush_external
+			--gl_flush_external
 
 			create_circle (a_color, create {GL_VECTOR_3D [DOUBLE]}.make_xyz (a_center.x, a_center.y - a_height, a_center.z), a_radius)
 

@@ -40,7 +40,7 @@ feature -- Initialization
 		do
 			map := a_map
 			create collision_polygons.make (1)
-			create traveler_factory
+			create traveler_factory.make
 			create travelers.make
 			traveler_key := 0
 			create scheduler.make ("timetable_tram.xml")
@@ -48,17 +48,18 @@ feature -- Initialization
 		ensure
 			travelers_created: travelers /= Void
 			map_set: map = a_map
-			traveler_factory_set: traveler_factory /= Void
+		traveler_factory_set: traveler_factory /= Void
 		end
 
 feature -- Basic operations
 
-	draw is
+	update is
 			-- Draw all travelers.
 		local
-			a_traveler: TUPLE[EM_3D_OBJECT, TRAFFIC_MOVING]
-			graphic: EM_3D_OBJECT
+			a_traveler: TUPLE[TE_3D_NODE, TRAFFIC_MOVING]
+			graphic: TE_3D_NODE
 			info: TRAFFIC_MOVING
+			rotation: EM_QUATERNION
 		do
 
 			from
@@ -73,18 +74,16 @@ feature -- Basic operations
 
 				if (graphic /= Void) and (info /= Void) then
 					-- we have to check so that no errors happen
-					if info.is_marked then
-						-- draw marked travelers bigger.
-						graphic.set_scale (0.6, 0.6, 0.6)
-					else
-						graphic.set_scale(0.3, 0.3, 0.3)
-					end
-					graphic.set_origin (info.position.x, traveler_offset, info.position.y)
-					graphic.set_rotation (0, info.angle_x, 0)
-					graphic.draw
-					if not travelers.after then
+--					if info.is_marked then
+--						-- draw marked travelers bigger.
+--						graphic.set_scale (0.6, 0.6, 0.6)
+--					else
+--						graphic.set_scale(0.3, 0.3, 0.3)
+--					end
+					graphic.transform.reset
+					graphic.transform.set_position (info.position.x, traveler_offset, info.position.y)
+					graphic.transform.rotate(0.0,1.0,0.0,info.angle_x)
 					travelers.forth
-					end
 				end
 			end
 		end
@@ -95,9 +94,8 @@ feature -- Basic operations
 			a_traveler /= Void
 			a_map /= Void
 		local
-			traveler: EM_3D_OBJECT
 			texture_ids: ARRAY[INTEGER]
-			traffic_model: TRAFFIC_3D_TEXTURE_OBJECT
+			traffic_model: TE_3D_NODE
 			bitmap: EM_BITMAP
 			s: STRING
 			fs: KL_FILE_SYSTEM
@@ -109,98 +107,42 @@ feature -- Basic operations
 
 			if a_traveler.traffic_type.name.is_equal ("walking") then
 				if person_toggle = 0 then
-					traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0, 0, .7))
-					s := fs.pathname ("..", "objects")
-					s := fs.pathname (s, "man.obj")
-					traveler_factory.load_file (s)
+					--traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0, 0, .7))
+					traffic_model := traveler_factory.create_traveler("man")
 					person_toggle := 1
 				else
-					traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0.7, 0, .2))
-					s := fs.pathname ("..", "objects")
-					s := fs.pathname (s, "woman.obj")
-					traveler_factory.load_file (s)
+					--traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0.7, 0, .2))
+					traffic_model := traveler_factory.create_traveler("woman")
 					person_toggle := 0
 				end
-				traveler := traveler_factory.create_object
-				traveler.set_scale (2.0, 2.0, 2.0)
-				create traffic_model.make
-				traffic_model.set_model(traveler)
-				traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
 			elseif a_traveler.traffic_type.name.is_equal ("tram") then
-				traveler_factory.set_color (traveler_factory.default_color)
-				s := fs.pathname ("..", "objects")
-				s := fs.pathname (s, "tram2000.tga")
-				bitmap_factory.create_bitmap_from_image(s)
-				bitmap := bitmap_factory.last_bitmap
-				create texture_ids.make (0,0)
-				texture_ids.force (bitmap.texture.id, 0)
-				s := fs.pathname ("..", "objects")
-				s := fs.pathname (s, "tram2000.obj")
-				traveler_factory.load_file(s)
-				traveler := traveler_factory.create_object
-				create traffic_model.make
-				traffic_model.set_model(traveler)
-				traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
-				traffic_model.set_texture_id (texture_ids)
-				traffic_model.add_texture (bitmap)
+--				s := fs.pathname ("..", "objects")
+--				s := fs.pathname (s, "tram2000.tga")
+--				bitmap_factory.create_bitmap_from_image(s)
+--				bitmap := bitmap_factory.last_bitmap
+--				create texture_ids.make (0,0)
+--				texture_ids.force (bitmap.texture.id, 0)
+				traffic_model := traveler_factory.create_traveler("tram")
 			elseif a_traveler.traffic_type.name.is_equal ("event taxi") then
 				--TODO: Change this to color associated with a taxi office. Each taxi office has a
 				--different color.
-				s := fs.pathname ("..", "objects")
-				s := fs.pathname (s, "taxi.tga")
+--				traveler_factory.set_color (traveler_factory.default_color)
 
-				bitmap_factory.create_bitmap_from_image(s)
-				bitmap := bitmap_factory.last_bitmap
-				create texture_ids.make (0,0)
-				texture_ids.force (bitmap.texture.id, 0)
-				traveler_factory.set_color (traveler_factory.default_color)
-
-				s := fs.pathname ("..", "objects")
-				s := fs.pathname (s, "taxi.obj")
-				traveler_factory.load_file(s)
-				traveler := traveler_factory.create_object
-
-				create traffic_model.make
-				traffic_model.set_model(traveler)
-				traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
-				traffic_model.set_texture_id (texture_ids)
-				traffic_model.add_texture (bitmap)
+				traffic_model := traveler_factory.create_traveler("taxi")
 			elseif a_traveler.traffic_type.name.is_equal ("dispatcher taxi") then
 				--TODO: Change this to color associated with a taxi office. Each taxi office has a
 				--different color.
-				s := fs.pathname ("..", "objects")
-				s := fs.pathname (s, "taxi.tga")
+--				traveler_factory.set_color (create {GL_VECTOR_3D [REAL]}.make_xyz (1.0, 0, 0))
 
-				bitmap_factory.create_bitmap_from_image(s)
-				bitmap := bitmap_factory.last_bitmap
-				create texture_ids.make (0,0)
-				texture_ids.force (bitmap.texture.id, 0)
-				traveler_factory.set_color (create {GL_VECTOR_3D [REAL]}.make_xyz (1.0, 0, 0))
-
-				s := fs.pathname ("..", "objects")
-				s := fs.pathname (s, "taxi.obj")
-				traveler_factory.load_file(s)
-				traveler := traveler_factory.create_object
-
-				create traffic_model.make
-				traffic_model.set_model(traveler)
-				traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
-				traffic_model.set_texture_id (texture_ids)
-				traffic_model.add_texture (bitmap)
+				traffic_model := traveler_factory.create_traveler("taxi")
 			else
-				traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0, 1.0, 0))
-				s := fs.pathname ("..", "objects")
-				s := fs.pathname (s, "woman.obj")
-				traveler_factory.load_file (s)
-				person_toggle := 0
-				traveler := traveler_factory.create_object
-				traveler.set_scale (2.0, 2.0, 2.0)
-				create traffic_model.make
-				traffic_model.set_model(traveler)
-				traffic_model.set_bounding_box (traveler.width, traveler.height, traveler.depth)
+--				traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0, 1.0, 0))
+				traffic_model := traveler_factory.create_traveler("error")
+
 			end
-			traffic_model.set_origin (a_traveler.position.x, traveler_offset, a_traveler.position.y)
-			traffic_model.set_rotation (0, a_traveler.angle_x, 0)
+			traffic_model.make_child_of ((create{TE_3D_SHARED_GLOBALS}).root) --insert it into the hierarchy
+			traffic_model.transform.set_position (a_traveler.position.x, traveler_offset, a_traveler.position.y)
+			traffic_model.transform.rotate (0.0, 1.0, 0.0, a_traveler.angle_x)
 			time.add_callback_tour (agent a_traveler.take_tour)
 			travelers.force ([traffic_model, a_traveler])
 			a_map.add_traveler (a_traveler)
@@ -333,7 +275,7 @@ feature -- Basic operations
 
 feature -- Access
 
-	travelers: LINKED_LIST [TUPLE[EM_3D_OBJECT, TRAFFIC_MOVING]]
+	travelers: LINKED_LIST [TUPLE[TE_3D_NODE, TRAFFIC_MOVING]]
 			-- Container for all traveler.		
 
 	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
@@ -345,8 +287,8 @@ feature{NONE} -- Implementation
 	traveler_key: INTEGER
 			-- Key for travelers
 
-	traveler_factory: TRAFFIC_3D_OBJ_LOADER
-			-- Factory for travelers
+	traveler_factory: TRAFFIC_3D_TRAVELER_FACTORY
+			-- factory to create the travelers
 
 	map: TRAFFIC_MAP
 			-- Map on which travelers walk around
