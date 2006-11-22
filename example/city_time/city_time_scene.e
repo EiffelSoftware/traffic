@@ -44,7 +44,7 @@ feature -- Interface
 			create time_button.make_from_text("start time")
 			create passenger_button.make_from_text ("update passengers")
 
-			-- Lines checkbox
+			-- checkboxes
 			create lines_checkbox.make_from_text ("Show VBZ Lines")
 
 			-- Zoom out Button
@@ -100,6 +100,7 @@ feature -- Interface
 			passenger_label.resize_to_optimal_dimension
 			passenger_label.set_tooltip ("passengers")
 			toolbar_panel.add_widget (passenger_label)
+
 
 			-- passenger slider
 			create passenger_slider.make_from_range_horizontal (0, 300)

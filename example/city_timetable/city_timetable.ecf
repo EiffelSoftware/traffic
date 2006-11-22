@@ -30,9 +30,11 @@
 		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf" readonly="true"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
 		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false">
-			<option>
+			<option profile="false">
 				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
 			</option>
+			<class_option class="TE_RENDERPASS_MANAGER" profile="false">
+			</class_option>
 		</library>
 		<cluster name="city_timetable" location=".\">
 			<option>

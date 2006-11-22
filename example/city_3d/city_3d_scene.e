@@ -183,8 +183,8 @@ feature -- Interface
 			buildings_transparent_checkbox.set_background_color (bg_color)
 			buildings_transparent_checkbox.set_optimal_dimension (180, 20)
 			buildings_transparent_checkbox.resize_to_optimal_dimension
-			buildings_transparent_checkbox.checked_event.subscribe (agent map_widget.enable_buildings_transparent)
-			buildings_transparent_checkbox.unchecked_event.subscribe (agent map_widget.disable_buildings_transparent)
+			--buildings_transparent_checkbox.checked_event.subscribe (agent map_widget.enable_buildings_transparent)
+			--buildings_transparent_checkbox.unchecked_event.subscribe (agent map_widget.disable_buildings_transparent)
 			toolbar_panel.add_widget (buildings_transparent_checkbox)
 
 			-- Sun Checkbox
@@ -203,8 +203,8 @@ feature -- Interface
 			sun_checkbox.set_optimal_dimension (110, 20)
 			sun_checkbox.resize_to_optimal_dimension
 			sun_checkbox.set_background_color (bg_color)
-			coordinates_checkbox.checked_event.subscribe (agent map_widget.enable_coordinates_shown)
-			coordinates_checkbox.unchecked_event.subscribe (agent map_widget.disable_coordinates_shown)
+			--coordinates_checkbox.checked_event.subscribe (agent map_widget.enable_coordinates_shown)
+			--coordinates_checkbox.unchecked_event.subscribe (agent map_widget.disable_coordinates_shown)
 			toolbar_panel.add_widget (coordinates_checkbox)
 
 			-- Highlighting Checkbox

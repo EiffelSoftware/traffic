@@ -119,12 +119,12 @@ feature -- Drawing
 			Precursor
 
 			-- Translation
-			gl_translatef_external (x_coord*focus, y_coord, z_coord*focus)
-			gl_translatef_external (x_translation, -y_translation, 0)
+			--gl_translatef_external (x_coord*focus, y_coord, z_coord*focus)
+			--gl_translatef_external (x_translation, -y_translation, 0)
 
 			-- Rotation
-			gl_rotatef_external (x_rotation, 1, 0, 0)
-			gl_rotatef_external (y_rotation, 0, 1, 0)
+			--gl_rotatef_external (x_rotation, 1, 0, 0)
+			--gl_rotatef_external (y_rotation, 0, 1, 0)
 		end
 
 
@@ -132,26 +132,40 @@ feature {NONE} -- Event handling
 
 	wheel_down is
 			-- Handle mouse wheel down event.
+		local
+			camera: TE_3D_CAMERA
+			z_axis: EM_VECTOR3D
 		do
-			if focus > 3 then
-				focus := focus + 1
-			else
-				focus := focus + 0.1
-			end
+--			if focus > 3 then
+--				focus := focus + 1
+--			else
+--				focus := focus + 0.1
+--			end
+		camera := renderpass_manager.renderpasses.i_th(1).camera
+		z_axis := camera.transform.position * (1.0/10.0)
+		camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
+
 		ensure then
-			focus_incremented: focus > old focus
+--			focus_incremented: focus > old focus
 		end
 
 	wheel_up is
 			-- Handle mouse wheel up event.
+		local
+			camera: TE_3D_CAMERA
+			z_axis: EM_VECTOR3D
 		do
-			if focus > 3 then
-				focus := focus - 1
-			elseif focus > 0.1 then
-				focus := focus - 0.1
-			end
+--			if focus > 3 then
+--				focus := focus - 1
+--			elseif focus > 0.1 then
+--				focus := focus - 0.1
+--			end
+		camera := renderpass_manager.renderpasses.i_th(1).camera
+		z_axis := camera.transform.position * (1.0/10.0)
+		camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
+
 		ensure then
-			focus_decremented: focus > 0.1 implies focus < old focus
+--			focus_decremented: focus > 0.1 implies focus < old focus
 		end
 
 	mouse_click (event: EM_MOUSEBUTTON_EVENT) is
@@ -207,51 +221,71 @@ feature {NONE} -- Event handling
 		local
 			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
 			delta_x, delta_y, delta, mouse_delta: DOUBLE
+			camera: TE_3D_CAMERA
+			radius,polar,azimut,zx_comp_length:DOUBLE
 		do
 			if event.button_state_right then
-				y_rotation := y_rotation + event.x_motion
-				x_rotation := x_rotation + event.y_motion
-				if x_rotation <= 15 then
-					x_rotation := 15
-				elseif x_rotation >= 90 then
-					x_rotation := 90
+--				y_rotation := y_rotation + event.x_motion
+--				x_rotation := x_rotation + event.y_motion
+--				if x_rotation <= 15 then
+--					x_rotation := 15
+--				elseif x_rotation >= 90 then
+--					x_rotation := 90
+--				end
+				camera := renderpass_manager.renderpasses.i_th(1).camera
+
+				--carth to spherical
+				radius:=camera.transform.position.length
+				zx_comp_length:=sqrt(camera.transform.position.z^2.0 + camera.transform.position.x^2)
+				if camera.transform.position.x >=0 then
+					azimut:=arc_cosine(camera.transform.position.z/zx_comp_length)
+				else
+					azimut:=2*PI - arc_cosine(camera.transform.position.z/zx_comp_length)
 				end
+				polar:=PI/2 - arc_tangent(camera.transform.position.y/zx_comp_length)
+
+				--rotate camera arround 000
+				polar := polar - event.y_motion/50.0
+				azimut := azimut - event.x_motion/50.0
+
+				--spherical to carthesian
+				camera.transform.set_position (radius*sine(polar)*sine(azimut), radius*cosine(polar), radius*sine(polar)*cosine(azimut))
 
 			elseif event.button_state_left then
-				start_vec := transform_coords (event.x, event.y)
-				end_vec := transform_coords (event.x + event.x_motion, event.y + event.y_motion)
+--				start_vec := transform_coords (event.x, event.y)
+--				end_vec := transform_coords (event.x + event.x_motion, event.y + event.y_motion)
 
-				delta_x := end_vec.x - start_vec.x
-				delta_y := end_vec.z - start_vec.z
+--				delta_x := end_vec.x - start_vec.x
+--				delta_y := end_vec.z - start_vec.z
 
-				delta := sqrt (delta_x^2 + delta_y^2)
-				mouse_delta := sqrt (event.x_motion^2 + event.y_motion^2)
+--				delta := sqrt (delta_x^2 + delta_y^2)
+--				mouse_delta := sqrt (event.x_motion^2 + event.y_motion^2)
 
-				if mouse_delta > 0 and then delta/mouse_delta <= 3 and then sqrt (start_vec.x^2 + start_vec.y^2) < plane_size/2 then
-					x_translation := x_translation + event.x_motion*(delta/mouse_delta)
-					y_translation := y_translation + event.y_motion*(delta/mouse_delta)
-				end
+--				if mouse_delta > 0 and then delta/mouse_delta <= 3 and then sqrt (start_vec.x^2 + start_vec.y^2) < plane_size/2 then
+--					x_translation := x_translation + event.x_motion*(delta/mouse_delta)
+--					y_translation := y_translation + event.y_motion*(delta/mouse_delta)
+--				end
 			end
 		end
 
 	key_down (event: EM_KEYBOARD_EVENT) is
 			-- Handle key events.
 		do
-			if event.key = event.sdlk_up then
-				x_rotation := x_rotation + 10
-			elseif event.key = event.sdlk_down then
-				x_rotation := x_rotation - 10
-			elseif event.key = event.sdlk_left then
-				y_rotation := y_rotation - 10
-			elseif event.key = event.sdlk_right then
-				y_rotation := y_rotation + 10
-			elseif event.key = event.sdlk_return then
-				x_coord := 0
-				y_coord := -1
-				z_coord := -9
-				x_translation := 0
-				y_translation := 0
-			end
+--			if event.key = event.sdlk_up then
+--				x_rotation := x_rotation + 10
+--			elseif event.key = event.sdlk_down then
+--				x_rotation := x_rotation - 10
+--			elseif event.key = event.sdlk_left then
+--				y_rotation := y_rotation - 10
+--			elseif event.key = event.sdlk_right then
+--				y_rotation := y_rotation + 10
+--			elseif event.key = event.sdlk_return then
+--				x_coord := 0
+--				y_coord := -1
+--				z_coord := -9
+--				x_translation := 0
+--				y_translation := 0
+--			end
 		end
 
 feature {NONE} -- Implementation
@@ -310,7 +344,5 @@ feature {NONE} -- Implementation
 		end
 
 invariant
-
-	focus_greater_than_0: focus > 0
 
 end

@@ -1,0 +1,15 @@
+# XSI Wavefront OBJ Export v3.0
+# File Created: Mon Nov 20 19:26:47 2006
+# XSI Version: 5.0.2005.1013-1
+o polymsh2
+# Hierarchy (from self to top father)
+g polymsh2
+
+#begin 0 vertices
+#end 0 vertices
+
+#begin 0 normals
+#end 0 vertex normals
+
+#begin 0 faces
+#end 0 faces

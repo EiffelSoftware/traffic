@@ -23,6 +23,8 @@ inherit
 			time as traffic_time
 		end
 
+	TE_3D_SHARED_GLOBALS
+
 creation
 	make
 

@@ -109,6 +109,7 @@
 		<geant target="do_one" arguments="city_3d"/>
 		<geant target="do_one" arguments="city_timetable"/>
 		<geant target="do_one" arguments="city_time"/>
+		<geant target="do_one" arguments="city_timetable"/>
 		<geant target="do_one" arguments="chapter2_preview"/>
 		<geant target="do_one" arguments="chapter3_queries"/>
 		<geant target="do_one" arguments="chapter3_commands"/>
