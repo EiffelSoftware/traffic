@@ -58,7 +58,7 @@ feature -- Access
 	near: DOUBLE is 1.0
 		-- distance from the viewer to the near clipping plane (always positive).
 
-	far: DOUBLE is 1000.0
+	far: DOUBLE is 200.0
 		-- distance from the viewer to the far clipping plane (always positive).
 
 	direction: EM_VECTOR3D is

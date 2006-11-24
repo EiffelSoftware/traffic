@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_3D_BUILDING_SIMPLE_FACTORY
+	TRAFFIC_3D_BUILDING_SIMPLE_FACTORY_OBSOLETE
 
 inherit
 

@@ -28,6 +28,9 @@ feature -- Initialization
 			points_valid: a_p1 /= void and a_p2 /= void and a_p3 /= void and a_p4 /= void
 			name_valid: a_name /= void
 			height_valdi: an_height > 0
+		local
+			random: RANDOM
+			evening_time, sleep_time: DOUBLE
 		do
 			corner1 := a_p1
 			corner2 := a_p2
@@ -39,6 +42,14 @@ feature -- Initialization
 			width := sqrt((corner1.x-corner4.x)*(corner1.x-corner4.x)+(corner1.y-corner4.y)*(corner1.y-corner4.y))
 			height := an_height
 			create center.make((corner2.x+corner4.x)/2,(corner1.y+corner3.y)/2)
+
+			--calculate light times
+			create random.make
+			random.set_seed (out.hash_code)
+			evening_time := 18.0 +(random.double_item*(2).to_double) --18 + interval[0,2]
+			random.forth
+			sleep_time := 21.0 + (random.double_item*(6).to_double) --21 + interval[0,6]
+			light_time := [evening_time, sleep_time]
 		ensure
 			points_set: corner1 = a_p1 and corner2 = a_p2 and corner3 = a_p3 and corner4 = a_p4
 			name_set: name = a_name
@@ -167,6 +178,9 @@ feature -- Attributes
 
 	information: TRAFFIC_BUILDING_INFORMATION
 			-- Additional information.
+
+	light_time: TUPLE[DOUBLE, DOUBLE]
+			-- time interval in which the buildings lights are on
 
 invariant
 

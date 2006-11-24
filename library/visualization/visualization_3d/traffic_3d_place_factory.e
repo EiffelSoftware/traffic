@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision: 1.23 $"
 
 deferred class
-	TRAFFIC_3D_PLACE_FACTORY
+	TRAFFIC_3D_PLACE_FACTORY_OBSOLETE
 
 inherit
 	EM_3D_OBJECT_FACTORY

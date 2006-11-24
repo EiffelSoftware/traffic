@@ -17,12 +17,14 @@ feature -- initialization
 			-- Initialize with default values
 		do
 			model_matrix.set_unit
+			create event_channel
 		end
 
 	make_from_matrix(a_matrix: EM_MATRIX44) is
 				-- make transform object from transformation matrix
 		do
 			model_matrix := a_matrix
+			create event_channel
 		end
 
 
@@ -118,6 +120,7 @@ feature -- Transformation
 			model_matrix.set_element(x,4,1)
 			model_matrix.set_element(y,4,2)
 			model_matrix.set_element(z,4,3)
+			event_channel.publish([])
 		end
 
 
@@ -191,6 +194,9 @@ feature -- Obsolete
 feature -- Inapplicable
 
 feature {NONE} -- Implementation
+
+	event_channel: EM_EVENT_CHANNEL[TUPLE[]]
+
 
 invariant
 	invariant_clause: True -- Your invariant here

@@ -126,9 +126,6 @@ feature {NONE} -- Implementation
 					if  tokenizer.last_string.is_equal ("mtllib") then
 						--extract pathname from filename string
 						path_name := a_filename.substring(1, a_filename.last_index_of('\', a_filename.count))
-						--DEBUG
-							io.put_string(path_name)
-						--/DEBUG
 						--load material_library
 						tokenizer.read_token
 						path_name := path_name + tokenizer.last_string

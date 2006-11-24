@@ -112,6 +112,18 @@ feature {NONE} -- Implementation
 						tokenizer.read_token
 						bitmap_factory.create_bitmap_from_image (tokenizer.last_string)
 						texture := bitmap_factory.last_bitmap.texture
+					elseif tokenizer.last_string.is_equal ("map_Ke")  then
+						-- Texture file to be used
+						tokenizer.read_token
+						disable_shading
+						bitmap_factory.create_bitmap_from_image (tokenizer.last_string)
+						texture := bitmap_factory.last_bitmap.texture
+					elseif tokenizer.last_string.is_equal ("alphat")  then
+						-- Texture file to be used
+						tokenizer.read_token
+						if tokenizer.last_string.to_integer = 1 then
+							enable_alpha_testing
+						end
 					else
 						-- ignore this line, since I can't use it
 					end

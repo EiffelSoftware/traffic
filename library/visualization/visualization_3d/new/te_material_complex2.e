@@ -225,6 +225,11 @@ feature
 		do
 			material_in_gl_use := True
 			gl_push_attrib (em_gl_enable_bit | em_gl_polygon_bit)
+			--enable alpha testing
+			if alpha_testing then
+				gl_enable(em_GL_ALPHA_TEST)
+			end
+
 			if faceted then
 				gl_shade_model (em_gl_flat)
 			else

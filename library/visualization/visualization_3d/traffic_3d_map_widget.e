@@ -97,6 +97,9 @@ feature -- Status report
 	are_lines_shown: BOOLEAN
 			-- Are the lines displayed?
 
+	are_roads_shown: BOOLEAN
+			-- Are the roeads displayed?
+
 	is_shortest_path_shown: BOOLEAN
 			-- Is the shortest path shown?
 
@@ -157,6 +160,7 @@ feature -- Status setting
 			-- Set `are_lines_shown' to `True'.
 		do
 			are_lines_shown := True
+			lines_representation.unhide
 		ensure
 			lines_shown: are_lines_shown = True
 		end
@@ -165,8 +169,23 @@ feature -- Status setting
 			-- Set `are_lines_shown' to `False'.
 		do
 			are_lines_shown := False
+			lines_representation.hide
 		ensure
 			lines_not_shown: are_lines_shown = False
+		end
+
+	enable_roads_shown is
+			-- Set `are_roads_shown' to `True'.
+		do
+			are_roads_shown := True
+			roads_representation.unhide
+		end
+
+	disable_roads_shown is
+			-- Set `are_lines_shown' to `False'.
+		do
+			are_roads_shown := False
+			roads_representation.hide
 		end
 
 	enable_shortest_path_shown is
@@ -223,25 +242,12 @@ feature -- Basic operations
 	draw is
 			-- Draw the map.
 		do
-			if is_sun_shown then
-				-- Enable Sunlight and draw Sun
-				sun_representation.enable_sunlight
-				sun_representation.update
-			else
-				-- Enable Constant Light
-				sun_representation.disable_sunlight
-			end
+			-- Enable Sunlight and draw Sun
+			sun_representation.update
 
-			-- Display buildings and lines and places
-			if is_map_loaded and then not is_map_hidden then
-				if are_lines_shown then
-					--lines_representation.draw
-				else
-					--roads_representation.draw
-				end
-				--places_representation.draw
-				travelers_representation.update
-			end
+			travelers_representation.update
+
+			buildings_representation.update
 
 			renderpass_manager.render
 		end

@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_3D_TEXTURE_OBJECT
+	TRAFFIC_3D_TEXTURE_OBJECT_OBSOLETE
 
 inherit
 

@@ -8,17 +8,17 @@ indexing
 	date: "$Date: 2005/06/21 15:16:28 $"
 	revision: "$Revision: 1.4 $"
 
-deferred class 
-	TRAFFIC_3D_LOADER
+deferred class
+	TRAFFIC_3D_LOADER_OBSOLETE
 
 inherit
 	EM_3D_OBJECT_FACTORY
 
-feature 
+feature
 
 	load_file (a_filename: STRING) is
 		deferred
 		end
-	
+
 end -- class TRAFFIC_3D_LOADER
 

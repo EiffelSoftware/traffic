@@ -9,7 +9,7 @@ indexing
 	revision: "$Revision: 1.4 $"
 
 class
-	TRAFFIC_3D_OBJ_LOADER
+	TRAFFIC_3D_OBJ_LOADER_OBSOLETE
 
 inherit
 

@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 deferred class
-	TRAFFIC_3D_CONNECTION_FACTORY
+	TRAFFIC_3D_CONNECTION_FACTORY_OBSOLETE
 
 inherit
 

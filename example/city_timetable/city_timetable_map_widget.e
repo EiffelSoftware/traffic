@@ -32,6 +32,7 @@ feature -- Initialization
 			create dispatcher_taxi_offices.make(0)
 			create random.make
 			random.set_seed(time.time.ticks)
+			time.set_time(11,0,0)
 		end
 
 feature -- Access

@@ -28,6 +28,8 @@ inherit
 	EM_SHARED_BITMAP_FACTORY
 		export {NONE} all end
 
+	TRAFFIC_SHARED_TIME
+
 creation
 	make
 
@@ -36,10 +38,12 @@ feature -- Initialization
 	make is
 			-- Initialize and set building factory to be used.
 		do
-			create building_factory.make
+			create building_day_factory.make("building", 4)
+			create building_night_factory.make("building_night",4)
 			--create {TRAFFIC_3D_BUILDING_FANCY_FACTORY} highlighting_factory.make_with_color (create {EM_COLOR}.make_with_rgb (255, 0, 0))
-			create buildings.make_as_child((create {TE_3D_SHARED_GLOBALS}).root)
-			buildings.set_name("buildings")
+			create buildings_root.make_as_child((create {TE_3D_SHARED_GLOBALS}).root)
+			buildings_root.set_name("buildings")
+			create buildings.make
 			--create random.make
 			--random.start
 			id_counter := 1
@@ -56,21 +60,65 @@ feature -- Access
 
 feature	-- Basic operations
 
+	update is
+			-- loops through all buildings and checks wether the day or the night model is shown
+		require
+			time_exists: time /= Void
+		local
+			current_building: TRAFFIC_BUILDING
+			current_day_model: TE_3D_NODE
+			current_night_model: TE_3D_NODE
+			current_time: DOUBLE
+			evening_time, sleep_time: DOUBLE
+		do
+			current_time := time.actual_hour.to_double + time.actual_minute.to_double/60.0
+			from
+				buildings.start
+			until
+				buildings.after
+			loop
+				current_day_model ?= buildings.item.item(1)
+				current_night_model ?= buildings.item.item(2)
+				current_building ?= buildings.item.item(3)
+				evening_time ?= current_building.light_time.item(1)
+				sleep_time ?= current_building.light_time.item(2)
+
+				if (current_time >= evening_time and current_time <= sleep_time) or (current_time + 24.0 >= evening_time and current_time + 24.0 <= sleep_time) then
+					current_night_model.enable_hierarchy_renderable
+					current_day_model.disable_hierarchy_renderable
+				else
+					current_day_model.enable_hierarchy_renderable
+					current_night_model.disable_hierarchy_renderable
+				end
+
+				buildings.forth
+			end
+		end
+
+
 	add_building (a_building: TRAFFIC_BUILDING) is
 			-- Add `a_building' to representation.
 		require
 			building_valid: a_building /= Void
 		local
-			building: TE_3D_NODE
+			day_building: TE_3D_NODE
+			night_building: TE_3D_NODE
 			setting_vector : EM_VECTOR3D
 		do
-			building_factory.randomize_next_building
-			building := building_factory.create_building
-			building.transform.rotate (0,1,0,a_building.angle)
-			building.transform.set_position (a_building.center.x,0,a_building.center.y)
+			building_day_factory.randomize_next_building
+			day_building := building_day_factory.create_building
+			day_building.transform.rotate (0,1,0,a_building.angle)
+			day_building.transform.set_position (a_building.center.x,0,a_building.center.y)
+			building_night_factory.set_template(building_day_factory.template)
+			night_building := building_night_factory.create_building
+			night_building.transform.rotate (0,1,0,a_building.angle)
+			night_building.transform.set_position (a_building.center.x,0,a_building.center.y)
+			night_building.disable_hierarchy_renderable
 			a_building.set_id (id_counter)
 			id_counter := id_counter + 1
-			buildings.add_child (building)
+			buildings_root.add_child (day_building)
+			buildings_root.add_child (night_building)
+			buildings.force ([day_building, night_building, a_building])
 			map.add_building (a_building)
 			number_of_buildings := number_of_buildings + 1
 		end
@@ -78,7 +126,8 @@ feature	-- Basic operations
 	delete_buildings is
 			-- Delete buildings from representation.
 		do
-			buildings.children.wipe_out
+			buildings_root.children.wipe_out
+			buildings.wipe_out
 			number_of_buildings:= 0
 			id_counter:=1
 			if map /= void then
@@ -89,22 +138,29 @@ feature	-- Basic operations
 	delete_one_building(a_building: TRAFFIC_BUILDING) is
 			-- Delete the building 'a_building' from the building list.
 		local
-			a_building_origin: EM_VECTOR3D
+			current_building: TRAFFIC_BUILDING
+			current_day_building: TE_3D_NODE
+			current_night_building: TE_3D_NODE
 		do
-			a_building_origin.set (a_building.center.x, 0, a_building.center.y)
 
 			from
-				buildings.children.start
+				buildings.start
 			until
-				buildings.children.after
+				buildings.after
 			loop
+				current_building ?= buildings.item.item(3)
 				if
-					a_building_origin = buildings.children.item.transform.position
+					current_building = a_building
 				then
-					buildings.children.remove
-					buildings.children.back
+					current_day_building ?= buildings.item.item(1)
+					current_night_building ?= buildings.item.item(2)
+					buildings_root.children.start
+					buildings_root.children.prune(current_day_building)
+					buildings_root.children.start
+					buildings_root.children.prune(current_night_building)
+					buildings.remove
 				end
-				buildings.children.forth
+				buildings.forth
 			end
 
 			map.remove_one_building (a_building)
@@ -119,7 +175,7 @@ feature	-- Basic operations
 			number_of_buildings:= n
 		ensure
 			number_of_buildings = n
-			buildings.children.count >= number_of_buildings
+			buildings.count >= number_of_buildings
 		end
 
 	set_map (a_map: TRAFFIC_MAP) is
@@ -138,11 +194,17 @@ feature {NONE} -- Implementation
 	--buildings: ARRAYED_LIST [EM_3D_OBJECT]
 			-- Buildings in the representation
 
-	buildings: TE_3D_NODE
+	buildings_root: TE_3D_NODE
 			-- TE_3D_NODE which is parent of all buildings of this representation and child of the scene_root
 
-	building_factory: TRAFFIC_3D_BUILDING_FACTORY_NEW
-			-- Factory for buildings
+	buildings: LINKED_LIST [TUPLE[TE_3D_NODE, TE_3D_NODE, TRAFFIC_BUILDING]]
+			-- Container for all traveler.	
+
+	building_day_factory: TRAFFIC_3D_BUILDING_FACTORY_NEW
+			-- Factory for daylight buildings
+
+	building_night_factory: TRAFFIC_3D_BUILDING_FACTORY_NEW
+			-- Factory for nightlight buildings
 
 	--highlighting_factory: TRAFFIC_3D_BUILDING_FACTORY
 			-- Factory used to generate representations for highlighted buildings

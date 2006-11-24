@@ -95,13 +95,9 @@ feature -- Implementation
 		do
 			-- DEBUG
 				gl_enable(em_gl_lighting)
-				gl_disable(em_gl_color_material)
+				--gl_disable(em_gl_color_material)
 				gl_enable(em_GL_NORMALIZE)
-			--/DEBUG
-
-			--DEBUG
-				--create ps.make
-				--ps.start_profiling
+				--gl_polygon_mode(em_GL_FRONT, em_GL_LINE)
 			--/DEBUG
 
 

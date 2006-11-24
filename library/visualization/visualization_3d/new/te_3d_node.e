@@ -33,8 +33,10 @@ feature -- initialization
 		-- creates the node without parent. Insert the node into the scene hierarchy to render it!
 		do
 			create transform.make
+			--transform.event_channel.subscribe(agent feature name)
 			create children.make(0)
 			create hierarchy_bounding_box.make(6)
+			enable_hierarchy_renderable
 		ensure
 			children_not_void: children /= Void
 			transform_not_void: transform /= Void
@@ -49,6 +51,7 @@ feature {TE_3D_SHARED_GLOBALS} -- initialization as root
 			create children.make(0)
 			create hierarchy_bounding_box.make(6)
 			name := "scene_root"
+			enable_hierarchy_renderable
 		ensure
 			parent_is_void: parent = Void
 			children_not_void: children /= Void
@@ -107,6 +110,23 @@ feature -- Status report
 				children.forth
 			end
 
+		end
+
+	hierarchy_renderable: BOOLEAN
+			-- is the hierarchy, including this node as root of the hierarchy, renderable
+
+feature -- Status setting
+
+	enable_hierarchy_renderable is
+			-- enables hierarchy_renderable
+		do
+			hierarchy_renderable := true
+		end
+
+	disable_hierarchy_renderable is
+			-- disables hierarchy_renderable
+		do
+			hierarchy_renderable := false
 		end
 
 feature -- Cloning
@@ -318,23 +338,25 @@ feature {TE_3D_NODE, TE_RENDERPASS}-- Drawing
 			rotation_quat: EM_QUATERNION
 			aor: EM_VECTOR3D --axis of rotation
 		do
-			gl_push_matrix
+			if hierarchy_renderable then
+				gl_push_matrix
 
-			gl_load_matrixd(transform.to_opengl)
+				gl_mult_matrixd(transform.to_opengl)
 
-			--render the node
-			render_node
+				--render the node
+				render_node
 
-			--draw the children
-			from
-				children.start
-			until
-				children.after
-			loop
-				children.item.draw
-				children.forth
+				--draw the children
+				from
+					children.start
+				until
+					children.after
+				loop
+					children.item.draw
+					children.forth
+				end
+				gl_pop_matrix
 			end
-			gl_pop_matrix
 		end
 
 	render_node is

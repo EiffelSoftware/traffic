@@ -1,4 +1,3 @@
-
 indexing
 	description: "Factory that creates TE_3D_NODE Buildings from various fileformats"
 	author: "Matthias Bühlmann"
@@ -15,8 +14,8 @@ class
 
 feature -- Initialization
 
-	make is
-		-- create the factory, load all buildings and store them in the template list
+	make(a_name:STRING; a_count: INTEGER) is
+		-- create the factory, load a_count buildings with name a_name+i.obj and store them in the template list
 	local
 		fs: KL_FILE_SYSTEM
 		s: STRING --path string
@@ -30,6 +29,8 @@ feature -- Initialization
 
 		template := 1
 
+		template_count := a_count
+
 		create random.make
 		random.start
 
@@ -39,7 +40,7 @@ feature -- Initialization
 			i > template_count
 		loop
 				s := fs.pathname ("..", "buildings")
-				s := fs.pathname (s, "building" + i.out + ".obj")
+				s := fs.pathname (s, a_name + i.out + ".obj")
 				current_building := scene_importer.import_3d_scene(s)
 				current_building.calculate_hierarchy_bounding_box
 				building_templates.extend(current_building)
@@ -49,7 +50,7 @@ feature -- Initialization
 
 feature -- Access
 
-	template_count: INTEGER is 4
+	template_count: INTEGER
 			-- Number of available templates
 
 	building_templates: ARRAYED_LIST[TE_3D_NODE]

@@ -36,6 +36,8 @@ feature -- Initialization
 			calculate_boundaries
 			create level_of_detail.make(ressource_list.count)
 			--enable_frustum_culling
+			enable_hierarchy_renderable
+			enable_renderable
 		end
 
 	make_as_child(a_ressource_list:ARRAYED_LIST[TE_3D_RESSOURCE]; a_parent: TE_3D_NODE) is
@@ -50,6 +52,8 @@ feature -- Initialization
 			calculate_boundaries
 			create level_of_detail.make(ressource_list.count)
 			--enable_frustum_culling
+			enable_hierarchy_renderable
+			enable_renderable
 		end
 
 
@@ -84,6 +88,23 @@ feature -- Status report
 			worldspace_sphere.put(worldspace_pivot,1)
 			worldspace_sphere.put(radius,2)
 			Result := renderpass_manager.current_renderpass.camera.sphere_is_within_frustum(worldspace_sphere)
+		end
+
+	renderable: BOOLEAN
+			-- is this node renderable (doesn't affect the hierarchy)
+
+feature -- Status setting
+
+	enable_renderable is
+			-- enables renderable
+		do
+			renderable := true
+		end
+
+	disable_renderable is
+			-- disables renderable
+		do
+			renderable := false
 		end
 
 feature -- Engines
@@ -306,12 +327,14 @@ feature {NONE} -- Implementation
 		local
 			lod_level: INTEGER
 		do
-			--if not frustum_culling_enabled or else is_in_view_frustum then
-				--level_of_detail.update_by_bounding_sphere(current)
-				--lod_level := level_of_detail.index
-				lod_level := 1
-				ressource_list[lod_level].draw
-			--end
+			if renderable then
+				--if not frustum_culling_enabled or else is_in_view_frustum then
+					--level_of_detail.update_by_bounding_sphere(current)
+					--lod_level := level_of_detail.index
+					lod_level := 1
+					ressource_list[lod_level].draw
+				--end	
+			end
 		end
 
 invariant

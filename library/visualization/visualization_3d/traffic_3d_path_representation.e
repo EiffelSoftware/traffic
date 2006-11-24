@@ -35,16 +35,16 @@ feature -- Initialization
 		require
 			map_exists: a_map /= void
 		do
-			map := a_map
+--			map := a_map
 
-			create {TRAFFIC_3D_CONNECTION_LINE_REP_FACTORY} path_factory
-			create connection_views.make(0)
-			create connections_lookup.make (0)
+--			create {TRAFFIC_3D_CONNECTION_LINE_REP_FACTORY_OBSOLETE} path_factory
+--			create connection_views.make(0)
+--			create connections_lookup.make (0)
 
-		ensure
-			path_factory_created: path_factory /= Void
-			path_objects_created: connection_views /= Void
-			map_set: map = a_map
+--		ensure
+--			path_factory_created: path_factory /= Void
+--			path_objects_created: connection_views /= Void
+--			map_set: map = a_map
 		end
 
 feature -- Basic operations
@@ -101,12 +101,12 @@ feature -- Basic operations
 		local
 			connection_view: EM_3D_OBJECT
 		do
-			path_factory.set_color (a_color)
-			path_factory.set_connection (a_connection)
-			connection_view := path_factory.create_object
-			connection_view.set_origin (0, line_height + 0.01, 0)
-			connection_views.force_last (connection_view)
-			connections_lookup.force (connection_views.count, a_connection)
+--			path_factory.set_color (a_color)
+--			path_factory.set_connection (a_connection)
+--			connection_view := path_factory.create_object
+--			connection_view.set_origin (0, line_height + 0.01, 0)
+--			connection_views.force_last (connection_view)
+--			connections_lookup.force (connection_views.count, a_connection)
 		end
 
 	remove_all is

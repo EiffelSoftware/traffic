@@ -42,6 +42,7 @@ feature -- Initialization
 			create collision_polygons.make (1)
 			create traveler_factory.make
 			create travelers.make
+			create travelers_root.make_as_child((create{TE_3D_SHARED_GLOBALS}).root)
 			traveler_key := 0
 			create scheduler.make ("timetable_tram.xml")
 			scheduler.load_schedule
@@ -140,7 +141,7 @@ feature -- Basic operations
 				traffic_model := traveler_factory.create_traveler("error")
 
 			end
-			traffic_model.make_child_of ((create{TE_3D_SHARED_GLOBALS}).root) --insert it into the hierarchy
+			traffic_model.make_child_of (travelers_root) --insert it into the hierarchy
 			traffic_model.transform.set_position (a_traveler.position.x, traveler_offset, a_traveler.position.y)
 			traffic_model.transform.rotate (0.0, 1.0, 0.0, a_traveler.angle_x)
 			time.add_callback_tour (agent a_traveler.take_tour)
@@ -280,6 +281,9 @@ feature -- Access
 
 	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]
 			-- Collision polygons to check for collisions
+
+	travelers_root: TE_3D_NODE
+			-- root node for the travelers
 
 
 feature{NONE} -- Implementation

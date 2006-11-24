@@ -5,4 +5,4 @@ Ks 0.000000 0.000000 0.000000
 Ns 50.000000
 Tr 0.000000
 illum 1
-map_Kd E:\Projektdaten\Traffic\example\objects\taxi.tga
+map_Kd ..\objects\taxi.tga

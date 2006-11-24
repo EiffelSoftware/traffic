@@ -16,12 +16,6 @@ inherit
 	EM_CONSTANTS
 		export {NONE} all end
 
-	GL_FUNCTIONS
-		export {NONE} all end
-
-	GLU_FUNCTIONS
-		export {NONE} all end
-
 	EM_TIME_SINGLETON
 		export {NONE} all end
 
@@ -37,10 +31,12 @@ feature -- Initialization
 		do
 			map := a_map
 
-			create {TRAFFIC_3D_CONNECTION_LINE_REP_FACTORY} line_factory
+			create line_factory.make
 
 			create line_section_lookup.make (map.line_sections.count)
 			create line_section_views.make (map.line_sections.count)
+			create line_section_root.make_as_child((create{TE_3D_SHARED_GLOBALS}).root)
+			line_section_root.transform.set_position (0.0,0.004,0.0)
 			create collision_polygons.make (4)
 
 			add_lines(map)
@@ -48,15 +44,42 @@ feature -- Initialization
 			map.line_section_inserted_event.subscribe (agent process_item_inserted)
 			map.line_section_removed_event.subscribe (agent process_item_removed)
 
+			visible := true
+
 		ensure
 			line_factory_set: line_factory /= Void
 			line_objects_set: line_section_views /= Void and line_section_lookup /= Void
 		end
 
+feature -- Status setting
+
+	hide is
+			-- sets visibility to false
+		do
+			visible := false
+			line_section_root.disable_hierarchy_renderable
+		end
+
+	unhide is
+			-- sets visibility to true
+		do
+			visible := true
+			line_section_root.enable_hierarchy_renderable
+		end
+
+feature -- Status report
+
+	visible: BOOLEAN
+		-- are the places visible?
+
+
 feature -- Access
 
-	line_section_views: ARRAYED_LIST [EM_3D_OBJECT]
+	line_section_views: ARRAYED_LIST [TE_3D_NODE]
 			-- Container for all line section representations
+
+	line_section_root: TE_3D_NODE
+			-- root node for the line sections
 
 	line_section_lookup: DS_HASH_TABLE [INTEGER, TRAFFIC_LINE_SECTION]
 			-- Lookup for line_section_views
@@ -72,20 +95,20 @@ feature -- Access
 
 feature -- Basic operations
 
-	draw is
-			-- Draw all lines onto the screen.
-		do
-			from
-				line_section_views.start
-			until
-				line_section_views.after
-			loop
-				if line_section_views.item /= Void then
-					line_section_views.item.draw
-				end
-				line_section_views.forth
-			end
-		end
+--	draw is
+--			-- Draw all lines onto the screen.
+--		do
+--			from
+--				line_section_views.start
+--			until
+--				line_section_views.after
+--			loop
+--				if line_section_views.item /= Void then
+--					line_section_views.item.draw
+--				end
+--				line_section_views.forth
+--			end
+--		end
 
 	add_lines (a_map: TRAFFIC_MAP) is
 			-- Add views for all lines of `a_map'.
@@ -133,10 +156,13 @@ feature -- Basic operations
 			a_color_exists: a_color /= Void
 			a_line_section_exists: a_line_section /= Void
 		local
-			line_section_view: EM_3D_OBJECT
+			line_section_view: TE_3D_NODE
 		do
 			line_factory.set_connection (a_line_section)
-			line_section_view := line_factory.create_object
+			line_factory.set_color(a_color.red/255, a_color.green/255, a_color.blue/255)
+			line_factory.create_connection
+			line_section_view := line_factory.last_3d_member
+			line_section_view.make_child_of(line_section_root)
 			line_section_views.extend (line_section_view)
 			line_section_lookup.force (line_section_views.count, a_line_section)
 			collision_polygons.append_last (line_factory.collision_polygons)
@@ -150,23 +176,23 @@ feature -- Basic operations
 			line_section_view: EM_3D_OBJECT
 			old_factory: TRAFFIC_3D_CONNECTION_FACTORY
 		do
-			old_factory := line_factory
-			set_factory (create {TRAFFIC_3D_CONNECTION_HIGHLIGHTED_REP_FACTORY})
-			from
-				a_line.start
-			until
-				a_line.off
-			loop
-				line_factory.set_connection (a_line.item)
-				line_factory.set_height (5)
-				line_section_view := line_factory.create_object
+--			old_factory := line_factory
+--			set_factory (create {TRAFFIC_3D_CONNECTION_HIGHLIGHTED_REP_FACTORY_OBSOLETE})
+--			from
+--				a_line.start
+--			until
+--				a_line.off
+--			loop
+--				line_factory.set_connection (a_line.item)
+--				line_factory.set_height (5)
+--				line_section_view := line_factory.create_object
 
-				line_section_views.go_i_th (line_section_lookup.item (a_line.item))
-				line_section_views.replace (line_section_view)
+--				line_section_views.go_i_th (line_section_lookup.item (a_line.item))
+--				line_section_views.replace (line_section_view)
 
-				a_line.forth
-			end
-			set_factory (old_factory)
+--				a_line.forth
+--			end
+--			set_factory (old_factory)
 		end
 
 	unhighlight_single_line(a_line: TRAFFIC_LINE) is
@@ -176,19 +202,19 @@ feature -- Basic operations
 		local
 			line_section_view: EM_3D_OBJECT
 		do
-			from
-				a_line.start
-			until
-				a_line.off
-			loop
-				line_factory.set_connection (a_line.item)
-				line_section_view := line_factory.create_object
+--			from
+--				a_line.start
+--			until
+--				a_line.off
+--			loop
+--				line_factory.set_connection (a_line.item)
+--				line_section_view := line_factory.create_object
 
-				line_section_views.go_i_th (line_section_lookup.item (a_line.item))
-				line_section_views.replace (line_section_view)
+--				line_section_views.go_i_th (line_section_lookup.item (a_line.item))
+--				line_section_views.replace (line_section_view)
 
-				a_line.forth
-			end
+--				a_line.forth
+--			end
 		end
 
 	unhighlight_all_lines is
@@ -216,48 +242,48 @@ feature -- Basic operations
 			old_factory: TRAFFIC_3D_CONNECTION_FACTORY
 			i: INTEGER
 		do
-			old_factory := line_factory
-			set_factory (create {TRAFFIC_3D_CONNECTION_HIGHLIGHTED_REP_FACTORY})
-			from
-				lines := map.lines
-				lines.start
-				i := 1
-			until
-				lines.off
-			loop
-				line := lines.item_for_iteration
-				from
-					line.start
-				until
-					line.off
-				loop
-					line_factory.set_connection (line.item)
-					line_factory.set_height (5 + i*.2)
-					line_section_view := line_factory.create_object
+--			old_factory := line_factory
+--			set_factory (create {TRAFFIC_3D_CONNECTION_HIGHLIGHTED_REP_FACTORY_OBSOLETE})
+--			from
+--				lines := map.lines
+--				lines.start
+--				i := 1
+--			until
+--				lines.off
+--			loop
+--				line := lines.item_for_iteration
+--				from
+--					line.start
+--				until
+--					line.off
+--				loop
+--					line_factory.set_connection (line.item)
+--					line_factory.set_height (5 + i*.2)
+--					line_section_view := line_factory.create_object
 
-					line_section_views.go_i_th (line_section_lookup.item (line.item))
-					line_section_views.replace (line_section_view)
+--					line_section_views.go_i_th (line_section_lookup.item (line.item))
+--					line_section_views.replace (line_section_view)
 
-					line.forth
-				end
-				lines.forth
-				i := i + 1
-			end
+--					line.forth
+--				end
+--				lines.forth
+--				i := i + 1
+--			end
 
-			set_factory (old_factory)
+--			set_factory (old_factory)
 		 end
 
 feature -- Element change
 
-	set_factory (a_factory: TRAFFIC_3D_CONNECTION_FACTORY) is
-			-- Set `line_factory' to `a_factory'.
-		require
-			a_factory_exists: a_factory /= Void
-		do
-			line_factory := a_factory
-		ensure
-			factory_set: line_factory = a_factory
-		end
+--	set_factory (a_factory: TRAFFIC_3D_CONNECTION_FACTORY) is
+--			-- Set `line_factory' to `a_factory'.
+--		require
+--			a_factory_exists: a_factory /= Void
+--		do
+----			line_factory := a_factory
+----		ensure
+----			factory_set: line_factory = a_factory
+--		end
 
 feature -- Event handling
 

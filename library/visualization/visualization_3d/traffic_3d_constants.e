@@ -46,23 +46,24 @@ feature -- Constants
 	Fullscreen: BOOLEAN is False
 			-- Fullscreen?
 
-	Line_width: DOUBLE is 0.075
+	Line_width: DOUBLE is 0.3
 			-- Width of the line representation on the map.
 
-	Line_height: DOUBLE is 0.01
-			-- Height of the line representation on the map.
+--	Line_height: DOUBLE is 0.01
+--			-- Height of the line representation on the map.
 
-	Line_depth: DOUBLE is 0.2
-			-- Depth of the line representation on the map.
+--	Line_depth: DOUBLE is 0.2
+--		
+	-- Depth of the line representation on the map.
 
 	road_width: DOUBLE is 0.15
 			-- Width of the line representation on the map.
 
-	road_height: DOUBLE is 0.01
-			-- Height of the line representation on the map.
+--	road_height: DOUBLE is 0.01
+--			-- Height of the line representation on the map.
 
-	road_depth: DOUBLE is 0.2
-			-- Depth of the line representation on the map.
+--	road_depth: DOUBLE is 0.2
+--			-- Depth of the line representation on the map.
 
 	Place_width: DOUBLE is 0.075
 			-- Width of the place representation on the map.

@@ -201,6 +201,17 @@ feature -- time
 				actual_second = 0
 			end
 
+	set_time (a_hour, a_minute, a_second: INTEGER) is
+			-- sets the time
+			require
+				valid_time: a_hour >=0 and a_minute >=0 and a_second >=0
+			do
+				actual_hour := a_hour
+				actual_minute := a_minute
+				actual_second := a_second
+			end
+
+
 feature -- Constants
 
 	Default_simulated_day_minutes: INTEGER is 1

@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 deferred class
-	TRAFFIC_3D_DRAWING_PRIMITIVES
+	TRAFFIC_3D_DRAWING_PRIMITIVES_OBSOLETE
 
 inherit
 
