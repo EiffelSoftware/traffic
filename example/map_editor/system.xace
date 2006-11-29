@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<system name="map_editor">
+  <description>
+    system: "'MapEditor' application"
+    copyright: "Copyright (c) 2006"
+    license: "Eiffel Forum License v2 (see forum.txt)"
+    date: "$Date: 2006-01-09 13:23:40 +0100 (Mon, 09 Jan 2006) $"
+    revision: "$Revision: 436 $"
+  </description>
+  <root class="ME_APPLICATION" creation="make"/>
+  <option unless="${DEBUG}">
+    	<option name="assertion" value="none"/>
+    	<option name="garbage_collector" value="none"/>
+    	<option name="finalize" value="true"/>
+    	<option name="console_application" value="false"/>
+  </option>
+  <option if="${DEBUG}">
+  	<option unless="${DEVELOP}">
+	    <option name="assertion" value="all"/>
+	    <option name="garbage_collector" value="none"/>
+	    <option name="finalize" value="false"/>
+	    <option name="console_application" value="false"/>
+	  </option>
+	  <option if="${DEVELOP}">
+	  	<option name="assertion" value="require"/>
+	    <option name="garbage_collector" value="none"/>
+	    <option name="finalize" value="false"/>
+	    <option name="console_application" value="false"/>
+		</option>  	
+  </option>
+
+  <cluster name="map_editor" location=".">
+  	<option if="${DEVELOP}">
+  		<option name="assertion" value="all"/>
+   	</option>
+  </cluster>
+  
+
+  <mount location="${GOBO}/library/kernel.xace"/>
+  <mount location="${GOBO}/library/library.xace"/>
+  <mount location="${EWG}/library/runtime/eiffel/library.xace"/>
+  <mount location="${EM}/library/library.xace"/>
+  <mount location="../../library/library.xace"/> 
+
+</system>
