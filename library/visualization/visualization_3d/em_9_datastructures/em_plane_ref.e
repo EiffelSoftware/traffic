@@ -251,7 +251,7 @@ feature -- Status
 		require
 			valid_point: a_point /= void
 		do
-			result := a_point.x*a + a_point.y*a + a_point.z*a + d
+			result := a_point.x*a + a_point.y*b + a_point.z*c + d
 		end
 	is_point_inside( a_point: EM_VECTOR3D ): BOOLEAN is
 			-- Does the point lie on the plane?

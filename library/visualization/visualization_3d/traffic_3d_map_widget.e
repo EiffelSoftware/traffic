@@ -60,12 +60,18 @@ feature -- Initialisation
 			x_coord := 0
 			y_coord := -1
 
-			-- Create the Sun Representation and Sun Light
+			-- Create the Sun Representation and Sun Light and shadow_pass
 			create sun_representation.make
+			disable_shadows
+
+			--DEBUG --create 3d coordinates object
+--			coordinates := (create{TE_3D_SHARED_GLOBALS}).scene_importer.import_3d_scene("..\objects\coordinates.obj");
+--			(create{TE_3D_SHARED_GLOBALS}).root.add_child(coordinates)
+			--/DEBUG
 
 			--create the plane
 			create green_material.make
-			green_material.set_color(0.45,0.9,0.16) --(0.45,0.9,0.16)
+			green_material.set_color(0.25,0.7,0.06) --(0.45,0.9,0.16)
 			create primitive_factory.make
 			primitive_factory.set_material(green_material)
 			primitive_factory.create_simple_plane(plane_size, plane_size)
@@ -90,6 +96,9 @@ feature -- Status report
 
 	is_sun_shown: BOOLEAN
 			-- Is the sun displayed?
+
+	are_shadows_enabled: BOOLEAN
+			-- are shadows enabled?
 
 	are_buildings_shown: BOOLEAN
 			-- Are the buildings displayed?
@@ -138,6 +147,20 @@ feature -- Status setting
 			is_sun_shown := False
 		ensure
 			sun_not_shown: is_sun_shown = False
+		end
+
+	enable_shadows is
+			-- enables shadows
+		do
+			are_shadows_enabled := true
+			sun_representation.enable_shadows
+		end
+
+	disable_shadows is
+			-- enables shadows
+		do
+			are_shadows_enabled := false
+			sun_representation.disable_shadows
 		end
 
 	enable_buildings_shown is
@@ -206,6 +229,8 @@ feature -- Status setting
 
 feature -- Access
 
+	coordinates: TE_3D_NODE
+
 	travelers_representation: TRAFFIC_3D_TRAVELER_REPRESENTATION
 		-- Representation for all travelers
 
@@ -244,6 +269,8 @@ feature -- Basic operations
 		do
 			-- Enable Sunlight and draw Sun
 			sun_representation.update
+
+
 
 			travelers_representation.update
 
@@ -426,13 +453,6 @@ feature -- Basic operations
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
 								if not has_collision (collision_poly) then
 									buildings_representation.add_building (building)
-
-									--DEBUG
-										--io.put_string("building added %N")
-										renderpass_manager.render
-										--gl_finish
-									--/DEBUG
-
 									buildings_representation.collision_polygons.force_last (collision_poly)
 								end
 

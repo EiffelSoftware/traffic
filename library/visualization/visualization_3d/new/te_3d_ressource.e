@@ -24,7 +24,6 @@ feature -- Initialization
 			normal_list := a_normal_list
 			face_list := a_face_list
 			uvw_sets := some_uvw_sets
-
 			compile
 		end
 
@@ -69,6 +68,7 @@ feature -- Basic operations
 
 feature {TE_3D_MEMBER} -- Implementation
 
+
 	compile is
 			-- create the displaylist - has to be called when a change in the internal mesh structure, the material or the shader shall take effect on the displayed object
 		do
@@ -86,6 +86,7 @@ feature {TE_3D_MEMBER} -- Implementation
 			cluster: TE_3D_CLUSTER
 			face: TE_3D_FACE
 			i: INTEGER
+			j: INTEGER
 			normal, vertex, texcoord: EM_VECTOR3D
 		do
 			from --loop through all clusters
@@ -95,52 +96,59 @@ feature {TE_3D_MEMBER} -- Implementation
 			loop
 				cluster := cluster_list.item
 
-				cluster.material.specify -- perform material related calls
-
-				gl_begin (em_gl_triangles)
-				from --loop through all faces of the cluster
-					cluster.faces.start
+				from
+					j := 1
 				until
-					cluster.faces.after
+					j > cluster.material.material_passes
 				loop
-					face := face_list[cluster.faces.item]
 
-					from -- loop trough all vertices of the face
-						i := 1
+					cluster.material.specify_material_pass[j].publish([]) -- perform material_pass number j
+
+					gl_begin (em_gl_triangles)
+					from --loop through all faces of the cluster
+						cluster.faces.start
 					until
-						i > face.vertices.count --3
+						cluster.faces.after
 					loop
+						face := face_list[cluster.faces.item]
 
-						if face.normals /= Void and face.normals.count >= i then --specify normal for the next vertex
-							normal := normal_list[face.normals[i]]
-							gl_normal3d (normal.x, normal.y, normal.z)
+						from -- loop trough all vertices of the face
+							i := 1
+						until
+							i > face.vertices.count --3
+						loop
+
+							if face.normals /= Void and face.normals.count >= i then --specify normal for the next vertex
+								normal := normal_list[face.normals[i]]
+								gl_normal3d (normal.x, normal.y, normal.z)
+							end
+							if face.texture_coordinates[1] /= Void and face.texture_coordinates[1].count >= i then --specify texutre coordinates for the next vertex
+								texcoord := uvw_sets[1].i_th(face.texture_coordinates[1].i_th(i)) --TODO: implement multiple uvw sets
+								gl_tex_coord2d (texcoord.x, texcoord.y)
+							end
+
+							vertex := vertex_list[face.vertices[i]]
+							gl_vertex3d (vertex.x, vertex.y, vertex.z) -- specify the vertex
+
+							i := i+1
 						end
-						if face.texture_coordinates[1] /= Void and face.texture_coordinates[1].count >= i then --specify texutre coordinates for the next vertex
-							texcoord := uvw_sets[1].i_th(face.texture_coordinates[1].i_th(i)) --TODO: implement multiple uvw sets
-							gl_tex_coord2d (texcoord.x, texcoord.y)
-						end
 
-						vertex := vertex_list[face.vertices[i]]
-						gl_vertex3d (vertex.x, vertex.y, vertex.z) -- specify the vertex
-
-						i := i+1
+						cluster.faces.forth
 					end
-
-					cluster.faces.forth
-				end
-				gl_end
+					gl_end
+					j := j + 1
+				end --j
 				cluster.material.remove -- pop attributes set by the material
-
 				cluster_list.forth
-			end
+			end --cluster_list
 		end
 
-	draw is
+
+	draw_geometry is
 			-- calls the draw feature of the meshs
 		do
 			gl_call_list (displaylist)
 		end
-
 
 invariant
 	invariant_clause: True -- Your invariant here

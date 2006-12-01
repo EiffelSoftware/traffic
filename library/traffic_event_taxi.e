@@ -20,6 +20,9 @@ feature -- Initialization
 			a_taxi_office_not_void: a_taxi_office /= void
 			valid_seed: a_seed >= 0
 			valid_number_of_stops: stops >= 2
+		local
+			evening_time, morning_time: DOUBLE
+			random: RANDOM
 		do
 			traffic_type := create {TRAFFIC_TYPE_EVENT_TAXI}.make
 			create polypoints.make (stops)
@@ -34,6 +37,14 @@ feature -- Initialization
 			set_coordinates
 			set_angle
 			virtual_speed := random_number.double_item
+
+			-- set lit time
+			create random.make
+			random.set_seed (out.hash_code)
+			evening_time := 16.0 +(random.double_item*(2).to_double) --18 + interval[0,2]
+			random.forth
+			morning_time := 32.00 + (random.double_item*(4).to_double) --8 + interval[0,4]
+			light_time := [evening_time, morning_time]
 		end
 
 feature -- Access

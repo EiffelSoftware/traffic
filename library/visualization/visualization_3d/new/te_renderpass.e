@@ -5,7 +5,9 @@ indexing
 	revision: "$Revision$"
 
 class
-	TE_RENDERPASS inherit
+	TE_RENDERPASS_BEAUTY inherit
+
+		TE_RENDERPASS redefine make end
 
 		TE_3D_SHARED_GLOBALS
 
@@ -21,20 +23,22 @@ feature {TE_RENDERPASS_MANAGER} -- Initialization
 	make is
 			-- create renderpass with
 	do
+		Precursor
 		create camera.make_as_child(root)
 		create light_sources.make
 		background_color.set(0.1, 0.4, 0.5, 0.0)
+		create global_ambient_color.make_xyzt(0.0,0.0,0.0,0.0)
 	end
 
 feature -- Access
 
 	camera: TE_3D_CAMERA
 
-	name: STRING
-
 	light_sources: LINKED_LIST[TE_3D_LIGHT_SOURCE]
 
 	background_color: EM_VECTOR4D
+
+	global_ambient_color: GL_VECTOR_4D[REAL]
 
 feature -- Measurement
 
@@ -81,6 +85,11 @@ feature -- Inapplicable
 			camera := a_camera
 		end
 
+	set_background_color (r,g,b: DOUBLE) is
+			-- sets the background color of the current renderpass
+		do
+			background_color.set (r,g,b,0.0)
+		end
 
 feature {TE_RENDERPASS_MANAGER} -- Implementation
 
@@ -89,15 +98,19 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 		local
 		i:INTEGER
 		do
-			-- Reset depth buffer
+			gl_push_attrib(em_GL_ENABLE_BIT | em_GL_DEPTH_BUFFER_BIT | em_GL_LIGHTING_BIT | em_GL_CURRENT_BIT)
+
+			-- Lighting specific
+			gl_enable(em_gl_lighting)
+			gl_enable(em_GL_NORMALIZE)
+			gl_light_modelfv(em_GL_LIGHT_MODEL_AMBIENT, global_ambient_color.pointer)
+			gl_Color4d(1.0,1.0,1.0,1.0)
+
+			-- Depth buffer specific
 			gl_clear_external (Em_gl_depth_buffer_bit)
-
-			-- Opengl settings
 			gl_enable_external (Em_gl_depth_test)
-
-			-- Enable antialiasing
-			gl_enable_external (Em_gl_line_smooth)
-			gl_hint_external (Em_gl_line_smooth, Em_gl_nicest)
+			gl_depth_func (em_GL_LEQUAL)
+			gl_depth_mask(1)
 
 			-- Clearing background color to background_color
 			gl_clear_color_external (background_color.x, background_color.y, background_color.z, background_color.w)
@@ -116,8 +129,12 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 			until
 				light_sources.after
 			loop
-				gl_enable(em_GL_LIGHT0 + i)
-				light_sources.item.specify(i)
+				if light_sources.item.enabled then
+					gl_enable(em_GL_LIGHT0 + i)
+					light_sources.item.specify(i)
+				else
+					gl_disable(em_GL_LIGHT0 + i)
+				end
 				light_sources.forth
 				i := i+1
 			end
@@ -131,7 +148,12 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 			end
 
 			root.draw
+
+			gl_pop_attrib
 		end
+
+
+
 
 	output_gl_states is
 			-- outputs some gl states for debugging

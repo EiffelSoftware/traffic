@@ -142,7 +142,7 @@ feature {NONE} -- Event handling
 --			else
 --				focus := focus + 0.1
 --			end
-		camera := renderpass_manager.renderpasses.i_th(1).camera
+		camera := beauty_pass.camera
 		z_axis := camera.transform.position * (1.0/10.0)
 		camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
 
@@ -161,7 +161,7 @@ feature {NONE} -- Event handling
 --			elseif focus > 0.1 then
 --				focus := focus - 0.1
 --			end
-		camera := renderpass_manager.renderpasses.i_th(1).camera
+		camera := beauty_pass.camera
 		z_axis := camera.transform.position * (1.0/10.0)
 		camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
 
@@ -233,7 +233,7 @@ feature {NONE} -- Event handling
 --				elseif x_rotation >= 90 then
 --					x_rotation := 90
 --				end
-				camera := renderpass_manager.renderpasses.i_th(1).camera
+				camera := beauty_pass.camera
 
 				--carth to spherical
 				radius:=camera.transform.position.length

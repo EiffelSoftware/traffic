@@ -46,7 +46,7 @@ feature -- Initialization
 			--calculate light times
 			create random.make
 			random.set_seed (out.hash_code)
-			evening_time := 18.0 +(random.double_item*(2).to_double) --18 + interval[0,2]
+			evening_time := 16.0 +(random.double_item*(2).to_double) --18 + interval[0,2]
 			random.forth
 			sleep_time := 21.0 + (random.double_item*(6).to_double) --21 + interval[0,6]
 			light_time := [evening_time, sleep_time]

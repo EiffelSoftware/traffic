@@ -234,6 +234,7 @@ feature -- Initialize
 			end
 		end
 
+
 	make( a_11: DOUBLE; a_12: DOUBLE; a_13: DOUBLE; a_14: DOUBLE;
 	      a_21: DOUBLE; a_22: DOUBLE; a_23: DOUBLE; a_24: DOUBLE;
 	      a_31: DOUBLE; a_32: DOUBLE; a_33: DOUBLE; a_34: DOUBLE;
@@ -242,20 +243,20 @@ feature -- Initialize
 		do
 			make_empty
 			area.put( a_11, 0)
-			area.put( a_12, 1)
-			area.put( a_13, 2)
-			area.put( a_14, 3)
-			area.put( a_21, 4)
+			area.put( a_21, 1)
+			area.put( a_31, 2)
+			area.put( a_41, 3)
+			area.put( a_12, 4)
 			area.put( a_22, 5)
-			area.put( a_23, 6)
-			area.put( a_24, 7)
-			area.put( a_31, 8)
-			area.put( a_32, 9)
+			area.put( a_32, 6)
+			area.put( a_42, 7)
+			area.put( a_13, 8)
+			area.put( a_23, 9)
 			area.put( a_33, 10)
-			area.put( a_34, 11)
-			area.put( a_41, 12)
-			area.put( a_42, 13)
-			area.put( a_43, 14)
+			area.put( a_43, 11)
+			area.put( a_14, 12)
+			area.put( a_24, 13)
+			area.put( a_34, 14)
 			area.put( a_44, 15)
 		end
 
@@ -496,19 +497,13 @@ feature -- Commands
 			i,j,jj: INTEGER
 			jmax: INTEGER
 		do
-			--a := current
-			--DEBUG
-				a.set_row (row(1),1)
-				a.set_row (row(2),2)
-				a.set_row (row(3),3)
-				a.set_row (row(4),4)
-			--
+			a := twin
 			b.set_unit
 			from i:=1 until i>4 loop
 				jmax := i
 				from j := i+1 until j>4 loop
 					if (a[i,jmax]).abs<(a[i,j]).abs then
-						jmax := i
+						jmax := j -- CHANGED from i to j
 					end
 					j := j + 1
 				end
@@ -557,6 +552,73 @@ feature -- Commands
 			result := twin
 			result.inverse
 		end
+
+	srt_inversed: like current is
+			-- assuming this is a homogenous SRT transformation matrix, it returns the inversed transformation matrix
+		do
+			result := twin
+			result.srt_inverse
+		end
+
+	srt_inverse is
+			-- inverses the matrix assuming it is a homogenous SRT transformation matrix.
+		local
+			a: EM_MATRIX44
+			position:EM_VECTOR4D
+			x_axis, y_axis, z_axis: EM_VECTOR3D
+			x_scale, y_scale, z_scale: DOUBLE
+		do
+			a.set_row(row(1),1)
+			a.set_row(row(2),2)
+			a.set_row(row(3),3)
+			a.set_row(row(4),4)
+
+			x_axis.set(a.element(1,1), a.element(2,1), a.element(3,1))
+			y_axis.set(a.element(1,2), a.element(2,2), a.element(3,2))
+			z_axis.set(a.element(1,3), a.element(2,3), a.element(3,3))
+			x_scale := x_axis.length
+			y_scale := y_axis.length
+			z_scale := z_axis.length
+
+			position := -a.column(4)
+			position.set_element (1,4)
+			a.set_element(0.0,4,1)
+			a.set_element(0.0,4,2)
+			a.set_element(0.0,4,3)
+
+			a.set_row(a.row(1)*(1/x_scale),1)
+			a.set_row(a.row(2)*(1/y_scale),2)
+			a.set_row(a.row(3)*(1/z_scale),3)
+
+			a.transpose
+
+			position := a.mult(position)
+
+			a.set_row(a.row(1)*(1/x_scale),1)
+			a.set_row(a.row(2)*(1/y_scale),2)
+			a.set_row(a.row(3)*(1/z_scale),3)
+
+			a.set_column(position,4)
+			a.set_element(1,4,4)
+
+			area := a.area
+		end
+
+	transpose is
+			-- transposes the matrix
+		local
+		row1,row2,row3,row4 : EM_VECTOR4D
+		do
+			row1 := row(1)
+			row2 := row(2)
+			row3 := row(3)
+			row4 := row(4)
+			set_column(row1,1)
+			set_column(row2,2)
+			set_column(row3,3)
+			set_column(row4,4)
+		end
+
 
 	det: DOUBLE is
 			-- Calculate the determinant

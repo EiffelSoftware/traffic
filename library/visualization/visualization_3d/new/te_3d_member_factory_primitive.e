@@ -91,7 +91,7 @@ feature -- 3D Member Creation
 
 			new_uvw_index_set.force(uvw_indices)
 
-			create current_face.make(vertex_indices, normal_indices,new_uvw_index_set)
+			create current_face.make(vertex_indices, normal_indices,new_uvw_index_set, vertex_list.i_th (vertex_indices.i_th(1)),vertex_list.i_th (vertex_indices.i_th(2)),vertex_list.i_th (vertex_indices.i_th(3)))
 			face_list.force(current_face)
 
 			--create secound face
@@ -114,7 +114,7 @@ feature -- 3D Member Creation
 
 			new_uvw_index_set.force(uvw_indices)
 
-			create current_face.make(vertex_indices, normal_indices,new_uvw_index_set)
+			create current_face.make(vertex_indices, normal_indices,new_uvw_index_set,vertex_list.i_th (vertex_indices.i_th(1)),vertex_list.i_th (vertex_indices.i_th(2)),vertex_list.i_th (vertex_indices.i_th(3)))
 			face_list.force(current_face)
 
 			--create cluster
@@ -124,6 +124,7 @@ feature -- 3D Member Creation
 			single_cluster.push_index (2)
 			cluster_list.force(single_cluster)
 
+			calculate_face_neighbours
 			build_ressource_list
 			last_3d_member := build_3D_member
 		end
@@ -133,7 +134,7 @@ feature {NONE} -- Ressource List Creation
 
 	build_ressource_list is
 			-- builds the ressource list from which the 3d member gets built
-		require
+		require else
 			cluster_list_not_void_nor_empty: cluster_list /= Void and cluster_list.count > 0
 			vertex_list_not_void_nor_empty: vertex_list /= Void and vertex_list.count > 2
 			face_list_not_void_nor_empty: face_list /= Void and face_list.count > 0

@@ -71,6 +71,9 @@ feature -- Measurement
 
 feature -- Status report
 
+	enabled: BOOLEAN
+		-- is the light enabled
+
 	--color_or_intensity_has_changed: BOOLEAN
 			-- indicates wether the diffuse_color or the intensity of the lightsource has changed since the last gl update
 
@@ -79,11 +82,25 @@ feature -- Status report
 
 feature -- Status setting
 
+	enable is
+			-- enables the lightsource
+		do
+			enabled := true
+		end
+
+	disable is
+			-- disables the lightsource
+		do
+			enabled := false
+		end
+
+
 	reset_to_defaults is
 			-- resets settings to default values
 		local
 			default_color: GL_VECTOR_4D[DOUBLE]
 		do
+			enabled := true
 			specular := true
 			diffuse := true
 			movable := true

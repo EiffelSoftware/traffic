@@ -26,12 +26,14 @@ create
 feature
 
 	make
+		local
+			single_material_pass: EM_EVENT_CHANNEL[TUPLE[]]
 		do
 			Precursor
 			create ambient_color.make_xyzt (0.2, 0.2, 0.2, 1.0)
 			create diffuse_color.make_xyzt (1.0, 1.0, 1.0, 1.0)
 			create specular_color.make_xyzt (1.0, 1.0, 1.0, 1.0)
-			create emission_color.make_xyzt (0.0, 0.0, 0.0, 1.0)
+			create emissive_color.make_xyzt (0.0, 0.0, 0.0, 1.0)
 			shininess := 0.0
 			blend_source_func := em_gl_src_alpha
 			blend_target_func := em_gl_one_minus_src_alpha
@@ -41,9 +43,14 @@ feature
 			shaded := True
 			min_filter := True
 			mag_filter := True
+
+			-- create material_pass event and subscribe specify to it
+			create single_material_pass
+			single_material_pass.subscribe (agent default_pass)
+			specify_material_pass.extend(single_material_pass)
 		end
 
-feature
+feature -- Access
 
 	ambient_color: GL_VECTOR_4D [REAL_32]
 
@@ -52,11 +59,15 @@ feature
 	specular_color: GL_VECTOR_4D [REAL_32]
 			-- CULLING MUST BE ENABLED OR false WILL TAKE NO EFFECT!
 
-	emission_color: GL_VECTOR_4D [REAL_32]
+	emissive_color: GL_VECTOR_4D [REAL_32]
 
 	shininess: REAL_32
 
-	texture: GL_TEXTURE
+	diffuse_texture: GL_TEXTURE
+
+	emissive_texture: GL_TEXTURE
+
+	--reflection_texture: GL_TEXTURE
 
 	blending: BOOLEAN
 
@@ -89,7 +100,7 @@ feature
 
 	mag_filter: BOOLEAN
 
-feature
+feature -- Status setting
 
 	set_ambient_color (r, g, b: REAL_64)
 		do
@@ -110,9 +121,9 @@ feature
 			specular_color.set_xyzt (r, g, b, 1.0)
 		end
 
-	set_emission_color (r, g, b: REAL_64)
+	set_emissive_color (r, g, b: REAL_64)
 		do
-			emission_color.set_xyzt (r, g, b, 1.0)
+			emissive_color.set_xyzt (r, g, b, 1.0)
 		end
 
 	set_shininess (a_value: REAL_32)
@@ -123,11 +134,11 @@ feature
 			shininess := a_value
 		end
 
-	set_texture (a_texture: GL_TEXTURE)
+	set_diffuse_texture (a_texture: GL_TEXTURE)
 		require
 			texture_not_void: a_texture /= Void
 		do
-			texture := a_texture
+			diffuse_texture := a_texture
 		end
 
 	enable_blending
@@ -215,16 +226,32 @@ feature
 			name := a_name
 		end
 
-feature
+feature -- Pass setting
+
+	set_emissive_pass (new_emissive_texture: GL_TEXTURE) is
+			-- sets and activates the emissive material pass
+		local
+			emissive_material_pass: EM_EVENT_CHANNEL[TUPLE[]]
+		do
+			if emissive_texture = Void then
+				create emissive_material_pass
+				emissive_material_pass.subscribe (agent emissive_pass)
+				specify_material_pass.extend(emissive_material_pass)
+			end
+			emissive_texture := new_emissive_texture
+		end
+
+
+feature {NONE} -- Implementation
 
 	material_in_gl_use: BOOLEAN
 
-	specify
+	default_pass
 		local
 			temp_gl_vect: GL_VECTOR_4D [REAL_64]
 		do
 			material_in_gl_use := True
-			gl_push_attrib (em_gl_enable_bit | em_gl_polygon_bit)
+			gl_push_attrib (em_gl_enable_bit | em_gl_polygon_bit | em_GL_COLOR_BUFFER_BIT | em_GL_DEPTH_BUFFER_BIT | em_GL_LIGHTING_BIT)
 			--enable alpha testing
 			if alpha_testing then
 				gl_enable(em_GL_ALPHA_TEST)
@@ -259,13 +286,27 @@ feature
 			gl_materialfv (em_gl_front_and_back, em_gl_ambient, ambient_color.pointer)
 			gl_materialfv (em_gl_front_and_back, em_gl_diffuse, diffuse_color.pointer)
 			gl_materialfv (em_gl_front_and_back, em_gl_specular, specular_color.pointer)
-			gl_materialfv (em_gl_front_and_back, em_gl_emission, emission_color.pointer)
+			gl_materialfv (em_gl_front_and_back, em_gl_emission, emissive_color.pointer)
 			gl_materialf (em_gl_front_and_back, em_gl_shininess, shininess)
-			if texture /= Void then
+			if diffuse_texture /= Void then
 				gl_enable (em_gl_texture_2d)
-				gl_bind_texture (em_gl_texture_2d, texture.id)
+				gl_bind_texture (em_gl_texture_2d, diffuse_texture.id)
 			end
 		end
+
+	emissive_pass is
+			-- emissive pass for emissive textures
+		require
+			emissive_texture_exists: emissive_texture /= Void
+		do
+			gl_disable(em_GL_LIGHTING)
+			gl_depth_mask(0)
+			gl_enable(em_GL_BLEND)
+			gl_depth_func(em_GL_LEQUAL)
+			gl_blend_func(em_GL_ONE, em_GL_ONE)
+			gl_bind_texture(em_gl_texture_2d, emissive_texture.id)
+		end
+
 
 	remove
 			-- sets the blend function

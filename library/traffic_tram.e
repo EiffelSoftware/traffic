@@ -25,6 +25,8 @@ feature -- Initialization
 		require
 			a_line_not_void: a_line /= Void
 			valid_line_type: a_line.type.name.is_equal ("tram") or a_line.type.name.is_equal ("rail") or a_line.type.name.is_equal ("bus")
+		local
+			evening_time, sleep_time: DOUBLE
 		do
 			traffic_type := create {TRAFFIC_TYPE_TRAM}.make
 			create polypoints.make (0)
@@ -41,6 +43,11 @@ feature -- Initialization
 			set_coordinates
 			set_angle
 			virtual_speed := Default_virtual_speed
+
+			-- set lit time
+			evening_time := 17.0
+			sleep_time := 26.00
+			light_time := [evening_time, sleep_time]
 		end
 
 	make_with_schedule (a_line: TRAFFIC_LINE; a_schedule: TRAFFIC_LINE_SCHEDULE; an_offset: INTEGER) is

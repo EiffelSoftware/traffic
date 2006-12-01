@@ -67,11 +67,15 @@ feature -- Access
 	world_transform : TE_3D_TRANSFORM is
 			-- calculates the transform object in worldspace
 		do
+			if is_root then -- happens only if a direct child of root calls parent.world_transform - in this case it returns a unit transform object
+				create Result.make
+			else
 				if parent.is_root = true then
 					Result := transform
 				else
 					Result := parent.world_transform * transform
 				end
+			end
 		end
 
 	name: STRING
@@ -114,6 +118,7 @@ feature -- Status report
 
 	hierarchy_renderable: BOOLEAN
 			-- is the hierarchy, including this node as root of the hierarchy, renderable
+			-- if this is false - shadows of children will be disabled too!
 
 feature -- Status setting
 
@@ -135,7 +140,6 @@ feature -- Cloning
 			-- returns an instance of the 3D member and instances of all childs and subchilds of the 3d member as hirarchy
 		do
 			create Result.make_as_child(parent)
-			Result.set_hierarchy_bounding_box(hierarchy_bounding_box.twin)
 			from
 				children.start
 			until

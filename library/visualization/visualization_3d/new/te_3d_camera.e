@@ -1,4 +1,3 @@
-
 indexing
 	description: "Camera_object"
 	author: ""
@@ -15,6 +14,8 @@ class
 
 		DOUBLE_MATH
 
+		MATH_CONST
+
 		GL_FUNCTIONS
 
 		GLU_FUNCTIONS
@@ -28,20 +29,45 @@ feature -- Initialize
 
 	make_as_child (a_parent: TE_3D_NODE) is
 			--create camera as child of 'a_parent'
+		local
+			horizon_angle: DOUBLE
+			tangent_of_fov: DOUBLE
 		do
 			Precursor(a_parent)
 			create view_frustum.make
-			frustum_culling_enabled := true
-			transform.set_position (30.0,30.0,30.0)
+			look_at_target
+
+			gl_matrix_mode(em_GL_MODELVIEW)
+			gl_push_Matrix
+			gl_matrix_mode(em_GL_PROJECTION)
+			gl_push_Matrix
+			specify
+			gl_get_doublev(em_GL_PROJECTION_MATRIX, projection_matrix.to_pointer)
+			gl_pop_Matrix
+			gl_matrix_mode(EM_GL_MODELVIEW)
+			gl_pop_Matrix
 		end
 
 	make is
 			-- creates camera without a parent. Insert the camera into the hierarchy if you want to use it
+		local
+			f: DOUBLE
 		do
 			Precursor
 			create view_frustum.make
 			frustum_culling_enabled := true
 			transform.set_position (30.0,30.0,30.0)
+			transform.event_channel.subscribe(agent look_at_target)
+
+			gl_matrix_mode(em_GL_MODELVIEW)
+			gl_push_Matrix
+			gl_matrix_mode(em_GL_PROJECTION)
+			gl_push_Matrix
+			specify
+			gl_get_doublev(em_GL_PROJECTION_MATRIX, projection_matrix.to_pointer)
+			gl_pop_Matrix
+			gl_matrix_mode(EM_GL_MODELVIEW)
+			gl_pop_Matrix
 		end
 
 feature -- Access
@@ -55,10 +81,10 @@ feature -- Access
 	aspect: DOUBLE is 1.0 -- 1:1
 			-- aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 
-	near: DOUBLE is 1.0
+	near: DOUBLE is 1.05
 		-- distance from the viewer to the near clipping plane (always positive).
 
-	far: DOUBLE is 200.0
+	far: DOUBLE is 300.0
 		-- distance from the viewer to the far clipping plane (always positive).
 
 	direction: EM_VECTOR3D is
@@ -68,20 +94,17 @@ feature -- Access
 			result := -world_transform.z_axis
 		end
 
-	up_vector: EM_VECTOR3D is
-		-- the upvector of the camera.
-		do
-			result := world_transform.y_axis
-		end
+	target: EM_VECTOR3D --worldspace target
 
 	projection_matrix: EM_MATRIX44
-
+		-- projection matrix dependant from fov
 
 	frustum_culling_enabled: BOOLEAN
 	-- frustum culling state. Activated frustum culling of 3D members takes only effect if the frustum culling of the camera is activated!!
 	-- if frustum culling is not used, this state should be disabled!
 
 feature -- Measurement
+
 
 feature -- Status report
 
@@ -122,13 +145,18 @@ feature -- Basic operations
 		local
 			pos,tar,up: EM_VECTOR3D
 			inversed_model_matrix: EM_MATRIX44
+			wt: TE_3D_TRANSFORM
 		do
 			gl_push_attrib(em_GL_TRANSFORM_BIT)
 			gl_matrix_mode (em_GL_PROJECTION)
 			gl_load_identity
+
+			--gl_frustum(-1.0,1.0,-1.0,1.0,near,far)
 			glu_perspective (fov, aspect, near, far)
 
-			pos := world_transform.position
+			wt := world_transform
+			pos := wt.position
+			tar := pos - wt.z_axis
 
 			up.set(0.0,1.0,0.0)
 			glu_look_at(pos.x,pos.y,pos.z, tar.x,tar.y,tar.z, up.x,up.y,up.z)
@@ -248,6 +276,33 @@ feature -- Implementation
 			end
 		end
 
+
+feature {NONE} -- Implementation
+
+	look_at_target is
+			-- looks with -Z to the target with y pointing thorwards the upvector
+		local
+			world_up_vector: EM_VECTOR3D
+			front,Cameraup: EM_VECTOR3D
+			right,up: EM_VECTOR3D
+			LookAt: EM_MATRIX44
+		do
+			world_up_vector.set(0.0,1.0,0.0)
+			CameraUp := parent.world_transform.position + world_up_vector
+			CameraUp := parent.worldspace_to_localspace (CameraUp)
+			front := (parent.worldspace_to_localspace (target)-transform.position).normalized
+
+			--up := CameraUp - Front*CameraUp.dot_product(Front)
+			right := front.cross_product(cameraUp).normalized
+			up := right.cross_product(front).normalized
+
+			LookAt.set (right.x, right.y, right.z, transform.position.x,
+						up.x, up.y, up.z, transform.position.y,
+						-front.x, -front.y, -front.z, transform.position.z,
+						0.0,0.0,0.0,1.0)
+
+			transform.set_model_matrix (LookAt)
+		end
 
 invariant
 	invariant_clause: True -- Your invariant here

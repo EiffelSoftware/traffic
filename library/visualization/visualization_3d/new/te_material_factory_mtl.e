@@ -96,6 +96,10 @@ feature {NONE} -- Implementation
 						-- RGB vector for specular color
 						tokenizer.read_token
 						specular_color := read_RGB (tokenizer)
+					elseif tokenizer.last_string.is_equal ("Ke") then
+						-- RGB vector for emissive color
+						tokenizer.read_token
+						emissive_color := read_RGB (tokenizer)
 					elseif tokenizer.last_string.is_equal ("d") or tokenizer.last_string.is_equal ("Tr") then
 						-- DOUBLE value for aplha transparency
 						tokenizer.read_token
@@ -111,13 +115,12 @@ feature {NONE} -- Implementation
 						-- Texture file to be used
 						tokenizer.read_token
 						bitmap_factory.create_bitmap_from_image (tokenizer.last_string)
-						texture := bitmap_factory.last_bitmap.texture
+						diffuse_texture := bitmap_factory.last_bitmap.texture
 					elseif tokenizer.last_string.is_equal ("map_Ke")  then
 						-- Texture file to be used
 						tokenizer.read_token
-						disable_shading
 						bitmap_factory.create_bitmap_from_image (tokenizer.last_string)
-						texture := bitmap_factory.last_bitmap.texture
+						emissive_texture := bitmap_factory.last_bitmap.texture
 					elseif tokenizer.last_string.is_equal ("alphat")  then
 						-- Texture file to be used
 						tokenizer.read_token

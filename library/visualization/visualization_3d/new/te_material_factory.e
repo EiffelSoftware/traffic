@@ -17,7 +17,7 @@ feature -- Initialization
 			create ambient_color.make_xyzt (0.2,0.2,0.2,1.0)
 			create diffuse_color.make_xyzt (1.0,1.0,1.0,1.0)
 			create specular_color.make_xyzt (1.0,1.0,1.0,1.0)
-			create emission_color.make_xyzt (0.0,0.0,0.0,1.0)
+			create emissive_color.make_xyzt (0.0,0.0,0.0,1.0)
 			create name.make_empty
 			create shininess.make(0.0)
 			create last_nametable.make (1)
@@ -40,11 +40,13 @@ feature {NONE} -- Internal
 
 	specular_color: GL_VECTOR_4D[DOUBLE]
 
-	emission_color: GL_VECTOR_4D[DOUBLE]
+	emissive_color: GL_VECTOR_4D[DOUBLE]
 
 	shininess: TE_GL_VALUE[DOUBLE] -- range from 0.0 to 128.0
 
-	texture: GL_TEXTURE
+	diffuse_texture: GL_TEXTURE
+
+	emissive_texture: GL_TEXTURE
 
 	blending: BOOLEAN
 
@@ -102,10 +104,10 @@ feature -- Status setting
 			specular_color.set_xyzt(r,g,b,1.0)
 		end
 
-	set_emission_color(r,g,b: DOUBLE) is
+	set_emissive_color(r,g,b: DOUBLE) is
 			-- sets ambient color
 		do
-			emission_color.set_xyzt(r,g,b,1.0)
+			emissive_color.set_xyzt(r,g,b,1.0)
 		end
 
 	set_shininess(a_value:DOUBLE) is
@@ -116,13 +118,22 @@ feature -- Status setting
 			shininess.set_value(a_value)
 		end
 
-	set_texture(a_texture:GL_TEXTURE) is
-			-- sets the texture to be used as texture
+	set_diffuse_texture(a_texture:GL_TEXTURE) is
+			-- sets the diffuse texture to be used as texture
 		require
 			texture_not_void: a_texture /= Void
 		do
-			texture := a_texture
+			diffuse_texture := a_texture
 		end
+
+	set_emissive_texture(a_texture:GL_TEXTURE) is
+			-- sets the emissive texture to be used as texture
+		require
+			texture_not_void: a_texture /= Void
+		do
+			emissive_texture := a_texture
+		end
+
 
 	enable_blending is
 			-- enables blending
@@ -244,13 +255,14 @@ feature -- Basic operations
 			ambient_color.set_xyzt (0.2,0.2,0.2,1.0)
 			diffuse_color.set_xyzt (1.0,1.0,1.0,1.0)
 			specular_color.set_xyzt (1.0,1.0,1.0,1.0)
-			emission_color.set_xyzt (0.0,0.0,0.0,1.0)
+			emissive_color.set_xyzt (0.0,0.0,0.0,1.0)
 			name := ""
 			shininess.set_value(0.0)
 			opacity := 1.0
 			frontside_visible := true
 			backside_visible := false
-			texture := Void
+			diffuse_texture := Void
+			emissive_texture := Void
 			alpha_testing := false
 			blending := false
 			blend_source_func := em_gl_src_alpha
@@ -294,11 +306,14 @@ feature {NONE} -- Implementation
 			new_material.set_ambient_color(ambient_color.x, ambient_color.y, ambient_color.z)
 			new_material.set_diffuse_color(diffuse_color.x, diffuse_color.y, diffuse_color.z)
 			new_material.set_specular_color(specular_color.x, specular_color.y, specular_color.z)
-			new_material.set_emission_color(emission_color.x, emission_color.y, emission_color.z)
+			new_material.set_emissive_color(emissive_color.x, emissive_color.y, emissive_color.z)
 			new_material.set_shininess(shininess.value)
 
-			if texture /= Void then
-				new_material.set_texture(texture)
+			if diffuse_texture /= Void then
+				new_material.set_diffuse_texture(diffuse_texture)
+			end
+			if emissive_texture /= Void then
+				new_material.set_emissive_pass(emissive_texture)
 			end
 			if blending then
 				new_material.enable_blending

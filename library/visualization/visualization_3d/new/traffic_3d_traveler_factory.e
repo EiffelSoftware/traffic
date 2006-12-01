@@ -18,34 +18,13 @@ feature -- Initialization
 		-- create the factory, load a_count buildings with name a_name+i.obj and store them in the template list
 	local
 		fs: KL_FILE_SYSTEM
-		s: STRING --path string
-		i:INTEGER
-		scene_importer: TE_3D_SCENE_IMPORTER
-		current_building: TE_3D_NODE
 	do
 		fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
-		scene_importer := (create {TE_3D_SHARED_GLOBALS}).scene_importer
-		create building_templates.make(template_count)
-
-		template := 1
-
+		name := a_name
 		template_count := a_count
-
 		create random.make
 		random.start
-
-		from
-			i := 1
-		until
-			i > template_count
-		loop
-				s := fs.pathname ("..", "buildings")
-				s := fs.pathname (s, a_name + i.out + ".obj")
-				current_building := scene_importer.import_3d_scene(s)
-				current_building.calculate_hierarchy_bounding_box
-				building_templates.extend(current_building)
-				i := i + 1
-		end
+		template := 1
 	end
 
 feature -- Access
@@ -56,6 +35,10 @@ feature -- Access
 	building_templates: ARRAYED_LIST[TE_3D_NODE]
 			-- Containter of all types of buildings containing also object_width, object_depth and object_height
 
+	name: STRING
+			-- Stores the name of the buildings that get loaded
+
+
 feature -- Building Creation
 
 	create_building: TE_3D_NODE is
@@ -65,6 +48,10 @@ feature -- Building Creation
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 			hbb: ARRAYED_LIST[EM_VECTOR3D]
 		do
+			if building_templates = Void then
+				load_buildings
+			end
+
 			Result := building_templates.i_th(template).create_deep_instance
 
 			create poly_points.make
@@ -131,6 +118,34 @@ feature {NONE} -- Implementation
 
 	random: RANDOM
 		-- random object to use with the randomize_next_building feature
+
+	load_buildings is
+			-- loads the buildings
+	local
+		fs: KL_FILE_SYSTEM
+		s: STRING --path string
+		i:INTEGER
+		scene_importer: TE_3D_SCENE_IMPORTER
+		current_building: TE_3D_NODE
+	do
+		fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
+		scene_importer := (create {TE_3D_SHARED_GLOBALS}).scene_importer
+		create building_templates.make(template_count)
+
+		from
+			i := 1
+		until
+			i > template_count
+		loop
+				s := fs.pathname ("..", "buildings")
+				s := fs.pathname (s, name + i.out + ".obj")
+				current_building := scene_importer.import_3d_scene(s)
+				current_building.calculate_hierarchy_bounding_box
+				building_templates.extend(current_building)
+				i := i + 1
+		end
+	end
+
 
 invariant
 	invariant_clause: True -- Your invariant here

@@ -23,10 +23,17 @@ feature -- Initialization
 
 	make is
 			-- creates material with default values
+		local
+			single_material_pass: EM_EVENT_CHANNEL[TUPLE[]]
 		do
 			Precursor
 			create color.make_xyzt(1.0,1.0,1.0,1.0)
 			shaded := true
+
+			-- create material_pass event and subscribe specify to it
+			create single_material_pass
+			single_material_pass.subscribe (agent specify)
+			specify_material_pass.extend(single_material_pass)
 		end
 
 	make_with_color(r,g,b: REAL) is

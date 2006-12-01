@@ -48,9 +48,5 @@ feature -- Element change
 			color_set: color = a_color
 		end
 
-invariant
-
-	template_valid: template > 0 and template <= template_count
-
 end
 

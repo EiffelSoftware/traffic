@@ -51,6 +51,9 @@ feature -- Access
 	angle_x: DOUBLE
 			-- Angle in respect to the x-axis
 
+	light_time: TUPLE[DOUBLE, DOUBLE]
+			-- the timerange in which the traveler is lit
+
 
 feature -- Status report
 

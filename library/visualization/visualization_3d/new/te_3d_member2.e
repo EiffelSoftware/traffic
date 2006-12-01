@@ -19,41 +19,49 @@ class
 
 		TE_3D_SHARED_GLOBALS
 
+		EM_GL_CONSTANTS export {NONE} all end
+
 	create
 		make, make_as_child
 
 feature -- Initialization
 
-	make (a_ressource_list:ARRAYED_LIST[TE_3D_RESSOURCE]) is
+	make (a_ressource_list: ARRAYED_LIST [TE_3D_RESSOURCE])
 			-- create 3D member from a list of 3d ressources, calculate bounding_sphere for item 1 and make it child of root
 		require
 			list_not_empty: a_ressource_list.count > 0
 		do
-			make_node --call make creation procedure from TRAFFIC_3D_NODE
+			make_node
 			ressource_list := a_ressource_list
+			shadow_ressource := a_ressource_list.i_th (a_ressource_list.count)
+			create shadow_volume.make
 			create bounding_sphere
-			create bounding_box.make(6)
+			create bounding_box.make (6)
 			calculate_boundaries
-			create level_of_detail.make(ressource_list.count)
+			create level_of_detail.make (ressource_list.count)
 			--enable_frustum_culling
 			enable_hierarchy_renderable
 			enable_renderable
+			enable_use_shadow_ressource
 		end
 
-	make_as_child(a_ressource_list:ARRAYED_LIST[TE_3D_RESSOURCE]; a_parent: TE_3D_NODE) is
+	make_as_child (a_ressource_list: ARRAYED_LIST [TE_3D_RESSOURCE]; a_parent: TE_3D_NODE)
 			-- create 3D member from a list of 3d ressources, calculate bounding_sphere for item 1 and make it child of a_parent
 		require
 			list_not_empty: a_ressource_list.count > 0
 		do
-			make_node_as_child(a_parent)
+			make_node_as_child (a_parent)
 			ressource_list := a_ressource_list
+			shadow_ressource := a_ressource_list.i_th (a_ressource_list.count)
+			create shadow_volume.make
 			create bounding_sphere
-			create bounding_box.make(6)
+			create bounding_box.make (6)
 			calculate_boundaries
-			create level_of_detail.make(ressource_list.count)
+			create level_of_detail.make (ressource_list.count)
 			--enable_frustum_culling
 			enable_hierarchy_renderable
 			enable_renderable
+			enable_use_shadow_ressource
 		end
 
 
@@ -74,24 +82,31 @@ feature -- Status report
 	level_of_detail_enabled: BOOLEAN
 		-- is level of detail enabled?
 
-	is_in_view_frustum: BOOLEAN is
+	is_in_view_frustum: BOOLEAN
 			-- calculates, wetherthe member is within the viewfrustum or not
 		local
-			worldspace_sphere: TUPLE[EM_VECTOR3D, DOUBLE]
-			local_pivot, worldspace_pivot: EM_VECTOR3D
-			radius: DOUBLE
+			modelview_matrix, projection_matrix: EM_MATRIX44
+			pivot3d: EM_VECTOR3D
+			pivot4d: EM_VECTOR4D
 		do
-			local_pivot ?= bounding_sphere.item(1)
-			worldspace_pivot := localspace_to_worldspace(local_pivot)
-			radius ?= bounding_sphere.item (2)
-			create worldspace_sphere
-			worldspace_sphere.put(worldspace_pivot,1)
-			worldspace_sphere.put(radius,2)
-			Result := renderpass_manager.current_renderpass.camera.sphere_is_within_frustum(worldspace_sphere)
+			gl_get_doublev (em_gl_modelview_matrix, modelview_matrix.to_pointer)
+			gl_get_doublev (em_gl_projection_matrix, projection_matrix.to_pointer)
+			pivot3d := transform.position
+			pivot4d.set (pivot3d.x, pivot3d.y, pivot3d.z, 1.0)
+			pivot4d := modelview_matrix.mult (pivot4d)
+			pivot4d := projection_matrix.mult (pivot4d)
+			Result := pivot4d.x.abs < pivot4d.w.abs and pivot4d.y.abs < pivot4d.w.abs and pivot4d.z.abs < pivot4d.w.abs
 		end
 
 	renderable: BOOLEAN
 			-- is this node renderable (doesn't affect the hierarchy)
+
+
+	use_shadow_ressource: BOOLEAN
+			-- if this is true, the shadow ressource gets used to cast shadows. if false, the current LOD level will cast shadows
+
+	casts_shadows: BOOLEAN
+			-- does the member cast stencil shadows?
 
 feature -- Status setting
 
@@ -133,45 +148,81 @@ feature -- Status setting
 			level_of_detail_enabled := true
 		end
 
-	disable_level_of_detail is
+	disable_level_of_detail
 			-- enables level of detail
 		do
 			level_of_detail.disable
-			level_of_detail_enabled := false
+			level_of_detail_enabled := False
 		end
 
-feature -- Cursor movement
+	disable_shadow_casting
+			-- disables stencil shadow casting
+		do
+			casts_shadows := False
+		end
 
-feature {NONE} -- Ressources
+	disable_use_shadow_ressource
+			-- disables use_shadow_ressource
+		do
+			use_shadow_ressource := False
+		end
+
+	enable_shadow_casting
+			-- enables stencil shadow casting
+		do
+			casts_shadows := True
+		end
+
+	enable_use_shadow_ressource
+			-- enables use_shadow_ressource
+		do
+			use_shadow_ressource := True
+		end
+
+feature -- Element setting
+
+	set_shadow_ressource (new_shadow_ressource: TE_3D_RESSOURCE)
+			-- sets the shadow-ressource
+		do
+			shadow_ressource := new_shadow_ressource
+		end
+
+feature -- Ressources
 
 	ressource_list : ARRAYED_LIST[TE_3D_RESSOURCE]
 		-- list of 3D_ressources, each one representing one LOD level
+
+	shadow_ressource: TE_3D_RESSOURCE
+			-- separate ressource for casting shadows. by default this is the most simple LOD level
+
+	shadow_volume: TE_3D_SHADOW_VOLUME
 
 feature -- Removal
 
 feature -- Cloning
 
-	create_instance: TE_3D_MEMBER is
-			-- returns an instance of the 3D member. it references the same 3D ressources like current
-		do
-			create Result.make_as_child(ressource_list, parent)
-		end
-
-	create_deep_instance: TE_3D_MEMBER is
+	create_deep_instance: TE_3D_MEMBER
 			-- returns an instance of the 3D member and instances of all childs and subchilds of the 3d member as hirarchy
 		do
 			Result := create_instance
-			Result.set_hierarchy_bounding_box(hierarchy_bounding_box.twin)
+			Result.set_hierarchy_bounding_box (hierarchy_bounding_box.twin)
+			Result.set_shadow_ressource (shadow_ressource)
 			from
 				children.start
 			until
 				children.after
 			loop
-				Result.add_child(children.item.create_deep_instance)
+				Result.add_child (children.item.create_deep_instance)
 				children.forth
 			end
 		end
 
+	create_instance: TE_3D_MEMBER
+			-- returns an instance of the 3D member. it references the same 3D ressources like current
+		do
+			create Result.make_as_child (ressource_list, parent)
+			Result.set_shadow_ressource (shadow_ressource)
+		end
 
 feature -- Transformation
 
@@ -239,6 +290,44 @@ feature -- Duplication
 feature -- Miscellaneous
 
 feature -- Basic operations
+
+	render_shadow_volume
+			-- renders the shadow volume of the active LOD level
+		do
+			shadow_volume.draw_shadow_volume
+		end
+
+	render_unlit_faces
+			-- renders the faces which are currently not lit by the shadow casting lightsource
+		do
+			shadow_volume.draw_unlit_faces
+		end
+
+	update_shadow_volume (a_light_source: TE_3D_LIGHT_SOURCE)
+			-- updates the shadow_volume of the active LOD level
+		local
+			local_shadow_light_position: EM_VECTOR3D
+			world_shadow_light_position: EM_VECTOR3D
+			is_directional_light: BOOLEAN
+			active_3d_ressource: TE_3D_RESSOURCE
+			lod_level: INTEGER
+		do
+			world_shadow_light_position := a_light_source.world_transform.position
+			if a_light_source.light_position.t = 0.0 then
+				local_shadow_light_position := worldspace_to_localspace (world_shadow_light_position + world_transform.position)
+				is_directional_light := True
+			else
+				local_shadow_light_position := worldspace_to_localspace (world_shadow_light_position)
+				is_directional_light := False
+			end
+			lod_level := 1
+			if not use_shadow_ressource then
+				active_3d_ressource := ressource_list [lod_level]
+			else
+				active_3d_ressource := shadow_ressource
+			end
+			shadow_volume.update_shadow_volume (local_shadow_light_position, is_directional_light, active_3d_ressource)
+		end
 
 feature -- Obsolete
 
@@ -322,18 +411,16 @@ feature {NONE} -- Implementation
 			bounding_box.extend(vec8)
 		end
 
-	render_node is
+	render_node
 			-- renders the 3D_member to display
 		local
 			lod_level: INTEGER
 		do
 			if renderable then
-				--if not frustum_culling_enabled or else is_in_view_frustum then
-					--level_of_detail.update_by_bounding_sphere(current)
-					--lod_level := level_of_detail.index
-					lod_level := 1
-					ressource_list[lod_level].draw
-				--end	
+				if not frustum_culling_enabled or else is_in_view_frustum then
+					lod_level := 1;
+					ressource_list [lod_level].draw_geometry
+				end
 			end
 		end
 

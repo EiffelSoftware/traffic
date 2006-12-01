@@ -32,12 +32,6 @@ feature -- Initialization
 
 feature -- Access
 
-	camera: TE_3D_CAMERA is
-			-- active camera
-		do
-			Result := renderpass_manager.current_renderpass.camera
-		end
-
 	index: INTEGER
 		-- stores the last calculated LOD level
 
@@ -93,7 +87,7 @@ feature -- Inapplicable
 
 feature -- Implementation
 
-	update_by_bounding_sphere (a_3d_member: TE_3D_MEMBER) is
+	update_by_bounding_sphere (a_3d_member:TE_3D_MEMBER; a_camera:TE_3D_CAMERA) is
 		-- transforms the boundingsphere to screenspace to calculate the LOD index
 		local
 			bs_center: EM_VECTOR3D
@@ -106,8 +100,8 @@ feature -- Implementation
 			radius ?= a_3d_member.bounding_sphere.item(2)
 			bs_center ?= a_3d_member.bounding_sphere.item(1)
 			bs_center := a_3d_member.localspace_to_worldspace(bs_center) -- boundingsphere center in worldspace
-			distance_to_camera := (bs_center-camera.world_transform.position).length
-			screen_height := 2.0 * distance_to_camera * tangent(ang2rad * camera.fov/2.0)
+			distance_to_camera := (bs_center-a_camera.world_transform.position).length
+			screen_height := 2.0 * distance_to_camera * tangent(ang2rad * a_camera.fov/2.0)
 			screenspace_percentage := 100.0 * (radius/screen_height)
 
 			index := (screenspace_percentage/(100.0/(iterations+1))).floor + 1

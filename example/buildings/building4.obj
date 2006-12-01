@@ -3,6 +3,8 @@
 # XSI Version: 5.0.2005.1013-1
 mtllib building4.mtl
 
+shadow building4_shadow.obj
+
 o building4
 # Hierarchy (from self to top father)
 g building4

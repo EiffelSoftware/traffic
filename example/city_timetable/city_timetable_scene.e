@@ -47,6 +47,7 @@ feature -- Interface
 
 			-- Checkboxes
 			create sun_checkbox.make_from_text ("Show sun")
+			create shadow_checkbox.make_from_text ("Enable shadows")
 			create buildings_checkbox.make_from_text ("Show buildings")
 			create vehicles_checkbox.make_from_text ("Show vehicles")
 			create time_checkbox.make_from_text ("Simulate time")
@@ -109,6 +110,17 @@ feature -- Interface
 			sun_checkbox.checked_event.subscribe (agent sun_checked)
 			sun_checkbox.unchecked_event.subscribe (agent sun_unchecked)
 			toolbar_panel.add_widget (sun_checkbox)
+
+			-- Shadow Checkbox
+			shadow_checkbox.set_position (17, 395)
+			shadow_checkbox.set_background_color (bg_color)
+			shadow_checkbox.set_optimal_dimension (110, 20)
+			shadow_checkbox.resize_to_optimal_dimension
+			shadow_checkbox.set_background_color (bg_color)
+			shadow_checkbox.set_unchecked
+			shadow_checkbox.checked_event.subscribe (agent shadow_checked)
+			shadow_checkbox.unchecked_event.subscribe (agent shadow_unchecked)
+			toolbar_panel.add_widget (shadow_checkbox)
 
 			-- Buildings Checkbox
 			buildings_checkbox.set_position (17, (traffic_window_height * 0.87).rounded)
@@ -192,7 +204,7 @@ feature -- Interface
 			-- adding zurich_big.xml as default using platform independent paths
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 			s := fs.pathname ("..", "map")
-			s := fs.pathname (s, "zurich_big.xml")
+			s := fs.pathname (s, "zurich_little.xml")
 
 			create loader.make (s)
 			loader.enable_dump_loading
@@ -352,6 +364,18 @@ feature -- Event handling
 			map.disable_sun_shown
 		end
 
+	shadow_checked is
+			-- checkbox has been checked.
+		do
+			map.enable_shadows
+		end
+
+	shadow_unchecked is
+			-- checkbox has been checked.
+		do
+			map.disable_shadows
+		end
+
 	buildings_checked is
 			-- Checkbox has been checked.
 		do
@@ -439,6 +463,9 @@ feature -- Widgets
 
 	sun_checkbox: EM_CHECKBOX
 			-- Checkbox for different light
+
+	shadow_checkbox: EM_CHECKBOX
+			-- Checkbox for shadows
 
 	buildings_checkbox: EM_CHECKBOX
 			-- Checkbox for buildings

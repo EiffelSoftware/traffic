@@ -11,6 +11,14 @@ class
 
 		EM_GL_CONSTANTS export {NONE} all end
 
+		GLEXT_FUNCTIONS export {NONE} all end
+
+		EM_GLEXT_CONSTANTS export {NONE} all end
+
+		--DEBUG
+		MEMORY
+		--/DEBUG
+
 	create
 		make
 
@@ -19,22 +27,32 @@ feature {TE_3D_SHARED_GLOBALS} -- Initialization
 	make is
 			-- creates the renderpass manager, sets default global render settings and creates the first render pass
 		local
-			first_renderpass: TE_RENDERPASS
+			beauty_renderpass: TE_RENDERPASS_BEAUTY
 			s:STRING
+			i:INTEGER
 		do
 			enable_culling
 
 			create renderpasses.make(1)
-			create first_renderpass.make
-			current_renderpass := first_renderpass
+			create beauty_renderpass.make
+			current_renderpass := beauty_renderpass
 			current_renderpass_index := 1
-			renderpasses.extend(first_renderpass)
+			renderpasses.extend(beauty_renderpass)
 
 			--DEBUG
+				io.put_string("OpenGL Info: %N")
 				create s.make_from_c (gl_get_string(em_GL_VENDOR))
 				io.put_string("GL_VENDOR: " + s +"%N")
 				create s.make_from_c (gl_get_string(em_GL_RENDERER))
 				io.put_string("GL_RENDERER: " + s +"%N")
+--				create s.make_from_c (gl_get_string(em_GL_EXTENSIONS))
+--				io.put_string("GL_EXTENSIONS: " + s + "%N")
+				gl_get_integerv(em_GL_MAX_TEXTURE_UNITS_ARB, $i)
+				io.put_string ("supported number of Textures for Multitexturing: " + i.out + "%N")
+
+				io.put_string("garbage collection: " + collecting.out + "%N")
+
+				io.put_string("%N %N")
 			--/DEBUG
 		end
 
@@ -75,15 +93,11 @@ feature -- Global Render Settings
 
 feature -- Renderpass handling
 
-	create_new_renderpass is
-			-- creates a new default renderpass and extends it to the renderpasses
-		local
-			new_renderpass: TE_RENDERPASS
+	add_renderpass(new_render_pass: TE_RENDERPASS) is
+			-- adds a renderpass to the queue
 		do
-			create new_renderpass.make
-			renderpasses.extend(new_renderpass)
+			renderpasses.extend (new_render_pass)
 		end
-
 
 feature -- Implementation
 
@@ -91,13 +105,14 @@ feature -- Implementation
 			-- renders all renderpasses
 		local
 			i:INTEGER
-			ps:PROFILING_SETTING
+			ambient_color: GL_VECTOR_4D[REAL]
+			--debug_var: SPECIAL[ANY]
 		do
 			-- DEBUG
-				gl_enable(em_gl_lighting)
-				--gl_disable(em_gl_color_material)
-				gl_enable(em_GL_NORMALIZE)
-				--gl_polygon_mode(em_GL_FRONT, em_GL_LINE)
+
+				--full_collect
+
+				--debug_var := objects_instance_of(create{LINKED_LIST[LINKED_LIST[EM_VECTOR3D]]}.make)
 			--/DEBUG
 
 
@@ -107,9 +122,11 @@ feature -- Implementation
 			until
 				renderpasses.after
 			loop
-				current_renderpass := renderpasses[i]
-				current_renderpass_index := i
-				renderpasses.item.render
+				if renderpasses[i].enabled then
+					current_renderpass := renderpasses[i]
+					current_renderpass_index := i
+					renderpasses.item.render
+				end
 				renderpasses.forth
 				i := i+1
 			end

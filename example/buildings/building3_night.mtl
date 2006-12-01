@@ -1,8 +1,9 @@
 newmtl building3
-Ka 0.000000 0.000000 0.000000
-Kd 0.700000 0.700000 0.700000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
 Ks 0.000000 0.000000 0.000000
 Ns 50.000000
 Tr 0.000000
 illum 1
+map_Kd ..\buildings\building3_night_128.tga
 map_Ke ..\buildings\building3_lightmap_128.tga

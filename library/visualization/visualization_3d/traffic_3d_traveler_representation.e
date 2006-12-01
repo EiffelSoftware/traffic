@@ -57,12 +57,13 @@ feature -- Basic operations
 	update is
 			-- Draw all travelers.
 		local
-			a_traveler: TUPLE[TE_3D_NODE, TRAFFIC_MOVING]
-			graphic: TE_3D_NODE
+			a_traveler: TUPLE[TE_3D_NODE,TE_3D_NODE, TRAFFIC_MOVING]
+			day_model, night_model: TE_3D_NODE
 			info: TRAFFIC_MOVING
 			rotation: EM_QUATERNION
+			current_time, evening_time, sleep_time: DOUBLE
 		do
-
+			current_time := time.actual_hour.to_double + time.actual_minute.to_double/60.0
 			from
 				travelers.start
 			until
@@ -70,22 +71,28 @@ feature -- Basic operations
 			loop
 				-- set up the local variables
 				a_traveler := travelers.item
-				graphic ?= a_traveler @ 1
-				info ?= a_traveler @ 2
+				day_model ?= a_traveler @ 1
+				night_model ?= a_traveler @ 2
+				info ?= a_traveler @ 3
+				evening_time ?= info.light_time.item(1)
+				sleep_time ?= info.light_time.item(2)
 
-				if (graphic /= Void) and (info /= Void) then
-					-- we have to check so that no errors happen
---					if info.is_marked then
---						-- draw marked travelers bigger.
---						graphic.set_scale (0.6, 0.6, 0.6)
---					else
---						graphic.set_scale(0.3, 0.3, 0.3)
---					end
-					graphic.transform.reset
-					graphic.transform.set_position (info.position.x, traveler_offset, info.position.y)
-					graphic.transform.rotate(0.0,1.0,0.0,info.angle_x)
-					travelers.forth
+				if (current_time >= evening_time and current_time <= sleep_time) or (current_time + 24.0 >= evening_time and current_time + 24.0 <= sleep_time) then
+					night_model.enable_hierarchy_renderable
+					day_model.disable_hierarchy_renderable
+
+					night_model.transform.reset
+					night_model.transform.set_position (info.position.x, traveler_offset, info.position.y)
+					night_model.transform.rotate(0.0,1.0,0.0,info.angle_x)
+				else
+					night_model.disable_hierarchy_renderable
+					day_model.enable_hierarchy_renderable
+
+					day_model.transform.reset
+					day_model.transform.set_position (info.position.x, traveler_offset, info.position.y)
+					day_model.transform.rotate(0.0,1.0,0.0,info.angle_x)
 				end
+					travelers.forth
 			end
 		end
 
@@ -96,7 +103,7 @@ feature -- Basic operations
 			a_map /= Void
 		local
 			texture_ids: ARRAY[INTEGER]
-			traffic_model: TE_3D_NODE
+			traffic_day_model, traffic_night_model: TE_3D_NODE
 			bitmap: EM_BITMAP
 			s: STRING
 			fs: KL_FILE_SYSTEM
@@ -109,43 +116,48 @@ feature -- Basic operations
 			if a_traveler.traffic_type.name.is_equal ("walking") then
 				if person_toggle = 0 then
 					--traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0, 0, .7))
-					traffic_model := traveler_factory.create_traveler("man")
+					traffic_day_model := traveler_factory.create_traveler("man")
+					traffic_night_model := traffic_day_model
 					person_toggle := 1
 				else
 					--traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0.7, 0, .2))
-					traffic_model := traveler_factory.create_traveler("woman")
+					traffic_day_model := traveler_factory.create_traveler("woman")
+					traffic_night_model := traffic_day_model
 					person_toggle := 0
 				end
 			elseif a_traveler.traffic_type.name.is_equal ("tram") then
---				s := fs.pathname ("..", "objects")
---				s := fs.pathname (s, "tram2000.tga")
---				bitmap_factory.create_bitmap_from_image(s)
---				bitmap := bitmap_factory.last_bitmap
---				create texture_ids.make (0,0)
---				texture_ids.force (bitmap.texture.id, 0)
-				traffic_model := traveler_factory.create_traveler("tram")
+				traffic_day_model := traveler_factory.create_traveler("tram")
+				traffic_night_model := traveler_factory.create_traveler("tram_night")
 			elseif a_traveler.traffic_type.name.is_equal ("event taxi") then
 				--TODO: Change this to color associated with a taxi office. Each taxi office has a
 				--different color.
 --				traveler_factory.set_color (traveler_factory.default_color)
 
-				traffic_model := traveler_factory.create_traveler("taxi")
+				traffic_day_model := traveler_factory.create_traveler("taxi")
+				traffic_night_model := traveler_factory.create_traveler("taxi_night")
 			elseif a_traveler.traffic_type.name.is_equal ("dispatcher taxi") then
 				--TODO: Change this to color associated with a taxi office. Each taxi office has a
 				--different color.
 --				traveler_factory.set_color (create {GL_VECTOR_3D [REAL]}.make_xyz (1.0, 0, 0))
 
-				traffic_model := traveler_factory.create_traveler("taxi")
+				traffic_day_model := traveler_factory.create_traveler("taxi")
+				traffic_night_model := traveler_factory.create_traveler("taxi_night")
 			else
 --				traveler_factory.set_color (create {GL_VECTOR_3D[REAL]}.make_xyz(0, 1.0, 0))
-				traffic_model := traveler_factory.create_traveler("error")
+				traffic_day_model := traveler_factory.create_traveler("error")
+				traffic_night_model := traffic_day_model
 
 			end
-			traffic_model.make_child_of (travelers_root) --insert it into the hierarchy
-			traffic_model.transform.set_position (a_traveler.position.x, traveler_offset, a_traveler.position.y)
-			traffic_model.transform.rotate (0.0, 1.0, 0.0, a_traveler.angle_x)
+
+			traffic_day_model.make_child_of (travelers_root) --insert it into the hierarchy
+			traffic_night_model.make_child_of (travelers_root)
+			traffic_day_model.transform.set_position (a_traveler.position.x, traveler_offset, a_traveler.position.y)
+			traffic_night_model.transform.set_position (a_traveler.position.x, traveler_offset, a_traveler.position.y)
+			traffic_day_model.transform.rotate (0.0, 1.0, 0.0, a_traveler.angle_x)
+			traffic_night_model.transform.rotate (0.0, 1.0, 0.0, a_traveler.angle_x)
+			traffic_night_model.disable_hierarchy_renderable
 			time.add_callback_tour (agent a_traveler.take_tour)
-			travelers.force ([traffic_model, a_traveler])
+			travelers.force ([traffic_day_model,traffic_night_model, a_traveler])
 			a_map.add_traveler (a_traveler)
 
 		end
@@ -276,7 +288,7 @@ feature -- Basic operations
 
 feature -- Access
 
-	travelers: LINKED_LIST [TUPLE[TE_3D_NODE, TRAFFIC_MOVING]]
+	travelers: LINKED_LIST [TUPLE[TE_3D_NODE, TE_3D_NODE, TRAFFIC_MOVING]]
 			-- Container for all traveler.		
 
 	collision_polygons: ARRAYED_LIST[EM_POLYGON_CONVEX_COLLIDABLE]

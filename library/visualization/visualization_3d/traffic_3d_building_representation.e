@@ -101,19 +101,22 @@ feature	-- Basic operations
 		require
 			building_valid: a_building /= Void
 		local
-			day_building: TE_3D_NODE
-			night_building: TE_3D_NODE
+			day_building: TE_3D_MEMBER
+			night_building: TE_3D_MEMBER
 			setting_vector : EM_VECTOR3D
 		do
 			building_day_factory.randomize_next_building
-			day_building := building_day_factory.create_building
+			day_building ?= building_day_factory.create_building
 			day_building.transform.rotate (0,1,0,a_building.angle)
 			day_building.transform.set_position (a_building.center.x,0,a_building.center.y)
 			building_night_factory.set_template(building_day_factory.template)
-			night_building := building_night_factory.create_building
+			night_building ?= building_night_factory.create_building
 			night_building.transform.rotate (0,1,0,a_building.angle)
 			night_building.transform.set_position (a_building.center.x,0,a_building.center.y)
 			night_building.disable_hierarchy_renderable
+
+			day_building.enable_shadow_casting
+
 			a_building.set_id (id_counter)
 			id_counter := id_counter + 1
 			buildings_root.add_child (day_building)

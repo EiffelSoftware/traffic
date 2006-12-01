@@ -1,0 +1,9 @@
+newmtl tram2000_night
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ns 50.000000
+Tr 0.000000
+illum 1
+map_Kd ..\objects\tram2000_night_256.tga
+map_Ke ..\objects\tram2000_lightmap_256.tga

@@ -31,7 +31,7 @@ feature {NONE} -- Ressource List Creation
 
 	build_ressource_list is
 			-- builds the ressource list from which the 3d member gets built
-		require
+		require else
 			cluster_list_not_void_nor_empty: cluster_list /= Void and cluster_list.count > 0
 			vertex_list_not_void_nor_empty: vertex_list /= Void and vertex_list.count > 2
 			face_list_not_void_nor_empty: face_list /= Void and face_list.count > 0
@@ -89,6 +89,7 @@ feature {NONE} -- Implementation
 			poly_to_triangle_list: LINKED_LIST[TE_3D_FACE]
 			face_indices: LINKED_LIST[INTEGER]
 			mtl_factory: TE_MATERIAL_FACTORY_MTL
+			shadow_factory: TE_3D_MEMBER_FACTORY_FROMFILE_OBJ
 			path_name: STRING
 			current_texture_coordinates: EM_VECTOR3D
 		do
@@ -143,6 +144,14 @@ feature {NONE} -- Implementation
 							cluster_list.extend(create{TE_3D_CLUSTER}.make(mtl_factory.last_material_list.item))
 							mtl_factory.last_material_list.forth
 						end
+					elseif tokenizer.last_string.is_equal ("shadow") then
+						--load a shadow ressource
+						path_name := a_filename.substring(1, a_filename.last_index_of('\', a_filename.count))
+						tokenizer.read_token
+						path_name := path_name + tokenizer.last_string
+						create shadow_factory
+						shadow_factory.create_3d_member_from_file(path_name)
+						shadow_ressource := shadow_factory.last_3d_member.ressource_list.i_th(1)
 					elseif tokenizer.last_string.is_equal ("#") then
 						-- ignore this line, it's a comment
 					elseif tokenizer.last_string.is_equal ("v") then
@@ -184,7 +193,7 @@ feature {NONE} -- Implementation
 					end
 				end
 			end
-
+			calculate_face_neighbours -- loop through all faces to set the neighbour lists for each face for stencil shadows
 			uvw_sets.force(current_uvw_set)
 		end
 
@@ -284,7 +293,7 @@ feature {NONE} -- Implementation
 
 				create new_uvw_sets.make(0)
 				new_uvw_sets.force(triangle_uvw_indices)
-				create current_face.make(triangle_vertex_indices, triangle_normal_indices, new_uvw_sets)
+				create current_face.make(triangle_vertex_indices, triangle_normal_indices, new_uvw_sets, vertex_list.i_th (triangle_vertex_indices.i_th (1)),vertex_list.i_th (triangle_vertex_indices.i_th (2)),vertex_list.i_th (triangle_vertex_indices.i_th (3)))
 				Result.extend(current_face)
 
 				i := i+1

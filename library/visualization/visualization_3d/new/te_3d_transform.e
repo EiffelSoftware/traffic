@@ -17,6 +17,7 @@ feature -- initialization
 			-- Initialize with default values
 		do
 			model_matrix.set_unit
+			scaling.set (1,1,1)
 			create event_channel
 		end
 
@@ -24,6 +25,7 @@ feature -- initialization
 				-- make transform object from transformation matrix
 		do
 			model_matrix := a_matrix
+			scaling.set(1,1,1) --TODO: this is wrong! find out how to extract the scaling!!
 			create event_channel
 		end
 
@@ -42,11 +44,7 @@ feature -- Access
 			Result.set_from_matrix44(model_matrix)
 		end
 
---	--scaling: EM_VECTOR3D is
---		-- scaling
---		do
---			Result.set(scaling_matrix.element(1,1), scaling_matrix.element(2,2), scaling_matrix.element(3,3))
---		end
+	scaling: EM_VECTOR3D
 
 	x_axis: EM_VECTOR3D
 		-- x_axis
@@ -54,11 +52,8 @@ feature -- Access
 			x_unit:EM_VECTOR4D
 			x_axis_4d: EM_VECTOR4D
 		do
-			x_unit.set(1.0,0.0,0.0,1.0)
-			x_axis_4d := model_matrix.mult(x_unit)
-			result.set(x_axis_4d.x, x_axis_4d.y, x_axis_4d.z)
-			result := result - position
-			result.normalize
+			Result.set(model_matrix.element(1,1),model_matrix.element(2,1),model_matrix.element(3,1))
+			Result.normalize
 		end
 
 	y_axis: EM_VECTOR3D
@@ -67,11 +62,8 @@ feature -- Access
 			y_unit:EM_VECTOR4D
 			y_axis_4d: EM_VECTOR4D
 		do
-			y_unit.set(0.0,1.0,0.0,1.0)
-			y_axis_4d := model_matrix.mult(y_unit)
-			result.set(y_axis_4d.x, y_axis_4d.y, y_axis_4d.z)
-			result := result - position
-			result.normalize
+			Result.set(model_matrix.element(1,2),model_matrix.element(2,2),model_matrix.element(3,2))
+			Result.normalize
 		end
 
 	z_axis: EM_VECTOR3D
@@ -80,11 +72,8 @@ feature -- Access
 			z_unit:EM_VECTOR4D
 			z_axis_4d: EM_VECTOR4D
 		do
-			z_unit.set(0.0,1.0,0.0,1.0)
-			z_axis_4d := model_matrix.mult(z_unit)
-			result.set(z_axis_4d.x, z_axis_4d.y, z_axis_4d.z)
-			result := result - position
-			result.normalize
+			Result.set(model_matrix.element(1,3),model_matrix.element(2,3),model_matrix.element(3,3))
+			Result.normalize
 		end
 
 	model_matrix: EM_MATRIX44
@@ -123,6 +112,32 @@ feature -- Transformation
 			event_channel.publish([])
 		end
 
+	set_rotation(x,y,z,alpha:DOUBLE) is
+			-- sets the rotation from default arraund the axis specified with xyz about the angle alpha
+		local
+			S,R,T:EM_MATRIX44
+			rotation_axis: EM_VECTOR3D
+			scale_vec: EM_VECTOR4D
+		do
+			rotation_axis.set(x,y,z)
+			scale_vec.set(scaling.x,scaling.y,scaling.z,1.0)
+			S.set_diagonal (scale_vec)
+			T.set_from_translation (position)
+			R.set_from_rotation (rotation_axis, alpha)
+			model_matrix := T*R*S
+			event_channel.publish([])
+		end
+
+	set_scaling(x,y,z:DOUBLE) is
+			-- sets the scaling
+		do
+			model_matrix.set_column(model_matrix.column(1)*(x/scaling.x),1)
+			model_matrix.set_column(model_matrix.column(2)*(y/scaling.y),2)
+			model_matrix.set_column(model_matrix.column(3)*(z/scaling.z),3)
+			scaling.set(x,y,z)
+			event_channel.publish([])
+		end
+
 
 	translate (x,y,z:DOUBLE) is
 			-- offsets the position with the translate-vector
@@ -133,6 +148,7 @@ feature -- Transformation
 			translation_vect.set(x,y,z)
 			translation.set_from_translation(translation_vect)
 			model_matrix := translation * model_matrix
+			event_channel.publish([])
 		end
 
 	rotate (x,y,z,alpha:DOUBLE) is
@@ -144,8 +160,15 @@ feature -- Transformation
 			direction_vect.set(x,y,z)
 			rot_mat.set_from_rotation(direction_vect, alpha)
 			model_matrix :=rot_mat * model_matrix
+			event_channel.publish([])
 		end
 
+	set_model_matrix (new_model_matrix: EM_MATRIX44) is
+			-- sets the model matrix. the event_channel does NOT get called!!
+		do
+			model_matrix := new_model_matrix
+			scaling.set(1,1,1) --TODO: this is wrong! find out how to extract the scaling!!
+		end
 
 feature -- Conversion
 
@@ -184,19 +207,17 @@ feature -- Basic operations
 			homogenous_vector: EM_VECTOR4D
 		do
 			homogenous_vector.set(a_vector.x, a_vector.y, a_vector.z, 1.0)
-			homogenous_vector := model_matrix.inversed.mult(homogenous_vector)
+			homogenous_vector := model_matrix.srt_inversed.mult(homogenous_vector)
 			Result.set (homogenous_vector.x, homogenous_vector.y, homogenous_vector.z)
 		end
-
 
 feature -- Obsolete
 
 feature -- Inapplicable
 
-feature {NONE} -- Implementation
+feature -- Implementation
 
 	event_channel: EM_EVENT_CHANNEL[TUPLE[]]
-
 
 invariant
 	invariant_clause: True -- Your invariant here
