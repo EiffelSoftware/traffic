@@ -268,13 +268,11 @@ feature -- Basic operations
 			-- Draw the map.
 		do
 			-- Enable Sunlight and draw Sun
-			sun_representation.update
-
-
-
-			travelers_representation.update
-
-			buildings_representation.update
+			if is_map_loaded then
+				sun_representation.update
+				travelers_representation.update
+				buildings_representation.update
+			end
 
 			renderpass_manager.render
 		end

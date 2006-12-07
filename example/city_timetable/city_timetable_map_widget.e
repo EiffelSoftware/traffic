@@ -137,17 +137,9 @@ feature {NONE} -- Event handling
 			camera: TE_3D_CAMERA
 			z_axis: EM_VECTOR3D
 		do
---			if focus > 3 then
---				focus := focus + 1
---			else
---				focus := focus + 0.1
---			end
-		camera := beauty_pass.camera
-		z_axis := camera.transform.position * (1.0/10.0)
-		camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
-
-		ensure then
---			focus_incremented: focus > old focus
+			camera := beauty_pass.camera
+			z_axis := camera.transform.position * (1.0/10.0)
+			camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
 		end
 
 	wheel_up is
@@ -156,17 +148,9 @@ feature {NONE} -- Event handling
 			camera: TE_3D_CAMERA
 			z_axis: EM_VECTOR3D
 		do
---			if focus > 3 then
---				focus := focus - 1
---			elseif focus > 0.1 then
---				focus := focus - 0.1
---			end
-		camera := beauty_pass.camera
-		z_axis := camera.transform.position * (1.0/10.0)
-		camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
-
-		ensure then
---			focus_decremented: focus > 0.1 implies focus < old focus
+			camera := beauty_pass.camera
+			z_axis := camera.transform.position * (1.0/10.0)
+			camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
 		end
 
 	mouse_click (event: EM_MOUSEBUTTON_EVENT) is
@@ -226,13 +210,6 @@ feature {NONE} -- Event handling
 			radius,polar,azimut,zx_comp_length:DOUBLE
 		do
 			if event.button_state_right then
---				y_rotation := y_rotation + event.x_motion
---				x_rotation := x_rotation + event.y_motion
---				if x_rotation <= 15 then
---					x_rotation := 15
---				elseif x_rotation >= 90 then
---					x_rotation := 90
---				end
 				camera := beauty_pass.camera
 
 				--carth to spherical
@@ -253,19 +230,7 @@ feature {NONE} -- Event handling
 				camera.transform.set_position (radius*sine(polar)*sine(azimut), radius*cosine(polar), radius*sine(polar)*cosine(azimut))
 
 			elseif event.button_state_left then
---				start_vec := transform_coords (event.x, event.y)
---				end_vec := transform_coords (event.x + event.x_motion, event.y + event.y_motion)
-
---				delta_x := end_vec.x - start_vec.x
---				delta_y := end_vec.z - start_vec.z
-
---				delta := sqrt (delta_x^2 + delta_y^2)
---				mouse_delta := sqrt (event.x_motion^2 + event.y_motion^2)
-
---				if mouse_delta > 0 and then delta/mouse_delta <= 3 and then sqrt (start_vec.x^2 + start_vec.y^2) < plane_size/2 then
---					x_translation := x_translation + event.x_motion*(delta/mouse_delta)
---					y_translation := y_translation + event.y_motion*(delta/mouse_delta)
---				end
+				--TODO: implement pan
 			end
 		end
 

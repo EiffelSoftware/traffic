@@ -167,7 +167,7 @@ feature {NONE} -- Event handling
 			camera: TE_3D_CAMERA
 			z_axis: EM_VECTOR3D
 		do
-		camera := renderpass_manager.renderpasses.i_th(1).camera
+		camera := beauty_pass.camera
 		z_axis := camera.transform.position * (1.0/10.0)
 		camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
 		end
@@ -178,7 +178,7 @@ feature {NONE} -- Event handling
 			camera: TE_3D_CAMERA
 			z_axis: EM_VECTOR3D
 		do
-		camera := renderpass_manager.renderpasses.i_th(1).camera
+		camera := beauty_pass.camera
 		z_axis := camera.transform.position * (1.0/10.0)
 		camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
 		end
@@ -268,7 +268,7 @@ feature {NONE} -- Event handling
 			radius,polar,azimut,zx_comp_length:DOUBLE
 		do
 			if event.button_state_right then
-				camera := renderpass_manager.renderpasses.i_th(1).camera
+				camera := beauty_pass.camera
 
 				--carth to spherical
 				radius:=camera.transform.position.length
