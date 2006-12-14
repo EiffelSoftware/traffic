@@ -85,6 +85,7 @@
 
 		<!-- Please enter foldername correctly! -->
 		<geant file="build.eant" target="${target}" dir="general/installation"/>
+		<geant file="build.eant" target="${target}" dir="guide"/>
 		<geant file="build.eant" target="${target}" dir="traffic/developer"/>
 		<geant file="build.eant" target="${target}" dir="traffic/3d_examples"/>
 		<geant file="build.eant" target="${target}" dir="traffic/2d_examples"/>		

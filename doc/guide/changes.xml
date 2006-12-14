@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="guide/changes">
+<chapterinfo>
+	<copyright>
+		<year>2006</year>
+		<holder>Matthias Loeu</holder>
+	</copyright>
+    <email>mloeu@inf.ethz.ch</email>
+	<date>$Date: 2006-12-14 13:22:06 +0200 (Thu, 14 Dec 2006) $</date>
+</chapterinfo>
+    <title>Getting Started Guide</title>
+	
+    <section id="installation_audience">
+        <title>Changes to Traffic</title>
+        <para>There are some bugs in the release version of Traffic. </para>
+		<itemizedlist>
+			<listitem>
+				<para>In TOUCH_3D_APPLICATION: Swap lines 42 and 43 so that “set icon” is before “set_application_specifics”</para>
+			</listitem>
+			<listitem>
+				<para>--- something else ---</para>
+			</listitem>
+		</itemizedlist>
+
+
+		<title>Below here are some examples... will be deleted when I'm finished!</title>
+
+		<para></para>
+		<para></para>
+		<para></para>
+		<para><image src="p/p1.png"/></para>
+		<orderedlist>
+			<listitem>
+				<para>Lorem ipsum...</para>
+			</listitem>
+		</orderedlist>
+		<itemizedlist>
+			<listitem>
+				<para>Lorem ipsum...</para>
+			</listitem>
+		</itemizedlist>
+        <para>Lorem ipsum...</para>
+        <para>Lorem ipsum...</para>
+
+    </section>
+</chapter>

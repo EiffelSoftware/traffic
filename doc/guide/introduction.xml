@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="guide/introduction">
+<chapterinfo>
+	<copyright>
+		<year>2006</year>
+		<holder>Matthias Loeu</holder>
+	</copyright>
+    <email>mloeu@inf.ethz.ch</email>
+	<date>$Date: 2006-12-14 13:22:06 +0200 (Thu, 14 Dec 2006) $</date>
+</chapterinfo>
+    <title>Getting Started Guide</title>
+	
+    <section id="installation">
+        <title>Introduction</title>
+        <para>Since 2003 the Chair of  Software Engineering at the ETH Zurich teaches “Introduction to Programming” for their first semester students following the ideas of the Inverted Curriculum. It builds around a large piece of software which includes a tool called Traffic. Traffic consists of the Traffic library, as well as some example applications.</para>
+		<para>In this guide I will try to explain how to get your first Traffic example application running and help you create your own Traffic application.</para>
+		<itemizedlist>
+			<listitem>
+				<link url="introduction_audience.html">Intended Audience</link>
+				<para></para>
+			</listitem>
+		</itemizedlist>
+    </section>
+</chapter>

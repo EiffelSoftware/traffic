@@ -30,6 +30,18 @@
 	</itemizedlist>
 </section>
 
+<section>
+	<title>Getting Started Guide</title>
+	<itemizedlist>
+		<listitem>
+			<link url="guide/index.html">Guide</link>
+			<para>
+				Getting started with <projectname>Traffic</projectname>
+			</para>
+		</listitem>
+	</itemizedlist>
+</section>
+
 <section id="traffic library">
 	<title>Traffic library Documentation</title>
 	<itemizedlist>

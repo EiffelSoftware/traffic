@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<project name="guide" default="help">
+
+	<description>
+		description: "Getting Started Guide"
+		date: "$Date: 2006-12-14 13:22:06 +0200 (Thu, 14 Dec 2006) $"
+		revision: "$Revision: 387 $"
+	</description>
+
+	<inherit>
+		<parent location="../misc/build_function.eant">
+			<redefine target="init"/>
+			<redefine target="do_all"/>
+		</parent>
+	</inherit>
+
+	<target name="init" export="NONE">
+		<description>
+			Init all needed Projectvariables
+		</description>
+		<set name="root_path" value="../"/>
+		<set name="doc_section" value="guide"/>
+	</target>
+
+	<target name="do_all" export="NONE">
+		<description>
+			Call 'geant' with the same target ${target}
+			without subdirectories.
+		</description>
+		<geant target="${target}" arguments="introduction"/>
+		<geant target="${target}" arguments="introduction_audience"/>
+		<geant target="${target}" arguments="installation"/>
+		<geant target="${target}" arguments="installation_eiffelstudio"/>
+		<geant target="${target}" arguments="installation_eiffelmedia"/>
+		<geant target="${target}" arguments="installation_traffic"/>
+		<geant target="${target}" arguments="example"/>
+		<geant target="${target}" arguments="new"/>
+		<geant target="${target}" arguments="new_traffic"/>
+		<geant target="${target}" arguments="new_touch"/>
+		<geant target="${target}" arguments="new_app"/>
+		<geant target="${target}" arguments="changes"/>
+		<geant target="${target}" arguments="index"/>
+	</target>
+
+
+</project>
