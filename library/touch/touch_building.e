@@ -24,16 +24,17 @@ inherit
 
 	TOUCH_3D_CONSTANTS
 
+	TOUCH_SHARED_MAP_WIDGET
+
 
 create make_at_place
 
 feature --Initialization
 
-	make_at_place(a_place: TRAFFIC_PLACE; a_map_widget: TOUCH_3D_MAP_WIDGET) is
+	make_at_place(a_place: TRAFFIC_PLACE) is
 			-- Create a building at the location of 'a_place'. 
 		require
 			a_place /= Void
-			a_map_widget /= Void
 		local
 			p1, p2, p3, p4: EM_VECTOR_2D
 			internal_building_height: DOUBLE
@@ -41,9 +42,9 @@ feature --Initialization
 			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
 		do
 			internal_place := a_place
-			internal_map_widget := a_map_widget
-			internal_map := a_map_widget.map
-			internal_building_rep := a_map_widget.buildings_representation
+			internal_map_widget := map_widget
+			internal_map := map_widget.map
+			internal_building_rep := map_widget.buildings_representation
 
 			-- make a building at top of position of the place.		
 			internal_building_height := 1.0

@@ -10,6 +10,8 @@ class
 inherit
 	TOUCH_TIMING
 
+	TOUCH_SHARED_MAP_WIDGET
+
 create
 	make, make_route, make_empty_route
 
@@ -22,15 +24,13 @@ feature  -- Initialization
 			internal_route.make_empty (a_map)
 		end
 
-	make_route (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]; a_map_widget: TOUCH_3D_MAP_WIDGET) is
+	make_route (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]) is
 			-- Create route on map `a_map'.
-		require
-			a_map_widget_exists: a_map_widget /= Void
 		do
 
-			internal_map_widget := a_map_widget
-			internal_map := a_map_widget.map
-			create internal_route.make (a_places_to_visit, a_map_widget.map)
+			internal_map_widget := map_widget
+			internal_map := map_widget.map
+			create internal_route.make (a_places_to_visit, map_widget.map)
 
 --			calculate_shortest_path
 			make_itinerary
@@ -38,11 +38,11 @@ feature  -- Initialization
 
 		end
 
-	make (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]; a_map_widget: TOUCH_3D_MAP_WIDGET) is
+	make (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]) is
 			-- Create shortest path route through all places in `a_places_to_visit'.
 		do
-			internal_map_widget := a_map_widget
-			create internal_route.make (a_places_to_visit, a_map_widget.map)
+			internal_map_widget := map_widget
+			create internal_route.make (a_places_to_visit, map_widget.map)
 		end
 
 feature -- Basic operations

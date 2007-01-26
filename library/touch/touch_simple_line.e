@@ -16,20 +16,23 @@ inherit
 		undefine
 			out
 		end
+	TOUCH_SHARED_MAP_WIDGET
+		undefine
+			out
+		end
 
 create
 	make_with_line_and_representation
 
 feature -- Initialization
 
-	make_with_line_and_representation(a_line: TRAFFIC_SIMPLE_LINE; a_rep: TRAFFIC_3D_LINE_REPRESENTATION) is
+	make_with_line_and_representation(a_line: TRAFFIC_SIMPLE_LINE) is
 			-- Set `internal_line' to `a_line' (line for which this proxy is built) and allow access via `a_rep' to the visuals of the line.
 		require
 			a_line /= Void
-			a_rep /= Void
 		do
 			internal_line := a_line
-			internal_rep := a_rep
+			internal_rep := map_widget.lines_representation
 		ensure
 			internal_line /= Void
 			internal_rep /= Void

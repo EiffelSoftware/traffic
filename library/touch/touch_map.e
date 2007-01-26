@@ -12,17 +12,22 @@ inherit
 			out
 		end
 
+	TOUCH_SHARED_MAP_WIDGET
+		undefine
+			out
+		end
+
 create
 	make
 
 feature -- Initialization
 
-	make (a_widget: TOUCH_3D_MAP_WIDGET) is
+	make is -- (a_widget: TOUCH_3D_MAP_WIDGET) is
 			-- Set `internal_map_widget' to `a_widget'.
 		require
-			a_widget_exists: a_widget /= Void
+		--	a_widget_exists: a_widget /= Void
 		do
-			internal_map_widget := a_widget
+			internal_map_widget := map_widget
 		ensure
 			internal_map_widget /= Void
 		end
@@ -169,13 +174,13 @@ feature -- Access
 		require
 			a_traffic_place_exists: a_place /= Void
 		do
-			create Result.make_at_place(a_place, internal_map_widget)
+			create Result.make_at_place(a_place)
 		end
 
 	new_route (a_places_to_visit: LINKED_LIST [TRAFFIC_PLACE]): TOUCH_ROUTE is
 			-- New route with places from `a_places_list'
 		do
-			create Result.make_route (a_places_to_visit, internal_map_widget)
+			create Result.make_route (a_places_to_visit)
 		end
 
 	new_empty_route(a_map: TRAFFIC_MAP): TOUCH_ROUTE is
@@ -219,7 +224,7 @@ feature -- Access
 			a_name_exists: a_name /= Void
 			line_in_map: has_line (a_name)
 		do
-			create Result.make_with_line_and_representation(internal_map.line (a_name), internal_map_widget.lines_representation)
+			create Result.make_with_line_and_representation(internal_map.line (a_name))
 		end
 
 	simple_line (a_name: STRING): TOUCH_SIMPLE_LINE is
@@ -232,7 +237,7 @@ feature -- Access
 		do
 			a_line ?= internal_map.line (a_name)
 			if a_line /= Void then
-				create Result.make_with_line_and_representation(a_line, internal_map_widget.lines_representation)
+				create Result.make_with_line_and_representation(a_line)
 			end
 		end
 

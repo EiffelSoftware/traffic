@@ -4,31 +4,35 @@ indexing
 	revision: "$Revision$"
 
 class TOUCH_LINE
-	
+
 inherit
-	
+
 	ANY
-		redefine 
-			out 
+		redefine
+			out
 		end
-		
+
 	TOUCH_TIMING
+		undefine
+			out
+		end
+	TOUCH_SHARED_MAP_WIDGET
 		undefine
 			out
 		end
 
 create make_with_line_and_representation
-	
+
 feature -- Initialization
-	
-	make_with_line_and_representation(a_line: TRAFFIC_LINE; a_rep: TRAFFIC_3D_LINE_REPRESENTATION) is 
+
+	make_with_line_and_representation(a_line: TRAFFIC_LINE) is
 			-- Set `internal_line' to `a_line' (line for which this proxy is built) and allow access via `a_rep' to the visuals of the line.
 		require
 			a_line /= Void
-			a_rep /= Void		
-		do 
+		do
 			internal_line := a_line
-			internal_rep := a_rep
+			internal_rep := map_widget.lines_representation
+
 		ensure
 			internal_line /= Void
 			internal_rep /= Void
@@ -36,8 +40,8 @@ feature -- Initialization
 
 feature -- Access
 
-	name: STRING is 
-		do 
+	name: STRING is
+		do
 			Result := internal_line.name
 		end
 
@@ -52,19 +56,19 @@ feature -- Access
 		do
 			Result := internal_line.terminal_1
 		end
-		
+
 	terminal_2: TRAFFIC_PLACE is
 			-- Terminal of line in other direction.
 		do
 			Result := internal_line.terminal_2
 		end
-		
+
 	color: TRAFFIC_COLOR is
 			-- Line color.
 			-- Used as color represenation.
 		do
 			Result := internal_line.color
-		end		
+		end
 
 	start_to_terminal (a_terminal: TRAFFIC_PLACE): TRAFFIC_PLACE is
 			-- The start place to existing terminal `a_terminal'.
@@ -140,26 +144,26 @@ feature -- Element change
 		ensure
 			color_removed: color = Void
 		end
-		
-	highlight is 
+
+	highlight is
 			-- Highlight the line.
-		do 
+		do
 			internal_rep.highlight_single_line(internal_line)
 		end
-		
+
 	unhighlight is
 			-- Unhighlight the line.
 		do
 			internal_rep.unhighlight_single_line (internal_line)
-		end		
-		
-	highlight_for_5_seconds is 
+		end
+
+	highlight_for_5_seconds is
 			-- Highlight the line for five seconds.
 		do
 			highlight
 			wait(5000)
 			unhighlight
-		end	
+		end
 
 feature -- Status report
 
@@ -175,7 +179,7 @@ feature -- Status report
 			Result := internal_line.after
 		end
 
-	before: BOOLEAN is		
+	before: BOOLEAN is
 			-- Is there no valid cursor position to the left of cursor?
 		do
 			Result := internal_line.before
@@ -200,7 +204,7 @@ feature -- Status report
 		do
 			Result := internal_line.one_direction_exists
 		end
-		
+
 	other_direction_exists: BOOLEAN is
 			-- Does line have line section(s) in other direction?
 		do
@@ -221,9 +225,9 @@ feature -- Status report
 		do
 			Result := internal_line.is_valid_for_insertion (a_line_section)
 		end
-	
+
 	is_valid_insertion (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
-			-- Can a line_section from `a_origin' to `a_destination' be added 
+			-- Can a line_section from `a_origin' to `a_destination' be added
 			-- in front or back of this line?
 		require
 			a_origin_exists: a_origin /= Void
@@ -278,13 +282,13 @@ feature -- Basic operations
 		end
 
 feature -- Output
-		
+
 	out: STRING is
 			-- Textual representation
 		do
 			Result := internal_line.out
 		end
-		
+
 feature {NONE} -- Implementation
 
 	internal_line: TRAFFIC_LINE
@@ -292,10 +296,10 @@ feature {NONE} -- Implementation
 
 	internal_rep: TRAFFIC_3D_LINE_REPRESENTATION
 			-- Visualization of `internal_line' that gets calls concerning visualization changes
-		
+
 invariant
 
-	name_not_void: name /= Void 
+	name_not_void: name /= Void
 	name_not_empty: not name.is_empty
 	type_exists: type /= Void
 

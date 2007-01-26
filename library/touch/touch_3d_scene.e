@@ -17,6 +17,7 @@ inherit
 
 	EXCEPTIONS
 		export {NONE} all end
+	TOUCH_SHARED_MAP_WIDGET
 
 create
 	make_component_scene
@@ -40,7 +41,6 @@ feature -- Initialization
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
-				create map_widget.make
 				map_widget.set_position (0, 0)
 				add_component (map_widget)
 			else
@@ -126,9 +126,5 @@ feature -- Widgets
 			-- Botton to zoom out
 
 	click_here_button: EM_BUTTON
-			-- Button to execute example codes		
-
-	map_widget: TOUCH_3D_MAP_WIDGET
-			-- The 3 dimensional representation of the map		
-
+			-- Button to execute example codes				
 end

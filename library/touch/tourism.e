@@ -13,27 +13,25 @@ inherit
 
 	TOUCH_PARIS_OBJECTS
 
+	TOUCH_SHARED_MAP_WIDGET
+
 feature -- Access
 
-	run (a_map_widget: TOUCH_3D_MAP_WIDGET; a_console: TOUCH_CONSOLE) is
+	run (a_console: TOUCH_CONSOLE) is
 			-- Run the example code defined in `explore'.
 		require
-			a_map_widget_exists: a_map_widget /= Void
 			a_console_exists: a_console /= Void
 		do
-			map_widget := a_map_widget
 			console := a_console
-
-			-- explore
-
+			explore
 		end
 
 feature  -- Example main feature
 
---	explore is
---			-- Executed on startup.
---		deferred
---		end
+	explore is
+			-- Executed on startup.
+		do
+		end
 
 	explore_on_click is
 			-- Executed when the button is clicked.
@@ -41,9 +39,6 @@ feature  -- Example main feature
 		end
 
 feature -- Access
-
-	map_widget: TOUCH_3D_MAP_WIDGET
-			-- Map widget that also contains all 3d objects for displaying the map
 
 	console: TOUCH_CONSOLE
 			-- Console for output
@@ -72,7 +67,7 @@ feature -- Access (Paris)
 				loader.load_map
 				if not loader.has_error then
 					map_widget.set_map (loader.map)
-					create Result.make (map_widget)
+					create Result.make
 					map_widget.enable_map_hidden
 					is_paris_loaded := True
 					is_zurich_loaded := False
@@ -97,7 +92,7 @@ feature -- Access (Paris)
 				loader.load_map
 				if not loader.has_error then
 					map_widget.set_map (loader.map)
-					create Result.make (map_widget)
+					create Result.make
 					map_widget.enable_map_hidden
 					is_paris_loaded := True
 					is_zurich_loaded := False
