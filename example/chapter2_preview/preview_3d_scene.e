@@ -22,7 +22,7 @@ feature -- Interface
 		do
 			Precursor
 			create preview
-			preview.run (map_widget, console)
+			preview.run (console)
 			click_here_button.clicked_event.subscribe (agent button_click)
 		end
 
