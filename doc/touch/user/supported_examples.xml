@@ -29,6 +29,11 @@
 					Commands example 
 		        </para>
 		    </listitem>
+		    <listitem>
+				<para>
+					Road creation example 
+				</para>
+		   </listitem>
       	</itemizedlist>
     </para>
 	</section>
@@ -119,5 +124,71 @@
 <keyword>end</keyword>
 		</programlisting>
 	    </para>
+	</section>    
+<section id="road creation">
+	<title>
+	Road creation example
+	</title>
+	<para>
+		<programlisting>
+<keyword>class</keyword> ROAD_CREATION
+				
+<keyword>inherit</keyword>
+				
+	TOURISM
+	<keyword>redefine</keyword>
+		explore
+	<keyword>end</keyword>
+	TOUCH_ROAD
+				
+	<keyword>feature</keyword> <comment>Example</comment>
+				
+		explore_on_click <keyword>is</keyword>
+		<comment>Some information.</comment>
+			<keyword>do</keyword>
+				console.set_text ("This is an example of a road creation. Click the Button to create a new Road")
+				paris.display
+			<keyword>end</keyword>
+				
+		explore_on_click <keyword>is</keyword>
+			<comment>Try some commands.</comment>
+			<keyword>do</keyword>
+				create places.make
+				create place1.make_with_pos ("Place 1", 50, 50)
+				create place2.make_with_pos ("Place 2", 90, 50)
+				place1.link (place2)
+				create place3.make_with_pos ("Place 3", 130, 50)
+				place2.link (place3)
+				create place4.make_with_pos ("Place 4", 170, 50)
+				place3.link (place4)
+				create place5.make_with_pos ("Place 5", 210, 90)
+				place4.link (place5)
+				create place6.make_with_pos ("Place 6", 210, 130)
+				place5.link (place6)
+				create place7.make_with_pos ("Place 7", 210, 170)
+				place6.link (place7)
+				create place8.make_with_pos ("Place 8", 210, 210)
+				place7.link (place8)
+				create place9.make_with_pos ("Place 9", 210, 250)
+				place8.link (place9)
+				create place10.make_with_pos ("Place 10", 90, 150)
+				place9.link (place10)
+				places.extend (place1)
+				places.extend (place2)
+				places.extend (place3)
+				places.extend (place4)
+				places.extend (place5)
+				places.extend (place6)
+				places.extend (place7)
+				places.extend (place8)
+				places.extend (place9)
+				places.extend (place10)
+				map_widget.disable_lines_shown
+				make_colored_road(places, 5, 10, 25)
+			<keyword>end</keyword>
+				
+	<keyword>end</keyword>
+			</programlisting>
+		</para>
 	</section>    
 </chapter>

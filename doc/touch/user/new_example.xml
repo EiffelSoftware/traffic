@@ -70,7 +70,7 @@
 		</para>
 		
 		<para>
-			The second feature <featurename>explore_on button_click</featurename> contains the code 
+			The second feature <featurename>explore_on_click</featurename> contains the code 
 			which will be executed after pressing the button "click here". In the preview example, the 
 			line is highlighted again to have a look at it once more. 
 		</para>
@@ -178,9 +178,9 @@
 			<keyword>Precursor</keyword>
 
 			<keyword>create</keyword> preview
-			preview.run (map_widget, console)
+			preview.run (map_widget)
 
-			click_here_button.clicked_event.subscribe (<keyword>agent</keyword> preview.explore_on_button_click)	
+			click_here_button.clicked_event.subscribe (<keyword>agent</keyword> preview.explore_on_click)	
 		<keyword>end</keyword>
 
 <keyword>end</keyword>

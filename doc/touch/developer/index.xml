@@ -63,7 +63,15 @@
 		<listitem>
 			<link url="#tourism">TOURISM</link>
 		</listitem>
-
+		<listitem>
+			<link url="#touch_place">TOUCH_PLACE</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_shared_map_widget">TOUCH_SHARED_MAP_WIDGET</link>
+		</listitem>
+		<listitem>
+			<link url="#touch_road">TOUCH_ROAD</link>
+		</listitem>
 	</itemizedlist>
 </section>
 
@@ -80,8 +88,8 @@
 		</para>
 		<para>
 			The features <featurename>make_at_place</featurename> takes a trafic_place and the 
-			touch_3d_map_widget and creates a building at the location of the place. The center of
-			the building is at (place_position.x, place_position.y + 1). 
+			singleton variable map_widget from <classname>TOUCH_SHARED_MAP_WIDGET</classname> and creates 
+			a building at the location of the place. The center of the building is at (place_position.x, place_position.y + 1). 
 		</para>
 		<para>
 			The other calls are forwarded to the <classname>TRAFFIC_BUILDING</classname>. 
@@ -130,14 +138,15 @@
 		<title>TOUCH_LINE</title>
 		<title>Requirements</title>
 		<para>
-			TRAFFIC_LINE, TRAFFIC_LINE_REPRESENTATION
+			TRAFFIC_LINE
 		</para>
 		<title>Description</title>
 		<para>
 			The class <classname>TOUCH_LINE</classname> represents a touch line. 
 		</para>
 		<para>
-			The touch line connects the <classname>TRAFFIC_LINE</classname> with its <classname>TRAFFIC_3D_LINE_REPRESENTATION</classname>. The calls are 
+			The touch line connects the <classname>TRAFFIC_LINE</classname> with the singleton variable map_widget from 
+			<classname>TOUCH_SHARED_MAP_WIDGET</classname>. The calls are 
 			forwarded to the corresponding class.  			
 
 		</para>
@@ -158,7 +167,7 @@
 		<title>Description</title>
 		<para>
 			This class forwards calls to the <classname>TRAFFIC_MAP</classname> and the 
-			<classname>TOUCH_3D_MAP_WIDGET</classname>. 
+			singleton variable map_widget from <classname>TOUCH_SHARED_MAP_WIDGET</classname>. 
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -230,11 +239,12 @@
 		</para>
 		<para>
 			The creation feature <featurename>make_with_line_and_represenation</featurename> takes a 
-			<classname>TRAFFIC_SIMPLE_LINE</classname> and a <classname>TRAFFIC_LINE_REPRESENTATION</classname>
+			<classname>TRAFFIC_SIMPLE_LINE</classname> and the singleton variable map_widget from 
+			<classname>TOUCH_SHARED_MAP_WIDGET</classname>
 			to set the internal implementation features. 
 		</para>
 		<para>
-			The connection from the line to ist representation is needed for the highlighting of the line. 
+			The connection from the line to ist representation (via the singleton variable map_widget) is needed for the highlighting of the line. 
 		</para>
 		<title>Class overview</title>
 		<para>
@@ -357,24 +367,88 @@
 		<para>
 			In this class, the <classname>TOUCH_MAP</classname> "Paris" is loaded. 
 			Features which are used in the individual examples (<featurename>explore</featurename> and 
-			<featurename>explore_on_button_click</featurename>) are defined as deferred. 
+			<featurename>explore_on_click</featurename>) are defined as deferred. 
 		</para>
 		<para>
 			 The information, which map has been loaded can be retrieved by invoking the feature 
 			 <featurename>is_zurich_loaded</featurename> or <featurename>is_paris_loaded</featurename>. 
 		</para>
 		<para>
-			Access to the touch_3d_map_widget is given through the <featurename>map_widget</featurename> 
-			and to the touch_console through the feature <featurename>console</featurename>.
+			Access to the touch_console is given through the feature <featurename>console</featurename>.
+			Acces to the map_widget is given through the singleton variable map_widget from <classname>TOUCH_SHARED_MAP_WIDGET</classname>.
 		</para>
 		<para>
-			The feature <featurename>run</featurename> sets the <featurename>map_widget</featurename> and the 
-			<featurename>console</featurename> and invokes explore. 
+			The feature <featurename>run</featurename> sets the <featurename>console</featurename> and invokes explore. 
 		</para>
 
 		<title>Class overview</title>
 		<para>
 			<image src="image/tourism.png"/>
+		</para>
+		<toplink/>
+	</section>
+	
+	<section id="touch_place">
+		<title>TOUCH_PLACE</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+			A <classname>TOUCH_PLACE</classname> contains a <classname>TRAFFIC_PLACE</classname> and a
+			<classname>TRAFFIC_NODE</classname> which are created with a name and a position and are inserted
+			in the singleton variable map_widget from <classname>TOUCH_SHARED_MAP_WIDGET</classname>.
+		</para>
+		<para>
+			A <classname>TOUCH_PLACE</classname> can be linked with another <classname>TOUCH_PLACE</classname>
+			with the feature <featurename>link</featurename> which can be used for some representational features.
+		</para>
+		
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_place.png"/>
+		</para>
+		<toplink/>
+	</section>
+	
+	<section id="touch_shared_map_widget">
+		<title>TOUCH_SHARED_MAP_WIDGET</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+			Contains a singleton variable map_widget which is used by many classes using a 
+			<classname>TOUCH_3D_MAP_WIDGET</classname> allowing easy access for representational 
+			features and a general way of accessing maps.
+		</para>
+		
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_shared_map_widget.png"/>
+		</para>
+		<toplink/>
+	</section>
+	
+	<section id="touch_road">
+		<title>TOUCH_ROAD</title>
+		<title>Requirements</title>
+		<para>
+			NONE
+		</para>
+		<title>Description</title>
+		<para>
+			Allows to create a <classname>TRAFFIC_ROAD</classname> given a list of <classname>TOUCH_PLACE</classname>.
+			Its possible to create a nonanimated road using <featurename>make_road</featurename> or a colored one
+			using <featurename>make_colored_road</featurename> which manipulates the rgb-color of the <classname>TRAFFIC_PLACE</classname> 
+			contained in the <classname>TOUCH_PLACE</classname>.
+		</para>
+		
+		<title>Class overview</title>
+		<para>
+			<image src="image/touch_road.png"/>
 		</para>
 		<toplink/>
 	</section>
