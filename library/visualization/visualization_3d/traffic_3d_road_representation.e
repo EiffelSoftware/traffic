@@ -108,7 +108,7 @@ feature -- Basic operations
 			road_view := road_factory.last_3d_member
 			road_view.make_child_of (road_root)
 			road_views.extend (road_view)
-			road_lookup.put (road_views.count, a_road)
+			road_lookup.force (road_views.count, a_road)
 			collision_polygons.append_last (road_factory.collision_polygons)
 		ensure
 		end
