@@ -60,9 +60,7 @@
 		<title>EXAMPLENAME: preview</title>
 		<para>
 			Every example, like the preview example, has to inherit from <classname>TOURISM</classname>. 
-			The class <classname>TOURISM</classname> contains all the predefined objects needed for the examples
-			<classname>PREVIEW</classname> just needs the specific code which will be executed for the particular 
-			example.
+			The class <classname>TOURISM</classname> contains all the predefined objects needed for the examples.
 		</para>	
 		<para>
 			The feature <featurename>explore</featurename> is executed while starting the application. 
