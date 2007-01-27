@@ -113,6 +113,7 @@
 		<geant target="do_one" arguments="chapter2_preview"/>
 		<geant target="do_one" arguments="chapter3_queries"/>
 		<geant target="do_one" arguments="chapter3_commands"/>
+		<geant target="do_one" arguments="chapter6_road_creation"/>
 	</target>
 
 </project>
