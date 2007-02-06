@@ -18,7 +18,7 @@
 			</listitem>
 			<listitem>
 				<para>In the start dialog, in the section “Create project” choose “Basic application (no graphics library included)” and click “Create”.</para>
-				<image src="p/p9.png"/>
+				<image src="p/p10.png"/>
 			</listitem>
 			<listitem>
 				<para>On the next screen, you can choose the name of your application as well as the directory in which all the files are located, if you're done, click “OK”.</para>

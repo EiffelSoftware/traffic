@@ -12,35 +12,18 @@
 	
     <section id="installation_audience">
         <title>Changes to Traffic</title>
-        <para>There are some bugs in the release version of Traffic. </para>
+        <para>There are some bugs in the release version of Traffic. Most of them don't affect the user directly. One however I have to point out since your application might not work:</para>
+		<para>If you create a Touch application and save it somewhere outside the "/traffic/example" folder your application crashes because an icon is missing/not where it thinks it is. There are various solutions/workarounds to this problem: (you need only apply ONE of the points listed below!)</para>
 		<itemizedlist>
 			<listitem>
 				<para>In TOUCH_3D_APPLICATION: Swap lines 42 and 43 so that “set icon” is before “set_application_specifics”</para>
 			</listitem>
 			<listitem>
-				<para>--- something else ---</para>
+				<para>In TOUCH_3D_APPLICATION: In line 43, set the path of the icon to the existing icon, either in the Traffic library or a copy in you application folder.</para>
+			</listitem>
+			<listitem>
+				<para>Make a copy of the icon at the location stated on line 43 in the class TOUCH_3D_APPLICATION.</para>
 			</listitem>
 		</itemizedlist>
-
-
-		<title>Below here are some examples... will be deleted when I'm finished!</title>
-
-		<para></para>
-		<para></para>
-		<para></para>
-		<para><image src="p/p1.png"/></para>
-		<orderedlist>
-			<listitem>
-				<para>Lorem ipsum...</para>
-			</listitem>
-		</orderedlist>
-		<itemizedlist>
-			<listitem>
-				<para>Lorem ipsum...</para>
-			</listitem>
-		</itemizedlist>
-        <para>Lorem ipsum...</para>
-        <para>Lorem ipsum...</para>
-
     </section>
 </chapter>
