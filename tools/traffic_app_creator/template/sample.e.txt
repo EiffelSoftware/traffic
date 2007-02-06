@@ -1,0 +1,19 @@
+indexing
+	description: "Objects that ..."
+	author: ""
+	date: "$Date$"
+	revision: "$Revision$"
+
+class
+	<<system_class>>
+inherit
+	TOURISM
+
+feature -- explore
+	explore_on_click is
+			-- explore on click
+		do
+			-- something useful
+		end
+
+end

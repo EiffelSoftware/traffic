@@ -1,0 +1,29 @@
+indexing
+	description	: "System's root class"
+	date: "$Date$"
+	revision: "$Revision$"
+
+class
+	<<root_class>>
+inherit
+	TOUCH_3D_APPLICATION
+
+create
+	make
+
+feature -- Initialization
+	set_first_scene is
+			-- the first scene
+		do
+			set_scene (create {<<scene_class>>}.make_component_scene)
+		end
+
+	set_application_specifics is
+			-- Set application specifics.
+		do
+			set_window_title ("application with TOUCH")
+			set_application_id ("<<system_name>>")
+		end
+
+
+end -- class <<root_class>>

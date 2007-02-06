@@ -1,0 +1,32 @@
+indexing
+	description: "Objects that ..."
+	author: ""
+	date: "$Date$"
+	revision: "$Revision$"
+
+class
+	<<scene_class>>
+
+inherit
+
+	TOUCH_3D_SCENE
+		redefine
+			initialize_scene
+		end
+
+creation
+	make_component_scene
+
+feature -- Creation
+	initialize_scene is
+			-- Creation procedure
+		do
+			Precursor
+			create my_app
+			my_app.run (map_widget, console)
+			click_here_button.clicked_event.subscribe (agent my_app.explore_on_click)
+		end
+
+	my_app: <<system_class>>
+
+end
