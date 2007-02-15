@@ -25,6 +25,8 @@ feature -- Initialization
 		do
 			set_window_title ("Touch - Preview")
 			set_application_id ("Touch_Preview")
+		
 		end
+
 
 end

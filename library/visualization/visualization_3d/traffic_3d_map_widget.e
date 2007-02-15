@@ -69,6 +69,7 @@ feature -- Initialisation
 --			(create{TE_3D_SHARED_GLOBALS}).root.add_child(coordinates)
 			--/DEBUG
 
+
 			--create the plane
 			create green_material.make
 			green_material.set_color(0.25,0.7,0.06) --(0.45,0.9,0.16)
@@ -84,6 +85,10 @@ feature -- Initialisation
 			create buildings_representation.make
 
 			building_id:= 1
+
+
+			-- create boolean_grid. used for random building placement.
+			create boolean_grid.make (Grid_size, Grid_size)
 
 		ensure
 			sun_repr_created: sun_representation /= Void
@@ -252,6 +257,12 @@ feature -- Access
 	paths_representation: TRAFFIC_3D_PATH_REPRESENTATION
 		-- Representation for all paths
 
+	boolean_grid: ARRAY2[BOOLEAN]
+			-- A boolean grid over the map:
+			--	true means the cell is occupied
+			--	false means the cell is free
+
+
 feature -- Basic operations
 
 	prepare_drawing is
@@ -298,85 +309,158 @@ feature -- Basic operations
 				create paths_representation.make (map)
 
 				buildings_representation.set_map(a_map)
+				boolean_grid.clear_all
 			else
 				-- Todo remove everything
 			end
 		end
 
-	add_buildings_randomly (n: INTEGER) is
-			-- Adds randomly `n' buildings to map.		
+
+	add_buildings_randomly_improved (density:INTEGER) is
+			-- Add buildings randomly to the map, improved algorithm.
 		require
-			n_not_negative: n >= 0
-		local
-			local_x_coord, local_y_coord: DOUBLE -- cooridnates of the building center
-			i, j: INTEGER
-			angle: DOUBLE -- random number between -45 and 45
-			stretch_factor_x, stretch_factor_y: DOUBLE
-			building: TRAFFIC_BUILDING
-			poly_points: DS_LINKED_LIST[EM_VECTOR_2D]
-			old_number: INTEGER
-			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
-			p1,p2,p3,p4: EM_VECTOR_2D
-			center: EM_VECTOR_2D
-			angle_randomizer: RANDOM
-			randomizer: RANDOM
+			no_buildings_already_on_map: buildings_representation.number_of_buildings = 0
 		do
-			create angle_randomizer.set_seed(45)
-			create randomizer.set_seed (42)
-			old_number := 0
 
-			-- set stretch factor
-			stretch_factor_x := .25
-			stretch_factor_y := .25
+			io.putstring ("Randomly placing buildings: ")
+			io.new_line
 
+			-- load the buildings templates
+			io.putstring ("- Loading building templates...")
+			io.new_line
+			buildings_representation.load_building_templates
+
+			-- set the values of the cells with over lines to true
+			io.putstring ("- Checking occupied map positions...")
+			io.new_line
+			mark_occupied
+
+
+			-- place buildings on free grid cells.
+			place_buildings(density)
+
+		end
+
+
+	gl_to_grid_coords(coord_value: DOUBLE):INTEGER is
+			-- get integer coordinate value for a double value. these values depend on Grid_size.
+		--	require
+		--		coord_value <=25
+		--		coord_value >=-25
+		local
+			cell_size: DOUBLE --requires positive values
+		do
+			cell_size := Plane_size / Grid_size
+			Result := ((coord_value + Plane_size/2)/ cell_size).ceiling
+		end
+
+	grid_to_gl_coords (grid_coord: INTEGER): DOUBLE is
+			-- get gl coordinates of the upper edge of the cell
+		do
+			Result := grid_coord * Plane_size / Grid_size - Plane_size/2
+		end
+
+
+	delete_buildings is
+			-- Delete all buildings from representation.
+		do
+			buildings_representation.delete_buildings
+			buildings_representation.collision_polygons.wipe_out
+			boolean_grid.clear_all
+			building_id:= 1
+		end
+
+feature -- Event channels
+
+	building_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING,EM_MOUSEBUTTON_EVENT]]
+			-- Event for click on building
+
+	place_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE, EM_MOUSEBUTTON_EVENT]]
+			-- Event for click on place
+
+feature {NONE} -- Implementation
+
+	x_coord: DOUBLE
+			-- X coordinate of the viewer
+
+	y_coord: DOUBLE
+			-- Y coordinate of the viewer
+
+	building_id: INTEGER
+			-- Number to specify the building name
+
+	plane: TE_3D_MEMBER
+			-- Plane on which the map is displayed
+
+	Grid_size: INTEGER is 250
+			-- Height and width of the grid. The grid is used to mark occupied places on the map.
+			-- It is used for random building placement.
+
+
+	mark_occupied is
+			-- traverse each line section and call 'mark_cells_traversed_by_polygon_edge' for each pair of polypoints
+			-- of the line section
+	local
+			poly_points: ARRAYED_LIST [EM_VECTOR_2D]
+			poly_point: EM_VECTOR_2D
+			i,j:INTEGER
+		do
+			--traverse each of the line sections
 			from
-				i := 1
-				j := 1
+				i:=1
 			until
-				i > (n + old_number)
+				i > map.line_sections.count
 			loop
-				-- calculate center of building
-				local_x_coord := - (plane_size/2) + randomizer.double_i_th (j)*plane_size
-				local_y_coord := - (plane_size/2) + randomizer.double_i_th (j+1)*plane_size
-				create center.make (local_x_coord, local_y_coord)
-
-				-- calculate angle of building
-				angle := angle_randomizer.double_i_th(j)*-90+45
-
-				-- create the four corners
-				create p1.make (local_x_coord+0.5*stretch_factor_x, local_y_coord+0.5*stretch_factor_y)
-				create p2.make (local_x_coord+0.5*stretch_factor_x, local_y_coord-0.5*stretch_factor_y)
-				create p3.make (local_x_coord-0.5*stretch_factor_x, local_y_coord-0.5*stretch_factor_y)
-				create p4.make (local_x_coord-0.5*stretch_factor_x, local_y_coord+0.5*stretch_factor_y)
-
-				-- rotate the building
-				p1:=p1.rotation (center,-angle*pi/180)
-				p2:=p2.rotation (center,-angle*pi/180)
-				p3:=p3.rotation (center,-angle*pi/180)
-				p4:=p4.rotation (center,-angle*pi/180)
-
-				-- Check for collision with lines and other buildings
-				create poly_points.make
-				poly_points.force (p1, 1)
-				poly_points.force (p2, 2)
-				poly_points.force (p3, 3)
-				poly_points.force (p4, 4)
-				create collision_poly.make_from_absolute_list (create {EM_VECTOR_2D}.make (x_coord, y_coord), poly_points)
-
-				if not has_collision (collision_poly) then
-
-					-- create traffic building and add it to map
-					create building.make(p1, p2, p3, p4, 0.25, "building " + building_id.out)
-					building_id := building_id + 1
-					building.set_angle (angle)
-					buildings_representation.add_building (building)
-					i := i + 1
-		end
-				-- we need to random j's per round
-				j := j + 2
+				-- traverse each poly point of a line section
+				poly_points := map.line_sections.i_th (i).polypoints
+				from
+					j:=2
+					poly_point := poly_points.i_th (1)
+						--requires at least 2 vertices!!
+				until
+					j > poly_points.count
+				loop
+					-- operation executed by the two loops
+					mark_cells_traversed_by_polygon_edge(map_to_gl_coords (poly_point), map_to_gl_coords (poly_points.i_th (j)))
+					poly_point := poly_points.i_th (j)
+					j:=j+1
+				end
+				i :=i+1
 			end
-
 		end
+
+
+
+	place_buildings (density: INTEGER)is
+			-- place buildings on map. buildings are first placed along the lines on the map. Then they're placed randomly so that the highest
+			-- building density is in the middle of the map.
+		require
+			density_not_1_2_or_3: density /= 1 or density /= 2 or density /= 3
+		local
+			buildings_nr:INTEGER
+			i:INTEGER
+		do
+			buildings_nr := 200
+
+			-- add buildings along all lines
+			io.putstring ("- Placing buildings along lines...")
+			io.new_line
+
+			add_buildings_along_lines
+
+			-- add buildings randomly on map
+			io.putstring ("- Placing buildings on random positions on map...")
+			io.new_line
+
+			-- stand february 2007: templates 1 and 4 are skyskrapers, 2 and 3 are houses
+
+			add_buildings_randomly (density * buildings_nr,8,1)
+			add_buildings_randomly (density * buildings_nr,10,1)
+			add_buildings_randomly (density * buildings_nr,15,4)
+			add_buildings_randomly (density * buildings_nr,50,2)
+			add_buildings_randomly (density * buildings_nr,50,3)
+		end
+
 
 	add_buildings_along_lines is
 			-- Add buildings along all lines (expect railway).
@@ -387,7 +471,7 @@ feature -- Basic operations
 			building: TRAFFIC_BUILDING
 			temp_destination: EM_VECTOR_2D -- destination rotated by line angle
 			gl_origin: EM_VECTOR_2D -- origin in gl coordinates
-			p1,p2,p3,p4: EM_VECTOR_2D
+			center,p1,p2,p3,p4: EM_VECTOR_2D
 			angle: DOUBLE
 			building_height: DOUBLE
 			collision_poly: EM_POLYGON_CONVEX_COLLIDABLE
@@ -440,6 +524,7 @@ feature -- Basic operations
 								create p2.make (end_point.x-0.5, end_point.y)
 								create p3.make (p2.x-0.5,p2.y)
 								create p4.make (p1.x-0.5,p1.y)
+								create center.make ((p2.x+p4.x)/2,(p1.y+p3.y)/2)
 								create building.make (p1,p2,p3,p4, building_height, "building " + building_id.out)
 								building_id := building_id + 1
 								building.set_angle (0)
@@ -449,9 +534,13 @@ feature -- Basic operations
 								poly_points.force (p3, 3)
 								poly_points.force (p4, 4)
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
-								if not has_collision (collision_poly) then
+								if	not building_has_collision_with_grid(building.center)	then
+
 									buildings_representation.add_building (building)
 									buildings_representation.collision_polygons.force_last (collision_poly)
+
+									mark_cells_for_building(building.center,building.width,building.breadth)
+
 								end
 
 								--builiding on the left hand sinde of the line
@@ -459,6 +548,7 @@ feature -- Basic operations
 								create p3.make (end_point.x+0.5, end_point.y)
 								create p2.make (p3.x+0.5,p3.y)
 								create p1.make (p4.x+0.5,p4.y)
+								create center.make ((p2.x+p4.x)/2,(p1.y+p3.y)/2)
 								create building.make (p1,p2,p3,p4, building_height, "building " + building_id.out)
 								building_id := building_id + 1
 								building.set_angle (0)
@@ -468,9 +558,12 @@ feature -- Basic operations
 								poly_points.force (p3, 3)
 								poly_points.force (p4, 4)
 								create collision_poly.make_from_absolute_list (building.center, poly_points)
-								if not has_collision (collision_poly) then
+								if	not building_has_collision_with_grid (building.center)	then
+
 									buildings_representation.add_building (building)
 									buildings_representation.collision_polygons.force_last (collision_poly)
+
+									mark_cells_for_building(building.center,building.width,building.breadth)
 								end
 								start_point.set_y (end_point.y-0.01)
 								end_point.set_y (end_point.y-0.51)
@@ -501,6 +594,7 @@ feature -- Basic operations
 									create p1.make (p2.x,p2.y+0.5)
 									create p3.make (end_point.x,end_point.y+0.5)
 									create p4.make (p3.x,p3.y+0.5)
+									create center.make ((p2.x+p4.x)/2,(p1.y+p3.y)/2)
 									p1:= p1.rotation (gl_origin, -angle)
 									p2:= p2.rotation (gl_origin, -angle)
 									p3:= p3.rotation (gl_origin, -angle)
@@ -514,9 +608,12 @@ feature -- Basic operations
 									poly_points.force (p3, 3)
 									poly_points.force (p4, 4)
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
-									if not has_collision (collision_poly) then
+								if	not building_has_collision_with_grid (building.center)	then
+
 										buildings_representation.add_building (building)
 										buildings_representation.collision_polygons.force_last(collision_poly)
+
+										mark_cells_for_building(building.center,building.width,building.breadth)
 									end
 
 									--builiding underneath the line
@@ -524,6 +621,7 @@ feature -- Basic operations
 									create p2.make (p1.x,p1.y-0.5)
 									create p4.make (end_point.x,end_point.y-0.5)
 									create p3.make(p4.x,p4.y-0.5)
+									create center.make ((p2.x+p4.x)/2,(p1.y+p3.y)/2)
 									p1:= p1.rotation (gl_origin, -angle)
 									p2:= p2.rotation (gl_origin, -angle)
 									p3:= p3.rotation (gl_origin, -angle)
@@ -537,9 +635,12 @@ feature -- Basic operations
 									poly_points.force (p3, 3)
 									poly_points.force (p4, 4)
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
-									if not has_collision (collision_poly) then
+								if	not building_has_collision_with_grid (building.center)	then
+
 										buildings_representation.add_building (building)
 										buildings_representation.collision_polygons.force_last (collision_poly)
+
+										mark_cells_for_building(building.center,building.width,building.breadth)
 									end
 									start_point.set_x (end_point.x-0.01)
 									end_point.set_x (end_point.x-0.51)
@@ -555,35 +656,283 @@ feature -- Basic operations
 			end
 		end
 
-	delete_buildings is
-			-- Delete all buildings from representation.
+
+	add_buildings_randomly (n:INTEGER; size_of_plane:DOUBLE; a_template:INTEGER) is
+			-- Adds randomly `n' buildings to map.		
+		require
+			n_not_negative: n >= 0
+			size_of_plane <= Plane_size
+		local
+			local_x_coord, local_y_coord: DOUBLE -- cooridnates of the building center
+			i, j: INTEGER
+			angle: DOUBLE -- random number between -45 and 45
+			stretch_factor_x, stretch_factor_y: DOUBLE
+			building: TRAFFIC_BUILDING
+			old_number: INTEGER
+			p1,p2,p3,p4: EM_VECTOR_2D
+			center: EM_VECTOR_2D
+			angle_randomizer: RANDOM
+			randomizer: RANDOM
 		do
-			buildings_representation.delete_buildings
-			buildings_representation.collision_polygons.wipe_out
-			building_id:= 1
+			create angle_randomizer.set_seed(45)
+			create randomizer.set_seed (42)
+			old_number := 0
+
+			-- set stretch factor
+			stretch_factor_x := .25
+			stretch_factor_y := .25
+
+			from
+				i := 1
+				j := 1
+			until
+				i > (n + old_number)
+			loop
+
+				-- calculate center of building
+				local_x_coord := - (size_of_plane/2) + randomizer.double_i_th (j)*size_of_plane
+				local_y_coord := - (size_of_plane/2) + randomizer.double_i_th (j+1)*size_of_plane
+				create center.make (local_x_coord, local_y_coord)
+
+				-- calculate angle of building
+				angle := angle_randomizer.double_i_th(j)*-90+45
+
+				-- create the four corners
+				if 	local_x_coord <=24 and local_x_coord >=-24 and local_y_coord <=24 and local_y_coord >=-24 then
+
+					create p1.make (local_x_coord+0.5*stretch_factor_x, local_y_coord+0.5*stretch_factor_y)
+					create p2.make (local_x_coord+0.5*stretch_factor_x, local_y_coord-0.5*stretch_factor_y)
+					create p3.make (local_x_coord-0.5*stretch_factor_x, local_y_coord-0.5*stretch_factor_y)
+					create p4.make (local_x_coord-0.5*stretch_factor_x, local_y_coord+0.5*stretch_factor_y)
+
+					-- rotate the building
+					p1:=p1.rotation (center,-angle*pi/180)
+					p2:=p2.rotation (center,-angle*pi/180)
+					p3:=p3.rotation (center,-angle*pi/180)
+					p4:=p4.rotation (center,-angle*pi/180)
+
+					-- Check for collision with lines and other buildings
+					if	not building_has_collision_with_grid(center) then
+
+--						io.putint (x_grid_coordinate(p1))
+--						io.putstring(" , ")
+--						io.putint (y_grid_coordinate(p1))
+--						io.new_line
+--						io.putint (x_grid_coordinate(p2))
+--						io.putstring(" , ")
+--						io.putint (y_grid_coordinate(p2))
+--						io.new_line
+--						io.putint (x_grid_coordinate(p3))
+--						io.putstring(" , ")
+--						io.putint (y_grid_coordinate(p3))
+--						io.new_line
+--						io.putint (x_grid_coordinate(p4))
+--						io.putstring(" , ")
+--						io.putint (y_grid_coordinate(p4))
+--						io.new_line
+--						io.putint (x_grid_coordinate(center))
+--						io.putstring(" , ")
+--						io.putint (y_grid_coordinate(center))
+--						io.new_line
+--						io.new_line
+
+						-- create traffic building and add it to map
+						create building.make(p1, p2, p3, p4, 0.25, "building " + building_id.out)
+						building_id := building_id + 1
+						building.set_angle (angle)
+						buildings_representation.add_building_with_template (building, a_template)
+						mark_cells_for_building(building.center,building.width,building.breadth)
+					end
+				end
+				i := i + 1
+				-- we need to random j's per round
+				j := j + 2
+			end
 		end
 
-feature -- Event channels
 
-	building_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING,EM_MOUSEBUTTON_EVENT]]
-			-- Event for click on building
+	mark_cells_traversed_by_polygon_edge(p0, p1: EM_VECTOR_2D) is
+    		-- set grid boolean values along the line from p0 to p1 using the a standard line drawing Algorithm.
+    	local
+    	x0_local, y0_local, x1_local, y1_local: INTEGER
+        dx,dy: DOUBLE
+        m, b: DOUBLE
+        primitive_factory: TE_3D_MEMBER_FACTORY_PRIMITIVE
+		red_material: TE_MATERIAL_SIMPLE
 
-	place_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE, EM_MOUSEBUTTON_EVENT]]
-			-- Event for click on place
+		do
+			x0_local := x_grid_coordinate (p0)
+			y0_local := y_grid_coordinate (p0)
+			x1_local := x_grid_coordinate (p1)
+			y1_local := y_grid_coordinate (p1)
+			dy := p1.y - p0.y
+			dx := p1.x - p0.x
 
-feature {NONE} -- Implementation
+			if  x0_local + 1 <= Grid_size and
+				y0_local + 1 <= Grid_size
+			then
+			mark_cells (x0_local, y0_local)
+	        end
 
-	x_coord: DOUBLE
-			-- X coordinate of the viewer
+--			create primitive_factory.make
+--			create red_material.make
 
-	y_coord: DOUBLE
-			-- Y coordinate of the viewer
+--			red_material.set_color (0.5, 0.9, 0.5)
+--			primitive_factory.set_material (red_material)
+--			primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--			primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local) - (Plane_size/grid_size)/2)
+--			(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--			primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--			primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local+1) - (Plane_size/grid_size)/2)
+--			(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--			primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--			primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local-1) - (Plane_size/grid_size)/2)
+--			(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--			primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--			primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local+1) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local) - (Plane_size/grid_size)/2)
+--			(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--			primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--			primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local-1) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local) - (Plane_size/grid_size)/2)
+--			(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
 
-	building_id: INTEGER
-			-- Number to specify the building name
 
-	plane: TE_3D_MEMBER
-			-- Plane on which the map is displayed
+
+			if dx.abs > dy.abs then
+            	m := dy/dx					-- compute slope
+            	b := p0.y - m*p0.x
+	            	if dx < 0 then
+	            		dx := -1.0
+	            	else
+	            		dx := 1.0
+	            	end
+            	from
+            	until
+            		x0_local = x1_local
+            	loop
+            		x0_local := x0_local + dx.rounded
+            		y0_local := gl_to_grid_coords(m*grid_to_gl_coords(x0_local) + b)
+            		if  x0_local + 1 <= Grid_size and
+						y0_local + 1 <= Grid_size
+					then
+       				mark_cells (x0_local, y0_local)
+					end
+
+--            		primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--					primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local) - (Plane_size/grid_size)/2)
+--					(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--					primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--					primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local+1) - (Plane_size/grid_size)/2)
+--					(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--					primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--					primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local-1) - (Plane_size/grid_size)/2)
+--					(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--					primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--					primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local+1) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local) - (Plane_size/grid_size)/2)
+--					(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--					primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--					primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local-1) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local) - (Plane_size/grid_size)/2)
+--					(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+		        end
+            else
+            	if not (dy = 0) then
+	            	m := dx/dy					-- compute slope
+	            	b := p0.x - m*p0.y
+		            	if dy < 0 then
+		            		dy := -1.0
+		            	else
+		            		dy := 1.0
+		            	end
+	            	from
+	            	until
+	            		y0_local = y1_local
+	            	loop
+	            		y0_local := y0_local + dy.rounded
+	            		x0_local := gl_to_grid_coords(m*grid_to_gl_coords(y0_local) + b)
+
+	            		if  x0_local + 1 <= Grid_size and
+							y0_local + 1 <= Grid_size
+						then
+	            		mark_cells (x0_local, y0_local)
+				        end
+
+--	            		primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--						primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local) - (Plane_size/grid_size)/2)
+--						(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--						primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--						primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local+1) - (Plane_size/grid_size)/2)
+--						(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--						primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--						primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local-1) - (Plane_size/grid_size)/2)
+--						(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--						primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--						primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local+1) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local) - (Plane_size/grid_size)/2)
+--						(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+--						primitive_factory.create_simple_plane (Plane_size/Grid_size, Plane_size/Grid_size)
+--						primitive_factory.last_3d_member.transform.set_position(grid_to_gl_coords (x0_local-1) - (Plane_size/grid_size)/2, 0.0, grid_to_gl_coords (y0_local) - (Plane_size/grid_size)/2)
+--						(create{TE_3D_SHARED_GLOBALS}).root.add_child(primitive_factory.last_3d_member)
+
+	            	end
+				end
+        	end
+   		 end
+
+	x_grid_coordinate(vec: EM_VECTOR_2D):INTEGER is
+			-- get integer coordinates for a double vector. these coordinates depend on Grid_size.
+		do
+			Result := gl_to_grid_coords(vec.x)
+		end
+
+	y_grid_coordinate(vec: EM_VECTOR_2D):INTEGER is
+			-- get integer coordinates for a double vector. these coordinates depend on Grid_size.
+		do
+			Result := gl_to_grid_coords(vec.y)
+		end
+
+
+	building_has_collision_with_grid(point: EM_VECTOR_2D): BOOLEAN is
+			-- check if the building has a collision with a grid cell whose value is true
+		do
+			Result:=boolean_grid[x_grid_coordinate(point), y_grid_coordinate(point)] or
+					boolean_grid[x_grid_coordinate(point)+1, y_grid_coordinate(point)+1] or
+					boolean_grid[x_grid_coordinate(point)+1, y_grid_coordinate(point)] or
+					boolean_grid[x_grid_coordinate(point)+1, y_grid_coordinate(point)-1] or
+					boolean_grid[x_grid_coordinate(point), y_grid_coordinate(point)+1] or
+					boolean_grid[x_grid_coordinate(point), y_grid_coordinate(point)-1] or
+					boolean_grid[x_grid_coordinate(point)-1, y_grid_coordinate(point)-1] or
+					boolean_grid[x_grid_coordinate(point)-1, y_grid_coordinate(point)] or
+					boolean_grid[x_grid_coordinate(point)-1, y_grid_coordinate(point)+1]
+		end
+
+
+	mark_cells_for_building(center:EM_VECTOR_2D; laenge, breite:DOUBLE) is
+			-- mark cells
+		do
+			boolean_grid.put (true, x_grid_coordinate(center), y_grid_coordinate(center))
+			boolean_grid.put (true, x_grid_coordinate(center)+1, y_grid_coordinate(center)+1)
+			boolean_grid.put (true, x_grid_coordinate(center)+1, y_grid_coordinate(center))
+			boolean_grid.put (true, x_grid_coordinate(center)+1, y_grid_coordinate(center)-1)
+			boolean_grid.put (true, x_grid_coordinate(center), y_grid_coordinate(center)+1)
+			boolean_grid.put (true, x_grid_coordinate(center), y_grid_coordinate(center)-1)
+			boolean_grid.put (true, x_grid_coordinate(center)-1, y_grid_coordinate(center)-1)
+			boolean_grid.put (true, x_grid_coordinate(center)-1, y_grid_coordinate(center))
+			boolean_grid.put (true, x_grid_coordinate(center)-1, y_grid_coordinate(center)+1)
+		end
+
+
+	mark_cells(i,j:INTEGER) is
+			-- mark cell (i,j) and surrounding cells
+		do
+			boolean_grid.put (true, i, j)
+			boolean_grid.put (true, i+1, j+1)
+			boolean_grid.put (true, i+1, j)
+			boolean_grid.put (true, i+1, j-1)
+			boolean_grid.put (true, i, j+1)
+			boolean_grid.put (true, i, j-1)
+			boolean_grid.put (true, i-1, j-1)
+			boolean_grid.put (true, i-1, j)
+			boolean_grid.put (true, i-1, j+1)
+		end
+
 
 	has_collision (a_poly: EM_COLLIDABLE): BOOLEAN is
 			-- Is there a collision?

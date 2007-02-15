@@ -61,6 +61,8 @@ feature -- 3D Member Creation
 			vector.set(u_length/2.0,0.0,-v_length/2.0)
 			vertex_list.force(vector)
 
+
+
 			--create uv coordinates
 			vector.set(0.0,1.0,0.0)
 			current_uvw_set.force(vector)

@@ -41,6 +41,35 @@ feature -- Access
 
 feature -- Building Creation
 
+
+	load_buildings is
+			-- loads the buildings
+	local
+		fs: KL_FILE_SYSTEM
+		s: STRING --path string
+		i:INTEGER
+		scene_importer: TE_3D_SCENE_IMPORTER
+		current_building: TE_3D_NODE
+	do
+		fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
+		scene_importer := (create {TE_3D_SHARED_GLOBALS}).scene_importer
+		create building_templates.make(template_count)
+
+		from
+			i := 1
+		until
+			i > template_count
+		loop
+				s := fs.pathname ("..", "buildings")
+				s := fs.pathname (s, name + i.out + ".obj")
+				current_building := scene_importer.import_3d_scene(s)
+				current_building.calculate_hierarchy_bounding_box
+				building_templates.extend(current_building)
+				i := i + 1
+		end
+	end
+	
+
 	create_building: TE_3D_NODE is
 			-- Produce a new representation for a building.
 			-- TODO change from EM_VECTOR_2D to the new EM_VECTOR2D
@@ -119,32 +148,6 @@ feature {NONE} -- Implementation
 	random: RANDOM
 		-- random object to use with the randomize_next_building feature
 
-	load_buildings is
-			-- loads the buildings
-	local
-		fs: KL_FILE_SYSTEM
-		s: STRING --path string
-		i:INTEGER
-		scene_importer: TE_3D_SCENE_IMPORTER
-		current_building: TE_3D_NODE
-	do
-		fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
-		scene_importer := (create {TE_3D_SHARED_GLOBALS}).scene_importer
-		create building_templates.make(template_count)
-
-		from
-			i := 1
-		until
-			i > template_count
-		loop
-				s := fs.pathname ("..", "buildings")
-				s := fs.pathname (s, name + i.out + ".obj")
-				current_building := scene_importer.import_3d_scene(s)
-				current_building.calculate_hierarchy_bounding_box
-				building_templates.extend(current_building)
-				i := i + 1
-		end
-	end
 
 
 invariant

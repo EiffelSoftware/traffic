@@ -14,14 +14,17 @@ feature	 -- Example
 	explore_on_click is
 			-- Execute preview example.
 		do
+
 			Paris.display
-			Louvre.lighten
-			Route1.animate
-			Line8.spotlight
-			Paris.build
-			Paris.equip
-			Console.show (Line8)
-			Console.show (Place_balard)
+			Paris.map_widget.add_buildings_randomly_improved(3)
+			io.put_string ("done")
+			--Louvre.lighten
+			--Route1.animate
+			--Line8.spotlight
+			--Paris.build
+			--Paris.equip
+			--Console.show (Line8)
+			--Console.show (Place_balard)
 		end
 
 end

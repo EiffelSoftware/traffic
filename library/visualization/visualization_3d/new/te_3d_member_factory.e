@@ -12,6 +12,7 @@ feature --Access
 
 	last_3d_member: TE_3D_MEMBER
 
+
 feature {NONE} -- Implementation
 
 	cluster_list: ARRAYED_LIST[TE_3D_CLUSTER]

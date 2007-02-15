@@ -126,6 +126,49 @@ feature	-- Basic operations
 			number_of_buildings := number_of_buildings + 1
 		end
 
+	add_building_with_template (a_building: TRAFFIC_BUILDING; a_template:INTEGER) is
+			-- Add `a_building' with template `a_template' to representation.
+		require
+			building_valid: a_building /= Void
+		local
+			day_building: TE_3D_MEMBER
+			night_building: TE_3D_MEMBER
+			setting_vector : EM_VECTOR3D
+		do
+			building_day_factory.set_template (a_template)
+			day_building ?= building_day_factory.create_building
+			day_building.transform.rotate (0,1,0,a_building.angle)
+			day_building.transform.set_position (a_building.center.x,0,a_building.center.y)
+			building_night_factory.set_template(a_template)
+			night_building ?= building_night_factory.create_building
+			night_building.transform.rotate (0,1,0,a_building.angle)
+			night_building.transform.set_position (a_building.center.x,0,a_building.center.y)
+			night_building.disable_hierarchy_renderable
+
+			day_building.enable_shadow_casting
+
+			a_building.set_id (id_counter)
+			id_counter := id_counter + 1
+			buildings_root.add_child (day_building)
+			buildings_root.add_child (night_building)
+			buildings.force ([day_building, night_building, a_building])
+			map.add_building (a_building)
+			number_of_buildings := number_of_buildings + 1
+		end
+
+	load_building_templates is
+			-- load building templates
+		do
+			building_day_factory.load_buildings
+			building_night_factory.load_buildings
+		end
+
+	get_templates_count: INTEGER is
+			-- get number of building templates
+		do
+			Result := building_day_factory.template_count
+		end
+
 	delete_buildings is
 			-- Delete buildings from representation.
 		do
