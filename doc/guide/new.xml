@@ -24,6 +24,16 @@
 				<listitem>
 					<link url="new_touch.html">Touch application</link>
 					<para></para>
+					<itemizedlist>
+						<listitem>
+							<link url="new_touch_hand.html">Touch application by hand</link>
+							<para></para>
+						</listitem>
+						<listitem>
+							<link url="new_touch_app.html">Touch application with the Traffic Application Creator</link>
+							<para></para>
+						</listitem>
+					</itemizedlist>
 				</listitem>
 				<listitem>
 					<link url="new_app.html">New Traffic Application</link>

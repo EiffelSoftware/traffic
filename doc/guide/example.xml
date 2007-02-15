@@ -41,7 +41,7 @@
 				<para>Go get a coffee. Depending on your computer you may wait a while or an even longer while...</para>
 			</listitem>
 			<listitem>
-				<para>1.Once the project is compiled you can execute (debug) it by clicking on the  "Debug" button in EiffelStudio or by hitting F5.</para>
+				<para>Once the project is compiled you can execute (debug) it by clicking on the  "Debug" button in EiffelStudio or by hitting F5.</para>
 			</listitem>
 		</orderedlist>
 		<para></para>

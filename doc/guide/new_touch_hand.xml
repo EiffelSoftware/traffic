@@ -12,7 +12,7 @@
 	
     <section id="new_touch">
         <title>Touch application</title>
-        <para>In the textbook A Touch Of Class there are some example applications throughout. The Touch library contains some simplifications so that Traffic does not overwhelm you. Please skip this section if you don't want to use Touch.</para>
+        <para>In the textbook A Touch Of Class there are some example applications. The Touch library contains some simplifications so that Traffic does not overwhelm you. Please skip this section if you don't want to use Touch.</para>
         <para>A Touch application relies (initially) on three classes: a root class, an application class (which is also your root class), a scene class and a class which contains what you want to do.</para>
 		<orderedlist>
 			<listitem>

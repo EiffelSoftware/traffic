@@ -12,13 +12,13 @@
 	
     <section id="installation_eiffelstudio">
         <title>EiffelStudio</title>
-        <para>Traffic is written in a programming language called Eiffel. Although you can write programs with a simple text editor, I strongly recommend against it. EiffelStudio is an Integrated development Environment, which allows you to create, compile and run applications.
+        <para>Traffic is written in a programming language called Eiffel. Although you can write programs with a simple text editor, I strongly recommend against it. EiffelStudio is an Integrated development Environment, which allows you to create, compile, and run applications.
 As a prerequisite and although not required, I recommend you to install the “Microsoft .NET Framework” if you don't have it already.</para>
 		<para>You can locate EiffelStudio on the Eiffel Software page or directly on this page: http://eiffelsoftware.origo.ethz.ch/downloads/builds/. You will have to choose the correct version to download according the operating system you use. I will use the Windows version  (Eiffel57_gpl_64493-windows.msi) and the whole guide will be based on said operating system.</para>
 		<para>Run the EiffelStudio installer as a system administrator and follow the instructions on screen.</para>
 		<para><image src="p/p1.png" /></para>
 		<para>While installing EiffelStudio you will at one point have to choose which C Compiler you want to use (either Borland Compiler or Microsoft Visual Studio Compiler). It does not matter which one you choose – I chose the former – but you have to remember which one.</para>
 		<para><image src="p/p2.png" /></para>
-		<para>You have to precompile the Eiffel libraries. If you don't, you will have to do it later. For Traffic, only the Base library is required, however I recommend that you precompile everything (as shown). You can, however, get yourself a cup of coffee, to precompile takes quite some time.</para>
+		<para>You have to precompile the Eiffel libraries. If you don't, you will have to do it later. For Traffic, only the Base library is required, however I recommend that you precompile everything (as shown). Get yourself a cup of coffee - precompililation takes quite some time.</para>
     </section>
 </chapter>

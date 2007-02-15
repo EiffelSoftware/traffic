@@ -12,7 +12,7 @@
 	
     <section id="introduction_audience">
         <title>Intended Audience</title>
-        <para>This guide is pretty intended for students without previous programming knowledge and for those which have not seen Traffic yet. This guide is quite elaborate, so it should also fit for those without much experience using computers.</para>
+        <para>This guide is intended for students without previous programming knowledge and for those which have not seen Traffic yet. This guide is quite elaborate, so it should also fit for those without much experience using computers.</para>
 		<para>The operating system I am using is “Windows XP (32 bit)”. The exact procedure for other operating systems – although similar – may differ.</para>
     </section>
 </chapter>

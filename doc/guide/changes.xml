@@ -12,7 +12,8 @@
 	
     <section id="installation_audience">
         <title>Changes to Traffic</title>
-        <para>There are some bugs in the release version of Traffic. Most of them don't affect the user directly. One however I have to point out since your application might not work:</para>
+        <para>There are some bugs in the release version (3.1) of Traffic. They are already fixed on the developement version and presumably on any future release of Traffic, so, if you use one of those versions, please feel free to skip this section. Again, this only concerns users of Traffic 3.1!</para>
+		<para>Most of the bugs don't affect the user directly. One however I have to point out since your application might not work:</para>
 		<para>If you create a Touch application and save it somewhere outside the "/traffic/example" folder your application crashes because an icon is missing/not where it thinks it is. There are various solutions/workarounds to this problem: (you need only apply ONE of the points listed below!)</para>
 		<itemizedlist>
 			<listitem>
