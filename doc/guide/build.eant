@@ -38,6 +38,8 @@
 		<geant target="${target}" arguments="new"/>
 		<geant target="${target}" arguments="new_traffic"/>
 		<geant target="${target}" arguments="new_touch"/>
+		<geant target="${target}" arguments="new_touch_hand"/>
+		<geant target="${target}" arguments="new_touch_app"/>
 		<geant target="${target}" arguments="new_app"/>
 		<geant target="${target}" arguments="changes"/>
 		<geant target="${target}" arguments="index"/>

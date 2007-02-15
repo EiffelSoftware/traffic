@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="guide/new/touch/app">
+<chapterinfo>
+	<copyright>
+		<year>2006</year>
+		<holder>Matthias Loeu</holder>
+	</copyright>
+    <email>mloeu@inf.ethz.ch</email>
+	<date>$Date: 2006-12-14 13:22:06 +0200 (Thu, 14 Dec 2006) $</date>
+</chapterinfo>
+    <title>Getting Started Guide</title>
+	
+    <section id="new_touch_app">
+        <title>Touch application with the Traffic Application Creator</title>
+        <para>This application provides you with everything you need to start your own Touch application. It thus may replace the previous section, however if you do decide to read it, it gives you some insight on how a Touch application works.</para>
+		<orderedlist>
+			<listitem>
+				<para>Start the Traffic Application Creator.</para>
+			</listitem>
+			<listitem>
+				<para>Set the name of your application, as well as the directory it should reside and the directory where you have put Traffic.</para>
+				<para><image src="p/p23.png"/></para>
+			</listitem>
+			<listitem>
+				<para>Click "Generate" and everything else is done for you. When the Application Creator is finished, a message will appear.</para>
+			</listitem>
+			<listitem>
+				<para>Go to the directory where your application is. There should be four files there. Double-click on the ".ecf" file to launch EiffelStudio, compile, and run your new application.</para>
+			</listitem>
+		</orderedlist>
+    </section>
+</chapter>

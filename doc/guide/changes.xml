@@ -12,19 +12,24 @@
 	
     <section id="installation_audience">
         <title>Changes to Traffic</title>
-        <para>There are some bugs in the release version (3.1) of Traffic. They are already fixed on the developement version and presumably on any future release of Traffic, so, if you use one of those versions, please feel free to skip this section. Again, this only concerns users of Traffic 3.1!</para>
-		<para>Most of the bugs don't affect the user directly. One however I have to point out since your application might not work:</para>
-		<para>If you create a Touch application and save it somewhere outside the "/traffic/example" folder your application crashes because an icon is missing/not where it thinks it is. There are various solutions/workarounds to this problem: (you need only apply ONE of the points listed below!)</para>
+        <para>There are some bugs in the release version (3.1) of Traffic.</para>
+		<para>Most of the bugs don't affect the user directly. Two however I have to point out since your application might not work:</para>
 		<itemizedlist>
 			<listitem>
-				<para>In TOUCH_3D_APPLICATION: Swap lines 42 and 43 so that “set icon” is before “set_application_specifics”</para>
+				<para>This bug is fixed in the developement version of Traffic and thus presumably also in any future release. If you create a Touch application and save it somewhere outside the "/traffic/example" folder your application crashes because an icon is missing/not where it thinks it is. There are various solutions/workarounds to this problem: (you need only apply ONE of the points listed below!)</para>
+				<itemizedlist>
+					<listitem>
+						<para>In TOUCH_3D_APPLICATION: remove line 43 (set_window_icon...)</para>
+					</listitem>
+					<listitem>
+						<para>Make a copy of the icon at the location stated on line 43 in the class TOUCH_3D_APPLICATION, relative to where your application is.</para>
+					</listitem>
+				</itemizedlist>
 			</listitem>
 			<listitem>
-				<para>In TOUCH_3D_APPLICATION: In line 43, set the path of the icon to the existing icon, either in the Traffic library or a copy in you application folder.</para>
-			</listitem>
-			<listitem>
-				<para>Make a copy of the icon at the location stated on line 43 in the class TOUCH_3D_APPLICATION.</para>
+				<para>Again, if you create a Touch application outside the example folder of the Traffic application your application crashes because it searches for some images which are not at the expected place any more. I don't know of a good solution, a workaround is to either copy the "buildings" folder to where your application is or to change lines 54, 61, 120 and 128 of the class TRAFFIC_3D_BUILDING_FANCY_FACTORY to reflect the path changes. For example, if the Traffic library is on "D:\traffic", you have to replace the two dots ".." with "D:\traffic\example" on all of the lines stated above.</para>
 			</listitem>
 		</itemizedlist>
+		<para>There are a few other similiar bugs. If you are unsure why your application crashes, try placing it in the "example" folder in the Traffic library.</para>
     </section>
 </chapter>

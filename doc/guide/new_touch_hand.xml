@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="guide/new/touch">
+<chapter xmlns="http://www.gobosoft.com/eiffel/gobo/documentation" id="guide/new/touch/hand">
 <chapterinfo>
 	<copyright>
 		<year>2006</year>
@@ -10,9 +10,8 @@
 </chapterinfo>
     <title>Getting Started Guide</title>
 	
-    <section id="new_touch">
-        <title>Touch application</title>
-        <para>In the textbook A Touch Of Class there are some example applications. The Touch library contains some simplifications so that Traffic does not overwhelm you. Please skip this section if you don't want to use Touch.</para>
+    <section id="new_touch_hand">
+        <title>Touch application by hand</title>
         <para>A Touch application relies (initially) on three classes: a root class, an application class (which is also your root class), a scene class and a class which contains what you want to do.</para>
 		<orderedlist>
 			<listitem>
