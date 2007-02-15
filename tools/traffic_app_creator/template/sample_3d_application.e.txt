@@ -23,6 +23,7 @@ feature -- Initialization
 		do
 			set_window_title ("application with TOUCH")
 			set_application_id ("<<system_name>>")
+			set_window_icon ("<<traffic_dir2>>/example/image/traffic_icon.png")
 		end
 
 

@@ -34,6 +34,7 @@ feature -- Access
 			tmp : STRING
 			my_dir: STRING
 			dir : DIRECTORY
+			traffic_dir2 : STRING
 		do
 			-- get clean system name
 			system_name.to_lower
@@ -56,6 +57,10 @@ feature -- Access
 			replacer.add_replacement_rule ("<<root_class>>", tmp + "_3D_APPLICATION")
 			replacer.add_replacement_rule ("<<scene_class>>", tmp + "_3D_SCENE")
 			replacer.add_replacement_rule ("<<traffic_dir>>", traffic_dir)
+			create traffic_dir2.make_from_string (traffic_dir)
+			traffic_dir2.to_lower
+			traffic_dir2.replace_substring_all ("\", "/")
+			replacer.add_replacement_rule ("<<traffic_dir2>>", traffic_dir2)
 			succ := replacer.do_replacement
 
 			-- main class
@@ -73,38 +78,8 @@ feature -- Access
 			replacer.set_output_file (my_dir + "/" + system_name + "_3d_scene.e")
 			succ := succ and replacer.do_replacement
 
-
 			Result := succ
 		end
-
-
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
-feature -- Obsolete
-
-feature -- Inapplicable
 
 feature {NONE} -- Implementation
 

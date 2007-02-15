@@ -35,14 +35,6 @@ feature -- Access
 			Result := output_file
 		end
 
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
 feature -- Element change
 
 	set_input_file(file:STRING) is
@@ -68,18 +60,6 @@ feature -- Element change
 		do
 			replacement_table.remove (key)
 		end
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
 
 feature -- Basic operations
 	do_replacement : BOOLEAN is
@@ -118,11 +98,6 @@ feature -- Basic operations
 			-- assume we don't have any errors...
 			Result := true
 		end
-
-
-feature -- Obsolete
-
-feature -- Inapplicable
 
 feature {NONE} -- Implementation
 
