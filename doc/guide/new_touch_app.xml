@@ -13,6 +13,7 @@
     <section id="new_touch_app">
         <title>Touch application with the Traffic Application Creator</title>
         <para>This application provides you with everything you need to start your own Touch application. It thus may replace the previous section, however if you do decide to read it, it gives you some insight on how a Touch application works.</para>
+		<para>Please note that you have to make the necessary changes to Traffic if you want to run your Touch application outside the "Traffic/example" folder. Otherwise you will be restricted to said folder. (The existing Touch applications also have this limitation.)</para>
 		<orderedlist>
 			<listitem>
 				<para>Start the Traffic Application Creator.</para>
