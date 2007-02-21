@@ -801,6 +801,7 @@ feature -- Basic operations
 			a_type: TRAFFIC_TYPE_STREET
 			road_id: INTEGER
 			pp: ARRAYED_LIST [EM_VECTOR_2D]
+			current_ps, next_ps: TRAFFIC_PATH_SECTION
 		do
 			create pp.make (2)
 			road_id := road_id.max_value
@@ -840,8 +841,27 @@ feature -- Basic operations
 				create shortest_path_impl.make (scale_factor)
 
 				from temp_path.start until temp_path.after loop
-					shortest_path_impl.extend (temp_path.item.label)
-					temp_path.forth
+					if not (temp_path.item.label.origin = temp_path.item.label.destination) then
+							--don't make path_section for intra-place connections
+						if shortest_path_impl.first = Void then
+							create current_ps.make (temp_path.item.label)
+							shortest_path_impl.set_first (current_ps)
+						end
+						temp_path.forth
+						if not temp_path.after then
+							if not (temp_path.item.label.origin = temp_path.item.label.destination) then
+								create next_ps.make(temp_path.item.label)
+								if current_ps.is_insertable (next_ps) then
+									current_ps.extend (next_ps)
+								else
+									current_ps.set_next (next_ps)
+									current_ps := next_ps
+								end
+							end
+						end
+					else
+						temp_path.forth
+					end
 				end
 			end
 			graph.search (a_origin.dummy_node)
@@ -853,6 +873,36 @@ feature -- Basic operations
 --			graph.search (a_destination.dummy_node)
 --			graph.remove_node
 		end
+
+	find_shortest_path_of_a_list_of_places(places_to_visit: LINKED_LIST [TRAFFIC_PLACE]) is
+			-- given a list of places 'places_to_visit' finding shortest path visiting all this places
+			require
+				places_to_visit /= VOID
+				places_to_visit.count > 1
+			local
+				a_path: TRAFFIC_PATH
+				current_place, next_place: TRAFFIC_PLACE
+			do
+				create a_path.make (2.3)
+
+				from
+					places_to_visit.start
+				until
+					places_to_visit.after
+				loop
+					current_place := places_to_visit.item
+					places_to_visit.forth
+					if not places_to_visit.after then
+						next_place := places_to_visit.item
+						find_shortest_path(current_place, next_place)
+						if path_found then
+							a_path.append_a_path (shortest_path)
+						end
+					end
+				end
+				shortest_path_impl := a_path
+			end
+
 
 
 feature {TRAFFIC_MAP_LOADER}
