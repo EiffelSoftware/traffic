@@ -14,30 +14,71 @@ feature {NONE} -- Creation
 	make (a_scale_factor: DOUBLE) is
 			-- Initialize `Current'
 		do
-			create connections_impl .make (10)
-			create path_sections.make (5)
 			scale_factor := a_scale_factor
 		end
 
 feature -- Access
 
-	connections: LIST[TRAFFIC_CONNECTION] is
-			-- Connections
-		do
-			Result := connections_impl.twin
-		end
-
 	origin: TRAFFIC_PLACE is
 			-- Origin of the path
+		require
+			first /= Void
 		do
-			Result := connections.first.origin
+			Result := first.origin
 		end
 
 	destination: TRAFFIC_PLACE is
 			-- Destination of the path
+		require
+			first /= Void
+		local
+			ps: TRAFFIC_PATH_SECTION
 		do
-			Result := connections.last.destination
+			if first.next = Void then
+				Result := first.destination
+			else
+				from
+					ps := first
+				until
+					ps.next = Void
+				loop
+					ps := ps.next
+				end
+				Result := ps.destination
+			end
 		end
+
+	connections: LIST[TRAFFIC_CONNECTION] is
+			-- gives all traffic_connection
+		require
+			first /= Void
+		local
+			ps: TRAFFIC_PATH_SECTION
+			c: LIST[TRAFFIC_CONNECTION]
+		do
+			if first.next = Void then
+				Result := first.connections
+			else
+				from
+					ps := first
+				until
+					ps = Void
+				loop
+					from
+						ps.connections.start
+					until
+						ps.connections.after
+					loop
+						c.extend(ps.connections.item)
+						ps.connections.forth
+					end
+					ps := ps.next
+				end
+					RESULT := c
+			end
+		end
+
+
 
 feature -- Status report
 
@@ -46,13 +87,16 @@ feature -- Status report
 		require
 			a_connection /= Void
 		do
-			Result := last_inserted_node = Void or else last_inserted_node = a_connection.origin_impl
+			Result := last = Void or else last.connections.last.destination = a_connection.origin
 		end
+
 
 feature -- Output
 
 	textual_description: STRING is
 			-- Description providing information about the path
+		require
+			first /= Void
 		local
 			section: TRAFFIC_PATH_SECTION
 			i: INTEGER
@@ -72,9 +116,12 @@ feature -- Output
 			train_type := (create {TRAFFIC_TYPE_RAIL}.make).name
 			bus_type := (create {TRAFFIC_TYPE_BUS}.make).name
 
-			from i := 1 until i > path_sections.count loop
+			from
+				section := first
+			 until
+			 	section = Void
+			 loop
 				-- if the sections start and end are the same, it's a switch unless it's the first or last section
-				section := path_sections.i_th (i)
 
 				if section.has_line then
 					Result.append ("Take " + section.line.type.name + " no. " + section.line.name + " to " + section.destination.name + "%N")
@@ -91,7 +138,7 @@ feature -- Output
 					walking_length := walking_length + section.length
 				end
 
-				i := i + 1
+				section := section.next
 			end
 
 			Result.append ("Arriving at: " + destination.name + "%N%NTotal:")
@@ -111,52 +158,74 @@ feature -- Output
 
 feature -- Basic operations
 
-	extend (a_connection: TRAFFIC_CONNECTION) is
-			-- Add the connection `a_connection' to the path.
+	append_a_path(a_path: TRAFFIC_PATH) is
+			-- append a TRAFFIC_PATH 'a_path' at the end of the actual path
 		require
-			a_connection /= Void
---			is_valid_for_insertion (a_connection)
-		local
-			last_path_section: TRAFFIC_PATH_SECTION
-			ps: TRAFFIC_PATH_SECTION
+			a_path /= VOID
+			is_valid_for_insertion(a_path.first.connections.first)
 		do
-			connections_impl.extend (a_connection)
-			last_inserted_node := a_connection.destination_impl
-
-			if a_connection.origin /= a_connection.destination then
-				-- don't make sections for intra-place connections
-				if not path_sections.is_empty then
-					last_path_section := path_sections.last
-
-					if last_path_section.is_insertable (a_connection) then
-						last_path_section.extend (a_connection)
-					else
-						create ps.make (a_connection)
-						path_sections.extend (ps)
-					end
+			if first = Void then
+				set_first(a_path.first)
+				set_last
+			else
+				set_last
+				if last.is_insertable(a_path.first) then
+						--extend the last path section with the first path section of 'a_path'
+					last.extend (a_path.first)
 				else
-					create ps.make (a_connection)
-					path_sections.extend (ps)
+					last.set_next (a_path.first)
+					set_last
 				end
 			end
 		end
 
-feature {NONE} -- Implementation
+	set_first(a_path_section: TRAFFIC_PATH_SECTION) is
+			-- sets pointer 'first' to the 'a_path_section'
+		require
+			a_path_section /= Void
+		do
+			if not(a_path_section.origin.name.is_equal (a_path_section.destination.name)) then
+					--don't make intra-place sections
+				first := a_path_section
+			end
+		end
 
-	last_inserted_node: TRAFFIC_NODE
-			-- Node inserted as last
+	set_last is
+			-- sets the pointer 'last' to the last path_section of the path
+		require
+			first /= Void
+		local
+			ps: TRAFFIC_PATH_SECTION
+		do
+			if first.next = Void then
+				last := first
+			else
+				from
+					ps := first
+				until
+					ps = Void
+				loop
+					last := ps
+					ps := ps.next
+				end
+			end
+		end
 
-	connections_impl: ARRAYED_LIST [TRAFFIC_CONNECTION]
-			-- Connections of the path
 
-	path_sections: ARRAYED_LIST [TRAFFIC_PATH_SECTION]
-			-- Line sections over which the path goes
+
+feature --{TRAFFIC_PATH} -- Implementation
+
+	first: TRAFFIC_PATH_SECTION
+			--pointer to the first traffic_path_section of the path
+
+	last: TRAFFIC_PATH_SECTION
+			--pointer to the last traffic_path_section of the path
 
 	scale_factor: DOUBLE
 			-- Scale factor for real world distances
 
 	scale (a_distance: DOUBLE): DOUBLE is
-			-- Real-world distance 
+			-- Real-world distance
 		do
 			Result := a_distance * scale_factor
 		end
