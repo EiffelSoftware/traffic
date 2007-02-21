@@ -36,7 +36,7 @@
 		<external_object location="$(SDL)\lib\SDL_image.lib"/>
 		<external_object location="$(SDL)\lib\SDL_net.lib"/>
 		<external_object location="$(SDL)\lib\SDL_mixer.lib"/>
-		<external_object location="$(EM)\library\em_c_eiffel_glue_library_ise_bcb.lib"/>
+		<external_object location="$(EM)\library\em_c_eiffel_glue_library_ise_msc.lib"/>
 		<external_object location="$(EM)\library\net2.o"/>
 		<external_object location="$(EM)\library\fastevents.o"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>

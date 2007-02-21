@@ -8,56 +8,44 @@ class ROAD_CREATION
 inherit
 
 	TOURISM
-		redefine
-			explore
-		end
+	
 	TOUCH_ROAD
 
 feature -- Example
 
-	explore is
-			-- Some information.
-		do
-			console.set_text ("This is an example of a road creation. Click the Button to create a new Road")
-			paris.display
-		end
-
 	explore_on_click is
 			-- Create a road and animate it.
+		local
+			line_sections_1, line_sections_2, line_sections_3: LIST [TRAFFIC_LINE_SECTION]
+			ls_1, ls_2, ls_3: TRAFFIC_LINE_SECTION
+			tram_nr2, tram_nr3_a, tram_nr3_b: TRAFFIC_PATH_SECTION
+			a_path: TRAFFIC_PATH
 		do
-			create place1.make_with_pos ("Place 1", 50, 50)
-			create place2.make_with_pos ("Place 2", 90, 50)
-			create place3.make_with_pos ("Place 3", 130, 50)
-			create place4.make_with_pos ("Place 4", 170, 50)
-			create place5.make_with_pos ("Place 5", 210, 90)
-			create place6.make_with_pos ("Place 6", 210, 130)
-			create place7.make_with_pos ("Place 7", 210, 170)
-			create place8.make_with_pos ("Place 8", 210, 210)
-			create place9.make_with_pos ("Place 9", 210, 250)
-			create place10.make_with_pos ("Place 10", 90, 150)
-			place1.link (place2)
-			place2.link (place3)
-			place3.link (place4)
-			place4.link (place5)
-			place5.link (place6)
-			place6.link (place7)
-			place7.link (place8)
-			place8.link (place9)
-			place9.link (place10)
-			map_widget.disable_lines_shown -- Used for better contrast
-			make_colored_road(place1, 5, 10, 25)
-		end
+			Paris.display
+			line_sections_1 := Paris.line_sections_of_place ("place Nation")
+			line_sections_2 := Paris.line_sections_of_place("place Pere Lachaise")
+			line_sections_3 := Paris.line_sections_of_place("place Republique")
+			ls_1 := line_sections_1.i_th (5)
+			ls_2 := line_sections_2.i_th (5)
+			ls_3 := line_sections_3.i_th (1)
 
-feature -- Access
+			create tram_nr2
+			tram_nr2.make_tram (ls_1)
+			create tram_nr3_a
+			tram_nr3_a.make_tram (ls_2)
+			create tram_nr3_b
+			tram_nr3_b.make_tram (ls_3)
+			tram_nr3_a.extend (tram_nr3_b)
 
-	place1: TOUCH_PLACE
-	place2: TOUCH_PLACE
-	place3: TOUCH_PLACE
-	place4: TOUCH_PLACE
-	place5: TOUCH_PLACE
-	place6: TOUCH_PLACE
-	place7: TOUCH_PLACE
-	place8: TOUCH_PLACE
-	place9: TOUCH_PLACE
-	place10: TOUCH_PLACE
+			create a_path.make(2.3)
+			a_path.set_first (tram_nr2)
+			tram_nr2.set_next (tram_nr3_a)
+
+			io.new_line
+			io.put_string(a_path.textual_description)
+
+
+			end
+
+
 end

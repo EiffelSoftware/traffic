@@ -19,14 +19,22 @@ feature -- Interface
 
 	initialize_scene is
 			-- Creation procedure
-		local
-			road_creation: ROAD_CREATION
 		do
 			Precursor
-			
+
 			create road_creation
 			road_creation.run (console)
-			click_here_button.clicked_event.subscribe (agent road_creation.explore_on_click)
+			click_here_button.clicked_event.subscribe (agent button_click)
 		end
+
+	button_click is
+			-- Disable the button for the execution of preview.explore.
+		do
+			click_here_button.disable
+			road_creation.explore_on_click
+			click_here_button.enable
+		end
+
+	road_creation: ROAD_CREATION
 
 end
