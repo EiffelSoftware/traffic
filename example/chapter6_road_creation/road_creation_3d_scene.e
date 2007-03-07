@@ -33,6 +33,12 @@ feature -- Interface
 			click_here_button.disable
 			road_creation.explore_on_click
 			click_here_button.enable
+
+			--write the path description in the console
+			console.append_text (map_widget.map.path.textual_description)
+
+
+
 		end
 
 	road_creation: ROAD_CREATION

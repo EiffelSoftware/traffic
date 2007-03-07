@@ -2,7 +2,7 @@
 	<target name="Road_Creation">
 		<root class="ROAD_CREATION_3D_APPLICATION" feature="make"/>
 		<option trace="false" profile="false" debug="false" warning="true">
-			<assertions precondition="false" postcondition="false" check="false" invariant="false" loop="false"/>
+			<assertions precondition="true" postcondition="false" check="false" invariant="false" loop="false"/>
 			<warning name="export_class_missing" enabled="false"/>
 			<warning name="old_verbatim_strings" enabled="false"/>
 			<warning name="syntax" enabled="false"/>
