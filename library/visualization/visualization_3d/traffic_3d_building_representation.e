@@ -163,7 +163,31 @@ feature	-- Basic operations
 			building_night_factory.load_buildings
 		end
 
-	get_templates_count: INTEGER is
+	width_of_template (a_template: INTEGER): DOUBLE is
+		-- width of all buildings of type `a_template'
+		require
+			valid_template: a_template > 0 and a_template <= templates_count
+		local
+			p1,p2: EM_VECTOR3D
+		do
+			p1:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (1)
+			p2:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (2)
+			Result:= (p1-p2).length
+		end
+
+	breadth_of_template (a_template: INTEGER): DOUBLE is
+		-- breadth of all buildings of type `a_template'
+		require
+			valid_template: a_template > 0 and a_template <= templates_count
+		local
+			p2,p3: EM_VECTOR3D
+		do
+			p2:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (2)
+			p3:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (3)
+			Result:= (p2-p3).length
+		end
+
+	templates_count: INTEGER is
 			-- get number of building templates
 		do
 			Result := building_day_factory.template_count

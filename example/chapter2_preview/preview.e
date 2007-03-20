@@ -16,8 +16,9 @@ feature	 -- Example
 		do
 
 			Paris.display
-			Paris.map_widget.add_buildings_randomly_improved(3)
-			io.put_string ("done")
+			Paris.map_widget.place_buildings_randomly(3)
+			--Zurich.display
+			--Zurich.map_widget.place_buildings_randomly (3)
 			--Louvre.lighten
 			--Route1.animate
 			--Line8.spotlight

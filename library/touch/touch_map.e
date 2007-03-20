@@ -82,7 +82,7 @@ feature -- Element change
 	build is
 			-- Add buildings along traffic lines.
 		do
-			internal_map_widget.add_buildings_randomly_improved(3)
+			internal_map_widget.place_buildings_randomly(3)
 			internal_map_widget.enable_buildings_shown
 		end
 
