@@ -80,6 +80,7 @@ feature -- Initialization
 			console.disable
 
 			toolbar_panel.add_widget (console)
+			
 		end
 
 feature -- Event handling

@@ -351,6 +351,28 @@ feature -- Basic operations
 			building_id:= 1
 		end
 
+	add_path (a_path: TRAFFIC_PATH) is
+			-- Add path to the map	
+		require
+			a_path_exists: a_path /= Void
+		local
+			ps: TRAFFIC_PATH_SECTION
+		do
+			map.add_path (a_path)
+			paths_representation.add_path (a_path)
+
+			--places where have to change are colored red
+			create ps.default_create
+			from
+				ps := a_path.first
+			until
+				ps.next = Void -- = a_path.last
+			loop
+				places_representation.add_place_with_color_red (ps.connections.last.destination)
+				ps := ps.next
+			end
+		end
+
 feature -- Event channels
 
 	building_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_BUILDING,EM_MOUSEBUTTON_EVENT]]

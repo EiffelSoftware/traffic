@@ -23,9 +23,9 @@ feature --{NONE} -- Creation
 		end
 
 	make (a_connection: TRAFFIC_CONNECTION) is
-			-- Initialize 'current'
+			-- Initialize 'current', used if line-type is unknown
 		require
-			a_connection /= Void
+			connections_exists: a_connection /= Void
 		local
 			ls: TRAFFIC_LINE_SECTION
 		do
@@ -35,64 +35,64 @@ feature --{NONE} -- Creation
 			end
 			length := a_connection.length
 			if connections_impl = Void then
-				create connections_impl.make (10)
+				default_create
 			end
 			connections_impl.extend (a_connection)
 		end
 
-
 	make_tram (a_line_section: TRAFFIC_LINE_SECTION) is
-			-- Initialize 'Current'
+			-- Initialize 'Current' of type tram
 		require
-			a_line_section /= Void
-			is_tram(a_line_section)
+			line_section_exists: a_line_section /= Void
+			line_section_is_tram: is_tram (a_line_section)
 		do
 			line := a_line_section.line
 			length := a_line_section.length
 			if connections_impl = Void then
-				create connections_impl.make (10)
+				default_create
 			end
 			connections_impl.extend (a_line_section)
 		end
 
 	make_bus (a_line_section: TRAFFIC_LINE_SECTION) is
-			-- Initialize 'Current'
+			-- Initialize 'Current' of type bus
 		require
-			a_line_section /= Void
-			is_bus(a_line_section)
+			line_sectin_exists: a_line_section /= Void
+			line_section_is_bus: is_bus (a_line_section)
 		do
 			line := a_line_section.line
 			length := a_line_section.length
 			if connections_impl = Void then
-				create connections_impl.make (10)
+				default_create
 			end
 			connections_impl.extend (a_line_section)
 		end
 
 	make_rail (a_line_section: TRAFFIC_LINE_SECTION) is
-			-- Initialize 'Current'
+			-- Initialize 'Current' ob type rail
 		require
-			a_line_section /= Void
-			is_rail(a_line_section)
+			line_section_exists: a_line_section /= Void
+			line_section_is_rail: is_rail (a_line_section)
 		do
 			line := a_line_section.line
 			length := a_line_section.length
 			if connections_impl = Void then
-				create connections_impl.make (10)
+				default_create
 			end
 			connections_impl.extend (a_line_section)
 		end
 
-	make_walk (a_connection: TRAFFIC_CONNECTION) is
-			-- Initialize 'Current'
+	make_walk (a_road: TRAFFIC_ROAD) is
+			-- Initialize 'Current' of type walk
 		require
-			a_connection /= Void
+			road_exists: a_road /= Void
+			road_is_for_walking: a_road.type.is_allowed_walking
 		do
-			length := a_connection.length
+			length := a_road.length
 			if connections_impl = Void then
-				create connections_impl.make (10)
+				default_create
 			end
-			connections_impl.extend (a_connection)
+			connections_impl.extend (a_road)
 		end
 
 
@@ -117,10 +117,10 @@ feature -- Access
 	length: DOUBLE
 			-- Length of section
 
-	connections: LIST[TRAFFIC_CONNECTION] is
+	connections: ARRAYED_LIST [TRAFFIC_CONNECTION] is
 			-- Connections
 		do
-			Result := connections_impl.twin
+			Result := connections_impl
 		end
 
 	get_next: TRAFFIC_PATH_SECTION is
@@ -141,7 +141,7 @@ feature -- Status report
 	is_insertable (a_path_section: TRAFFIC_PATH_SECTION): BOOLEAN is
 			-- Can `a_path_section' be inserted?
 		require
-			a_path_section /= Void
+			a_path_section_exists: a_path_section /= Void
 		do
 			if has_line then
 				Result := a_path_section.line = line and a_path_section.origin /= a_path_section.destination
@@ -151,18 +151,18 @@ feature -- Status report
 		end
 
 	is_same_place (a_path_section: TRAFFIC_PATH_SECTION): BOOLEAN is
-			-- is the origin of 'a_path_section' the same place as current destination?
-			require
-				a_path_section /= Void
-			do
-				Result := destination = a_path_section.origin or connections_impl = Void
-			end
+			-- is the origin of `a_path_section' the same place as the current destination?
+		require
+			a_path_section_exists: a_path_section /= Void
+		do
+			Result := destination = a_path_section.origin or connections_impl = Void
+		end
 
 
 	is_tram (a_line_section: TRAFFIC_LINE_SECTION): BOOLEAN is
-			-- is 'a_line_section' of type tram?
+			-- is `a_line_section' of type tram?
 		require
-			a_line_section /= Void
+			a_line_section_exists: a_line_section /= Void
 		local
 			tram_type: STRING
 		do
@@ -172,9 +172,9 @@ feature -- Status report
 		end
 
 	is_bus (a_line_section: TRAFFIC_LINE_SECTION): BOOLEAN is
-			-- is 'a_line_section' of type tram?
+			-- is `a_line_section' of type tram?
 		require
-			a_line_section /= Void
+			a_line_section_exists: a_line_section /= Void
 		local
 			bus_type: STRING
 		do
@@ -184,9 +184,9 @@ feature -- Status report
 		end
 
 	is_rail (a_line_section: TRAFFIC_LINE_SECTION): BOOLEAN is
-			-- is 'a_line_section' of type tram?
+			-- is `a_line_section' of type tram?
 		require
-			a_line_section /= Void
+			a_line_section_exists: a_line_section /= Void
 		local
 			train_type: STRING
 		do
@@ -202,29 +202,30 @@ feature -- Basic operations
 	extend (a_path_section: TRAFFIC_PATH_SECTION) is
 			-- Extend with `a_path_section'.
 		require
-			a_path_section /= Void
-			is_insertable (a_path_section)
-			is_same_place(a_path_section)
+			path_section_exists: a_path_section /= Void
+			path_section_is_intertable: is_insertable (a_path_section)
+			is_realy_next: is_same_place (a_path_section)
 		do
 			if not has_line then
 				line := a_path_section.line
 			end
 			length := length + a_path_section.length
 			from
-				a_path_section.connections_impl.start
+				a_path_section.connections.start
 			until
-				a_path_section.connections_impl.after
+				a_path_section.connections.after
 			loop
-				connections_impl.extend(a_path_section.connections_impl.item)
-				a_path_section.connections_impl.forth
+				connections_impl.extend(a_path_section.connections.item)
+				a_path_section.connections.forth
 			end
 		end
 
 	set_next (a_path_section: TRAFFIC_PATH_SECTION) is
-			-- set pointer to next path section 'a_path_section'
+			-- set pointer to next path section `a_path_section'
 		require
-			a_path_section /= Void
-			is_same_place (a_path_section)
+			a_path_section_exists: a_path_section /= Void
+			is_realy_next: is_same_place (a_path_section)
+			is_different_type_of_line: not is_insertable(a_path_section)
 		do
 			next := a_path_section
 		end

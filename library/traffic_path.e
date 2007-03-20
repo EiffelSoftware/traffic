@@ -9,12 +9,12 @@ class
 create
 	make
 
-feature {NONE} -- Creation
+feature -- Creation
 
-	make (a_scale_factor: DOUBLE) is
+	make is
 			-- Initialize `Current'
 		do
-			scale_factor := a_scale_factor
+			create connections_impl.make(10)
 		end
 
 feature -- Access
@@ -22,7 +22,7 @@ feature -- Access
 	origin: TRAFFIC_PLACE is
 			-- Origin of the path
 		require
-			first /= Void
+			first_exists: first /= Void
 		do
 			Result := first.origin
 		end
@@ -30,35 +30,22 @@ feature -- Access
 	destination: TRAFFIC_PLACE is
 			-- Destination of the path
 		require
-			first /= Void
-		local
-			ps: TRAFFIC_PATH_SECTION
+			first_exists: first /= Void
 		do
-			if first.next = Void then
-				Result := first.destination
-			else
-				from
-					ps := first
-				until
-					ps.next = Void
-				loop
-					ps := ps.next
-				end
-				Result := ps.destination
-			end
+			Result := connections.last.destination
 		end
 
-	connections: LIST[TRAFFIC_CONNECTION] is
+	connections: ARRAYED_LIST [TRAFFIC_CONNECTION] is
 			-- gives all traffic_connection
 		require
-			first /= Void
+			first_exists: first /= Void
 		local
 			ps: TRAFFIC_PATH_SECTION
-			c: LIST[TRAFFIC_CONNECTION]
 		do
 			if first.next = Void then
 				Result := first.connections
 			else
+				create ps
 				from
 					ps := first
 				until
@@ -69,12 +56,12 @@ feature -- Access
 					until
 						ps.connections.after
 					loop
-						c.extend(ps.connections.item)
+						connections_impl.extend(ps.connections.item)
 						ps.connections.forth
 					end
 					ps := ps.next
 				end
-					RESULT := c
+					RESULT := connections_impl
 			end
 		end
 
@@ -85,9 +72,9 @@ feature -- Status report
 	is_valid_for_insertion (a_connection: TRAFFIC_CONNECTION): BOOLEAN is
 			-- Is `a_connection' valid for insertion?
 		require
-			a_connection /= Void
+			connection_exists: a_connection /= Void
 		do
-			Result := last = Void or else last.connections.last.destination = a_connection.origin
+			Result := last = Void or else last.destination = a_connection.origin
 		end
 
 
@@ -96,10 +83,10 @@ feature -- Output
 	textual_description: STRING is
 			-- Description providing information about the path
 		require
-			first /= Void
+			first_exists: first /= Void
+			scale_factor_exists: scale_factor /= Void
 		local
 			section: TRAFFIC_PATH_SECTION
-			i: INTEGER
 			walking_length: DOUBLE
 			tram_length: DOUBLE
 			bus_length: DOUBLE
@@ -121,8 +108,6 @@ feature -- Output
 			 until
 			 	section = Void
 			 loop
-				-- if the sections start and end are the same, it's a switch unless it's the first or last section
-
 				if section.has_line then
 					Result.append ("Take " + section.line.type.name + " no. " + section.line.name + " to " + section.destination.name + "%N")
 
@@ -159,10 +144,10 @@ feature -- Output
 feature -- Basic operations
 
 	append_a_path(a_path: TRAFFIC_PATH) is
-			-- append a TRAFFIC_PATH 'a_path' at the end of the actual path
+			-- append a TRAFFIC_PATH `a_path' at the end of the actual path
 		require
-			a_path /= VOID
-			is_valid_for_insertion(a_path.first.connections.first)
+			path_exists: a_path /= VOID
+			path_valid_for_insertion: is_valid_for_insertion(a_path.first.connections.first)
 		do
 			if first = Void then
 				set_first(a_path.first)
@@ -174,15 +159,15 @@ feature -- Basic operations
 					last.extend (a_path.first)
 				else
 					last.set_next (a_path.first)
-					set_last
 				end
+				set_last
 			end
 		end
 
 	set_first(a_path_section: TRAFFIC_PATH_SECTION) is
 			-- sets pointer 'first' to the 'a_path_section'
 		require
-			a_path_section /= Void
+			a_path_section_exists: a_path_section /= Void
 		do
 			if not(a_path_section.origin.name.is_equal (a_path_section.destination.name)) then
 					--don't make intra-place sections
@@ -193,7 +178,7 @@ feature -- Basic operations
 	set_last is
 			-- sets the pointer 'last' to the last path_section of the path
 		require
-			first /= Void
+			first_not_void: first /= Void
 		local
 			ps: TRAFFIC_PATH_SECTION
 		do
@@ -210,6 +195,15 @@ feature -- Basic operations
 				end
 			end
 		end
+
+	set_scale_factor (a_scale_factor: DOUBLE) is
+			-- sets the scale factor
+		require
+			a_scale_factor_exists: a_scale_factor /= Void
+		do
+			scale_factor := a_scale_factor
+		end
+
 
 
 
@@ -229,5 +223,8 @@ feature --{TRAFFIC_PATH} -- Implementation
 		do
 			Result := a_distance * scale_factor
 		end
+
+	connections_impl: ARRAYED_LIST [TRAFFIC_CONNECTION]
+			-- connections of path
 
 end

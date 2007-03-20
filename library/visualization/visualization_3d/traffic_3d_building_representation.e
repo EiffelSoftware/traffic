@@ -229,8 +229,9 @@ feature	-- Basic operations
 					buildings_root.children.start
 					buildings_root.children.prune(current_night_building)
 					buildings.remove
+				else
+					buildings.forth
 				end
-				buildings.forth
 			end
 
 			map.remove_one_building (a_building)

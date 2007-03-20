@@ -223,5 +223,72 @@ feature -- Predefined objects (Routes)
 			Result := Paris.new_route (temp_places)
 		end
 
+feature --Predefined objects (Line-Sections)
+
+	Place_Nation_Place_Republique: TRAFFIC_LINE_SECTION is
+			-- the line section connecting Place Nation and Place Pere Lachaise
+		require
+			Paris_exists: is_paris_loaded
+		local
+			line_sections: LIST [TRAFFIC_LINE_SECTION]
+		once
+			line_sections := Paris.line_sections_of_place ("place Nation")
+			Result := line_sections.i_th (10)
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Place_Republique_Place_Hotel_de_Ville: TRAFFIC_LINE_SECTION is
+			-- the line section connecting Place Pere Lachaise and Place Republique
+		require
+			Paris_exists: is_paris_loaded
+		local
+			line_sections: LIST [TRAFFIC_LINE_SECTION]
+		once
+			line_sections := Paris.line_sections_of_place ("place Republique")
+			Result := line_sections.i_th(18)
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Place_Hotel_de_Ville_Place_Chatelet: TRAFFIC_LINE_SECTION is
+			--the line section connecting Place Republique and Place Opera
+		require
+			Paris_exists: is_paris_loaded
+		local
+			line_sections: LIST [TRAFFIC_LINE_SECTION]
+		once
+			line_sections := Paris.line_sections_of_place ("place Hotel de Ville")
+			Result := line_sections.i_th (6)
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Place_Chatelet_Place_Opera: TRAFFIC_LINE_SECTION is
+			--the line section connecting Place Republique and Place Opera
+		require
+			Paris_exists: is_paris_loaded
+		local
+			line_sections: LIST [TRAFFIC_LINE_SECTION]
+		once
+			line_sections := Paris.line_sections_of_place ("place Chatelet")
+			Result := line_sections.i_th (15)
+		ensure
+			Result_exists: Result /= Void
+		end
+
+
+feature --Predefined Objects (Roads)
+
+	Road_Place_de_la_Nation: TRAFFIC_ROAD is
+			-- the road from Place de la Opera to place Opera
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.retrieve_road (94)
+		ensure
+			Result_exists: Result /= Void
+		end
+
 end
 

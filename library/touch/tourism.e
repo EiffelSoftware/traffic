@@ -94,8 +94,8 @@ feature -- Access (Paris)
 					map_widget.set_map (loader.map)
 					create Result.make
 					map_widget.enable_map_hidden
-					is_paris_loaded := True
-					is_zurich_loaded := False
+					is_paris_loaded := False
+					is_zurich_loaded := True
 				end
 			end
 		end

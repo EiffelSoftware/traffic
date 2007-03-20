@@ -4,7 +4,7 @@ indexing
 
 deferred class
 	TRAFFIC_TYPE_ROAD
-	
+
 inherit
 	TRAFFIC_TYPE
 
@@ -22,7 +22,16 @@ feature -- Basic
 					Result:=false
 				end
 			end
-		
+
+	is_allowed_walking: BOOLEAN is
+			-- Is it allowed to walk on 'a_road'?
+			local
+				street: TRAFFIC_TYPE_STREET
+			do
+				create street.make
+				Result := street.name.is_equal (name)
+			end
+
 end
 
 

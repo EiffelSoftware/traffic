@@ -75,56 +75,56 @@ feature {NONE} -- Constants
 	Unknown_subnode: INTEGER is 1
 
 	Mandatory_attribute_missing: INTEGER is 2
-	
+
 	Unknown_node_processor: INTEGER is 3
 
 	Wrong_attribute_type: INTEGER is 4
 
 	Wrong_property_value: INTEGER is 5
-	
+
 	Incorrect_property: INTEGER is 6
-	
+
 	Unknown_source: INTEGER is 7
 
 	Unknown_destination: INTEGER is 8
-	
+
 	Unknown_line: INTEGER is 9
-	
+
 	Missing_line: INTEGER is 10
 
 	Duplicate_name: INTEGER is 11
-	
+
 	Invalid_line_section: INTEGER is 12
-	
+
 	Invalid_option: INTEGER is 13
-	
+
 --	Unknown_station: INTEGER is 14
-	
+
 	Unknown_route_type: INTEGER is 15
-	
+
 	Wrong_color_value: INTEGER is 16
-	
+
 	File_not_readable: INTEGER is 17
 
 	Invalid_file_name: INTEGER is 18
-	
+
 	Wrong_position: INTEGER is 19
-	
+
 	Invalid_parent_node: INTEGER is 20
-	
+
 	Invalid_attribute_value: INTEGER is 21
-	
+
 	Invalid_incoming_line_section: INTEGER is 22
 
 	Invalid_outgoing_line_section: INTEGER is 23
 
 	Duplicate_id: INTEGER is 24
-	
+
 	Too_few_points: INTEGER is 25
-	
+
 	Mandatory_subnode_missing: INTEGER is 26
-	
+
 	No_road_with_given_id_exists: INTEGER is 27
-	
+
 end
 

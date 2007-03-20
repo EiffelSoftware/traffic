@@ -43,7 +43,7 @@ feature {NONE} -- Initialization
 			create internal_travelers.make (1)
 			create internal_taxi_offices.make(0)
 			internal_line_sections.compare_objects -- use equal for object comparision
-			internal_roads.compare_objects -- use equal for object comparision
+			--internal_roads.compare_objects -- use equal for object comparision
 			create internal_buildings.make (1,4)
 			from
 				i:=1
@@ -74,6 +74,7 @@ feature {NONE} -- Initialization
 			create road_changed_event
 			create road_inserted_event
 			create road_removed_event
+
 		ensure
 			name_set: equal (name, a_name)
 			places_not_void: places /= Void
@@ -361,6 +362,16 @@ feature -- Insertion
 			graph.put_node (a_stop)
 		end
 
+	add_path (a_path: TRAFFIC_PATH) is
+			-- Add `a_path' to map.
+		require
+			a_path_exists: a_path /= Void
+		do
+			a_path.set_scale_factor (scale_factor)
+			internal_path := a_path
+		end
+
+
 feature -- Removal
 
 	delete_buildings is
@@ -500,7 +511,7 @@ feature -- Removal
 			path_found := False
 		ensure
 			-- we can assume, that the line_section was only once inserted
-			road_removed: not internal_roads.has_item (a_road)
+	--		road_removed: not internal_roads.has_item (a_road)
 		end
 
 
@@ -513,6 +524,7 @@ feature -- Removal
 		ensure
 			not internal_travelers.has (index)
 		end
+
 
 feature -- Access
 
@@ -684,6 +696,14 @@ feature -- Access
 			Result:=internal_roads.item (i)
 		end
 
+	path: TRAFFIC_PATH is
+			-- path in internal_path
+		do
+			Result := internal_path
+		end
+
+
+
 feature -- Events
 
 	unspecified_place_changed_event: EM_EVENT_CHANNEL [TUPLE []]
@@ -726,7 +746,6 @@ feature -- Events
 			-- when item has been removed
 			-- at index passed as argument
 
-
 	unspecified_road_changed_event: EM_EVENT_CHANNEL [TUPLE []]
 			-- Event to inform views of `Current'
 			-- when `Current' changed such that
@@ -766,6 +785,7 @@ feature -- Events
 			-- Event to inform views of `Current'
 			-- when item has been removed
 			-- at index passed as argument
+
 
 feature {TRAFFIC_MAP_MODEL} -- Access
 
@@ -838,30 +858,29 @@ feature -- Basic operations
 			if graph.path_found then
 				path_found := True
 				temp_path := graph.shortest_path
-				create shortest_path_impl.make (scale_factor)
+				create shortest_path_impl.make
+				shortest_path_impl.set_scale_factor (scale_factor)
 
 				from temp_path.start until temp_path.after loop
-					if not (temp_path.item.label.origin = temp_path.item.label.destination) then
+					if (not (temp_path.item.label.origin = temp_path.item.label.destination)) and (shortest_path_impl.first = Void) then
 							--don't make path_section for intra-place connections
-						if shortest_path_impl.first = Void then
-							create current_ps.make (temp_path.item.label)
-							shortest_path_impl.set_first (current_ps)
-						end
-						temp_path.forth
-						if not temp_path.after then
-							if not (temp_path.item.label.origin = temp_path.item.label.destination) then
-								create next_ps.make(temp_path.item.label)
-								if current_ps.is_insertable (next_ps) then
-									current_ps.extend (next_ps)
-								else
-									current_ps.set_next (next_ps)
-									current_ps := next_ps
-								end
+						create current_ps.make (temp_path.item.label)
+						shortest_path_impl.set_first (current_ps)
+					else
+						if not (temp_path.item.label.origin = temp_path.item.label.destination) then
+								--don't make path_section for intra-place connections
+							create next_ps.make(temp_path.item.label)
+							if current_ps.is_insertable (next_ps) then
+									--same type of line
+								current_ps.extend (next_ps)
+							else
+									--different type of line
+								current_ps.set_next (next_ps)
+								current_ps := next_ps
 							end
 						end
-					else
-						temp_path.forth
 					end
+					temp_path.forth
 				end
 			end
 			graph.search (a_origin.dummy_node)
@@ -875,15 +894,16 @@ feature -- Basic operations
 		end
 
 	find_shortest_path_of_a_list_of_places(places_to_visit: LINKED_LIST [TRAFFIC_PLACE]) is
-			-- given a list of places 'places_to_visit' finding shortest path visiting all this places
+			-- given a list of places `places_to_visit' finding shortest path visiting all these places
 			require
-				places_to_visit /= VOID
-				places_to_visit.count > 1
+				places_to_visit_exists: places_to_visit /= VOID
+				min_two_places_to_visit: places_to_visit.count > 1
 			local
 				a_path: TRAFFIC_PATH
 				current_place, next_place: TRAFFIC_PLACE
 			do
-				create a_path.make (2.3)
+				create a_path.make
+				a_path.set_scale_factor (scale_factor)
 
 				from
 					places_to_visit.start
@@ -981,7 +1001,7 @@ feature {TRAFFIC_MAP_LOADER}
 			end
 		end
 
-feature {NONE} -- Implementation
+feature {NONE}-- Implementation
 
 	graph: TRAFFIC_GRAPH
 			-- used for path finding
@@ -1015,6 +1035,9 @@ feature {NONE} -- Implementation
 
 	scale_factor_impl: DOUBLE
 			-- Scale factor used to get real world distances
+
+	internal_path: TRAFFIC_PATH
+			-- path added to map
 
 	place_position (a_name: STRING): INTEGER is
 			-- Position of place `a_name' in places

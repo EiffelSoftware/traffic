@@ -176,7 +176,7 @@ feature -- 3D Member Creation
 
 			calculate_face_neighbours
 			build_ressource_list
-			last_3d_member := build_3D_member
+			last_3d_member := build_3d_member
 		end
 
 feature -- Access

@@ -127,6 +127,15 @@ feature -- Element change
 			a_line_in_map: has_line (a_line.name)
 		end
 
+	add_path (a_path: TRAFFIC_PATH) is
+			-- Add path 'a_path' to map
+		require
+			a_path_exists: a_path /= Void
+		do
+			internal_map_widget.add_path (a_path)
+		end
+
+
 	add_building (a_building: TRAFFIC_BUILDING) is
 			-- Add building `a_building' to map.
 		require
@@ -253,6 +262,13 @@ feature -- Access
 			Result := internal_map.lines
 		end
 
+	--path: TRAFFIC_PATH is
+	--		-- Path in map
+	--	do
+	--		Result := internal_map.path
+	--	end
+
+
 	buildings: LINKED_LIST [TRAFFIC_BUILDING] is
 			-- All buildings on map.
 		local
@@ -285,6 +301,12 @@ feature -- Access
 			Result := internal_map.line_sections_of_place (a_name)
 		end
 
+	retrieve_road (i: INTEGER): TRAFFIC_ROAD is
+			-- Road with given id `i'
+		do
+			Result := internal_map.retrieve_road (i)
+		end
+
 
 feature -- Basic operation
 
@@ -293,6 +315,13 @@ feature -- Basic operation
 		do
 			Result := internal_map.out
 		end
+
+	redraw is
+			-- redraw the map
+		do
+			internal_map_widget.redraw
+		end
+
 
 feature -- Basic operations
 

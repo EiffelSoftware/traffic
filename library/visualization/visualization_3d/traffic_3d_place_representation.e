@@ -144,6 +144,20 @@ feature -- Basic operations
 			a_place_has_view: place_lookup.has (a_place)
 		end
 
+	add_place_with_color_red (a_place: TRAFFIC_PLACE) is
+			-- Add red visualization for `a_place'.
+		local
+			place_view: TE_3D_NODE
+		do
+			place_factory.set_place (a_place)
+			place_factory.set_color(255, 0, 0)
+			place_factory.create_place
+			place_view := place_factory.last_3d_member
+			place_view.make_child_of(place_root)
+			place_views.force (place_view)
+			place_lookup.force (place_views.count, a_place)
+		end
+
 --	remove_place (a_place: TRAFFIC_PLACE) is
 --			-- Remove visualization for `a_place'.
 --		require
