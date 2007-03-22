@@ -72,6 +72,44 @@ feature -- Interface
 			lines_checkbox.unchecked_event.subscribe (agent lines_unchecked)
 			toolbar_panel.add_widget (lines_checkbox)
 
+			-- Bird view Button
+			create bird_view_button.make_from_text ("go birdie")
+			bird_view_button.set_position (10, 80)
+			bird_view_button.set_optimal_dimension (140, 30)
+			bird_view_button.resize_to_optimal_dimension
+			bird_view_button.clicked_event.subscribe (agent birdie_button)
+			toolbar_panel.add_widget (bird_view_button)
+
+			-- translation Button
+			create translation_button.make_from_text ("translate 90°")
+			translation_button.set_position (10, 120)
+			translation_button.set_optimal_dimension (140, 30)
+			translation_button.resize_to_optimal_dimension
+			translation_button.clicked_event.subscribe (agent translation_90)
+			toolbar_panel.add_widget (translation_button)
+
+			-- zoom tool
+			create zoom_text_field.make_empty
+			zoom_text_field.set_position (10, 160)
+			zoom_text_field.set_optimal_dimension (140, 30)
+			zoom_text_field.resize_to_optimal_dimension
+			create zoom_go_button.make_from_text ("go")
+			zoom_go_button.set_position (10, 200)
+			zoom_go_button.set_optimal_dimension (140, 30)
+			zoom_go_button.resize_to_optimal_dimension
+			zoom_go_button.clicked_event.subscribe (agent perform_zoom)
+			toolbar_panel.add_widget (zoom_text_field)
+			toolbar_panel.add_widget (zoom_go_button)
+
+			-- rotation tool
+			create rotation_slider.make_from_range_horizontal (0, 360)
+			rotation_slider.set_position (10, 240)
+			rotation_slider.set_optimal_dimension (140, 20)
+			rotation_slider.resize_to_optimal_dimension
+			rotation_slider.position_changed_event.subscribe (agent perform_rotation(?))
+			toolbar_panel.add_widget (rotation_slider)
+
+
 			-- adding zurich_big.xml as default using platform independent paths
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 			s := fs.pathname ("..", "map")
@@ -99,13 +137,23 @@ feature -- Interface
 			quick_open.clicked_event.subscribe (agent choose_file)
 			quicktoolbar_panel.add_widget (quick_open)
 
+			-- Open Picture
+			s := fs.pathname ("resource", "file_open.png")
+			bitmap_factory.create_bitmap_from_image (s)
+			create quick_open.make_from_image (bitmap_factory.last_bitmap)
+			quick_open.set_optimal_dimension (26, 25)
+			quick_open.resize_to_optimal_dimension
+			quick_open.set_position (30, 2)
+			quick_open.clicked_event.subscribe (agent choose_picture)
+			quicktoolbar_panel.add_widget (quick_open)
+
 			-- Zoom out Button
 			s := fs.pathname ("resource", "zoom_out.png")
 			bitmap_factory.create_bitmap_from_image (s)
 			create zoom_out_button.make_from_image (bitmap_factory.last_bitmap)
 			zoom_out_button.set_optimal_dimension (26, 25)
 			zoom_out_button.resize_to_optimal_dimension
-			zoom_out_button.set_position (30, 2)
+			zoom_out_button.set_position (58, 2)
 			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
 			quicktoolbar_panel.add_widget (zoom_out_button)
 
@@ -115,7 +163,7 @@ feature -- Interface
 			create zoom_in_button.make_from_image (bitmap_factory.last_bitmap)
 			zoom_in_button.set_optimal_dimension (26, 25)
 			zoom_in_button.resize_to_optimal_dimension
-			zoom_in_button.set_position (58, 2)
+			zoom_in_button.set_position (86, 2)
 			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
 			quicktoolbar_panel.add_widget (zoom_in_button)
 
@@ -126,7 +174,6 @@ feature -- Interface
 			fps_label.set_background_color (theme_colors.button_background)
 			fps_label.set_foreground_color (theme_colors.button_text)
 			quicktoolbar_panel.add_widget (fps_label)
-
 		end
 
 feature -- Event handling
@@ -161,11 +208,29 @@ feature -- Event handling
 					loaded_file_name := a_dlg.filename
 				else
 					create dlg.make_from_error ("Error parsing" + a_dlg.filename)
-					io.put_string (loader.error_message)
+					io.put_string ("bad error!!")
 					dlg.show
 				end
 
 			end
+		end
+
+	choose_picture is
+			-- open picture dialog and choose a picture for the map
+		local
+			dlg: ME_FILE_DIALOG
+		do
+			create dlg.make
+			dlg.add_file_filter ("Pictures (*.jpg)", "jpg")
+			dlg.show
+			dlg.button_clicked_event.subscribe (agent show_picture (dlg))
+		end
+
+	show_picture(dlg: EM_FILE_DIALOG) is
+			-- file dialog was closed, now show the picture
+		local
+		do
+			map_widget.set_picture (dlg.absolute_filename)
 		end
 
 	zoom_in_button_clicked is
@@ -198,6 +263,39 @@ feature -- Event handling
 			map_widget.enable_lines_shown
 		end
 
+	birdie_button is
+			-- bird button has beed pressed
+		do
+--			map_widget.enable_bird_view
+--			map_widget.z
+			map_widget.set_picture("C:\Traffic\zueri.jpg")
+		end
+
+	translation_90 is
+			-- turn the map
+		do
+--			map_widget.turn_90_clock
+		end
+
+	perform_zoom is
+			-- zoom the picture
+		local
+			zoom_factor: DOUBLE
+		do
+			zoom_factor := zoom_text_field.text.to_double
+			map_widget.stretch_picture (zoom_factor, zoom_factor, true)
+		end
+
+	perform_rotation(deg: INTEGER) is
+			-- rotate the picture
+		local
+
+		do
+			io.putstring (deg.out+"°%N")
+			map_widget.rotate_picture (deg.to_double)
+		end
+
+
 feature -- Widgets
 
 	toolbar_panel: EM_PANEL
@@ -220,6 +318,21 @@ feature -- Widgets
 
 	fps_label: EM_FPS_LABEL
 			-- Frame counter label
+
+	bird_view_button: EM_BUTTON
+			-- Button to enable bird view
+
+	translation_button: EM_BUTTON
+			-- Button to turn 90°
+
+	zoom_text_field: EM_TEXTBOX
+			-- textbox for the zoom
+
+	zoom_go_button: EM_BUTTON
+			-- button for the zoom
+
+	rotation_slider: EM_SLIDER
+			-- slider for rotation
 
 feature {NONE} -- Implementation
 

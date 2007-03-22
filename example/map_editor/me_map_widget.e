@@ -7,7 +7,7 @@ class ME_MAP_WIDGET
 
 inherit
 
-	TRAFFIC_3D_MAP_WIDGET
+	TRAFFIC_GL_2D_MAP_WIDGET
 		redefine
 			make
 		end
