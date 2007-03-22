@@ -263,7 +263,7 @@ feature {NONE} -- Event handling
 			-- Handle mouse movement event.
 		local
 			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
-			delta_x, delta_y, delta, mouse_delta: DOUBLE
+			delta_x, delta_y, delta_z, delta, mouse_delta: DOUBLE
 			camera: TE_3D_CAMERA
 			radius,polar,azimut,zx_comp_length:DOUBLE
 		do
@@ -288,8 +288,19 @@ feature {NONE} -- Event handling
 				camera.transform.set_position (radius*sine(polar)*sine(azimut), radius*cosine(polar), radius*sine(polar)*cosine(azimut))
 
 			elseif event.button_state_left then
+				start_vec := transform_coords (event.screen_x, event.screen_y)
+				end_vec := transform_coords (event.screen_x + event.x_motion, event.screen_y + event.y_motion)
+				delta_x := end_vec.x - start_vec.x
+				delta_y := end_vec.y - start_vec.y
+				delta_z := end_vec.z - start_vec.z
+
+				root.transform.translate (delta_x, 0, delta_z)---event.y_motion*(delta/mouse_delta), 0)				
+			else
+				root.transform.reset
 			end
 		end
+
+	last_point: GL_VECTOR_3D[DOUBLE]
 
 
 	key_down (event: EM_KEYBOARD_EVENT) is

@@ -18,7 +18,7 @@ inherit
 		--end
 
 	TRAFFIC_3D_CONSTANTS
-		export {NONE} all end
+
 
 	MATH_CONST
 		export {NONE} all end
@@ -381,7 +381,7 @@ feature -- Event channels
 	place_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE, EM_MOUSEBUTTON_EVENT]]
 			-- Event for click on place
 
-feature {NONE} -- Implementation
+feature -- Implementation
 
 	x_coord: DOUBLE
 			-- X coordinate of the viewer

@@ -53,6 +53,9 @@ feature -- 3D Member Creation
 			create current_uvw_set.make(0)
 
 			create uvw_indices.make(0)
+			--create cluster
+			create cluster_list.make(1)
+			create single_cluster.make(material)
 
 			up_vector.set(0.0, 1.0, 0.0)
 			--create normal
@@ -75,7 +78,7 @@ feature -- 3D Member Creation
 				current_point := some_points.i_th(i)
 				next_point := some_points.i_th(i+1)
 				current_angle := angle_between_vectors((last_point-current_point),(next_point-current_point))/2.0
-				current_bisector := up_vector.cross_product(((next_point-current_point).normalized - (last_point-current_point).normalized).normalized)
+				current_bisector := up_vector.cross_product(((next_point-current_point).normalized + (current_point-last_point).normalized).normalized)
 				current_bisector := current_bisector * (a_width/(2.0*sine(current_angle)))
 				vector := current_point + current_bisector
 				vertex_list.force(vector)
@@ -96,11 +99,12 @@ feature -- 3D Member Creation
 				normal_indices.force(1)
 
 				new_uvw_index_set.force(uvw_indices)
-
 				create current_face.make(vertex_indices, normal_indices,new_uvw_index_set, vertex_list.i_th (vertex_indices.i_th (1)),vertex_list.i_th (vertex_indices.i_th (2)),vertex_list.i_th (vertex_indices.i_th (3)))
 				face_list.force(current_face)
+				single_cluster.push_index (face_list.count)
 
-				--create secound triangle of quad
+
+				--create second triangle of quad
 				create new_uvw_index_set.make(1)
 				create vertex_indices.make(3)
 				create normal_indices.make(3)
@@ -117,6 +121,7 @@ feature -- 3D Member Creation
 
 				create current_face.make(vertex_indices, normal_indices,new_uvw_index_set, vertex_list.i_th (vertex_indices.i_th (1)),vertex_list.i_th (vertex_indices.i_th (2)),vertex_list.i_th (vertex_indices.i_th (3)))
 				face_list.force(current_face)
+				single_cluster.push_index (face_list.count)
 
 				i := i+1
 			end
@@ -144,9 +149,10 @@ feature -- 3D Member Creation
 			normal_indices.force(1)
 
 			new_uvw_index_set.force(uvw_indices)
-
 			create current_face.make(vertex_indices, normal_indices,new_uvw_index_set, vertex_list.i_th (vertex_indices.i_th (1)),vertex_list.i_th (vertex_indices.i_th (2)),vertex_list.i_th (vertex_indices.i_th (3)))
 			face_list.force(current_face)
+			single_cluster.push_index (face_list.count)
+
 
 			--create secound triangle of last quad
 			create new_uvw_index_set.make(1)
@@ -165,18 +171,15 @@ feature -- 3D Member Creation
 
 			create current_face.make(vertex_indices, normal_indices,new_uvw_index_set, vertex_list.i_th (vertex_indices.i_th (1)),vertex_list.i_th (vertex_indices.i_th (2)),vertex_list.i_th (vertex_indices.i_th (3)))
 			face_list.force(current_face)
+			single_cluster.push_index (face_list.count)
 
 
-			--create cluster
-			create cluster_list.make(1)
-			create single_cluster.make(material)
-			single_cluster.push_index (1)
-			single_cluster.push_index (2)
 			cluster_list.force(single_cluster)
 
 			calculate_face_neighbours
 			build_ressource_list
 			last_3d_member := build_3d_member
+
 		end
 
 feature -- Access
@@ -263,9 +266,8 @@ feature -- Basic operations
 			from
 				i := 1
 			until
-				i > connection.polypoints.count-1
+				i > connection.polypoints.count - 1
 			loop
-
 				current_polypoint_2d := map_to_gl_coords(connection.polypoints.i_th(i))
 				current_polypoint_3d.set (current_polypoint_2d.x, 0.0, current_polypoint_2d.y)
 				polyline_3d.extend (current_polypoint_3d)

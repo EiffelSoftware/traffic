@@ -235,9 +235,6 @@ feature {NONE} -- Implementation
 					breadth := (position.y - stops.last.position.y)*2
 				end
 			end
-			if breadth > 50  then
-				io.put_string ("Action")
-			end
 		end
 
 invariant

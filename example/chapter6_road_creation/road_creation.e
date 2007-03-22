@@ -49,7 +49,7 @@ feature -- Example
 			--redraw Paris, now with the white path
 			Paris.redraw
 
-			end
+		end
 
 
 
