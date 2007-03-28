@@ -775,8 +775,9 @@
 		<title>Description</title>
 		<para>
 			A <classname>TRAFFIC_PATH</classname> is a path from an origin to a destination. It is the result of a shortest
-			path calculation and keeps track of the different means of transportation. It can be used to print a textual
-			description of the trip.
+			path calculation or a self-made path and keeps track of the different means of transportation. It can be used to print a textual
+			description of the trip. A <classname>TRAFFIC_PATH</classname> exists of different <classname>TRAFFIC_PATH_SECTION</classname>s 
+			whereas the first one is set by the feature <featurename>set_first</featurename>, respectively reached by using the feature <featurename>first</featurename>. 
 		</para>
 	<title>Class overview</title>
 		<para>
@@ -791,10 +792,17 @@
 		<title>Description</title>
 		<para>
 			A <classname>TRAFFIC_PATH_SECTION</classname> is part of <link url="#traffic_path">TRAFFIC_PATH</link>.
-			It has a common means of transport and consists of one or more connections. The total length can be accessed through
-			<featurename>length</featurename>. The feature <featurename>extend</featurename> requires the given
-			<classname>TRAFFIC_CONNECTION</classname> to either have the same <featurename>line</featurename> as
-			the path section or have not be a line section. This can be checked with <featurename>is_insertable</featurename>.
+			It has a common means of transport and consists of one or more connections. 
+		</para>
+		<para>		
+			There exist different ways to create a new path section:
+			If the line-type is known, with the <featurename>make_tram</featurename>, <featurename>make_bus</featurename>, <featurename>make_rail</featurename>, <featurename>make_walk</featurename> features
+			it can be created the appropriate path section. Otherwise it can be used the feature <featurename>make</featurename>.
+		</para>
+		<para> 
+			The total length can be accessed through <featurename>length</featurename>. The feature <featurename>extend</featurename> requires the given
+			<classname>TRAFFIC_PATH_SECTION</classname> to have the same <featurename>line</featurename> as
+			the path section. This can be checked with <featurename>is_insertable</featurename>. The feature <featurename>get_next</featurename> references to the following <classname>TRAFFIC_PATH_SECTION</classname> and can be set by <featurename>set_next</featurename>.
 		</para>
 		<toplink/>
 	</section>

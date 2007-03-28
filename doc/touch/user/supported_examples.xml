@@ -127,7 +127,7 @@
 	</section>    
 <section id="road creation">
 	<title>
-	Road creation example
+	Path creation example
 	</title>
 	<para>
 		<programlisting>
@@ -136,45 +136,46 @@
 <keyword>inherit</keyword>
 				
 	TOURISM
-	<keyword>redefine</keyword>
-		explore
-	<keyword>end</keyword>
 	TOUCH_ROAD
 				
 	<keyword>feature</keyword> <comment>Example</comment>
 				
-		explore <keyword>is</keyword>
-		<comment>Some information.</comment>
-			<keyword>do</keyword>
-				console.set_text ("This is an example of a road creation. Click the Button to create a new Road")
-				paris.display
-			<keyword>end</keyword>
-				
 		explore_on_click <keyword>is</keyword>
-			<comment>Create a road and animate it.</comment>
+			<comment>Create a path and animate it.</comment>
+			<keyword>local</keyword>
+				tram_1, tram_2a, tram_2b, walk, rail: TRAFFIC_PATH_SECTION
 			<keyword>do</keyword>
-				<keyword>create</keyword> place1.make_with_pos ("Place 1", 50, 50)
-				<keyword>create</keyword> place2.make_with_pos ("Place 2", 90, 50)
-				<keyword>create</keyword> place3.make_with_pos ("Place 3", 130, 50)
-				<keyword>create</keyword> place4.make_with_pos ("Place 4", 170, 50)
-				<keyword>create</keyword> place5.make_with_pos ("Place 5", 210, 90)
-				<keyword>create</keyword> place6.make_with_pos ("Place 6", 210, 130)
-				<keyword>create</keyword> place7.make_with_pos ("Place 7", 210, 170)
-				<keyword>create</keyword> place8.make_with_pos ("Place 8", 210, 210)
-				<keyword>create</keyword> place9.make_with_pos ("Place 9", 210, 250)
-				<keyword>create</keyword> place10.make_with_pos ("Place 10", 90, 150)
-				place1.link (place2)
-				place2.link (place3)
-				place3.link (place4)
-				place4.link (place5)
-				place5.link (place6)
-				place6.link (place7)
-				place7.link (place8)
-				place8.link (place9)
-				place9.link (place10)
-				map_widget.disable_lines_shown -- Used for better contrast
-				make_colored_road(place1, 5, 10, 25)
+				Paris.display
+				
+				<keyword>create</keyword> walk
+				walk.make_walk (Road_Place_de_la_Nation)
+				<keyword>create</keyword> tram_1
+				tram_1.make_tram (Place_Nation_Place_Republique)
+				<keyword>create</keyword> tram_2a
+				tram_2a.make_tram (Place_Republique_Place_Hotel_de_Ville)
+				<keyword>create</keyword> tram_2b
+				tram_2b.make_tram (Place_Hotel_de_Ville_Place_Chatelet)
+				<keyword>create</keyword> rail
+				rail.make_rail (Place_Chatelet_Place_Opera)
+				
+				tram_2a.extend (tram_2b)
+				
+				<comment>build the path</comment>
+				<keyword>create</keyword> a_path.make
+				a_path.set_first (walk)
+				walk.set_next (tram_1)
+				tram_1.set_next (tram_2a)
+				tram_2a.set_next (rail)
+				
+				<comment>add the path to the map of Paris</comment>
+				Paris.add_path (a_path)
+				
+				<comment>redraw Paris, now with the white path</comment>
+				Paris.redraw
 			<keyword>end</keyword>
+			
+		a_path: TRAFFIC_PATH
+				<comment>a path in Paris</comment>
 				
 	<keyword>end</keyword>
 			</programlisting>
