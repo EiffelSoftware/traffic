@@ -123,10 +123,10 @@ feature -- Access
 			Result := connections_impl
 		end
 
-	get_next: TRAFFIC_PATH_SECTION is
+	next: TRAFFIC_PATH_SECTION is
 			-- give the next traffic_path_section
 		do
-			Result := next
+			Result := next_impl
 		end
 
 
@@ -227,7 +227,7 @@ feature -- Basic operations
 			is_realy_next: is_same_place (a_path_section)
 			is_different_type_of_line: not is_insertable(a_path_section)
 		do
-			next := a_path_section
+			next_impl := a_path_section
 		end
 
 
@@ -236,7 +236,7 @@ feature -- Implementation
 	connections_impl: ARRAYED_LIST [TRAFFIC_CONNECTION]
 			-- Connections of the path
 
-	next: TRAFFIC_PATH_SECTION
+	next_impl: TRAFFIC_PATH_SECTION
 			-- next traffic_path_section
 
 end
