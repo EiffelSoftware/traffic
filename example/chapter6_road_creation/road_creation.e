@@ -9,19 +9,16 @@ inherit
 
 	TOURISM
 	TOUCH_ROAD
-
+	
 feature -- Example
 
 	explore_on_click is
 			-- Create a road and animate it.
 		local
 			tram_1, tram_2a, tram_2b, walk, rail: TRAFFIC_PATH_SECTION
-			a_path: TRAFFIC_PATH
 		do
 
 			Paris.display
-
-			create a_path.make
 
 			--create the path-sections
 			create walk
@@ -38,6 +35,7 @@ feature -- Example
 			tram_2a.extend (tram_2b)
 
 			--build the path
+			create a_path.make
 			a_path.set_first(walk)
 			walk.set_next (tram_1)
 			tram_1.set_next (tram_2a)
@@ -51,6 +49,8 @@ feature -- Example
 
 		end
 
+	a_path: TRAFFIC_PATH
+			--a path in Paris
 
 
 end
