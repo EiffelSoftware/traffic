@@ -802,7 +802,7 @@
 		<para> 
 			The total length can be accessed through <featurename>length</featurename>. The feature <featurename>extend</featurename> requires the given
 			<classname>TRAFFIC_PATH_SECTION</classname> to have the same <featurename>line</featurename> as
-			the path section. This can be checked with <featurename>is_insertable</featurename>. The feature <featurename>get_next</featurename> references to the following <classname>TRAFFIC_PATH_SECTION</classname> and can be set by <featurename>set_next</featurename>.
+			the path section. This can be checked with <featurename>is_insertable</featurename>. The feature <featurename>next</featurename> references to the following <classname>TRAFFIC_PATH_SECTION</classname> and can be set by <featurename>set_next</featurename>.
 		</para>
 		<toplink/>
 	</section>
