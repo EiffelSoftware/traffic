@@ -751,7 +751,7 @@ feature -- Implementation
 				create center.make (local_x_coord, local_y_coord)
 
 				-- Check for collision with lines and other buildings
-				if	not rectangular_area_has_collision_with_grid (center, b, w) then
+				if	not rectangular_area_has_collision_with_grid (center, w, b) then
 					-- create the four corners
 					create p1.make (local_x_coord+0.5*w, local_y_coord+0.5*b)
 					create p2.make (local_x_coord+0.5*w, local_y_coord-0.5*b)
@@ -769,7 +769,7 @@ feature -- Implementation
 					building_id := building_id + 1
 					buildings_representation.add_building_with_template (building, a_template)
 					buildings_representation.collision_polygons.force_last (collision_poly)
-					mark_grid_cells_for_rectangular_area (center, b, w)
+					mark_grid_cells_for_rectangular_area (center, w, b)
 					nr_buildings_placed := nr_buildings_placed + 1
 				end
 				-- we need two random j's per round
