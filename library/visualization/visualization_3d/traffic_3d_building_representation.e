@@ -170,8 +170,8 @@ feature	-- Basic operations
 		local
 			p1,p2: EM_VECTOR3D
 		do
-			p1:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (1)
-			p2:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (2)
+			p1:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (2)
+			p2:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (3)
 			Result:= (p1-p2).length
 		end
 
@@ -182,8 +182,8 @@ feature	-- Basic operations
 		local
 			p2,p3: EM_VECTOR3D
 		do
-			p2:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (2)
-			p3:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (3)
+			p2:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (1)
+			p3:=building_day_factory.building_templates.i_th (a_template).hierarchy_bounding_box.i_th (2)
 			Result:= (p2-p3).length
 		end
 
