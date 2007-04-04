@@ -8,11 +8,17 @@ class
 
 inherit
 		TRAFFIC_MOVING
+			redefine
+				move
+			end
 
 create
-	make_directed, make_random
+	make_directed, make_random, make_with_path
 
 feature -- Access
+
+	path: TRAFFIC_PATH
+			-- Path to take
 
 	intended_line: TRAFFIC_LINE
 			-- Line to use next
@@ -37,6 +43,40 @@ feature -- Status report
 			-- a vehicle that travels back on its line.
 
 feature -- Initialization
+
+	make_with_path (a_path: TRAFFIC_PATH; a_speed: DOUBLE) is
+			-- Set passenger's path to be a_path.
+		require
+			a_path_not_void: a_path /= Void
+		local
+			list: ARRAYED_LIST [EM_VECTOR_2D]
+			path_conns: ARRAYED_LIST [TRAFFIC_CONNECTION]
+			evening_time, sleep_time: DOUBLE
+		do
+			path := a_path
+			position := a_path.origin.position
+			path_conns := a_path.connections
+			create list.make (path_conns.count + 1)
+			from
+				path_conns.start
+			until
+				path_conns.off
+			loop
+				list.append (path_conns.item.polypoints)
+				path_conns.forth
+			end
+			polypoints := list
+			polypoints.start
+			traffic_type := a_path.first.type
+			set_coordinates
+			set_angle
+			-- set lit time
+			evening_time := 17.0
+			sleep_time := 26.00
+			light_time := [evening_time, sleep_time]
+			virtual_speed := a_speed
+		end
+
 
 	make_directed (an_itinerary: ARRAYED_LIST [EM_VECTOR_2D];  a_speed: DOUBLE) is
 			-- Set passengers route as 'an_itinerary' and speed to 'a_speed'.
@@ -84,12 +124,29 @@ feature -- Basic operations
 			set_angle
 		end
 
-
 	take_tour is
 			-- Take a tour on the map.
 		do
 			move
 		end
+
+	move is
+			--
+		local
+			direction: EM_VECTOR_2D
+		do
+			direction := destination - origin
+			if not has_finished then
+
+				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) or direction.length <= 0 then
+					set_coordinates
+					set_angle
+				else
+					position := position + (direction / direction.length) * speed
+				end
+			end
+		end
+
 
 	set_intended_line_info (a_line: TRAFFIC_LINE; a_boarding_stop: INTEGER; a_deboarding_stop: INTEGER) is
 			-- Set where 'Current' intends to board and to get off.

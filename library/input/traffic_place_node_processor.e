@@ -6,7 +6,7 @@ indexing
 
 class
 	TRAFFIC_PLACE_NODE_PROCESSOR
-	
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
 		redefine
@@ -20,7 +20,7 @@ feature -- Access
 
 	Name: STRING is "place"
 			-- Name of node to process
-			
+
 	place: TRAFFIC_PLACE
 			-- Reference to node
 
@@ -38,7 +38,7 @@ feature -- Basic operations
 		do
 			if not has_attribute ("name") then
 				set_error (Mandatory_attribute_missing, << "name" >>)
-			elseif map_factory.map.has_place (attribute ("name")) then
+			elseif map_factory.map.places.has (attribute ("name")) then
 				set_error (Duplicate_name, << attribute ("name") >>)
 			else
 				map_factory.build_place (attribute ("name"), map)
@@ -49,7 +49,7 @@ feature -- Basic operations
 				process_subnodes
 			end
 		end
-		
+
 	process_subnodes is
 			-- Process subnodes.
 		local
@@ -93,7 +93,7 @@ feature -- Basic operations
 				subnodes.forth
 			end
 			if files.count > 0 or description /= Void then
-				create info.make 
+				create info.make
 				info.set_description (description)
 				from
 					files.start
@@ -106,5 +106,5 @@ feature -- Basic operations
 				map_factory.place.set_information (info)
 			end
 		end
-		
+
 end

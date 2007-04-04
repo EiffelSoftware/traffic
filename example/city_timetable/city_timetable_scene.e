@@ -391,7 +391,7 @@ feature -- Event handling
 	load_buildings_clicked is
 			-- Load buildings along lines.
 		do
-			map.add_buildings_along_lines
+			map.place_buildings_randomly (2)
 		end
 
 	delete_buildings_clicked is
@@ -403,7 +403,7 @@ feature -- Event handling
 	time_checked is
 			-- Checkbox has been checked.
 		do
-			map.map.change_traveler_speed (map.time.simulated_minutes / 2)
+--			map.map.change_traveler_speed (map.time.simulated_minutes / 2)
 			map.time.change_simulated_time (1)
 			map.time.start_time
 		end
@@ -425,7 +425,7 @@ feature -- Event handling
 		require
 			time_exists: traffic_time /= Void
 		do
-			time_label.set_text (traffic_time.actual_hour.out + ":" + traffic_time.actual_minute.out)
+			time_label.set_text (traffic_time.actual_time.hour.out + ":" + traffic_time.actual_time.minute.out)
 		end
 
 	lines_unchecked is

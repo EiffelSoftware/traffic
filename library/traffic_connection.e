@@ -29,6 +29,9 @@ feature -- Element change
 
 feature -- Access
 
+	type: TRAFFIC_TYPE
+			-- Type of the line section
+
 	origin: TRAFFIC_PLACE is
 			-- Place of origin.
 		do
@@ -64,6 +67,11 @@ feature -- Access
 				end
 			end
 		end
+
+feature -- Status report
+
+	is_directed: BOOLEAN
+			-- Is the road directed?
 
 feature {TRAFFIC_MAP, TRAFFIC_PATH} -- Access
 

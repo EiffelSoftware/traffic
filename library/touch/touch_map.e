@@ -40,26 +40,26 @@ feature -- Status report
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
 		do
-			Result := internal_map.has_place (a_name)
+			Result := internal_map.places.has (a_name)
 		end
 
-	has_line_section_between (a_origin_name, a_destination_name: STRING): BOOLEAN is
-			-- Has traffic map line section between places with given names?
-		require
-			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
-			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
-		do
-			Result := internal_map.has_line_section_between (a_origin_name, a_destination_name)
-		end
+--	has_line_section_between (a_origin_name, a_destination_name: STRING): BOOLEAN is
+--			-- Has traffic map line section between places with given names?
+--		require
+--			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
+--			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
+--		do
+--			Result := internal_map.has_line_section_between (a_origin_name, a_destination_name)
+--		end
 
-	has_line_section (a_origin_name, a_destination_name: STRING; a_traffic_type: TRAFFIC_TYPE; a_line: TRAFFIC_LINE): BOOLEAN is
+	has_line_section (a_origin, a_destination: TRAFFIC_PLACE; a_traffic_type: TRAFFIC_TYPE; a_line: TRAFFIC_LINE): BOOLEAN is
 			-- Has traffic map line section `a_line_section'?
 		require
-			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
-			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
+--			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
+--			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
 			a_traffic_type_exists: a_traffic_type /= Void
 		do
-			Result := internal_map.has_line_section (a_origin_name, a_destination_name, a_traffic_type, a_line)
+			Result := internal_map.line_sections.has_similar (a_origin, a_destination, a_traffic_type, a_line)
 		end
 
 	has_line (a_name: STRING): BOOLEAN is
@@ -68,7 +68,7 @@ feature -- Status report
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
 		do
-			Result := internal_map.has_line (a_name)
+			Result := internal_map.lines.has (a_name)
 		end
 
 feature -- Element change
@@ -76,7 +76,7 @@ feature -- Element change
 	equip is
 			-- Add `a_number' trams per line.
 		do
-			internal_map_widget.travelers_representation.add_tram_per_line (internal_map, 2)
+			internal_map.add_tram_per_line (2)
 		end
 
 	build is
@@ -100,7 +100,7 @@ feature -- Element change
 			a_place_exists: a_place /= Void
 			no_place_with_same_name_in_map: not has_place (a_place.name)
 		do
-			internal_map.add_place (a_place)
+			internal_map.places.force (a_place, a_place.name)
 		ensure
 			a_place_in_map: has_place (a_place.name)
 		end
@@ -109,11 +109,11 @@ feature -- Element change
 			-- Add line section `a_line_section' to map.
 		require
 			a_line_section_exists: a_line_section /= Void
-			a_line_section_not_in_map: not has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
+			a_line_section_not_in_map: not line_sections.has_similar (a_line_section.origin, a_line_section.destination, a_line_section.type, a_line_section.line)
 		do
 			internal_map.add_line_section (a_line_section)
 		ensure
-			a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
+			a_line_section_in_map: line_sections.has_similar (a_line_section.origin, a_line_section.destination, a_line_section.type, a_line_section.line)
 		end
 
 	add_line (a_line: TRAFFIC_LINE) is
@@ -122,7 +122,7 @@ feature -- Element change
 			a_line_exists: a_line /= Void
 			no_line_with_same_name_in_map: not has_line (a_line.name)
 		do
-			internal_map.add_line (a_line)
+			internal_map.lines.force (a_line, a_line.name)
 		ensure
 			a_line_in_map: has_line (a_line.name)
 		end
@@ -144,13 +144,13 @@ feature -- Element change
 			internal_map.add_building (a_building)
 		end
 
-	add_traveler (a_traveler: TRAFFIC_MOVING) is
-			-- Add traveler 'a_traveler' to map.
-			require
-				a_traveler_exists: a_traveler /= Void
-			do
-				internal_map.add_traveler (a_traveler)
-			end
+--	add_traveler (a_traveler: TRAFFIC_MOVING) is
+--			-- Add traveler 'a_traveler' to map.
+--			require
+--				a_traveler_exists: a_traveler /= Void
+--			do
+--				internal_map.add_traveler (a_traveler)
+--			end
 
 	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Remove line_section `a_line_section' from map (bad implementation)
@@ -160,21 +160,21 @@ feature -- Element change
 				internal_map.remove_line_section (a_line_section)
 			end
 
-	remove_traveler (index: INTEGER) is
-			-- Remove traveler at position index
-			require
-				index_valid: index >= 0
-			do
-				internal_map.remove_traveler (index)
-			end
+--	remove_traveler (index: INTEGER) is
+--			-- Remove traveler at position index
+--			require
+--				index_valid: index >= 0
+--			do
+--				internal_map.travelers.remove (index)
+--			end
 
-	change_traveler_speed (divisor: DOUBLE) is
-			-- Divide the speed of each traveler by divisor
-			require
-				divisor >= 2
-			do
-				internal_map.change_traveler_speed (divisor)
-			end
+--	change_traveler_speed (divisor: DOUBLE) is
+--			-- Divide the speed of each traveler by divisor
+--			require
+--				divisor >= 2
+--			do
+--				internal_map.change_traveler_speed (divisor)
+--			end
 
 feature -- Access
 
@@ -216,15 +216,27 @@ feature -- Access
 			a_name_exists: a_name /= Void
 			place_in_map: has_place (a_name)
 		do
-			Result := internal_map.place (a_name)
+			Result := internal_map.places.item (a_name)
 		ensure
 			result_exists: Result /= Void
 		end
 
-	places: HASH_TABLE [TRAFFIC_PLACE, STRING] is
+	places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING] is
 			-- All places in map.
 		do
 			Result := internal_map.places
+		end
+
+	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD, INTEGER] is
+			-- All roads
+		do
+			Result := internal_map.roads
+		end
+
+	passengers: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PASSENGER] is
+			-- All roads
+		do
+			Result := internal_map.passengers
 		end
 
 	line (a_name: STRING): TOUCH_LINE is
@@ -233,7 +245,7 @@ feature -- Access
 			a_name_exists: a_name /= Void
 			line_in_map: has_line (a_name)
 		do
-			create Result.make_with_line_and_representation(internal_map.line (a_name))
+			create Result.make_with_line_and_representation(internal_map.lines.item (a_name))
 		end
 
 	simple_line (a_name: STRING): TOUCH_SIMPLE_LINE is
@@ -244,19 +256,19 @@ feature -- Access
 		local
 			a_line: TRAFFIC_SIMPLE_LINE
 		do
-			a_line ?= internal_map.line (a_name)
+			a_line ?= internal_map.lines.item (a_name)
 			if a_line /= Void then
 				create Result.make_with_line_and_representation(a_line)
 			end
 		end
 
-	line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION] is
+	line_sections: TRAFFIC_LINE_SECTION_LIST is
 			-- All line sections in map
 		do
 			Result := internal_map.line_sections
 		end
 
-	lines: HASH_TABLE [TRAFFIC_LINE, STRING] is
+	lines: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_LINE, STRING] is
 			-- All lines in map.
 		do
 			Result := internal_map.lines
@@ -287,25 +299,35 @@ feature -- Access
 			end
 		end
 
-	travelers: HASH_TABLE [TRAFFIC_MOVING, INTEGER] is
-			-- All travelers on the map
-		do
-			Result := internal_map.travelers
-		end
+--	travelers: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_MOVING, INTEGER] is
+--			-- All travelers on the map
+--		do
+--			Result := internal_map.travelers
+--		end
 
 	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_LINE_SECTION] is
 			-- Line sections with origin or destination place `a_name'.
 		require
 			place_in_map: has_place (a_name)
 		do
-			Result := internal_map.line_sections_of_place (a_name)
+			Result := internal_map.line_sections.items_of_place (internal_map.places.item (a_name))
 		end
 
-	retrieve_road (i: INTEGER): TRAFFIC_ROAD is
-			-- Road with given id `i'
-		do
-			Result := internal_map.retrieve_road (i)
-		end
+--	line_sections_between (a_origin_name, a_destination_name: STRING): LIST [TRAFFIC_LINE_SECTION] is
+--			-- line sections between places with given names
+--		require
+--			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
+--			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
+--			has: has_line_section_between (a_origin_name, a_destination_name)
+--		do
+--			Result := internal_map.line_sections_between (a_origin_name, a_destination_name)
+--		end
+
+--	retrieve_road (i: INTEGER): TRAFFIC_ROAD is
+--			-- Road with given id `i'
+--		do
+--			Result := internal_map.retrieve_road (i)
+--		end
 
 
 feature -- Basic operation
@@ -329,6 +351,8 @@ feature -- Basic operations
 			-- Display `Current' on `internal_map_widget'.
 		do
 			internal_map_widget.disable_map_hidden
+			internal_map_widget.enable_lines_shown
+			internal_map_widget.enable_roads_shown
 		end
 
 feature {NONE} -- Implementation
@@ -349,6 +373,6 @@ invariant
 	places_not_void: places /= Void
 	lines_not_void: lines /= Void
 	line_sections_not_void: line_sections /= Void
-	travelers_not_void: travelers /= Void
+--	travelers_not_void: travelers /= Void
 
 end

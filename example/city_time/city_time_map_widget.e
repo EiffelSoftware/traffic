@@ -60,7 +60,7 @@ feature -- Basic operations
 --				update_passenger_number (0)
 				update_passenger_number (number_of_passengers)
 
-				travelers_representation.add_tram_per_line (map, 2)
+				map.add_tram_per_line (2)
 			end
 		ensure then
 			travelers_created: map /= Void implies travelers_representation /= Void
@@ -69,7 +69,14 @@ feature -- Basic operations
 	adjust_speed is
 			-- Double the speed of the travelers.
 		do
-			map.change_traveler_speed (time.simulated_minutes /2)
+--			from
+--				
+--			until
+--				
+--			loop
+--				
+--			end
+--			map.change_traveler_speed (time.simulated_minutes /2)
 		end
 
 	update_passenger_number (number: INTEGER) is
@@ -81,14 +88,7 @@ feature -- Basic operations
 			traveler: TRAFFIC_PASSENGER
 		do
 			if number_of_passengers >= number then
-				from
-					i := number_of_passengers
-				until
-					i <= number
-				loop
-					travelers_representation.remove_traveler
-					i := i - 1
-				end
+				map.passengers.prune_last (number_of_passengers - number)
 			else
 				from
 					i := 0
@@ -97,7 +97,7 @@ feature -- Basic operations
 				loop
 					create traveler.make_random (7, time.time.ticks)
 					traveler.set_reiterate (True)
-					travelers_representation.add_traveler (traveler, map)
+					map.passengers.force_last (traveler)
 					i := i + 1
 				end
 			end
@@ -141,7 +141,7 @@ feature {NONE} -- Event handling
 			camera: TE_3D_CAMERA
 			z_axis: EM_VECTOR3D
 		do
-		camera := renderpass_manager.renderpasses.i_th(1).camera
+		camera := beauty_pass.camera
 		z_axis := camera.transform.position * (1.0/10.0)
 		camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
 		end
@@ -152,7 +152,7 @@ feature {NONE} -- Event handling
 			camera: TE_3D_CAMERA
 			z_axis: EM_VECTOR3D
 		do
-		camera := renderpass_manager.renderpasses.i_th(1).camera
+		camera := beauty_pass.camera
 		z_axis := camera.transform.position * (1.0/10.0)
 		camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
 		end
@@ -166,7 +166,7 @@ feature {NONE} -- Event handling
 			radius,polar,azimut,zx_comp_length:DOUBLE
 		do
 			if event.button_state_right then
-				camera := renderpass_manager.renderpasses.i_th(1).camera
+				camera := beauty_pass.camera
 
 				--carth to spherical
 				radius:=camera.transform.position.length
@@ -224,7 +224,7 @@ feature -- {CITY_3D_SCENE}	-- Travelere objects
 
 			create traveler.make_directed (temp_list, 0.5)
 
-			travelers_representation.add_traveler (traveler, map)
+			map.passengers.force_last (traveler)
 		end
 
 end

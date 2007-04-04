@@ -46,9 +46,9 @@ feature -- Basic operations
 					set_error (Mandatory_attribute_missing, <<"from">>)
 				elseif not has_attribute ("to") then
 					set_error (Mandatory_attribute_missing, <<"to">>)
-				elseif not map.has_place (attribute ("from")) then
+				elseif not map.places.has (attribute ("from")) then
 					set_error (Unknown_source, <<attribute ("from")>>)
-				elseif not map.has_place (attribute ("to")) then
+				elseif not map.places.has (attribute ("to")) then
 					set_error (Unknown_destination, << attribute ("to")>> )
 				elseif line = Void then
 					set_error (Missing_line, << >> )

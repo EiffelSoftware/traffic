@@ -13,13 +13,6 @@ inherit
 			set_coordinates
 		end
 
-	TRAFFIC_SHARED_TIME
-		rename
-			time as traffic_time
-		end
-
-
-
 feature --Access
 
 	line: TRAFFIC_LINE
@@ -82,7 +75,7 @@ feature -- Status report
 	is_after (entry: TRAFFIC_LINE_SCHEDULE_ENTRY): BOOLEAN is
 			-- Is it past the start time?
 		do
-			Result := (traffic_time.actual_hour > entry.start_time.hour) or else ((entry.start_time.hour = traffic_time.actual_hour) and (traffic_time.actual_minute >= entry.start_time.minute))
+			Result := (traffic_time.actual_time.hour > entry.start_time.hour) or else ((entry.start_time.hour = traffic_time.actual_time.hour) and (traffic_time.actual_time.minute >= entry.start_time.minute))
 		end
 
 feature -- Basic operations
@@ -147,7 +140,7 @@ feature -- Basic operations
 
 				if not polypoints.after then
 					direction := destination - origin
-					seconds_passed := (traffic_time.actual_hour * 3600 + traffic_time.actual_minute * 60 + traffic_time.actual_second - last_update)
+					seconds_passed := (traffic_time.actual_time.hour * 3600 + traffic_time.actual_time.minute * 60 + traffic_time.actual_time.second - last_update)
 					travel_distance := (schedule_speed * seconds_passed)
 
 					if ((position.x - destination.x).abs < travel_distance) and ((position.y - destination.y).abs < travel_distance) then
@@ -163,7 +156,7 @@ feature -- Basic operations
 					end
 				end
 
-				last_update := traffic_time.actual_hour * 3600 + traffic_time.actual_minute * 60 + traffic_time.actual_second
+				last_update := traffic_time.actual_time.hour * 3600 + traffic_time.actual_time.minute * 60 + traffic_time.actual_time.second
 			end
 		end
 

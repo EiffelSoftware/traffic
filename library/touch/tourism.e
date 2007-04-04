@@ -75,7 +75,7 @@ feature -- Access (Paris)
 			end
 		end
 
-	Zurich: TOUCH_MAP is
+	Zurich: TRAFFIC_MAP is
 			-- Object representing the city of Zurich
 		require else
 			map_widget_exists: map_widget /= Void
@@ -92,7 +92,8 @@ feature -- Access (Paris)
 				loader.load_map
 				if not loader.has_error then
 					map_widget.set_map (loader.map)
-					create Result.make
+--					create Result.make
+					Result := loader.map
 					map_widget.enable_map_hidden
 					is_paris_loaded := False
 					is_zurich_loaded := True

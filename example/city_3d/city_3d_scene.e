@@ -132,7 +132,7 @@ feature -- Interface
 			load_buildings_button.clicked_event.subscribe (agent load_buildings_clicked)
 			toolbar_panel_left.add_widget (load_buildings_button)
 			load_buildings_along_lines_button.set_position(10,225)
-			load_buildings_along_lines_button.clicked_event.subscribe (agent map_widget.add_buildings_along_lines)
+			load_buildings_along_lines_button.clicked_event.subscribe (agent map_widget.place_buildings_randomly (2))
 			toolbar_panel_left.add_widget (load_buildings_along_lines_button)
 			delete_buildings_button.set_position (10, 275)
 			delete_buildings_button.clicked_event.subscribe (agent delete_buildings_clicked)
@@ -337,7 +337,8 @@ feature -- Interface
 			map_widget.set_map (loader.map)
 			loaded_file_name := s
 
-			map_widget.travelers_representation.add_tram_per_line (map_widget.map, 2)
+			map_widget.map.add_tram_per_line (2)
+--			map_widget.travelers_representation.add_tram_per_line (map_widget.map, 2)
 
 		end
 
@@ -475,7 +476,7 @@ feature -- Event handling
 			marked_origin_label.set_text ("")
 			marked_destination_label.set_text ("")
 			traffic_line_ride_button.hide
-			map_widget.travelers_representation.add_tram_per_line (map_widget.map, 2)
+			map_widget.map.add_tram_per_line (2)
 		rescue
 			catch(24)
 			catch(8)

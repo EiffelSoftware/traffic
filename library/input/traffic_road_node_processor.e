@@ -8,7 +8,7 @@ class
 
 inherit
 	TRAFFIC_NODE_PROCESSOR
-		redefine 
+		redefine
 			process_subnodes
 		end
 
@@ -19,7 +19,7 @@ feature -- Access
 
 	Name: STRING is "road"
 			-- Name of element to process
-		
+
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		do
@@ -43,13 +43,13 @@ feature -- Basic operations
 				elseif not has_attribute ("direction") then
 					set_error (Mandatory_attribute_missing, <<"direction">>)
 				elseif not has_attribute ("type") then
-					set_error (Mandatory_attribute_missing, <<"type">>)	
-				elseif not map.has_place (attribute ("from")) then
+					set_error (Mandatory_attribute_missing, <<"type">>)
+				elseif not map.places.has (attribute ("from")) then
 					set_error (Unknown_source, <<attribute ("from")>>)
-				elseif not map.has_place (attribute ("to")) then
+				elseif not map.places.has (attribute ("to")) then
 					set_error (Unknown_destination, << attribute ("to")>> )
 				else
-					
+
 					map_factory.build_road (( attribute ("from")), ( attribute ("to")), map, ( attribute ("type")), ( attribute ("id")),( attribute ("direction")))
 					road := map_factory.road
 
@@ -62,19 +62,19 @@ feature -- Basic operations
 					 adjust_position (road, polypoints)
 				end
 			end
-		
+
 	end
-		
+
 	zero_vector: EM_VECTOR_2D is
 	once
 		Result := create {EM_VECTOR_2D}.make (0, 0)
 	end
-	
+
 	adjust_position (road: TRAFFIC_ROAD; a_polypoints: LIST [EM_VECTOR_2D]) is
 			-- Adjust positions
 		do
 			if road.origin.position = Void or equal(road.origin.position, zero_vector) then
-				road.origin.set_position 
+				road.origin.set_position
 					(create {EM_VECTOR_2D}.make (a_polypoints.first.x, a_polypoints.first.y))
 			else
 				road.origin.set_position
@@ -82,7 +82,7 @@ feature -- Basic operations
 												(road.origin.position.y + a_polypoints.first.y)/ 2.0))
 			end
 			if road.destination.position = Void or equal(road.destination.position, zero_vector) then
-				road.destination.set_position 
+				road.destination.set_position
 					(create {EM_VECTOR_2D}.make (a_polypoints.last.x, a_polypoints.last.y))
 			else
 				road.destination.set_position
@@ -90,7 +90,7 @@ feature -- Basic operations
 												(road.destination.position.y + a_polypoints.last.y)/ 2.0))
 			end
 		end
-		
+
 
 	process_subnodes is
 			-- Process subnodes.
@@ -135,7 +135,7 @@ feature -- Basic operations
 
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			-- Polypoints of this link
-			
 
-		
+
+
 end

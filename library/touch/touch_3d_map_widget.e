@@ -30,7 +30,6 @@ feature -- Initialization
 			mouse_wheel_up_event.subscribe (agent wheel_up)
 		end
 
-
 feature -- Zoom options
 
 	zoom_in is
@@ -101,5 +100,6 @@ feature {NONE} -- Event handling
 				--TODO: implement pan
 			end
 		end
+
 
 end

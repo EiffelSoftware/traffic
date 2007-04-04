@@ -12,7 +12,8 @@ inherit
 		redefine
 			out,
 			origin_impl,
-			destination_impl
+			destination_impl,
+			type
 		end
 
 create
@@ -38,6 +39,7 @@ feature {NONE} -- Initialization
 			create polypoints.make (2)
 			set_polypoints (a_list)
 			create roads.make (1)
+			is_directed := True
 
 		ensure
 			origin_set: origin_impl = a_origin

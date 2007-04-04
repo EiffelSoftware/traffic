@@ -95,9 +95,14 @@ feature --{NONE} -- Creation
 			connections_impl.extend (a_road)
 		end
 
-
-
 feature -- Access
+
+	type: TRAFFIC_TYPE is
+			-- Type of the path section
+		do
+			Result := connections.first.type
+		end
+
 
 	origin: TRAFFIC_PLACE is
 			-- Origin of the path
@@ -155,7 +160,9 @@ feature -- Status report
 		require
 			a_path_section_exists: a_path_section /= Void
 		do
-			Result := destination = a_path_section.origin or connections_impl = Void
+			Result := destination = a_path_section.origin or
+				(not a_path_section.connections.first.is_directed and destination = a_path_section.connections.first.destination) or
+				connections_impl = Void
 		end
 
 

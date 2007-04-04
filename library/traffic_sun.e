@@ -92,7 +92,7 @@ feature -- Element change
 		require
 			time_exists: time /= Void
 		do
-			theta := (3*pi/2.0 + (2.0*pi*(time.actual_hour*3600.0 + time.actual_minute*60.0 + time.actual_second))/(24.0*60.0*60.0))
+			theta := (3*pi/2.0 + (2.0*pi*(time.actual_time.hour*3600.0 + time.actual_time.minute*60.0 + time.actual_time.second))/(24.0*60.0*60.0))
 			if theta >= 2*pi then
 				theta := theta - 2*pi
 			end

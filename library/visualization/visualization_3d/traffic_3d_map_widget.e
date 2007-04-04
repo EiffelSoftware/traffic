@@ -276,7 +276,7 @@ feature -- Basic operations
 			-- Enable Sunlight and draw Sun
 			if is_map_loaded then
 				sun_representation.update
-				travelers_representation.update
+--				travelers_representation.update
 				buildings_representation.update
 			end
 
@@ -381,7 +381,7 @@ feature -- Event channels
 	place_clicked_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE, EM_MOUSEBUTTON_EVENT]]
 			-- Event for click on place
 
-feature -- Implementation
+feature {NONE} -- Implementation
 
 	x_coord: DOUBLE
 			-- X coordinate of the viewer
@@ -412,7 +412,7 @@ feature -- Implementation
 			poly_points: ARRAYED_LIST [EM_VECTOR_2D]
 			poly_point: EM_VECTOR_2D
 			i,j:INTEGER
-			places: HASH_TABLE[TRAFFIC_PLACE,STRING_8]
+			places: TRAFFIC_EVENT_HASH_TABLE[TRAFFIC_PLACE,STRING_8]
 		do
 
 			--mark cells for each of the line sections
@@ -422,7 +422,7 @@ feature -- Implementation
 				i > map.line_sections.count
 			loop
 				-- traverse each poly point of a line section
-				poly_points := map.line_sections.i_th (i).polypoints
+				poly_points := map.line_sections.item (i).polypoints
 				from
 					j:=2
 					poly_point := poly_points.i_th (1)
@@ -505,7 +505,7 @@ feature -- Implementation
 	add_buildings_along_lines is
 			-- Add buildings along all lines (except railway).
 		local
-			line_sections:ARRAYED_LIST [TRAFFIC_LINE_SECTION]
+			line_sections:DS_ARRAYED_LIST [TRAFFIC_LINE_SECTION]
 			line_section: TRAFFIC_LINE_SECTION
 			building: TRAFFIC_BUILDING
 			center,p1,p2,p3,p4: EM_VECTOR_2D
@@ -533,7 +533,7 @@ feature -- Implementation
 				--line_sections.index > line_sections.count
 			loop
 
-				line_section := line_sections.item
+				line_section := line_sections.item_for_iteration
 				-- railways are not taken into account
 				if not line_section.type.name.is_equal ("rail") then
 					from

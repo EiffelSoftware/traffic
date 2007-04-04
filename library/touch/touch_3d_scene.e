@@ -8,8 +8,12 @@ class TOUCH_3D_SCENE
 inherit
 
 	EM_COMPONENT_SCENE
+		rename
+			time as em_time
 		redefine
-			initialize_scene
+			initialize_scene,
+			run,
+			redraw
 		end
 
 	TOUCH_3D_CONSTANTS
@@ -19,10 +23,44 @@ inherit
 		export {NONE} all end
 	TOUCH_SHARED_MAP_WIDGET
 
+	TRAFFIC_SHARED_TIME
+
 create
 	make_component_scene
 
 feature -- Initialization
+
+	run (a_screen: EM_VIDEO_SURFACE) is
+			--
+		do
+			if is_frame_counter_displayed then
+				create frame_counter.make
+			end
+			screen := a_screen
+			event_loop.key_down_event.subscribe (agent handle_key_down_event (?))
+			event_loop.key_up_event.subscribe (agent handle_key_up_event (?))
+			event_loop.mouse_button_down_event.subscribe (agent handle_mouse_button_down_event (?))
+			event_loop.mouse_button_up_event.subscribe (agent handle_mouse_button_up_event (?))
+			event_loop.mouse_motion_event.subscribe (agent handle_mouse_motion_event (?))
+			event_loop.quit_event.subscribe (agent handle_quit_event (?))
+			event_loop.update_event.subscribe (agent handle_update_event)
+			event_loop.update_event.subscribe (agent animate)
+			event_loop.update_event.subscribe (agent redraw)
+			event_loop.joystick_axis_event.subscribe (agent handle_joystick_axis_event (?))
+			event_loop.joystick_ball_event.subscribe (agent handle_joystick_ball_event (?))
+			event_loop.joystick_button_down_event.subscribe (agent handle_joystick_button_down_event (?))
+			event_loop.joystick_button_up_event.subscribe (agent handle_joystick_button_up_event (?))
+			event_loop.joystick_hat_event.subscribe (agent handle_joystick_hat_event (?))
+			event_loop.update_event.subscribe (agent start_next_scene_threaded)
+
+			is_running := True
+			set_running_scene (Current)
+			time.set_time (9, 0, 0)
+			time.resume_time
+			event_loop.dispatch
+			set_running_scene (Void)
+			is_running := False
+		end
 
 	initialize_scene is
 			-- Create all gui elements.
@@ -80,7 +118,9 @@ feature -- Initialization
 			console.disable
 
 			toolbar_panel.add_widget (console)
-			
+
+			create time_counter.make
+			time_counter.set_x (map_widget.x + map_widget.width - 140)
 		end
 
 feature -- Event handling
@@ -127,5 +167,44 @@ feature -- Widgets
 			-- Botton to zoom out
 
 	click_here_button: EM_BUTTON
-			-- Button to execute example codes				
+			-- Button to execute example codes	
+
+feature -- Access
+
+	time_counter: TOUCH_TIME_COUNTER
+
+	redraw is
+			--
+		local
+			cursor: DS_BILINKED_LIST_CURSOR [EM_COMPONENT]
+			component: EM_COMPONENT
+		do
+			if video_subsystem.opengl_enabled then
+				gl_clear (Em_gl_color_buffer_bit | Em_gl_depth_buffer_bit)
+			end
+			from
+				cursor := components_impl.new_cursor
+				cursor.start
+			until
+				cursor.off
+			loop
+				component := cursor.item
+				if component.is_visible then
+					component.redraw
+				end
+				cursor.forth
+			end
+			if is_frame_counter_displayed then
+				if video_subsystem.opengl_enabled and not video_subsystem.video_surface.is_opengl_blitting_enabled then
+					video_subsystem.video_surface.enable_opengl_blitting
+				end
+				frame_counter.draw (screen)
+			end
+			if video_subsystem.opengl_enabled and not video_subsystem.video_surface.is_opengl_blitting_enabled then
+				video_subsystem.video_surface.enable_opengl_blitting
+			end
+			time_counter.draw (screen)
+			screen.redraw
+		end
+
 end

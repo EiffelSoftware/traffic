@@ -16,16 +16,18 @@ feature	 -- Example
 		do
 
 			Paris.display
-			Paris.map_widget.place_buildings_randomly(3)
+--			Zurich.map_widget.place_buildings_randomly(1)
 			--Zurich.display
 			--Zurich.map_widget.place_buildings_randomly (3)
-			--Louvre.lighten
-			--Route1.animate
-			--Line8.spotlight
-			--Paris.build
-			--Paris.equip
-			--Console.show (Line8)
-			--Console.show (Place_balard)
+			Louvre.lighten
+			Route1.animate
+			Line8.spotlight
+			Paris.build
+			Paris.equip
+			Console.show (Line8)
+			Console.show (Place_balard)
+--			io.put_string (Paris.lines.out)
+--			io.put_string (Paris.places.out)
 		end
 
 end

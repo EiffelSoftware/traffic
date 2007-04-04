@@ -16,6 +16,11 @@ inherit
 	TRAFFIC_3D_CONSTANTS
 		export {NONE} all end
 
+	TRAFFIC_SHARED_TIME
+		rename
+			time as traffic_time
+		end
+
 feature -- Access
 
 	traffic_type: TRAFFIC_TYPE
@@ -75,6 +80,13 @@ feature -- Basic operations
 			-- Take a tour on the map.
 		deferred
 		end
+
+	start is
+			-- Start taking a tour.
+		do
+			traffic_time.add_callback_tour (agent take_tour)
+		end
+
 
 feature -- Element change
 

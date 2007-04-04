@@ -42,6 +42,7 @@
 				<cluster name="visualization_3d" location="$|visualization_3d\">
 					<cluster name="em_9_datastructures" location="$|em_9_datastructures\"/>
 					<cluster name="new" location="$|new\"/>
+					<cluster name="nodes" location="$|nodes\"/>
 				</cluster>
 			</cluster>
 		</cluster>

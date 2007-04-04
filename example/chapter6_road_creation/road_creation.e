@@ -26,11 +26,11 @@ feature -- Example
 			create tram_1
 			tram_1.make_tram (Place_Nation_Place_Republique)
 			create tram_2a
-			tram_2a.make_tram (Place_Republique_Place_Hotel_de_Ville)
+			tram_2a.make_tram (tram11_Place_Republique_Place_Hotel_de_Ville)
 			create tram_2b
-			tram_2b.make_tram (Place_Hotel_de_Ville_Place_Chatelet)
+			tram_2b.make_tram (tram11_Place_Hotel_de_Ville_Place_Chatelet)
 			create rail
-			rail.make_rail (Place_Chatelet_Place_Opera)
+			rail.make_rail (rail_Place_Chatelet_Place_Opera)
 
 			tram_2a.extend (tram_2b)
 

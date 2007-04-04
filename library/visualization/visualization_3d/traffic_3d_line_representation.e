@@ -41,8 +41,8 @@ feature -- Initialization
 
 			add_lines(map)
 
-			map.line_section_inserted_event.subscribe (agent process_item_inserted)
-			map.line_section_removed_event.subscribe (agent process_item_removed)
+			map.line_sections.element_inserted_event.subscribe (agent process_item_inserted)
+			map.line_sections.element_removed_event.subscribe (agent process_item_removed)
 
 			visible := true
 
@@ -115,7 +115,7 @@ feature -- Basic operations
 		require
 			map_valid: a_map /= Void
 		local
-			all_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
+			all_lines: DS_HASH_TABLE [TRAFFIC_LINE, STRING]
 		do
 			all_lines := map.lines
 			from
@@ -220,7 +220,7 @@ feature -- Basic operations
 	unhighlight_all_lines is
 			-- Unhighlight all the lines.
 		local
-			lines: HASH_TABLE [TRAFFIC_LINE , STRING]
+			lines: DS_HASH_TABLE [TRAFFIC_LINE , STRING]
 		do
 			from
 				lines := map.lines
@@ -287,7 +287,7 @@ feature -- Element change
 
 feature -- Event handling
 
-	process_item_inserted (a_line_section: TRAFFIC_LINE_SECTION) is
+	process_item_inserted (a_line_section: TRAFFIC_LINE_SECTION; i: INTEGER) is
 			-- Add view for `a_line_section'.
 		require
 			a_line_section: a_line_section /= Void

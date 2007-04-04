@@ -1,4 +1,4 @@
-Version 3.1	(svn 598)	25.10.2006
+Version 3.1	(snv 800)	25.10.2006
 
 	* Taxis, trams, passengers, and other vehicles
 	* Improved 3d visualization with 3d obj models and textures

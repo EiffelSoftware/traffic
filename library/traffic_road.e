@@ -8,6 +8,9 @@ class
 
 inherit
 	TRAFFIC_CONNECTION
+		redefine
+			type
+		end
 
 create
 	make
@@ -59,10 +62,5 @@ feature -- Access
 
 	id: INTEGER
 			-- Id of road
-
-feature -- Status report
-
-	is_directed: BOOLEAN
-			-- Is the road directed?
 
 end

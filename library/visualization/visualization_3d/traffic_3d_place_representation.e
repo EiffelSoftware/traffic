@@ -43,7 +43,7 @@ feature -- Initialization
 
 			add_places(map)
 
-			map.place_inserted_event.subscribe (agent process_item_inserted)
+			map.places.element_inserted_event.subscribe (agent process_item_inserted)
 --			map.place_removed_event.subscribe (agent process_item_removed)
 
 			visible := true
@@ -112,7 +112,7 @@ feature -- Basic operations
 	add_places(a_map: TRAFFIC_MAP) is
 			-- Add all places from the map to the places array.
 		local
-			all_places: HASH_TABLE [TRAFFIC_PLACE, STRING]
+			all_places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
 		do
 			all_places := a_map.places
 			from
@@ -217,19 +217,20 @@ feature -- Status report
 		require
 			a_point_exists: a_point /= Void
 		local
-			places: ARRAYED_LIST [TRAFFIC_PLACE]
+			places: ARRAY [TRAFFIC_PLACE]
+			i: INTEGER
 		do
 			from
-				places := map.places.linear_representation
-				places.start
+				places := map.places.to_array
+				i := 1
 			until
-				places.after or Result /= Void
+				i <= places.count or Result /= Void
 			loop
-				if a_point.x > places.item.position.x - places.item.width/2 - tolerance and a_point.x < places.item.position.x + places.item.width/2 + tolerance and
-					a_point.y > places.item.position.y - places.item.breadth/2 - tolerance and a_point.y < places.item.position.y + places.item.breadth/2 + tolerance then
-					Result := places.item
+				if a_point.x > places.item (i).position.x - places.item (i).width/2 - tolerance and a_point.x < places.item (i).position.x + places.item (i).width/2 + tolerance and
+					a_point.y > places.item (i).position.y - places.item (i).breadth/2 - tolerance and a_point.y < places.item (i).position.y + places.item (i).breadth/2 + tolerance then
+					Result := places.item (i)
 				end
-				places.forth
+				i := i + 1
 			end
 		end
 

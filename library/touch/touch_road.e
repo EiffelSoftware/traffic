@@ -24,7 +24,7 @@ feature -- Access
 			a_place.next /= Void
 		then
 			create temp_road.make (a_place.t_node, a_place.next.t_node, create {TRAFFIC_TYPE_STREET}.make, 1, "directed")
-			map_widget.map.add_road (temp_road)
+			map_widget.map.roads.put (temp_road, temp_road.id)
 			make_road (a_place.next)
 		end
 	end
@@ -45,14 +45,14 @@ feature -- Access
 				until
 					found
 				loop
-					if not map_widget.map.has_road_with_id (i) then
+					if not map_widget.map.roads.has (i) then
 						found := True
 					else
 						i := i + 1
 					end
 				end
 				create temp_road.make (a_place.t_node, a_place.next.t_node, create {TRAFFIC_TYPE_STREET}.make, i, "directed")
-				map_widget.map.add_road (temp_road)
+				map_widget.map.roads.put (temp_road, temp_road.id)
 				map_widget.places_representation.highlight_place (a_place.t_place, create {EM_COLOR}.make_with_rgb (x,y,z))
 				make_colored_road(a_place.next, x+5, y+10, z+25)
 			end

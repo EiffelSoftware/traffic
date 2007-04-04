@@ -4,7 +4,7 @@ indexing
 
 class
 	TRAFFIC_ONROAD_NODE_PROCESSOR
-	
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
 
@@ -35,8 +35,8 @@ feature -- Basic operations
 			else
 				a_map:=map_factory.map
 				-- retrieve the corresponding instance of TRAFFIC_ROAD
-				if (a_map.has_road_with_id(attribute("id").to_integer)) then
-					parent.send_data (a_map.retrieve_road(attribute("id").to_integer))
+				if (a_map.roads.has (attribute("id").to_integer)) then
+					parent.send_data (a_map.roads.item (attribute("id").to_integer))
 				else
 					set_error(No_road_with_given_id_exists,<<"id">>)
 					parent.send_data(Void)

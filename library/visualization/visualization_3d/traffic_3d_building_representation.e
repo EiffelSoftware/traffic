@@ -71,7 +71,7 @@ feature	-- Basic operations
 			current_time: DOUBLE
 			evening_time, sleep_time: DOUBLE
 		do
-			current_time := time.actual_hour.to_double + time.actual_minute.to_double/60.0
+			current_time := time.actual_time.hour.to_double + time.actual_time.minute.to_double/60.0
 			from
 				buildings.start
 			until

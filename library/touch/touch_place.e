@@ -26,7 +26,7 @@ feature -- Initialisation
 		create vector.make (x,y)
 		create t_place.make_with_position (a_name,x,y)
 		create t_node.make (t_place, vector)
-		map_widget.map.add_place (t_place)
+		map_widget.map.places.put (t_place, t_place.name)
 	ensure
 		t_place_exists: t_place /= Void
 		t_node_exists: t_node /= Void

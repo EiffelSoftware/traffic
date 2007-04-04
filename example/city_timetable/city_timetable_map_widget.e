@@ -68,7 +68,7 @@ feature -- Basic operations
 		require
 			factory_exists: travelers_representation /= Void
 		do
-			travelers_representation.add_tram_per_line_with_schedule (map, 1)
+			map.add_tram_per_line_with_schedule (map, 1)
 		end
 
 	add_dispatcher_taxi_office(number_of_taxis: INTEGER) is
@@ -103,7 +103,7 @@ feature -- Basic operations
 			taxis_not_void: taxis /= void
 
 		do
-			taxis.do_all (agent travelers_representation.add_traveler(?, map))
+--			taxis.do_all (agent map.taxi(?, map))
 		end
 
 	set_taxi_office_type(type: STRING) is

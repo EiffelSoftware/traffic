@@ -293,7 +293,7 @@ feature	 -- Basic operations
 	time_count is
 			-- Update the time label.
 		do
-			time_label.set_text ("day time: " + traffic_time.actual_hour.out + " hour  " + traffic_time.actual_minute.out + " minute")
+			time_label.set_text ("day time: " + traffic_time.actual_time.hour.out + " hour  " + traffic_time.actual_time.minute.out + " minute")
 		end
 
 feature -- Widgets

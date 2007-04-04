@@ -336,17 +336,17 @@ feature {NONE} -- Implementation
 		local
 			tmp_line_section: TRAFFIC_LINE_SECTION
 			tmp_two_station_line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
-			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
+			outgoing_line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_SECTION]
 			possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]
 		do
 			create possible_moves.make
-			outgoing_line_sections := traffic_map.line_sections_of_place (a_player.location.name)
+			outgoing_line_sections := traffic_map.line_sections.items_of_place (a_player.location)
 			from
 				outgoing_line_sections.start
 			until
 				outgoing_line_sections.after
 			loop
-				tmp_line_section := outgoing_line_sections.item
+				tmp_line_section := outgoing_line_sections.item_for_iteration
 				if tmp_line_section /= Void and then a_player.enough_tickets (tmp_line_section.type) then
 					if not is_occupied (tmp_line_section.destination) then
 						possible_moves.extend (tmp_line_section)
@@ -381,19 +381,19 @@ feature {NONE} -- Implementation
 			traffic_map_exists: traffic_map /= Void
 		local
 			destination: TRAFFIC_PLACE
-			outgoing_line_sections: LIST [TRAFFIC_LINE_SECTION]
+			outgoing_line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_SECTION]
 			list: ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			create Result.make
-			outgoing_line_sections := traffic_map.line_sections_of_place (a_line_section.destination.name)
+			outgoing_line_sections := traffic_map.line_sections.items_of_place (a_line_section.destination)
 			from
 				outgoing_line_sections.start
 			until
 				outgoing_line_sections.after
 			loop
-				if (outgoing_line_sections.item.type = Tram_type and then outgoing_line_sections.item.destination /= a_line_section.origin) then
+				if (outgoing_line_sections.item_for_iteration.type = Tram_type and then outgoing_line_sections.item_for_iteration.destination /= a_line_section.origin) then
 				-- TODO: and then outgoing_line_sections.item.line = a_line_section.line ??
-					destination := outgoing_line_sections.item.destination
+					destination := outgoing_line_sections.item_for_iteration.destination
 					create list.make (2)
 					list.extend (a_line_section.origin.position)
 					list.extend (destination.position)

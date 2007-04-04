@@ -42,7 +42,7 @@ feature -- Initialization
 
 			add_roads(map)
 
-			map.road_inserted_event.subscribe (agent process_item_inserted)
+			map.roads.element_inserted_event.subscribe (agent process_item_inserted)
 --			map.road_removed_event.subscribe (agent process_item_removed)
 
 			visible := true
@@ -80,7 +80,7 @@ feature -- Basic operations
 		require
 			map_valid: a_map /= Void
 		local
-			all_roads: HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+			all_roads: DS_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
 		do
 
 			all_roads := map.roads
