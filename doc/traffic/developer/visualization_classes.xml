@@ -192,7 +192,7 @@
 			The <classname>TRAFFIC_3D_MAP_WIDGET</classname> class is the main class in this cluster. As seen in the overview it contains all the representations of buildings, lines, places and travelers. It represents the whole map which can be plugged into an <classname>EM_3D_SCENE</classname>. It provides the feature <featurename>draw</featurename> that draws all the city elements onto the screen. The feature <featurename>collision_polygons</featurename> returns a list of polygons which is useful for searching for a collision (e.g. used for placing buildings). The feature <featurename>set_map</featurename> is used to set the map to be displayed and creates all the visual representation needed for display.
     	</para>
 		<para>
-			There are two features to add buildings (<featurename>add_buildings_randomly</featurename> and <featurename>add_buildings_along_lines</featurename>) which either add several randomly distributed buildings or several buildings along all traffic lines (expect railways). It is also possible to delete all the buildings with the feature <featurename>delete_buildings</featurename>. <newline/>
+			There is a feature to place buildings randomly (<featurename>place_buildings_randomly</featurename>) which places several randomly distributed buildings on the map. It is also possible to delete all the buildings with the feature <featurename>delete_buildings</featurename>. <newline/>
 		</para>
 		<para>
 			It is also possible to get informed if a building is clicked. If a class needs this functionality, it has to subscribe to <featurename>building_clicked_event</featurename>.
