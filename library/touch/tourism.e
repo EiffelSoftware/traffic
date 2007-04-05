@@ -86,7 +86,7 @@ feature -- Access (Paris)
 		once
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 			s := fs.pathname ("..", "map")
-			s := fs.pathname (s, "zurich_big.xml")
+			s := fs.pathname (s, "zurich_tiny.xml")
 			create loader.make (s)
 			if not loader.has_error then
 				loader.load_map

@@ -72,7 +72,7 @@ feature {NONE} -- Event handling
 			-- Handle mouse movement event.
 		local
 			start_vec, end_vec: GL_VECTOR_3D[DOUBLE]
-			delta_x, delta_y, delta, mouse_delta: DOUBLE
+			delta_x, delta_y, delta_z, delta, mouse_delta: DOUBLE
 			camera: TE_3D_CAMERA
 			radius,polar,azimut,zx_comp_length:DOUBLE
 		do
@@ -98,6 +98,20 @@ feature {NONE} -- Event handling
 
 			elseif event.button_state_left then
 				--TODO: implement pan
+				camera := beauty_pass.camera
+				start_vec := transform_coords (event.screen_x, event.screen_y)
+				end_vec := transform_coords (event.screen_x + event.x_motion, event.screen_y + event.y_motion)
+				delta_x := end_vec.x - start_vec.x
+				delta_y := end_vec.y - start_vec.y
+				delta_z := end_vec.z - start_vec.z
+
+				io.put_string ((camera.target.x + delta_x).out + ", " + (camera.target.z - delta_z).out + "%N")
+
+				camera.set_target (create {EM_VECTOR3D}.make_from_tuple ([0.0, camera.target.y + delta_z, 0.0]))--camera.target.x + delta_z, camera.target.y - delta_y, camera.target.z - delta_x]))
+--				root.transform.translate (delta_x, 0, delta_z)---event.y_motion*(delta/mouse_delta), 0)				
+			else
+				camera := beauty_pass.camera
+				camera.set_target (create {EM_VECTOR3D}.make_from_tuple ([0.0, 0.0, 0.0]))
 			end
 		end
 

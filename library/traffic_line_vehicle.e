@@ -144,11 +144,14 @@ feature -- Basic operations
 					travel_distance := (schedule_speed * seconds_passed)
 
 					if ((position.x - destination.x).abs < travel_distance) and ((position.y - destination.y).abs < travel_distance) then
-						origin := map_to_gl_coords (polypoints.item)
-						position := map_to_gl_coords (polypoints.item)
+--						origin := map_to_gl_coords (polypoints.item)
+--						position := map_to_gl_coords (polypoints.item)
+						origin := polypoints.item
+						position := polypoints.item
 						polypoints.forth
 						if not polypoints.after then
-							destination := map_to_gl_coords (polypoints.item)
+--							destination := map_to_gl_coords (polypoints.item)
+							destination := polypoints.item
 							set_angle
 						end
 					else
@@ -208,6 +211,14 @@ feature{NONE} --Implementation
 			polypoints.extend (pp.last)
 			polypoints.extend (pp.last)
 			polypoints.extend (pp.last)
+			from
+				polypoints.start
+			until
+				polypoints.off
+			loop
+				io.put_string (polypoints.item.out + "%N")
+				polypoints.forth
+			end
 
 			polypoints.start
 
@@ -215,6 +226,7 @@ feature{NONE} --Implementation
 			polypoints.forth
 			polypoints.forth
 			polypoints.forth
+
 		ensure
 			valid_polypoints: polypoints.count >= old polypoints.count
 		end
@@ -224,8 +236,10 @@ feature{NONE} --Implementation
 		do
 			-- Hopefully this will give a bit performance to the journey
 			-- otherwise just clear out the map_to_gl_coords
-			origin :=  map_to_gl_coords (polypoints.item)
-			position := map_to_gl_coords (polypoints.item)
+--			origin :=  map_to_gl_coords (polypoints.item)
+--			position := map_to_gl_coords (polypoints.item)
+			origin :=  polypoints.item
+			position := polypoints.item
 
 			if is_traveling_back then
 				polypoints.back
@@ -234,7 +248,8 @@ feature{NONE} --Implementation
 					polypoints.forth
 					set_coordinates
 				else
-					destination := map_to_gl_coords (polypoints.item)
+--					destination := map_to_gl_coords (polypoints.item)
+					destination := polypoints.item
 				end
 			else
 				polypoints.forth
@@ -243,9 +258,11 @@ feature{NONE} --Implementation
 					polypoints.back
 					set_coordinates
 				else
-					destination := map_to_gl_coords (polypoints.item)
+--					destination := map_to_gl_coords (polypoints.item)
+					destination := polypoints.item
 				end
 			end
+			io.put_string ("from " + origin.out + " to " + destination.out + "%N")
 		end
 
 invariant

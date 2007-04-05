@@ -62,7 +62,8 @@ feature{NONE} --Implementation
 			polypoints.start
 			-- Set the new origin and destination.
 			origin := position
-			destination := map_to_gl_coords (from_location)
+--			destination := map_to_gl_coords (from_location)
+			destination := from_location
 			set_reiterate (false)
 		end
 

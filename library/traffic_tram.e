@@ -42,12 +42,12 @@ feature -- Initialization
 
 			set_coordinates
 			set_angle
-			virtual_speed := Default_virtual_speed
+			speed := Default_virtual_speed
 
 			-- set lit time
 			evening_time := 17.0
 			sleep_time := 26.00
-			light_time := [evening_time, sleep_time]
+--			light_time := [evening_time, sleep_time]
 		end
 
 	make_with_schedule (a_line: TRAFFIC_LINE; a_schedule: TRAFFIC_LINE_SCHEDULE; an_offset: INTEGER) is
@@ -166,7 +166,7 @@ feature -- Constants
 	Default_wagon_limitation: INTEGER is 2
 			-- Default number of wagons attached
 
-	Default_virtual_speed: REAL is 1.0
+	Default_virtual_speed: REAL is 30.0
 			-- Default speed
 
 invariant

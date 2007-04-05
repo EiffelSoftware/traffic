@@ -17,6 +17,8 @@ inherit
 	EM_GL_CONSTANTS
 		export {NONE} all end
 
+	TRAFFIC_3D_CONSTANTS
+
 
 create
 	make_with_moving
@@ -80,9 +82,12 @@ feature -- Basic operations
 
 	render_node is
 			-- Update the position before the node is rendered.
+		local
+			p: EM_VECTOR_2D
 		do
 			graphical.transform.reset
-			graphical.transform.set_position (moving.position.x, 0, moving.position.y)
+			p := map_to_gl_coords (moving.position)
+			graphical.transform.set_position (p.x, 0, p.y)
 			graphical.transform.rotate(0.0,1.0,0.0,moving.angle_x)
 			Precursor
 		end

@@ -25,7 +25,7 @@ class
 	create
 		make_as_child, make
 
-feature -- Initialize
+feature {NONE} -- Initialize
 
 	make_as_child (a_parent: TE_3D_NODE) is
 			--create camera as child of 'a_parent'
@@ -34,6 +34,7 @@ feature -- Initialize
 			tangent_of_fov: DOUBLE
 		do
 			Precursor(a_parent)
+			create target.make_from_tuple ([0.0, 0.0, 0.0])
 			create view_frustum.make
 			look_at_target
 
@@ -54,6 +55,7 @@ feature -- Initialize
 			f: DOUBLE
 		do
 			Precursor
+			create target.make_from_tuple ([0.0, 0.0, 0.0])
 			create view_frustum.make
 			frustum_culling_enabled := true
 			transform.set_position (30.0,30.0,30.0)
@@ -125,6 +127,19 @@ feature -- Status setting
 feature -- Cursor movement
 
 feature -- Element change
+
+	set_target (a_target: EM_VECTOR3D) is
+			-- Set `target' to `a_target'.
+		require
+			a_target_not_void: a_target /= Void
+		do
+			target := a_target
+			look_at_target
+		ensure
+			target_set: target = a_target
+		end
+
+
 
 feature -- Removal
 
@@ -299,12 +314,12 @@ feature {NONE} -- Implementation
 			LookAt.set (right.x, right.y, right.z, transform.position.x,
 						up.x, up.y, up.z, transform.position.y,
 						-front.x, -front.y, -front.z, transform.position.z,
-						0.0,0.0,0.0,1.0)
+						target.x, target.y, target.z, 1.0)--0.0,0.0,0.0,1.0)
 
 			transform.set_model_matrix (LookAt)
 		end
 
 invariant
-	invariant_clause: True -- Your invariant here
+	target_not_void: target /= Void
 
 end

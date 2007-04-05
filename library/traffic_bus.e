@@ -24,7 +24,7 @@ feature -- Initialization
 			--TODO? commented because it won't compile set_line_route(line)
 			set_coordinates
 			set_angle
-			virtual_speed := Default_virtual_speed
+			speed := Default_virtual_speed
 			unit_capacity := Default_capacity
 		end
 
@@ -47,7 +47,7 @@ feature-- Constants
 	Default_capacity: INTEGER is 180
 		-- Default capacity of a bus
 
-	Default_virtual_speed: REAL is 1.1
+	Default_virtual_speed: REAL is 20.0
 		-- Default speed of a bus
 
 end

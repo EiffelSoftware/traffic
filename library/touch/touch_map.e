@@ -76,7 +76,7 @@ feature -- Element change
 	equip is
 			-- Add `a_number' trams per line.
 		do
-			internal_map.add_tram_per_line (2)
+			internal_map.add_tram_per_line (1)
 		end
 
 	build is
@@ -305,7 +305,7 @@ feature -- Access
 --			Result := internal_map.travelers
 --		end
 
-	line_sections_of_place (a_name: STRING): LIST [TRAFFIC_LINE_SECTION] is
+	line_sections_of_place (a_name: STRING): DS_ARRAYED_LIST [TRAFFIC_LINE_SECTION] is
 			-- Line sections with origin or destination place `a_name'.
 		require
 			place_in_map: has_place (a_name)

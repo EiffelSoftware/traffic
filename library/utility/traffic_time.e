@@ -159,12 +159,14 @@ feature -- Constants
 	Default_simulated_day_minutes: INTEGER is 1440
 		-- Default number of minutes that a day lasts
 
+	Default_scale_factor: DOUBLE is 5.52
+
 feature -- Output
 
 	out: STRING is
 			--
 		do
-			Result := actual_time.hour.out + ":" + actual_time.minute.out + ":" + actual_time.second.out
+			Result := actual_time.hour.out + ":" + actual_time.minute.out + ":" + actual_time.second.out + ":" + actual_time.milli_second.out
 		end
 
 
@@ -193,16 +195,16 @@ feature{NONE} -- Implementation
 			actual_time.hour >= 0
 		local
 			real_mili_secs: INTEGER
-			sim_secs: DOUBLE
+			sim_ms_secs: DOUBLE
 			old_hour: INTEGER
 		do
 			if is_time_running then
 				real_mili_secs := time.ticks - real_ms_start
-				sim_secs := 1440/simulated_minutes*real_mili_secs/1000.0 + sim_sec_start
-				actual_time.set_second (sim_secs.rounded\\60)
-				actual_time.set_minute ((sim_secs/60).floor\\60)
+				sim_ms_secs := 1440/simulated_minutes*real_mili_secs/1000 + sim_sec_start
+				actual_time.make_by_fine_seconds (sim_ms_secs)
+--				actual_time.set_minute ((sim_secs/60).floor\\60)
 				old_hour := actual_time.hour
-				actual_time.set_hour ((sim_secs/3600).floor\\24)
+--				actual_time.set_hour ((sim_secs/3600).floor\\24)
 				if actual_time.hour < old_hour then
 					actual_day := actual_day + 1
 				end

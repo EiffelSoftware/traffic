@@ -13,8 +13,8 @@ inherit
 	DOUBLE_MATH
 		export {NONE} all end
 
-	TRAFFIC_3D_CONSTANTS
-		export {NONE} all end
+--	TRAFFIC_3D_CONSTANTS
+--		export {NONE} all end
 
 	TRAFFIC_SHARED_TIME
 		rename
@@ -44,20 +44,24 @@ feature -- Access
 	index: INTEGER
 			-- Index of moving
 
-	time: DOUBLE
+--	scale_factor: DOUBLE
+			-- Factor for conversion between real distances and the map distances
+			-- Multiply the map distances with this factor to get the real distances
+
+--	time: DOUBLE
 			-- Time for one minute
 
 	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
 			-- All points to be traveled through
 
-	virtual_speed: DOUBLE
+--	virtual_speed: DOUBLE
 			-- Virtual speed of the object on the map
 
 	angle_x: DOUBLE
 			-- Angle in respect to the x-axis
 
-	light_time: TUPLE[DOUBLE, DOUBLE]
-			-- the timerange in which the traveler is lit
+--	light_time: TUPLE[DOUBLE, DOUBLE]
+--			-- the timerange in which the traveler is lit
 
 
 feature -- Status report
@@ -86,7 +90,6 @@ feature -- Basic operations
 		do
 			traffic_time.add_callback_tour (agent take_tour)
 		end
-
 
 feature -- Element change
 
@@ -119,15 +122,15 @@ feature -- Element change
 			speed_set: speed = a_speed
 		end
 
-	set_time (a_time: DOUBLE) is
-			-- Set time to 'a_time'.
-		require
-			a_time_valid: a_time > 0
-		do
-			time := a_time
-		ensure
-			time_set: time = a_time
-		end
+--	set_time (a_time: DOUBLE) is
+--			-- Set time to 'a_time'.
+--		require
+--			a_time_valid: a_time > 0
+--		do
+--			time := a_time
+--		ensure
+--			time_set: time = a_time
+--		end
 
 	set_reiterate (a_boolean: BOOLEAN) is
 			-- Set the moving reiterating his itinerary.
@@ -143,17 +146,37 @@ feature {NONE} -- Implementation
 			-- Move from origin to destination.
 		local
 			direction: EM_VECTOR_2D
+			step: EM_VECTOR_2D
+			diff: DOUBLE
 		do
 			direction := destination - origin
-			if not has_finished then
 
-				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) or direction.length <= 0 then
+			if last_move_time /= Void then
+				current_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
+				diff := (current_move_time.fine_seconds - last_move_time.fine_seconds)*speed/traffic_time.default_scale_factor
+				if ((position.x - destination.x).abs < diff) and ((position.y - destination.y).abs < diff) or direction.length <= 0 then
 					set_coordinates
 					set_angle
 				else
-					position := position + (direction / direction.length) * speed
+					position := position + (direction / direction.length) * diff
 				end
+
+
+				last_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
+			else
+				create last_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
+				create current_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
 			end
+
+--			if not has_finished then
+
+--				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) or direction.length <= 0 then
+--					set_coordinates
+--					set_angle
+--				else
+--					position := position + (direction / direction.length) * speed
+--				end
+--			end
 		end
 
 	set_coordinates is
@@ -164,8 +187,10 @@ feature {NONE} -- Implementation
 		do
 			-- hopefully this will give a bit performance to the journey
 			-- otherwise just clear out the map_to_gl_coords
-			origin :=  map_to_gl_coords (polypoints.item)
-			position := map_to_gl_coords (polypoints.item)
+--			origin :=  map_to_gl_coords (polypoints.item)
+--			position := map_to_gl_coords (polypoints.item)
+			origin :=  polypoints.item
+			position := polypoints.item
 
 			if is_traveling_back then
 				polypoints.back
@@ -174,7 +199,8 @@ feature {NONE} -- Implementation
 					polypoints.forth
 					set_coordinates
 				else
-					destination := map_to_gl_coords (polypoints.item)
+--					destination := map_to_gl_coords (polypoints.item)
+					destination := polypoints.item
 				end
 
 			elseif is_reiterating then
@@ -184,17 +210,19 @@ feature {NONE} -- Implementation
 					polypoints.back
 					set_coordinates
 				else
-					destination := map_to_gl_coords (polypoints.item)
+--					destination := map_to_gl_coords (polypoints.item)
+					destination := polypoints.item
 				end
 			else
 				polypoints.forth
 				if polypoints.after then
 					has_finished := True
 				else
-					destination := map_to_gl_coords (polypoints.item)
+--					destination := map_to_gl_coords (polypoints.item)
+					destination := polypoints.item
 				end
 			end
-
+			io.put_string ("from " + origin.out + " to " + destination.out + "%N")
 		ensure
 			origin /= Void
 			position /= Void
@@ -285,9 +313,6 @@ feature {NONE} -- Implementation
 
 		end
 
-	random_number: RANDOM
-		-- Make a direction out of this genererator	
-
 	give_random_direction is
 			-- Give a random destination.
 		require
@@ -332,6 +357,17 @@ feature {NONE} -- Implementation
 		ensure
 			polypoints_extended: polypoints.count = old polypoints.count + (2* (num-1))
 		end
+
+feature {NONE} -- Implementation
+
+	random_number: RANDOM
+		-- Make a direction out of this genererator	
+
+	last_move_time: TIME
+		-- Time of the last move
+
+	current_move_time: TIME
+		-- Now (when a step is taken)
 
 invariant
 	polypoints_exist: polypoints /= Void

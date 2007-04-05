@@ -15,17 +15,20 @@ feature	 -- Example
 			-- Execute preview example.
 		do
 
-			Paris.display
+			Zurich.display
 --			Zurich.map_widget.place_buildings_randomly(1)
 			--Zurich.display
 			--Zurich.map_widget.place_buildings_randomly (3)
-			Louvre.lighten
-			Route1.animate
-			Line8.spotlight
-			Paris.build
-			Paris.equip
-			Console.show (Line8)
-			Console.show (Place_balard)
+--			Console.show ("Louver.highlight start")
+--			Louvre.lighten
+--			Console.show ("Louver.highlight stop")
+--			Route1.animate
+--			Console.show ("Route1.animate start")
+--			Line8.spotlight
+--			Paris.build
+			Zurich.add_tram_per_line (1)
+--			Console.show (Line8)
+--			Console.show (Place_balard)
 --			io.put_string (Paris.lines.out)
 --			io.put_string (Paris.places.out)
 		end

@@ -73,8 +73,8 @@ feature -- Initialization
 			-- set lit time
 			evening_time := 17.0
 			sleep_time := 26.00
-			light_time := [evening_time, sleep_time]
-			virtual_speed := a_speed
+--			light_time := [evening_time, sleep_time]
+			speed := a_speed
 		end
 
 
@@ -91,7 +91,7 @@ feature -- Initialization
 			position := polypoints.first
 			set_coordinates
 			set_angle
-			virtual_speed := a_speed
+			speed := a_speed
 		end
 
 	make_random (stops: INTEGER; a_seed: INTEGER; ) is
@@ -107,7 +107,7 @@ feature -- Initialization
 			add_random_polypoints(stops)
 			set_coordinates
 			set_angle
-			virtual_speed := random_number.double_item
+			speed := random_number.double_item
 			random_number.forth
 		end
 
