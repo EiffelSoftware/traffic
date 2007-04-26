@@ -9,9 +9,6 @@ deferred class
 inherit
 
 	TRAFFIC_VEHICLE
-		redefine
-			set_coordinates
-		end
 
 feature --Access
 
@@ -69,7 +66,7 @@ feature --Access
 
 feature -- Status report
 
-	schedule_active: BOOLEAN
+	is_schedule_active: BOOLEAN
 			-- Is the schedule active or is the status in waiting?
 
 	is_after (entry: TRAFFIC_LINE_SCHEDULE_ENTRY): BOOLEAN is
@@ -93,7 +90,7 @@ feature -- Basic operations
 			if schedule = Void then
 				move
 			else
-				if schedule_active = True then
+				if is_schedule_active = True then
 					-- The tram is traveling on schedule
 					entry := schedule.i_th (schedule_index)
 
@@ -113,19 +110,19 @@ feature -- Basic operations
 
 						-- Use the polypoints of the schedule entry
 						polypoints.wipe_out
-						polypoints.append (entry.line_section.polypoints)
-						polypoints.start
+						polypoints.append_last (entry.line_section.polypoints)
+						poly_cursor.start
 
 						-- Set correct speed and initial position
 						schedule_speed := entry.speed
 						set_speed (schedule_speed.rounded)
-						set_coordinates
-						set_angle
+						update_coordinates
+						update_angle
 
 						-- If we arrived at the end, go to the beginning and wait for the next day							
 						if schedule_index > schedule.count then
 							schedule_day := schedule_day + 1
-							schedule_active := False
+							is_schedule_active := False
 							schedule_index := 1
 						end
 					end
@@ -134,11 +131,11 @@ feature -- Basic operations
 					entry := schedule.first
 					if (schedule_day <= traffic_time.actual_day) and is_after(entry) then
 						schedule_day := traffic_time.actual_day
-						schedule_active := True
+						is_schedule_active := True
 					end
 				end
 
-				if not polypoints.after then
+				if not poly_cursor.after then
 					direction := destination - origin
 					seconds_passed := (traffic_time.actual_time.hour * 3600 + traffic_time.actual_time.minute * 60 + traffic_time.actual_time.second - last_update)
 					travel_distance := (schedule_speed * seconds_passed)
@@ -146,13 +143,13 @@ feature -- Basic operations
 					if ((position.x - destination.x).abs < travel_distance) and ((position.y - destination.y).abs < travel_distance) then
 --						origin := map_to_gl_coords (polypoints.item)
 --						position := map_to_gl_coords (polypoints.item)
-						origin := polypoints.item
-						position := polypoints.item
-						polypoints.forth
-						if not polypoints.after then
+						origin := poly_cursor.item
+						position := poly_cursor.item
+						poly_cursor.forth
+						if not poly_cursor.after then
 --							destination := map_to_gl_coords (polypoints.item)
-							destination := polypoints.item
-							set_angle
+							destination := poly_cursor.item
+							update_angle
 						end
 					else
 						position := position + (direction / direction.length) * travel_distance
@@ -168,31 +165,47 @@ feature -- Basic operations
 		require
 			a_place_not_void: a_place /= Void
 		local
-			was_found: BOOLEAN
+			found: BOOLEAN
 		do
 			from
-				line.start
+				poly_cursor.start
 			until
-				was_found or line.after
+				poly_cursor.after or found
 			loop
-				if line.item.origin.position = a_place.position then
-					from
-						polypoints.start
-					until
-						polypoints.after or was_found
-					loop
-							polypoints.forth
-							polypoints.forth
-							polypoints.forth
-							was_found := True
-							set_coordinates
-							set_angle
-					end
+				if poly_cursor.item.is_equal (a_place.position) then
+					update_coordinates
+					update_angle
+					found := True
 				else
-					line.forth
+					poly_cursor.forth
 				end
-
 			end
+			if poly_cursor.after then
+				poly_cursor.start
+			end
+--			from
+--				line.start
+--			until
+--				was_found or line.after
+--			loop
+--				if line.item.origin.position = a_place.position then
+--					from
+--						polypoints.start
+--					until
+--						polypoints.after or was_found
+--					loop
+--							polypoints.forth
+--							polypoints.forth
+--							polypoints.forth
+--							was_found := True
+--							set_coordinates
+--							set_angle
+--					end
+--				else
+--					line.forth
+--				end
+
+--			end
 		end
 
 feature{NONE} --Implementation		
@@ -202,68 +215,70 @@ feature{NONE} --Implementation
 		require
 			line_not_void: a_line /= void
 		local
-			pp: ARRAYED_LIST[EM_VECTOR_2D]
+			pp: DS_ARRAYED_LIST[EM_VECTOR_2D]
 		do
 			pp:=a_line.road_points
 			-- Add the whole section item (origin and destination)
-			polypoints.append (pp)
+			polypoints.append_last (pp)
 			-- Repetition of the las polypoint to stop also there for a short time.
-			polypoints.extend (pp.last)
-			polypoints.extend (pp.last)
-			polypoints.extend (pp.last)
-			from
-				polypoints.start
-			until
-				polypoints.off
-			loop
-				io.put_string (polypoints.item.out + "%N")
-				polypoints.forth
-			end
+--			polypoints.extend (pp.last)
+--			polypoints.extend (pp.last)
+--			polypoints.extend (pp.last)
+--			from
+--				polypoints.start
+--			until
+--				polypoints.off
+--			loop
+--				polypoints.forth
+--			end
 
 			polypoints.start
 
 			-- Not wait at starting point therefore omit first three points
-			polypoints.forth
-			polypoints.forth
-			polypoints.forth
+--			polypoints.forth
+--			polypoints.forth
+--			polypoints.forth
 
 		ensure
 			valid_polypoints: polypoints.count >= old polypoints.count
 		end
 
-	set_coordinates is
-		-- Set the positions to the corresponding ones of the line section.
-		do
-			-- Hopefully this will give a bit performance to the journey
-			-- otherwise just clear out the map_to_gl_coords
---			origin :=  map_to_gl_coords (polypoints.item)
---			position := map_to_gl_coords (polypoints.item)
-			origin :=  polypoints.item
-			position := polypoints.item
+--	set_coordinates is
+--		-- Set the positions to the corresponding ones of the line section.
+--		do
+--			-- Hopefully this will give a bit performance to the journey
+--			-- otherwise just clear out the map_to_gl_coords
+----			origin :=  map_to_gl_coords (polypoints.item)
+----			position := map_to_gl_coords (polypoints.item)
+--			origin :=  poly_cursor.item
+--			position := poly_cursor.item
 
-			if is_traveling_back then
-				polypoints.back
-				if polypoints.before then
-					is_traveling_back := False
-					polypoints.forth
-					set_coordinates
-				else
---					destination := map_to_gl_coords (polypoints.item)
-					destination := polypoints.item
-				end
-			else
-				polypoints.forth
-				if polypoints.after then
-					is_traveling_back := True
-					polypoints.back
-					set_coordinates
-				else
---					destination := map_to_gl_coords (polypoints.item)
-					destination := polypoints.item
-				end
-			end
-			io.put_string ("from " + origin.out + " to " + destination.out + "%N")
-		end
+--			if line.name.is_equal ("4") then
+--				io.put_string ("Hello")
+--			end
+
+--			if is_traveling_back then
+--				poly_cursor.back
+--				if poly_cursor.before then
+--					is_traveling_back := False
+--					poly_cursor.forth
+--					set_coordinates
+--				else
+----					destination := map_to_gl_coords (polypoints.item)
+--					destination := poly_cursor.item
+--				end
+--			else
+--				poly_cursor.forth
+--				if poly_cursor.after then
+--					is_traveling_back := True
+--					poly_cursor.back
+--					set_coordinates
+--				else
+----					destination := map_to_gl_coords (polypoints.item)
+--					destination := poly_cursor.item
+--				end
+--			end
+--		end
 
 invariant
 

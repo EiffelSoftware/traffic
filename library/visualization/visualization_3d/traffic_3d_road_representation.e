@@ -106,7 +106,7 @@ feature -- Basic operations
 			road_factory.set_color (0.4,0.4,0.4)
 			road_factory.create_connection
 			road_view := road_factory.last_3d_member
-			road_view.make_child_of (road_root)
+			road_view.set_as_child_of (road_root)
 			road_views.extend (road_view)
 			road_lookup.force (road_views.count, a_road)
 			collision_polygons.append_last (road_factory.collision_polygons)

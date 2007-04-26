@@ -13,7 +13,56 @@ inherit
 			end
 
 create
-	make_directed, make_random, make_with_path
+	make_with_path, make_with_points
+	--make_random,make_directed,
+
+feature -- Initialization
+
+	make_with_path (a_path: TRAFFIC_PATH; a_speed: DOUBLE) is
+			-- Set passenger's path to be `a_path'.
+		require
+			a_path_not_void: a_path /= Void
+		local
+			list: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			path_conns: ARRAYED_LIST [TRAFFIC_CONNECTION]
+			evening_time, sleep_time: DOUBLE
+		do
+			path := a_path
+			position := a_path.origin.position
+			path_conns := a_path.connections
+			create list.make (path_conns.count + 1)
+			from
+				path_conns.start
+			until
+				path_conns.off
+			loop
+				list.append_last (path_conns.item.polypoints)
+				path_conns.forth
+			end
+			polypoints := list
+			create poly_cursor.make (polypoints)
+			poly_cursor.start
+			traffic_type := a_path.first.type
+			update_coordinates
+			update_angle
+			speed := a_speed
+		end
+
+	make_with_points (a_list: DS_ARRAYED_LIST [EM_VECTOR_2D]; a_speed: DOUBLE) is
+			-- Set passengers route as `a_list' and speed to `a_speed'.
+			-- `a_list' is the list of the points where the passenger will go through.
+		require
+			a_list_not_void: a_list /= Void
+			a_speed_not_negative: a_speed >= 0
+		do
+			traffic_type := create {TRAFFIC_TYPE_WALKING}.make
+			polypoints := a_list
+			polypoints.start
+			position := polypoints.first
+			update_coordinates
+			update_angle
+			speed := a_speed
+		end
 
 feature -- Access
 
@@ -42,87 +91,36 @@ feature -- Status report
 			-- If the deboarding_stop is less than the boarding_stop the passenger has to use
 			-- a vehicle that travels back on its line.
 
-feature -- Initialization
 
-	make_with_path (a_path: TRAFFIC_PATH; a_speed: DOUBLE) is
-			-- Set passenger's path to be a_path.
-		require
-			a_path_not_void: a_path /= Void
-		local
-			list: ARRAYED_LIST [EM_VECTOR_2D]
-			path_conns: ARRAYED_LIST [TRAFFIC_CONNECTION]
-			evening_time, sleep_time: DOUBLE
-		do
-			path := a_path
-			position := a_path.origin.position
-			path_conns := a_path.connections
-			create list.make (path_conns.count + 1)
-			from
-				path_conns.start
-			until
-				path_conns.off
-			loop
-				list.append (path_conns.item.polypoints)
-				path_conns.forth
-			end
-			polypoints := list
-			polypoints.start
-			traffic_type := a_path.first.type
-			set_coordinates
-			set_angle
-			-- set lit time
-			evening_time := 17.0
-			sleep_time := 26.00
---			light_time := [evening_time, sleep_time]
-			speed := a_speed
-		end
-
-
-	make_directed (an_itinerary: ARRAYED_LIST [EM_VECTOR_2D];  a_speed: DOUBLE) is
-			-- Set passengers route as 'an_itinerary' and speed to 'a_speed'.
-			-- 'an_itinerary' is the list of the points where the passenger will go through.
-		require
-			an_itinerary_not_void: an_itinerary /= Void
-			a_speed_not_negative: a_speed >= 0
-		do
-			traffic_type := create {TRAFFIC_TYPE_WALKING}.make
-			polypoints := an_itinerary
-			polypoints.start
-			position := polypoints.first
-			set_coordinates
-			set_angle
-			speed := a_speed
-		end
-
-	make_random (stops: INTEGER; a_seed: INTEGER; ) is
-			-- Stop at 'stops' random positions and give random speed.
-			-- 'a_seed' to set the random numbers seed, e. g. use time ticks.
-		require
-			a_seed_not_negative: a_seed >= 0
-			valid_number_of_stops: stops >= 2
-		do
-			traffic_type := create {TRAFFIC_TYPE_WALKING}.make
-			create polypoints.make (0)
-			create random_number.set_seed(a_seed)
-			add_random_polypoints(stops)
-			set_coordinates
-			set_angle
-			speed := random_number.double_item
-			random_number.forth
-		end
+--	make_random (stops: INTEGER; a_seed: INTEGER; ) is
+--			-- Stop at 'stops' random positions and give random speed.
+--			-- 'a_seed' to set the random numbers seed, e. g. use time ticks.
+--		require
+--			a_seed_not_negative: a_seed >= 0
+--			valid_number_of_stops: stops >= 2
+--		do
+--			traffic_type := create {TRAFFIC_TYPE_WALKING}.make
+--			create polypoints.make (0)
+--			create random_number.set_seed(a_seed)
+--			add_random_polypoints(stops)
+--			set_coordinates
+--			set_angle
+--			speed := random_number.double_item
+--			random_number.forth
+--		end
 
 feature -- Basic operations
 
-	set_polypoints (a_list: ARRAYED_LIST [EM_VECTOR_2D]) is
-			-- Set polypoints to travel through to `a_list'.
-		require
-			a_list_valid: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
-		do
-			polypoints := a_list
-			polypoints.start
-			set_coordinates
-			set_angle
-		end
+--	set_polypoints (a_list: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
+--			-- Set polypoints to travel through to `a_list'.
+--		require
+--			a_list_valid: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
+--		do
+--			polypoints := a_list
+--			polypoints.start
+--			update_coordinates
+--			update_angle
+--		end
 
 	take_tour is
 			-- Take a tour on the map.
@@ -139,8 +137,8 @@ feature -- Basic operations
 			if not has_finished then
 
 				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) or direction.length <= 0 then
-					set_coordinates
-					set_angle
+					update_coordinates
+					update_angle
 				else
 					position := position + (direction / direction.length) * speed
 				end

@@ -211,7 +211,11 @@ feature {NONE} -- Implementation
 			until
 				i > 2
 			loop
-				double_array.force (tokenizer.last_string.to_double, i)
+				if tokenizer.last_string.is_double then
+					double_array.force (tokenizer.last_string.to_double, i)
+				else
+					double_array.force (0.0, i)
+				end
 				tokenizer.read_token
 				i := i + 1
 			end
@@ -253,11 +257,19 @@ feature {NONE} -- Implementation
 					polygon_vertex_indices.force (current_value.to_integer)
 				end
 				current_value := token.substring(slash_index+1,token.index_of ('/', slash_index+1)-1)
-				slash_index := token.index_of ('/', slash_index+1)
+				if slash_index /= 0 then
+					slash_index := token.index_of ('/', slash_index+1)
+				else
+					current_value := ""
+				end
 				if not current_value.is_equal ("") and has_texture_coordinates then
 					polygon_uvw_indices.force (current_value.to_integer)
 				end
-				current_value := token.substring (slash_index+1,token.count)
+				if slash_index /= 0 then
+					current_value := token.substring (slash_index+1,token.count)
+				else
+					current_value := ""
+				end
 				if not current_value.is_equal ("") and has_normals then
 					polygon_normal_indices.force (current_value.to_integer)
 				end

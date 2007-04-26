@@ -64,10 +64,11 @@ feature -- Basic operations
 		require
 			scene_running: running_scene /= Void
 		do
+--			internal_map_widget.paths_representation. internal_route
 			create traveler.make_directed (itinerary, 0.5)
-			traveler.set_reiterate (False)
+			traveler.set_reiterate (True)
 			internal_map.passengers.force_last (traveler)
-			traveler.take_tour
+--			traveler.take_tour
 
 			index := internal_map.passengers.count
 			traveler.set_speed (50)
@@ -76,8 +77,8 @@ feature -- Basic operations
 --			internal_map_widget.map.change_traveler_speed (3)
 --			internal_map_widget.time.resume_time
 
-			wait(6500)
-			end_animate
+--			wait(6500)
+--			end_animate
 		end
 
 feature -- Element change
@@ -140,8 +141,6 @@ feature -- Access
 			until
 				connections.after
 			loop
-				io.new_line
-				io.put_string (connections.item.origin.name+"  "+connections.item.destination.name)
 				internal_places_on_route.extend(connections.item.origin)
 				connections.forth
 			end

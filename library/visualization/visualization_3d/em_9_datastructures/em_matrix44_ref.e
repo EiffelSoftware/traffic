@@ -328,7 +328,7 @@ feature -- Initialize
 		end
 
 	make_from_rotation( v: EM_VECTOR3D; angle: DOUBLE ) is
-			-- Make a scalar matrix
+			-- Make a scalar matrix with angle in radian
 		local
 			s: DOUBLE
 			c: DOUBLE

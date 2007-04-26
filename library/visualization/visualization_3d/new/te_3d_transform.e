@@ -5,7 +5,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TE_3D_TRANSFORM inherit
+	TE_3D_TRANSFORM 
 
 create
 	make, make_from_matrix

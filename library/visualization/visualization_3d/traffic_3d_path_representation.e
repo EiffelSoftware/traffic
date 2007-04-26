@@ -108,7 +108,7 @@ feature -- Basic operations
 			path_factory.set_connection (a_connection)
 			path_factory.create_connection
 			connection_view := path_factory.last_3d_member
-			connection_view.make_child_of(connection_root)
+			connection_view.set_as_child_of(connection_root)
 			connection_views.extend (connection_view)
 			connections_lookup.force(connection_views.count, a_connection)
 		end

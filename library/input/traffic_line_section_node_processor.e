@@ -35,7 +35,7 @@ feature -- Basic operations
 		local
 			line: TRAFFIC_LINE
 			simple_line: TRAFFIC_SIMPLE_LINE
-			polypoints_other_direction: ARRAYED_LIST [EM_VECTOR_2D]
+			polypoints_other_direction: DS_ARRAYED_LIST [EM_VECTOR_2D]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_SECTION
 
 			sections: LIST [TRAFFIC_LINE_SECTION]
@@ -65,7 +65,7 @@ feature -- Basic operations
 						until
 							polypoints.before
 						loop
-							polypoints_other_direction.extend (polypoints.item.twin)
+							polypoints_other_direction.force_last (polypoints.item_for_iteration.twin)
 							polypoints.back
 						end
 					else
@@ -202,7 +202,7 @@ feature -- Basic operations
 						-- Has a point been generated?
 						position ?= data
 						if position /= Void then
-							polypoints.extend (position)
+							polypoints.force_last (position)
 						end
 						-- Has a road been generated?
 						road ?= data
@@ -217,7 +217,7 @@ feature -- Basic operations
 			end
 		end
 
-	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
+	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
 			-- Polypoints of this link
 
 	roads: ARRAYED_LIST[TRAFFIC_ROAD]

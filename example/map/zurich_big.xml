@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--DOCTYPE city SYSTEM "map.dtd"--> 
-<map name="Zurich" scale_factor="5.52"> 
+<map name="Zurich" scale_factor="5.52" center_x="685" center_y="713.5" radius="713.5"> 
 
 <description text="grosse zurich city map." />
 

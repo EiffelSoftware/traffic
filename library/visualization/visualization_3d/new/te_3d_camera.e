@@ -58,7 +58,7 @@ feature {NONE} -- Initialize
 			create target.make_from_tuple ([0.0, 0.0, 0.0])
 			create view_frustum.make
 			frustum_culling_enabled := true
-			transform.set_position (30.0,30.0,30.0)
+			transform.set_position (300.0,300.0,300.0)
 			transform.event_channel.subscribe(agent look_at_target)
 
 			gl_matrix_mode(em_GL_MODELVIEW)
@@ -83,10 +83,10 @@ feature -- Access
 	aspect: DOUBLE is 1.0 -- 1:1
 			-- aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 
-	near: DOUBLE is 1.05
+	near: DOUBLE is 100.0--250.0--1.05
 		-- distance from the viewer to the near clipping plane (always positive).
 
-	far: DOUBLE is 300.0
+	far: DOUBLE is 5000.0-- 500.0
 		-- distance from the viewer to the far clipping plane (always positive).
 
 	direction: EM_VECTOR3D is

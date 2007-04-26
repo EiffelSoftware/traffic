@@ -40,6 +40,7 @@ feature {NONE} -- Initialization
 			create graph.make_multi_graph
 			create places.make (default_size * default_size)
 			places.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
+
 			create lines.make (default_size)
 			lines.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
 			create line_sections.make (default_size)
@@ -47,11 +48,8 @@ feature {NONE} -- Initialization
 			create passengers.make
 			create trams.make
 			create busses.make
---			create internal_place_array.make (200)
---			create travelers.make (1)
-			create internal_taxi_offices.make(0)
-	--		line_sections. -- use equal for object comparision
-			--internal_roads.compare_objects -- use equal for object comparision
+			create taxi_offices.make
+
 			create internal_buildings.make (1,4)
 			from
 				i:=1
@@ -63,28 +61,7 @@ feature {NONE} -- Initialization
 				i:=i+1
 			end
 
---			create unspecified_line_section_changed_event
---			create line_section_changed_event
---			create line_section_inserted_event
---			create line_section_removed_event
-
---			create unspecified_line_changed_event
---			create line_changed_event
---			create line_inserted_event
---			create line_removed_event
-
---			create unspecified_place_changed_event
---			create place_changed_event
---			create place_inserted_event
---			create place_removed_event
-
---			create unspecified_road_changed_event
---			create road_changed_event
---			create road_inserted_event
---			create road_removed_event
-
---			create moving_inserted_event
---			create moving_removed_event
+--			create center.make (669.0,718.0)
 
 		ensure
 			name_set: equal (name, a_name)
@@ -158,25 +135,26 @@ feature -- Status report
 --			Result := roads.has (an_id)
 --		end
 
-	is_valid_shortest_path_mode (a_mode: INTEGER): BOOLEAN is
-			-- Is `a_mode' valid?
-		do
-			Result := a_mode = shortest_path_mode_minimal_switches or
-					  a_mode = shortest_path_mode_normal_distance
-		end
-
-	path_found: BOOLEAN
-			-- Was a shortest path found on graph?
-
 feature -- Element change
 
-	set_shortest_path_mode (a_mode: INTEGER) is
-			-- set the shortest path mode
+	set_center (a_center: EM_VECTOR_2D) is
+			-- Set city center to `a_center'.
 		require
-			valide_mode: is_valid_shortest_path_mode (a_mode)
+			a_center_exists: a_center /= Void
 		do
-			shortest_path_mode := a_mode
-			graph.set_shortest_path_mode (a_mode)
+			center := a_center
+		ensure
+			center_set: center = a_center
+		end
+
+	set_radius (a_radius: DOUBLE) is
+			-- Set city radius to `a_radius'.
+		require
+			a_radius_exists: a_radius /= Void
+		do
+			radius := a_radius
+		ensure
+			radius_set: radius = a_radius
 		end
 
 	set_description (a_description: STRING) is
@@ -244,14 +222,14 @@ feature -- Insertion
 				lines.after
 			loop
 				if lines.item_for_iteration.type.name.is_equal ("tram") or lines.item_for_iteration.type.name.is_equal ("rail") or lines.item_for_iteration.type.name.is_equal ("bus") then
-					create a_tram.make_default_with_line (lines.item_for_iteration)
+					create a_tram.make_with_line (lines.item_for_iteration)
 					from
 						i := 1
-						create a_tram.make_default_with_line (lines.item_for_iteration)
+						create a_tram.make_with_line (lines.item_for_iteration)
 					until
 						i > number or i = a_tram.line_count
 					loop
-						create a_tram.make_default_with_line (lines.item_for_iteration)
+						create a_tram.make_with_line (lines.item_for_iteration)
 						a_tram.set_to_place (a_tram.place (i))
 						trams.put_last (a_tram)
 						a_tram.start
@@ -388,13 +366,13 @@ feature -- Insertion
 --			moving_inserted_event.publish ([a_traveler])
 --		end
 
-	add_taxi_office( a_taxi_office: TRAFFIC_TAXI_OFFICE) is
-			-- Add taxi office 'a_taxi_office' to map.
-		require
-			a_taxi_office_exists: a_taxi_office /= void
-		do
-			internal_taxi_offices.force(a_taxi_office)
-		end
+--	add_taxi_office( a_taxi_office: TRAFFIC_TAXI_OFFICE) is
+--			-- Add taxi office 'a_taxi_office' to map.
+--		require
+--			a_taxi_office_exists: a_taxi_office /= void
+--		do
+--			internal_taxi_offices.force(a_taxi_office)
+--		end
 
 	add_stop (a_stop: TRAFFIC_STOP) is
 			-- Add `a_stop' to map.
@@ -404,14 +382,14 @@ feature -- Insertion
 			graph.put_node (a_stop)
 		end
 
-	add_path (a_path: TRAFFIC_PATH) is
-			-- Add `a_path' to map.
-		require
-			a_path_exists: a_path /= Void
-		do
-			a_path.set_scale_factor (scale_factor)
-			internal_path := a_path
-		end
+--	add_path (a_path: TRAFFIC_PATH) is
+--			-- Add `a_path' to map.
+--		require
+--			a_path_exists: a_path /= Void
+--		do
+--			a_path.set_scale_factor (scale_factor)
+--			internal_path := a_path
+--		end
 
 
 feature -- Removal
@@ -528,7 +506,7 @@ feature -- Removal
 			index := line_sections.index
 			line_sections.remove_at
 --			line_section_removed_event.publish ([a_line_section])
-			path_found := False
+--			path_found := False
 		ensure
 			-- we can assume, that the line_section was only once inserted
 			line_section_removed: not line_sections.has (a_line_section)
@@ -550,7 +528,7 @@ feature -- Removal
 				roads.forth
 			end
 
-			path_found := False
+--			path_found := False
 		ensure
 			-- we can assume, that the line_section was only once inserted
 	--		road_removed: not internal_roads.has_item (a_road)
@@ -570,11 +548,22 @@ feature -- Removal
 
 feature -- Access
 
+	center: EM_VECTOR_2D
+
+	radius: DOUBLE
+			-- Radius of the city
+
+	paths: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PATH]
+			-- Paths of the map
+
+	graph: TRAFFIC_GRAPH
+			-- Graph used for calculating shortest paths
+
 	area_width: DOUBLE is 1300.0
 			-- Area that the city is located on (todo: calculate)
 
-	shortest_path_mode: INTEGER
-			-- Mode used for shortest path calculation (either normal or minimal switches)
+--	city_center: EM_VECTOR2D
+			-- City center position
 
 	name: STRING
 			-- Name of region this map represents
@@ -582,33 +571,18 @@ feature -- Access
 	description: STRING
 			-- Textual description of the map
 
-	shortest_path_mode_normal_distance: INTEGER is
-			-- Number representing path calculation mode based on regular distance
-		do
-			Result := graph.normal_distance
-		end
-
-	shortest_path_mode_minimal_switches: INTEGER is
-			-- Number representing path calculation mode based on regular distance
-		do
-			Result := graph.minimal_switches
-		end
-
-	taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE] is
+	taxi_offices: TRAFFIC_EVENT_LINKED_LIST[TRAFFIC_TAXI_OFFICE]
 			-- All taxi offices associated with this map
-		do
-			Result := internal_taxi_offices.twin
-		end
 
-	shortest_path: TRAFFIC_PATH is
-			-- Shortest path, that has been found with `find_shortest_path'
-		require
-			path_found: path_found
-		do
-			Result := shortest_path_impl.twin
-		ensure
-			path_not_void: Result /= Void
-		end
+--	shortest_path: TRAFFIC_PATH is
+--			-- Shortest path, that has been found with `find_shortest_path'
+--		require
+--			path_found: path_found
+--		do
+--			Result := shortest_path_impl.twin
+--		ensure
+--			path_not_void: Result /= Void
+--		end
 
 --	place (a_name: STRING): TRAFFIC_PLACE is
 --			-- Place named `a_name'
@@ -624,15 +598,6 @@ feature -- Access
 	places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
 			-- All places in map
 
---	line (a_name: STRING): TRAFFIC_LINE is
---			-- Line named `a_name'
---		require
---			a_name_exists: a_name /= Void
---			line_in_map: lines.has (a_name)
---		do
---			Result := lines.item (a_name)
---		end
-
 	line_sections: TRAFFIC_LINE_SECTION_LIST
 			-- All line sections in map
 
@@ -647,9 +612,6 @@ feature -- Access
 		do
 			Result := internal_buildings.twin
 		end
-
---	travelers: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_MOVING, INTEGER]
-			-- All travelers on the map
 
 	passengers: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PASSENGER]
 			-- All passengers moving around the city
@@ -708,11 +670,11 @@ feature -- Access
 --			Result:=roads.item (i)
 --		end
 
-	path: TRAFFIC_PATH is
-			-- path in internal_path
-		do
-			Result := internal_path
-		end
+--	path: TRAFFIC_PATH is
+--			-- path in internal_path
+--		do
+--			Result := internal_path
+--		end
 
 
 
@@ -834,118 +796,6 @@ feature -- Output
 
 feature -- Basic operations
 
-	find_shortest_path (a_origin: TRAFFIC_PLACE; a_destination: TRAFFIC_PLACE) is
-			-- Find shortest path.
-		local
-			temp_path: LIST [LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]]
-			a_road: TRAFFIC_ROAD
-			a_type: TRAFFIC_TYPE_STREET
-			road_id: INTEGER
-			pp: ARRAYED_LIST [EM_VECTOR_2D]
-			current_ps, next_ps: TRAFFIC_PATH_SECTION
-		do
-			create pp.make (2)
-			road_id := road_id.max_value
-			path_found := False
-			create a_type.make
-			graph.put_node (a_origin.dummy_node)
-			-- Connect the dummy node of the origin with the stops.
-			pp.extend (a_origin.position)
-			pp.extend (Void)
-			from a_origin.stops.start until a_origin.stops.after loop
-				create a_road.make (a_origin.dummy_node, a_origin.stops.item,
-				  a_type, road_id, "undirected")
-				graph.search (a_origin.stops.item)
-				pp.put_i_th (graph.incident_edge_labels.first.polypoints.first, 2)
-				a_road.set_polypoints (pp)
-				graph.put_edge (a_origin.dummy_node, a_origin.stops.item, a_road, 0)
-				a_origin.stops.forth
-			end
-
-			-- Connect the stops with the dummy node of the destination
-			graph.put_node (a_destination.dummy_node)
-			pp.put_i_th (a_destination.position, 1)
-			from a_destination.stops.start until a_destination.stops.after loop
-				create a_road.make (a_destination.stops.item, a_destination.dummy_node,
-				    a_type, road_id, "undirected")
-				graph.search (a_destination.stops.item)
-				pp.put_i_th (graph.incident_edge_labels.first.polypoints.first, 2)
-				a_road.set_polypoints (pp)
-				graph.put_edge (a_destination.stops.item, a_destination.dummy_node, a_road , 0)
-				a_destination.stops.forth
-			end
-			graph.find_shortest_path (a_origin.dummy_node, a_destination.dummy_node)
-
-			if graph.path_found then
-				path_found := True
-				temp_path := graph.shortest_path
-				create shortest_path_impl.make
-				shortest_path_impl.set_scale_factor (scale_factor)
-
-				from temp_path.start until temp_path.after loop
-					if (not (temp_path.item.label.origin = temp_path.item.label.destination)) and (shortest_path_impl.first = Void) then
-							--don't make path_section for intra-place connections
-						create current_ps.make (temp_path.item.label)
-						shortest_path_impl.set_first (current_ps)
-					else
-						if not (temp_path.item.label.origin = temp_path.item.label.destination) then
-								--don't make path_section for intra-place connections
-							create next_ps.make(temp_path.item.label)
-							if current_ps.is_insertable (next_ps) then
-									--same type of line
-								current_ps.extend (next_ps)
-							else
-									--different type of line
-								current_ps.set_next (next_ps)
-								current_ps := next_ps
-							end
-						end
-					end
-					temp_path.forth
-				end
-			end
-			graph.search (a_origin.dummy_node)
-			if graph.off then
-				raise ("This shouldn't happen: dummy node not found")
-			end
-			-- Remove the dummy connections again.
---			graph.remove_node
---			graph.search (a_destination.dummy_node)
---			graph.remove_node
-		end
-
-	find_shortest_path_of_a_list_of_places(places_to_visit: LINKED_LIST [TRAFFIC_PLACE]) is
-			-- given a list of places `places_to_visit' finding shortest path visiting all these places
-			require
-				places_to_visit_exists: places_to_visit /= VOID
-				min_two_places_to_visit: places_to_visit.count > 1
-			local
-				a_path: TRAFFIC_PATH
-				current_place, next_place: TRAFFIC_PLACE
-			do
-				create a_path.make
-				a_path.set_scale_factor (scale_factor)
-
-				from
-					places_to_visit.start
-				until
-					places_to_visit.after
-				loop
-					current_place := places_to_visit.item
-					places_to_visit.forth
-					if not places_to_visit.after then
-						next_place := places_to_visit.item
-						find_shortest_path(current_place, next_place)
-						if path_found then
-							a_path.append_a_path (shortest_path)
-						end
-					end
-				end
-				shortest_path_impl := a_path
-			end
-
-
-
 feature {TRAFFIC_MAP_LOADER}
 
 	recalculate_weights_and_connect_stops is
@@ -961,7 +811,7 @@ feature {TRAFFIC_MAP_LOADER}
 			w: DOUBLE
 			edge_count: INTEGER
 			type: TRAFFIC_TYPE_STREET
-			pp: ARRAYED_LIST [EM_VECTOR_2D]
+			pp: DS_ARRAYED_LIST [EM_VECTOR_2D]
 			a: EM_VECTOR_2D
 			place_array: ARRAY [TRAFFIC_PLACE]
 			i: INTEGER
@@ -988,8 +838,8 @@ feature {TRAFFIC_MAP_LOADER}
 			-- Connect stops.
 			-- TODO: If the roads should be used for transport, the nodes must be connected as well.
 			create pp.make (2)
-			pp.extend (Void)
-			pp.extend (Void)
+--			pp.force_last (Void)
+--			pp.force_last (Void)
 
 			from
 				place_array := places.to_array
@@ -1005,18 +855,18 @@ feature {TRAFFIC_MAP_LOADER}
 				loop
 					s := p.stops.item
 					graph.search (s)
-					pp.put_i_th (position_from_connections(graph.incident_edge_labels, s), 1)
+					pp.force (position_from_connections(graph.incident_edge_labels, s), 1)
 					p.stops.forth
 					if not p.stops.after then
 						graph.search (p.stops.item)
-						pp.put_i_th (position_from_connections (graph.incident_edge_labels, p.stops.item), 2)
+						pp.force (position_from_connections (graph.incident_edge_labels, p.stops.item), 2)
 						create a_edge.make (s, p.stops.item, type, (create {INTEGER}).max_value, "undirected")
 						a_edge.set_polypoints (pp)
 						graph.put_edge (s, p.stops.item, a_edge, a_edge.length)
 
 						a := pp.first
-						pp.put_i_th (pp.last, 1)
-						pp.put_i_th (a, 2)
+						pp.force (pp.last, 1)
+						pp.force (a, 2)
 						a_edge.set_polypoints (pp)
 						graph.put_edge (p.stops.item, s, a_edge , a_edge.length)
 					end
@@ -1026,9 +876,6 @@ feature {TRAFFIC_MAP_LOADER}
 		end
 
 feature {NONE}-- Implementation
-
-	graph: TRAFFIC_GRAPH
-			-- used for path finding
 
 --	internal_places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
 			-- Places on map.
@@ -1051,17 +898,17 @@ feature {NONE}-- Implementation
 --	internal_travelers: HASH_TABLE [TRAFFIC_MOVING, INTEGER]
 --			-- Travelers on map.
 
-	internal_taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE]
+--	internal_taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE]
 			-- Taxi offices associated with this map
 
-	shortest_path_impl: TRAFFIC_PATH
-			-- Traffic path last calculated
+--	shortest_path_impl: TRAFFIC_PATH
+--			-- Traffic path last calculated
 
 	scale_factor_impl: DOUBLE
 			-- Scale factor used to get real world distances
 
-	internal_path: TRAFFIC_PATH
-			-- path added to map
+--	internal_path: TRAFFIC_PATH
+--			-- path added to map
 
 	place_position (a_name: STRING): INTEGER is
 			-- Position of place `a_name' in places
@@ -1181,5 +1028,5 @@ invariant
 	lines_not_void: lines /= Void -- Lines exist.
 	line_sections_not_void: line_sections /= Void -- Line sections exist
 --	travelers_not_void: travelers /= Void -- Travelers exist
-	internal_taxi_offices_not_void: internal_taxi_offices /= Void
+--	internal_taxi_offices_not_void: internal_taxi_offices /= Void
 end

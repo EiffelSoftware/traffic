@@ -89,16 +89,21 @@ feature -- Basic operations
 		do
 			border := 4.0
 
-			place_position := map_to_gl_coords(place.position)
+--			place_position := map_to_gl_coords(place.position)
+			place_position := place.position
 			--place_size := map_to_gl_coords(place_size)
-			create_simple_plane((place.width+border)/30.0, (place.breadth+border)/30.0) -- /30.0 comes from the map_to_gl coordinate conversation.. TODO: get rid of this coordinate-conversion problem
-			last_3d_member.transform.set_position(place_position.x, 0.0, place_position.y)
+			create_simple_plane((place.width+border), (place.breadth+border)) -- /30.0 comes from the map_to_gl coordinate conversation.. TODO: get rid of this coordinate-conversion problem
+			last_3d_member.transform.set_position(place_position.x, 0.07, place_position.y)
 
 			-- Collision polygon creation - from old factory
-			q1 := map_to_gl_coords (create {EM_VECTOR_2D}.make (place.position.x - place.width/2 - border, place.position.y - place.breadth/2 - border))
-			q2 := map_to_gl_coords (create {EM_VECTOR_2D}.make (place.position.x - place.width/2 - border, place.position.y + place.breadth/2 + border))
-			q3 := map_to_gl_coords (create {EM_VECTOR_2D}.make (place.position.x + place.width/2 + border, place.position.y + place.breadth/2 + border))
-			q4 := map_to_gl_coords (create {EM_VECTOR_2D}.make (place.position.x + place.width/2 + border, place.position.y - place.breadth/2 - border))
+--			q1 := map_to_gl_coords (create {EM_VECTOR_2D}.make (place.position.x - place.width/2 - border, place.position.y - place.breadth/2 - border))
+--			q2 := map_to_gl_coords (create {EM_VECTOR_2D}.make (place.position.x - place.width/2 - border, place.position.y + place.breadth/2 + border))
+--			q3 := map_to_gl_coords (create {EM_VECTOR_2D}.make (place.position.x + place.width/2 + border, place.position.y + place.breadth/2 + border))
+--			q4 := map_to_gl_coords (create {EM_VECTOR_2D}.make (place.position.x + place.width/2 + border, place.position.y - place.breadth/2 - border))
+			create q1.make (place.position.x - place.width/2 - border, place.position.y - place.breadth/2 - border)
+			create q2.make (place.position.x - place.width/2 - border, place.position.y + place.breadth/2 + border)
+			create q3.make (place.position.x + place.width/2 + border, place.position.y + place.breadth/2 + border)
+			create q4.make (place.position.x + place.width/2 + border, place.position.y - place.breadth/2 - border)
 
 			create poly_points.make
 			poly_points.force (create {EM_VECTOR_2D}.make (q1.x, q1.y), 1) -- left bottom corner

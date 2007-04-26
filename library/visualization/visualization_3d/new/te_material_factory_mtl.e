@@ -11,6 +11,8 @@ class
 
 		EM_SHARED_BITMAP_FACTORY
 
+		KL_SHARED_FILE_SYSTEM
+
 	create
 		make
 
@@ -63,6 +65,7 @@ feature {NONE} -- Implementation
 			mtl_file: PLAIN_TEXT_FILE
 			tokenizer: TE_3D_TEXT_SCANNER
 			first_definition_set: BOOLEAN
+			f: STRING
 		do
 			from
 				create mtl_file.make_open_read (a_filename)
@@ -114,12 +117,14 @@ feature {NONE} -- Implementation
 					elseif tokenizer.last_string.is_equal ("map_Kd")  then
 						-- Texture file to be used
 						tokenizer.read_token
-						bitmap_factory.create_bitmap_from_image (tokenizer.last_string)
+						f := file_system.pathname (file_system.dirname (a_filename), tokenizer.last_string)
+						bitmap_factory.create_bitmap_from_image (f)--tokenizer.last_string)
 						diffuse_texture := bitmap_factory.last_bitmap.texture
 					elseif tokenizer.last_string.is_equal ("map_Ke")  then
 						-- Texture file to be used
 						tokenizer.read_token
-						bitmap_factory.create_bitmap_from_image (tokenizer.last_string)
+						f := file_system.pathname (file_system.dirname (a_filename), tokenizer.last_string)
+						bitmap_factory.create_bitmap_from_image (f)--tokenizer.last_string)
 						emissive_texture := bitmap_factory.last_bitmap.texture
 					elseif tokenizer.last_string.is_equal ("alphat")  then
 						-- Texture file to be used

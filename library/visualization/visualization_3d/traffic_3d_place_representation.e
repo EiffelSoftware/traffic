@@ -136,7 +136,7 @@ feature -- Basic operations
 			place_factory.set_color(color.red/255, color.green/255, color.blue/255)
 			place_factory.create_place
 			place_view := place_factory.last_3d_member
-			place_view.make_child_of(place_root)
+			place_view.set_as_child_of(place_root)
 			place_views.force (place_view)
 			place_lookup.force (place_views.count, a_place)
 			collision_polygons.force (place_factory.collision_polygon, place_views.count)
@@ -153,7 +153,7 @@ feature -- Basic operations
 			place_factory.set_color(255, 0, 0)
 			place_factory.create_place
 			place_view := place_factory.last_3d_member
-			place_view.make_child_of(place_root)
+			place_view.set_as_child_of(place_root)
 			place_views.force (place_view)
 			place_lookup.force (place_views.count, a_place)
 		end
@@ -224,7 +224,7 @@ feature -- Status report
 				places := map.places.to_array
 				i := 1
 			until
-				i <= places.count or Result /= Void
+				i > places.count or Result /= Void
 			loop
 				if a_point.x > places.item (i).position.x - places.item (i).width/2 - tolerance and a_point.x < places.item (i).position.x + places.item (i).width/2 + tolerance and
 					a_point.y > places.item (i).position.y - places.item (i).breadth/2 - tolerance and a_point.y < places.item (i).position.y + places.item (i).breadth/2 + tolerance then

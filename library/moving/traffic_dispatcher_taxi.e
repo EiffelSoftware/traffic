@@ -6,43 +6,50 @@ indexing
 class
 	TRAFFIC_DISPATCHER_TAXI inherit
 		TRAFFIC_TAXI
+			redefine
+				make_random
+			end
 create
 	make_random
 
 feature -- Initialization
 
-	make_random (a_taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE; a_seed: INTEGER; stops: INTEGER;) is
+	make_random (a_taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE; stops: INTEGER) is
 			-- Create a taxi with an associated 'a_taxi_office'.
 			-- Random speed and stops at 'stops' random positions.
 			-- Set seed of random_number to 'a_seed'.
-		require
-			a_taxi_office_not_void: a_taxi_office /= void
-			valid_seed: a_seed >= 0
-			valid_number_of_stops: stops >= 2
+--		require
+--			a_taxi_office_not_void: a_taxi_office /= void
+--			valid_number_of_stops: stops >= 2
 		local
 			evening_time, morning_time: DOUBLE
 			random: RANDOM
 		do
 			traffic_type := create {TRAFFIC_TYPE_DISPATCHER_TAXI}.make
 			create polypoints.make (stops)
-			create random_number.set_seed(a_seed)
+--			create random.set_seed(a_seed)
 			add_random_polypoints (stops)
+			create poly_cursor.make (polypoints)
+			poly_cursor.start
 
 			office := a_taxi_office
 			office.enlist(Current)
 
 			set_reiterate (true)
-			set_coordinates
-			set_angle
-			virtual_speed := random_number.double_item
+			update_coordinates
+			update_angle
+
+			speed := 17
+			start
+--			virtual_speed := random_number.double_item
 
 			-- set lit time
-			create random.make
-			random.set_seed (out.hash_code)
-			evening_time := 16.0 +(random.double_item*(2).to_double) --18 + interval[0,2]
-			random.forth
-			morning_time := 32.00 + (random.double_item*(4).to_double) --8 + interval[0,4]
-			light_time := [evening_time, morning_time]
+--			create random.make
+--			random.set_seed (out.hash_code)
+--			evening_time := 16.0 +(random.double_item*(2).to_double) --18 + interval[0,2]
+--			random.forth
+--			morning_time := 32.00 + (random.double_item*(4).to_double) --8 + interval[0,4]
+--			light_time := [evening_time, morning_time]
 		end
 
 feature -- Access
@@ -63,7 +70,7 @@ feature -- Basic operations
 				-- Set is_marked to true so that the view will draw the busy taxi marked.
 				is_marked := True
 				office.delist(Current)
-				set_angle
+				update_angle
 			else
 				office.recall(from_location, to_location)
 			end
@@ -81,7 +88,7 @@ feature -- Basic operations
 					add_random_polypoints (7)
 					-- Set new destination
 					origin := position
-					destination := map_to_gl_coords (polypoints.first)
+					destination := polypoints.first
 					has_finished := false
 					set_reiterate (true)
 					-- Taxi is available again.
@@ -93,6 +100,6 @@ feature -- Basic operations
 
 invariant
 
-	random_number_not_void: random_number /= void
+--	random_number_not_void: random_number /= void
 
 end

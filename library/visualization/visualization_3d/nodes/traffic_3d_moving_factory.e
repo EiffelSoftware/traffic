@@ -8,34 +8,44 @@ class
 
 feature -- Factory methods
 
-	new_default_member (a_moving: TRAFFIC_MOVING): TRAFFIC_3D_MOVING_NODE is
+	new_default_member (a_moving: TRAFFIC_MOVING): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_MOVING] is
 			-- New man drawable
 		do
 			if error_template = Void then
 				error_template := load_template ("error.obj")
 			end
-			create Result.make_with_moving (a_moving, error_template.create_deep_instance)
+			create Result.make_with_item (a_moving, error_template.create_deep_instance)
 		end
 
-	new_man_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_NODE is
+	new_person_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
+			-- New person drawable (toggling between man and woman)
+		do
+			if person_toggle = 0 then
+				Result := new_man_member (a_passenger)
+			else
+				Result := new_woman_member (a_passenger)
+			end
+		end
+
+	new_man_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
 			-- New man drawable
 		do
 			if man_template = Void then
 				man_template := load_template ("man.obj")
 			end
-			create Result.make_with_moving (a_passenger, man_template.create_deep_instance)
+			create Result.make_with_item (a_passenger, man_template.create_deep_instance)
 		end
 
-	new_woman_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_NODE is
+	new_woman_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
 			-- New woman drawable
 		do
 			if woman_template = Void then
 				woman_template := load_template ("woman.obj")
 			end
-			create Result.make_with_moving (a_passenger, woman_template.create_deep_instance)
+			create Result.make_with_item (a_passenger, woman_template.create_deep_instance)
 		end
 
-	new_taxi_daynight_member (a_taxi: TRAFFIC_TAXI): TRAFFIC_3D_MOVING_DAYNIGHT_NODE is
+	new_taxi_daynight_member (a_taxi: TRAFFIC_TAXI): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_TAXI] is
 			-- New taxi drawable with two representations
 		do
 			if taxi_template = Void then
@@ -44,11 +54,13 @@ feature -- Factory methods
 			if taxi_night_template = Void then
 				taxi_night_template := load_template ("taxi_night.obj")
 			end
-			create Result.make_with_moving (a_taxi, taxi_template.create_deep_instance, taxi_night_template.create_deep_instance)
+			create Result.make_with_item (a_taxi, taxi_template.create_deep_instance, taxi_night_template.create_deep_instance)
 		end
 
-	new_tram_daynight_member (a_tram: TRAFFIC_TRAM): TRAFFIC_3D_MOVING_DAYNIGHT_NODE is
+	new_tram_daynight_member (a_tram: TRAFFIC_TRAM): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_TRAM] is
 			-- New taxi drawable with two representations
+		local
+			s: TE_3D_MEMBER_FACTORY_PRIMITIVE
 		do
 			if tram_template = Void then
 				tram_template := load_template ("tram2000_small.obj")
@@ -56,7 +68,10 @@ feature -- Factory methods
 			if tram_night_template = Void then
 				tram_night_template := load_template ("tram2000_small_night.obj")
 			end
-			create Result.make_with_moving (a_tram, tram_template.create_deep_instance, tram_night_template.create_deep_instance)
+			create Result.make_with_item (a_tram, tram_template.create_deep_instance, tram_night_template.create_deep_instance)
+--			create s.make
+--			s.create_simple_plane((10.0), (15.0)) -- /30.0 comes from the map_to_gl coordinate conversation.. TODO: get rid of this coordinate-conversion problem
+--			create Result.make_with_moving (a_tram, s.last_3d_member, s.last_3d_member)
 		end
 
 feature {NONE} -- Implementation
@@ -82,6 +97,9 @@ feature {NONE} -- Implementation
 	error_template: TE_3D_NODE
 			-- template which is returned when a wrong name is passed
 
+	person_toggle: INTEGER
+			-- Toggle between man and woman (0: man; 1: woman)
+
 	load_template (a_file_name: STRING): TE_3D_NODE is
 			-- load the traveler templates
 		local
@@ -98,41 +116,6 @@ feature {NONE} -- Implementation
 			s := fs.pathname (s, a_file_name)
 			Result := scene_importer.import_3d_scene (s)
 			Result.calculate_hierarchy_bounding_box
---"taxi.obj")
---			taxi_template := scene_importer.import_3d_scene(s)
---			taxi_template.calculate_hierarchy_bounding_box
-
---			s := fs.pathname ("..", "objects")
---			s := fs.pathname (s, "taxi_night.obj")
---			taxi_night_template := scene_importer.import_3d_scene(s)
---			taxi_night_template.calculate_hierarchy_bounding_box
-
---			s := fs.pathname ("..", "objects")
---			s := fs.pathname (s, "tram2000_small.obj")
---			tram_template := scene_importer.import_3d_scene(s)
---			tram_template.calculate_hierarchy_bounding_box
-
---			s := fs.pathname ("..", "objects")
---			s := fs.pathname (s, "tram2000_small_night.obj")
---			tram_night_template := scene_importer.import_3d_scene(s)
---			tram_night_template.calculate_hierarchy_bounding_box
-
---			s := fs.pathname ("..", "objects")
---			s := fs.pathname (s, "man.obj")
---			man_template := scene_importer.import_3d_scene(s)
---			man_template.calculate_hierarchy_bounding_box
-
---			s := fs.pathname ("..", "objects")
---			s := fs.pathname (s, "woman.obj")
---			woman_template := scene_importer.import_3d_scene(s)
---			woman_template.calculate_hierarchy_bounding_box
-
---			s := fs.pathname ("..", "objects")
---			s := fs.pathname (s, "error.obj")
---			woman_template := scene_importer.import_3d_scene(s)
---			woman_template.calculate_hierarchy_bounding_box
-
---			loaded := true
 		end
 
 end

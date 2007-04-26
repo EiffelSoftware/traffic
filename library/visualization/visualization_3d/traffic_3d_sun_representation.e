@@ -52,7 +52,7 @@ feature {NONE} -- Initialization
 			s := fs.pathname ("..", "objects")
 			s := fs.pathname (s, "sun.obj")
 			sun_model := scene_importer.import_3d_scene(s)
-			sun_model.make_child_of(root)
+			sun_model.set_as_child_of(root)
 			sun_model.set_name("sun_model")
 
 			create shadow_pass.make

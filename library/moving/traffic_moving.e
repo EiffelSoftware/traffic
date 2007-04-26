@@ -26,8 +26,8 @@ feature -- Access
 	traffic_type: TRAFFIC_TYPE
 			-- Type of moving item
 
-	traffic_info: STRING
-			-- Some info on moving item
+--	traffic_info: STRING
+--			-- Some info on moving item
 
 	position: EM_VECTOR_2D
 			-- Current position on map
@@ -41,28 +41,8 @@ feature -- Access
 	speed: DOUBLE
 			-- Speed on the map TODO: speed := distance(take-tour) / time(from one point to another)
 
-	index: INTEGER
-			-- Index of moving
-
---	scale_factor: DOUBLE
-			-- Factor for conversion between real distances and the map distances
-			-- Multiply the map distances with this factor to get the real distances
-
---	time: DOUBLE
-			-- Time for one minute
-
-	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
-			-- All points to be traveled through
-
---	virtual_speed: DOUBLE
-			-- Virtual speed of the object on the map
-
 	angle_x: DOUBLE
 			-- Angle in respect to the x-axis
-
---	light_time: TUPLE[DOUBLE, DOUBLE]
---			-- the timerange in which the traveler is lit
-
 
 feature -- Status report
 
@@ -78,12 +58,10 @@ feature -- Status report
 	is_marked: BOOLEAN
 			-- Is the moving marked, highlighted?
 
-feature -- Basic operations
+	is_waiting: BOOLEAN
+			-- Is the moving waiting?
 
-	take_tour is
-			-- Take a tour on the map.
-		deferred
-		end
+feature -- Basic operations
 
 	start is
 			-- Start taking a tour.
@@ -91,26 +69,13 @@ feature -- Basic operations
 			traffic_time.add_callback_tour (agent take_tour)
 		end
 
+	wait (a_duration: DURATION) is
+			-- Wait for `a_duration' until the next move is made.
+		do
+
+		end
+
 feature -- Element change
-
-	set_index (an_index: INTEGER) is
-			-- Give the object an index.
-		do
-			index := an_index
-		ensure
-			index_set: index = an_index
-		end
-
-
-	set_traffic_info (a_type: STRING) is
-			-- Set the traffic info.
-		require
-			a_type_exists: a_type /= Void
-		do
-			traffic_info := a_type
-		ensure
-			info_set: traffic_info = a_type
-		end
 
 	set_speed (a_speed: DOUBLE) is
 			-- Set the speed to 'a_speed'.
@@ -122,16 +87,6 @@ feature -- Element change
 			speed_set: speed = a_speed
 		end
 
---	set_time (a_time: DOUBLE) is
---			-- Set time to 'a_time'.
---		require
---			a_time_valid: a_time > 0
---		do
---			time := a_time
---		ensure
---			time_set: time = a_time
---		end
-
 	set_reiterate (a_boolean: BOOLEAN) is
 			-- Set the moving reiterating his itinerary.
 		do
@@ -142,6 +97,11 @@ feature -- Element change
 
 feature {NONE} -- Implementation
 
+	take_tour is
+			-- Take a tour on the map.
+		deferred
+		end
+
 	move is
 			-- Move from origin to destination.
 		local
@@ -151,12 +111,12 @@ feature {NONE} -- Implementation
 		do
 			direction := destination - origin
 
-			if last_move_time /= Void then
+			if not has_finished and last_move_time /= Void then
 				current_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
 				diff := (current_move_time.fine_seconds - last_move_time.fine_seconds)*speed/traffic_time.default_scale_factor
 				if ((position.x - destination.x).abs < diff) and ((position.y - destination.y).abs < diff) or direction.length <= 0 then
-					set_coordinates
-					set_angle
+					update_coordinates
+					update_angle
 				else
 					position := position + (direction / direction.length) * diff
 				end
@@ -179,91 +139,91 @@ feature {NONE} -- Implementation
 --			end
 		end
 
-	set_coordinates is
+	update_coordinates is
 			-- Set the positions to the corresponding ones of the line section.
 		require
-			not polypoints.after
-			not polypoints.before
+			poly_cursor_valid: not poly_cursor.after and not poly_cursor.before
+			not_finished: not has_finished
 		do
 			-- hopefully this will give a bit performance to the journey
 			-- otherwise just clear out the map_to_gl_coords
 --			origin :=  map_to_gl_coords (polypoints.item)
 --			position := map_to_gl_coords (polypoints.item)
-			origin :=  polypoints.item
-			position := polypoints.item
+
+			origin :=  poly_cursor.item
+			position := poly_cursor.item
 
 			if is_traveling_back then
-				polypoints.back
-				if polypoints.before then
+				poly_cursor.back
+				if poly_cursor.before then
 					is_traveling_back := False
-					polypoints.forth
-					set_coordinates
+					poly_cursor.forth
+					update_coordinates
 				else
 --					destination := map_to_gl_coords (polypoints.item)
-					destination := polypoints.item
+					destination := poly_cursor.item
 				end
 
 			elseif is_reiterating then
-				polypoints.forth
-				if polypoints.after then
+				poly_cursor.forth
+				if poly_cursor.after then
 					is_traveling_back := True
-					polypoints.back
-					set_coordinates
+					poly_cursor.back
+					update_coordinates
 				else
 --					destination := map_to_gl_coords (polypoints.item)
-					destination := polypoints.item
+					destination := poly_cursor.item
 				end
 			else
-				polypoints.forth
-				if polypoints.after then
+				poly_cursor.forth
+				if poly_cursor.after then
 					has_finished := True
 				else
 --					destination := map_to_gl_coords (polypoints.item)
-					destination := polypoints.item
+					destination := poly_cursor.item
 				end
 			end
-			io.put_string ("from " + origin.out + " to " + destination.out + "%N")
 		ensure
 			origin /= Void
 			position /= Void
 			destination /= Void
 		end
 
-	tour_helper is
-			-- Help during the tour to get the next destination if there is any.
-		do
-			if not polypoints.after and not polypoints.before then
+--	tour_helper is
+--			-- Help during the tour to get the next destination if there is any.
+--		do
+--			if not poly_cursor.after and not poly_cursor.before then
 
-				if not is_traveling_back then
-					polypoints.forth
-					origin := destination
-					position := destination
-					destination := polypoints.item
-				elseif is_traveling_back then
-					polypoints.back
-					origin := destination
-					position := destination
-					destination := polypoints.item
-				end
+--				if not is_traveling_back then
+--					poly_cursor.forth
+--					origin := destination
+--					position := destination
+--					destination := poly_cursor.item
+--				elseif is_traveling_back then
+--					poly_cursor.back
+--					origin := destination
+--					position := destination
+--					destination := poly_cursor.item
+--				end
 
-			elseif polypoints.after and is_reiterating then
-				is_traveling_back := True
-				polypoints.back
-				origin := destination
-				position := destination
+--			elseif poly_cursor.after and is_reiterating then
+--				is_traveling_back := True
+--				poly_cursor.back
+--				origin := destination
+--				position := destination
 
-			elseif polypoints.before and is_reiterating and is_traveling_back then
-				is_traveling_back := False
-				polypoints.forth
-				origin := destination
-				position := destination
-				destination := polypoints.item
-			else
-				has_finished := True
-			end
-		end
+--			elseif poly_cursor.before and is_reiterating and is_traveling_back then
+--				is_traveling_back := False
+--				poly_cursor.forth
+--				origin := destination
+--				position := destination
+--				destination := poly_cursor.item
+--			else
+--				has_finished := True
+--			end
+--		end
 
-	set_angle is
+	update_angle is
 			-- Set the angles to the x- and y-axis respectively.
 		local
 			x_difference, y_difference, hypo, quad: DOUBLE
@@ -277,97 +237,84 @@ feature {NONE} -- Implementation
 			if hypo /= 0 then
 				-- arc_sine in radian
 				quad := 0
+					angle_x := arc_sine (x_difference/hypo)
 				if  (x_difference >= 0) and (y_difference >= 0) then
 					angle_x := arc_sine (x_difference/hypo)
 						-- the same in degree
-					angle_x := angle_x * 180 / pi
-					angle_x := 180 + angle_x
+--					angle_x := angle_x * 180 / pi
+--					angle_x := 180 + angle_x
+					angle_x := pi + angle_x
 				elseif (x_difference < 0) and (y_difference >= 0) then
 					x_difference := x_difference.abs
 					y_difference := y_difference.abs
 					angle_x := arc_sine (x_difference/hypo)
 						-- the same in degree
-					angle_x := angle_x * 180 / pi
-					angle_x := 180 - angle_x
+--					angle_x := angle_x * 180 / pi
+--					angle_x := 180 - angle_x
+					angle_x := pi - angle_x
 				elseif (x_difference < 0) and (y_difference < 0) then
 					x_difference := x_difference.abs
 					y_difference := y_difference.abs
 					angle_x := arc_sine (x_difference/hypo)
 						-- the same in degree
-					angle_x := angle_x * 180 / pi
+--					angle_x := angle_x * 180 / pi
 				elseif (x_difference >= 0) and (y_difference < 0) then
 					x_difference := x_difference.abs
 					y_difference := y_difference.abs
 					angle_x := arc_sine (x_difference/hypo)
 						-- the same in degree
-					angle_x := angle_x * 180 / pi
-					angle_x := 360 - angle_x
+--					angle_x := angle_x * 180 / pi
+--					angle_x := 360 - angle_x
+					angle_x := 2*pi - angle_x
 				end
 
-				if angle_x < 0 then
-					angle_x := 360 + angle_x
-				elseif angle_x > 360 then
-					angle_x := angle_x - 360
-				end
+--				if angle_x < 0 then
+--					angle_x := 360 + angle_x
+--				elseif angle_x > 360 then
+--					angle_x := angle_x - 360
+--				end
 			end
 
 		end
 
-	give_random_direction is
-			-- Give a random destination.
-		require
-			random_number /= Void
-		local
-			temp_x, temp_y: DOUBLE
-		do
-			temp_x := random_number.double_item
-			random_number.forth
-			temp_y := random_number.double_item
-			create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
-			-- approximated places so that they are on the map
-			random_number.forth
-		ensure
-			destination.x < 1433
-			destination.x > -67
-			destination.y < 1468
-			destination.y > -32
-		end
+--	give_random_direction is
+--			-- Give a random destination.
+--		require
+--			random_number /= Void
+--		local
+--			temp_x, temp_y: DOUBLE
+--		do
+--			temp_x := random_number.double_item
+--			random_number.forth
+--			temp_y := random_number.double_item
+--			create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
+--			-- approximated places so that they are on the map
+--			random_number.forth
+--		ensure
+--			destination.x < 1433
+--			destination.x > -67
+--			destination.y < 1468
+--			destination.y > -32
+--		end
 
-	add_random_polypoints(num: INTEGER) is
-		--  Add to the polypoints 'num' random destinations.
-		require
-			random_number_not_void: random_number /= void
-		local
-			i: INTEGER
-		do
-			random_number.forth
-			from
-				i := 1
-			until
-				i >= num
-			loop
-				random_number.forth
-				give_random_direction
-				polypoints.extend (destination)
-				random_number.forth
-				polypoints.extend (destination)
-				i := i+1
-			end
-			polypoints.start
-		ensure
-			polypoints_extended: polypoints.count = old polypoints.count + (2* (num-1))
-		end
 
 feature {NONE} -- Implementation
 
-	random_number: RANDOM
+--	random_number: RANDOM
 		-- Make a direction out of this genererator	
+	poly_cursor: DS_ARRAYED_LIST_CURSOR [EM_VECTOR_2D]
+			-- Cursor that guides the moving object
+
+	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			-- All points to be traveled through
 
 	last_move_time: TIME
-		-- Time of the last move
+			-- Time of the last move
 
 	current_move_time: TIME
-		-- Now (when a step is taken)
+			-- Now (when a step is taken)
+
+	wait_duration: DURATION
 
 invariant
 	polypoints_exist: polypoints /= Void
@@ -375,5 +322,7 @@ invariant
 	destination_exists: destination /= Void
 	position_exists: position /= Void
 	speed_valid: speed >= 0
+	poly_cursor_exists: poly_cursor /= Void
+	poly_cursor.container.count >= 2
 end
 

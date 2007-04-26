@@ -36,7 +36,7 @@ feature -- Initialization
 			create line_section_lookup.make (map.line_sections.count)
 			create line_section_views.make (map.line_sections.count)
 			create line_section_root.make_as_child((create{TE_3D_SHARED_GLOBALS}).root)
-			line_section_root.transform.set_position (0.0,0.004,0.0)
+			line_section_root.transform.set_position (0.0,0.04,0.0)
 			create collision_polygons.make (4)
 
 			add_lines(map)
@@ -162,7 +162,7 @@ feature -- Basic operations
 			line_factory.set_color(a_color.red/255, a_color.green/255, a_color.blue/255)
 			line_factory.create_connection
 			line_section_view := line_factory.last_3d_member
-			line_section_view.make_child_of(line_section_root)
+			line_section_view.set_as_child_of(line_section_root)
 			line_section_views.extend (line_section_view)
 			line_section_lookup.force (line_section_views.count, a_line_section)
 			collision_polygons.append_last (line_factory.collision_polygons)

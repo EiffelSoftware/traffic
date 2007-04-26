@@ -209,7 +209,7 @@ feature {NONE} -- Implementation
 			id_is_valid: id >=0 and id <8
 		do
 			gl_lightfv(em_GL_LIGHT0 + id, em_GL_DIFFUSE, diffuse_color.pointer)
-			--gl_lightf(em_GL_LIGHT0 + id, em_GL_CONSTANT_ATTENUATION, intensity)
+		--gl_lightf(em_GL_LIGHT0 + id, em_GL_CONSTANT_ATTENUATION, intensity)
 		end
 
 	update_other_parameters(id:INTEGER) is

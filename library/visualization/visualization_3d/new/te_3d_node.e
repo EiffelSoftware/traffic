@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Objects that represent nodes in the 3D object hierarchy."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -14,10 +13,10 @@ create
 	make_as_child, make_as_root, make
 
 
-feature -- initialization
+feature -- Initialization
 
 	make_as_child (a_parent: TE_3D_NODE) is
-		-- creates the node as child of a_parent
+			-- Create the node as child of `a_parent'.
 		do
 			make
 			if a_parent /= Void then
@@ -30,7 +29,7 @@ feature -- initialization
 		end
 
 	make is
-		-- creates the node without parent. Insert the node into the scene hierarchy to render it!
+			-- Create the node without parent. Insert the node into the scene hierarchy to render it!
 		do
 			create transform.make
 			--transform.event_channel.subscribe(agent feature name)
@@ -42,10 +41,10 @@ feature -- initialization
 			transform_not_void: transform /= Void
 		end
 
-feature {TE_3D_SHARED_GLOBALS} -- initialization as root
+feature {TE_3D_SHARED_GLOBALS} -- Initialization
 
 	make_as_root is
-			-- creates the node as root - this is only open to TE_3D_SHARED_ROOT so that there is only one root
+			-- Create as root node (only callable from TE_3D_SHARED_ROOT so that there is only one root).
 		do
 			create transform.make
 			create children.make(0)
@@ -61,11 +60,14 @@ feature {TE_3D_SHARED_GLOBALS} -- initialization as root
 
 feature -- Access
 
+	hierarchy_bounding_box: ARRAYED_LIST[EM_VECTOR3D]
+			-- Bounding box containing all children and sub-children
+
 	transform : TE_3D_TRANSFORM
-		-- transform object, storing the model_matrix of the node
+			-- Transform object, storing the model_matrix of the node
 
 	world_transform : TE_3D_TRANSFORM is
-			-- calculates the transform object in worldspace
+			-- Transform object in worldspace
 		do
 			if is_root then -- happens only if a direct child of root calls parent.world_transform - in this case it returns a unit transform object
 				create Result.make
@@ -79,19 +81,115 @@ feature -- Access
 		end
 
 	name: STRING
+			-- Name of the node
 
 	parent: TE_3D_NODE
-		-- the parent node. If this is void, this is the root of the hirarchy.
+			-- Parent node (if this is void, this is the root of the hirarchy)
 
 	children : ARRAYED_LIST[TE_3D_NODE]
-		-- list of all children nodes in the hirarchy
+			-- List of all children nodes in the hierarchy
 
-	-- key_frame_player
+	--key_frame_player: TE_3D_KEY_FRAME_PLAYER
+			-- Keyframe player to use keyframe animations
+
+	--constraints: LINKED_LIST[TE_3D_CONSTRAINT]
+			-- List of 3d constraints
+
+feature {TE_3D_NODE} -- Element Change
+
+	set_parent (new_parent: TE_3D_NODE) is
+			-- Set `parent' to the `new_parent'.
+			-- Must be only called by the `add_child' and `remove_child' feature of another TE_3D_NODE.
+		do
+			parent := new_parent
+		ensure
+			parent_is_new_parent: parent = new_parent
+		end
+
+feature -- Element change
+
+	set_hierarchy_bounding_box(a_bounding_box: ARRAYED_LIST[EM_VECTOR3D]) is
+			-- Set `hierarchy_bounding_box' to `a_bounding_box' without calculating it.
+		require
+			a_bounding_box_exists: a_bounding_box /= Void
+			must_countain_8_vertices: a_bounding_box.count = 8
+		do
+			hierarchy_bounding_box := a_bounding_box
+		ensure
+			hierarchy_bounding_box_set: hierarchy_bounding_box = a_bounding_box
+		end
+
+	set_name(a_name:STRING) is
+			-- Set `name' to `a_name'.
+		do
+			name := a_name
+		ensure
+			name_set: name = a_name
+		end
+
+	set_as_child_of (a_parent: TE_3D_NODE) is
+			-- Add the current node to `a_parent's childlist.
+			-- Ensures that the current node is removed from the old parents childlist,
+			-- sets the new parent, and makes the actual node a child of the new parent.
+		require
+			a_parent_exists: a_parent /= Void
+			is_not_already_child_of: parent /= a_parent and not a_parent.is_parent_of(Current)
+		do
+			a_parent.add_child (Current)
+		ensure
+			is_child_of_new_parent: parent.is_parent_of(Current)
+			has_right_parent: parent = a_parent
+		end
+
+	add_child (a_child: TE_3D_NODE) is
+			-- Add `a_child' to the children of `Current' and set the parent of this child.
+		require
+			a_child_exists: a_child /= Void
+			child_not_yet_added: not is_parent_of (a_child) and a_child.parent /= Current
+		do
+			-- Remove a_child from a_childs' current parents' child list
+			if a_child.parent /= Void then
+				a_child.parent.remove_child (a_child)
+			end
+			-- Add a_child to the current nodes' childlist
+			children.extend (a_child)
+			-- Set the childs parent to the current node
+			a_child.set_parent (Current)
+		ensure
+			child_is_inserted: children.is_inserted (a_child) = true
+			child_has_right_parent: a_child.parent = current
+		end
+
+	remove_child (a_child: TE_3D_NODE) is
+			-- Remove `a_child' from the list of children.
+		require
+			has_child: is_parent_of (a_child)
+		do
+			children.prune (a_child)
+			a_child.set_parent (Void)
+		ensure
+			child_removed: not is_parent_of (a_child)
+		end
+
+	remove_all_children is
+			-- Remove all children from the children list.
+		do
+			from
+				children.start
+			until
+				children.off
+			loop
+				children.item.set_parent (Void)
+				children.forth
+			end
+			children.wipe_out
+		end
+
 
 feature -- Status report
 
-	is_root : BOOLEAN is
-			-- is this node the root?
+	is_root: BOOLEAN is
+			-- Is this node the root?
 		do
 			if parent = void then
 				result := true
@@ -101,7 +199,9 @@ feature -- Status report
 		end
 
 	is_parent_of (a_node: TE_3D_NODE): BOOLEAN is
-			-- checks wether a_node is child of the actual node
+			-- Is `a_node' a child of `Current'?
+		require
+			a_node_exists: a_node /= Void
 		do
 			from
 				children.start
@@ -113,115 +213,31 @@ feature -- Status report
 				end
 				children.forth
 			end
-
 		end
 
-	hierarchy_renderable: BOOLEAN
-			-- is the hierarchy, including this node as root of the hierarchy, renderable
-			-- if this is false - shadows of children will be disabled too!
+	is_hierarchy_renderable: BOOLEAN
+			-- Is the hierarchy (including this node as root of the hierarchy) renderable?
+			-- If this is false, shadows of children will be disabled!
 
 feature -- Status setting
 
 	enable_hierarchy_renderable is
-			-- enables hierarchy_renderable
+			-- Set the hierarchy to be renderable.
 		do
-			hierarchy_renderable := true
+			is_hierarchy_renderable := True
+		ensure
+			hierarchy_renderable: is_hierarchy_renderable
 		end
 
 	disable_hierarchy_renderable is
-			-- disables hierarchy_renderable
+			-- Set the hierarchy to not be renderable.
 		do
-			hierarchy_renderable := false
-		end
-
-feature -- Cloning
-
-	create_deep_instance: TE_3D_NODE is
-			-- returns an instance of the 3D member and instances of all childs and subchilds of the 3d member as hirarchy
-		do
-			create Result.make_as_child(parent)
-			from
-				children.start
-			until
-				children.after
-			loop
-				Result.add_child(children.item.create_deep_instance)
-				children.forth
-			end
-		end
-
-feature -- Element change
-
-	-- both features can be used to get the same result, but they're applied from different points of view
-
-	add_child (a_child: TE_3D_NODE) is
-			-- adds a child to that node and sets the parent of this child to the actual node
-		--require
-			--child_not_yet_added: (is_parent_of(a_child) = false and a_child.parent /= current) --these two conditions should always have the same result!!
-		do
-			if a_child.parent /= Void then --remove a_child from a_childs' current parents' child list
-				a_child.parent.remove_child(a_child)
-			end
-			--add a_child to the current nodes' childlist
-			children.extend (a_child)
-			--set the childs parent to the current node
-			a_child.set_parent(Current)
+			is_hierarchy_renderable := False
 		ensure
-			child_is_inserted: children.is_inserted(a_child) = true
-			child_has_right_parent: a_child.parent = current
+			hierarchy_not_renderable: not is_hierarchy_renderable
 		end
 
-	make_child_of (a_parent: TE_3D_NODE) is
-			-- ensures that the current node is removed from the old parents childlist, sets the new parent and makes the actual node a child of the new parent
-		--require
-			--is_not_already_child_of: (parent /= a_parent and a_parent.is_parent_of(current)) --these two conditions should always have the same result!!
-		do
-			--add the current node to a_parents' childlist
-			a_parent.add_child(current)
-		ensure
-			is_child_of_new_parent: parent.is_parent_of(current)
-			has_right_parent: parent = a_parent
-		end
-
-
-feature {TE_3D_NODE} -- Element Change
-
-	remove_child (a_child: TE_3D_NODE) is
-			-- removes the child from this nodes childrenlist
-		require
-			actual_node_is_parent: is_parent_of(a_child) = true
-		do
-			from
-				children.start
-			until
-				children.after
-			loop
-				if children.item = a_child then
-					children.remove
-				end
-				if not children.after then --TODO: ARGH! optimize this!
-					children.forth
-				end
-			end
-		end
-
-	set_parent (new_parent: TE_3D_NODE) is
-			-- sets the parent to the new_parent. must be only called by the 'add_child' feature of another TE_3D_NODE
-		require
-			new_parent_not_void: new_parent /= Void
-		do
-			parent := new_parent
-		ensure
-			parent_is_new_parent: parent = new_parent
-		end
-
-
-feature -- Removal
-
-feature -- Measurement
-
-	hierarchy_bounding_box: ARRAYED_LIST[EM_VECTOR3D]
-			-- bounding box containing all children and sub-children
+feature -- Basic operations
 
 	calculate_hierarchy_bounding_box is
 			-- updates the hierarchy_bounding_box. DON'T USE THIS EVERY FRAME CAUSE IT'S NOT PERFORMANT!
@@ -277,13 +293,6 @@ feature -- Measurement
 			hierarchy_bounding_box.extend(vec8)
 		end
 
-	set_hierarchy_bounding_box(a_bounding_box: ARRAYED_LIST[EM_VECTOR3D]) is
-			-- set the hierarchy_bounding_box without calculating it
-		require
-			must_countain_8_vertices: a_bounding_box.count = 8
-		do
-			hierarchy_bounding_box := a_bounding_box
-		end
 
 
 	hierarchy_bounding_sphere is
@@ -292,57 +301,55 @@ feature -- Measurement
 
 		end
 
+feature -- Cloning
 
-feature -- Transformation
+	create_deep_instance: TE_3D_NODE is
+			-- Cloned instance of the 3D member and instances of all childs and subchilds of the 3d member as hirarchy
+		do
+			create Result.make_as_child(parent)
+			from
+				children.start
+			until
+				children.after
+			loop
+				Result.add_child (children.item.create_deep_instance)
+				children.forth
+			end
+		end
 
 feature -- Conversion
 
-feature -- Duplication
-
-feature -- Engines
-
-	--key_frame_player: TE_3D_KEY_FRAME_PLAYER
-		--keyframe player to use keyframe animations
-
-	--constraints: LINKED_LIST[TE_3D_CONSTRAINT]
-		--list of 3d constraints
-
-feature -- Basic operations
-
-	set_name(a_name:STRING) is
-			-- sets the name
-		do
-			name := a_name
-		end
-
-
-feature -- Obsolete
-
-feature -- Inapplicabel
-
-feature -- Space transformation
-
-	worldspace_to_localspace (a_vector: EM_VECTOR3D):EM_VECTOR3D is
-			-- converts a worldspace 3d vector to localspace of the current 3D node. a_vector MUST BE IN WORLDSPACE!!
+	worldspace_to_localspace (a_vector: EM_VECTOR3D): EM_VECTOR3D is
+			-- Worldspace vector `a_vector' converted to localspace of the current 3D node
+			-- `a_vector' MUST BE IN WORLDSPACE!!
+		require
+			a_vector_exists: a_vector /= Void
 		do
 			Result := world_transform.inverse_vectortransform(a_vector)
+		ensure
+			Result_exists: Result /= Void
 		end
 
-	localspace_to_worldspace (a_vector: EM_VECTOR3D):EM_VECTOR3D is
-			-- converts a localspace 3d vector to worldspace. a_vector MUST BE IN LOCAL SPACE OF THE CURRENT 3D_NODE!!
+	localspace_to_worldspace (a_vector: EM_VECTOR3D): EM_VECTOR3D is
+			-- Localspace vector `a_vector' converted to worldspace
+			-- `a_vector' MUST BE IN LOCAL SPACE OF THE CURRENT 3D_NODE!!
+		require
+			a_vector_exists: a_vector /= Void
 		do
 			Result := world_transform.vectortransform(a_vector)
+		ensure
+			Result_exists: Result /= Void
 		end
 
-feature {TE_3D_NODE, TE_RENDERPASS}-- Drawing
+feature {TE_3D_NODE, TE_RENDERPASS} -- Drawing
 
 	draw is
-			-- calls draw feature of all children
+			-- Draw the hierarchy if `is_hierarchy_renderable'.
 		local
 			rotation_quat: EM_QUATERNION
 			aor: EM_VECTOR3D --axis of rotation
 		do
-			if hierarchy_renderable then
+			if is_hierarchy_renderable then
 				gl_push_matrix
 
 				gl_mult_matrixd(transform.to_opengl)
@@ -364,16 +371,14 @@ feature {TE_3D_NODE, TE_RENDERPASS}-- Drawing
 		end
 
 	render_node is
-			-- performs openGL commands to display the node on the display
+			-- Perform openGL commands to display the node on the display.
 		do
 			-- Do nothing, since the simple 3D_node has got no graphical representation
 		end
 
-
-feature {NONE} --Implementation
-
-
 invariant
-	is_true: True -- Your invariant here
+
+	children_not_void: children /= Void
+	transform_not_void: transform /= Void
 
 end

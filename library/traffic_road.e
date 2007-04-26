@@ -39,9 +39,9 @@ feature{NONE} -- Creation
 			else
 				is_directed:=false
 			end
-			create polypoints.make (2)
-			polypoints.extend (a_origin.place.position)
-			polypoints.extend (a_destination.place.position)
+			create polypoints.make (0)
+			polypoints.force_last (a_origin.place.position)
+			polypoints.force_last (a_destination.place.position)
 		ensure
 			origin_set: origin_impl = a_origin
 			destination_set: destination_impl = a_destination

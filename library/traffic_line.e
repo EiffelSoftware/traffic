@@ -251,12 +251,12 @@ feature -- Basic operations
 			line_added_to_line_section: a_line_section.line = Current
 		end
 
-	road_points: ARRAYED_LIST[EM_VECTOR_2D] is
+	road_points: DS_ARRAYED_LIST[EM_VECTOR_2D] is
 			-- returns the polypoints retrieve by the roads
 			-- that belongs to this line
 		local
 			roads:ARRAYED_LIST[TRAFFIC_ROAD]
-			pp: ARRAYED_LIST[EM_VECTOR_2D]
+			pp: DS_ARRAYED_LIST[EM_VECTOR_2D]
 			invert, is_station: BOOLEAN
 			v: EM_VECTOR_2D
 		do
@@ -293,14 +293,14 @@ feature -- Basic operations
 						until
 							pp.before
 						loop
-							v:=pp.item
-							if is_station then
-								Result.extend(v)
-								Result.extend(v)
-								Result.extend(v)
-								is_station:=false
-							end
-							Result.extend(v)
+							v:=pp.item_for_iteration
+--							if is_station then
+--								Result.extend(v)
+--								Result.extend(v)
+--								Result.extend(v)
+--								is_station:=false
+--							end
+							Result.force_last (v)
 							pp.back
 						end
 
@@ -319,14 +319,14 @@ feature -- Basic operations
 						until
 							pp.after
 						loop
-							v:=pp.item
-							if is_station then
-								Result.extend(v)
-								Result.extend(v)
-								Result.extend(v)
-								is_station:=false
-							end
-							Result.extend(v)
+							v:=pp.item_for_iteration
+--							if is_station then
+--								Result.extend(v)
+--								Result.extend(v)
+--								Result.extend(v)
+--								is_station:=false
+--							end
+							Result.force_last (v)
 							pp.forth
 						end
 

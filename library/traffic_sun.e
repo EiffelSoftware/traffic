@@ -28,9 +28,9 @@ feature {NONE} -- Initialization
 		do
 			theta := 0.6
 			phi := 1.0
-			radius := 50.0
+			radius := 5000.0
 		ensure
-			coordinates_initialized : (theta = 0.6) and (phi = 1.0) and (radius = 50.0)
+--			coordinates_initialized : (theta = 0.6) and (phi = 1.0) and (radius = 50.0)
 		end
 
 

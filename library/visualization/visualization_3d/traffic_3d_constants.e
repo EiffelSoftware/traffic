@@ -31,7 +31,7 @@ feature -- Constants
 	Max_building_height: DOUBLE is 1.0
 			-- Maximum height of buildings.
 
-	Plane_size: DOUBLE is 50.0
+	Plane_size: DOUBLE is 1300.0--50.0
 			-- Length, resp. width, of plane.
 
 	Traffic_window_width: INTEGER is 800 -- 1000 -- 1024
@@ -46,7 +46,7 @@ feature -- Constants
 	Fullscreen: BOOLEAN is False
 			-- Fullscreen?
 
-	Line_width: DOUBLE is 0.3
+	Line_width: DOUBLE is 7.0
 			-- Width of the line representation on the map.
 
 	beauty_pass: TE_RENDERPASS_BEAUTY is
@@ -88,14 +88,14 @@ feature -- Constants
 			Result := 2*line_width
 		end
 
-	map_to_gl_coords (vec: EM_VECTOR_2D): EM_VECTOR_2D is
-			-- Transform map coordinates to the ones used by OpenGL.
-		require
-			vec /= void
-		do
-			-- (669,718) are the coordinates of the HB, where the centre is.
-			create Result.make ((1350 - vec.x - 669)/30,(1420 - vec.y - 718)/30)
-		end
+--	map_to_gl_coords (vec: EM_VECTOR_2D): EM_VECTOR_2D is
+--			-- Transform map coordinates to the ones used by OpenGL.
+--		require
+--			vec /= void
+--		do
+--			-- (669,718) are the coordinates of the HB, where the centre is.
+--			create Result.make ((1350 - vec.x - 669)/30,(1420 - vec.y - 718)/30)
+--		end
 
 	gl_to_map_coords (vec: EM_VECTOR_2D): EM_VECTOR_2D is
 			-- Transform coordinates used by OpenGL to map coordinates

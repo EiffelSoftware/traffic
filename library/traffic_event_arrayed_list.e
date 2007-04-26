@@ -36,11 +36,9 @@ feature {NONE} -- Initialization
 			-- Create event channels
 			create element_inserted_event
 			create element_removed_event
-			create changed_event
 		ensure then
 			inserted_initialized: element_inserted_event /= Void
 			removed_initialized: element_removed_event /= Void
-			changed_initialized: changed_event /= Void
 		end
 
 	make_equal (n: INTEGER_32)
@@ -51,11 +49,9 @@ feature {NONE} -- Initialization
 			Precursor (n)
 			create element_inserted_event
 			create element_removed_event
-			create changed_event
 		ensure then
 			inserted_initialized: element_inserted_event /= Void
 			removed_initialized: element_removed_event /= Void
-			changed_initialized: changed_event /= Void
 		end
 
 feature -- Element change
@@ -65,9 +61,22 @@ feature -- Element change
 			-- Keep items of `other' in the same order.
 			-- Do not move cursors.
 			-- (Performance: O(count-i+other.count).)
+		local
+			c: DS_LINEAR_CURSOR [G]
+			j: INTEGER
 		do
 			Precursor (other, i)
-			changed_event.publish ([])
+			from
+				c := other.new_cursor
+				c.start
+				j := 1
+			until
+				c.off
+			loop
+				element_inserted_event.publish ([c.item, i - 1 + j])
+				c.forth
+				j := j + 1
+			end
 		end
 
 	extend_last (other: DS_LINEAR [G])
@@ -75,9 +84,22 @@ feature -- Element change
 			-- Keep items of `other' in the same order.
 			-- Do not move cursors.
 			-- (Performance: O(other.count).)
+		local
+			c: DS_LINEAR_CURSOR [G]
+			j: INTEGER
 		do
+			j := count + 1
 			Precursor (other)
-			changed_event.publish ([])
+			from
+				c := other.new_cursor
+				c.start
+			until
+				c.off
+			loop
+				element_inserted_event.publish ([c.item, j])
+				j := j + 1
+				c.forth
+			end
 		end
 
 	force_last (v: G)
@@ -158,16 +180,26 @@ feature -- Removal
 			-- (Performance: O(count).)
 		do
 			Precursor (v)
-			changed_event.publish ([])
+			element_removed_event.publish ([v])
 		end
 
 	keep_first (n: INTEGER_32)
 			-- Keep `n' first items in list.
 			-- Move all cursors off.
 			-- (Performance: O(1).)
+		local
+			c: DS_ARRAYED_LIST_CURSOR [G]
 		do
+			from
+				create c.make (Current)
+				c.go_i_th (n+1)
+			until
+				c.off
+			loop
+				element_removed_event.publish ([c.item])
+				c.forth
+			end
 			Precursor (n)
-			changed_event.publish ([])
 		end
 
 	prune (n: INTEGER_32; i: INTEGER_32)
@@ -176,21 +208,45 @@ feature -- Removal
 			-- (Performance: O(count-i-n).)
 		local
 			call_to: BOOLEAN
+			c: DS_ARRAYED_LIST_CURSOR [G]
+			j: INTEGER
 		do
 			call_to := (i + n) /= (count + 1)
-			Precursor (n, i)
 			if not call_to then
-				changed_event.publish ([])
+				from
+					create c.make (Current)
+					c.go_i_th (i)
+					j := 0
+				until
+					j >= n
+				loop
+					element_removed_event.publish ([c.item])
+					j := j + 1
+					c.forth
+				end
 			end
+			Precursor (n, i)
 		end
 
 	prune_last (n: INTEGER_32)
 			-- Remove `n' last items from list.
 			-- Move all cursors off.
 			-- (Performance: O(1).)
+		local
+			c: DS_ARRAYED_LIST_CURSOR [G]
+			i: INTEGER
 		do
+			from
+				create c.make (Current)
+				c.go_i_th (count - n + 1)
+				i := 1
+			until
+				c.off
+			loop
+				element_removed_event.publish ([c.item])
+				c.forth
+			end
 			Precursor (n)
-			changed_event.publish ([])
 		end
 
 	remove (i: INTEGER_32)
@@ -225,9 +281,19 @@ feature -- Removal
 			-- Remove all items from list.
 			-- Move all cursors off.
 			-- (Performance: O(1).)
+		local
+			c: DS_ARRAYED_LIST_CURSOR [G]
 		do
+			from
+				create c.make (Current)
+				c.start
+			until
+				c.off
+			loop
+				element_removed_event.publish ([c.item])
+				c.forth
+			end
 			Precursor
-			changed_event.publish ([])
 		end
 
 feature -- Access
@@ -237,9 +303,6 @@ feature -- Access
 
 	element_removed_event: EM_EVENT_CHANNEL [TUPLE [G]]
 			-- Deletion event (Removed element)
-
-	changed_event: EM_EVENT_CHANNEL [TUPLE []]
-			-- Unspecified list change event
 
 feature -- Output
 
@@ -264,6 +327,5 @@ invariant
 
 	inserted_initialized: element_inserted_event /= Void
 	removed_initialized: element_removed_event /= Void
-	changed_initialized: changed_event /= Void
 
 end

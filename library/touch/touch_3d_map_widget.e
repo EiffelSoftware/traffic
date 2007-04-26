@@ -19,54 +19,20 @@ create
 
 feature -- Initialization
 
-	make is
+	make (a_width, a_height: INTEGER) is
 			-- Subscribe to events.
 		do
-			Precursor
+			Precursor (a_width, a_height)
 			--enable_lines_shown
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
-			mouse_wheel_down_event.subscribe (agent wheel_down)
-			mouse_wheel_up_event.subscribe (agent wheel_up)
+			mouse_wheel_down_event.subscribe (agent zoom_in)
+			mouse_wheel_up_event.subscribe (agent zoom_out)
 		end
 
 feature -- Zoom options
 
-	zoom_in is
-			-- Zoom in.
-		do
-			wheel_up
-		end
-
-	zoom_out is
-			-- Zoom in.
-		do
-			wheel_down
-		end
-
 feature {NONE} -- Event handling
-
-	wheel_down is
-			-- Handle mouse wheel down event.
-		local
-			camera: TE_3D_CAMERA
-			z_axis: EM_VECTOR3D
-		do
-			camera := beauty_pass.camera
-			z_axis := camera.transform.position * (1.0/10.0)
-			camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
-		end
-
-	wheel_up is
-			-- Handle mouse wheel up event.
-		local
-			camera: TE_3D_CAMERA
-			z_axis: EM_VECTOR3D
-		do
-			camera := beauty_pass.camera
-			z_axis := camera.transform.position * (1.0/10.0)
-			camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
-		end
 
 	mouse_drag (event: EM_MOUSEMOTION_EVENT) is
 			-- Handle mouse movement event.
@@ -105,7 +71,6 @@ feature {NONE} -- Event handling
 				delta_y := end_vec.y - start_vec.y
 				delta_z := end_vec.z - start_vec.z
 
-				io.put_string ((camera.target.x + delta_x).out + ", " + (camera.target.z - delta_z).out + "%N")
 
 				camera.set_target (create {EM_VECTOR3D}.make_from_tuple ([0.0, camera.target.y + delta_z, 0.0]))--camera.target.x + delta_z, camera.target.y - delta_y, camera.target.z - delta_x]))
 --				root.transform.translate (delta_x, 0, delta_z)---event.y_motion*(delta/mouse_delta), 0)				

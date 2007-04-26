@@ -11,7 +11,7 @@ inherit
 
 feature -- Element change
 
-	set_polypoints (a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]) is
+	set_polypoints (a_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
 			-- Set polypoints to `a_polypoints'.
 		require
 			a_polypoints_exist: a_polypoints /= Void
@@ -44,7 +44,7 @@ feature -- Access
 			Result := destination_impl.place
 		end
 
-	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
+	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
 			-- Position representation of the connection.
 
 	length: DOUBLE is
@@ -62,7 +62,7 @@ feature -- Access
 				until
 					i = polypoints.count
 				loop
-					Result := Result + polypoints.i_th (i).distance (polypoints.i_th (i + 1))
+					Result := Result + polypoints.item (i).distance (polypoints.item (i + 1))
 					i := i + 1
 				end
 			end

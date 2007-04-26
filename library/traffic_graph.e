@@ -18,7 +18,7 @@ inherit
 			enable_user_defined_weight_function
 		end
 
-create {TRAFFIC_MAP}
+create
 	make_multi_graph
 
 feature {NONE} -- Creation
@@ -43,7 +43,7 @@ feature -- Basic operations
 			end
 		end
 
-feature {TRAFFIC_MAP} -- Access
+feature -- Access
 
 	normal_distance: INTEGER is 0
 			-- Use normal path calculation
@@ -51,7 +51,7 @@ feature {TRAFFIC_MAP} -- Access
 	minimal_switches: INTEGER is 1
 			-- Use minimal switches path calculation
 
-feature {TRAFFIC_MAP} -- Status Setting
+feature -- Status Setting
 
 	set_shortest_path_mode (a_mode: INTEGER) is
 			-- Set path mode to `a_mode'.

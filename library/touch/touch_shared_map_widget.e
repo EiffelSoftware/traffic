@@ -14,7 +14,7 @@ feature -- Traffic map widget singleton
 		indexing
 			once_status: global
 		once
-			create Result.make
+			create Result.make (800, 600)
 		end
 
 invariant

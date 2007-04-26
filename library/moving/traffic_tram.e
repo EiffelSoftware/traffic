@@ -16,11 +16,11 @@ inherit
 		end
 
 create
-	make_default_with_line, make_with_schedule
+	make_with_line, make_with_schedule
 
 feature -- Initialization
 
-	make_default_with_line (a_line: TRAFFIC_LINE) is
+	make_with_line (a_line: TRAFFIC_LINE) is
 			-- Create a tram, set default values for capacity, number of wagons and speed.
 		require
 			a_line_not_void: a_line /= Void
@@ -29,19 +29,21 @@ feature -- Initialization
 			evening_time, sleep_time: DOUBLE
 		do
 			traffic_type := create {TRAFFIC_TYPE_TRAM}.make
+			set_reiterate (True)
 			create polypoints.make (0)
 			line := a_line
 
 			set_line_route_from_roads(line)
-
+			create poly_cursor.make (polypoints)
+			poly_cursor.start
 			--set_speed(1)
 
 			engine_capacity := Default_engine_capacity
 			wagon_limitation := Default_wagon_limitation
 			wagons := create {ARRAYED_LIST[TRAFFIC_WAGON]}.make(wagon_limitation)
 
-			set_coordinates
-			set_angle
+			update_coordinates
+			update_angle
 			speed := Default_virtual_speed
 
 			-- set lit time
@@ -59,7 +61,7 @@ feature -- Initialization
 			valid_line_type: a_line.type.name.is_equal ("tram") or a_line.type.name.is_equal ("rail") or a_line.type.name.is_equal ("bus")
 		do
 			-- Use the default creation
-			make_default_with_line(a_line)
+			make_with_line(a_line)
 
 			-- Add the schedule.
 			schedule := a_schedule

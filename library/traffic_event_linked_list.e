@@ -38,11 +38,9 @@ feature {NONE} -- Initialization
 			-- Create event channels
 			create element_inserted_event
 			create element_removed_event
-			create changed_event
 		ensure then
 			inserted_initialized: element_inserted_event /= Void
 			removed_initialized: element_removed_event /= Void
-			changed_initialized: changed_event /= Void
 		end
 
 	make_equal
@@ -53,11 +51,9 @@ feature {NONE} -- Initialization
 			-- Create event channels
 			create element_inserted_event
 			create element_removed_event
-			create changed_event
 		ensure then
 			inserted_initialized: element_inserted_event /= Void
 			removed_initialized: element_removed_event /= Void
-			changed_initialized: changed_event /= Void
 		end
 
 feature -- Element change
@@ -68,12 +64,22 @@ feature -- Element change
 			-- Do not move cursors.
 			-- (Performance: O(i+other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of extend.
+		local
+			c: DS_LINEAR_CURSOR [G]
 		do
 			if (i = 1 or i = count + 1 or other.is_empty) then
 				Precursor (other, i)
 			else
+				from
+					c := other.new_cursor
+					c.start
+				until
+					c.off
+				loop
+					element_inserted_event.publish ([c.item])
+					c.forth
+				end
 				Precursor (other, i)
-				changed_event.publish ([])
 			end
 		end
 
@@ -83,10 +89,20 @@ feature -- Element change
 			-- Do not move cursors.
 			-- (Performance: O(other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of extend_first.
+		local
+			c: DS_LINEAR_CURSOR [G]
 		do
 			if not other.is_empty then
+				from
+					c := other.new_cursor
+					c.start
+				until
+					c.off
+				loop
+					element_inserted_event.publish ([c.item])
+					c.forth
+				end
 				Precursor (other)
-				changed_event.publish ([])
 			end
 		end
 
@@ -96,10 +112,20 @@ feature -- Element change
 			-- Do not move cursors.
 			-- (Performance: O(other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of extend_last.
+		local
+			c: DS_LINEAR_CURSOR [G]
 		do
 			if not other.is_empty then
+				from
+					c := other.new_cursor
+					c.start
+				until
+					c.off
+				loop
+					element_inserted_event.publish ([c.item])
+					c.forth
+				end
 				Precursor (other)
-				changed_event.publish ([])
 			end
 		end
 
@@ -110,12 +136,22 @@ feature -- Element change
 			-- (Synonym of `a_cursor.extend_left (other)'.)
 			-- (Performance: O(other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of extend_left_cursor.
+		local
+			c: DS_LINEAR_CURSOR [G]
 		do
 			if a_cursor.after or a_cursor.is_first or other.is_empty then
 				Precursor (other, a_cursor)
 			else
+				from
+					c := other.new_cursor
+					c.start
+				until
+					c.off
+				loop
+					element_inserted_event.publish ([c.item])
+					c.forth
+				end
 				Precursor (other, a_cursor)
-				changed_event.publish ([])
 			end
 		end
 
@@ -126,10 +162,20 @@ feature -- Element change
 			-- (Synonym of `a_cursor.extend_right (other)'.)
 			-- (Performance: O(other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of extend_right_cursor.
+		local
+			c: DS_LINEAR_CURSOR [G]
 		do
 			if not other.is_empty then
+				from
+					c := other.new_cursor
+					c.start
+				until
+					c.off
+				loop
+					element_inserted_event.publish ([c.item])
+					c.forth
+				end
 				Precursor (other, a_cursor)
-				changed_event.publish ([])
 			end
 		end
 
@@ -140,12 +186,7 @@ feature -- Element change
 			-- (Performance: O(i+other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of append.
 		do
-			if i = 1 or i = count + 1 or other.is_empty then
-				Precursor (other, i)
-			else
-				Precursor (other, i)
-				changed_event.publish ([])
-			end
+			append (other, i)
 		end
 
 	extend_first (other: DS_LINEAR [G])
@@ -155,10 +196,7 @@ feature -- Element change
 			-- (Performance: O(other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of append_first.
 		do
-			if not other.is_empty then
-				Precursor (other)
-				changed_event.publish ([])
-			end
+			append_first (other)
 		end
 
 	extend_last (other: DS_LINEAR [G])
@@ -168,10 +206,7 @@ feature -- Element change
 			-- (Performance: O(other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of append_last.
 		do
-			if not other.is_empty then
-				Precursor (other)
-				changed_event.publish ([])
-			end
+			append_last (other)
 		end
 
 	extend_left_cursor (other: DS_LINEAR [G]; a_cursor: like new_cursor)
@@ -182,12 +217,7 @@ feature -- Element change
 			-- (Performance: O(other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of append_left_cursor.
 		do
-			if a_cursor.after or a_cursor.is_first or other.is_empty then
-				Precursor (other, a_cursor)
-			else
-				Precursor (other, a_cursor)
-				changed_event.publish ([])
-			end
+			append_left_cursor (other, a_cursor)
 		end
 
 	extend_right_cursor (other: DS_LINEAR [G]; a_cursor: like new_cursor)
@@ -198,10 +228,7 @@ feature -- Element change
 			-- (Performance: O(other.count).)
 			-- Was declared in DS_LINKED_LIST as synonym of append_right_cursor.
 		do
-			if not other.is_empty then
-				Precursor (other, a_cursor)
-				changed_event.publish ([])
-			end
+			append_right_cursor (other, a_cursor)
 		end
 
 	put (v: G; i: INTEGER_32)
@@ -379,7 +406,7 @@ feature -- Element change
 			-- (Performance: O(max(i,j)).)
 		do
 			Precursor (i, j)
-			changed_event.publish ([])
+			-- No event is thrown.
 		end
 
 feature -- Removal
@@ -390,21 +417,45 @@ feature -- Removal
 			-- if not void, use `=' criterion otherwise.)
 			-- Move all cursors off.
 			-- (Performance: O(count).)
+		local
+			c: DS_LINKED_LIST_CURSOR [G]
 		do
+			from
+				c := new_cursor
+				c.start
+			until
+				c.off
+			loop
+				c.search_forth (v)
+				if not c.off then
+					element_removed_event.publish ([c.item])
+					c.forth
+				end
+			end
 			Precursor (v)
-			changed_event.publish ([])
 		end
 
 	keep_first (n: INTEGER_32)
 			-- Keep `n' first items in list.
 			-- Move all cursors off.
 			-- (Performance: O(n).)
+		local
+			c: DS_LINKED_LIST_CURSOR [G]
 		do
 			if n = 0 then
 				Precursor (n)
 			else
+				from
+					c := new_cursor
+					c.go_i_th (n)
+					c.forth
+				until
+					c.off
+				loop
+					element_removed_event.publish ([c.item])
+					c.forth
+				end
 				Precursor (n)
-				changed_event.publish ([])
 			end
 		end
 
@@ -412,10 +463,23 @@ feature -- Removal
 			-- Remove `n' items at and after `i'-th position.
 			-- Move all cursors off.
 			-- (Performance: O(i+n).)
+		local
+			c: DS_LINKED_LIST_CURSOR [G]
+			j: INTEGER
 		do
 			if n /= 0 and i /= 1 then
+				from
+					c := new_cursor
+					c.go_i_th (i)
+					j := 0
+				until
+					j >= n
+				loop
+					element_removed_event.publish ([c.item])
+					j := j + 1
+					c.forth
+				end
 				Precursor (n, i)
-				changed_event.publish ([])
 			else
 				Precursor (n, i)
 			end
@@ -425,10 +489,23 @@ feature -- Removal
 			-- Remove `n' first items from list.
 			-- Move all cursors off.
 			-- (Performance: O(n).)
+		local
+			c: DS_LINKED_LIST_CURSOR [G]
+			j: INTEGER
 		do
 			if n /= 0 and count /= n then
+				from
+					c := new_cursor
+					c.start
+					j := 0
+				until
+					j >= n
+				loop
+					element_removed_event.publish ([c.item])
+					j := j + 1
+					c.forth
+				end
 				Precursor (n)
-				changed_event.publish ([])
 			else
 				Precursor (n)
 			end
@@ -439,10 +516,23 @@ feature -- Removal
 			-- Move all cursors off.
 			-- (Synonym of `a_cursor.prune_left (n)'.)
 			-- (Performance: O(2*a_cursor.index-n).)
+		local
+			c: DS_LINKED_LIST_CURSOR [G]
+			j: INTEGER
 		do
 			if n /= 0 and not a_cursor.after then
+				from
+					c := new_cursor
+					c.go_i_th (a_cursor.index-n)
+					j := 0
+				until
+					j >= n
+				loop
+					element_removed_event.publish ([c.item])
+					j := j + 1
+					c.forth
+				end
 				Precursor (n, a_cursor)
-				changed_event.publish ([])
 			else
 				Precursor (n, a_cursor)
 			end
@@ -453,10 +543,23 @@ feature -- Removal
 			-- Move all cursors off.
 			-- (Synonym of `a_cursor.prune_right (n)'.)
 			-- (Performance: O(n).)
+		local
+			c: DS_LINKED_LIST_CURSOR [G]
+			j: INTEGER
 		do
 			if n /= 0 and not a_cursor.before then
+				from
+					c := new_cursor
+					c.go_i_th (a_cursor.index + 1)
+					j := 0
+				until
+					j >= n
+				loop
+					element_removed_event.publish ([c.item])
+					j := j + 1
+					c.forth
+				end
 				Precursor (n, a_cursor)
-				changed_event.publish ([])
 			else
 				Precursor (n, a_cursor)
 			end
@@ -592,7 +695,18 @@ feature -- Removal
 			-- Remove all items from list.
 			-- Move all cursors off.
 			-- (Performance: O(1).)
+		local
+			c: DS_LINKED_LIST_CURSOR [G]
 		do
+			from
+				c := new_cursor
+				c.start
+			until
+				c.off
+			loop
+				element_removed_event.publish ([c.item])
+				c.forth
+			end
 			Precursor
 		end
 
@@ -604,8 +718,9 @@ feature -- Access
 	element_removed_event: EM_EVENT_CHANNEL [TUPLE [G]]
 			-- Deletion event (Removed element)
 
-	changed_event: EM_EVENT_CHANNEL [TUPLE []]
-			-- Unspecified list change event
+invariant
 
+	inserted_event_exists: element_inserted_event /= Void
+	removed_event_exists: element_removed_event /= Void
 
 end

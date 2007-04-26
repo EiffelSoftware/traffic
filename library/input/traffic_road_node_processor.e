@@ -70,7 +70,7 @@ feature -- Basic operations
 		Result := create {EM_VECTOR_2D}.make (0, 0)
 	end
 
-	adjust_position (road: TRAFFIC_ROAD; a_polypoints: LIST [EM_VECTOR_2D]) is
+	adjust_position (road: TRAFFIC_ROAD; a_polypoints: DS_LIST [EM_VECTOR_2D]) is
 			-- Adjust positions
 		do
 			if road.origin.position = Void or equal(road.origin.position, zero_vector) then
@@ -123,7 +123,7 @@ feature -- Basic operations
 						-- Has a point been generated?
 						position ?= data
 						if position /= Void then
-							polypoints.extend (position)
+							polypoints.force_last (position)
 						end
 					else
 						set_error (p.error_code, p.slots)
@@ -133,7 +133,7 @@ feature -- Basic operations
 			end
 		end
 
-	polypoints: ARRAYED_LIST [EM_VECTOR_2D]
+	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
 			-- Polypoints of this link
 
 

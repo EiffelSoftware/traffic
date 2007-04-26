@@ -20,10 +20,12 @@ feature -- Initialization
 			traffic_type := create {TRAFFIC_TYPE_BUS}.make
 
 			create polypoints.make (0)
+			create poly_cursor.make (polypoints)
+			poly_cursor.start
 			line := a_line
 			--TODO? commented because it won't compile set_line_route(line)
-			set_coordinates
-			set_angle
+			update_coordinates
+			update_angle
 			speed := Default_virtual_speed
 			unit_capacity := Default_capacity
 		end

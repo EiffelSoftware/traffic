@@ -24,8 +24,8 @@ feature -- Initialization
 			Precursor
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
-			mouse_wheel_down_event.subscribe (agent wheel_down)
-			mouse_wheel_up_event.subscribe (agent wheel_up)
+			mouse_wheel_down_event.subscribe (agent zoom_in)
+			mouse_wheel_up_event.subscribe (agent zoom_out)
 			key_down_event.subscribe (agent key_down (?))
 			mouse_clicked_event.subscribe (agent mouse_click)
 			create event_taxi_offices.make(0)
@@ -51,18 +51,6 @@ feature -- Access
 
 feature -- Basic operations
 
-	zoom_in is
-			-- Zoom in.
-		do
-			wheel_up
-		end
-
-	zoom_out is
-			-- Zoom in.
-		do
-			wheel_down
-		end
-
 	add_vehicles is
 			-- Add trams to lines
 		require
@@ -71,31 +59,33 @@ feature -- Basic operations
 			map.add_tram_per_line_with_schedule (map, 1)
 		end
 
-	add_dispatcher_taxi_office(number_of_taxis: INTEGER) is
-			-- Add a new taxi_office to the map. The taxi_office has 'number_of_taxis' taxis.
-			-- Set the seed on the office to time.tick.
-			-- This seed is for random generating the positions of the taxis associated with the office.
-		local
-			taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE
-		do
-			create taxi_office.make(number_of_taxis, time.time.ticks)
-			dispatcher_taxi_offices.extend(taxi_office)
-			map.add_taxi_office (taxi_office)
-			add_taxis(taxi_office.taxi_list)
-		end
+--	add_dispatcher_taxi_office(number_of_taxis: INTEGER) is
+--			-- Add a new taxi_office to the map. The taxi_office has 'number_of_taxis' taxis.
+--			-- Set the seed on the office to time.tick.
+--			-- This seed is for random generating the positions of the taxis associated with the office.
+--		local
+--			taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE
+--		do
+--			create taxi_office
+--			taxi_office.add_taxis (number_of_taxis)
+--			dispatcher_taxi_offices.extend(taxi_office)
+--			map.add_taxi_office (taxi_office)
+----			add_taxis(taxi_office.taxi_list)
+--		end
 
-	add_event_taxi_office(number_of_taxis: INTEGER) is
-			-- Add an event_taxi_office to the map.
-		local
-			taxi_office: TRAFFIC_EVENT_TAXI_OFFICE
-		do
-			-- set seed for random generating the positions of the taxis
-			-- associated with the office to time.tick
-			create taxi_office.make(number_of_taxis, time.time.ticks)
-			event_taxi_offices.extend(taxi_office)
-			map.add_taxi_office (taxi_office)
-			add_taxis(taxi_office.taxi_list)
-		end
+--	add_event_taxi_office(number_of_taxis: INTEGER) is
+--			-- Add an event_taxi_office to the map.
+--		local
+--			taxi_office: TRAFFIC_EVENT_TAXI_OFFICE
+--		do
+--			-- set seed for random generating the positions of the taxis
+--			-- associated with the office to time.tick
+--			create taxi_office
+--			taxi_office.add_taxis(number_of_taxis)
+--			event_taxi_offices.extend(taxi_office)
+--			map.add_taxi_office (taxi_office)
+----			add_taxis(taxi_office.taxi_list)
+--		end
 
 	add_taxis (taxis: ARRAYED_LIST[TRAFFIC_MOVING]) is
 			-- Add taxis to the map.
@@ -130,28 +120,6 @@ feature -- Drawing
 
 
 feature {NONE} -- Event handling
-
-	wheel_down is
-			-- Handle mouse wheel down event.
-		local
-			camera: TE_3D_CAMERA
-			z_axis: EM_VECTOR3D
-		do
-			camera := beauty_pass.camera
-			z_axis := camera.transform.position * (1.0/10.0)
-			camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
-		end
-
-	wheel_up is
-			-- Handle mouse wheel up event.
-		local
-			camera: TE_3D_CAMERA
-			z_axis: EM_VECTOR3D
-		do
-			camera := beauty_pass.camera
-			z_axis := camera.transform.position * (1.0/10.0)
-			camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
-		end
 
 	mouse_click (event: EM_MOUSEBUTTON_EVENT) is
 			-- Handle mouse clicked event.

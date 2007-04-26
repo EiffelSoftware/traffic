@@ -24,27 +24,17 @@ inherit
 		end
 
 create
-	make_day, make
+	make_with_speedup
 
 feature -- Initialization
 
-	make is
-			-- Set minutes for a simulated day to the default values.
-		do
-			make_day (default_simulated_day_minutes)
-		ensure
-			simulated_minutes_set: simulated_minutes = default_simulated_day_minutes
-		end
-
-
-	make_day (simulated_day_minutes: INTEGER) is
-			-- Initialize the simulated day to last for 'simulated_day_minutes'.
+	make_with_speedup (a_speedup: INTEGER) is
+			-- Set `speedup' to `a_speedup'.
 		require
-			simulated_day_minutes >= 1
+			a_speedup_valid: a_speedup >= 1
 		do
 			create actual_time.make (0, 0, 0)
-			simulated_minutes := simulated_day_minutes
-			change_simulated_time (simulated_minutes)
+			speedup := a_speedup
 			create all_procedures.make
 			create all_tours.make
 
@@ -53,20 +43,19 @@ feature -- Initialization
 			update_agent := agent update_time
 
 		ensure
-			simulated_minutes = simulated_day_minutes
+			speedup_set: speedup = a_speedup
 		end
 
 feature  -- Access
 
-	simulated_minutes: INTEGER
-		-- Minutes in realtime
-
 	actual_time: TIME
+		-- Simulated time
 
 	actual_day: INTEGER
-		-- Actual day
+		-- Simulated days since time counting started
 
-
+	speedup: INTEGER
+		-- Speedup to let the time run faster than the original time
 
 feature -- Status report
 
@@ -75,7 +64,23 @@ feature -- Status report
 
 feature -- Basic operations
 
-	start_time is
+	set_speedup (a_speedup: INTEGER) is
+			-- Set `speedup' to `a_speedup'.
+		require
+			a_speedup_valid: a_speedup >= 1
+		do
+			if is_time_running then
+				pause
+				speedup := a_speedup
+				resume
+			else
+				speedup := a_speedup
+			end
+		ensure
+			speedup_set: speedup = a_speedup
+		end
+
+	start is
 			-- Start to count the time at (0:0:0).
 		require
 			not is_time_running
@@ -83,24 +88,24 @@ feature -- Basic operations
 			is_time_running := True
 			running_scene.event_loop.update_event.subscribe (update_agent)
 			real_ms_start := time.ticks
-			sim_sec_start := 0
+			simulated_ms_start := 0
 		ensure
 			is_time_running
 		end
 
-	pause_time is
+	pause is
 			-- Pause the time count.
 		require
 			is_time_running
 		do
 			is_time_running := False
 			running_scene.event_loop.update_event.unsubscribe (update_agent)
-			sim_sec_start := (1440/simulated_minutes*(time.ticks - real_ms_start)/1000.0 + sim_sec_start).floor
+			simulated_ms_start := actual_time.seconds*1000
 		ensure
 			not is_time_running
 		end
 
-	resume_time is
+	resume is
 			-- Resume the paused time.
 		require
 			not is_time_running
@@ -112,7 +117,7 @@ feature -- Basic operations
 			is_time_running
 		end
 
-	reset_time is
+	reset is
 			-- Reset the time to (0:0:0).
 		do
 			actual_time.set_hour (0)
@@ -120,7 +125,7 @@ feature -- Basic operations
 			actual_time.set_second (0)
 			is_time_running := False
 			real_ms_start := 0
-			sim_sec_start := 0
+			simulated_ms_start := 0
 			running_scene.event_loop.update_event.unsubscribe (update_agent)
 		ensure
 			is_time_running = False
@@ -129,7 +134,7 @@ feature -- Basic operations
 			actual_time.second = 0
 		end
 
-	set_time (a_hour, a_minute, a_second: INTEGER) is
+	set (a_hour, a_minute, a_second: INTEGER) is
 			-- Sets the time to (`a_hour':`a_minute':`a_second').
 		require
 			valid_time: a_hour >=0 and a_minute >=0 and a_second >=0
@@ -137,27 +142,10 @@ feature -- Basic operations
 			actual_time.set_hour (a_hour)
 			actual_time.set_minute (a_minute)
 			actual_time.set_second (a_second)
-			sim_sec_start := actual_time.hour*3600 + actual_time.minute*60 + actual_time.second
-		end
-
-	change_simulated_time (simulated_day_minutes: INTEGER) is
-			-- the day lasts for 'simulated_day_minutes'.
-		require
-			simulated_day_minutes >= 1
-		do
-			simulated_minutes := simulated_day_minutes
-			if is_time_running then
-				pause_time
-				resume_time
-			end
-		ensure
-			simulated_minutes = simulated_day_minutes
+			simulated_ms_start := actual_time.seconds*1000
 		end
 
 feature -- Constants
-
-	Default_simulated_day_minutes: INTEGER is 1440
-		-- Default number of minutes that a day lasts
 
 	Default_scale_factor: DOUBLE is 5.52
 
@@ -166,7 +154,7 @@ feature -- Output
 	out: STRING is
 			--
 		do
-			Result := actual_time.hour.out + ":" + actual_time.minute.out + ":" + actual_time.second.out + ":" + actual_time.milli_second.out
+			Result := actual_time.hour.out + ":" + actual_time.minute.out + ":" + actual_time.second.out
 		end
 
 
@@ -181,8 +169,11 @@ feature{NONE} -- Implementation
 	real_ms_start: INTEGER
 		-- Value of `ticks' in EM_TIME when our time counting started
 
-	sim_sec_start: INTEGER
+--	sim_sec_start: INTEGER
 		-- Value of simulated seconds that the `real_ms_start' denotes (used for pausing)
+
+	simulated_ms_start: INTEGER
+		-- Start counting with this value
 
 	update_agent: PROCEDURE [ANY, TUPLE]
 		-- Agent used for updating current simulated time
@@ -194,19 +185,21 @@ feature{NONE} -- Implementation
 			actual_time.minute >= 0
 			actual_time.hour >= 0
 		local
-			real_mili_secs: INTEGER
-			sim_ms_secs: DOUBLE
+			real_ms: INTEGER
+			sim_ms: INTEGER
 			old_hour: INTEGER
 		do
 			if is_time_running then
-				real_mili_secs := time.ticks - real_ms_start
-				sim_ms_secs := 1440/simulated_minutes*real_mili_secs/1000 + sim_sec_start
-				actual_time.make_by_fine_seconds (sim_ms_secs)
---				actual_time.set_minute ((sim_secs/60).floor\\60)
-				old_hour := actual_time.hour
---				actual_time.set_hour ((sim_secs/3600).floor\\24)
-				if actual_time.hour < old_hour then
+				real_ms := time.ticks - real_ms_start
+				sim_ms := speedup*real_ms + simulated_ms_start
+				if sim_ms//1000 >= actual_time.seconds_in_day then
+					real_ms_start := time.ticks
+					sim_ms := (sim_ms//1000)\\actual_time.seconds_in_day
+					simulated_ms_start := sim_ms
 					actual_day := actual_day + 1
+					actual_time.make_by_seconds (sim_ms)
+				else
+					actual_time.make_by_seconds (sim_ms//1000)
 				end
 				call_tours
 				call_procedure
@@ -256,7 +249,7 @@ feature -- Procedures
 invariant
 	actual_time.hour >= 0
 	actual_time.minute >= 0
-	simulated_minutes >= 1
+--	simulated_minutes >= 1
 
 
 end

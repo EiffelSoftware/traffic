@@ -10,9 +10,9 @@ feature -- Access
 	time: TRAFFIC_TIME is
 			-- Time singleton that simulates a day
 		once
-			create Result.make
-		ensure	
+			create Result.make_with_speedup (2)
+		ensure
 			Result_exists: Result /= Void
 		end
-	
+
 end

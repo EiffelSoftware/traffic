@@ -200,7 +200,7 @@ feature -- Insertion
 			origin, destination: TRAFFIC_PLACE
 			origin_stop, destination_stop: TRAFFIC_STOP
 			other_line_section: TRAFFIC_LINE_SECTION
-			pp, polypoints:  ARRAYED_LIST [EM_VECTOR_2D]
+			pp, polypoints:  DS_ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			start_stop := Void
 
@@ -219,7 +219,7 @@ feature -- Insertion
 				until
 					polypoints.before
 				loop
-					pp.extend (polypoints.item.twin)
+					pp.force_last (polypoints.item_for_iteration.twin)
 					polypoints.back
 				end
 				create other_line_section.make (destination_stop, origin_stop, a_line_section.type, pp)
@@ -275,7 +275,7 @@ feature -- Insertion
 			line_section: TRAFFIC_LINE_SECTION
 			origin: TRAFFIC_STOP
 			a_stop: TRAFFIC_STOP
-			pp: ARRAYED_LIST [EM_VECTOR_2D]
+			pp: DS_ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			create a_stop.make_stop (a_place, Current, a_place.position)
 			if stops_one_direction.count = 0 and then start_stop = Void then
@@ -289,8 +289,8 @@ feature -- Insertion
 					origin := stops_one_direction.last
 				end
 				create pp.make (2)
-				pp.extend (origin.place.position)
-				pp.extend (a_place.position)
+				pp.force_last (origin.place.position)
+				pp.force_last (a_place.position)
 				map.add_stop (a_stop)
 				create line_section.make (origin, a_stop, type, pp)
 				extend (line_section)

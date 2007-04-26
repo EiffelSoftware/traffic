@@ -168,7 +168,7 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 		local
 			current_member: TE_3D_MEMBER
 		do
-			if a_node.hierarchy_renderable then
+			if a_node.is_hierarchy_renderable then
 				from
 					a_node.children.start
 				until
@@ -195,7 +195,7 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 		local
 			current_member: TE_3D_MEMBER
 		do
-			if a_node.hierarchy_renderable then
+			if a_node.is_hierarchy_renderable then
 				from
 					a_node.children.start
 				until
@@ -221,7 +221,7 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 		local
 			current_member: TE_3D_MEMBER
 		do
-			if a_node.hierarchy_renderable then
+			if a_node.is_hierarchy_renderable then
 				from
 					a_node.children.start
 				until

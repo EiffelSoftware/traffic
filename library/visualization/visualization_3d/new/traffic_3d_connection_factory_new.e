@@ -268,17 +268,20 @@ feature -- Basic operations
 			until
 				i > connection.polypoints.count - 1
 			loop
-				current_polypoint_2d := map_to_gl_coords(connection.polypoints.i_th(i))
+--				current_polypoint_2d := map_to_gl_coords(connection.polypoints.i_th(i))
+				current_polypoint_2d := connection.polypoints.item(i)
 				current_polypoint_3d.set (current_polypoint_2d.x, 0.0, current_polypoint_2d.y)
 				polyline_3d.extend (current_polypoint_3d)
 
 
 				-- Collision polygon TAKEN FROM OLD CONNECTION FACTORY
-					create start_point.make (connection.polypoints.i_th (i).x, connection.polypoints.i_th (i).y)
-					create end_point.make (connection.polypoints.i_th (i+1).x, connection.polypoints.i_th (i+1).y)
+					create start_point.make (connection.polypoints.item (i).x, connection.polypoints.item (i).y)
+					create end_point.make (connection.polypoints.item (i+1).x, connection.polypoints.item (i+1).y)
 
-					start_point := map_to_gl_coords (start_point)
-					end_point := map_to_gl_coords (end_point)
+--					start_point := map_to_gl_coords (start_point)
+--					end_point := map_to_gl_coords (end_point)
+					start_point := start_point
+					end_point := end_point
 
 					delta_x := end_point.x - start_point.x
 					delta_y := end_point.y - start_point.y
@@ -305,7 +308,8 @@ feature -- Basic operations
 			end
 			--add last point to the 3d_polyline
 			i := connection.polypoints.count
-			current_polypoint_2d := map_to_gl_coords(connection.polypoints.i_th(i))
+			current_polypoint_2d := connection.polypoints.item (i)
+--			current_polypoint_2d := map_to_gl_coords(connection.polypoints.i_th(i))
 			current_polypoint_3d.set (current_polypoint_2d.x, 0.0, current_polypoint_2d.y)
 			polyline_3d.extend (current_polypoint_3d)
 
@@ -320,8 +324,18 @@ feature {NONE} -- Implementation
 
 	angle_between_vectors(vector_a, vector_b: EM_VECTOR3D): DOUBLE is
 			-- angle between two 3d vectors
+		local
+			d,l,a: DOUBLE
 		do
-			Result := arc_cosine((vector_a.dot_product(vector_b))/(vector_a.length * vector_b.length))
+			l := (vector_a.length * vector_b.length)
+			d := (vector_a.dot_product(vector_b))
+			a := d/l
+			if a < -1.0 then
+				a := -1.0
+			elseif a > 1.0 then
+				a := 1.0
+			end
+			Result := arc_cosine(a)
 		end
 
 

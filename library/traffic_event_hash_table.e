@@ -36,11 +36,9 @@ feature {NONE} -- Intialization
 			-- Create event channels
 			create element_inserted_event
 			create element_removed_event
-			create changed_event
 		ensure then
 			inserted_initialized: element_inserted_event /= Void
 			removed_initialized: element_removed_event /= Void
-			changed_initialized: changed_event /= Void
 		end
 
 	make_with_equality_testers (n: INTEGER_32; an_item_tester: like equality_tester; a_key_tester: like key_equality_tester)
@@ -54,11 +52,9 @@ feature {NONE} -- Intialization
 			-- Create event channels
 			create element_inserted_event
 			create element_removed_event
-			create changed_event
 		ensure then
 			inserted_initialized: element_inserted_event /= Void
 			removed_initialized: element_removed_event /= Void
-			changed_initialized: changed_event /= Void
 		end
 
 feature -- Removal
@@ -67,9 +63,19 @@ feature -- Removal
 			-- Remove all items from container.
 			-- Move all cursors off.
 			-- (from DS_SPARSE_CONTAINER)
+		local
+			c: DS_HASH_TABLE_CURSOR [G, K]
 		do
+			from
+				create c.make (Current)
+				c.start
+			until
+				c.off
+			loop
+				element_removed_event.publish ([c.item])
+				c.forth
+			end
 			Precursor
-			changed_event.publish ([])
 		end
 
 feature {DS_ARRAYED_SPARSE_TABLE_CURSOR} -- Implementation
@@ -98,9 +104,6 @@ feature -- Access
 	element_removed_event: EM_EVENT_CHANNEL [TUPLE [G]]
 			-- Deletion event (Removed element)
 
-	changed_event: EM_EVENT_CHANNEL [TUPLE []]
-			-- Unspecified list change event
-
 feature -- Output
 
 	out: STRING is
@@ -124,6 +127,5 @@ invariant
 
 	inserted_initialized: element_inserted_event /= Void
 	removed_initialized: element_removed_event /= Void
-	changed_initialized: changed_event /= Void
 
 end

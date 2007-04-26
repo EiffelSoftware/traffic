@@ -136,7 +136,7 @@ feature -- Traffic place building
 
 feature -- Line section building
 
-	build_line_section (a_origin, a_destination:STRING; a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]; a_map: TRAFFIC_MAP; a_line: TRAFFIC_LINE) is
+	build_line_section (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]; a_map: TRAFFIC_MAP; a_line: TRAFFIC_LINE) is
 			-- Generate new traffic line section object going from origin `a_origin' to place named `a_destination'
 			-- belonging to line `a_line' in map `a_map'.
 			-- (Access the generated object through feature `line_section')
@@ -147,12 +147,12 @@ feature -- Line section building
 --			a_polypoints_exists: a_polypoints /= Void
 			a_line_exists: a_line /= Void
 		local
-			pps: ARRAYED_LIST [EM_VECTOR_2D]
+			pps: DS_ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			if a_polypoints = Void or else a_polypoints.count < 2 then
 				create pps.make (2)
-				pps.extend (a_map.places.item (a_origin).position)
-				pps.extend (a_map.places.item (a_destination).position)
+				pps.force_last (a_map.places.item (a_origin).position)
+				pps.force_last (a_map.places.item (a_destination).position)
 			else
 				pps := a_polypoints
 			end
@@ -333,7 +333,7 @@ feature {NONE} -- Implementation
 --	dummy_line: TRAFFIC_LINE
 			-- Line used for dummy stops.
 
-	create_line_section (a_origin, a_destination: STRING; a_polypoints: ARRAYED_LIST [EM_VECTOR_2D]; a_line: TRAFFIC_LINE; a_map: TRAFFIC_MAP): TRAFFIC_LINE_SECTION is
+	create_line_section (a_origin, a_destination: STRING; a_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]; a_line: TRAFFIC_LINE; a_map: TRAFFIC_MAP): TRAFFIC_LINE_SECTION is
 			-- Create line section with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_line'.
 		require
 			a_origin_exists: a_origin /= Void

@@ -22,7 +22,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_LINE; a_list: ARRAYED_LIST [EM_VECTOR_2D] ) is
+	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_LINE; a_list: DS_ARRAYED_LIST [EM_VECTOR_2D] ) is
 			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -51,7 +51,7 @@ feature {NONE} -- Initialization
 			roads_created: roads/=Void
 		end
 
-	make_non_insertable (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE_LINE; a_list: ARRAYED_LIST [EM_VECTOR_2D]) is
+	make_non_insertable (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE_LINE; a_list: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
 			-- Make a temporary line_section which shouldn't be inserted into a `TRAFFIC_MAP'.
 		require
 			a_origin_exists: a_origin /= Void

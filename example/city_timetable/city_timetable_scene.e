@@ -7,9 +7,10 @@ class CITY_TIMETABLE_SCENE
 
 inherit
 
-	EM_COMPONENT_SCENE
+	TRAFFIC_3D_SCENE
 		redefine
-			redraw
+--			redraw,
+			make
 		end
 
 	TRAFFIC_3D_CONSTANTS
@@ -17,11 +18,6 @@ inherit
 
 	EXCEPTIONS
 		export {NONE} all end
-
-	TRAFFIC_SHARED_TIME
-		rename
-			time as traffic_time
-		end
 
 	TE_3D_SHARED_GLOBALS
 
@@ -36,170 +32,133 @@ feature -- Interface
 			loader: TRAFFIC_MAP_LOADER
 			s: STRING
 			fs: KL_FILE_SYSTEM
+			et: TRAFFIC_EVENT_TAXI_OFFICE
+			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
 		do
 			make_component_scene
 
-			set_frame_counter_visibility (True)
+			create random.set_seed (198273)
 
-			create bg_color.make_with_rgb (211,211,211)
-			-- Toolbar
-			create toolbar_panel.make_from_dimension (200, traffic_window_height)
+			set_frame_counter_visibility (False)
+
+			Precursor
+
+			map_widget.place_clicked_event.subscribe (agent call_taxi)
 
 			-- Checkboxes
-			create sun_checkbox.make_from_text ("Show sun")
-			create shadow_checkbox.make_from_text ("Enable shadows")
-			create buildings_checkbox.make_from_text ("Show buildings")
-			create vehicles_checkbox.make_from_text ("Show vehicles")
-			create time_checkbox.make_from_text ("Simulate time")
+--			create buildings_checkbox.make_from_text ("Show buildings")
+--			create vehicles_checkbox.make_from_text ("Show vehicles")
+--			create time_checkbox.make_from_text ("Simulate time")
 
-			-- 'Zoom in' and 'Zoom out' buttons
-			create zoom_in_button.make_from_text ("Zoom in")
-			create zoom_out_button.make_from_text ("Zoom out")
-
-			-- Labels, Buttons, Lists
-			create load_buildings_button.make_from_text("Load buildings")
-			create time_label.make_from_text("00:00")
-			create delete_buildings_button.make_from_text("Delete buildings")
-			create station_label.make_from_text("Select station")
-			create station_schedule_textlist.make_empty
-			create station_lines_combobox.make_empty
+--			-- Labels, Buttons, Lists
+--			create load_buildings_button.make_from_text("Load buildings")
+--			create time_label.make_from_text("00:00")
+--			create delete_buildings_button.make_from_text("Delete buildings")
+--			create station_label.make_from_text("Select station")
+--			create station_schedule_textlist.make_empty
+--			create station_lines_combobox.make_empty
 
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
-			if video_subsystem.opengl_enabled then
-				create map.make
-				map.set_position (0, 0)
-				add_component (map)
-				map.mouse_clicked_event.subscribe (agent handle_mouse_click (?))
-			else
-				io.put_string ("OpenGL disabled: Map not loaded%N")
-			end
+--			if video_subsystem.opengl_enabled then
+--				map_widget.mouse_clicked_event.subscribe (agent handle_mouse_click (?))
+--			else
+--				io.put_string ("OpenGL disabled: Map not loaded%N")
+--			end
 
 			-- Toolbar Panel
-			toolbar_panel.set_background_color (bg_color)
-			toolbar_panel.set_position (city_timetable_window_width-200, 0)
-			add_component (toolbar_panel)
 
 			-- Taxi office type combobox
-			create taxi_office_type_combobox.make_empty
-			taxi_office_type_combobox.put ("Event Taxi Office")
-			taxi_office_type_combobox.put ("Dispatcher Taxi Office")
-			taxi_office_type_combobox.set_selected_element ("Event Taxi Office")
-			taxi_office_type_combobox.set_position (15, 10)
-			taxi_office_type_combobox.set_dimension (160,20)
-			taxi_office_type_combobox.selection_changed_event.subscribe (agent taxi_office_type_changed(?))
-			toolbar_panel.add_widget (taxi_office_type_combobox)
+--			create taxi_office_type_combobox.make_empty
+--			taxi_office_type_combobox.put ("Event Taxi Office")
+--			taxi_office_type_combobox.put ("Dispatcher Taxi Office")
+--			taxi_office_type_combobox.set_selected_element ("Event Taxi Office")
+--			taxi_office_type_combobox.set_position (15, 10)
+--			taxi_office_type_combobox.set_dimension (160,20)
+--			taxi_office_type_combobox.selection_changed_event.subscribe (agent taxi_office_type_changed(?))
+--			toolbar_panel.add_widget (taxi_office_type_combobox)
 
 			-- Building buttons
-			load_buildings_button.set_position(20,(traffic_window_height * 0.68).rounded)
-			load_buildings_button.set_dimension (160, load_buildings_button.height)
-			load_buildings_button.clicked_event.subscribe (agent load_buildings_clicked)
-			toolbar_panel.add_widget (load_buildings_button)
-			delete_buildings_button.set_position (20, (traffic_window_height * 0.73).rounded)
-			delete_buildings_button.set_dimension (160, delete_buildings_button.height)
-			delete_buildings_button.clicked_event.subscribe (agent delete_buildings_clicked)
-			toolbar_panel.add_widget (delete_buildings_button)
+--			load_buildings_button.set_position(20,(traffic_window_height * 0.68).rounded)
+--			load_buildings_button.set_dimension (160, load_buildings_button.height)
+--			load_buildings_button.clicked_event.subscribe (agent load_buildings_clicked)
+----			toolbar_panel.add_widget (load_buildings_button)
+--			delete_buildings_button.set_position (20, (traffic_window_height * 0.73).rounded)
+--			delete_buildings_button.set_dimension (160, delete_buildings_button.height)
+--			delete_buildings_button.clicked_event.subscribe (agent delete_buildings_clicked)
+----			toolbar_panel.add_widget (delete_buildings_button)
 
 			-- Sun Checkbox
-			sun_checkbox.set_position (17, (traffic_window_height * 0.83).rounded)
-			sun_checkbox.set_background_color (bg_color)
-			sun_checkbox.set_optimal_dimension (110, 20)
-			sun_checkbox.resize_to_optimal_dimension
-			sun_checkbox.set_background_color (bg_color)
-			sun_checkbox.set_checked
-			sun_checkbox.checked_event.subscribe (agent sun_checked)
-			sun_checkbox.unchecked_event.subscribe (agent sun_unchecked)
-			toolbar_panel.add_widget (sun_checkbox)
+--			toolbar_panel.add_widget (sun_checkbox)
 
 			-- Shadow Checkbox
-			shadow_checkbox.set_position (17, 395)
-			shadow_checkbox.set_background_color (bg_color)
-			shadow_checkbox.set_optimal_dimension (110, 20)
-			shadow_checkbox.resize_to_optimal_dimension
-			shadow_checkbox.set_background_color (bg_color)
-			shadow_checkbox.set_unchecked
-			shadow_checkbox.checked_event.subscribe (agent shadow_checked)
-			shadow_checkbox.unchecked_event.subscribe (agent shadow_unchecked)
-			toolbar_panel.add_widget (shadow_checkbox)
 
 			-- Buildings Checkbox
-			buildings_checkbox.set_position (17, (traffic_window_height * 0.87).rounded)
-			buildings_checkbox.set_background_color (bg_color)
-			buildings_checkbox.set_optimal_dimension (110, 20)
-			buildings_checkbox.resize_to_optimal_dimension
-			buildings_checkbox.set_background_color (bg_color)
-			buildings_checkbox.set_checked
-			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
-			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
-			toolbar_panel.add_widget (buildings_checkbox)
+--			buildings_checkbox.set_position (17, (traffic_window_height * 0.87).rounded)
+--			buildings_checkbox.set_optimal_dimension (110, 20)
+--			buildings_checkbox.resize_to_optimal_dimension
+--			buildings_checkbox.set_checked
+--			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
+--			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
+----			toolbar_panel.add_widget (buildings_checkbox)
 
-			-- Lines checkbox
-			create lines_checkbox.make_from_text ("Show VBZ Lines")
-			lines_checkbox.set_position (20,375)
-			lines_checkbox.set_optimal_dimension (120, 20)
-			lines_checkbox.resize_to_optimal_dimension
-			lines_checkbox.checked_event.subscribe (agent lines_checked)
-			lines_checkbox.unchecked_event.subscribe (agent lines_unchecked)
-			toolbar_panel.add_widget (lines_checkbox)
 
-			-- Time Checkbox
-			time_checkbox.set_position (17, (traffic_window_height * 0.91).rounded)
-			time_checkbox.set_background_color (bg_color)
-			time_checkbox.set_optimal_dimension (110, 20)
-			time_checkbox.resize_to_optimal_dimension
-			time_checkbox.set_background_color (bg_color)
-			time_checkbox.checked_event.subscribe (agent time_checked)
-			time_checkbox.unchecked_event.subscribe (agent time_unchecked)
-			toolbar_panel.add_widget (time_checkbox)
+--			-- Time Checkbox
+--			time_checkbox.set_position (17, (traffic_window_height * 0.91).rounded)
+--			time_checkbox.set_optimal_dimension (110, 20)
+--			time_checkbox.resize_to_optimal_dimension
+--			time_checkbox.checked_event.subscribe (agent time_checked)
+--			time_checkbox.unchecked_event.subscribe (agent time_unchecked)
+----			toolbar_panel.add_widget (time_checkbox)
 
-			-- Time slider
-			create time_slider.make_from_range_horizontal (1, 60)
-			time_slider.set_position (40, (traffic_window_height * 0.95).rounded)
-			time_slider.set_optimal_dimension (120, 20)
-			time_slider.resize_to_optimal_dimension
-			time_slider.set_tooltip ("Day simulation minutes")
-			time_slider.position_changed_event.subscribe (agent number_of_minutes_changed)
-			toolbar_panel.add_widget (time_slider)
+--			-- Time slider
+--			create time_slider.make_from_range_horizontal (1, 60)
+--			time_slider.set_position (40, (traffic_window_height * 0.95).rounded)
+--			time_slider.set_optimal_dimension (120, 20)
+--			time_slider.resize_to_optimal_dimension
+--			time_slider.set_tooltip ("Day simulation minutes")
+--			time_slider.position_changed_event.subscribe (agent number_of_minutes_changed)
+----			toolbar_panel.add_widget (time_slider)
 
 			-- Zoom out Button
-			zoom_out_button.set_position (180-zoom_out_button.width, (traffic_window_height * 0.78).rounded)
-			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
-			zoom_out_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
-			toolbar_panel.add_widget (zoom_out_button)
+--			zoom_out_button.set_position (180-zoom_out_button.width, (traffic_window_height * 0.78).rounded)
+--			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
+--			zoom_out_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+--			toolbar_panel.add_widget (zoom_out_button)
 
 			-- Zoom in Button
-			zoom_in_button.set_position (20, (traffic_window_height * 0.78).rounded)
-			zoom_in_button.set_dimension (zoom_out_button.width, zoom_out_button.height)
-			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
-			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
-			toolbar_panel.add_widget (zoom_in_button)
+--			zoom_in_button.set_position (20, (traffic_window_height * 0.78).rounded)
+--			zoom_in_button.set_dimension (zoom_out_button.width, zoom_out_button.height)
+--			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
+--			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
+--			toolbar_panel.add_widget (zoom_in_button)
 
 			-- Time label
-			time_label.set_position(15, 35)
-			time_label.set_optimal_dimension(160,40)
-			time_label.resize_to_optimal_dimension
-			time_label.align_center
-			toolbar_panel.add_widget (time_label)
+--			time_label.set_position(15, 35)
+--			time_label.set_optimal_dimension(160,40)
+--			time_label.resize_to_optimal_dimension
+--			time_label.align_center
+----			toolbar_panel.add_widget (time_label)
 
-			-- Station label
-			station_label.set_position(0, 60)
-			station_label.set_optimal_dimension(200, 40)
-			station_label.resize_to_optimal_dimension
-			station_label.align_center
-			toolbar_panel.add_widget (station_label)
+--			-- Station label
+--			station_label.set_position(0, 60)
+--			station_label.set_optimal_dimension(200, 40)
+--			station_label.resize_to_optimal_dimension
+--			station_label.align_center
+----			toolbar_panel.add_widget (station_label)
 
-			-- Station lines combobox
-			station_lines_combobox.set_position(15, 80)
-			station_lines_combobox.set_dimension (160,20)
-			station_lines_combobox.selection_changed_event.subscribe (agent station_lines_selection_changed)
-			toolbar_panel.add_widget (station_lines_combobox)
+--			-- Station lines combobox
+--			station_lines_combobox.set_position(15, 80)
+--			station_lines_combobox.set_dimension (160,20)
+--			station_lines_combobox.selection_changed_event.subscribe (agent station_lines_selection_changed)
+----			toolbar_panel.add_widget (station_lines_combobox)
 
 			-- Station schedue scrollpanel			
-			create station_schedule_scrollpanel.make_from_dimension (160, 230)
-			station_schedule_scrollpanel.set_position (15, 120)
-			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
-			toolbar_panel.add_widget (station_schedule_scrollpanel)
-
+--			create station_schedule_scrollpanel.make_from_dimension (160, 230)
+--			station_schedule_scrollpanel.set_position (15, 120)
+--			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
+----			toolbar_panel.add_widget (station_schedule_scrollpanel)
+			build_tool_bar
 
 			-- adding zurich_big.xml as default using platform independent paths
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
@@ -209,321 +168,411 @@ feature -- Interface
 			create loader.make (s)
 			loader.enable_dump_loading
 			loader.load_map
-			map.set_map (loader.map)
-			map.add_vehicles
+			map_widget.set_map (loader.map)
 			loaded_file_name := s
+
 			if not loader.has_error then
-				map.add_event_taxi_office(5)
-				map.add_dispatcher_taxi_office(5)
---				travelers_representation.add_tram_per_line (map, 2)
+				create et.make_with_color (255, 0, 0)
+				loader.map.taxi_offices.force_last (et)
+				et.add_taxis (5)
+				create dt.make_with_color (0, 255, 0)
+				loader.map.taxi_offices.force_last (dt)
+				dt.add_taxis (5)
+				time.set (11, 0, 0)
+				create taxi_combobox.make_empty
+				taxi_combobox.set_to_string_agent (agent taxi_office_output)
+				taxi_combobox.put (et)
+				taxi_combobox.put (dt)
+				taxi_combobox.set_selected_element (et)
+				taxi_combobox.set_position (10, 120)
+				taxi_combobox.set_dimension (160,20)
+				toolbar_panel.add_widget (taxi_combobox)
 			end
+		end
+
+	build_tool_bar is
+			--
+		local
+			label: EM_LABEL
+			checkbox: EM_CHECKBOX
+			button: EM_BUTTON
+			slider: EM_SLIDER
+			combobox: EM_COMBOBOX [TRAFFIC_TAXI_OFFICE]
+		do
+			create toolbar_panel.make_from_dimension (200, height)
+			toolbar_panel.set_position (width-200, 0)
+			add_component (toolbar_panel)
+			map_widget.set_width (width-200)
+
+			-- Trams
+			create label.make_from_text ("0 Trams/Line")
+			label.set_position (50, 10)
+			toolbar_panel.add_widget (label)
+			create slider.make_from_range_horizontal (0, 5)
+			slider.set_width (40)
+			slider.set_position (155, 10)
+			slider.position_changed_event.subscribe (agent update_tram_count (?, label))
+			toolbar_panel.add_widget (slider)
+			create button.make_from_text ("Add")
+			button.clicked_event.subscribe (agent add_trams (slider))
+			button.set_position (10, 10)
+			toolbar_panel.add_widget (button)
+
+			-- Sun
+			create checkbox.make_from_text ("Show sun")
+			checkbox.set_position (10, 30)
+			checkbox.set_checked
+			checkbox.checked_event.subscribe (agent map_widget.enable_sun_shown)
+			checkbox.unchecked_event.subscribe (agent map_widget.disable_sun_shown)
+			toolbar_panel.add_widget (checkbox)
+
+			-- Shadows
+			create checkbox.make_from_text ("Enable shadows")
+			checkbox.set_position (10, 50)
+			checkbox.set_unchecked
+			checkbox.checked_event.subscribe (agent map_widget.enable_shadows)
+			checkbox.unchecked_event.subscribe (agent map_widget.disable_shadows)
+			toolbar_panel.add_widget (checkbox)
+
+			-- Lines
+			create checkbox.make_from_text ("Show VBZ Lines")
+			checkbox.set_position (10,70)
+			checkbox.checked_event.subscribe (agent map_widget.enable_lines_shown)
+			checkbox.unchecked_event.subscribe (agent map_widget.disable_lines_shown)
+			toolbar_panel.add_widget (checkbox)
+
+			-- Time
+			create label.make_from_text ("1x      ")
+			label.set_position (50, 90)
+			toolbar_panel.add_widget (label)
+			create slider.make_from_range_horizontal (1, 1000)
+			slider.set_height (label.height)
+			slider.set_width (110)
+			slider.set_position (90, 90)
+			slider.position_changed_event.subscribe (agent update_time_slider (?, label))
+			toolbar_panel.add_widget (slider)
+			create button.make_from_text ("Start")
+			button.clicked_event.subscribe (agent update_time (button))
+			button.set_position (10, 90)
+			toolbar_panel.add_widget (button)
+
+			-- Taxis
 		end
 
 feature -- Event handling
 
-	redraw is
-			-- Update the clock and redraw the scene
+	taxi_office_output (an_office: TRAFFIC_TAXI_OFFICE): STRING is
+			--
 		do
-			update
-			Precursor
+			Result := an_office.generating_type.substring (9, an_office.generating_type.count)
 		end
 
-
-	zoom_in_button_clicked is
-			-- "Zoom in" button has been clicked.
+	update_tram_count (a_value: INTEGER; a_label: EM_LABEL) is
+			-- Update the label for number of trams per line.
 		require
-			zoom_in_button /= Void
+			a_label_exists: a_label /= Void
 		do
-			zoom_in_button.set_pressed (False)
-			map.zoom_in
+			a_label.set_text (a_value.out + " Trams/Line")
 		end
 
-	zoom_out_button_clicked is
-			-- "Zoom out" button has been clicked.
+	add_trams (a_slider: EM_SLIDER) is
+			-- Add `slider.current_value' number of trams per line.
 		require
-			zoom_out_button /= Void
+			a_slider_exists: a_slider /= Void
 		do
-			zoom_out_button.set_pressed (False)
-			map.zoom_out
-		end
-
-	handle_mouse_click (e: EM_MOUSEBUTTON_EVENT) is
-			-- Adapt the text on the station label
-		require
-			valid_station_label: station_label /= Void
-		local
-			traveler: TRAFFIC_LINE_VEHICLE
-		do
-			-- Clear all information
-			station_label.set_text ("Selected station")
-			station_schedule_textlist.elements.wipe_out
-			station_lines_combobox.elements.wipe_out
-
-			if map.marked_station /= Void then
-				-- Display the name of the station
-				station_label.set_text (map.marked_station.name)
-
-				-- Add the lines that travel trough the station to the combobox
-				from
-					map.marked_station.schedule.start
-				until
-					map.marked_station.schedule.after
-				loop
-					traveler ?= map.marked_station.schedule.item @ 1
-
-					if not station_lines_combobox.has (traveler.line.name) then
-						station_lines_combobox.put (traveler.line.name)
-					end
-
-					map.marked_station.schedule.forth
-				end
-
-				-- Select the first line if there is one
-				if station_lines_combobox.count > 0 then
-					station_lines_combobox.set_selected_index (1)
-				end
+			map_widget.map.trams.wipe_out
+			if a_slider.current_value > 0 then
+				map_widget.map.add_tram_per_line (a_slider.current_value)
 			end
 		end
 
-
-	station_lines_selection_changed (selection: STRING) is
-			-- The selection of the combobox of the lines of the selected station has changed
-		local
-			traveler: TRAFFIC_LINE_VEHICLE
-			departure_time: TIME
-			target: TRAFFIC_PLACE
-			direction_name: STRING
-			list: LINKED_LIST[TIME]
-			schedule: HASH_TABLE[LINKED_LIST[TIME], STRING]
-		do
-			-- Clear all times
-			station_schedule_textlist.elements.wipe_out
-
-			-- Create a hash table which we use to sort the schedule entrys by target
-			create schedule.make (2)
-
-			if map.marked_station /= Void and station_lines_combobox.has_selected_element then
-				-- Add all times when a tram of this line departs at the station
-				from
-					map.marked_station.schedule.start
-				until
-					map.marked_station.schedule.after
-				loop
-					traveler ?= map.marked_station.schedule.item @ 1
-					departure_time ?= map.marked_station.schedule.item @ 2
-					target ?= map.marked_station.schedule.item @ 3
-
-					if traveler.line.name.is_equal (station_lines_combobox.selected_element) then
-						direction_name := "To " + target.name
-						if schedule.has (direction_name) then
-							schedule.item (direction_name).extend (departure_time)
-						else
-							create list.make
-							list.extend (departure_time)
-							schedule.put (list, direction_name)
-						end
-					end
-
-					map.marked_station.schedule.forth
-				end
-
-				-- Display
-				from
-					schedule.start
-				until
-					schedule.after
-				loop
-					station_schedule_textlist.put (schedule.key_for_iteration)
-
-					from
-						schedule.item_for_iteration.start
-					until
-						schedule.item_for_iteration.after
-					loop
-						station_schedule_textlist.put ("  " + schedule.item_for_iteration.item.out)
-
-						schedule.item_for_iteration.forth
-					end
-
-					schedule.forth
-				end
-			end
-
-			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
-		end
-
-	sun_checked is
-			-- Checkbox has been checked.
-		do
-			map.enable_sun_shown
-		end
-
-	sun_unchecked is
-			-- Checkbox has been unchecked.
-		do
-			map.disable_sun_shown
-		end
-
-	shadow_checked is
-			-- checkbox has been checked.
-		do
-			map.enable_shadows
-		end
-
-	shadow_unchecked is
-			-- checkbox has been checked.
-		do
-			map.disable_shadows
-		end
-
-	buildings_checked is
-			-- Checkbox has been checked.
-		do
-			map.enable_buildings_shown
-		end
-
-	buildings_unchecked is
-			-- Checkbox has been unchecked.
-		do
-			map.disable_buildings_shown
-		end
-
-	load_buildings_clicked is
-			-- Load buildings along lines.
-		do
-			map.place_buildings_randomly (2)
-		end
-
-	delete_buildings_clicked is
-			-- Delete buildings from representation.
-		do
-			map.delete_buildings
-		end
-
-	time_checked is
-			-- Checkbox has been checked.
-		do
---			map.map.change_traveler_speed (map.time.simulated_minutes / 2)
-			map.time.change_simulated_time (1)
-			map.time.start_time
-		end
-
-	time_unchecked is
-			-- Checkbox has been unchecked.
-		do
-			map.time.pause_time
-		end
-
-	number_of_minutes_changed (number: INTEGER) is
-			-- The time slider was used.
-			do
-			traffic_time.change_simulated_time (number)
-		end
-
-	update is
-			-- Set clock corresponding to time
+	update_time (a_button: EM_BUTTON) is
+			--
 		require
-			time_exists: traffic_time /= Void
+			a_button_exists: a_button /= Void
 		do
-			time_label.set_text (traffic_time.actual_time.hour.out + ":" + traffic_time.actual_time.minute.out)
-		end
-
-	lines_unchecked is
-			-- Checkbox has been unchecked.
-		do
-			map.disable_lines_shown
-		end
-
-	lines_checked is
-			-- Checkbox has been checked.
-		do
-			map.enable_lines_shown
-		end
-
-	taxi_office_type_changed(type: STRING) is
-			-- Selection on "taxi_office_type_combobox" changed.
-		do
-			if type.is_equal ("Event Taxi Office")  then
-				-- Event Taxis in yellow
-				taxi_office_type_combobox.set_background_color(create {EM_COLOR}.make_with_rgb(255, 255, 0))
+			if time.is_time_running then
+				time.pause
+				a_button.set_text ("Start")
 			else
-				-- Dispatcher Taxis in ozean
-				taxi_office_type_combobox.set_background_color (create {EM_COLOR}.make_with_rgb(255, 0, 0))
+				time.resume
+				a_button.set_text ("Stop")
 			end
-			map.set_taxi_office_type(type)
 		end
+
+	update_time_slider (a_value: INTEGER; a_label: EM_LABEL) is
+			--
+		require
+			a_label_exists: a_label /= Void
+		do
+			time.set_speedup (a_value)
+			a_label.set_text (a_value.out + "x")
+		end
+
+	call_taxi (a_place: TRAFFIC_PLACE; an_event: EM_MOUSEBUTTON_EVENT) is
+			-- Send a taxi to `a_place'.
+		local
+			vect: GL_VECTOR_3D [DOUBLE]
+		do
+			vect := map_widget.transform_coords (an_event.x, an_event.y)
+			taxi_combobox.selected_element.call (create {EM_VECTOR_2D}.make (vect.x, vect.z), random_destination)
+		end
+
+
+--	redraw is
+--			-- Update the clock and redraw the scene
+--		do
+--			update
+--			Precursor
+--		end
+
+
+--	handle_mouse_click (e: EM_MOUSEBUTTON_EVENT) is
+--			-- Adapt the text on the station label
+--		require
+--			valid_station_label: station_label /= Void
+--		local
+--			traveler: TRAFFIC_LINE_VEHICLE
+--		do
+--			-- Clear all information
+----			station_label.set_text ("Selected station")
+----			station_schedule_textlist.elements.wipe_out
+----			station_lines_combobox.elements.wipe_out
+
+----			if map.marked_station /= Void then
+----				-- Display the name of the station
+----				station_label.set_text (map.marked_station.name)
+
+----				-- Add the lines that travel trough the station to the combobox
+----				from
+----					map.marked_station.schedule.start
+----				until
+----					map.marked_station.schedule.after
+----				loop
+----					traveler ?= map.marked_station.schedule.item @ 1
+
+----					if not station_lines_combobox.has (traveler.line.name) then
+----						station_lines_combobox.put (traveler.line.name)
+----					end
+
+----					map.marked_station.schedule.forth
+----				end
+
+----				-- Select the first line if there is one
+----				if station_lines_combobox.count > 0 then
+----					station_lines_combobox.set_selected_index (1)
+----				end
+----			end
+--		end
+
+
+--	station_lines_selection_changed (selection: STRING) is
+--			-- The selection of the combobox of the lines of the selected station has changed
+--		local
+--			traveler: TRAFFIC_LINE_VEHICLE
+--			departure_time: TIME
+--			target: TRAFFIC_PLACE
+--			direction_name: STRING
+--			list: LINKED_LIST[TIME]
+--			schedule: HASH_TABLE[LINKED_LIST[TIME], STRING]
+--		do
+--			-- Clear all times
+----			station_schedule_textlist.elements.wipe_out
+
+----			-- Create a hash table which we use to sort the schedule entrys by target
+----			create schedule.make (2)
+
+----			if map.marked_station /= Void and station_lines_combobox.has_selected_element then
+----				-- Add all times when a tram of this line departs at the station
+----				from
+----					map.marked_station.schedule.start
+----				until
+----					map.marked_station.schedule.after
+----				loop
+----					traveler ?= map.marked_station.schedule.item @ 1
+----					departure_time ?= map.marked_station.schedule.item @ 2
+----					target ?= map.marked_station.schedule.item @ 3
+
+----					if traveler.line.name.is_equal (station_lines_combobox.selected_element) then
+----						direction_name := "To " + target.name
+----						if schedule.has (direction_name) then
+----							schedule.item (direction_name).extend (departure_time)
+----						else
+----							create list.make
+----							list.extend (departure_time)
+----							schedule.put (list, direction_name)
+----						end
+----					end
+
+----					map.marked_station.schedule.forth
+----				end
+
+----				-- Display
+----				from
+----					schedule.start
+----				until
+----					schedule.after
+----				loop
+----					station_schedule_textlist.put (schedule.key_for_iteration)
+
+----					from
+----						schedule.item_for_iteration.start
+----					until
+----						schedule.item_for_iteration.after
+----					loop
+----						station_schedule_textlist.put ("  " + schedule.item_for_iteration.item.out)
+
+----						schedule.item_for_iteration.forth
+----					end
+
+----					schedule.forth
+----				end
+----			end
+
+----			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
+--		end
+
+--	buildings_checked is
+--			-- Checkbox has been checked.
+--		do
+--			map_widget.enable_buildings_shown
+--		end
+
+--	buildings_unchecked is
+--			-- Checkbox has been unchecked.
+--		do
+--			map_widget.disable_buildings_shown
+--		end
+
+--	load_buildings_clicked is
+--			-- Load buildings along lines.
+--		do
+--			map_widget.place_buildings_randomly (2)
+--		end
+
+--	delete_buildings_clicked is
+--			-- Delete buildings from representation.
+--		do
+--			map_widget.delete_buildings
+--		end
+
+--	time_checked is
+--			-- Checkbox has been checked.
+--		do
+----			map.map.change_traveler_speed (map.time.simulated_minutes / 2)
+----			map_widget.time.change_simulated_time (1)
+--			map_widget.time.start
+--		end
+
+--	time_unchecked is
+--			-- Checkbox has been unchecked.
+--		do
+--			map_widget.time.pause
+--		end
+
+--	number_of_minutes_changed (number: INTEGER) is
+--			-- The time slider was used.
+--			do
+----			traffic_time.change_simulated_time (number)
+--		end
+
+--	update is
+--			-- Set clock corresponding to time
+--		require
+--			time_exists: traffic_time /= Void
+--		do
+----			time_label.set_text (traffic_time.actual_time.hour.out + ":" + traffic_time.actual_time.minute.out)
+--		end
+
+--	taxi_office_type_changed(type: STRING) is
+--			-- Selection on "taxi_office_type_combobox" changed.
+--		do
+----			if type.is_equal ("Event Taxi Office")  then
+----				-- Event Taxis in yellow
+----				taxi_office_type_combobox.set_background_color(create {EM_COLOR}.make_with_rgb(255, 255, 0))
+----			else
+----				-- Dispatcher Taxis in ozean
+----				taxi_office_type_combobox.set_background_color (create {EM_COLOR}.make_with_rgb(255, 0, 0))
+----			end
+----			map_widget.set_taxi_office_type(type)
+--		end
 
 feature -- Widgets
 
-	taxi_office_type_combobox: EM_COMBOBOX[STRING]
+	taxi_combobox: EM_COMBOBOX[TRAFFIC_TAXI_OFFICE]
 			-- Requests will be sent to the selected taxi office.
 
 	toolbar_panel: EM_PANEL
-			-- Panel, in which all option widgets are displayed.
 
-	sun_checkbox: EM_CHECKBOX
-			-- Checkbox for different light
 
-	shadow_checkbox: EM_CHECKBOX
-			-- Checkbox for shadows
+--	buildings_checkbox: EM_CHECKBOX
+--			-- Checkbox for buildings
 
-	buildings_checkbox: EM_CHECKBOX
-			-- Checkbox for buildings
+--	vehicles_checkbox: EM_CHECKBOX
+--			-- Checkbox for vehicles
 
-	vehicles_checkbox: EM_CHECKBOX
-			-- Checkbox for vehicles
+--	time_checkbox: EM_CHECKBOX
+--			-- Checkbox for time
 
-	time_checkbox: EM_CHECKBOX
-			-- Checkbox for time
+--	lines_checkbox: EM_CHECKBOX
+--			-- Checkbox for visibility of lines
 
-	lines_checkbox: EM_CHECKBOX
-			-- Checkbox for visibility of lines
+--	time_label: EM_LABEL
+--			-- Clock
 
-	zoom_in_button: EM_BUTTON
-			-- Botton to zoom in
+--	time_slider: EM_SLIDER
+--			-- Scrollbar for the time			
 
-	zoom_out_button: EM_BUTTON
-			-- Botton to zoom out
+--	station_label: EM_LABEL
+--			-- Selected station
 
-	time_label: EM_LABEL
-			-- Clock
+--	station_lines_combobox: EM_COMBOBOX[STRING]
+--			-- The available lines in the selected station			
 
-	time_slider: EM_SLIDER
-			-- Scrollbar for the time			
+--	station_schedule_textlist: EM_TEXTLIST[STRING]
+--			-- Schedule of selected station
 
-	station_label: EM_LABEL
-			-- Selected station
+--	station_schedule_scrollpanel: EM_SCROLLPANEL
+--			-- Scrollpanel for station_schedule_textlist
 
-	station_lines_combobox: EM_COMBOBOX[STRING]
-			-- The available lines in the selected station			
+--	load_buildings_button: EM_BUTTON
+--			-- Button to load buildings along lines
 
-	station_schedule_textlist: EM_TEXTLIST[STRING]
-			-- Schedule of selected station
-
-	station_schedule_scrollpanel: EM_SCROLLPANEL
-			-- Scrollpanel for station_schedule_textlist
-
-	load_buildings_button: EM_BUTTON
-			-- Button to load buildings along lines
-
-	delete_buildings_button: EM_BUTTON
-			-- Button to delete buildings from the map
+--	delete_buildings_button: EM_BUTTON
+--			-- Button to delete buildings from the map
 
 feature {NONE} -- Implementation
 
-	city_timetable_window_width: INTEGER is 800
-			-- Width of map
+	random: RANDOM
 
-	bg_color: EM_COLOR
-			-- Background color of the scene
+--	city_timetable_window_width: INTEGER is 800
+--			-- Width of map
 
-	map_file_name: STRING
-			-- Name of the map file to be loaded
+----	bg_color: EM_COLOR
+--			-- Background color of the scene
 
-	loaded_file_name: STRING
-			-- Name of the currently loaded
+--	map_file_name: STRING
+--			-- Name of the map file to be loaded
 
-	map: CITY_TIMETABLE_MAP_WIDGET
+--	map: CITY_TIMETABLE_MAP_WIDGET
 			-- The 3 dimensional representation of the map
+
+	random_destination: EM_VECTOR_2D is
+			-- Random destination for taxi
+		require
+			random /= Void
+		local
+			temp_x, temp_y: DOUBLE
+			destination: EM_VECTOR_2D
+		do
+			random.forth
+			temp_x := random.double_item
+			random.forth
+			temp_y := random.double_item
+			create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
+			-- approximated places so that they are on the map
+			random.forth
+			Result := destination
+		end
 
 end

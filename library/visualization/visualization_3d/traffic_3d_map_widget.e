@@ -1,5 +1,6 @@
 indexing
 	description: "[
+
 					Map widget to display the map in 3D.
 					Inherit from this class and add events to handle the map
 					]"
@@ -44,7 +45,7 @@ create
 
 feature -- Initialisation
 
-	make is
+	make (a_width, a_height: INTEGER) is
 			-- Initialize the map widget.
 		local
 			green_material: TE_MATERIAL_SIMPLE
@@ -53,8 +54,8 @@ feature -- Initialisation
 			make_component
 
 			set_keyboard_sensitive (True)
-			set_width (600)
-			set_height (600)
+			set_width (a_width)
+			set_height (a_height)
 
 			-- Variable initialization
 			x_coord := 0
@@ -77,7 +78,7 @@ feature -- Initialisation
 			primitive_factory.set_material(green_material)
 			primitive_factory.create_simple_plane(plane_size, plane_size)
 			plane := primitive_factory.last_3d_member; --<- I NEED A `;' HAHA :D
-			(create{TE_3D_SHARED_GLOBALS}).root.add_child(plane)
+			(create{TE_3D_SHARED_GLOBALS}).root.add_child (plane)
 
 			mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 			create building_clicked_event.default_create
@@ -257,8 +258,143 @@ feature -- Access
 	paths_representation: TRAFFIC_3D_PATH_REPRESENTATION
 		-- Representation for all paths
 
+	transform_coords (screen_x, screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
+			-- Transform mouse coordinates with gl_un_project to 3D coordinates.
+		local
+			model_matrix, projection_matrix: ARRAY [DOUBLE]
+			model_c, projection_c: ANY
+			viewport: GL_VECTOR_4D [INTEGER]
+			y_new: INTEGER
+			result_x, result_y, result_z: DOUBLE
+			temp: ANY
+			window_z: REAL
+		do
+			if video_subsystem.video_surface.is_opengl_blitting_enabled then
+				video_subsystem.video_surface.disable_opengl_blitting
+			end
+
+			create model_matrix.make (0, 15)
+			create projection_matrix.make (0, 15)
+			create viewport.make_xyzt (0, 0, 0, 0)
+			model_c := model_matrix.to_c
+			projection_c := projection_matrix.to_c
+
+			gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
+			gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
+			gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
+			viewport.set_xyzt (x, y, width, height)
+			y_new := video_subsystem.video_surface.height - screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
+			window_z := 0.0
+			gl_read_pixels_external (screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
+			temp := glu_un_project_external (screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
+			create Result.make_xyz (result_x, result_y, result_z)
+		ensure
+			Result /= void
+		end
+
+feature -- Element change
+
+	set_map (a_map: TRAFFIC_MAP) is
+			-- Use `a_map' to be displayed.
+		local
+			green_material: TE_MATERIAL_SIMPLE
+			primitive_factory: TE_3D_MEMBER_FACTORY_PRIMITIVE
+		do
+			map := a_map
+			if map /= Void then
+				wipe_out
+				is_map_loaded := True
+				create places_representation.make (map)
+				create lines_representation.make (map)
+				create roads_representation.make (map)
+				create travelers_representation.make (map)
+				create paths_representation.make (map)
+
+				buildings_representation.set_map(a_map)
+				boolean_grid.clear_all
+
+				root.transform.set_position (-map.center.x, 0, -map.center.y)---event.y_motion*(delta/mouse_delta), 0)				
+
+--				beauty_pass.camera.set_target (create {EM_VECTOR3D}.make_from_tuple ([map.city_center.x, 0.0, map.city_center.y]))
+				plane.transform.set_position (map.center.x, 0.0, map.center.y)
+--				plane.transform.set_scaling (plane.bounding_box., y, z: REAL_64)
+--				disable_sun_shown
+			else
+				-- Todo remove everything
+			end
+		end
+
+	wipe_out is
+			-- Remove all map elements.
+		do
+			if places_representation /= Void then
+				places_representation.place_root.remove_all_children
+			end
+			if lines_representation /= Void then
+				lines_representation.line_section_root.remove_all_children
+			end
+			if travelers_representation /= Void then
+				travelers_representation.moving_root.remove_all_children
+			end
+			if roads_representation /= Void then
+				roads_representation.road_root.remove_all_children
+			end
+			if buildings_representation /= Void then
+				-- Todo!!!
+				buildings_representation.delete_buildings
+			end
+		end
+
 
 feature -- Basic operations
+
+	rotate_camera (x_distance, y_distance: DOUBLE) is
+			-- Rotate camera by x_distance and y_distance around the city map centre.
+		local
+			camera: TE_3D_CAMERA
+			radius,polar,azimut,zx_comp_length:DOUBLE
+		do
+			camera := beauty_pass.camera
+
+			--carth to spherical
+			radius:=camera.transform.position.length
+			zx_comp_length:=sqrt(camera.transform.position.z^2.0 + camera.transform.position.x^2)
+			if camera.transform.position.x >=0 then
+				azimut:=arc_cosine(camera.transform.position.z/zx_comp_length)
+			else
+				azimut:=2*PI - arc_cosine(camera.transform.position.z/zx_comp_length)
+			end
+			polar:=PI/2 - arc_tangent(camera.transform.position.y/zx_comp_length)
+
+			--rotate camera arround 000
+			polar := polar - y_distance/50.0
+			azimut := azimut - x_distance/50.0
+
+			--spherical to carthesian
+			camera.transform.set_position (radius*sine(polar)*sine(azimut), radius*cosine(polar), radius*sine(polar)*cosine(azimut))
+		end
+
+	zoom_out is
+			-- Handle mouse wheel down event.
+		local
+			camera: TE_3D_CAMERA
+			z_axis: EM_VECTOR3D
+		do
+			camera := beauty_pass.camera
+			z_axis := camera.transform.position * (1.0/10.0)
+			camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
+		end
+
+	zoom_in is
+			-- Handle mouse wheel up event.
+		local
+			camera: TE_3D_CAMERA
+			z_axis: EM_VECTOR3D
+		do
+			camera := beauty_pass.camera
+			z_axis := camera.transform.position * (1.0/10.0)
+			camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
+		end
 
 	prepare_drawing is
 			-- Prepare for drawing.
@@ -289,26 +425,6 @@ feature -- Basic operations
 			--nothing
 		end
 
-
-	set_map (a_map: TRAFFIC_MAP) is
-			-- Use `a_map' to be displayed.
-		do
-			map := a_map
-			if map /= Void then
-				is_map_loaded := True
-				buildings_representation.delete_buildings
-				create places_representation.make (map)
-				create lines_representation.make (map)
-				create roads_representation.make (map)
-				create travelers_representation.make (map)
-				create paths_representation.make (map)
-
-				buildings_representation.set_map(a_map)
-				boolean_grid.clear_all
-			else
-				-- Todo remove everything
-			end
-		end
 
 
 	place_buildings_randomly (a_density:INTEGER) is
@@ -358,7 +474,7 @@ feature -- Basic operations
 		local
 			ps: TRAFFIC_PATH_SECTION
 		do
-			map.add_path (a_path)
+--			map.add_path (a_path)
 			paths_representation.add_path (a_path)
 
 			--places where have to change are colored red
@@ -409,7 +525,7 @@ feature {NONE} -- Implementation
 			-- call `mark_grid_cells_for_line_section' for each pair of polypoints of each line section.
 			-- call `mark_grid_cells_for_rectangular_area' for each place.
 		local
-			poly_points: ARRAYED_LIST [EM_VECTOR_2D]
+			poly_points: DS_ARRAYED_LIST [EM_VECTOR_2D]
 			poly_point: EM_VECTOR_2D
 			i,j:INTEGER
 			places: TRAFFIC_EVENT_HASH_TABLE[TRAFFIC_PLACE,STRING_8]
@@ -425,12 +541,13 @@ feature {NONE} -- Implementation
 				poly_points := map.line_sections.item (i).polypoints
 				from
 					j:=2
-					poly_point := poly_points.i_th (1)
+					poly_point := poly_points.item (1)
 				until
 					j > poly_points.count
 				loop
-					mark_grid_cells_for_line_section (map_to_gl_coords (poly_point), map_to_gl_coords (poly_points.i_th (j)), Line_width)
-					poly_point := poly_points.i_th (j)
+--					mark_grid_cells_for_line_section (map_to_gl_coords (poly_point), map_to_gl_coords (poly_points.i_th (j)), Line_width)
+					mark_grid_cells_for_line_section (poly_point, poly_points.item (j), Line_width)
+					poly_point := poly_points.item (j)
 					j:=j+1
 				end
 				i :=i+1
@@ -444,7 +561,8 @@ feature {NONE} -- Implementation
 				places.after
 			loop
 				if places.item_for_iteration.width > 0 and places.item_for_iteration.breadth > 0 then
-					mark_grid_cells_for_rectangular_area (map_to_gl_coords(places.item_for_iteration.position), places.item_for_iteration.width/30, places.item_for_iteration.breadth/30)
+--					mark_grid_cells_for_rectangular_area (map_to_gl_coords(places.item_for_iteration.position), places.item_for_iteration.width/30, places.item_for_iteration.breadth/30)
+					mark_grid_cells_for_rectangular_area (places.item_for_iteration.position, places.item_for_iteration.width/30, places.item_for_iteration.breadth/30)
 				end
 				places.forth
 			end
@@ -542,9 +660,11 @@ feature {NONE} -- Implementation
 						i+1 > line_section.polypoints.count
 					loop
 						--check if linesection is vertical
-						if line_section.polypoints.i_th (i+1).x = line_section.polypoints.i_th (i).x then
-							temp_destination := map_to_gl_coords(line_section.polypoints.i_th(i+1))
-							gl_origin := map_to_gl_coords (line_section.polypoints.i_th (i))
+						if line_section.polypoints.item (i+1).x = line_section.polypoints.item (i).x then
+--							temp_destination := map_to_gl_coords(line_section.polypoints.i_th(i+1))
+							temp_destination := line_section.polypoints.item(i+1)
+--							gl_origin := map_to_gl_coords (line_section.polypoints.i_th (i))
+							gl_origin := line_section.polypoints.item (i)
 							from
 								start_point.set_y (gl_origin.y-0.5)
 								start_point.set_x (gl_origin.x)
@@ -618,12 +738,13 @@ feature {NONE} -- Implementation
 							end
 						else
 							-- linessection is not vertical
-							angle:= arc_tangent((line_section.polypoints.i_th (i+1).y-line_section.polypoints.i_th (i).y)/(line_section.polypoints.i_th (i+1).x-line_section.polypoints.i_th (i).x))
+							angle:= arc_tangent((line_section.polypoints.item (i+1).y-line_section.polypoints.item (i).y)/(line_section.polypoints.item (i+1).x-line_section.polypoints.item (i).x))
 							if angle*180/pi>-70 and angle*180/pi<70 then
 
-								temp_destination:=map_to_gl_coords(line_section.polypoints.i_th(i+1).rotation (line_section.polypoints.i_th(i), -angle))
-								gl_origin:=map_to_gl_coords (line_section.polypoints.i_th(i))
-
+--								temp_destination:=map_to_gl_coords(line_section.polypoints.i_th(i+1).rotation (line_section.polypoints.i_th(i), -angle))
+--								gl_origin:=map_to_gl_coords (line_section.polypoints.i_th(i))
+								temp_destination:=line_section.polypoints.item(i+1).rotation (line_section.polypoints.item(i), -angle)
+								gl_origin:=line_section.polypoints.item(i)
 								from
 									start_point.set_y (gl_origin.y)
 									start_point.set_x (gl_origin.x-0.5)
@@ -1086,47 +1207,13 @@ feature {NONE} -- Implementation
 		local
 			place: TRAFFIC_PLACE
 		do
-			place := places_representation.place_at_position (gl_to_map_coords (create {EM_VECTOR_2D}.make (a_point.x, a_point.z)))
+			place := places_representation.place_at_position (create {EM_VECTOR_2D}.make (a_point.x, a_point.z))
 			if place /= Void then
 					place_clicked_event.publish([place,event])
 			end
 		end
 
 
-	transform_coords (screen_x, screen_y: INTEGER): GL_VECTOR_3D[DOUBLE] is
-			-- Transform mouse coordinates with gl_un_project to 3D coordinates.
-		local
-			model_matrix, projection_matrix: ARRAY [DOUBLE]
-			model_c, projection_c: ANY
-			viewport: GL_VECTOR_4D [INTEGER]
-			y_new: INTEGER
-			result_x, result_y, result_z: DOUBLE
-			temp: ANY
-			window_z: REAL
-		do
-			if video_subsystem.video_surface.is_opengl_blitting_enabled then
-				video_subsystem.video_surface.disable_opengl_blitting
-			end
-
-			create model_matrix.make (0, 15)
-			create projection_matrix.make (0, 15)
-			create viewport.make_xyzt (0, 0, 0, 0)
-			model_c := model_matrix.to_c
-			projection_c := projection_matrix.to_c
-
-			gl_get_doublev_external (Em_gl_modelview_matrix, $model_c)
-			gl_get_doublev_external (Em_gl_projection_matrix, $projection_c)
-			gl_get_integerv_external (Em_gl_viewport, viewport.pointer)
-			viewport.set_xyzt (x, y, width, height)
-			y_new := video_subsystem.video_surface.height - screen_y -- OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
-
-			gl_read_pixels_external (screen_x, y_new, 1, 1, Em_gl_depth_component, Em_gl_float, $window_z)
-			temp := glu_un_project_external (screen_x, y_new, window_z, $model_c, $projection_c, viewport.pointer, $result_x, $result_y, $result_z)
-
-			create Result.make_xyz (result_x, result_y, result_z)
-		ensure
-			Result /= void
-		end
 
 	invariant
 		Grid_size_greater_0: Grid_size > 0
