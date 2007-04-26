@@ -165,7 +165,7 @@ feature -- Element change
 		require
 			has_child: is_parent_of (a_child)
 		do
-			children.prune (a_child)
+			children.prune_all (a_child)
 			a_child.set_parent (Void)
 		ensure
 			child_removed: not is_parent_of (a_child)

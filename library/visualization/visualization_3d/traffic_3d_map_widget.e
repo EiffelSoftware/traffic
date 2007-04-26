@@ -237,7 +237,7 @@ feature -- Access
 
 	coordinates: TE_3D_NODE
 
-	travelers_representation: TRAFFIC_3D_TRAVELER_REPRESENTATION
+	travelers_representation: TRAFFIC_3D_MOVING_REPRESENTATION
 		-- Representation for all travelers
 
 	lines_representation: TRAFFIC_3D_LINE_REPRESENTATION

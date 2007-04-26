@@ -74,6 +74,21 @@ feature -- Factory methods
 --			create Result.make_with_moving (a_tram, s.last_3d_member, s.last_3d_member)
 		end
 
+	new_bus_daynight_member (a_bus: TRAFFIC_BUS): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_BUS] is
+			-- New bus drawable with two representations
+		local
+			s: TE_3D_MEMBER_FACTORY_PRIMITIVE
+		do
+			if tram_template = Void then
+				tram_template := load_template ("tram2000_small.obj")
+			end
+			if tram_night_template = Void then
+				tram_night_template := load_template ("tram2000_small_night.obj")
+			end
+			create Result.make_with_item (a_bus, tram_template.create_deep_instance, tram_night_template.create_deep_instance)
+			Result.set_color (create {EM_COLOR}.make_with_rgb (255, 0, 0))
+		end
+
 feature {NONE} -- Implementation
 
 	taxi_template: TE_3D_NODE

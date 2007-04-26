@@ -1,32 +1,10 @@
 indexing
-	description: "Objects that represent the travelers on the map"
+	description: "Objects that represent the moving objects on the map"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_3D_TRAVELER_REPRESENTATION
-inherit
-
-	TRAFFIC_3D_CONSTANTS
-		export {NONE} all end
-
-	DOUBLE_MATH
-		export {NONE} all end
-
-	EM_CONSTANTS
-		export {NONE} all end
-
-	GL_FUNCTIONS
-		export {NONE} all end
-
-	GLU_FUNCTIONS
-		export {NONE} all end
-
-	TRAFFIC_SHARED_TIME
-
-	EM_SHARED_BITMAP_FACTORY
-		export {NONE} all end
-
+	TRAFFIC_3D_MOVING_REPRESENTATION
 
 create
 	make
@@ -41,12 +19,15 @@ feature -- Initialization
 			create moving_root.make_as_child ((create{TE_3D_SHARED_GLOBALS}).root)
 			create taxi_root.make_as_child (moving_root)
 			create tram_root.make_as_child (moving_root)
+			create bus_root.make_as_child (moving_root)
 			create passenger_root.make_as_child (moving_root)
 			create moving_factory
 			a_map.passengers.element_inserted_event.subscribe (agent add_passenger)
 			a_map.trams.element_inserted_event.subscribe (agent add_tram)
+			a_map.busses.element_inserted_event.subscribe (agent add_bus)
 			a_map.passengers.element_removed_event.subscribe (agent remove_passenger (?))
 			a_map.trams.element_removed_event.subscribe (agent remove_tram (?))
+			a_map.busses.element_removed_event.subscribe (agent remove_bus (?))
 			add_taxi_agent := agent add_taxi (?)
 			remove_taxi_agent := agent remove_taxi (?)
 			a_map.taxi_offices.element_inserted_event.subscribe (agent add_taxi_office)
@@ -71,6 +52,14 @@ feature -- Insertion
 			a_tram_not_void: a_tram /= Void
 		do
 			moving_factory.new_tram_daynight_member (a_tram).set_as_child_of (tram_root)
+		end
+
+	add_bus (a_bus: TRAFFIC_BUS) is
+			-- Add a representation for `a_bus'.
+		require
+			a_bus_not_void: a_bus /= Void
+		do
+			moving_factory.new_bus_daynight_member (a_bus).set_as_child_of (bus_root)
 		end
 
 	add_taxi (a_taxi: TRAFFIC_TAXI) is
@@ -170,6 +159,19 @@ feature -- Deletion
 			end
 		end
 
+	remove_bus (a_bus: TRAFFIC_BUS) is
+			-- Remove representation for `a_bus'.
+		require
+			a_bus_exists: a_bus /= Void
+		local
+			node: TE_3D_NODE
+		do
+			node := bus_root.child_for_item (a_bus)
+			if node /= Void then
+				bus_root.remove_child (node)
+			end
+		end
+
 feature -- Access
 
 	moving_factory: TRAFFIC_3D_MOVING_FACTORY
@@ -177,6 +179,8 @@ feature -- Access
 	moving_root: TE_3D_NODE
 
 	tram_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_TRAM]
+
+	bus_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_BUS]
 
 	taxi_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_TAXI]
 
