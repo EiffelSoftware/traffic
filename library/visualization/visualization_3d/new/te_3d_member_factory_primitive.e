@@ -149,24 +149,6 @@ feature {NONE} -- Ressource List Creation
 		end
 
 
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
 feature -- Basic operations
 
 	set_material(a_material: TE_MATERIAL) is
@@ -174,15 +156,5 @@ feature -- Basic operations
 		do
 			material := a_material
 		end
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
-feature {NONE} -- Implementation
-
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end

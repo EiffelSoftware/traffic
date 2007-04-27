@@ -33,7 +33,7 @@ feature -- Initialization
 			make
 			graphical := a_3d_graphical
 			graphical.set_as_child_of (Current)
-			graphical.transform.set_scaling (50, 50, 50)
+--			graphical.transform.set_scaling (50, 50, 50)
 		end
 
 feature -- Access

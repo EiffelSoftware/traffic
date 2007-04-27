@@ -484,7 +484,7 @@ feature -- Basic operations
 			until
 				ps.next = Void -- = a_path.last
 			loop
-				places_representation.add_place_with_color_red (ps.connections.last.destination)
+--				places_representation.add_place_with_color_red (ps.connections.last.destination)
 				ps := ps.next
 			end
 		end
@@ -1207,7 +1207,7 @@ feature {NONE} -- Implementation
 		local
 			place: TRAFFIC_PLACE
 		do
-			place := places_representation.place_at_position (create {EM_VECTOR_2D}.make (a_point.x, a_point.z))
+			place := map.place_at_position (create {EM_VECTOR_2D}.make (a_point.x, a_point.z))
 			if place /= Void then
 					place_clicked_event.publish([place,event])
 			end

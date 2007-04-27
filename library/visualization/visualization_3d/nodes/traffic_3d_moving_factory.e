@@ -20,10 +20,12 @@ feature -- Factory methods
 	new_person_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
 			-- New person drawable (toggling between man and woman)
 		do
-			if person_toggle = 0 then
+			if not is_woman then
 				Result := new_man_member (a_passenger)
+				is_woman := True
 			else
 				Result := new_woman_member (a_passenger)
+				is_woman := False
 			end
 		end
 
@@ -112,8 +114,8 @@ feature {NONE} -- Implementation
 	error_template: TE_3D_NODE
 			-- template which is returned when a wrong name is passed
 
-	person_toggle: INTEGER
-			-- Toggle between man and woman (0: man; 1: woman)
+	is_woman: BOOLEAN
+			-- Toggle between man and woman (True: woman; False: man)
 
 	load_template (a_file_name: STRING): TE_3D_NODE is
 			-- load the traveler templates
