@@ -17,14 +17,14 @@ inherit
 			out
 		end
 
-	LINKED_LIST [TRAFFIC_LINE_SECTION]
+	TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_LINE_SECTION]
 		rename
 			make as make_linked_list,
 			out as linked_list_out,
 			extend as put_end
 
 		export
-		{ANY} start, finish, after, before, off, forth, back, item, count, i_th, wipe_out, has
+		{ANY} start, finish, after, before, off, forth, back, item, count, wipe_out, has
 		select copy,is_equal
 		end
 
@@ -203,40 +203,40 @@ feature -- Basic operations
 			destination := destination_stop.place
 
 			if terminal_1 = Void then -- no direction exists yet
-				put_front (a_line_section)
+				put_first (a_line_section)
 				terminal_1 := destination
 				stops_one_direction.extend (origin_stop)
 				stops_one_direction.extend (destination_stop)
 			else
 				if is_valid_insertion_one_direction_end (origin, destination) then
 					if other_direction_exists then -- put left of other direction
-						position := index_of (start_other_direction, 1)
-						go_i_th (position)
+						start
+						search_forth (start_other_direction)
 						put_left (a_line_section)
 					else -- put at end of list
-						put_end (a_line_section)
+						put_last (a_line_section)
 					end
 					terminal_1 := destination
 					stops_one_direction.extend (destination_stop)
 				else
 					if is_valid_insertion_one_direction_front (origin, destination) then -- put front of list
-						put_front (a_line_section)
+						put_first (a_line_section)
 						stops_one_direction.extend (origin_stop)
 					else
 						if terminal_2 = Void then -- start other direction
-							put_end (a_line_section)
+							put_last (a_line_section)
 							start_other_direction := a_line_section
 							terminal_2 := destination
 							stops_other_direction.extend (origin_stop)
 							stops_other_direction.extend (destination_stop)
 						else
 							if is_valid_insertion_other_direction_end (origin, destination) then -- put end of list
-								put_end (a_line_section)
+								put_last (a_line_section)
 								terminal_2 := destination
 								stops_other_direction.extend (destination_stop)
 							else --is_valid_insertion_other_direction_front
-								position := index_of (start_other_direction, 1)
-								go_i_th (position)
+								start
+								search_forth (start_other_direction)
 								put_left (a_line_section)
 								start_other_direction := a_line_section
 								stops_other_direction.extend (origin_stop)
@@ -267,18 +267,18 @@ feature -- Basic operations
 			until
 				after
 			loop
-				roads:=item.roads
+				roads:=item_for_iteration.roads
 				is_station:=true
 				-- loop on all the roads
 
-				if item.origin=roads.first.origin and item.destination=roads.last.destination then
+				if item_for_iteration.origin=roads.first.origin and item_for_iteration.destination=roads.last.destination then
 					invert:=false
-				elseif item.origin=roads.last.destination and item.destination=roads.first.origin then
+				elseif item_for_iteration.origin=roads.last.destination and item_for_iteration.destination=roads.first.origin then
 
 					invert:=true
 				else
 					io.putstring ("Invalid roads for given line section%N")
-					io.putstring("Line section origin: "+item.origin.name+" - Line section destination:"+item.destination.name+"%N")
+					io.putstring("Line section origin: "+item_for_iteration.origin.name+" - Line section destination:"+item_for_iteration.destination.name+"%N")
 				end
 				if invert then
 					from
@@ -367,9 +367,9 @@ feature -- Output
 				from
 					start
 				until
-					after or equal (item, start_other_direction)
+					after or equal (item_for_iteration, start_other_direction)
 				loop
-					l_line_section := item
+					l_line_section := item_for_iteration
 					Result := Result + ", " + l_line_section.destination.name
 					forth
 				end
@@ -386,13 +386,13 @@ feature -- Output
 				Result := ""
 			else
 				Result := start_other_direction.origin.name
-				position := index_of (start_other_direction, 1)
+				start
+				search_forth (start_other_direction)
 				from
-					go_i_th (position)
 				until
 					after
 				loop
-					l_line_section := item
+					l_line_section := item_for_iteration
 					Result := Result + ", " + l_line_section.destination.name
 					forth
 				end

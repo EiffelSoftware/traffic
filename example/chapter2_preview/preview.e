@@ -26,7 +26,7 @@ feature	 -- Example
 --			Console.show ("Route1.animate start")
 --			Line8.spotlight
 --			Paris.build
-			Zurich.add_tram_per_line (2)
+--			Zurich.add_tram_per_line (2)
 --			Zurich.time.pause_time
 --			Console.show (Line8)
 --			Console.show (Place_balard)

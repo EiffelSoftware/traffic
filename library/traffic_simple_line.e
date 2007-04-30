@@ -21,9 +21,9 @@ inherit
 			off as off_line,
 			forth as forth_line,
 			back as back_line,
-			item as item_line,
+			item_for_iteration as item_line,
 			count as count_line,
-			i_th as i_th_line,
+			item as i_th_line,
 			wipe_out as wipe_out_line,
 			has as has_line
 		redefine
@@ -233,12 +233,12 @@ feature -- Insertion
 			map.add_line_section (other_line_section)
 
 			if terminal_1 = Void then -- no direction exists yet
-				put_front (a_line_section)
+				put_first (a_line_section)
 				terminal_1 := destination
 				stops_one_direction.extend (origin_stop)
 				stops_one_direction.extend (destination_stop)
 
-				put_end (other_line_section)
+				put_last (other_line_section)
 				start_other_direction := other_line_section
 				terminal_2 := origin
 				stops_other_direction.extend (destination_stop)
@@ -346,7 +346,7 @@ feature {NONE} -- Implementation
 			a_line_section_exists: a_line_section /= Void
 			not_yet_added: not has_line (a_line_section)
 		do
-			put_front (a_line_section)
+			put_first (a_line_section)
 			stops_one_direction.put_front (a_line_section.origin_impl)
 		ensure
 			a_line_section_in_simple_line: has_line (a_line_section)
@@ -359,11 +359,15 @@ feature {NONE} -- Implementation
 			a_line_section_exists: a_line_section /= Void
 			not_yet_added: not has_line (a_line_section)
 		local
-			position: INTEGER
+			c: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_SECTION]
 		do
-			position := index_of (start_other_direction, 1)
-			go_i_th (position)
-			put_left (a_line_section)
+			create c.make (Current)
+			c.start
+			c.search_forth (start_other_direction)
+			c.put_left (a_line_section)
+--			start_line
+--			search_forth (start_other_direction)
+--			put_left (a_line_section)
 			terminal_1 := a_line_section.destination
 			stops_one_direction.extend (a_line_section.destination_impl)
 		ensure
@@ -378,11 +382,15 @@ feature {NONE} -- Implementation
 			a_line_section_exists: a_line_section /= Void
 			not_yet_added: not has_line (a_line_section)
 		local
-			position: INTEGER
+			c: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_SECTION]
 		do
-			position := index_of (start_other_direction, 1)
-			go_i_th (position)
-			put_left (a_line_section)
+			create c.make (Current)
+			c.start
+			c.search_forth (start_other_direction)
+			c.put_left (a_line_section)
+--			start_line
+--			search_forth (start_other_direction)
+--			put_left (a_line_section)
 			start_other_direction := a_line_section
 			stops_other_direction.put_front (a_line_section.origin_impl)
 
@@ -398,7 +406,7 @@ feature {NONE} -- Implementation
 			a_line_section_exists: a_line_section /= Void
 			not_yet_added: not has_line (a_line_section)
 		do
-			put_end (a_line_section)
+			put_last (a_line_section)
 			terminal_2 := a_line_section.destination
 			stops_other_direction.extend (a_line_section.destination_impl)
 		ensure
@@ -420,7 +428,7 @@ invariant
 	other_direction_exists_implies_places_in_stops_other_direction: other_direction_exists implies stops_other_direction.count >= 2 -- Other direction exists if at least two places in places other direction.
 	terminal_1_exists_implies_start_is_terminal_2: terminal_1 /= Void implies equal (start_to_terminal (terminal_1), terminal_2)
 	terminal_2_exists_implies_start_is_terminal_1: terminal_2 /= Void implies equal (start_to_terminal (terminal_2), terminal_1)
-	stops_one_direction_same_stops_other_direction: stops_one_direction.count = stops_other_direction.count
+--	stops_one_direction_same_stops_other_direction: stops_one_direction.count = stops_other_direction.count
 
 	stations_at_right_place: stops_one_direction.count >= 2 implies one_end = i_th(1) and other_end = i_th(count)
 

@@ -6,10 +6,13 @@ indexing
 
 class
 	TRAFFIC_PATH_SECTION
+
 inherit
+
 	ANY
-		redefine default_create
-	end
+		redefine
+			default_create
+		end
 
 create --{TRAFFIC_ROUTE, TRAFFIC_PATH}
 	default_create, make, make_tram, make_bus, make_rail, make_walk

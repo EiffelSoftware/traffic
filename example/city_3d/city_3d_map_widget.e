@@ -21,10 +21,10 @@ create
 
 feature -- Initialization
 
-	make is
+	make (a_width, a_height: INTEGER_32) is
 			-- Subscribe to events.
 		do
-			Precursor
+			Precursor (a_width, a_height)
 			-- User Interaction
 			mouse_dragged_event.subscribe (agent mouse_drag (?))
 			mouse_wheel_down_event.subscribe (agent wheel_down)
@@ -66,17 +66,17 @@ feature -- Basic operations
 		end
 
 
-	zoom_in is
-			-- Zoom in.
-		do
-			wheel_up
-		end
+--	zoom_in is
+--			-- Zoom in.
+--		do
+--			wheel_up
+--		end
 
-	zoom_out is
-			-- Zoom in.
-		do
-			wheel_down
-		end
+--	zoom_out is
+--			-- Zoom in.
+--		do
+--			wheel_down
+--		end
 
 	calculate_shortest_path is
 			-- Calculate the shortest path.
@@ -86,17 +86,17 @@ feature -- Basic operations
 			shortest_path: TRAFFIC_PATH
 		do
 			if marked_station_changed and marked_origin /= Void and marked_destination /= Void then
-				map.find_shortest_path (marked_origin, marked_destination)
+--				map.find_shortest_path (marked_origin, marked_destination)
 
 				marked_station_changed := False
 
-				if map.path_found then
-					shortest_path := map.shortest_path
-					paths_representation.remove_all
-					paths_representation.add_path (shortest_path)
-					shortest_path_connections := shortest_path.connections
-					shortest_path_calculated_event.publish ([shortest_path.textual_description])
-				end
+--				if map.path_found then
+----					shortest_path := map.shortest_path
+--					paths_representation.remove_all
+--					paths_representation.add_path (shortest_path)
+--					shortest_path_connections := shortest_path.connections
+--					shortest_path_calculated_event.publish ([shortest_path.textual_description])
+--				end
 			end
 		end
 
@@ -110,7 +110,7 @@ feature -- Basic operations
 			shortest_path_connections.start
 			if not shortest_path_connections.after then
 				shortest_path_connections.item.polypoints.start
-				last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.first)
+--				last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.first)
 				shortest_path_connections.item.polypoints.forth
 			end
 			create position.make (0, 0)
@@ -357,7 +357,7 @@ feature {NONE} -- Implementation
 		do
 			start_point := last_polypoint
 			if shortest_path_connections.item /= Void then
-				end_point := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
+--				end_point := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
 				direction := end_point - start_point
 
 				if start_point.distance (end_point) > 0 then
@@ -376,14 +376,14 @@ feature {NONE} -- Implementation
 					gl_translated_external (-start_point.x, 0, -start_point.y)
 				end
 				if (position-direction).length < speed then
-					last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
+--					last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.item)
 					shortest_path_connections.item.polypoints.forth
 
 					if shortest_path_connections.item.polypoints.after and then not shortest_path_connections.after then
 						shortest_path_connections.forth
 						if not shortest_path_connections.after then
 							shortest_path_connections.item.polypoints.start
-							last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.first)
+--							last_polypoint := map_to_gl_coords (shortest_path_connections.item.polypoints.first)
 							shortest_path_connections.item.polypoints.forth
 						end
 					end

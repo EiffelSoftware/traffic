@@ -76,7 +76,7 @@ feature -- Element change
 	equip is
 			-- Add `a_number' trams per line.
 		do
-			internal_map.add_tram_per_line (1)
+--			internal_map.add_tram_per_line (1)
 		end
 
 	build is
@@ -127,13 +127,13 @@ feature -- Element change
 			a_line_in_map: has_line (a_line.name)
 		end
 
-	add_path (a_path: TRAFFIC_PATH) is
-			-- Add path 'a_path' to map
-		require
-			a_path_exists: a_path /= Void
-		do
-			internal_map_widget.add_path (a_path)
-		end
+--	add_path (a_path: TRAFFIC_PATH) is
+--			-- Add path 'a_path' to map
+--		require
+--			a_path_exists: a_path /= Void
+--		do
+----			internal_map_widget.add_path (a_path)
+--		end
 
 
 	add_building (a_building: TRAFFIC_BUILDING) is

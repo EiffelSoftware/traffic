@@ -100,7 +100,7 @@ feature -- Interface
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
-				create map_widget.make
+				create map_widget.make (800, 600)
 				map_widget.set_position (200, 0)
 				add_component (map_widget)
 			else
@@ -337,7 +337,7 @@ feature -- Interface
 			map_widget.set_map (loader.map)
 			loaded_file_name := s
 
-			map_widget.map.add_tram_per_line (2)
+--			map_widget.map.add_tram_per_line (2)
 --			map_widget.travelers_representation.add_tram_per_line (map_widget.map, 2)
 
 		end
@@ -476,7 +476,7 @@ feature -- Event handling
 			marked_origin_label.set_text ("")
 			marked_destination_label.set_text ("")
 			traffic_line_ride_button.hide
-			map_widget.map.add_tram_per_line (2)
+--			map_widget.map.add_tram_per_line (2)
 		rescue
 			catch(24)
 			catch(8)
@@ -544,13 +544,13 @@ feature -- Event handling
 	minimal_switches_checked is
 			-- set shortest path mode to minimal switches
 		do
-			map_widget.map.set_shortest_path_mode (map_widget.map.shortest_path_mode_minimal_switches)
+--			map_widget.map.set_shortest_path_mode (map_widget.map.shortest_path_mode_minimal_switches)
 		end
 
 	minimal_switches_unchecked is
 			-- set shortest path mode to normal distance
 		do
-			map_widget.map.set_shortest_path_mode (map_widget.map.shortest_path_mode_normal_distance)
+--			map_widget.map.set_shortest_path_mode (map_widget.map.shortest_path_mode_normal_distance)
 		end
 
 feature -- Widgets

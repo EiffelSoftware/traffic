@@ -55,8 +55,8 @@ feature -- Initialization
 
 			is_running := True
 			set_running_scene (Current)
-			time.set_time (9, 0, 0)
-			time.resume_time
+			time.set (9, 0, 0)
+			time.resume
 			event_loop.dispatch
 			set_running_scene (Void)
 			is_running := False
@@ -171,7 +171,7 @@ feature -- Widgets
 
 feature -- Access
 
-	time_counter: TOUCH_TIME_COUNTER
+	time_counter: TRAFFIC_TIME_COUNTER
 
 	redraw is
 			--

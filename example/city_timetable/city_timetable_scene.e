@@ -205,7 +205,7 @@ feature -- Interface
 			map_widget.set_width (width-200)
 
 			-- Trams
-			create label.make_from_text ("0 Trams/Line")
+			create label.make_from_text ("0 Vehicles/Line")
 			label.set_position (50, 10)
 			toolbar_panel.add_widget (label)
 			create slider.make_from_range_horizontal (0, 5)
@@ -214,7 +214,7 @@ feature -- Interface
 			slider.position_changed_event.subscribe (agent update_tram_count (?, label))
 			toolbar_panel.add_widget (slider)
 			create button.make_from_text ("Add")
-			button.clicked_event.subscribe (agent add_trams (slider))
+			button.clicked_event.subscribe (agent add_vehicles (slider))
 			button.set_position (10, 10)
 			toolbar_panel.add_widget (button)
 
@@ -275,14 +275,46 @@ feature -- Event handling
 			a_label.set_text (a_value.out + " Trams/Line")
 		end
 
-	add_trams (a_slider: EM_SLIDER) is
-			-- Add `slider.current_value' number of trams per line.
+	add_vehicles (a_slider: EM_SLIDER) is
+			-- Add `slider.current_value' number of vehicles per line.
 		require
 			a_slider_exists: a_slider /= Void
+		local
+			tram: TRAFFIC_TRAM
+			train: TRAFFIC_TRAM -- Todo add trains
+			bus: TRAFFIC_BUS
+			i: INTEGER
 		do
 			map_widget.map.trams.wipe_out
 			if a_slider.current_value > 0 then
-				map_widget.map.add_tram_per_line (a_slider.current_value)
+				from
+					map_widget.map.lines.start
+				until
+					map_widget.map.lines.after
+				loop
+					from
+						i := 1
+					until
+						i > a_slider.current_value or else i = map_widget.map.lines.item_for_iteration.count
+					loop
+						if map_widget.map.lines.item_for_iteration.type.name.is_equal ("tram") then
+							create tram.make_with_line (map_widget.map.lines.item_for_iteration)
+							tram.set_to_place (tram.place (i))
+							map_widget.map.trams.put_last (tram)
+							tram.start
+						elseif map_widget.map.lines.item_for_iteration.type.name.is_equal ("rail") then
+							-- Todo
+						elseif map_widget.map.lines.item_for_iteration.type.name.is_equal ("bus") then
+							create bus.make_with_line (map_widget.map.lines.item_for_iteration)
+							bus.set_to_place (bus.place (i))
+							bus.set_speed (5)
+							map_widget.map.busses.put_last (bus)
+							bus.start
+						end
+						i := i + 1
+					end
+					map_widget.map.lines.forth
+				end
 			end
 		end
 

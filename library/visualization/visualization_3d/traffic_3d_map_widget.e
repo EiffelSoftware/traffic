@@ -310,6 +310,9 @@ feature -- Element change
 				create travelers_representation.make (map)
 				create paths_representation.make (map)
 
+				-- Todo remove
+--				map.paths.element_inserted_event.subscribe (agent add_path (?))
+
 				buildings_representation.set_map(a_map)
 				boolean_grid.clear_all
 
@@ -475,7 +478,7 @@ feature -- Basic operations
 			ps: TRAFFIC_PATH_SECTION
 		do
 --			map.add_path (a_path)
-			paths_representation.add_path (a_path)
+--			paths_representation.add_path (a_path)
 
 			--places where have to change are colored red
 			create ps.default_create
@@ -484,7 +487,7 @@ feature -- Basic operations
 			until
 				ps.next = Void -- = a_path.last
 			loop
---				places_representation.add_place_with_color_red (ps.connections.last.destination)
+				places_representation.highlight_place (ps.connections.last.destination, create {EM_COLOR}.make_with_rgb (255, 0, 0))
 				ps := ps.next
 			end
 		end
@@ -1127,36 +1130,36 @@ feature {NONE} -- Implementation
 		end
 
 
-	has_collision (a_poly: EM_COLLIDABLE): BOOLEAN is
-			-- Is there a collision?
-		require
-			a_poly_exists: a_poly /= void
-		do
-			-- Check if there is a collision with a line
-			from
-				roads_representation.collision_polygons.start
-				Result := False
-			until
-				roads_representation.collision_polygons.after or Result
-			loop
-				if roads_representation.collision_polygons.item_for_iteration /= Void and then a_poly.collides_with (roads_representation.collision_polygons.item_for_iteration) then
-					Result := True
-				end
-				roads_representation.collision_polygons.forth
-			end
+--	has_collision (a_poly: EM_COLLIDABLE): BOOLEAN is
+--			-- Is there a collision?
+--		require
+--			a_poly_exists: a_poly /= void
+--		do
+--			-- Check if there is a collision with a line
+--			from
+--				roads_representation.collision_polygons.start
+--				Result := False
+--			until
+--				roads_representation.collision_polygons.after or Result
+--			loop
+--				if roads_representation.collision_polygons.item_for_iteration /= Void and then a_poly.collides_with (roads_representation.collision_polygons.item_for_iteration) then
+--					Result := True
+--				end
+--				roads_representation.collision_polygons.forth
+--			end
 
-			-- Check if there is a collsion with a building
-			from
-				buildings_representation.collision_polygons.start
-			until
-				buildings_representation.collision_polygons.after or Result
-			loop
-				if buildings_representation.collision_polygons.item_for_iteration /= Void and then a_poly.collides_with (buildings_representation.collision_polygons.item_for_iteration) then
-					Result := True
-				end
-				buildings_representation.collision_polygons.forth
-			end
-		end
+--			-- Check if there is a collsion with a building
+--			from
+--				buildings_representation.collision_polygons.start
+--			until
+--				buildings_representation.collision_polygons.after or Result
+--			loop
+--				if buildings_representation.collision_polygons.item_for_iteration /= Void and then a_poly.collides_with (buildings_representation.collision_polygons.item_for_iteration) then
+--					Result := True
+--				end
+--				buildings_representation.collision_polygons.forth
+--			end
+--		end
 
 	publish_mouse_event (event: EM_MOUSEBUTTON_EVENT) is
 			-- 	Publish mouse event if there was a click somewhere on the map.

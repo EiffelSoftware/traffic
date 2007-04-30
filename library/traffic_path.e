@@ -207,7 +207,7 @@ feature -- Basic operations
 
 
 
-feature --{TRAFFIC_PATH} -- Implementation
+feature -- Implementation
 
 	first: TRAFFIC_PATH_SECTION
 			--pointer to the first traffic_path_section of the path

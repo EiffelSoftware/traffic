@@ -21,6 +21,11 @@ inherit
 			remove_first, remove_last, remove_left_cursor, remove_right_cursor, wipe_out
 		end
 
+	TRAFFIC_EVENT_CONTAINER [G]
+		undefine
+			is_equal, copy, out
+		end
+
 create
 	make,
 	make_equal,
@@ -709,18 +714,5 @@ feature -- Removal
 			end
 			Precursor
 		end
-
-feature -- Access
-
-	element_inserted_event: EM_EVENT_CHANNEL [TUPLE [G]]
-			-- Insertion event (1: New element, 2: Position)
-
-	element_removed_event: EM_EVENT_CHANNEL [TUPLE [G]]
-			-- Deletion event (Removed element)
-
-invariant
-
-	inserted_event_exists: element_inserted_event /= Void
-	removed_event_exists: element_removed_event /= Void
 
 end

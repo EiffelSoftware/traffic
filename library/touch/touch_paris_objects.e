@@ -7,7 +7,7 @@ deferred class TOUCH_PARIS_OBJECTS
 
 feature -- Access
 
-	Paris: TOUCH_MAP is
+	Paris: TRAFFIC_MAP is
 			-- Map of Paris
 		deferred
 		ensure
@@ -21,44 +21,44 @@ feature -- Status report
 
 feature -- Access (Lines)
 
-	Line1: TOUCH_SIMPLE_LINE is
+	Line1: TRAFFIC_SIMPLE_LINE is
 			-- Line 1 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 1")
+			Result ?= Paris.lines.item ("tram 1")
 		end
 
-	Line2: TOUCH_SIMPLE_LINE is
+	Line2: TRAFFIC_SIMPLE_LINE is
 			-- Line 2 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 2")
+			Result ?= Paris.lines.item ("tram 2")
 		end
 
-	Line3: TOUCH_SIMPLE_LINE is
+	Line3: TRAFFIC_SIMPLE_LINE is
 			-- Line 3 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 3")
+			Result ?= Paris.lines.item ("tram 3")
 		end
 
-	Line7_a: TOUCH_SIMPLE_LINE is
+	Line7_a: TRAFFIC_SIMPLE_LINE is
 			-- Line 7 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 7(a)")
+			Result ?= Paris.lines.item ("tram 7(a)")
 		end
 
-	Line8: TOUCH_SIMPLE_LINE is
+	Line8: TRAFFIC_SIMPLE_LINE is
 			-- Line 8 of the Paris map
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.simple_line("tram 8")
+			Result ?= Paris.lines.item ("tram 8")
 		end
 
 feature  -- Predefined objects (Places)
@@ -68,7 +68,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Balard")
+			Result := Paris.places.item ("place Balard")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -78,7 +78,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Mairie d'Issy")
+			Result := Paris.places.item ("place Mairie d'Issy")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -88,7 +88,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Chatillon - Montrouge")
+			Result := Paris.places.item ("place Chatillon - Montrouge")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -98,7 +98,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Gare de Lyon")
+			Result := Paris.places.item ("place Gare de Lyon")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -108,7 +108,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Invalides")
+			Result := Paris.places.item ("place Invalides")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -118,7 +118,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Madeleine")
+			Result := Paris.places.item ("place Madeleine")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -128,7 +128,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Bobigny - Pablo Picasso")
+			Result := Paris.places.item ("place Bobigny - Pablo Picasso")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -138,7 +138,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place La Fourche")
+			Result := Paris.places.item ("place La Fourche")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -148,7 +148,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Bastille")
+			Result := Paris.places.item ("place Bastille")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -158,7 +158,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Concorde")
+			Result := Paris.places.item ("place Concorde")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -168,7 +168,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place Republique")
+			Result := Paris.places.item ("place Republique")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -178,7 +178,7 @@ feature  -- Predefined objects (Places)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.place ("place La Motte - Picquet - Grenelle")
+			Result := Paris.places.item ("place La Motte - Picquet - Grenelle")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -190,7 +190,7 @@ feature -- Predefined objects (Buildings)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.new_building_at_place(Paris.place ("place Palais Royal Musee du Louvre"))
+--			Result := Paris.new_building_at_place(Paris.place ("place Palais Royal Musee du Louvre"))
 		end
 
 feature -- Predefined objects (Routes)
@@ -203,10 +203,10 @@ feature -- Predefined objects (Routes)
 				temp_places: LINKED_LIST [TRAFFIC_PLACE]
 		once
  			create temp_places.make
-			temp_places.force (Paris.place ("place Concorde"))
-			temp_places.force (Paris.place ("place Republique"))
+			temp_places.force (Paris.places.item ("place Concorde"))
+			temp_places.force (Paris.places.item ("place Republique"))
 
-			Result := Paris.new_route (temp_places)
+--			Result := Paris.new_route (temp_places)
 		end
 
 	Route2: TOUCH_ROUTE is
@@ -217,10 +217,10 @@ feature -- Predefined objects (Routes)
 				temp_places: LINKED_LIST [TRAFFIC_PLACE]
 		once
  			create temp_places.make
-			temp_places.force (Paris.place ("place Bastille"))
-			temp_places.force (Paris.place ("place La Motte - Picquet - Grenelle"))
+			temp_places.force (Paris.places.item ("place Bastille"))
+			temp_places.force (Paris.places.item ("place La Motte - Picquet - Grenelle"))
 
-			Result := Paris.new_route (temp_places)
+--			Result := Paris.new_route (temp_places)
 		end
 
 feature --Predefined objects (Line-Sections)

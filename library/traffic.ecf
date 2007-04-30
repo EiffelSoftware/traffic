@@ -36,6 +36,7 @@
 				</cluster>
 				<cluster name="traffic_gl_tools" location="$|gl_tools\"/>
 			</cluster>
+			<cluster name="moving" location="$|moving"/>
 			<cluster name="type" location="$|type\"/>
 			<cluster name="visualization" location="$|visualization\">
 				<cluster name="visualization_2d" location="$|visualization_2d\"/>

@@ -34,6 +34,7 @@ feature {NONE} -- Initialization
 			default_size: INTEGER
 			i: INTEGER
 			temp_list: LINKED_LIST[TRAFFIC_BUILDING]
+			t: TRAFFIC_EVENT_META_LINKED_LIST [TRAFFIC_LINE_SECTION, TRAFFIC_LINE]
 		do
 			default_size := 100
 			name := a_name
@@ -49,6 +50,7 @@ feature {NONE} -- Initialization
 			create trams.make
 			create busses.make
 			create taxi_offices.make
+			create paths.make
 
 			create internal_buildings.make (1,4)
 			from
@@ -79,6 +81,28 @@ feature -- TODO
 		end
 
 feature -- Status report
+
+	place_at_position (a_point: EM_VECTOR_2D): TRAFFIC_PLACE	is
+			-- Place that `a_point' is located on
+			-- Returns Void if there is no place at this position
+		require
+			a_point_exists: a_point /= Void
+		local
+			tolerance: DOUBLE
+		do
+			tolerance := 2.0
+			from
+				places.start
+			until
+				places.off or Result /= Void
+			loop
+				if a_point.x > places.item_for_iteration.position.x - places.item_for_iteration.width/2 - tolerance and a_point.x < places.item_for_iteration.position.x + places.item_for_iteration.width/2 + tolerance and
+					a_point.y > places.item_for_iteration.position.y - places.item_for_iteration.breadth/2 - tolerance and a_point.y < places.item_for_iteration.position.y + places.item_for_iteration.breadth/2 + tolerance then
+					Result := places.item_for_iteration
+				end
+				places.forth
+			end
+		end
 
 --	has_place (a_name: STRING): BOOLEAN is
 --			-- Does the traffic map have a place called `a_name'?
@@ -206,39 +230,39 @@ feature -- Insertion
 --		ensure
 --			a_place_in_map: places.has (a_place.name)
 --		end
-	add_tram_per_line (number: INTEGER) is
-			-- Add `number' trams per line to the map `a_map'.
-		require
-			number_valid: number > 0
-		local
-			a_tram: TRAFFIC_TRAM
-			traveling_points: LINKED_LIST [EM_VECTOR_2D]
-			i: INTEGER
-		do
-			create traveling_points.make
-			from
-				lines.start
-			until
-				lines.after
-			loop
-				if lines.item_for_iteration.type.name.is_equal ("tram") or lines.item_for_iteration.type.name.is_equal ("rail") or lines.item_for_iteration.type.name.is_equal ("bus") then
-					create a_tram.make_with_line (lines.item_for_iteration)
-					from
-						i := 1
-						create a_tram.make_with_line (lines.item_for_iteration)
-					until
-						i > number or i = a_tram.line_count
-					loop
-						create a_tram.make_with_line (lines.item_for_iteration)
-						a_tram.set_to_place (a_tram.place (i))
-						trams.put_last (a_tram)
-						a_tram.start
-						i := i + 1
-					end
-				end
-				lines.forth
-			end
-		end
+--	add_vehicle_per_line (number: INTEGER) is
+--			-- Add `number' trams per line to the map `a_map'.
+--		require
+--			number_valid: number > 0
+--		local
+--			a_tram: TRAFFIC_TRAM
+--			traveling_points: LINKED_LIST [EM_VECTOR_2D]
+--			i: INTEGER
+--		do
+--			create traveling_points.make
+--			from
+--				lines.start
+--			until
+--				lines.after
+--			loop
+--				if lines.item_for_iteration.type.name.is_equal ("tram") or lines.item_for_iteration.type.name.is_equal ("rail") or lines.item_for_iteration.type.name.is_equal ("bus") then
+--					create a_tram.make_with_line (lines.item_for_iteration)
+--					from
+--						i := 1
+--						create a_tram.make_with_line (lines.item_for_iteration)
+--					until
+--						i > number or i = a_tram.line_count
+--					loop
+--						create a_tram.make_with_line (lines.item_for_iteration)
+--						a_tram.set_to_place (a_tram.place (i))
+--						trams.put_last (a_tram)
+--						a_tram.start
+--						i := i + 1
+--					end
+--				end
+--				lines.forth
+--			end
+--		end
 
 	add_tram_per_line_with_schedule (a_map: TRAFFIC_MAP; number: INTEGER) is
 			-- Add `number' of trams per line with an automatically generated schedule.
@@ -601,7 +625,7 @@ feature -- Access
 	line_sections: TRAFFIC_LINE_SECTION_LIST
 			-- All line sections in map
 
-	lines: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_LINE, STRING]
+	lines: TRAFFIC_EVENT_META_HASH_TABLE [TRAFFIC_LINE_SECTION, TRAFFIC_LINE, STRING]
 			-- All lines in map
 
 	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD, INTEGER]

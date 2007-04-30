@@ -7,12 +7,12 @@ class
 	TRAFFIC_BUS inherit
 		TRAFFIC_LINE_VEHICLE
 create
-	make_default_with_line
+	make_with_line
 
 feature -- Initialization	
 
-	make_default_with_line (a_line: TRAFFIC_LINE) is
-			-- Create a bus following 'a_line'.
+	make_with_line (a_line: TRAFFIC_LINE) is
+			-- Create a bus following `a_line'.
 			-- Set unit_capacity and speed to default values.
 		require
 			a_line_exists: a_line /= Void
@@ -20,10 +20,10 @@ feature -- Initialization
 			traffic_type := create {TRAFFIC_TYPE_BUS}.make
 
 			create polypoints.make (0)
+			set_line_route_from_roads (a_line)
 			create poly_cursor.make (polypoints)
 			poly_cursor.start
 			line := a_line
-			--TODO? commented because it won't compile set_line_route(line)
 			update_coordinates
 			update_angle
 			speed := Default_virtual_speed
@@ -39,7 +39,8 @@ feature -- Basic operations
 		do
 			line := a_line
 			polypoints.wipe_out
-			-- won't compile: set_line_route(line)
+			set_line_route_from_roads (a_line)
+			poly_cursor.start
 		ensure
 			new_line_set:  line = a_line
 		end

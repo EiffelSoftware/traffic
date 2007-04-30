@@ -50,10 +50,10 @@ feature -- Status report
 
 feature -- Access (Paris)
 
-	Paris: TOUCH_MAP is
+	Paris: TRAFFIC_MAP is
 			-- Object representing the city of Paris
 		require else
-			map_widget_exists: map_widget /= Void
+--			map_widget_exists: map_widget /= Void
 		local
 			loader: TRAFFIC_MAP_LOADER
 			s: STRING
@@ -64,11 +64,12 @@ feature -- Access (Paris)
 			s := fs.pathname (s, "paris.xml")
 			create loader.make (s)
 			if not loader.has_error then
+				loader.disable_dump_loading
 				loader.load_map
 				if not loader.has_error then
 					map_widget.set_map (loader.map)
-					create Result.make
-					map_widget.enable_map_hidden
+					Result := loader.map
+--					map_widget.enable_map_hidden
 					is_paris_loaded := True
 					is_zurich_loaded := False
 				end

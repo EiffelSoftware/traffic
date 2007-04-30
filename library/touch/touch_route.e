@@ -39,8 +39,8 @@ feature  -- Initialization
 			internal_map := map_widget.map
 			internal_places_to_visit := a_places_to_visit
 
-			internal_map.find_shortest_path_of_a_list_of_places (internal_places_to_visit)
-			internal_route := internal_map.shortest_path
+--			internal_map.find_shortest_path_of_a_list_of_places (internal_places_to_visit)
+--			internal_route := internal_map.shortest_path
 
 			make_itinerary
 		end
@@ -53,8 +53,8 @@ feature  -- Initialization
 			internal_map := map_widget.map
 			internal_places_to_visit := a_places_to_visit
 
-			internal_map.find_shortest_path_of_a_list_of_places (a_places_to_visit)
-			internal_route := internal_map.shortest_path
+--			internal_map.find_shortest_path_of_a_list_of_places (a_places_to_visit)
+--			internal_route := internal_map.shortest_path
 		end
 
 feature -- Basic operations
@@ -65,7 +65,7 @@ feature -- Basic operations
 			scene_running: running_scene /= Void
 		do
 --			internal_map_widget.paths_representation. internal_route
-			create traveler.make_directed (itinerary, 0.5)
+			create traveler.make_with_points (itinerary, 0.5)
 			traveler.set_reiterate (True)
 			internal_map.passengers.force_last (traveler)
 --			traveler.take_tour
@@ -99,7 +99,7 @@ feature -- Basic operation
 	calculate_shortest_path is
 			-- Calculate the shortest path from one place to visit to the next.
 		do
-			internal_map.find_shortest_path_of_a_list_of_places (internal_places_to_visit)
+--			internal_map.find_shortest_path_of_a_list_of_places (internal_places_to_visit)
 		end
 
 	make_itinerary is
@@ -115,7 +115,7 @@ feature -- Basic operation
 			until
 				places.after
 			loop
-				itinerary.force (places.item.position)
+				itinerary.force_last (places.item.position)
 				places.forth
 			end
 		end
@@ -163,7 +163,7 @@ feature {NONE} -- Implementation
 
 	internal_route: TRAFFIC_PATH
 
-	itinerary: ARRAYED_LIST [EM_VECTOR_2D]
+	itinerary: DS_ARRAYED_LIST [EM_VECTOR_2D]
 
 	traveler: TRAFFIC_PASSENGER
 
@@ -175,7 +175,7 @@ feature {NONE} -- Implementation
 
 	internal_places_on_route: LINKED_LIST [TRAFFIC_PLACE]
 
-	traveler_rep: TRAFFIC_3D_TRAVELER_REPRESENTATION
+	traveler_rep: TRAFFIC_3D_MOVING_REPRESENTATION
 
 	end_animate is
 			-- The traveler is removed from the map.

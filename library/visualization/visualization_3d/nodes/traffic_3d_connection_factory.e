@@ -21,16 +21,88 @@ create make
 feature -- Initialization
 
 	make is
-			-- makes factory and sets the color to black
+			-- Initialize the factory and set the material to a white material.
 		local
-		default_material: TE_MATERIAL_SIMPLE
+			default_material: TE_MATERIAL_SIMPLE
 		do
-			create default_material.make_with_color(0.0,0.0,0.0)
+			create default_material.make_with_color(1.0,1.0,1.0)
 			set_material(default_material)
 			width := Line_width
 		end
 
-feature -- 3D Member Creation
+feature -- Access
+
+	width: DOUBLE
+			-- Width of line that represents the connection
+
+feature -- Status setting
+
+	set_color (r,g,b: DOUBLE) is
+			-- Set `color' to `a_color'. as unclamped floating point colors
+		local
+			new_material: TE_MATERIAL_SIMPLE
+		do
+			create new_material.make_with_color(r, g, b)
+			set_material(new_material)
+		end
+
+	set_width (a_width: DOUBLE) is
+			-- Set the `width' of the drawn connection to `a_width'.
+		require
+			width_valid: a_width > 0.0
+		do
+			width := a_width
+		end
+
+feature -- Basic operations
+
+	new_connection (a_connection: TRAFFIC_CONNECTION): TRAFFIC_3D_RENDERABLE [TRAFFIC_CONNECTION] is
+			-- New polyline for `a_connection'
+		require
+			width_positive: width > 0
+			connection_not_void: a_connection /= void
+		local
+			polyline_3d: ARRAYED_LIST[EM_VECTOR3D]
+			current_polypoint_3d: EM_VECTOR3D
+			i: INTEGER
+		do
+			create polyline_3d.make(a_connection.polypoints.count)
+			from
+				i := 1
+			until
+				i > a_connection.polypoints.count - 1
+			loop
+				current_polypoint_3d.set (a_connection.polypoints.item(i).x, 0.0, a_connection.polypoints.item(i).y)
+				polyline_3d.extend (current_polypoint_3d)
+				i := i + 1
+			end
+			-- Add last point to the 3d_polyline
+			i := a_connection.polypoints.count
+			current_polypoint_3d.set (a_connection.polypoints.item (i).x, 0.0, a_connection.polypoints.item (i).y)
+			polyline_3d.extend (current_polypoint_3d)
+			create_flat_polyline(polyline_3d, width)
+			create Result.make_with_item (a_connection, last_3d_member)
+		ensure
+			Result_exists: Result /= Void
+		end
+
+feature {NONE} -- Implementation
+
+	angle_between_vectors(vector_a, vector_b: EM_VECTOR3D): DOUBLE is
+			-- Angle between two 3d vectors
+		local
+			d,l,a: DOUBLE
+		do
+			l := (vector_a.length * vector_b.length)
+			d := (vector_a.dot_product(vector_b))
+			a := d/l
+			if a < -1.0 then
+				a := -1.0
+			elseif a > 1.0 then
+				a := 1.0
+			end
+			Result := arc_cosine(a)
+		end
 
 	create_flat_polyline(some_points: ARRAYED_LIST[EM_VECTOR3D]; a_width: DOUBLE) is
 			-- creates polyline facing torwards the y value
@@ -181,165 +253,5 @@ feature -- 3D Member Creation
 			last_3d_member := build_3d_member
 
 		end
-
-feature -- Access
-
-	connection: TRAFFIC_CONNECTION
-			-- Connection for which the 3d object is created
-
-	collision_polygons: DS_LINKED_LIST [EM_POLYGON_CONVEX_COLLIDABLE]
-			-- Collision polygons for the generated object (one per two polypoints)
-
-	width: DOUBLE
-			-- Width of line that represents the connection
-
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-	set_connection (a_connection: TRAFFIC_CONNECTION) is
-			-- Set the connection to generate a representation for to `a_connection'.
-		require
-			a_connection_exists: a_connection /= Void
-		do
-			connection := a_connection
-		end
-
-	set_color (r,g,b: DOUBLE) is
-			-- Set `color' to `a_color'. as unclamped floating point colors
-		local
-			new_material: TE_MATERIAL_SIMPLE
-		do
-			create new_material.make_with_color(r, g, b)
-			set_material(new_material)
-		end
-
-	set_width (a_width: DOUBLE) is
-			-- Set the `width' of the drawn connection to `a_width'.
-		require
-			width_valid: a_width > 0.0
-		do
-			width := a_width
-		end
-
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
-	create_connection is
-			-- creates the connection and returns it
-		require
-			width_positive: width > 0
-			connection_not_void: connection /= void
-		local
-			polyline_3d: ARRAYED_LIST[EM_VECTOR3D]
-			current_polypoint_2d: EM_VECTOR_2D -- <- i use this because of the map_to_gl_coords function. ARGH! TODO: remove the map_to_gl_coords stuff...
-			current_polypoint_3d: EM_VECTOR3D
-			i: INTEGER
-
-			delta_x, delta_y, delta_z, norm: DOUBLE -- for collision polygon creation from old factory
-			start_point, end_point, a_point, c_point: EM_VECTOR_2D -- for collision polygon creation from old factory
-			polygon_points: DS_LINKED_LIST [EM_VECTOR_2D] -- for collision polygon creation from old factory
-			collidable: EM_POLYGON_CONVEX_COLLIDABLE -- for collision polygon creation from old factory
-
-		do
-
-			create polyline_3d.make(connection.polypoints.count)
-
-			create collision_polygons.make -- from old factory
-			from
-				i := 1
-			until
-				i > connection.polypoints.count - 1
-			loop
---				current_polypoint_2d := map_to_gl_coords(connection.polypoints.i_th(i))
-				current_polypoint_2d := connection.polypoints.item(i)
-				current_polypoint_3d.set (current_polypoint_2d.x, 0.0, current_polypoint_2d.y)
-				polyline_3d.extend (current_polypoint_3d)
-
-
-				-- Collision polygon TAKEN FROM OLD CONNECTION FACTORY
-					create start_point.make (connection.polypoints.item (i).x, connection.polypoints.item (i).y)
-					create end_point.make (connection.polypoints.item (i+1).x, connection.polypoints.item (i+1).y)
-
---					start_point := map_to_gl_coords (start_point)
---					end_point := map_to_gl_coords (end_point)
-					start_point := start_point
-					end_point := end_point
-
-					delta_x := end_point.x - start_point.x
-					delta_y := end_point.y - start_point.y
-
-					norm := sqrt (delta_x*delta_x + delta_y*delta_y)
-
-					if norm = 0 then
-						norm := 1
-					end
-
-					create a_point.make (start_point.x-delta_y*1.5*width/norm, start_point.y+delta_x*1.5*width/norm)
-					create c_point.make (end_point.x+delta_y*1.5*width/norm, end_point.y-delta_x*1.5*width/norm)
-
-					create polygon_points.make
-					polygon_points.force ((a_point),1)
-					polygon_points.force (create {EM_VECTOR_2D}.make (start_point.x+delta_y*1.5*width/norm, start_point.y-delta_x*1.5*width/norm), 2)
-					polygon_points.force ((c_point),3)
-					polygon_points.force (create {EM_VECTOR_2D}.make (end_point.x-delta_y*1.5*width/norm, end_point.y+delta_x*1.5*width/norm), 4)
-					create collidable.make_from_absolute_list ((a_point + (c_point - a_point)/2), polygon_points)
-					collision_polygons.force_last (collidable)
-				------
-
-				i := i + 1
-			end
-			--add last point to the 3d_polyline
-			i := connection.polypoints.count
-			current_polypoint_2d := connection.polypoints.item (i)
---			current_polypoint_2d := map_to_gl_coords(connection.polypoints.i_th(i))
-			current_polypoint_3d.set (current_polypoint_2d.x, 0.0, current_polypoint_2d.y)
-			polyline_3d.extend (current_polypoint_3d)
-
-			create_flat_polyline(polyline_3d, width)
-		end
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
-feature {NONE} -- Implementation
-
-	angle_between_vectors(vector_a, vector_b: EM_VECTOR3D): DOUBLE is
-			-- angle between two 3d vectors
-		local
-			d,l,a: DOUBLE
-		do
-			l := (vector_a.length * vector_b.length)
-			d := (vector_a.dot_product(vector_b))
-			a := d/l
-			if a < -1.0 then
-				a := -1.0
-			elseif a > 1.0 then
-				a := 1.0
-			end
-			Result := arc_cosine(a)
-		end
-
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end

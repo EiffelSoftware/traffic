@@ -18,6 +18,11 @@ inherit
 			prune, prune_last, remove, remove_last, wipe_out, out
 		end
 
+	TRAFFIC_EVENT_CONTAINER [G]
+		undefine
+			is_equal, copy, out
+		end
+
 create
 	make,
 	make_equal,
@@ -296,14 +301,6 @@ feature -- Removal
 			Precursor
 		end
 
-feature -- Access
-
-	element_inserted_event: EM_EVENT_CHANNEL [TUPLE [G, INTEGER]]
-			-- Insertion event (1: New element, 2: Position)
-
-	element_removed_event: EM_EVENT_CHANNEL [TUPLE [G]]
-			-- Deletion event (Removed element)
-
 feature -- Output
 
 	out: STRING is
@@ -322,10 +319,5 @@ feature -- Output
 				c.forth
 			end
 		end
-
-invariant
-
-	inserted_initialized: element_inserted_event /= Void
-	removed_initialized: element_removed_event /= Void
 
 end

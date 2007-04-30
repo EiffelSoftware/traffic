@@ -23,7 +23,7 @@ feature -- Intialization
 			-- Create an automatic schedule for a traffic line.
 			-- This method uses an automatich generator which generates a schedule
 			-- where a tram moves along the line from 05:00 to 23:00
-			-- It could be extended to use an xml file which provies the real data
+			-- It could be extended to use an xml file which provides the real data
 			-- of the tram schedule of i.e. zurich
 		require
 			valid_line: a_line /= Void
@@ -69,11 +69,11 @@ feature -- Intialization
 						a_line.after
 					loop
 						-- Create schedule entry
-						create new_entry.make_with_line_section(a_line.item)
+						create new_entry.make_with_line_section(a_line.item_for_iteration)
 						new_entry.set_start_time(act_time.twin)
 
 						-- Add time for traveling
-						distance := a_line.item.origin.position.distance (a_line.item.destination.position).abs
+						distance := a_line.item_for_iteration.origin.position.distance (a_line.item_for_iteration.destination.position).abs
 						act_time.minute_add (((distance.rounded) // 80).max(1))
 
 						-- Set end time in schedule entry

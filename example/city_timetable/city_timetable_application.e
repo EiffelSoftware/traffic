@@ -30,9 +30,9 @@ feature -- Initialization
 		do
 			-- Initialise screen
 			video_subsystem.set_video_surface_width (800)
-			video_subsystem.set_video_surface_height (traffic_window_height)
-			video_subsystem.set_video_bpp (traffic_screen_resolution)
-			video_subsystem.set_fullscreen (Fullscreen)
+			video_subsystem.set_video_surface_height (600)
+			video_subsystem.set_video_bpp (32)
+			video_subsystem.set_fullscreen (False)
 			video_subsystem.set_opengl (True)
 			video_subsystem.enable
 			initialize_screen

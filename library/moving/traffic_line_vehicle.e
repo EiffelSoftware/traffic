@@ -58,9 +58,9 @@ feature --Access
 			end
 			if i < stop then
 				line.back
-				Result := line.item.destination
+				Result := line.item_for_iteration.destination
 			else
-				Result := line.item.origin
+				Result := line.item_for_iteration.origin
 			end
 		end
 

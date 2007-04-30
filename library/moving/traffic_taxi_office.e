@@ -77,7 +77,7 @@ feature -- Basic operations
 		do
 			if available_taxis.count > 0 then
 				nearest_taxi := available_taxis.first
-				position := gl_to_map_coords (nearest_taxi.position)
+				position := available_taxis.first.position
 				minimum_distance := sqrt((from_location.x - position.x)^2 + (from_location.y - position.y)^2)
 				from
 					available_taxis.start
@@ -86,7 +86,7 @@ feature -- Basic operations
 				until
 					available_taxis.after
 				loop
-					position :=gl_to_map_coords (available_taxis.item_for_iteration.position)
+					position :=available_taxis.item_for_iteration.position
 					temp_distance := sqrt((from_location.x - position.x)^2 + (from_location.y - position.y)^2)
 					if minimum_distance > temp_distance then
 						minimum_distance := temp_distance

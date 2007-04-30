@@ -83,9 +83,12 @@ feature -- Insertion
 			-- Add visualization for `a_place'.
 		require
 			a_place_has_no_view: not place_root.has_child (a_place)
+		local
+			p: TRAFFIC_3D_RENDERABLE [TRAFFIC_PLACE]
 		do
-			place_factory.set_color (color.red, color.green, color.blue)
-			place_root.add_child (place_factory.new_place_member (a_place))
+			p := place_factory.new_place_member (a_place)
+			place_root.add_child (p)
+			p.set_color (color)
 		end
 
 feature -- Removal
