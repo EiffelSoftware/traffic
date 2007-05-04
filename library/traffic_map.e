@@ -32,9 +32,9 @@ feature {NONE} -- Initialization
 			a_name_not_empty: not a_name.is_empty
 		local
 			default_size: INTEGER
-			i: INTEGER
-			temp_list: LINKED_LIST[TRAFFIC_BUILDING]
-			t: TRAFFIC_EVENT_META_LINKED_LIST [TRAFFIC_LINE_SECTION, TRAFFIC_LINE]
+--			i: INTEGER
+--			temp_list: LINKED_LIST[TRAFFIC_BUILDING]
+--			t: TRAFFIC_EVENT_META_LINKED_LIST [TRAFFIC_LINE_SECTION, TRAFFIC_LINE]
 		do
 			default_size := 100
 			name := a_name
@@ -51,17 +51,19 @@ feature {NONE} -- Initialization
 			create busses.make
 			create taxi_offices.make
 			create paths.make
+			create buildings.make
+			create free_movings.make
 
-			create internal_buildings.make (1,4)
-			from
-				i:=1
-			until
-				i>4
-			loop
-				create temp_list.make
-				internal_buildings[i]:=temp_list
-				i:=i+1
-			end
+--			create internal_buildings.make (1,4)
+--			from
+--				i:=1
+--			until
+--				i>4
+--			loop
+--				create temp_list.make
+--				internal_buildings[i]:=temp_list
+--				i:=i+1
+--			end
 
 --			create center.make (669.0,718.0)
 
@@ -211,8 +213,12 @@ feature -- Element change
 
 	set_scale_factor (a_scale_factor: DOUBLE) is
 			-- Set `a_scale_factor'.
+		require
+			a_scale_factor_valid: a_scale_factor > 0
 		do
-			scale_factor_impl := a_scale_factor
+			scale_factor := a_scale_factor
+		ensure
+			scale_factor_set: scale_factor = a_scale_factor
 		end
 
 feature -- Insertion
@@ -345,41 +351,41 @@ feature -- Insertion
 --		end
 
 
-	add_building (a_building: TRAFFIC_BUILDING) is
-			-- Add building `a_building' to map.
-		require
-			a_building_exists: a_building /= Void
-		do
-			if (a_building.corner1.x>=0 and a_building.corner1.y>=0) or
-			   (a_building.corner2.x>=0 and a_building.corner2.y>=0) or
-			   (a_building.corner3.x>=0 and a_building.corner3.y>=0) or
-			   (a_building.corner4.x>=0 and a_building.corner4.y>=0)
-			then
-				internal_buildings.item(1).extend(a_building)
-			end
-			if (a_building.corner1.x<=0 and a_building.corner1.y>=0) or
-			   (a_building.corner2.x<=0 and a_building.corner2.y>=0) or
-			   (a_building.corner3.x<=0 and a_building.corner3.y>=0) or
-			   (a_building.corner4.x<=0 and a_building.corner4.y>=0)
-			then
-				internal_buildings.item(2).extend(a_building)
-			end
-			if (a_building.corner1.x>=0 and a_building.corner1.y<=0) or
-			   (a_building.corner2.x>=0 and a_building.corner2.y<=0) or
-			   (a_building.corner3.x>=0 and a_building.corner3.y<=0) or
-			   (a_building.corner4.x>=0 and a_building.corner4.y<=0)
-			then
-				internal_buildings.item(3).extend(a_building)
-			end
-			if (a_building.corner1.x<=0 and a_building.corner1.y<=0) or
-			   (a_building.corner2.x<=0 and a_building.corner2.y<=0) or
-			   (a_building.corner3.x<=0 and a_building.corner3.y<=0) or
-			   (a_building.corner4.x<=0 and a_building.corner4.y<=0)
-			then
-				internal_buildings.item(4).extend(a_building)
-			end
+--	add_building (a_building: TRAFFIC_BUILDING) is
+--			-- Add building `a_building' to map.
+--		require
+--			a_building_exists: a_building /= Void
+--		do
+--			if (a_building.corner1.x>=0 and a_building.corner1.y>=0) or
+--			   (a_building.corner2.x>=0 and a_building.corner2.y>=0) or
+--			   (a_building.corner3.x>=0 and a_building.corner3.y>=0) or
+--			   (a_building.corner4.x>=0 and a_building.corner4.y>=0)
+--			then
+--				internal_buildings.item(1).extend(a_building)
+--			end
+--			if (a_building.corner1.x<=0 and a_building.corner1.y>=0) or
+--			   (a_building.corner2.x<=0 and a_building.corner2.y>=0) or
+--			   (a_building.corner3.x<=0 and a_building.corner3.y>=0) or
+--			   (a_building.corner4.x<=0 and a_building.corner4.y>=0)
+--			then
+--				internal_buildings.item(2).extend(a_building)
+--			end
+--			if (a_building.corner1.x>=0 and a_building.corner1.y<=0) or
+--			   (a_building.corner2.x>=0 and a_building.corner2.y<=0) or
+--			   (a_building.corner3.x>=0 and a_building.corner3.y<=0) or
+--			   (a_building.corner4.x>=0 and a_building.corner4.y<=0)
+--			then
+--				internal_buildings.item(3).extend(a_building)
+--			end
+--			if (a_building.corner1.x<=0 and a_building.corner1.y<=0) or
+--			   (a_building.corner2.x<=0 and a_building.corner2.y<=0) or
+--			   (a_building.corner3.x<=0 and a_building.corner3.y<=0) or
+--			   (a_building.corner4.x<=0 and a_building.corner4.y<=0)
+--			then
+--				internal_buildings.item(4).extend(a_building)
+--			end
 
-		end
+--		end
 
 --	add_traveler (a_traveler: TRAFFIC_MOVING) is
 --			-- Add traveler 'a_traveler' to map.
@@ -418,105 +424,105 @@ feature -- Insertion
 
 feature -- Removal
 
-	delete_buildings is
-			-- Delete all buildings from map.
-		do
-			internal_buildings.item (1).wipe_out
-			internal_buildings.item (2).wipe_out
-			internal_buildings.item (3).wipe_out
-			internal_buildings.item (4).wipe_out
-		end
+--	delete_buildings is
+--			-- Delete all buildings from map.
+--		do
+--			internal_buildings.item (1).wipe_out
+--			internal_buildings.item (2).wipe_out
+--			internal_buildings.item (3).wipe_out
+--			internal_buildings.item (4).wipe_out
+--		end
 
-	remove_one_building (a_building: TRAFFIC_BUILDING) is
-			-- Delete the 'a_building' from the internal_buildings array.
-		local
-			index_to_remove, index: INTEGER
-		do
-			if (a_building.corner1.x>=0 and a_building.corner1.y>=0) or
-			   (a_building.corner2.x>=0 and a_building.corner2.y>=0) or
-			   (a_building.corner3.x>=0 and a_building.corner3.y>=0) or
-			   (a_building.corner4.x>=0 and a_building.corner4.y>=0)
-			then
-				from
-					internal_buildings.item(1).start
-					index := 1
-				until
-					internal_buildings.item(1).after
-				loop
-					if internal_buildings.item(1).item.center = a_building.center then
-						index_to_remove := index
-					end
-					index := index + 1
-					internal_buildings.item (1).forth
-				end
-				internal_buildings.item(1).go_i_th (index_to_remove)
-				internal_buildings.item(1).remove
-			end
+--	remove_one_building (a_building: TRAFFIC_BUILDING) is
+--			-- Delete the 'a_building' from the internal_buildings array.
+--		local
+--			index_to_remove, index: INTEGER
+--		do
+--			if (a_building.corner1.x>=0 and a_building.corner1.y>=0) or
+--			   (a_building.corner2.x>=0 and a_building.corner2.y>=0) or
+--			   (a_building.corner3.x>=0 and a_building.corner3.y>=0) or
+--			   (a_building.corner4.x>=0 and a_building.corner4.y>=0)
+--			then
+--				from
+--					internal_buildings.item(1).start
+--					index := 1
+--				until
+--					internal_buildings.item(1).after
+--				loop
+--					if internal_buildings.item(1).item.center = a_building.center then
+--						index_to_remove := index
+--					end
+--					index := index + 1
+--					internal_buildings.item (1).forth
+--				end
+--				internal_buildings.item(1).go_i_th (index_to_remove)
+--				internal_buildings.item(1).remove
+--			end
 
-			if (a_building.corner1.x<=0 and a_building.corner1.y>=0) or
-			   (a_building.corner2.x<=0 and a_building.corner2.y>=0) or
-			   (a_building.corner3.x<=0 and a_building.corner3.y>=0) or
-			   (a_building.corner4.x<=0 and a_building.corner4.y>=0)
-			then
-				from
-					internal_buildings.item(2).start
-					index := 1
-				until
-					internal_buildings.item(2).after
-				loop
-					if internal_buildings.item(2).item.center = a_building.center then
-						index_to_remove := index
-					end
-					index := index + 1
-					internal_buildings.item (2).forth
-				end
-				internal_buildings.item(2).go_i_th (index_to_remove)
-				internal_buildings.item(2).remove
-			end
+--			if (a_building.corner1.x<=0 and a_building.corner1.y>=0) or
+--			   (a_building.corner2.x<=0 and a_building.corner2.y>=0) or
+--			   (a_building.corner3.x<=0 and a_building.corner3.y>=0) or
+--			   (a_building.corner4.x<=0 and a_building.corner4.y>=0)
+--			then
+--				from
+--					internal_buildings.item(2).start
+--					index := 1
+--				until
+--					internal_buildings.item(2).after
+--				loop
+--					if internal_buildings.item(2).item.center = a_building.center then
+--						index_to_remove := index
+--					end
+--					index := index + 1
+--					internal_buildings.item (2).forth
+--				end
+--				internal_buildings.item(2).go_i_th (index_to_remove)
+--				internal_buildings.item(2).remove
+--			end
 
-			if (a_building.corner1.x>=0 and a_building.corner1.y<=0) or
-			   (a_building.corner2.x>=0 and a_building.corner2.y<=0) or
-			   (a_building.corner3.x>=0 and a_building.corner3.y<=0) or
-			   (a_building.corner4.x>=0 and a_building.corner4.y<=0)
-			then
-				from
-					internal_buildings.item(3).start
-					index := 1
-				until
-					internal_buildings.item(3).after
-				loop
-					if internal_buildings.item(3).item.center = a_building.center then
-						index_to_remove := index
-					end
-					index := index + 1
-					internal_buildings.item (3).forth
-				end
-				internal_buildings.item(3).go_i_th (index_to_remove)
-				internal_buildings.item(3).remove
-			end
+--			if (a_building.corner1.x>=0 and a_building.corner1.y<=0) or
+--			   (a_building.corner2.x>=0 and a_building.corner2.y<=0) or
+--			   (a_building.corner3.x>=0 and a_building.corner3.y<=0) or
+--			   (a_building.corner4.x>=0 and a_building.corner4.y<=0)
+--			then
+--				from
+--					internal_buildings.item(3).start
+--					index := 1
+--				until
+--					internal_buildings.item(3).after
+--				loop
+--					if internal_buildings.item(3).item.center = a_building.center then
+--						index_to_remove := index
+--					end
+--					index := index + 1
+--					internal_buildings.item (3).forth
+--				end
+--				internal_buildings.item(3).go_i_th (index_to_remove)
+--				internal_buildings.item(3).remove
+--			end
 
-			if (a_building.corner1.x<=0 and a_building.corner1.y<=0) or
-			   (a_building.corner2.x<=0 and a_building.corner2.y<=0) or
-			   (a_building.corner3.x<=0 and a_building.corner3.y<=0) or
-			   (a_building.corner4.x<=0 and a_building.corner4.y<=0)
-			then
-				from
-					internal_buildings.item(4).start
-					index := 1
-				until
-					internal_buildings.item(4).after
-				loop
-					if internal_buildings.item(4).item.center = a_building.center then
-						index_to_remove := index
-					end
-					index := index + 1
-					internal_buildings.item (4).forth
-				end
+--			if (a_building.corner1.x<=0 and a_building.corner1.y<=0) or
+--			   (a_building.corner2.x<=0 and a_building.corner2.y<=0) or
+--			   (a_building.corner3.x<=0 and a_building.corner3.y<=0) or
+--			   (a_building.corner4.x<=0 and a_building.corner4.y<=0)
+--			then
+--				from
+--					internal_buildings.item(4).start
+--					index := 1
+--				until
+--					internal_buildings.item(4).after
+--				loop
+--					if internal_buildings.item(4).item.center = a_building.center then
+--						index_to_remove := index
+--					end
+--					index := index + 1
+--					internal_buildings.item (4).forth
+--				end
 
-				internal_buildings.item(4).go_i_th (index_to_remove)
-				internal_buildings.item(4).remove
-			end
-		end
+--				internal_buildings.item(4).go_i_th (index_to_remove)
+--				internal_buildings.item(4).remove
+--			end
+--		end
 
 	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
 			-- Remove line_section `a_line_section' from map (bad implementation).
@@ -573,21 +579,13 @@ feature -- Removal
 feature -- Access
 
 	center: EM_VECTOR_2D
+			-- Position of the city center
 
 	radius: DOUBLE
 			-- Radius of the city
 
-	paths: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PATH]
-			-- Paths of the map
-
 	graph: TRAFFIC_GRAPH
 			-- Graph used for calculating shortest paths
-
-	area_width: DOUBLE is 1300.0
-			-- Area that the city is located on (todo: calculate)
-
---	city_center: EM_VECTOR2D
-			-- City center position
 
 	name: STRING
 			-- Name of region this map represents
@@ -595,29 +593,20 @@ feature -- Access
 	description: STRING
 			-- Textual description of the map
 
+	scale_factor: DOUBLE
+			-- Scale factor to reach real world distances
+			-- Multiply with this to receive real-world distances
+
+feature -- Access (map objects)
+
+	paths: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PATH]
+			-- Paths of the map
+
+	buildings: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_BUILDING]
+			-- Buildings of the map
+
 	taxi_offices: TRAFFIC_EVENT_LINKED_LIST[TRAFFIC_TAXI_OFFICE]
 			-- All taxi offices associated with this map
-
---	shortest_path: TRAFFIC_PATH is
---			-- Shortest path, that has been found with `find_shortest_path'
---		require
---			path_found: path_found
---		do
---			Result := shortest_path_impl.twin
---		ensure
---			path_not_void: Result /= Void
---		end
-
---	place (a_name: STRING): TRAFFIC_PLACE is
---			-- Place named `a_name'
---		require
---			a_name_exists: a_name /= Void
---			place_in_map: places.has (a_name)
---		do
---			Result := places.item (a_name)
---		ensure
---			result_exists: Result /= Void
---		end
 
 	places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
 			-- All places in map
@@ -631,12 +620,6 @@ feature -- Access
 	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
 			-- All roads in map
 
-	buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]] is
-			-- All buildings on map
-		do
-			Result := internal_buildings.twin
-		end
-
 	passengers: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PASSENGER]
 			-- All passengers moving around the city
 
@@ -644,6 +627,12 @@ feature -- Access
 			-- All trams in the city
 
 	busses: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_BUS]
+			-- All busses in the city
+
+	free_movings: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_FREE_MOVING]
+			-- All free moving objects in the city
+
+feature -- Access
 
 	line_sections_of_stop (a_name: STRING; a_line: TRAFFIC_LINE): LIST [TRAFFIC_LINE_SECTION] is
 			-- Line sections (2 or 1) of the stop specified by `a_name' for the line `a_line'
@@ -681,13 +670,6 @@ feature -- Access
 			end
 		end
 
-	scale_factor: DOUBLE is
-			-- Scale factor to reach real world distances
-			-- Multiply with this to receive real-world distances
-		do
-			Result := scale_factor_impl
-		end
-
 --	retrieve_road (i: INTEGER): TRAFFIC_ROAD is
 --			-- Road with given id `i'
 --		do
@@ -702,7 +684,7 @@ feature -- Access
 
 
 
-feature -- Events
+--feature -- Events
 
 --	unspecified_place_changed_event: EM_EVENT_CHANNEL [TUPLE []]
 --			-- Event to inform views of `Current'
@@ -794,7 +776,7 @@ feature -- Events
 --			-- when item has been removed
 --			-- at index passed as argument
 
-feature {TRAFFIC_MAP_MODEL} -- Access
+--feature {TRAFFIC_MAP_MODEL} -- Access
 
 --	map_places: TRAFFIC_EVENT_ARRAYED_LIST [TRAFFIC_PLACE] is
 --			--
@@ -818,7 +800,7 @@ feature -- Output
 				"%N%Nlines:%N" + lines.out
 		end
 
-feature -- Basic operations
+--feature -- Basic operations
 
 feature {TRAFFIC_MAP_LOADER}
 
@@ -916,7 +898,7 @@ feature {NONE}-- Implementation
 --	internal_line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION]
 --			--	Line sections on map.
 
-	internal_buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]]
+--	internal_buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]]
 			-- Buildings on map.
 
 --	internal_travelers: HASH_TABLE [TRAFFIC_MOVING, INTEGER]
@@ -928,7 +910,7 @@ feature {NONE}-- Implementation
 --	shortest_path_impl: TRAFFIC_PATH
 --			-- Traffic path last calculated
 
-	scale_factor_impl: DOUBLE
+--	scale_factor_impl: DOUBLE
 			-- Scale factor used to get real world distances
 
 --	internal_path: TRAFFIC_PATH

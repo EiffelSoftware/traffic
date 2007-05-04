@@ -8,6 +8,14 @@ class
 
 feature -- Constants
 
+	Building_directory: STRING is "..\buildings"
+
+	Building_files: ARRAY [STRING] is
+			-- Location of the building templates
+		once
+			Result := << "building1", "building1_night", "building2", "building2_night", "building3", "building3_night", "building4", "building4_night" >>
+		end
+
 --	Hours_per_day: INTEGER is 24
 --			-- Hours.
 

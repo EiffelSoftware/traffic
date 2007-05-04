@@ -24,24 +24,15 @@ feature -- Initialization
 			-- Create a tram, set default values for capacity, number of wagons and speed.
 		require
 			a_line_not_void: a_line /= Void
---			valid_line_type: a_line.type.name.is_equal ("tram") or a_line.type.name.is_equal ("rail") or a_line.type.name.is_equal ("bus")
+			valid_line: is_valid_line (a_line)
 		do
-			traffic_type := create {TRAFFIC_TYPE_TRAM}.make
+			set_line (a_line)
 			set_reiterate (True)
-			create polypoints.make (0)
-			line := a_line
-
-			set_line_route_from_roads(line)
-			create poly_cursor.make (polypoints)
-			poly_cursor.start
-			--set_speed(1)
 
 			engine_capacity := Default_engine_capacity
 			wagon_limitation := Default_wagon_limitation
 			wagons := create {ARRAYED_LIST[TRAFFIC_WAGON]}.make(wagon_limitation)
 
-			update_coordinates
-			update_angle
 			speed := Default_virtual_speed
 
 		end
@@ -55,7 +46,7 @@ feature -- Initialization
 			valid_line_type: a_line.type.name.is_equal ("tram") or a_line.type.name.is_equal ("rail") or a_line.type.name.is_equal ("bus")
 		do
 			-- Use the default creation
-			make_with_line(a_line)
+			make_with_line (a_line)
 
 			-- Add the schedule.
 			schedule := a_schedule
@@ -66,7 +57,7 @@ feature -- Initialization
 			register_in_place_schedule
 
 			-- Set position to first entry in schedule
-			set_to_place (schedule.first.line_section.origin)
+			set_to_station (schedule.first.line_section.origin)
 
 			-- Never reiterate
 			set_reiterate (False)
@@ -162,8 +153,18 @@ feature -- Constants
 	Default_wagon_limitation: INTEGER is 2
 			-- Default number of wagons attached
 
-	Default_virtual_speed: REAL is 30.0
+	Default_virtual_speed: REAL is 11.0
 			-- Default speed
+
+feature -- Status report
+
+	is_valid_line (a_line: TRAFFIC_LINE): BOOLEAN is
+			-- Is `a_line' valid for a tram to move on?
+		do
+			if a_line.type.is_equal (create {TRAFFIC_TYPE_TRAM}.make) then
+				Result := True
+			end
+		end
 
 invariant
 	wagons_not_void: wagons /= void

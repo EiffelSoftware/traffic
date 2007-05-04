@@ -303,7 +303,7 @@ feature -- Basic operations
 
 feature -- Cloning
 
-	create_deep_instance: TE_3D_NODE is
+	create_deep_instance: like Current is
 			-- Cloned instance of the 3D member and instances of all childs and subchilds of the 3d member as hirarchy
 		do
 			create Result.make_as_child(parent)

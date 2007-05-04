@@ -15,6 +15,18 @@ feature -- Factory methods
 				error_template := load_template ("error.obj")
 			end
 			create Result.make_with_item (a_moving, error_template.create_deep_instance)
+			Result.graphical.transform.set_scaling (50, 50, 50)
+		end
+
+	new_free_moving_member (a_moving: TRAFFIC_FREE_MOVING): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_FREE_MOVING] is
+			-- New man drawable
+		do
+			if man_template = Void then
+				man_template := load_template ("man.obj")
+			end
+			create Result.make_with_item (a_moving, man_template.create_deep_instance)
+			Result.graphical.transform.set_scaling (50, 50, 50)
+			Result.set_color (create {EM_COLOR}.make_with_rgb (0, 255, 0))
 		end
 
 	new_person_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
@@ -36,6 +48,7 @@ feature -- Factory methods
 				man_template := load_template ("man.obj")
 			end
 			create Result.make_with_item (a_passenger, man_template.create_deep_instance)
+			Result.graphical.transform.set_scaling (50, 50, 50)
 		end
 
 	new_woman_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
@@ -45,6 +58,7 @@ feature -- Factory methods
 				woman_template := load_template ("woman.obj")
 			end
 			create Result.make_with_item (a_passenger, woman_template.create_deep_instance)
+			Result.graphical.transform.set_scaling (50, 50, 50)
 		end
 
 	new_taxi_daynight_member (a_taxi: TRAFFIC_TAXI): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_TAXI] is
@@ -57,12 +71,12 @@ feature -- Factory methods
 				taxi_night_template := load_template ("taxi_night.obj")
 			end
 			create Result.make_with_item (a_taxi, taxi_template.create_deep_instance, taxi_night_template.create_deep_instance)
+			Result.day_graphical.transform.set_scaling (50, 50, 50)
+			Result.night_graphical.transform.set_scaling (50, 50, 50)
 		end
 
 	new_tram_daynight_member (a_tram: TRAFFIC_TRAM): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_TRAM] is
 			-- New taxi drawable with two representations
-		local
-			s: TE_3D_MEMBER_FACTORY_PRIMITIVE
 		do
 			if tram_template = Void then
 				tram_template := load_template ("tram2000_small.obj")
@@ -71,15 +85,12 @@ feature -- Factory methods
 				tram_night_template := load_template ("tram2000_small_night.obj")
 			end
 			create Result.make_with_item (a_tram, tram_template.create_deep_instance, tram_night_template.create_deep_instance)
---			create s.make
---			s.create_simple_plane((10.0), (15.0)) -- /30.0 comes from the map_to_gl coordinate conversation.. TODO: get rid of this coordinate-conversion problem
---			create Result.make_with_moving (a_tram, s.last_3d_member, s.last_3d_member)
+			Result.day_graphical.transform.set_scaling (50, 50, 50)
+			Result.night_graphical.transform.set_scaling (50, 50, 50)
 		end
 
 	new_bus_daynight_member (a_bus: TRAFFIC_BUS): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_BUS] is
 			-- New bus drawable with two representations
-		local
-			s: TE_3D_MEMBER_FACTORY_PRIMITIVE
 		do
 			if tram_template = Void then
 				tram_template := load_template ("tram2000_small.obj")
@@ -89,6 +100,8 @@ feature -- Factory methods
 			end
 			create Result.make_with_item (a_bus, tram_template.create_deep_instance, tram_night_template.create_deep_instance)
 			Result.set_color (create {EM_COLOR}.make_with_rgb (255, 0, 0))
+			Result.day_graphical.transform.set_scaling (50, 50, 50)
+			Result.night_graphical.transform.set_scaling (50, 50, 50)
 		end
 
 feature {NONE} -- Implementation

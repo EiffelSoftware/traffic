@@ -5,7 +5,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [G -> TRAFFIC_MOVING]
+	TRAFFIC_3D_DAYNIGHT_RENDERABLE [G]
 
 inherit
 	TRAFFIC_3D_RENDERABLE [G]
@@ -15,6 +15,8 @@ inherit
 		redefine
 			render_node
 		end
+
+	TRAFFIC_SHARED_TIME
 
 create
 	make_with_item
@@ -32,6 +34,8 @@ feature -- Initialization
 
 			night_graphical := a_night_graphical
 			night_graphical.set_as_child_of (Current)
+--			day_graphical.transform.set_scaling (50, 50, 50)
+--			night_graphical.transform.set_scaling (50, 50, 50)
 
 			-- TODO: randomize
 			create night_start.make (19, 0, 0)
@@ -54,13 +58,13 @@ feature -- Basic operations
 			is_night: BOOLEAN
 		do
 			if night_start < day_start then
-				if item.time.actual_time > night_start and item.time.actual_time < day_start then
+				if time.actual_time > night_start and time.actual_time < day_start then
 					is_night := True
 				else
 					is_night := False
 				end
 			else
-				if item.time.actual_time > day_start and item.time.actual_time < night_start then
+				if time.actual_time > day_start and time.actual_time < night_start then
 					is_night := False
 				else
 					is_night := True
@@ -69,13 +73,9 @@ feature -- Basic operations
 			if is_night then
 				day_graphical.disable_hierarchy_renderable
 				night_graphical.enable_hierarchy_renderable
-				night_graphical.transform.set_rotation(0,1.0,0,item.angle_x)
-				night_graphical.transform.set_position (item.position.x, 0, item.position.y)
 			else
 				night_graphical.disable_hierarchy_renderable
 				day_graphical.enable_hierarchy_renderable
-				day_graphical.transform.set_rotation(0,1.0,0,item.angle_x)
-				day_graphical.transform.set_position (item.position.x, 0, item.position.y)
 			end
 		end
 

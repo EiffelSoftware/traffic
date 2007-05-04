@@ -7,8 +7,8 @@ deferred class
 	TRAFFIC_MOVING
 
 inherit
-	MATH_CONST
-		export {NONE} all end
+--	MATH_CONST
+--		export {NONE} all end
 
 	DOUBLE_MATH
 		export {NONE} all end
@@ -17,13 +17,13 @@ inherit
 --		export {NONE} all end
 
 	TRAFFIC_SHARED_TIME
-		rename
-			time as traffic_time
-		end
+--		rename
+--			time as traffic_time
+--		end
 
 feature -- Access
 
-	traffic_type: TRAFFIC_TYPE
+--	traffic_type: TRAFFIC_TYPE
 			-- Type of moving item
 
 --	traffic_info: STRING
@@ -39,7 +39,7 @@ feature -- Access
 			-- Destination position on map
 
 	speed: DOUBLE
-			-- Speed on the map TODO: speed := distance(take-tour) / time(from one point to another)
+			-- Speed in m/s
 
 	angle_x: DOUBLE
 			-- Angle in respect to the x-axis
@@ -66,7 +66,7 @@ feature -- Basic operations
 	start is
 			-- Start taking a tour.
 		do
-			traffic_time.add_callback_tour (agent take_tour)
+			time.add_callback_tour (agent move)
 		end
 
 	wait (a_duration: DURATION) is
@@ -97,10 +97,10 @@ feature -- Element change
 
 feature {NONE} -- Implementation
 
-	take_tour is
-			-- Take a tour on the map.
-		deferred
-		end
+--	take_tour is
+--			-- Take a tour on the map.
+--		deferred
+--		end
 
 	move is
 			-- Move from origin to destination.
@@ -112,31 +112,25 @@ feature {NONE} -- Implementation
 			direction := destination - origin
 
 			if not has_finished and last_move_time /= Void then
-				current_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
-				diff := (current_move_time.fine_seconds - last_move_time.fine_seconds)*speed/traffic_time.default_scale_factor
+				current_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
+				diff := (current_move_time.fine_seconds - last_move_time.fine_seconds)*speed/time.default_scale_factor
 				if ((position.x - destination.x).abs < diff) and ((position.y - destination.y).abs < diff) or direction.length <= 0 then
+--					io.put_string ("speed: " + speed.out + " " + destination.distance (origin).out + "m in " +
+--						(current_move_time.fine_seconds - start_move_time.fine_seconds).out + "s%N"	)
 					update_coordinates
 					update_angle
+--					start_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
 				else
 					position := position + (direction / direction.length) * diff
 				end
 
 
-				last_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
+				last_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
 			else
-				create last_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
-				create current_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
+				create last_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
+				create current_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
+--				create start_move_time.make_by_fine_seconds (traffic_time.actual_time.fine_seconds)
 			end
-
---			if not has_finished then
-
---				if ((position.x - destination.x).abs < speed) and ((position.y - destination.y).abs < speed) or direction.length <= 0 then
---					set_coordinates
---					set_angle
---				else
---					position := position + (direction / direction.length) * speed
---				end
---			end
 		end
 
 	update_coordinates is
@@ -145,14 +139,8 @@ feature {NONE} -- Implementation
 			poly_cursor_valid: not poly_cursor.after and not poly_cursor.before
 			not_finished: not has_finished
 		do
-			-- hopefully this will give a bit performance to the journey
-			-- otherwise just clear out the map_to_gl_coords
---			origin :=  map_to_gl_coords (polypoints.item)
---			position := map_to_gl_coords (polypoints.item)
-
 			origin :=  poly_cursor.item
 			position := poly_cursor.item
-
 			if is_traveling_back then
 				poly_cursor.back
 				if poly_cursor.before then
@@ -160,10 +148,8 @@ feature {NONE} -- Implementation
 					poly_cursor.forth
 					update_coordinates
 				else
---					destination := map_to_gl_coords (polypoints.item)
 					destination := poly_cursor.item
 				end
-
 			elseif is_reiterating then
 				poly_cursor.forth
 				if poly_cursor.after then
@@ -171,7 +157,6 @@ feature {NONE} -- Implementation
 					poly_cursor.back
 					update_coordinates
 				else
---					destination := map_to_gl_coords (polypoints.item)
 					destination := poly_cursor.item
 				end
 			else
@@ -179,7 +164,6 @@ feature {NONE} -- Implementation
 				if poly_cursor.after then
 					has_finished := True
 				else
---					destination := map_to_gl_coords (polypoints.item)
 					destination := poly_cursor.item
 				end
 			end
@@ -300,13 +284,8 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Implementation
 
---	random_number: RANDOM
-		-- Make a direction out of this genererator	
 	poly_cursor: DS_ARRAYED_LIST_CURSOR [EM_VECTOR_2D]
 			-- Cursor that guides the moving object
-
-	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
-			-- All points to be traveled through
 
 	last_move_time: TIME
 			-- Time of the last move
@@ -317,7 +296,6 @@ feature {NONE} -- Implementation
 	wait_duration: DURATION
 
 invariant
-	polypoints_exist: polypoints /= Void
 	origin_exists: origin /= Void
 	destination_exists: destination /= Void
 	position_exists: position /= Void

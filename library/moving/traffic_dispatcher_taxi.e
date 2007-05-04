@@ -7,7 +7,7 @@ class
 	TRAFFIC_DISPATCHER_TAXI inherit
 		TRAFFIC_TAXI
 			redefine
-				make_random
+				make_random, move
 			end
 create
 	make_random
@@ -25,7 +25,7 @@ feature -- Initialization
 			evening_time, morning_time: DOUBLE
 			random: RANDOM
 		do
-			traffic_type := create {TRAFFIC_TYPE_DISPATCHER_TAXI}.make
+--			traffic_type := create {TRAFFIC_TYPE_DISPATCHER_TAXI}.make
 			create polypoints.make (stops)
 --			create random.set_seed(a_seed)
 			add_random_polypoints (stops)
@@ -76,11 +76,11 @@ feature -- Basic operations
 			end
 		end
 
-	take_tour is
+	move is
 			-- Take a tour on the map.
 			-- Set new random directions and if 'Current' has done a request and is available again.
 		do
-			move
+			Precursor
 			if has_finished and busy then
 					-- Taxi has fullfilled a request.
 					-- Add new random directions.

@@ -21,13 +21,16 @@ feature -- Initialization
 			create tram_root.make_as_child (moving_root)
 			create bus_root.make_as_child (moving_root)
 			create passenger_root.make_as_child (moving_root)
+			create free_moving_root.make_as_child (moving_root)
 			create moving_factory
 			a_map.passengers.element_inserted_event.subscribe (agent add_passenger)
 			a_map.trams.element_inserted_event.subscribe (agent add_tram)
 			a_map.busses.element_inserted_event.subscribe (agent add_bus)
+			a_map.free_movings.element_inserted_event.subscribe (agent add_free_moving)
 			a_map.passengers.element_removed_event.subscribe (agent remove_passenger (?))
 			a_map.trams.element_removed_event.subscribe (agent remove_tram (?))
 			a_map.busses.element_removed_event.subscribe (agent remove_bus (?))
+			a_map.free_movings.element_removed_event.subscribe (agent remove_free_moving)
 			add_taxi_agent := agent add_taxi (?)
 			remove_taxi_agent := agent remove_taxi (?)
 			a_map.taxi_offices.element_inserted_event.subscribe (agent add_taxi_office)
@@ -73,10 +76,10 @@ feature -- Insertion
 			end
 		end
 
-	add_moving (a_moving: TRAFFIC_MOVING) is
+	add_free_moving (a_moving: TRAFFIC_FREE_MOVING) is
 			-- Add a default representation for `a_moving'.
 		do
-			moving_factory.new_default_member (a_moving).set_as_child_of (moving_root)
+			moving_factory.new_free_moving_member (a_moving).set_as_child_of (moving_root)
 		end
 
 	add_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE) is
@@ -121,6 +124,19 @@ feature -- Deletion
 			node := taxi_root.child_for_item (a_taxi)
 			if node /= Void then
 				taxi_root.remove_child (node)
+			end
+		end
+
+	remove_free_moving (a_moving: TRAFFIC_FREE_MOVING) is
+			-- Remove representation for `a_moving'.
+		require
+			a_moving_exists: a_moving /= Void
+		local
+			node: TE_3D_NODE
+		do
+			node := free_moving_root.child_for_item (a_moving)
+			if node /= Void then
+				free_moving_root.remove_child (node)
 			end
 		end
 
@@ -185,6 +201,8 @@ feature -- Access
 	taxi_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_TAXI]
 
 	passenger_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_PASSENGER]
+
+	free_moving_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_FREE_MOVING]
 
 feature -- Element setting
 

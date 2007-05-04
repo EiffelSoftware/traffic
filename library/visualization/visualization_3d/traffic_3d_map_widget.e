@@ -83,7 +83,7 @@ feature -- Initialisation
 			mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 			create building_clicked_event.default_create
 			create place_clicked_event
-			create buildings_representation.make
+--			create buildings_representation.make
 
 			building_id:= 1
 
@@ -309,11 +309,12 @@ feature -- Element change
 				create roads_representation.make (map)
 				create travelers_representation.make (map)
 				create paths_representation.make (map)
+				create buildings_representation.make (map)
 
 				-- Todo remove
 --				map.paths.element_inserted_event.subscribe (agent add_path (?))
 
-				buildings_representation.set_map(a_map)
+--				buildings_representation.set_map(a_map)
 				boolean_grid.clear_all
 
 				root.transform.set_position (-map.center.x, 0, -map.center.y)---event.y_motion*(delta/mouse_delta), 0)				
@@ -343,8 +344,7 @@ feature -- Element change
 				roads_representation.road_root.remove_all_children
 			end
 			if buildings_representation /= Void then
-				-- Todo!!!
-				buildings_representation.delete_buildings
+				buildings_representation.buildings_root.remove_all_children
 			end
 		end
 
@@ -416,7 +416,7 @@ feature -- Basic operations
 			if is_map_loaded then
 				sun_representation.update
 --				travelers_representation.update
-				buildings_representation.update
+--				buildings_representation.update
 			end
 
 			renderpass_manager.render
@@ -435,7 +435,7 @@ feature -- Basic operations
 			-- `a_density' is the building density on the map. 1 means weak, 2 meduim, and 3 strong building density.
 		require
 			map_loaded: is_map_loaded
-			no_buildings_already_on_map: buildings_representation.number_of_buildings = 0
+--			no_buildings_already_on_map: buildings_representation.number_of_buildings = 0
 			a_density_not_1_2_or_3: a_density /= 1 or a_density /= 2 or a_density /= 3
 		do
 
@@ -443,9 +443,9 @@ feature -- Basic operations
 			io.new_line
 
 			-- load buildings templates.
-			io.putstring ("- Loading building templates...")
-			io.new_line
-			buildings_representation.load_building_templates
+--			io.putstring ("- Loading building templates...")
+--			io.new_line
+--			buildings_representation.load_building_templates
 
 
 			-- set the values of cells over all line sections and places to true.
@@ -461,14 +461,14 @@ feature -- Basic operations
 		end
 
 
-	delete_buildings is
-			-- Delete all buildings from representation.
-		do
-			buildings_representation.delete_buildings
-			buildings_representation.collision_polygons.wipe_out
-			boolean_grid.clear_all
-			building_id:= 1
-		end
+--	delete_buildings is
+--			-- Delete all buildings from representation.
+--		do
+--			buildings_representation.delete_buildings
+----			buildings_representation.collision_polygons.wipe_out
+--			boolean_grid.clear_all
+--			building_id:= 1
+--		end
 
 	add_path (a_path: TRAFFIC_PATH) is
 			-- Add path to the map	
@@ -578,7 +578,7 @@ feature {NONE} -- Implementation
 			-- place buildings on map. buildings are first placed along the lines on the map. Then they're placed randomly on the map.
 		require
 			a_density_not_1_2_or_3: a_density /= 1 or a_density /= 2 or a_density /= 3
-			at_least_one_building_template: buildings_representation.templates_count >= 1
+			at_least_one_building_template: buildings_representation.building_factory.count >= 1
 		local
 			i, nr_of_templates, buildings_nr:INTEGER
 			randomizer: RANDOM
@@ -588,7 +588,7 @@ feature {NONE} -- Implementation
 			create t.default_create
 			create randomizer.set_seed (t.millisecond_now)
 			buildings_nr := 35
-			nr_of_templates := buildings_representation.templates_count
+			nr_of_templates := buildings_representation.building_factory.count
 
 			-- add buildings along all lines
 			io.putstring ("- Placing buildings along lines...")
@@ -613,7 +613,7 @@ feature {NONE} -- Implementation
 				from
 					i := 1
 				until
-					i > buildings_representation.templates_count
+					i > buildings_representation.building_factory.count
 				loop
 					t.update
 					randomizer.set_seed (t.millisecond_now)
@@ -683,7 +683,7 @@ feature {NONE} -- Implementation
 							loop
 								--buildings on the right hand side of the line
 								random.forth
-								template:= (random.double_item*(buildings_representation.templates_count-1).to_double).rounded +1
+								template:= (random.double_item*(buildings_representation.building_factory.count-1).to_double).rounded +1
 								w:=buildings_representation.width_of_template (template)
 								b:=buildings_representation.breadth_of_template (template)
 
@@ -705,13 +705,13 @@ feature {NONE} -- Implementation
 									poly_points.force (p4, 4)
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
 									buildings_representation.add_building_with_template (building, template)
-									buildings_representation.collision_polygons.force_last (collision_poly)
+--									buildings_representation.collision_polygons.force_last (collision_poly)
 									mark_grid_cells_for_rectangular_area(building.center, w, b)
 								end
 
 								--builiding on the left hand sinde of the line
 								random.forth
-								template:= (random.double_item*(buildings_representation.templates_count-1).to_double).rounded +1
+								template:= (random.double_item*(buildings_representation.building_factory.count-1).to_double).rounded +1
 								w:=buildings_representation.width_of_template (template)
 								b:=buildings_representation.breadth_of_template (template)
 
@@ -733,7 +733,7 @@ feature {NONE} -- Implementation
 									poly_points.force (p4, 4)
 									create collision_poly.make_from_absolute_list (building.center, poly_points)
 									buildings_representation.add_building_with_template (building, template)
-									buildings_representation.collision_polygons.force_last (collision_poly)
+--									buildings_representation.collision_polygons.force_last (collision_poly)
 									mark_grid_cells_for_rectangular_area(center, w, b)
 								end
 								start_point.set_y (end_point.y-0.01)
@@ -763,7 +763,7 @@ feature {NONE} -- Implementation
 								loop
 									--building above the line
 									random.forth
-									template:= (random.double_item*(buildings_representation.templates_count-1).to_double).rounded +1
+									template:= (random.double_item*(buildings_representation.building_factory.count-1).to_double).rounded +1
 									w:=buildings_representation.width_of_template (template)
 									b:=buildings_representation.breadth_of_template (template)
 
@@ -789,14 +789,14 @@ feature {NONE} -- Implementation
 										poly_points.force (p4, 4)
 										create collision_poly.make_from_absolute_list (building.center, poly_points)
 										buildings_representation.add_building_with_template (building, template)
-										buildings_representation.collision_polygons.force_last(collision_poly)
+--										buildings_representation.collision_polygons.force_last(collision_poly)
 										mark_grid_cells_for_quadratic_area(grid_coordinate(building.center.x),grid_coordinate(building.center.y),sqrt(w*w + b*b))
 
 									end
 
 									--builiding underneath the line
 									random.forth
-									template:= (random.double_item*(buildings_representation.templates_count-1).to_double).rounded +1
+									template:= (random.double_item*(buildings_representation.building_factory.count-1).to_double).rounded +1
 									w:=buildings_representation.width_of_template (template)
 									b:=buildings_representation.breadth_of_template (template)
 
@@ -822,7 +822,7 @@ feature {NONE} -- Implementation
 										poly_points.force (p4, 4)
 										create collision_poly.make_from_absolute_list (building.center, poly_points)
 										buildings_representation.add_building_with_template (building, template)
-										buildings_representation.collision_polygons.force_last (collision_poly)
+--										buildings_representation.collision_polygons.force_last (collision_poly)
 										mark_grid_cells_for_quadratic_area(grid_coordinate(building.center.x),grid_coordinate(building.center.y),sqrt(w*w + b*b))
 
 									end
@@ -892,7 +892,7 @@ feature {NONE} -- Implementation
 					create building.make (p1, p2, p3, p4, 0.25, "building " + building_id.out)
 					building_id := building_id + 1
 					buildings_representation.add_building_with_template (building, a_template)
-					buildings_representation.collision_polygons.force_last (collision_poly)
+--					buildings_representation.collision_polygons.force_last (collision_poly)
 					mark_grid_cells_for_rectangular_area (center, w, b)
 					nr_buildings_placed := nr_buildings_placed + 1
 				end
@@ -1178,26 +1178,27 @@ feature {NONE} -- Implementation
 	publish_building_events (a_point: GL_VECTOR_3D[DOUBLE]; event: EM_MOUSEBUTTON_EVENT) is
 			-- Publish mouse event if a building was clicked.
 		local
-			buildings: LINKED_LIST[TRAFFIC_BUILDING]
+			buildings: DS_LINKED_LIST[TRAFFIC_BUILDING]
 			found: BOOLEAN
 		do
-			if a_point.x >=0 and a_point.z>=0 then
-				buildings:= map.buildings[1]
-			elseif a_point.x<=0 and a_point.z>=0 then
-				buildings:= map.buildings[2]
-			elseif a_point.x>=0 and a_point.z<=0 then
-				buildings:= map.buildings[3]
-			else
-				buildings:= map.buildings[4]
-			end
+--			if a_point.x >=0 and a_point.z>=0 then
+--				buildings:= map.buildings[1]
+--			elseif a_point.x<=0 and a_point.z>=0 then
+--				buildings:= map.buildings[2]
+--			elseif a_point.x>=0 and a_point.z<=0 then
+--				buildings:= map.buildings[3]
+--			else
+--				buildings:= map.buildings[4]
+--			end
+			buildings := map.buildings
 			from
 				buildings.start
 				found:= false
 			until
 				buildings.after or found
 			loop
-				if buildings.item.contains_point(a_point.x, a_point.z) then
-					building_clicked_event.publish([buildings.item,event])
+				if buildings.item_for_iteration.contains_point(a_point.x, a_point.z) then
+					building_clicked_event.publish([buildings.item_for_iteration,event])
 					found:= true
 				end
 				buildings.forth

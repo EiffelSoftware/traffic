@@ -200,6 +200,7 @@ feature{NONE} -- Implementation
 					actual_time.make_by_seconds (sim_ms)
 				else
 					actual_time.make_by_seconds (sim_ms//1000)
+					actual_time.set_fractionals ((sim_ms\\1000)/1000)
 				end
 				call_tours
 				call_procedure

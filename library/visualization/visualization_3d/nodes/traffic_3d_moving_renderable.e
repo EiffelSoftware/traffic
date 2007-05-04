@@ -16,16 +16,15 @@ inherit
 
 create
 	make_with_item
-	
+
 feature --
 
 	render_node is
 			-- Update the position before the node is rendered.
 		do
-			graphical.transform.reset
+			Precursor
 			graphical.transform.set_rotation(0.0, 1.0, 0.0,item.angle_x)
 			graphical.transform.set_position (item.position.x, 0, item.position.y)
-			Precursor
 		end
 
 end

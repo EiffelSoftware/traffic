@@ -45,6 +45,21 @@ feature -- Interface
 
 			map_widget.place_clicked_event.subscribe (agent call_taxi)
 
+			-- adding zurich_big.xml as default using platform independent paths
+			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
+			s := fs.pathname ("..", "map")
+			s := fs.pathname (s, "zurich_little.xml")
+
+			create loader.make (s)
+			loader.disable_dump_loading
+			loader.load_map
+			map_widget.set_map (loader.map)
+			loaded_file_name := s
+
+			create point_randomizer.set_map (loader.map)
+
+			build_tool_bar
+
 			-- Checkboxes
 --			create buildings_checkbox.make_from_text ("Show buildings")
 --			create vehicles_checkbox.make_from_text ("Show vehicles")
@@ -158,104 +173,203 @@ feature -- Interface
 --			station_schedule_scrollpanel.set_position (15, 120)
 --			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
 ----			toolbar_panel.add_widget (station_schedule_scrollpanel)
-			build_tool_bar
 
-			-- adding zurich_big.xml as default using platform independent paths
-			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
-			s := fs.pathname ("..", "map")
-			s := fs.pathname (s, "zurich_little.xml")
 
-			create loader.make (s)
-			loader.enable_dump_loading
-			loader.load_map
-			map_widget.set_map (loader.map)
-			loaded_file_name := s
+		end
 
-			if not loader.has_error then
-				create et.make_with_color (255, 0, 0)
-				loader.map.taxi_offices.force_last (et)
-				et.add_taxis (5)
-				create dt.make_with_color (0, 255, 0)
-				loader.map.taxi_offices.force_last (dt)
-				dt.add_taxis (5)
-				time.set (11, 0, 0)
-				create taxi_combobox.make_empty
-				taxi_combobox.set_to_string_agent (agent taxi_office_output)
-				taxi_combobox.put (et)
-				taxi_combobox.put (dt)
-				taxi_combobox.set_selected_element (et)
-				taxi_combobox.set_position (10, 120)
-				taxi_combobox.set_dimension (160,20)
-				toolbar_panel.add_widget (taxi_combobox)
-			end
+	build_line_vehicle_tools: EM_PANEL is
+			-- Build the area which steers adding and removing line vehicles.
+		local
+			label: EM_LABEL
+			button: EM_BUTTON
+			slider: EM_SLIDER
+		do
+			create Result.make_from_dimension (toolbar_panel.width, 20)
+			create label.make_from_text ("0 Vehicles/Line")
+			label.set_position (50, 0)
+			Result.add_widget (label)
+			create slider.make_from_range_horizontal (0, 5)
+			slider.set_width (40)
+			slider.set_position (155, 0)
+			slider.position_changed_event.subscribe (agent update_tram_count (?, label))
+			Result.add_widget (slider)
+			create button.make_from_text ("Add")
+			button.clicked_event.subscribe (agent add_vehicles (slider))
+			button.set_position (10, 0)
+			Result.add_widget (button)
+		end
+
+	build_map_tools: EM_PANEL is
+			-- Build the area which steers map display options.
+		local
+			checkbox: EM_CHECKBOX
+			button: EM_BUTTON
+		do
+			create Result.make_from_dimension (toolbar_panel.width, 70)
+			-- Sun
+			create checkbox.make_from_text ("Show sun")
+			checkbox.set_position (10, 0)
+			checkbox.set_checked
+			checkbox.checked_event.subscribe (agent map_widget.enable_sun_shown)
+			checkbox.unchecked_event.subscribe (agent map_widget.disable_sun_shown)
+			Result.add_widget (checkbox)
+
+			-- Shadows
+			create checkbox.make_from_text ("Enable shadows")
+			checkbox.set_position (10, 20)
+			checkbox.set_unchecked
+			checkbox.checked_event.subscribe (agent map_widget.enable_shadows)
+			checkbox.unchecked_event.subscribe (agent map_widget.disable_shadows)
+			Result.add_widget (checkbox)
+
+			-- Lines
+			create checkbox.make_from_text ("Show VBZ Lines")
+			checkbox.set_position (10,40)
+			checkbox.checked_event.subscribe (agent map_widget.enable_lines_shown)
+			checkbox.checked_event.subscribe (agent map_widget.disable_roads_shown)
+			checkbox.unchecked_event.subscribe (agent map_widget.disable_lines_shown)
+			checkbox.unchecked_event.subscribe (agent map_widget.enable_roads_shown)
+			checkbox.set_checked
+			Result.add_widget (checkbox)
+		end
+
+	build_taxi_tools: EM_PANEL is
+			-- Build the area which steers the taxis.
+		require
+			map_loaded: map_widget.map /= Void
+		local
+			et: TRAFFIC_EVENT_TAXI_OFFICE
+			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
+		do
+			create Result.make_from_dimension (toolbar_panel.width, 20)
+			create et.make_with_color (255, 0, 0)
+			map_widget.map.taxi_offices.force_last (et)
+			et.add_taxis (5)
+			create dt.make_with_color (0, 255, 0)
+			map_widget.map.taxi_offices.force_last (dt)
+			dt.add_taxis (5)
+			time.set (11, 0, 0)
+			create taxi_combobox.make_empty
+			taxi_combobox.set_to_string_agent (agent taxi_office_output)
+			taxi_combobox.put (et)
+			taxi_combobox.put (dt)
+			taxi_combobox.set_selected_element (et)
+			taxi_combobox.set_position (10, 0)
+			taxi_combobox.set_dimension (160,20)
+			Result.add_widget (taxi_combobox)
+
+		end
+
+	build_time_tools: EM_PANEL is
+			-- Build the area which steers the time.
+		local
+			label: EM_LABEL
+			button: EM_BUTTON
+			slider: EM_SLIDER
+		do
+			create Result.make_from_dimension (toolbar_panel.width, 20)
+			-- Time
+			create label.make_from_text ("1x      ")
+			label.set_position (50, 0)
+			Result.add_widget (label)
+			create slider.make_from_range_horizontal (1, 1000)
+			slider.set_height (label.height)
+			slider.set_width (110)
+			slider.set_position (90, 0)
+			slider.position_changed_event.subscribe (agent update_time_slider (?, label))
+			Result.add_widget (slider)
+			create button.make_from_text ("Start")
+			button.clicked_event.subscribe (agent update_time (button))
+			button.set_position (10, 0)
+			Result.add_widget (button)
+		end
+
+	build_passenger_tools: EM_PANEL is
+			-- Build the area that steers the passengers.
+		local
+			label: EM_LABEL
+			button: EM_BUTTON
+			slider: EM_SLIDER
+		do
+			create Result.make_from_dimension (toolbar_panel.width, 20)
+			create label.make_from_text ("0 pass.  ")
+			label.set_position (50, 0)
+			Result.add_widget (label)
+			create slider.make_from_range_horizontal (0, 100)
+			slider.set_height (label.height)
+			slider.set_width (90)
+			slider.set_position (110, 0)
+			slider.position_changed_event.subscribe (agent update_passenger_count (?, label))
+			Result.add_widget (slider)
+			create button.make_from_text ("Add")
+			button.clicked_event.subscribe (agent add_passengers (slider))
+			button.set_position (10, 0)
+			Result.add_widget (button)
+		end
+
+	build_free_moving_tools: EM_PANEL is
+			-- Build the area that steers the free moving objects.
+		local
+			label: EM_LABEL
+			button: EM_BUTTON
+			slider: EM_SLIDER
+		do
+			create Result.make_from_dimension (toolbar_panel.width, 20)
+			create label.make_from_text ("0 free mov.  ")
+			label.set_position (50, 0)
+			Result.add_widget (label)
+			create slider.make_from_range_horizontal (0, 100)
+			slider.set_height (label.height)
+			slider.set_width (90)
+			slider.set_position (110, 0)
+			slider.position_changed_event.subscribe (agent update_free_moving_count (?, label))
+			Result.add_widget (slider)
+			create button.make_from_text ("Add")
+			button.clicked_event.subscribe (agent add_free_movings (slider))
+			button.set_position (10, 0)
+			Result.add_widget (button)
 		end
 
 	build_tool_bar is
-			--
+			-- Build the toolbar.
+		require
+			map_exists: map_widget.map /= Void
 		local
 			label: EM_LABEL
 			checkbox: EM_CHECKBOX
 			button: EM_BUTTON
 			slider: EM_SLIDER
 			combobox: EM_COMBOBOX [TRAFFIC_TAXI_OFFICE]
+			panel: EM_PANEL
 		do
 			create toolbar_panel.make_from_dimension (200, height)
 			toolbar_panel.set_position (width-200, 0)
 			add_component (toolbar_panel)
 			map_widget.set_width (width-200)
 
-			-- Trams
-			create label.make_from_text ("0 Vehicles/Line")
-			label.set_position (50, 10)
-			toolbar_panel.add_widget (label)
-			create slider.make_from_range_horizontal (0, 5)
-			slider.set_width (40)
-			slider.set_position (155, 10)
-			slider.position_changed_event.subscribe (agent update_tram_count (?, label))
-			toolbar_panel.add_widget (slider)
-			create button.make_from_text ("Add")
-			button.clicked_event.subscribe (agent add_vehicles (slider))
-			button.set_position (10, 10)
-			toolbar_panel.add_widget (button)
+			panel := build_map_tools
+			panel.set_position (0, 20)
+			toolbar_panel.add_widget (panel)
 
-			-- Sun
-			create checkbox.make_from_text ("Show sun")
-			checkbox.set_position (10, 30)
-			checkbox.set_checked
-			checkbox.checked_event.subscribe (agent map_widget.enable_sun_shown)
-			checkbox.unchecked_event.subscribe (agent map_widget.disable_sun_shown)
-			toolbar_panel.add_widget (checkbox)
+			panel := build_time_tools
+			panel.set_position (0, 80)
+			toolbar_panel.add_widget (panel)
 
-			-- Shadows
-			create checkbox.make_from_text ("Enable shadows")
-			checkbox.set_position (10, 50)
-			checkbox.set_unchecked
-			checkbox.checked_event.subscribe (agent map_widget.enable_shadows)
-			checkbox.unchecked_event.subscribe (agent map_widget.disable_shadows)
-			toolbar_panel.add_widget (checkbox)
+			panel := build_line_vehicle_tools
+			panel.set_position (0, 120)
+			toolbar_panel.add_widget (panel)
 
-			-- Lines
-			create checkbox.make_from_text ("Show VBZ Lines")
-			checkbox.set_position (10,70)
-			checkbox.checked_event.subscribe (agent map_widget.enable_lines_shown)
-			checkbox.unchecked_event.subscribe (agent map_widget.disable_lines_shown)
-			toolbar_panel.add_widget (checkbox)
+			panel := build_taxi_tools
+			panel.set_position (0, 150)
+			toolbar_panel.add_widget (panel)
 
-			-- Time
-			create label.make_from_text ("1x      ")
-			label.set_position (50, 90)
-			toolbar_panel.add_widget (label)
-			create slider.make_from_range_horizontal (1, 1000)
-			slider.set_height (label.height)
-			slider.set_width (110)
-			slider.set_position (90, 90)
-			slider.position_changed_event.subscribe (agent update_time_slider (?, label))
-			toolbar_panel.add_widget (slider)
-			create button.make_from_text ("Start")
-			button.clicked_event.subscribe (agent update_time (button))
-			button.set_position (10, 90)
-			toolbar_panel.add_widget (button)
+			panel := build_passenger_tools
+			panel.set_position (0, 180)
+			toolbar_panel.add_widget (panel)
 
+			panel := build_free_moving_tools
+			panel.set_position (0, 210)
+			toolbar_panel.add_widget (panel)
 			-- Taxis
 		end
 
@@ -272,7 +386,7 @@ feature -- Event handling
 		require
 			a_label_exists: a_label /= Void
 		do
-			a_label.set_text (a_value.out + " Trams/Line")
+			a_label.set_text (a_value.out + " Vehicles/Line")
 		end
 
 	add_vehicles (a_slider: EM_SLIDER) is
@@ -299,22 +413,29 @@ feature -- Event handling
 					loop
 						if map_widget.map.lines.item_for_iteration.type.name.is_equal ("tram") then
 							create tram.make_with_line (map_widget.map.lines.item_for_iteration)
-							tram.set_to_place (tram.place (i))
+							tram.set_to_station (map_widget.map.lines.item_for_iteration.item (i).origin)
 							map_widget.map.trams.put_last (tram)
+							io.put_string (map_widget.map.lines.item_for_iteration.name + " Tram " + tram.position.out + "%N")
 							tram.start
 						elseif map_widget.map.lines.item_for_iteration.type.name.is_equal ("rail") then
-							-- Todo
+							create tram.make_with_line (map_widget.map.lines.item_for_iteration)
+							tram.set_to_station (map_widget.map.lines.item_for_iteration.item (i).origin)
+							map_widget.map.trams.put_last (tram)
+							io.put_string (map_widget.map.lines.item_for_iteration.name + " Tram " + tram.position.out + "%N")
+							tram.start
 						elseif map_widget.map.lines.item_for_iteration.type.name.is_equal ("bus") then
 							create bus.make_with_line (map_widget.map.lines.item_for_iteration)
-							bus.set_to_place (bus.place (i))
+							bus.set_to_station (map_widget.map.lines.item_for_iteration.item (i).origin)
 							bus.set_speed (5)
 							map_widget.map.busses.put_last (bus)
+							io.put_string (map_widget.map.lines.item_for_iteration.name + " Bus " + bus.position.out + "%N")
 							bus.start
 						end
 						i := i + 1
 					end
 					map_widget.map.lines.forth
 				end
+				io.put_string ("No. " + (map_widget.map.trams.count + map_widget.map.busses.count).out + "%N")
 			end
 		end
 
@@ -339,6 +460,78 @@ feature -- Event handling
 		do
 			time.set_speedup (a_value)
 			a_label.set_text (a_value.out + "x")
+		end
+
+	add_passengers (a_slider: EM_SLIDER) is
+			-- Add `slider.current_value' number of passengers.
+		require
+			a_slider_exists: a_slider /= Void
+		local
+			passenger: TRAFFIC_PASSENGER
+			i: INTEGER
+		do
+			if a_slider.current_value > map_widget.map.passengers.count then
+				-- Add more
+				from
+					i := 1
+				until
+					i > a_slider.current_value - map_widget.map.passengers.count
+				loop
+					point_randomizer.generate_point_array (7)
+--					create passenger.make_with_points (point_randomizer.last_array, 1.5)
+					map_widget.map.passengers.force_last (passenger)
+					passenger.set_reiterate (True)
+					passenger.start
+					i := i + 1
+				end
+			elseif a_slider.current_value < map_widget.map.passengers.count then
+				-- Remove
+				map_widget.map.passengers.prune_last (map_widget.map.passengers.count - a_slider.current_value)
+			end
+		end
+
+	update_passenger_count (a_value: INTEGER; a_label: EM_LABEL) is
+			-- Update the label for number of passengers.
+		require
+			a_label_exists: a_label /= Void
+		do
+			a_label.set_text (a_value.out + " pass.")
+		end
+
+	add_free_movings (a_slider: EM_SLIDER) is
+			-- Add `slider.current_value' number of free moving objects.
+		require
+			a_slider_exists: a_slider /= Void
+		local
+			moving: TRAFFIC_FREE_MOVING
+			i: INTEGER
+		do
+			if a_slider.current_value > map_widget.map.free_movings.count then
+				-- Add more
+				from
+					i := 1
+				until
+					i > a_slider.current_value - map_widget.map.free_movings.count
+				loop
+					point_randomizer.generate_point_array (7)
+					create moving.make_with_points (point_randomizer.last_array, 1.5)
+					map_widget.map.free_movings.force_last (moving)
+					moving.set_reiterate (True)
+					moving.start
+					i := i + 1
+				end
+			elseif a_slider.current_value < map_widget.map.passengers.count then
+				-- Remove
+				map_widget.map.free_movings.prune_last (map_widget.map.free_movings.count - a_slider.current_value)
+			end
+		end
+
+	update_free_moving_count (a_value: INTEGER; a_label: EM_LABEL) is
+			-- Update the label for number of free moving.
+		require
+			a_label_exists: a_label /= Void
+		do
+			a_label.set_text (a_value.out + " free mov.")
 		end
 
 	call_taxi (a_place: TRAFFIC_PLACE; an_event: EM_MOUSEBUTTON_EVENT) is
@@ -529,12 +722,16 @@ feature -- Event handling
 ----			map_widget.set_taxi_office_type(type)
 --		end
 
-feature -- Widgets
+feature -- Access
 
 	taxi_combobox: EM_COMBOBOX[TRAFFIC_TAXI_OFFICE]
 			-- Requests will be sent to the selected taxi office.
 
 	toolbar_panel: EM_PANEL
+			-- Toolbar panel with all widgets
+
+	point_randomizer: TRAFFIC_POINT_RANDOMIZER
+			-- Generator for list of random points
 
 
 --	buildings_checkbox: EM_CHECKBOX

@@ -47,6 +47,8 @@ feature -- Basic operations
 
 feature{NONE} --Implementation
 
+	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
+
 	set_request_information (from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
 			-- Set new origin and destination, new points to drive from from_location to to_location.
 		require

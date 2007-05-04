@@ -16,31 +16,21 @@ feature -- Initialization
 			-- Set unit_capacity and speed to default values.
 		require
 			a_line_exists: a_line /= Void
+			valid_line: is_valid_line (a_line)
 		do
-			traffic_type := create {TRAFFIC_TYPE_BUS}.make
-
-			create polypoints.make (0)
-			set_line_route_from_roads (a_line)
-			create poly_cursor.make (polypoints)
-			poly_cursor.start
-			line := a_line
-			update_coordinates
-			update_angle
+			set_line (a_line)
 			speed := Default_virtual_speed
 			unit_capacity := Default_capacity
 		end
 
 feature -- Basic operations
 
-	replace(a_line: TRAFFIC_LINE) is
-			-- Serve as replacement bus for 'a_line'.
+	replace (a_line: TRAFFIC_LINE) is
+			-- Serve as replacement bus for `a_line'.
 		require
 			a_line_not_void: a_line /= void
 		do
-			line := a_line
-			polypoints.wipe_out
-			set_line_route_from_roads (a_line)
-			poly_cursor.start
+			set_line (a_line)
 		ensure
 			new_line_set:  line = a_line
 		end
@@ -50,7 +40,18 @@ feature-- Constants
 	Default_capacity: INTEGER is 180
 		-- Default capacity of a bus
 
-	Default_virtual_speed: REAL is 20.0
+	Default_virtual_speed: REAL is 8.0
 		-- Default speed of a bus
+
+feature -- Status report
+
+	is_valid_line (a_line: TRAFFIC_LINE): BOOLEAN is
+			-- Is `a_line' valid for a tram to move on?
+		do
+			if a_line.type.is_equal (create {TRAFFIC_TYPE_TRAM}.make) or a_line.type.is_equal (create {TRAFFIC_TYPE_BUS}.make) then
+				Result := True
+			end
+		end
+
 
 end
