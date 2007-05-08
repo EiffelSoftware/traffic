@@ -48,7 +48,7 @@ feature -- Basic operations
 	find_shortest_path (a_origin: TRAFFIC_PLACE; a_destination: TRAFFIC_PLACE) is
 			-- Find shortest path.
 		local
-			temp_path: LIST [LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, TRAFFIC_CONNECTION]]
+			temp_path: LIST [TRAFFIC_CONNECTION]
 			a_road: TRAFFIC_ROAD
 			a_type: TRAFFIC_TYPE_STREET
 			road_id: INTEGER
@@ -64,12 +64,12 @@ feature -- Basic operations
 			pp.force_last (a_origin.position)
 			pp.force_last (Void)
 			from a_origin.stops.start until a_origin.stops.after loop
-				create a_road.make (a_origin.dummy_node, a_origin.stops.item,
+				create a_road.make_insertable (a_origin.dummy_node, a_origin.stops.item,
 				  a_type, road_id, "undirected")
 				map.graph.search (a_origin.stops.item)
-				pp.force (map.graph.incident_edge_labels.first.polypoints.first, 2)
+				pp.force (map.graph.incident_edges.first.polypoints.first, 2)
 				a_road.set_polypoints (pp)
-				map.graph.put_edge (a_origin.dummy_node, a_origin.stops.item, a_road, 0)
+				map.graph.connect_nodes (a_origin.dummy_node, a_origin.stops.item, 0, 0)
 				a_origin.stops.forth
 			end
 
@@ -77,12 +77,12 @@ feature -- Basic operations
 			map.graph.put_node (a_destination.dummy_node)
 			pp.force (a_destination.position, 1)
 			from a_destination.stops.start until a_destination.stops.after loop
-				create a_road.make (a_destination.stops.item, a_destination.dummy_node,
+				create a_road.make_insertable (a_destination.stops.item, a_destination.dummy_node,
 				    a_type, road_id, "undirected")
 				map.graph.search (a_destination.stops.item)
-				pp.force (map.graph.incident_edge_labels.first.polypoints.first, 2)
+				pp.force (map.graph.incident_edges.first.polypoints.first, 2)
 				a_road.set_polypoints (pp)
-				map.graph.put_edge (a_destination.stops.item, a_destination.dummy_node, a_road , 0)
+				map.graph.connect_nodes (a_destination.stops.item, a_destination.dummy_node, 0 , 0)
 				a_destination.stops.forth
 			end
 			map.graph.find_shortest_path (a_origin.dummy_node, a_destination.dummy_node)
@@ -94,14 +94,14 @@ feature -- Basic operations
 				path.set_scale_factor (map.scale_factor)
 
 				from temp_path.start until temp_path.after loop
-					if (not (temp_path.item.label.origin = temp_path.item.label.destination)) and (path.first = Void) then
+					if (not (temp_path.item.origin = temp_path.item.destination)) and (path.first = Void) then
 							--don't make path_section for intra-place connections
-						create current_ps.make (temp_path.item.label)
+						create current_ps.make (temp_path.item)
 						path.set_first (current_ps)
 					else
-						if not (temp_path.item.label.origin = temp_path.item.label.destination) then
+						if not (temp_path.item.origin = temp_path.item.destination) then
 								--don't make path_section for intra-place connections
-							create next_ps.make(temp_path.item.label)
+							create next_ps.make(temp_path.item)
 							if current_ps.is_insertable (next_ps) then
 									--same type of line
 								current_ps.extend (next_ps)

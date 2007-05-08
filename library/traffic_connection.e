@@ -7,7 +7,56 @@ deferred class
 	TRAFFIC_CONNECTION
 
 inherit
-	HASHABLE
+	LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, REAL]
+		rename
+			make_directed as make_directed_old,
+			make_undirected as make_undirected_old,
+			internal_start_node as origin_impl,
+			internal_end_node as destination_impl,
+			start_node as origin_impl,
+			end_node as destination_impl
+		redefine
+			out, is_equal, origin_impl, destination_impl
+		end
+
+	TRAFFIC_MAP_ITEM
+		undefine
+			out, is_equal
+		end
+
+feature -- Initialization
+
+	make_directed (a_start_node, a_end_node: like origin_impl) is
+		require
+			nodes_not_void: a_start_node /= Void and a_end_node /= Void
+		do
+			origin_impl := a_start_node
+			destination_impl := a_end_node
+			is_directed := True
+		ensure
+			nodes_not_void: origin_impl /= Void and
+							destination_impl /= Void
+			nodes_not_void: origin_impl /= Void and
+							destination_impl /= Void
+			is_directed: is_directed
+--			weight_set: weight = a_weight
+--			default_weight_function: not user_defined_weight_function
+		end
+
+	make_undirected (a_start_node, a_end_node: like origin_impl) is
+		require
+			nodes_not_void: a_start_node /= Void and a_end_node /= Void
+		do
+			origin_impl := a_start_node
+			destination_impl := a_end_node
+			is_directed := False
+		ensure
+			nodes_not_void: origin_impl /= Void and
+							destination_impl /= Void
+			not_directed: not is_directed
+--			weight_set: weight = a_weight
+--			default_weight_function: not user_defined_weight_function
+		end
 
 feature -- Element change
 
@@ -68,19 +117,79 @@ feature -- Access
 			end
 		end
 
-feature -- Status report
+feature -- Element change
 
-	is_directed: BOOLEAN
+
+--	is_directed: BOOLEAN
 			-- Is the road directed?
 
-feature {TRAFFIC_MAP, TRAFFIC_PATH} -- Access
+feature -- Access
 
 	origin_impl: TRAFFIC_NODE
 
-	destination_impl: TRAFFIC_NODE
+	destination_impl: like origin_impl
+
+--	opposite (a_node: like origin_impl): like origin_impl is
+--			-- Opposite node of `a_linked_node' in an undirected graph
+--		require
+--			undirected: not is_directed
+--			incident_node: a_node = origin_impl or a_node = destination_impl
+--		do
+--			if a_node = origin_impl then
+--				Result := destination_impl
+--			else
+--				Result := origin_impl
+--			end
+--		end
+
+--feature -- Status report
+
+--	is_loop: BOOLEAN is
+--			-- Is the current edge a loop?
+--		do
+--			Result := origin_impl.is_equal (destination_impl)
+--		end
+
+--	is_directed: BOOLEAN
+--			-- Is the current edge directed?
+
+feature -- Comparison
+
+	is_equal (other: like Current): BOOLEAN is
+			-- Is `other' attached to an object considered
+			-- equal to current object?
+		do
+			-- Start and end node must be equal.
+			Result := origin_impl.is_equal (other.origin_impl) and
+					  destination_impl.is_equal (other.destination_impl)
+
+			-- Consider also flipped edges in undirected graphs.
+			if not is_directed then
+				Result := Result or
+						 (origin_impl.is_equal (other.destination_impl) and
+						  destination_impl.is_equal (other.origin_impl))
+			end
+			-- Labels must be equal.
+--			Result := Result and equal (label, other.label)
+		end
+
+feature -- Output
+
+	out: STRING is
+			-- Textual representation of the edge
+		do
+			Result := origin_impl.out
+			if is_directed then
+				Result.append (" -> ")
+			else
+				Result.append (" -- ")
+			end
+			Result.append (destination_impl.out)
+		end
 
 invariant
 
 	polypoints_exist: polypoints /= Void
+	nodes_exist: origin_impl /= Void and destination_impl /= Void
 
 end

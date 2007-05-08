@@ -13,13 +13,13 @@ inherit
 		end
 
 create
-	make
+	make_insertable
 
 
 
 feature{NONE} -- Creation
 
-	make (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER; a_direction:STRING) is
+	make_insertable (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER; a_direction:STRING) is
 			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -27,12 +27,11 @@ feature{NONE} -- Creation
 			a_origin_exists: a_origin /= Void
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
-			an_id_is_valid: an_id>=0
 			a_direction_exists: a_direction/=Void
 		do
 			origin_impl := a_origin
 			destination_impl := a_destination
-			id:=an_id
+			make_directed (origin_impl, destination_impl)
 			type := a_type
 			if a_direction.is_equal("directed") then
 				is_directed:=true
@@ -42,11 +41,13 @@ feature{NONE} -- Creation
 			create polypoints.make (0)
 			polypoints.force_last (a_origin.place.position)
 			polypoints.force_last (a_destination.place.position)
+			id := an_id
 		ensure
 			origin_set: origin_impl = a_origin
 			destination_set: destination_impl = a_destination
 			type_set: type = a_type
 			polypoints_exists: polypoints /= Void
+			id_set: id = an_id
 		end
 
 feature -- Access
@@ -62,5 +63,24 @@ feature -- Access
 
 	id: INTEGER
 			-- Id of road
+
+feature -- Basic operations
+
+	add_to_map (a_map: TRAFFIC_MAP) is
+			-- Add `Current' and all nodes to `a_map'.
+		do
+			a_map.graph.put_road (Current)
+			is_in_map := True
+			map := a_map
+		end
+
+	remove_from_map is
+			-- Remove all nodes from `a_map'.
+		do
+			is_in_map := False
+			map := Void
+
+		end
+
 
 end

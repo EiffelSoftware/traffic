@@ -49,10 +49,6 @@ feature -- Measurement
 			Result := edge_list.count
 		end
 
-feature -- Status report
-
-feature -- Status setting
-
 feature -- Cursor movement
 
 	turn_to (a_node: LINKED_GRAPH_NODE [G, L]) is
@@ -78,7 +74,7 @@ feature -- Cursor movement
 feature -- Element change
 
 	put_edge (a_edge: LINKED_GRAPH_EDGE [G, L]) is
-			-- 
+			--
 		require
 			incident_node: item = a_edge.start_node or item = a_edge.end_node
 		do
@@ -87,26 +83,6 @@ feature -- Element change
 			edge_inserted: edge_list.has (a_edge)
 			increased_degree: out_degree = old out_degree + 1
 		end
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
-feature {NONE} -- Implementation
 
 invariant
 

@@ -31,8 +31,9 @@ feature{NONE} -- Creation
 			place := a_place
 			line := a_line
 			position := a_position
-
+			item := Current
 			place.stops.extend (Current)
+			create connection_list.make
 		ensure
 			stop_added: place.stops.has (Current)
 		end
@@ -45,6 +46,8 @@ feature{NONE} -- Creation
 		do
 			place := a_place
 			position := a_position
+			item := Current
+			create connection_list.make
 			create line.make ("dummy", a_line_type)
 		end
 
@@ -75,5 +78,6 @@ feature -- Output
 
 invariant
 	line_not_void: line /= Void
+	item_is_self: item = Current
 
 end

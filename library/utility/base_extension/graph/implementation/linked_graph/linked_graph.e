@@ -104,10 +104,10 @@ feature -- Access
 			index: INTEGER
 		do
 			create {ARRAYED_LIST [like edge_item]} Result.make (out_degree)
-			
+
 			-- Backup current cursor.
 			index := current_node.edge_list.index
-			
+
 			from
 				edge_list := current_node.edge_list
 				edge_list.start
@@ -117,7 +117,7 @@ feature -- Access
 				Result.extend (edge_list.item)
 				edge_list.forth
 			end
-			
+
 			-- Restore old cursor.
 			if edge_list.valid_index (index) then
 				edge_list.go_i_th (index)
@@ -131,10 +131,10 @@ feature -- Access
 			index: INTEGER
 		do
 			create {ARRAYED_LIST [L]} Result.make (out_degree)
-			
+
 			-- Backup current cursor.
 			index := current_node.edge_list.index
-			
+
 			from
 				edge_list := current_node.edge_list
 				edge_list.start
@@ -144,7 +144,7 @@ feature -- Access
 				Result.extend (edge_list.item.label)
 				edge_list.forth
 			end
-			
+
 			-- Restore old cursor.
 			if edge_list.valid_index (index) then
 				edge_list.go_i_th (index)
@@ -229,7 +229,7 @@ feature -- Status report
 
 	has_multi_graph_support: BOOLEAN is
 			-- Are multigraphs supported by the current implementation?
-		do			
+		do
 			Result := True
 		end
 
@@ -246,7 +246,7 @@ feature -- Status report
 			else
 				node := linked_node_from_item (a_edge.start_node)
 			end
-			
+
 			from
 				index := node.edge_list.index
 				node.edge_list.start
@@ -273,10 +273,10 @@ feature -- Status report
 			start_node := linked_node_from_item (a_start_node)
 			end_node := linked_node_from_item (a_end_node)
 			el := start_node.edge_list
-			
+
 			-- Make backup of cursor.
 			index := el.index
-			
+
 			from
 				el.start
 			until
@@ -287,7 +287,7 @@ feature -- Status report
 				end
 				el.forth
 			end
-			
+
 			-- Restore cursor.
 			if el.valid_index (index) then
 				el.go_i_th (index)
@@ -305,8 +305,8 @@ feature -- Status report
 		do
 			Result := current_node.edge_list.index = 1
 		end
-		
-	path_found: BOOLEAN 
+
+	path_found: BOOLEAN
 			-- Has a path been found in `find_path'?
 
 	is_simple_graph: BOOLEAN
@@ -406,7 +406,7 @@ feature -- Element change
 				else
 					index := node_count + 1
 				end
-				
+
 				-- Create new node object and put it
 				-- into the list at appropriate position.
 				create node.make (a_node)
@@ -462,13 +462,13 @@ feature -- Removal
 
 			-- Get index of `a_item'.
 			index := index_of_element.item (a_item)
-			
+
 			if index > 0 then
 				-- Node found: remove `a_item' from node list.
 				node_list.put (Void, index)
 				inactive_nodes.extend (index)
 				index_of_element.remove (a_item)
-	
+
 				-- Remove all incident edges of `a_item'.
 				from
 					dangling_edges := internal_edges.linear_representation
@@ -487,7 +487,7 @@ feature -- Removal
 						dangling_edges.forth
 					end
 				end
-				
+
 				-- Adjust node counter.
 				node_count := node_count - 1
 			end
@@ -525,12 +525,12 @@ feature -- Removal
 			if not off then
 				c := cursor
 			end
-			
+
 			-- Search for the start node and prune the current edge.
 			search (a_start_node)
 			turn_to_target (a_end_node)
 			remove_edge
-			
+
 			-- Restore old cursor.
 			if c /= Void then
 				go_to (c)
@@ -675,7 +675,7 @@ feature {NONE} -- Implementation
 			c: like cursor
 		do
 			linked_edge ?= a_edge
-			
+
 			-- Find both start and end node in the node list.
 			if linked_edge /= Void then
 				start_node := linked_edge.internal_start_node
@@ -685,7 +685,7 @@ feature {NONE} -- Implementation
 				end_node := linked_node_from_item (a_edge.end_node)
 				create linked_edge.make_directed (start_node, end_node, a_edge.label)
 			end
-			
+
 			-- Turn cursor if `edge_item' is removed.
 			if (not off) and then linked_edge.is_equal (edge_item) then
 				right
@@ -695,13 +695,13 @@ feature {NONE} -- Implementation
 			if not off then
 				c := cursor
 			end
-			
+
 			-- Remove edge from linked graph representation.
 			current_node := start_node
 			turn_to_edge (a_edge)
 			current_node.edge_list.remove
 			internal_edges.prune (linked_edge)
-			
+
 			-- Restore cursor.
 			if c /= Void then
 				go_to (c)
@@ -709,7 +709,7 @@ feature {NONE} -- Implementation
 				invalidate_cursor
 			end
 		end
-	
+
 	invalidate_cursor is
 			-- Invalidate cursor. `off' will be set to true.
 		do
@@ -742,7 +742,7 @@ feature {NONE} -- Status setting
 			is_symmetric_graph := a_value
 		end
 
-	
+
 invariant
 
 	node_list_not_void: node_list /= Void

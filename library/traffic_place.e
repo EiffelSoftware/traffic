@@ -12,6 +12,11 @@ inherit
 			out
 		end
 
+	TRAFFIC_MAP_ITEM
+		undefine
+			out
+		end
+
 create
 	make, make_with_position
 
@@ -24,7 +29,7 @@ feature {NONE} -- Initialize
 			a_name_not_empty: not a_name.is_empty
 		do
 			name := a_name
-			create dummy_node.make (Current, create {EM_VECTOR_2D}.make (0.0, 0.0))
+			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (0.0, 0.0))
 			set_dummy_node (dummy_node)
 			create schedule.make
 			create stops.make (5)
@@ -41,7 +46,7 @@ feature {NONE} -- Initialize
 			a_name_not_empty: not a_name.is_empty
 		do
 			name := a_name
-			create dummy_node.make (Current, create {EM_VECTOR_2D}.make (a_x, a_y))
+			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (a_x, a_y))
 			set_dummy_node (dummy_node)
 			create schedule.make
 			create stops.make (5)
@@ -113,6 +118,29 @@ feature -- Status report
 
 feature -- Element change
 
+	add_to_map (a_map: TRAFFIC_MAP) is
+			-- Add `Current' and all nodes to `a_map'.
+		do
+			a_map.places.force (Current, name)
+			from
+				nodes.start
+			until
+				nodes.after
+			loop
+				nodes.item.add_to_map (a_map)
+				nodes.forth
+			end
+			is_in_map := True
+			map := a_map
+		end
+
+	remove_from_map is
+			-- Remove all nodes from `a_map'.
+		do
+			is_in_map := False
+			map := Void
+		end
+
 	set_information (a_information: TRAFFIC_PLACE_INFORMATION) is
 			-- Set information to `a_information'.
 		require
@@ -159,6 +187,9 @@ feature -- Insertion
 			stops.extend (a_stop)
 			nodes.extend (a_stop)
 			update_position
+			if is_in_map then
+				a_stop.add_to_map (map)
+			end
 		end
 
 feature {TRAFFIC_MAP_FACTORY} -- Element change

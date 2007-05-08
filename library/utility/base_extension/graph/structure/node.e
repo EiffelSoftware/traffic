@@ -13,7 +13,7 @@ class
 
 inherit
 	COMPARABLE
-	
+
 	HASHABLE
 		undefine
 			is_equal
@@ -54,16 +54,14 @@ feature {GRAPH} -- Access
 --- ??? --- ??? --- ??? --- ??? --- ??? --- ??? --- ??? ---
 	referring_edge: EDGE [like item, L]
 			-- Edge where we came from
-			
+
 	referring_node: like Current
 			-- Node where we came from
 
 feature {GRAPH, NODE} -- Access
-	
+
 	distance: REAL
 			-- Length of the shortest path to `item' until now
-
-feature -- Measurement
 
 feature {GRAPH, NODE} -- Status report
 
@@ -93,8 +91,6 @@ feature -- Status setting
 		end
 
 
-feature -- Cursor movement
-
 feature {GRAPH} -- Element change
 
 	set_referrer (a_node: like Current; a_edge: like referring_edge; a_distance: like distance) is
@@ -113,18 +109,6 @@ feature {GRAPH} -- Element change
 			smaller_than_before: distance < old distance
 		end
 
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
 feature -- Basic operations
 
 	infix "<" (other: like Current): BOOLEAN is
@@ -133,14 +117,8 @@ feature -- Basic operations
 			Result := distance < other.distance
 		end
 
-feature -- Obsolete
-
-feature -- Inapplicable
-
-feature {NONE} -- Implementation
-
 invariant
-	
+
 	distance_positive: distance >= 0
 	item_not_void: item /= Void
 

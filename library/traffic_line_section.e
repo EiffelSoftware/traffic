@@ -17,12 +17,12 @@ inherit
 		end
 
 create
-	make,
-	make_non_insertable
+	make_insertable--,
+--	make_non_insertable
 
 feature {NONE} -- Initialization
 
-	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_LINE; a_list: DS_ARRAYED_LIST [EM_VECTOR_2D] ) is
+	make_insertable (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_LINE; a_list: DS_ARRAYED_LIST [EM_VECTOR_2D] ) is
 			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -32,8 +32,9 @@ feature {NONE} -- Initialization
 			a_type_exists: a_type /= Void
 			a_list_exists: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
 		do
-			origin_impl := a_origin
-			destination_impl := a_destination
+--			origin_impl := a_origin
+--			destination_impl := a_destination
+			make_directed (a_origin, a_destination)
 			create state.make
 			type := a_type
 			create polypoints.make (2)
@@ -51,46 +52,46 @@ feature {NONE} -- Initialization
 			roads_created: roads/=Void
 		end
 
-	make_non_insertable (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE_LINE; a_list: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
-			-- Make a temporary line_section which shouldn't be inserted into a `TRAFFIC_MAP'.
-		require
-			a_origin_exists: a_origin /= Void
-			a_destination_exists: a_destination /= Void
-			a_type_exists: a_type /= Void
-			a_list_exists: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
-		local
-			origin_stop: TRAFFIC_STOP
-			destination_stop: TRAFFIC_STOP
-		do
-			if not a_origin.stops.is_empty then
-				origin_stop := a_origin.stops.first
-			else
-				create origin_stop.make_non_insertable (a_origin, a_type, a_origin.position)
-			end
+--	make_non_insertable (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE_LINE; a_list: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
+--			-- Make a temporary line_section which shouldn't be inserted into a `TRAFFIC_MAP'.
+--		require
+--			a_origin_exists: a_origin /= Void
+--			a_destination_exists: a_destination /= Void
+--			a_type_exists: a_type /= Void
+--			a_list_exists: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
+--		local
+--			origin_stop: TRAFFIC_STOP
+--			destination_stop: TRAFFIC_STOP
+--		do
+--			if not a_origin.stops.is_empty then
+--				origin_stop := a_origin.stops.first
+--			else
+--				create origin_stop.make_non_insertable (a_origin, a_type, a_origin.position)
+--			end
 
-			if not a_destination.stops.is_empty then
-				destination_stop := a_destination.stops.first
-			else
-				create destination_stop.make_non_insertable (a_destination, a_type, a_destination.position)
-			end
+--			if not a_destination.stops.is_empty then
+--				destination_stop := a_destination.stops.first
+--			else
+--				create destination_stop.make_non_insertable (a_destination, a_type, a_destination.position)
+--			end
 
-			origin_impl := origin_stop
-			destination_impl := destination_stop
-			create state.make
-			type := a_type
+--			origin_impl := origin_stop
+--			destination_impl := destination_stop
+--			create state.make
+--			type := a_type
 
-			create polypoints.make (2)
-			create roads.make (1)
-			set_polypoints (a_list)
-		ensure
-			origin_set: origin = a_origin
-			destination_set: destination = a_destination
-			state_exists: state /= Void
-			has_type: type /=Void
-			type_set: type = a_type
-			polypoints_exists: polypoints /= Void
-			roads_created: roads/=Void
-		end
+--			create polypoints.make (2)
+--			create roads.make (1)
+--			set_polypoints (a_list)
+--		ensure
+--			origin_set: origin = a_origin
+--			destination_set: destination = a_destination
+--			state_exists: state /= Void
+--			has_type: type /=Void
+--			type_set: type = a_type
+--			polypoints_exists: polypoints /= Void
+--			roads_created: roads/=Void
+--		end
 
 feature -- Access
 
@@ -120,6 +121,22 @@ feature -- Access
 		end
 
 feature -- Element change
+
+	add_to_map (a_map: TRAFFIC_MAP) is
+			-- Add `Current' and all nodes to `a_map'.
+		do
+			a_map.graph.put_line_section (Current)
+			is_in_map := True
+			map := a_map
+		end
+
+	remove_from_map is
+			-- Remove all nodes from `a_map'.
+		do
+			is_in_map := False
+			map := Void
+
+		end
 
 	set_state (a_state: TRAFFIC_LINE_SECTION_STATE ) is
 			-- Change state to `a_state'.
@@ -174,7 +191,7 @@ feature {TRAFFIC_LINE} -- Status setting
 			line_void: line = Void
 		end
 
-feature {TRAFFIC_MAP, TRAFFIC_LINE} -- Access
+feature -- Access
 
 	origin_impl: TRAFFIC_STOP
 

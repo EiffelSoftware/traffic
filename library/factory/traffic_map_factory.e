@@ -374,7 +374,7 @@ feature {NONE} -- Implementation
 				map.add_stop (destination_stop)
 			end
 
-			create typed_line_section.make (origin_stop, destination_stop, a_line.type, a_polypoints)
+			create typed_line_section.make_insertable (origin_stop, destination_stop, a_line.type, a_polypoints)
 			a_line.extend (typed_line_section) -- typed_line_section.set_line (a_line)
 			Result := typed_line_section
 		ensure
@@ -427,7 +427,7 @@ feature {NONE} -- Implementation
 			traffic_type_factory.build(a_type)
 			type?= traffic_type_factory.traffic_type
 			i:=an_id.to_integer
-			create a_road.make (origin_node, destination_node, type,i,a_direction)
+			create a_road.make_insertable (origin_node, destination_node, type, i, a_direction)
 			Result := a_road
 		ensure
 			result_exists: Result /= Void

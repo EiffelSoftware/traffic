@@ -38,9 +38,10 @@ feature {NONE} -- Initialization
 		do
 			default_size := 100
 			name := a_name
-			create graph.make_multi_graph
+			create graph.make
 			create places.make (default_size * default_size)
 			places.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
+--			places.element_inserted_event.subscribe (agent graph.put_node (a_node: [like item] TRAFFIC_NODE))
 
 			create lines.make (default_size)
 			lines.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
@@ -317,7 +318,7 @@ feature -- Insertion
 			--a_line_section_not_in_map: not has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
 		do
 			line_sections.force_last (a_line_section)
-			graph.put_edge (a_line_section.origin_impl, a_line_section.destination_impl, a_line_section, a_line_section.length)
+			graph.put_line_section (a_line_section)
 			-- TODO: connect nodes at origin and destination with their peers (stops of other lines)
 --			line_section_inserted_event.publish ([a_line_section])
 		ensure
@@ -599,6 +600,15 @@ feature -- Access
 
 feature -- Access (map objects)
 
+	line_sections: TRAFFIC_LINE_SECTION_LIST
+			-- All line sections in map
+
+	lines: TRAFFIC_EVENT_META_HASH_TABLE [TRAFFIC_LINE_SECTION, TRAFFIC_LINE, STRING]
+			-- All lines in map
+
+	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+			-- All roads in map
+
 	paths: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PATH]
 			-- Paths of the map
 
@@ -610,15 +620,6 @@ feature -- Access (map objects)
 
 	places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
 			-- All places in map
-
-	line_sections: TRAFFIC_LINE_SECTION_LIST
-			-- All line sections in map
-
-	lines: TRAFFIC_EVENT_META_HASH_TABLE [TRAFFIC_LINE_SECTION, TRAFFIC_LINE, STRING]
-			-- All lines in map
-
-	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
-			-- All roads in map
 
 	passengers: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PASSENGER]
 			-- All passengers moving around the city
@@ -644,7 +645,7 @@ feature -- Access
 		do
 			Result := create {ARRAYED_LIST [TRAFFIC_LINE_SECTION]}.make (2)
 			graph.search (places.item (a_name).stop (a_line))
-			a_connections := graph.incident_edge_labels
+			a_connections := graph.incident_edges
 			from a_connections.start until a_connections.after loop
 				ls ?= a_connections.item
 				if ls /= Void then
@@ -665,7 +666,7 @@ feature -- Access
 			nodes := places.item (a_name).nodes
 			from nodes.start until nodes.after loop
 				graph.search (nodes.item)
-				Result.append (graph.incident_edge_labels)
+				Result.append (graph.incident_edges)
 				nodes.forth
 			end
 		end
@@ -796,8 +797,8 @@ feature -- Output
 			-- Textual representation.
 		do
 			Result := "Traffic map%Nnamed: " + name + "%Ndescription: " + description_out +
-				"%N%Nplaces:%N" + places.out +
-				"%N%Nlines:%N" + lines.out
+				"%N%Nplaces:%N" + places.out --+
+--				"%N%Nlines:%N" + lines.out
 		end
 
 --feature -- Basic operations
@@ -808,7 +809,7 @@ feature {TRAFFIC_MAP_LOADER}
 			-- Due to an error in processing the weights need to be recalculated.
 			-- In addition, the stops of different lines are connected at nodes.
 		local
-			the_edges: LIST[WEIGHTED_EDGE[TRAFFIC_NODE, TRAFFIC_CONNECTION]]
+			the_edges: LIST[TRAFFIC_CONNECTION]
 			p: TRAFFIC_PLACE
 			s: TRAFFIC_STOP
 			a_edge: TRAFFIC_ROAD
@@ -829,7 +830,7 @@ feature {TRAFFIC_MAP_LOADER}
 			until
 				the_edges.after
 			loop
-				w := the_edges.item.label.length
+				w := the_edges.item.length
 				the_edges.item.set_weight (w)
 				total_weight := total_weight + w
 				edge_count := edge_count + 1
@@ -861,20 +862,20 @@ feature {TRAFFIC_MAP_LOADER}
 				loop
 					s := p.stops.item
 					graph.search (s)
-					pp.force (position_from_connections(graph.incident_edge_labels, s), 1)
+					pp.force (position_from_connections(graph.incident_edges, s), 1)
 					p.stops.forth
 					if not p.stops.after then
 						graph.search (p.stops.item)
-						pp.force (position_from_connections (graph.incident_edge_labels, p.stops.item), 2)
-						create a_edge.make (s, p.stops.item, type, (create {INTEGER}).max_value, "undirected")
+						pp.force (position_from_connections (graph.incident_edges, p.stops.item), 2)
+						create a_edge.make_insertable (s, p.stops.item, type, i, "undirected")
 						a_edge.set_polypoints (pp)
-						graph.put_edge (s, p.stops.item, a_edge, a_edge.length)
+						graph.put_road (a_edge)
 
 						a := pp.first
 						pp.force (pp.last, 1)
 						pp.force (a, 2)
 						a_edge.set_polypoints (pp)
-						graph.put_edge (p.stops.item, s, a_edge , a_edge.length)
+						graph.put_road (a_edge)
 					end
 				end
 				i := i + 1
@@ -1031,8 +1032,8 @@ invariant
 	name_not_void: name /= Void -- Map name exists.
 	name_not_empty: not name.is_empty -- Map name not empty.
 	places_not_void: places /= Void -- Places exist.
-	lines_not_void: lines /= Void -- Lines exist.
-	line_sections_not_void: line_sections /= Void -- Line sections exist
+--	lines_not_void: lines /= Void -- Lines exist.
+--	line_sections_not_void: line_sections /= Void -- Line sections exist
 --	travelers_not_void: travelers /= Void -- Travelers exist
 --	internal_taxi_offices_not_void: internal_taxi_offices /= Void
 end
