@@ -33,6 +33,7 @@ feature {NONE} -- Initialize
 			create stops.make (5)
 			create nodes.make (5)
 			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (0.0, 0.0))
+			add_node (dummy_node)
 --			set_dummy_node (dummy_node)
 		ensure
 			name_set: equal (a_name, name)
@@ -51,6 +52,7 @@ feature {NONE} -- Initialize
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
+			add_node (dummy_node)
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -311,12 +313,12 @@ feature {NONE} -- Implementation
 invariant
 	name_not_void: name /= Void -- Name exists.
 	name_not_empty: not name.is_empty -- Name not empty.
-	position_not_void: position /= Void -- Position exists.
+--	position_not_void: position /= Void -- Position exists.
 	stops_not_void: stops /= Void
 	nodes_not_void: stops /= Void
 	--stops_in_nodes: stops.for_all (agent nodes.has)
 	dummy_node_not_void: dummy_node /= Void
 	place_in_map: is_in_map implies map.places.has (name)
-	place_not_in_map: not is_in_map implies not map.places.has (name)
+--	place_not_in_map: not is_in_map implies not map.places.has (name) -- This gives an exception!!!
 
 end

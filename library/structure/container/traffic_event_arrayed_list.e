@@ -59,7 +59,7 @@ feature {NONE} -- Initialization
 			removed_initialized: element_removed_event /= Void
 		end
 
-feature {TRAFFIC_MAP_ITEM} -- Element change
+feature -- Element change
 
 	extend (other: DS_LINEAR [G]; i: INTEGER_32)
 			-- Add items of `other' at `i'-th position.
@@ -175,7 +175,7 @@ feature {TRAFFIC_MAP_ITEM} -- Element change
 			element_inserted_event.publish ([v, a_cursor.index])
 		end
 
-feature {TRAFFIC_MAP_ITEM} -- Removal
+feature -- Removal
 
 	delete (v: G)
 			-- Remove all occurrences of `v'.

@@ -55,7 +55,9 @@ feature {NONE} -- Create
 			position := a_position
 			create connection_list.make
 			reset
-			place.add_node (Current)
+			if place.dummy_node /= Void then
+				place.add_node (Current)
+			end
 		ensure
 			no_referrer: (referring_node = Void) and (referring_connection = Void)
 			distance_positive: distance >= 0
@@ -188,6 +190,6 @@ invariant
 	item_is_self: item = Current
 	connection_list_exists: connection_list /= Void
 	node_in_map: is_in_map implies map.graph.has_node (Current)
-	node_not_in_map: not is_in_map implies not map.graph.has_node (Current)
-	place_in_map: place.is_in_map implies is_in_map
+--	node_not_in_map: not is_in_map implies not map.graph.has_node (Current)
+--	place_in_map: place.is_in_map implies is_in_map
 end
