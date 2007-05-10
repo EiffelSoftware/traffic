@@ -13,6 +13,9 @@ inherit
 			out,
 			origin_impl,
 			destination_impl,
+--			add_to_map,
+--			remove_from_map,
+--			is_insertable,
 			type
 		end
 
@@ -122,22 +125,6 @@ feature -- Access
 
 feature -- Element change
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all nodes to `a_map'.
-		do
-			a_map.graph.put_line_section (Current)
-			is_in_map := True
-			map := a_map
-		end
-
-	remove_from_map is
-			-- Remove all nodes from `a_map'.
-		do
-			is_in_map := False
-			map := Void
-
-		end
-
 	set_state (a_state: TRAFFIC_LINE_SECTION_STATE ) is
 			-- Change state to `a_state'.
 		require
@@ -168,27 +155,19 @@ feature -- Basic operations
 			roads.wipe_out
 		end
 
-feature {TRAFFIC_LINE} -- Status setting
+feature -- Status report
 
-	set_line (a_line: TRAFFIC_LINE) is
-			-- Set line this line section belongs to.
-		require
-			a_line_exists: a_line /= Void
-			line_not_set: line = Void
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+			-- (All places, stops, and the line need to be in the map already)
 		do
-			line := a_line
-		ensure
-			line_set: line = a_line
-		end
+			Result := 	origin_impl.is_in_map and destination_impl.is_in_map and
+						origin.is_in_map and destination.is_in_map
 
-	remove_line is
-			-- Remove line section from line.
-		require
-			line_set: line /= Void
-		do
-			line := Void
-		ensure
-			line_void: line = Void
+			if line /= Void then
+				Result := Result and line.is_in_map
+			end
+
 		end
 
 feature -- Access
@@ -213,6 +192,51 @@ feature -- Output
 				state.out +
 				", from " + origin.name + " to " + destination.name +
 				line_name
+		end
+
+feature {TRAFFIC_LINE} -- Status setting
+
+	set_line (a_line: TRAFFIC_LINE) is
+			-- Set line this line section belongs to.
+		require
+			a_line_exists: a_line /= Void
+			line_not_set: line = Void
+		do
+			line := a_line
+		ensure
+			line_set: line = a_line
+		end
+
+	remove_line is
+			-- Remove line section from line.
+		require
+			line_set: line /= Void
+		do
+			line := Void
+		ensure
+			line_void: line = Void
+		end
+
+feature {TRAFFIC_LINE} -- Basic operations (map)
+
+	add_to_map (a_map: TRAFFIC_MAP) is
+			-- Add `Current' and all nodes to `a_map'.
+		do
+			a_map.graph.put_line_section (Current)
+			a_map.line_sections.force_last (Current)
+			is_in_map := True
+			map := a_map
+		ensure then
+			map_has: a_map.line_sections.has (Current)
+			graph_has: a_map.graph.has_edge (Current)
+		end
+
+	remove_from_map is
+			-- Remove all nodes from `a_map'.
+		do
+			is_in_map := False
+			map := Void
+
 		end
 
 invariant

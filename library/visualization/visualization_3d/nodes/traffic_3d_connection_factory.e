@@ -64,24 +64,76 @@ feature -- Basic operations
 		local
 			polyline_3d: ARRAYED_LIST[EM_VECTOR3D]
 			current_polypoint_3d: EM_VECTOR3D
+			p1: EM_VECTOR3D
+			q1, q2: EM_VECTOR3D
 			i: INTEGER
 		do
 			create polyline_3d.make(a_connection.polypoints.count)
-			from
-				i := 1
-			until
-				i > a_connection.polypoints.count - 1
-			loop
-				current_polypoint_3d.set (a_connection.polypoints.item(i).x, 0.0, a_connection.polypoints.item(i).y)
-				polyline_3d.extend (current_polypoint_3d)
-				i := i + 1
+
+			-- Case 1: There are only 2 polypoints. Check if they are the same.
+			if a_connection.polypoints.count = 2 then
+				if a_connection.polypoints.item (1).distance (a_connection.polypoints.item (2)) > 0.0 then
+					current_polypoint_3d.set (a_connection.polypoints.item (1).x, 0.0, a_connection.polypoints.item (1).y)
+					polyline_3d.extend (current_polypoint_3d)
+					current_polypoint_3d.set (a_connection.polypoints.item (2).x, 0.0, a_connection.polypoints.item (2).y)
+					polyline_3d.extend (current_polypoint_3d)
+				end
+			-- Case 2: There are more than 2 polypoints. Check angles between consecutive segments.
+			else
+				from
+					i := 2
+					p1.set (a_connection.polypoints.item (1).x, 0.0, a_connection.polypoints.item (1).y)
+					polyline_3d.extend (p1)
+				until
+					i > a_connection.polypoints.count
+				loop
+					if polyline_3d.count < 2 then
+						-- Check length
+						p1.set (a_connection.polypoints.item (i).x, 0.0, a_connection.polypoints.item (i).y)
+						if (p1-polyline_3d.last).length > 0.0 then
+							polyline_3d.extend (p1)
+						end
+					else
+						-- Check angle
+						p1.set (a_connection.polypoints.item (i).x, 0.0, a_connection.polypoints.item (i).y)
+						q1 := polyline_3d.i_th (polyline_3d.count - 1) - polyline_3d.last
+						q2 := p1 - polyline_3d.last
+						if angle_between_vectors (q1, q2) >= 0.000001 or angle_between_vectors (q1, q2) <= -0.000001 then
+							polyline_3d.extend (p1)
+						end
+					end
+					i := i + 1
+				end
+
 			end
+--			p := a_connection.polypoints.first
+----			create current_polypoint_3d.make_from_tuple ([a_connection.polypoints.first.x, 0.0, a_connection.polypoints.first.y])
+--			current_polypoint_3d.set (p.x, 0.0, p.y)
+--			polyline_3d.force (current_polypoint_3d)
+--			from
+--				i := 2
+--			until
+--				i > a_connection.polypoints.count
+--			loop
+--				if p.distance (a_connection.polypoints.item (i)) > 0.0 then
+--					p := a_connection.polypoints.item (i)
+--					current_polypoint_3d.set (p.x, 0.0, p.y)
+--					polyline_3d.extend (current_polypoint_3d)
+--				end
+--				i := i + 1
+--			end
 			-- Add last point to the 3d_polyline
-			i := a_connection.polypoints.count
-			current_polypoint_3d.set (a_connection.polypoints.item (i).x, 0.0, a_connection.polypoints.item (i).y)
-			polyline_3d.extend (current_polypoint_3d)
-			create_flat_polyline(polyline_3d, width)
-			create Result.make_with_item (a_connection, last_3d_member)
+--			i := a_connection.polypoints.count - 1
+--			if a_connection.polypoints.item (i).distance (a_connection.polypoints.item (i+1)) > 0.0 then
+--				current_polypoint_3d.set (a_connection.polypoints.item (i+1).x, 0.0, a_connection.polypoints.item (i+1).y)
+--				polyline_3d.extend (current_polypoint_3d)
+--			end
+			if polyline_3d.count >= 2 then
+				create_flat_polyline(polyline_3d, width)
+				create Result.make_with_item (a_connection, last_3d_member)
+			else
+				create Result.make_with_item (a_connection, create {TE_3D_NODE}.make)
+			end
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -150,7 +202,7 @@ feature {NONE} -- Implementation
 				current_point := some_points.i_th(i)
 				next_point := some_points.i_th(i+1)
 				current_angle := angle_between_vectors((last_point-current_point),(next_point-current_point))/2.0
-				current_bisector := up_vector.cross_product(((next_point-current_point).normalized + (current_point-last_point).normalized).normalized)
+				current_bisector := up_vector.cross_product(((next_point-current_point) + (current_point-last_point)).normalized)
 				current_bisector := current_bisector * (a_width/(2.0*sine(current_angle)))
 				vector := current_point + current_bisector
 				vertex_list.force(vector)
@@ -195,6 +247,7 @@ feature {NONE} -- Implementation
 				face_list.force(current_face)
 				single_cluster.push_index (face_list.count)
 
+--				current_bisector := up_vector.cross_product(((next_point-current_point).normalized + (current_point-last_point).normalized).normalized)
 				i := i+1
 			end
 			-- create last two vertices

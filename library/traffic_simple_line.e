@@ -45,7 +45,7 @@ feature {NONE} -- Initialization
 			a_map_exists: a_map /= Void
 		do
 			make_line (a_name, a_type)
-			map := a_map
+--			map := a_map
 		ensure
 			name_set: equal (name, a_name)
 			type_set: type = a_type -- have to be same object
@@ -230,7 +230,7 @@ feature -- Insertion
 			a_line_section.set_line (Current)
 
 			other_line_section.set_line (Current)
-			map.add_line_section (other_line_section)
+--			map.add_line_section (other_line_section)
 
 			if terminal_1 = Void then -- no direction exists yet
 				put_first (a_line_section)
@@ -291,10 +291,10 @@ feature -- Insertion
 				create pp.make (2)
 				pp.force_last (origin.place.position)
 				pp.force_last (a_place.position)
-				map.add_stop (a_stop)
+--				map.add_stop (a_stop)
 				create line_section.make_insertable (origin, a_stop, type, pp)
 				extend (line_section)
-				map.add_line_section (line_section)
+--				map.add_line_section (line_section)
 			end
 		end
 
@@ -337,7 +337,7 @@ feature {NONE} -- Implementation
 			-- Used to maintain a station, when remove_all_sections is called
 			-- and is used, when a line is built using `extend_stop'
 
-	map: TRAFFIC_MAP
+--	map: TRAFFIC_MAP
 			-- Map this simple line belongs to.
 
 	insert_one_direction_front (a_line_section: TRAFFIC_LINE_SECTION) is

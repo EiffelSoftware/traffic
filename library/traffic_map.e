@@ -311,19 +311,19 @@ feature -- Insertion
 			end
 		end
 
-	add_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
-			-- Add line section `a_line_section' to map.
-		require
-			a_line_section_exists: a_line_section /= Void
-			--a_line_section_not_in_map: not has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
-		do
-			line_sections.force_last (a_line_section)
-			graph.put_line_section (a_line_section)
-			-- TODO: connect nodes at origin and destination with their peers (stops of other lines)
---			line_section_inserted_event.publish ([a_line_section])
-		ensure
-			--a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
-		end
+--	add_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
+--			-- Add line section `a_line_section' to map.
+--		require
+--			a_line_section_exists: a_line_section /= Void
+--			--a_line_section_not_in_map: not has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
+--		do
+--			line_sections.force_last (a_line_section)
+--			graph.put_line_section (a_line_section)
+--			-- TODO: connect nodes at origin and destination with their peers (stops of other lines)
+----			line_section_inserted_event.publish ([a_line_section])
+--		ensure
+--			--a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
+--		end
 
 --	add_line (a_line: TRAFFIC_LINE) is
 --			-- Add line `a_line' to map.
@@ -405,13 +405,13 @@ feature -- Insertion
 --			internal_taxi_offices.force(a_taxi_office)
 --		end
 
-	add_stop (a_stop: TRAFFIC_STOP) is
-			-- Add `a_stop' to map.
-		require
-			a_stop_exists: a_stop /= Void
-		do
-			graph.put_node (a_stop)
-		end
+--	add_stop (a_stop: TRAFFIC_STOP) is
+--			-- Add `a_stop' to map.
+--		require
+--			a_stop_exists: a_stop /= Void
+--		do
+--			graph.put_node (a_stop)
+--		end
 
 --	add_path (a_path: TRAFFIC_PATH) is
 --			-- Add `a_path' to map.
@@ -600,6 +600,9 @@ feature -- Access
 
 feature -- Access (map objects)
 
+	places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
+			-- All places in map
+
 	line_sections: TRAFFIC_LINE_SECTION_LIST
 			-- All line sections in map
 
@@ -615,11 +618,8 @@ feature -- Access (map objects)
 	buildings: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_BUILDING]
 			-- Buildings of the map
 
-	taxi_offices: TRAFFIC_EVENT_LINKED_LIST[TRAFFIC_TAXI_OFFICE]
+	taxi_offices: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_TAXI_OFFICE]
 			-- All taxi offices associated with this map
-
-	places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
-			-- All places in map
 
 	passengers: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PASSENGER]
 			-- All passengers moving around the city
@@ -841,45 +841,44 @@ feature {TRAFFIC_MAP_LOADER}
 				average_weight := total_weight / edge_count
 			end
 
-			create type.make
-			-- Connect stops.
-			-- TODO: If the roads should be used for transport, the nodes must be connected as well.
-			create pp.make (2)
---			pp.force_last (Void)
---			pp.force_last (Void)
+--			create type.make
+--			-- Connect stops.
+--			-- TODO: If the roads should be used for transport, the nodes must be connected as well.
+--			create pp.make (2)
+----			pp.force_last (Void)
+----			pp.force_last (Void)
 
-			from
-				place_array := places.to_array
-				i := 1
-			until
-				i > place_array.count
-			loop
-				from
-					p := place_array.item (i)
-					p.stops.start
-				until
-					p.stops.after
-				loop
-					s := p.stops.item
-					graph.search (s)
-					pp.force (position_from_connections(graph.incident_edges, s), 1)
-					p.stops.forth
-					if not p.stops.after then
-						graph.search (p.stops.item)
-						pp.force (position_from_connections (graph.incident_edges, p.stops.item), 2)
-						create a_edge.make_insertable (s, p.stops.item, type, i, "undirected")
-						a_edge.set_polypoints (pp)
-						graph.put_road (a_edge)
+--			from
+--				places.start
+--			until
+--				places.off
+--			loop
+--				from
+--					p := place_array.item (i)
+--					p.stops.start
+--				until
+--					p.stops.after
+--				loop
+--					s := p.stops.item
+--					graph.search (s)
+--					pp.force (position_from_connections (p.stops.item.connection_list, s), 1)
+--					p.stops.forth
+--					if not p.stops.after then
+--						graph.search (p.stops.item)
+--						pp.force (p.position, 2)
+--						create a_edge.make_invisible (s, p.dummy_node, type, graph.id_manager.next_free_index, "undirected")
+--						a_edge.set_polypoints (pp)
+--						a_edge.add_to_map (Current)
 
-						a := pp.first
-						pp.force (pp.last, 1)
-						pp.force (a, 2)
-						a_edge.set_polypoints (pp)
-						graph.put_road (a_edge)
-					end
-				end
-				i := i + 1
-			end
+----						a := pp.first
+----						pp.force (pp.last, 1)
+----						pp.force (a, 2)
+----						a_edge.set_polypoints (pp)
+----						a_edge.add_to_map (Current)
+--					end
+--				end
+--				i := i + 1
+--			end
 		end
 
 feature {NONE}-- Implementation

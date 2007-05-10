@@ -29,11 +29,11 @@ feature {NONE} -- Initialize
 			a_name_not_empty: not a_name.is_empty
 		do
 			name := a_name
-			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (0.0, 0.0))
-			set_dummy_node (dummy_node)
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
+			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (0.0, 0.0))
+--			set_dummy_node (dummy_node)
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -47,7 +47,7 @@ feature {NONE} -- Initialize
 		do
 			name := a_name
 			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (a_x, a_y))
-			set_dummy_node (dummy_node)
+--			set_dummy_node (dummy_node)
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
@@ -116,12 +116,31 @@ feature -- Status report
 			Result := stops.there_exists (agent is_stop_of_line (?, a_line))
 		end
 
-feature -- Element change
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+			-- (All nodes need to be insertable. See `TRAFFIC_NODE is_insertable' for requirements.)
+		do
+			Result := True
+			from
+				nodes.start
+			until
+				nodes.off or not Result
+			loop
+				if not nodes.item.is_insertable (a_map) then
+					Result := False
+				end
+				nodes.forth
+			end
+		end
+
+feature -- Basic operations (map)
 
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.
 		do
 			a_map.places.force (Current, name)
+			is_in_map := True
+			map := a_map
 			from
 				nodes.start
 			until
@@ -130,8 +149,8 @@ feature -- Element change
 				nodes.item.add_to_map (a_map)
 				nodes.forth
 			end
-			is_in_map := True
-			map := a_map
+		ensure then
+			map_has: a_map.places.has (name)
 		end
 
 	remove_from_map is
@@ -140,6 +159,8 @@ feature -- Element change
 			is_in_map := False
 			map := Void
 		end
+
+feature -- Element change
 
 	set_information (a_information: TRAFFIC_PLACE_INFORMATION) is
 			-- Set information to `a_information'.
@@ -179,10 +200,12 @@ feature -- Basic operations
 			schedule.extend (entry)
 		end
 
-feature -- Insertion
+feature {TRAFFIC_NODE} -- Insertion
 
 	add_stop (a_stop: TRAFFIC_STOP) is
 			-- add a traffic stop
+		require
+			is_insertable: a_stop.is_insertable (map)
 		do
 			stops.extend (a_stop)
 			nodes.extend (a_stop)
@@ -192,13 +215,30 @@ feature -- Insertion
 			end
 		end
 
-feature {TRAFFIC_MAP_FACTORY} -- Element change
-
-	set_dummy_node (a_node: TRAFFIC_NODE) is
-			-- used for shortest path
+	add_node (a_node: TRAFFIC_NODE) is
+			-- Add `a_node' to `Current'.
+		local
+			s: TRAFFIC_STOP
 		do
-			dummy_node := a_node
+			s ?= a_node
+			if s /= Void then
+				add_stop (s)
+			else
+				nodes.extend (a_node)
+--				update_position
+				if is_in_map then
+					a_node.add_to_map (map)
+				end
+			end
 		end
+
+--feature {TRAFFIC_MAP_FACTORY} -- Element change
+
+--	set_dummy_node (a_node: TRAFFIC_NODE) is
+--			-- used for shortest path
+--		do
+--			dummy_node := a_node
+--		end
 
 feature -- Output
 
@@ -276,5 +316,7 @@ invariant
 	nodes_not_void: stops /= Void
 	--stops_in_nodes: stops.for_all (agent nodes.has)
 	dummy_node_not_void: dummy_node /= Void
+	place_in_map: is_in_map implies map.places.has (name)
+	place_not_in_map: not is_in_map implies not map.places.has (name)
 
 end

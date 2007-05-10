@@ -16,8 +16,8 @@ inherit
 create {TRAFFIC_MAP_FACTORY, TRAFFIC_SIMPLE_LINE, TOUCH_PLACE}
 	make_stop
 
-create {TRAFFIC_LINE_SECTION}
-	make_non_insertable
+--create {TRAFFIC_LINE_SECTION}
+--	make_non_insertable
 
 feature{NONE} -- Creation
 
@@ -32,24 +32,24 @@ feature{NONE} -- Creation
 			line := a_line
 			position := a_position
 			item := Current
-			place.stops.extend (Current)
 			create connection_list.make
+			place.add_stop (Current)
 		ensure
 			stop_added: place.stops.has (Current)
 		end
 
-	make_non_insertable (a_place: TRAFFIC_PLACE; a_line_type: TRAFFIC_TYPE_LINE; a_position: EM_VECTOR_2D ) is
-			-- Initialize `Current'.
-		require
-			place_not_void: a_place /= Void
-			position_not_void: a_position /= Void
-		do
-			place := a_place
-			position := a_position
-			item := Current
-			create connection_list.make
-			create line.make ("dummy", a_line_type)
-		end
+--	make_non_insertable (a_place: TRAFFIC_PLACE; a_line_type: TRAFFIC_TYPE_LINE; a_position: EM_VECTOR_2D ) is
+--			-- Initialize `Current'.
+--		require
+--			place_not_void: a_place /= Void
+--			position_not_void: a_position /= Void
+--		do
+--			place := a_place
+--			position := a_position
+--			item := Current
+--			create connection_list.make
+--			create line.make ("dummy", a_line_type)
+--		end
 
 feature -- Access
 

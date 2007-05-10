@@ -18,6 +18,7 @@ inherit
 --			turn_to
 		redefine
 --			turn_to,
+			hash_code,
 			connection_list,
 			referring_connection,
 			put_connection
@@ -54,6 +55,7 @@ feature {NONE} -- Create
 			position := a_position
 			create connection_list.make
 			reset
+			place.add_node (Current)
 		ensure
 			no_referrer: (referring_node = Void) and (referring_connection = Void)
 			distance_positive: distance >= 0
@@ -73,11 +75,11 @@ feature -- Access
 
 	connection_list: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
 
---	hash_code: INTEGER is
---			-- Hash code value
---		do
---			Result := place.hash_code
---		end
+	hash_code: INTEGER is
+			-- Hash code value
+		do
+			Result := ([place, position]).hash_code
+		end
 
 --	distance: REAL
 			-- Length of the shortest path to `item' until now
@@ -94,20 +96,28 @@ feature -- Element change
 			position_set: position = a_position
 		end
 
+feature {TRAFFIC_PLACE} -- Basic operations (map)
+
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.
+		local
+			e: TRAFFIC_ROAD
+			p: DS_ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			a_map.graph.put_node (Current)
-			from
-				connection_list.start
-			until
-				connection_list.after
-			loop
-				connection_list.item.add_to_map (a_map)
-				connection_list.forth
-			end
 			is_in_map := True
 			map := a_map
+			-- Connect the stop to the dummy_node
+			if Current /= place.dummy_node then
+				create e.make_invisible (Current, place.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index, "undirected")
+				create p.make (2)
+				p.put_first (position)
+				p.put_last (place.dummy_node.position)
+				e.set_polypoints (p)
+				e.add_to_map (a_map)
+			end
+		ensure then
+			graph_has: a_map.graph.has_node (Current)
 		end
 
 	remove_from_map is
@@ -154,57 +164,11 @@ feature -- Status report
 --			Result := distance < other.distance
 --		end
 
-feature -- Status setting
-
---	set_processed is
---			-- Set `processed' flag.
---		do
---			processed := True
---		ensure
---			processed: processed
---		end
-
---	reset is
---			-- Reset `referring_edge', `distance' and `processed'.
---		do
---			referring_node := Void
---			referring_connection := Void
---			distance := (create {INTEGER_REF}).Max_value
---			processed := False
---		ensure
---			no_referrer: (referring_node = Void) and (referring_connection = Void)
---			fresh: not processed
---		end
-
-feature -- Measurement
-
---	out_degree: INTEGER is
---			-- Number of outgoing edges of `Current'
---		do
---			Result := connection_list.count
---		end
-
-feature -- Cursor movement
-
---	turn_to (a_node: like Current) is
---			-- Turn to the edge where `a_node' is the opposite node.
-----		require
-----			node_not_void: a_node /= Void
---		local
---			found: BOOLEAN
---		do
---			from
---				connection_list.start
---			until
---				found or connection_list.after
---			loop
---				if connection_list.item.destination_impl = a_node then
---					found := True
---				else
---					connection_list.forth
---				end
---			end
---		end
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := connection_list.is_empty
+		end
 
 feature {NONE} -- Implementation
 
@@ -223,5 +187,7 @@ invariant
 	position_not_void: position /= Void
 	item_is_self: item = Current
 	connection_list_exists: connection_list /= Void
-
+	node_in_map: is_in_map implies map.graph.has_node (Current)
+	node_not_in_map: not is_in_map implies not map.graph.has_node (Current)
+	place_in_map: place.is_in_map implies is_in_map
 end

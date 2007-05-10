@@ -13,11 +13,11 @@ class
 
 inherit
 	COMPARABLE
-
-	HASHABLE
 		undefine
 			is_equal
 		end
+
+	HASHABLE
 
 create
 	make

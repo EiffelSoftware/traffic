@@ -34,6 +34,12 @@ inherit
 				out as math_out
 		end
 
+	TRAFFIC_MAP_ITEM
+		undefine
+			is_equal,
+			copy,
+			out
+		end
 create
 	make
 
@@ -100,6 +106,31 @@ feature -- Access
 
 feature -- Element change
 
+	add_to_map (a_map: TRAFFIC_MAP) is
+			-- Add `Current' and all nodes to `a_map'.
+		do
+			a_map.lines.force (Current, name)
+			is_in_map := True
+			map := a_map
+			from
+				start
+			until
+				after
+			loop
+				item_for_iteration.add_to_map (a_map)
+				forth
+			end
+		ensure then
+			line_in_map: a_map.lines.has (name)
+		end
+
+	remove_from_map is
+			-- Remove all nodes from `a_map'.
+		do
+			is_in_map := False
+			map := Void
+		end
+
 	set_color (a_color: TRAFFIC_COLOR) is
 			-- Set color to `a_color'.
 		require
@@ -125,6 +156,24 @@ feature -- Removal
 		end
 
 feature -- Status report
+
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+			-- E.g. are all needed elements already inserted in the map?
+		do
+			Result := True
+			from
+				start
+			until
+				off or not Result
+			loop
+				if not item_for_iteration.is_insertable (a_map) then
+					Result := False
+				end
+				forth
+			end
+		end
 
 	is_terminal (a_terminal: TRAFFIC_PLACE): BOOLEAN is
 			-- Is `a_terminal' a terminal of line?
@@ -192,6 +241,7 @@ feature -- Basic operations
 		require else
 			a_line_section_exists: a_line_section /= Void
 			a_line_section_valid_for_insertion: is_valid_for_insertion (a_line_section)
+			a_section_insertable: is_in_map implies a_line_section.is_insertable (map)
 		local
 			position: INTEGER
 			origin, destination: TRAFFIC_PLACE
@@ -246,6 +296,9 @@ feature -- Basic operations
 				end
 			end
 			a_line_section.set_line (Current)
+			if is_in_map then
+				a_line_section.add_to_map (map)
+			end
 		ensure
 			a_line_section_in_line: has (a_line_section)
 			line_added_to_line_section: a_line_section.line = Current

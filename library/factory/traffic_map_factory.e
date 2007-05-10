@@ -91,7 +91,7 @@ feature -- Traffic place building
 			unique_name: not a_map.places.has (a_name)
 		do
 			create internal_place.make (a_name)
-			a_map.places.force (internal_place, internal_place.name)
+			internal_place.add_to_map (a_map)
 		ensure
 			place_created: place /= Void
 			place_has_name: equal (place.name, a_name)
@@ -111,7 +111,8 @@ feature -- Traffic place building
 			create internal_place.make_with_position (a_name, a_x, a_y)
 --			create dummy_node.make (internal_place, )
 --			internal_place.set_dummy_node (dummy_node)
-			a_map.places.force (internal_place, internal_place.name)
+--			a_map.places.force (internal_place, internal_place.name)
+			internal_place.add_to_map (a_map)
 		ensure
 			place_created: place /= Void
 			place_has_name: equal (place.name, a_name)
@@ -157,7 +158,7 @@ feature -- Line section building
 				pps := a_polypoints
 			end
 			internal_line_section := create_line_section (a_origin, a_destination, pps, a_line, a_map)
-			a_map.add_line_section (internal_line_section)
+--			a_map.add_line_section (internal_line_section)
 		ensure
 			line_section_created: line_section /= Void
 			line_section_has_line: line_section.line = a_line
@@ -199,7 +200,8 @@ feature -- Road section building
 			a_direction_exists: a_direction/=Void
 		do
 			internal_road := create_road (a_origin, a_destination, a_map, a_type, an_id, a_direction)
-			a_map.roads.force_last (internal_road, internal_road.id)
+			internal_road.add_to_map (a_map)
+--			a_map.roads.force_last (internal_road, internal_road.id)
 		ensure
 			road_created: road /= Void
 			--TODO:map_has_origin:a_map.has_stop (a_origin)
@@ -242,7 +244,8 @@ feature -- Traffic line building
 			build_traffic_type (a_type_name)
 			actual_traffic_type ?= internal_traffic_type
 			internal_line := create_line (a_name, actual_traffic_type)
-			a_map.lines.force (internal_line, internal_line.name)
+			internal_line.add_to_map (a_map)
+--			a_map.lines.force (internal_line, internal_line.name)
 		ensure
 			line_created: line /= Void
 			line_has_name: equal (line.name, a_name)
@@ -283,7 +286,8 @@ feature -- Traffic simple line building
 			build_traffic_type (a_type_name)
 			actual_traffic_type ?= internal_traffic_type
 			internal_simple_line := create_simple_line (a_name, actual_traffic_type, a_map)
-			a_map.lines.force (internal_simple_line, internal_simple_line.name)
+			internal_simple_line.add_to_map (a_map)
+--			a_map.lines.force (internal_simple_line, internal_simple_line.name)
 		ensure
 			simple_line_created: simple_line /= Void
 			simple_line_has_name: equal (simple_line.name, a_name)
@@ -361,8 +365,8 @@ feature {NONE} -- Implementation
 			else
 				create stop_pos.make_from_other (a_polypoints.first)
 				create origin_stop.make_stop (origin_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
-				origin_place.add_stop (origin_stop)
-				map.add_stop (origin_stop)
+--				origin_place.add_stop (origin_stop)
+--				map.add_stop (origin_stop)
 			end
 
 			if destination_place.has_stop (a_line) then
@@ -370,8 +374,8 @@ feature {NONE} -- Implementation
 			else
 				create stop_pos.make_from_other (a_polypoints.last)
 				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
-				destination_place.add_stop (destination_stop)
-				map.add_stop (destination_stop)
+--				destination_place.add_stop (destination_stop)
+--				map.add_stop (destination_stop)
 			end
 
 			create typed_line_section.make_insertable (origin_stop, destination_stop, a_line.type, a_polypoints)
@@ -427,7 +431,7 @@ feature {NONE} -- Implementation
 			traffic_type_factory.build(a_type)
 			type?= traffic_type_factory.traffic_type
 			i:=an_id.to_integer
-			create a_road.make_insertable (origin_node, destination_node, type, i, a_direction)
+			create a_road.make_visible (origin_node, destination_node, type, i, a_direction)
 			Result := a_road
 		ensure
 			result_exists: Result /= Void

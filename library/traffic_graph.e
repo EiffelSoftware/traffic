@@ -45,7 +45,7 @@ feature {NONE} -- Initialization
 			create id_manager
 		end
 
-feature -- Insertion
+feature {TRAFFIC_MAP_ITEM} -- Insertion
 
 	connect_nodes (a_start_node, a_end_node: like item; a_label: REAL; a_weight: REAL) is
 			-- Redefined to record weight.
@@ -53,7 +53,7 @@ feature -- Insertion
 			r: TRAFFIC_ROAD
 			i: INTEGER
 		do
-			create r.make_insertable (a_start_node, a_end_node, create {TRAFFIC_TYPE_STREET}.make, id_manager.next_free_index, "undirected")
+			create r.make_visible (a_start_node, a_end_node, create {TRAFFIC_TYPE_STREET}.make, id_manager.next_free_index, "undirected")
 			a_start_node.put_connection (r)
 			internal_edges.extend (r)
 			id_manager.take (r.id)
@@ -84,7 +84,8 @@ feature -- Insertion
 		require
 			a_road_exists: a_road /= Void
 			not_has_id: not id_manager.is_taken (a_road.id)
-			not_already_in_graph: not has_edge (a_road)
+--			not_already_in_graph: not has_edge (a_road)
+			nodes_exist: has_node (a_road.origin_impl) and has_node (a_road.destination_impl)
 		do
 			a_road.origin_impl.put_connection (a_road)
 			internal_edges.extend (a_road)
@@ -99,7 +100,8 @@ feature -- Insertion
 			-- Insert `a_section' into the graph.
 		require
 			a_section_exists: a_section /= Void
-			not_already_in_graph: not has_edge (a_section)
+--			not_already_in_graph: not has_edge (a_section)
+			nodes_exist: has_node (a_section.origin_impl) and has_node (a_section.destination_impl)
 --			has_line: lines.has (a_section.line.name)
 		do
 			a_section.origin_impl.put_connection (a_section)
@@ -110,6 +112,34 @@ feature -- Insertion
 			end
 --			line_sections.force_last (a_section)
 		end
+
+	put_connection (a_connection: TRAFFIC_CONNECTION) is
+			-- Insert `a_connection' into the graph.
+		require
+			a_connection_exists: a_connection /= Void
+--			not_already_in_graph: not has_edge (a_section)
+			nodes_exist: has_node (a_connection.origin_impl) and has_node (a_connection.destination_impl)
+--			has_line: lines.has (a_section.line.name)
+		local
+			r: TRAFFIC_ROAD
+			l: TRAFFIC_LINE_SECTION
+		do
+			r ?= a_connection
+			l ?= a_connection
+			if r /= Void then
+				put_road (r)
+			elseif l /= Void then
+				put_line_section (l)
+			else
+				a_connection.origin_impl.put_connection (a_connection)
+				internal_edges.extend (a_connection)
+				total_weight := total_weight + a_connection.length
+				if not a_connection.is_directed then
+					a_connection.destination_impl.put_connection (a_connection)
+				end
+			end
+		end
+
 
 --	put_line (a_line: TRAFFIC_LINE) is
 --			-- Insert `a_line' into the graph.
@@ -134,7 +164,7 @@ feature -- Insertion
 			index: INTEGER
 			node: like current_node
 		do
-			if not index_of_element.has (a_node) then
+			if not node_list.has (a_node) then
 				-- Compute item index of new element.
 				if not inactive_nodes.is_empty then
 					inactive_nodes.start
@@ -149,6 +179,8 @@ feature -- Insertion
 				node_list.force (a_node, index)
 				index_of_element.force (index, a_node)
 				node_count := node_count + 1
+			else
+				io.put_string ("not inserted%N")
 			end
 		end
 

@@ -1,5 +1,5 @@
 indexing
-	description: "Objects of type TRAFFIC_CONNECTION represents connections between TRAFFIC_PLACEs"
+	description: "Invisible connections for the graph"
 	date: "$Date: 2006-03-27 19:42:12 +0200 (Mon, 27 Mar 2006) $"
 	revision: "$Revision: 601 $"
 
@@ -75,6 +75,26 @@ feature -- Element change
 		do
 			polypoints.wipe_out
 		end
+
+--feature -- Basic operations
+
+--	add_to_map (a_map: TRAFFIC_MAP) is
+--			-- Add `Current' and all nodes to `a_map'.
+--		do
+--			a_map.graph.put_connection (Current)
+--			is_in_map := True
+--			map := a_map
+--		ensure then
+--			graph_has: a_map.graph.has_edge (Current)
+--		end
+
+--	remove_from_map is
+--			-- Remove all nodes from `a_map'.
+--		do
+--			is_in_map := False
+--			map := Void
+
+--		end
 
 feature -- Access
 
@@ -154,6 +174,16 @@ feature -- Access
 --			-- Is the current edge directed?
 
 feature -- Comparison
+
+feature -- Status report
+
+--	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+--			-- Is `Current' insertable into `a_map'?
+--			-- E.g. are all needed elements already inserted in the map?
+--		do
+--			Result := 	origin_impl.is_in_map and destination_impl.is_in_map and
+--						origin.is_in_map and destination.is_in_map
+--		end
 
 	is_equal (other: like Current): BOOLEAN is
 			-- Is `other' attached to an object considered

@@ -19,6 +19,7 @@ feature -- Element change
 		require
 			a_map_exists: a_map /= Void
 			not_in_map: not is_in_map
+			insertable: is_insertable (a_map)
 		deferred
 		ensure
 			is_in_map: is_in_map
@@ -38,5 +39,14 @@ feature -- Element change
 feature -- Access
 
 	map: TRAFFIC_MAP
+
+feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+			-- E.g. are all needed elements already inserted in the map?
+		deferred
+		end
+
 
 end
