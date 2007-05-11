@@ -104,7 +104,7 @@ feature -- Access
 	line: TRAFFIC_LINE
 			-- Line this line section belongs to
 
-	state: TRAFFIC_LINE_SECTION_STATE
+	state: TRAFFIC_LINE_CONNECTION_STATE
 			-- State of line section
 
 	roads: ARRAYED_LIST [TRAFFIC_ROAD_CONNECTION]
@@ -125,7 +125,7 @@ feature -- Access
 
 feature -- Element change
 
-	set_state (a_state: TRAFFIC_LINE_SECTION_STATE ) is
+	set_state (a_state: TRAFFIC_LINE_CONNECTION_STATE ) is
 			-- Change state to `a_state'.
 		require
 			a_state_exists: a_state /= Void

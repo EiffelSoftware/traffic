@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_LINE_SECTION_STATE_CONSTANTS
+	TRAFFIC_LINE_CONNECTION_STATE_CONSTANTS
 
 feature -- Constants
 
