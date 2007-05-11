@@ -1,10 +1,10 @@
 indexing
-	description: "A Road of the city."
-	date: "$Date: 2006-03-27 19:42:12 +0200 (Mon, 27 Mar 2006) $"
-	revision: "$Revision: 601 $"
+	description: "Connections that represent the changing from one means of transportation to the other. Will most probably be invisible."
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
-	TRAFFIC_ROAD_CONNECTION
+	TRAFFIC_EXCHANGE_CONNECTION
 
 inherit
 	TRAFFIC_CONNECTION
@@ -13,11 +13,11 @@ inherit
 		end
 
 create
-	make_visible
+	make_exchange
 
-feature{NONE} -- Creation
+feature {NONE} -- Initialization
 
-	make_visible (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER) is
+	make_exchange (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER) is
 			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -30,7 +30,6 @@ feature{NONE} -- Creation
 			destination_impl := a_destination
 			make_directed (origin_impl, destination_impl)
 			type := a_type
-			is_directed:=true
 			create polypoints.make (0)
 			polypoints.force_last (a_origin.place.position)
 			polypoints.force_last (a_destination.place.position)
@@ -57,12 +56,13 @@ feature -- Access
 	id: INTEGER
 			-- Id of road
 
+
 feature -- Basic operations
 
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.
 		do
-			a_map.graph.put_road (Current)
+			a_map.graph.put_connection (Current)
 			is_in_map := True
 			map := a_map
 		ensure then
@@ -86,5 +86,6 @@ feature -- Status report
 			Result := 	origin_impl.is_in_map and destination_impl.is_in_map and
 						origin.is_in_map and destination.is_in_map
 		end
+
 
 end

@@ -64,7 +64,7 @@ feature -- Insertion
 		require
 			map_valid: a_map /= Void
 		local
-			all_roads: DS_HASH_TABLE [TRAFFIC_ROAD_CONNECTION, INTEGER]
+			all_roads: DS_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
 		do
 
 			all_roads := map.roads
@@ -78,7 +78,7 @@ feature -- Insertion
 			end
 		end
 
-	add_road (a_road: TRAFFIC_ROAD_CONNECTION) is
+	add_road (a_road: TRAFFIC_ROAD) is
 			-- Add view for `a_road'.
 		require
 			a_road_exists: a_road /= Void
@@ -86,21 +86,21 @@ feature -- Insertion
 		local
 			r: TRAFFIC_3D_RENDERABLE [TRAFFIC_CONNECTION]
 		do
-			r := road_factory.new_connection (a_road)
+			r := road_factory.new_connection (a_road.one_way)
 			r.set_color (color)
 			r.set_as_child_of (road_root)
 		end
 
 feature -- Removal
 
-	remove_road (a_road: TRAFFIC_ROAD_CONNECTION) is
+	remove_road (a_road: TRAFFIC_ROAD) is
 			-- Remove representation of `a_road'.
 		require
 			a_road_exists: a_road /= Void
 		local
 			n: TRAFFIC_3D_RENDERABLE [TRAFFIC_CONNECTION]
 		do
-			n := road_root.child_for_item (a_road)
+			n := road_root.child_for_item (a_road.one_way)
 			if n /= Void then
 				road_root.remove_child (n)
 			end

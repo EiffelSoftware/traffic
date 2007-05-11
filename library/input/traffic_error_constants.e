@@ -112,7 +112,7 @@ feature {NONE} -- Implementation
 		do
 			Result := a_string.occurrences (Slot_character)
 		ensure
-			Result_positive: Result > 0
+			Result_positive: Result >= 0
 		end
 
 	full_message: STRING is

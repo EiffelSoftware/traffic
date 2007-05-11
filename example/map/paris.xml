@@ -734,61 +734,61 @@
 	<line name="tram 1" type="tram" simple="true">
 		<color red="242" green="201" blue="52"/>
 		<line_section from="place Chateau de Vincennes" to="place Nation" direction="undirected">
-			<onroad id="1"/>
+			<onroad id="1" back="false"/>
 			<point x="1160" y="800"/>
 			<point x="1101" y="742"/>
 			<point x="1040" y="742"/>
 			<point x="1032" y="735"/>
 		</line_section>
 		<line_section from="place Nation" to="place Gare de Lyon" direction="undirected">
-			<onroad id="2"/>
+			<onroad id="2" back="false"/>
 			<point x="1032" y="735"/>
 			<point x="1021" y="723"/>
 			<point x="921" y="820"/>
 			<point x="902" y="802"/>
 		</line_section>
 		<line_section from="place Gare de Lyon" to="place Bastille" direction="undirected">
-			<onroad id="3"/>
+			<onroad id="3" back="false"/>
 			<point x="902" y="802"/>
 			<point x="881" y="781"/>
 			<point x="881" y="740"/>
 			<point x="839" y="700"/>
 		</line_section>
 		<line_section from="place Bastille" to="place Hotel de Ville" direction="undirected">
-			<onroad id="4"/>
+			<onroad id="4" back="false"/>
 			<point x="839" y="700"/>
 			<point x="821" y="682"/>
 			<point x="780" y="682"/>
 			<point x="742" y="641"/>
 		</line_section>
 		<line_section from="place Hotel de Ville" to="place Chatelet" direction="undirected">
-			<onroad id="5"/>
+			<onroad id="5" back="false"/>
 			<point x="742" y="641"/>
 			<point x="691" y="641"/>
 		</line_section>
 		<line_section from="place Chatelet" to="place Palais Royal Musee du Louvre" direction="undirected">
-			<onroad id="6"/>
+			<onroad id="6" back="false"/>
 			<point x="691" y="641"/>
 			<point x="533" y="641"/>
 		</line_section>
 		<line_section from="place Palais Royal Musee du Louvre" to="place Concorde" direction="undirected">
-			<onroad id="7"/>
+			<onroad id="7" back="false"/>
 			<point x="533" y="641"/>
 			<point x="441" y="641"/>
 			<point x="430" y="630"/>
 		</line_section>
 		<line_section from="place Concorde" to="place Charles de Gaulle - Etoile" direction="undirected">
-			<onroad id="8"/>
+			<onroad id="8" back="false"/>
 			<point x="430" y="630"/>
 			<point x="294" y="495"/>
 		</line_section>
 		<line_section from="place Charles de Gaulle - Etoile" to="place Porte Maillot" direction="undirected">
-			<onroad id="9"/>
+			<onroad id="9" back="false"/>
 			<point x="294" y="495"/>
 			<point x="230" y="431"/>
 		</line_section>
 		<line_section from="place Porte Maillot" to="place La Defense" direction="undirected">
-			<onroad id="10"/>
+			<onroad id="10" back="false"/>
 			<point x="230" y="431"/>
 			<point x="121" y="322"/>
 		</line_section>
@@ -796,19 +796,19 @@
 	<line name="tram 2" type="tram" simple="true">
 		<color red="29" green="96" blue="172"/>
 		<line_section from="place Porte Dauphine" to="place Charles de Gaulle - Etoile" direction="undirected">
-			<onroad id="11"/>
+			<onroad id="11" back="false"/>
 			<point x="201" y="502"/>
 			<point x="241" y="541"/>
 			<point x="286" y="495"/>
 		</line_section>
 		<line_section from="place Charles de Gaulle - Etoile" to="place Anvers" direction="undirected">
-			<onroad id="12"/>
+			<onroad id="12" back="false"/>
 			<point x="286" y="495"/>
 			<point x="460" y="321"/>
 			<point x="670" y="321"/>
 		</line_section>
 		<line_section from="place Anvers" to="place Pere Lachaise" direction="undirected">
-			<onroad id="13"/>
+			<onroad id="13" back="false"/>
 			<point x="670" y="321"/>
 			<point x="880" y="321"/>
 			<point x="920" y="360"/>
@@ -817,7 +817,7 @@
 			<point x="1020" y="568"/>
 		</line_section>
 		<line_section from="place Pere Lachaise" to="place Nation" direction="undirected">
-			<onroad id="14"/>
+			<onroad id="14" back="false"/>
 			<point x="1020" y="568"/>
 			<point x="1020" y="681"/>
 			<point x="1040" y="699"/>
@@ -826,25 +826,25 @@
 	<line name="tram 3" type="tram" simple="true">
 		<color red="185" green="170" blue="70"/>
 		<line_section from="place Pont de Levallois - Becon" to="place Haussmann - St.Lazare" direction="undirected">
-			<onroad id="15"/>
+			<onroad id="15" back="false"/>
 			<point x="298" y="247"/>
 			<point x="485" y="450"/>
 		</line_section>
 		<line_section from="place Haussmann - St.Lazare" to="place Opera" direction="undirected">
-			<onroad id="16"/>
+			<onroad id="16" back="false"/>
 			<point x="485" y="450"/>
 			<point x="474" y="461"/>
 			<point x="533" y="521"/>
 		</line_section>
 		<line_section from="place Opera" to="place Republique" direction="undirected">
-			<onroad id="17"/>
+			<onroad id="17" back="false"/>
 			<point x="533" y="521"/>
 			<point x="585" y="574"/>
 			<point x="783" y="574"/>
 			<point x="837" y="522"/>
 		</line_section>
 		<line_section from="place Republique" to="place Pere Lachaise" direction="undirected">
-			<onroad id="18"/>
+			<onroad id="18" back="false"/>
 			<point x="837" y="522"/>
 			<point x="846" y="513"/>
 			<point x="914" y="513"/>
@@ -852,7 +852,7 @@
 			<point x="1020" y="568"/>
 		</line_section>
 		<line_section from="place Pere Lachaise" to="place Gallieni" direction="undirected">
-			<onroad id="19"/>
+			<onroad id="19" back="false"/>
 			<point x="1020" y="568"/>
 			<point x="1163" y="568"/>
 		</line_section>
@@ -860,7 +860,7 @@
 	<line name="tram 4" type="tram" simple="true">
 		<color red="189" green="86" blue="159"/>
 		<line_section from="place Porte de Clignancourt" to="place Gare du Nord" direction="undirected">
-			<onroad id="20"/>
+			<onroad id="20" back="false"/>
 			<point x="663" y="217"/>
 			<point x="700" y="254"/>
 			<point x="700" y="337"/>
@@ -868,7 +868,7 @@
 			<point x="803" y="360"/>
 		</line_section>
 		<line_section from="place Gare du Nord" to="place Chatelet" direction="undirected">
-			<onroad id="21"/>
+			<onroad id="21" back="false"/>
 			<point x="803" y="360"/>
 			<point x="803" y="412"/>
 			<point x="755" y="460"/>
@@ -877,33 +877,33 @@
 			<point x="675" y="648"/>
 		</line_section>
 		<line_section from="place Chatelet" to="place St Michel - Notre Dame" direction="undirected">
-			<onroad id="22"/>
+			<onroad id="22" back="false"/>
 			<point x="675" y="648"/>
 			<point x="675" y="659"/>
 			<point x="638" y="699"/>
 			<point x="661" y="727"/>
 		</line_section>
 		<line_section from="place St Michel - Notre Dame" to="place St. Germain des Pres" direction="undirected">
-			<onroad id="23"/>
+			<onroad id="23" back="false"/>
 			<point x="661" y="727"/>
 			<point x="638" y="749"/>
 			<point x="570" y="749"/>
 		</line_section>
 		<line_section from="place St. Germain des Pres" to="place Montparnasse - Bienvenue" direction="undirected">
-			<onroad id="24"/>
+			<onroad id="24" back="false"/>
 			<point x="570" y="749"/>
 			<point x="560" y="749"/>
 			<point x="560" y="875"/>
 		</line_section>
 		<line_section from="place Montparnasse - Bienvenue" to="place Denfert Rochereau" direction="undirected">
-			<onroad id="25"/>
+			<onroad id="25" back="false"/>
 			<point x="560" y="875"/>
 			<point x="620" y="875"/>
 			<point x="650" y="904"/>
 			<point x="650" y="926"/>
 		</line_section>
 		<line_section from="place Denfert Rochereau" to="place Porte d'Orleans" direction="undirected">
-			<onroad id="26"/>
+			<onroad id="26" back="false"/>
 			<point x="650" y="926"/>
 			<point x="650" y="992"/>
 			<point x="610" y="1032"/>
@@ -912,7 +912,7 @@
 	<line name="tram 5" type="tram" simple="true">
 		<color red="243" green="116" blue="72"/>
 		<line_section from="place Bobigny - Pablo Picasso" to="place Gare du Nord" direction="undirected">
-			<onroad id="27"/>
+			<onroad id="27" back="false"/>
 			<point x="1160" y="240"/>
 			<point x="1080" y="311"/>
 			<point x="965" y="311"/>
@@ -922,7 +922,7 @@
 			<point x="811" y="360"/>
 		</line_section>
 		<line_section from="place Gare du Nord" to="place Republique" direction="undirected">
-			<onroad id="28"/>
+			<onroad id="28" back="false"/>
 			<point x="811" y="360"/>
 			<point x="811" y="442"/>
 			<point x="820" y="451"/>
@@ -930,18 +930,18 @@
 			<point x="837" y="518"/>
 		</line_section>
 		<line_section from="place Republique" to="place Bastille" direction="undirected">
-			<onroad id="29"/>
+			<onroad id="29" back="false"/>
 			<point x="837" y="518"/>
 			<point x="920" y="599"/>
 			<point x="839" y="699"/>
 		</line_section>
 		<line_section from="place Bastille" to="place Gare d'Austerlitz" direction="undirected">
-			<onroad id="30"/>
+			<onroad id="30" back="false"/>
 			<point x="839" y="699"/>
 			<point x="839" y="857"/>
 		</line_section>
 		<line_section from="place Gare d'Austerlitz" to="place Place d'Italie" direction="undirected">
-			<onroad id="31"/>
+			<onroad id="31" back="false"/>
 			<point x="839" y="857"/>
 			<point x="839" y="889"/>
 			<point x="791" y="939"/>
@@ -951,45 +951,45 @@
 	<line name="tram 6" type="tram" simple="true">
 		<color red="120" green="192" blue="150"/>
 		<line_section from="place Nation" to="place Place d'Italie" direction="undirected">
-			<onroad id="32"/>
+			<onroad id="32" back="false"/>
 			<point x="1016" y="727"/>
 			<point x="1070" y="781"/>
 			<point x="893" y="961"/>
 			<point x="791" y="961"/>
 		</line_section>
 		<line_section from="place Place d'Italie" to="place Denfert Rochereau" direction="undirected">
-			<onroad id="33"/>
+			<onroad id="33" back="false"/>
 			<point x="791" y="961"/>
 			<point x="701" y="961"/>
 			<point x="661" y="926"/>
 		</line_section>
 		<line_section from="place Denfert Rochereau" to="place Montparnasse - Bienvenue" direction="undirected">
-			<onroad id="25"/>
+			<onroad id="25" back="true"/>
 			<point x="661" y="926"/>
 			<point x="613" y="882"/>
 			<point x="557" y="882"/>
 		</line_section>
 		<line_section from="place Montparnasse - Bienvenue" to="place La Motte - Picquet - Grenelle" direction="undirected">
-			<onroad id="34"/>
+			<onroad id="34" back="false"/>
 			<point x="557" y="882"/>
 			<point x="459" y="882"/>
 			<point x="380" y="811"/>
 			<point x="338" y="811"/>
 		</line_section>
 		<line_section from="place La Motte - Picquet - Grenelle" to="place Champs de Mars, Tour Eiffel, Bir-Hakeim" direction="undirected">
-			<onroad id="35"/>
+			<onroad id="35" back="false"/>
 			<point x="338" y="811"/>
 			<point x="318" y="811"/>
 			<point x="256" y="741"/>
 		</line_section>
 		<line_section from="place Champs de Mars, Tour Eiffel, Bir-Hakeim" to="place Trocadero" direction="undirected">
-			<onroad id="36"/>
+			<onroad id="36" back="false"/>
 			<point x="256" y="741"/>
 			<point x="220" y="699"/>
 			<point x="220" y="634"/>
 		</line_section>
 		<line_section from="place Trocadero" to="place Charles de Gaulle - Etoile" direction="undirected">
-			<onroad id="37"/>
+			<onroad id="37" back="false"/>
 			<point x="220" y="634"/>
 			<point x="220" y="581"/>
 			<point x="298" y="504"/>
@@ -999,7 +999,7 @@
 	<line name="tram 7(a)" type="tram" simple="true">
 		<color red="244" green="162" blue="181"/>
 		<line_section from="place La Courneuve 8 Mai 1945" to="place Opera" direction="undirected">
-			<onroad id="38"/>
+			<onroad id="38" back="false"/>
 			<point x="1020" y="140"/>
 			<point x="1020" y="180"/>
 			<point x="881" y="322"/>
@@ -1009,17 +1009,17 @@
 			<point x="533" y="537"/>
 		</line_section>
 		<line_section from="place Opera" to="place Palais Royal Musee du Louvre" direction="undirected">
-			<onroad id="39"/>
+			<onroad id="39" back="false"/>
 			<point x="533" y="537"/>
 			<point x="533" y="632"/>
 		</line_section>
 		<line_section from="place Palais Royal Musee du Louvre" to="place Chatelet" direction="undirected">
-			<onroad id="6"/>
+			<onroad id="6" back="true"/>
 			<point x="533" y="632"/>
 			<point x="691" y="632"/>
 		</line_section>
 		<line_section from="place Chatelet" to="place Place d'Italie" direction="undirected">
-			<onroad id="40"/>
+			<onroad id="40" back="false"/>
 			<point x="691" y="632"/>
 			<point x="693" y="632"/>
 			<point x="783" y="726"/>
@@ -1030,12 +1030,12 @@
 			<point x="781" y="961"/>
 		</line_section>
 		<line_section from="place Place d'Italie" to="place Maison Blanche" direction="undirected">
-			<onroad id="41"/>
+			<onroad id="41" back="false"/>
 			<point x="781" y="961"/>
 			<point x="781" y="1021"/>
 		</line_section>
 		<line_section from="place Maison Blanche" to="place Villejuif - Louis Aragon" direction="undirected">
-			<onroad id="42"/>
+			<onroad id="42" back="false"/>
 			<point x="781" y="1021"/>
 			<point x="781" y="1136"/>
 		</line_section>
@@ -1043,7 +1043,7 @@
 	<line name="tram 7(b)" type="tram" simple="true">
 		<color red="244" green="162" blue="181"/>
 		<line_section from="place Maison Blanche" to="place Mairie d'Ivry" direction="undirected">
-			<onroad id="43"/>
+			<onroad id="43" back="false"/>
 			<point x="780" y="1021"/>
 			<point x="794" y="1036"/>
 			<point x="916" y="1036"/>
@@ -1053,51 +1053,51 @@
 	<line name="tram 8" type="tram" simple="true">
 		<color red="189" green="147" blue="192"/>
 		<line_section from="place Balard" to="place La Motte - Picquet - Grenelle" direction="undirected">
-			<onroad id="44"/>
+			<onroad id="44" back="false"/>
 			<point x="267" y="983"/>
 			<point x="338" y="917"/>
 			<point x="338" y="811"/>
 		</line_section>
 		<line_section from="place La Motte - Picquet - Grenelle" to="place Invalides" direction="undirected">
-			<onroad id="45"/>
+			<onroad id="45" back="false"/>
 			<point x="338" y="811"/>
 			<point x="338" y="734"/>
 			<point x="400" y="672"/>
 		</line_section>
 		<line_section from="place Invalides" to="place Concorde" direction="undirected">
-			<onroad id="46"/>
+			<onroad id="46" back="false"/>
 			<point x="400" y="672"/>
 			<point x="417" y="655"/>
 			<point x="417" y="630"/>
 		</line_section>
 		<line_section from="place Concorde" to="place Madeleine" direction="undirected">
-			<onroad id="47"/>
+			<onroad id="47" back="false"/>
 			<point x="417" y="630"/>
 			<point x="417" y="567"/>
 			<point x="430" y="567"/>
 		</line_section>
 		<line_section from="place Madeleine" to="place Opera" direction="undirected">
-			<onroad id="48"/>
+			<onroad id="48" back="false"/>
 			<point x="430" y="567"/>
 			<point x="486" y="567"/>
 			<point x="533" y="520"/>
 		</line_section>
 		<line_section from="place Opera" to="place Republique" direction="undirected">
-			<onroad id="17"/>
+			<onroad id="17" back="false"/>
 			<point x="533" y="520"/>
 			<point x="545" y="508"/>
 			<point x="807" y="508"/>
 			<point x="837" y="538"/>
 		</line_section>
 		<line_section from="place Republique" to="place Bastille" direction="undirected">
-			<onroad id="29"/>
+			<onroad id="29" back="false"/>
 			<point x="837" y="538"/>
 			<point x="828" y="548"/>
 			<point x="828" y="674"/>
 			<point x="839" y="686"/>
 		</line_section>
 		<line_section from="place Bastille" to="place Creteil - Prefecture" direction="undirected">
-			<onroad id="49"/>
+			<onroad id="49" back="false"/>
 			<point x="839" y="686"/>
 			<point x="885" y="733"/>
 			<point x="915" y="733"/>
@@ -1110,18 +1110,18 @@
 	<line name="tram 9" type="tram" simple="true">
 		<color red="185" green="170" blue="70"/>
 		<line_section from="place Mairie de Montreull" to="place Nation" direction="undirected">
-			<onroad id="50"/>
+			<onroad id="50" back="false"/>
 			<point x="1160" y="611"/>
 			<point x="1043" y="728"/>
 			<point x="1033" y="719"/>
 		</line_section>
 		<line_section from="place Nation" to="place Republique" direction="undirected">
-			<onroad id="51"/>
+			<onroad id="51" back="false"/>
 			<point x="1033" y="719"/>
 			<point x="837" y="526"/>
 		</line_section>
 		<line_section from="place Republique" to="place Trocadero" direction="undirected">
-			<onroad id="52"/>
+			<onroad id="52" back="false"/>
 			<point x="837" y="526"/>
 			<point x="811" y="500"/>
 			<point x="503" y="500"/>
@@ -1130,7 +1130,7 @@
 			<point x="220" y="634"/>
 		</line_section>
 		<line_section from="place Trocadero" to="place Pont de Sevres" direction="undirected">
-			<onroad id="53"/>
+			<onroad id="53" back="false"/>
 			<point x="220" y="634"/>
 			<point x="148" y="634"/>
 			<point x="148" y="956"/>
@@ -1140,7 +1140,7 @@
 	<line name="tram 10" type="tram" simple="true">
 		<color red="185" green="170" blue="70"/>
 		<line_section from="place Gare d'Austerlitz" to="place La Motte - Picquet - Grenelle" direction="undirected">
-			<onroad id="54"/>
+			<onroad id="54" back="false"/>
 			<point x="823" y="857"/>
 			<point x="774" y="812"/>
 			<point x="729" y="812"/>
@@ -1151,7 +1151,7 @@
 			<point x="338" y="802"/>
 		</line_section>
 		<line_section from="place La Motte - Picquet - Grenelle" to="place Porte de St.Cloud" direction="undirected">
-			<onroad id="55"/>
+			<onroad id="55" back="false"/>
 			<point x="338" y="802"/>
 			<point x="326" y="802"/>
 			<point x="273" y="851"/>
@@ -1162,19 +1162,19 @@
 	<line name="tram 11" type="tram" simple="true">
 		<color red="157" green="109" blue="64"/>
 		<line_section from="place Mairie de Lilas" to="place Republique" direction="undirected">
-			<onroad id="56"/>
+			<onroad id="56" back="false"/>
 			<point x="1160" y="390"/>
 			<point x="1126" y="430"/>
 			<point x="937" y="430"/>
 			<point x="837" y="530"/>
 		</line_section>
 		<line_section from="place Republique" to="place Hotel de Ville" direction="undirected">
-			<onroad id="57"/>
+			<onroad id="57" back="false"/>
 			<point x="837" y="530"/>
 			<point x="742" y="624"/>
 		</line_section>
 		<line_section from="place Hotel de Ville" to="place Chatelet" direction="undirected">
-			<onroad id="5"/>
+			<onroad id="5" back="false"/>
 			<point x="742" y="624"/>
 			<point x="717" y="648"/>
 			<point x="691" y="648"/>
@@ -1183,7 +1183,7 @@
 	<line name="tram 12" type="tram" simple="true">
 		<color red="2" green="145" blue="99"/>
 		<line_section from="place Porte de la Chapelle" to="place Haussmann - St.Lazare" direction="undirected">
-			<onroad id="58"/>
+			<onroad id="58" back="false"/>
 			<point x="810" y="219"/>
 			<point x="810" y="264"/>
 			<point x="627" y="264"/>
@@ -1192,19 +1192,19 @@
 			<point x="502" y="450"/>
 		</line_section>
 		<line_section from="place Haussmann - St.Lazare" to="place Madeleine" direction="undirected">
-			<onroad id="59"/>
+			<onroad id="59" back="false"/>
 			<point x="502" y="450"/>
 			<point x="502" y="459"/>
 			<point x="430" y="535"/>
 			<point x="430" y="567"/>
 		</line_section>
 		<line_section from="place Madeleine" to="place Concorde" direction="undirected">
-			<onroad id="47"/>
+			<onroad id="47" back="true"/>
 			<point x="430" y="567"/>
 			<point x="430" y="630"/>
 		</line_section>
 		<line_section from="place Concorde" to="place Montparnasse - Bienvenue" direction="undirected">
-			<onroad id="60"/>
+			<onroad id="60" back="false"/>
 			<point x="430" y="630"/>
 			<point x="430" y="685"/>
 			<point x="578" y="831"/>
@@ -1212,7 +1212,7 @@
 			<point x="557" y="864"/>
 		</line_section>
 		<line_section from="place Montparnasse - Bienvenue" to="place Mairie d'Issy" direction="undirected">
-			<onroad id="61"/>
+			<onroad id="61" back="false"/>
 			<point x="557" y="864"/>
 			<point x="498" y="864"/>
 			<point x="285" y="1081"/>
@@ -1221,7 +1221,7 @@
 	<line name="tram 13(a)" type="tram" simple="true">
 		<color red="93" green="166" blue="204"/>
 		<line_section from="place Saint-Denis - Universite" to="place La Fourche" direction="undirected">
-			<onroad id="62"/>
+			<onroad id="62" back="false"/>
 			<point x="787" y="35"/>
 			<point x="728" y="101"/>
 			<point x="610" y="101"/>
@@ -1229,26 +1229,26 @@
 			<point x="493" y="288"/>
 		</line_section>
 		<line_section from="place La Fourche" to="place Haussmann - St.Lazare" direction="undirected">
-			<onroad id="63"/>
+			<onroad id="63" back="false"/>
 			<point x="493" y="288"/>
 			<point x="493" y="450"/>
 		</line_section>
 		<line_section from="place Haussmann - St.Lazare" to="place Invalides" direction="undirected">
-			<onroad id="64"/>
+			<onroad id="64" back="false"/>
 			<point x="493" y="450"/>
 			<point x="493" y="457"/>
 			<point x="400" y="553"/>
 			<point x="400" y="685"/>
 		</line_section>
 		<line_section from="place Invalides" to="place Montparnasse - Bienvenue" direction="undirected">
-			<onroad id="65"/>
+			<onroad id="65" back="false"/>
 			<point x="400" y="685"/>
 			<point x="400" y="763"/>
 			<point x="511" y="874"/>
 			<point x="553" y="874"/>
 		</line_section>
 		<line_section from="place Montparnasse - Bienvenue" to="place Chatillon - Montrouge" direction="undirected">
-			<onroad id="66"/>
+			<onroad id="66" back="false"/>
 			<point x="553" y="874"/>
 			<point x="553" y="941"/>
 			<point x="453" y="1040"/>
@@ -1258,7 +1258,7 @@
 	<line name="tram 13(b)" type="tram" simple="true">
 		<color red="93" green="166" blue="204"/>
 		<line_section from="place Gabriel Peri" to="place La Fourche" direction="undirected">
-			<onroad id="87"/>
+			<onroad id="87" back="false"/>
 			<point x="346" y="142"/>
 			<point x="492" y="288"/>
 		</line_section>
@@ -1267,38 +1267,38 @@
 	<line name="RER A" type="rail" simple="true">
 		<color red="243" green="116" blue="72"/>
 		<line_section from="place Cergy" to="place Charles de Gaulle - Etoile" direction="undirected">
-			<onroad id="67"/>
+			<onroad id="67" back="false"/>
 			<point x="22" y="281"/>
 			<point x="100" y="281"/>
 			<point x="314" y="495"/>
 		</line_section>
 		<line_section from="place Charles de Gaulle - Etoile" to="place Opera" direction="undirected">
-			<onroad id="68"/>
+			<onroad id="68" back="false"/>
 			<point x="314" y="495"/>
 			<point x="355" y="535"/>
 			<point x="534" y="535"/>
 		</line_section>
 		<line_section from="place Opera" to="place Chatelet" direction="undirected">
-			<onroad id="69"/>
+			<onroad id="69" back="false"/>
 			<point x="534" y="535"/>
 			<point x="621" y="621"/>
 			<point x="691" y="621"/>
 		</line_section>
 		<line_section from="place Chatelet" to="place Gare de Lyon" direction="undirected">
-			<onroad id="70"/>
+			<onroad id="70" back="false"/>
 			<point x="691" y="621"/>
 			<point x="712" y="621"/>
 			<point x="890" y="802"/>
 		</line_section>
 		<line_section from="place Gare de Lyon" to="place Nation" direction="undirected">
-			<onroad id="88"/>
+			<onroad id="88" back="false"/>
 			<point x="890" y="802"/>
 			<point x="903" y="815"/>
 			<point x="1015" y="707"/>
 			<point x="1034" y="726"/>
 		</line_section>
 		<line_section from="place Nation" to="place Marne-la-Vallee" direction="undirected">
-			<onroad id="71"/>
+			<onroad id="71" back="false"/>
 			<point x="1034" y="726"/>
 			<point x="1043" y="733"/>
 			<point x="1220" y="733"/>
@@ -1307,7 +1307,7 @@
 	<line name="RER B" type="rail" simple="true">
 		<color red="93" green="166" blue="204"/>
 		<line_section from="place Aeroport Charles de Gaulle" to="place Gare du Nord" direction="undirected">
-			<onroad id="72"/>
+			<onroad id="72" back="false"/>
 			<point x="1225" y="88"/>
 			<point x="826" y="88"/>
 			<point x="731" y="186"/>
@@ -1315,36 +1315,36 @@
 			<point x="785" y="360"/>
 		</line_section>
 		<line_section from="place Gare du Nord" to="place Chatelet" direction="undirected">
-			<onroad id="89"/>
+			<onroad id="89" back="false"/>
 			<point x="785" y="360"/>
 			<point x="785" y="407"/>
 			<point x="690" y="502"/>
 			<point x="690" y="648"/>
 		</line_section>
 		<line_section from="place Chatelet" to="place St Michel - Notre Dame" direction="undirected">
-			<onroad id="90"/>
+			<onroad id="90" back="false"/>
 			<point x="690" y="648"/>
 			<point x="690" y="656"/>
 			<point x="661" y="689"/>
 			<point x="661" y="727"/>
 		</line_section>
 		<line_section from="place St Michel - Notre Dame" to="place Port Royal" direction="undirected">
-			<onroad id="73"/>
+			<onroad id="73" back="false"/>
 			<point x="661" y="727"/>
 			<point x="661" y="902"/>
 		</line_section>
 		<line_section from="place Port Royal" to="place Denfert Rochereau" direction="undirected">
-			<onroad id="74"/>
+			<onroad id="74" back="false"/>
 			<point x="661" y="902"/>
 			<point x="661" y="926"/>
 		</line_section>
 		<line_section from="place Denfert Rochereau" to="place Cite Universitaire" direction="undirected">
-			<onroad id="75"/>
+			<onroad id="75" back="false"/>
 			<point x="661" y="926"/>
 			<point x="661" y="1022"/>
 		</line_section>
 		<line_section from="place Cite Universitaire" to="place St. Remy" direction="undirected">
-			<onroad id="76"/>
+			<onroad id="76" back="false"/>
 			<point x="661" y="1022"/>
 			<point x="661" y="1115"/>
 			<point x="551" y="1221"/>
@@ -1354,7 +1354,7 @@
 	<line name="RER C(a)" type="rail" simple="true">
 		<color red="242" green="201" blue="52"/>
 		<line_section from="place Dourdan" to="place Gare d'Austerlitz" direction="undirected">
-			<onroad id="77"/>
+			<onroad id="77" back="false"/>
 			<point x="921" y="1222"/>
 			<point x="943" y="1222"/>
 			<point x="981" y="1181"/>
@@ -1362,26 +1362,26 @@
 			<point x="832" y="857"/>
 		</line_section>
 		<line_section from="place Gare d'Austerlitz" to="place St Michel - Notre Dame" direction="undirected">
-			<onroad id="78"/>
+			<onroad id="78" back="false"/>
 			<point x="832" y="857"/>
 			<point x="699" y="727"/>
 			<point x="661" y="727"/>
 		</line_section>
 		<line_section from="place St Michel - Notre Dame" to="place Invalides" direction="undirected">
-			<onroad id="79"/>
+			<onroad id="79" back="false"/>
 			<point x="661" y="727"/>
 			<point x="590" y="727"/>
 			<point x="545" y="685"/>
 			<point x="400" y="685"/>
 		</line_section>
 		<line_section from="place Invalides" to="place Champs de Mars, Tour Eiffel, Bir-Hakeim" direction="undirected">
-			<onroad id="80"/>
+			<onroad id="80" back="false"/>
 			<point x="400" y="685"/>
 			<point x="312" y="685"/>
 			<point x="238" y="742"/>
 		</line_section>
 		<line_section from="place Champs de Mars, Tour Eiffel, Bir-Hakeim" to="place Versaille - Rive Gauche" direction="undirected">
-			<onroad id="81"/>
+			<onroad id="81" back="false"/>
 			<point x="238" y="742"/>
 			<point x="238" y="1082"/>
 			<point x="122" y="1202"/>
@@ -1391,12 +1391,12 @@
 	<line name="RER C(b)" type="rail" simple="true">
 		<color red="242" green="201" blue="52"/>
 		<line_section from="place Champs de Mars, Tour Eiffel, Bir-Hakeim" to="place Kennedy Radio France" direction="undirected">
-			<onroad id="82"/>
+			<onroad id="82" back="false"/>
 			<point x="238" y="741"/>
 			<point x="190" y="741"/>
 		</line_section>
 		<line_section from="place Kennedy Radio France" to="place Porte Maillot" direction="undirected">
-			<onroad id="83"/>
+			<onroad id="83" back="false"/>
 			<point x="190" y="741"/>
 			<point x="183" y="741"/>
 			<point x="121" y="679"/>
@@ -1404,7 +1404,7 @@
 			<point x="230" y="455"/>
 		</line_section>
 		<line_section from="place Porte Maillot" to="place Pontoise" direction="undirected">
-			<onroad id="84"/>
+			<onroad id="84" back="false"/>
 			<point x="230" y="455"/>
 			<point x="440" y="225"/>
 			<point x="440" y="20"/>
@@ -1413,7 +1413,7 @@
 	<line name="RER D" type="rail" simple="true">
 		<color red="3" green="179" blue="135"/>
 		<line_section from="place Orry-la-Ville - Coye" to="place Gare du Nord" direction="undirected">
-			<onroad id="85"/>
+			<onroad id="85" back="false"/>
 			<point x="640" y="0"/>
 			<point x="621" y="21"/>
 			<point x="621" y="81"/>
@@ -1421,19 +1421,19 @@
 			<point x="793" y="360"/>
 		</line_section>
 		<line_section from="place Gare du Nord" to="place Chatelet" direction="undirected">
-			<onroad id="89"/>
+			<onroad id="89" back="false"/>
 			<point x="793" y="360"/>
 			<point x="793" y="409"/>
 			<point x="700" y="501"/>
 			<point x="700" y="620"/>
 		</line_section>
 		<line_section from="place Chatelet" to="place Gare de Lyon" direction="undirected">
-			<onroad id="70"/>
+			<onroad id="70" back="false"/>
 			<point x="700" y="620"/>
 			<point x="877" y="802"/>
 		</line_section>
 		<line_section from="place Gare de Lyon" to="place Melun" direction="undirected">
-			<onroad id="85"/>
+			<onroad id="86" back="false"/>
 			<point x="877" y="802"/>
 			<point x="1100" y="1031"/>
 			<point x="1100" y="1181"/>

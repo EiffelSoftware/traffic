@@ -164,9 +164,8 @@ feature -- Status report
 		require
 			a_path_section_exists: a_path_section /= Void
 		do
-			Result := destination = a_path_section.origin or
-				((not a_path_section.connections.first.is_directed) and destination = a_path_section.connections.first.destination) or
-				connections_impl = Void
+			Result := connections_impl = Void or else destination = a_path_section.origin
+
 		end
 
 

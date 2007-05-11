@@ -32,43 +32,53 @@ feature -- Basic operations
 	process is
 			-- Process node.
 		local
-			road: TRAFFIC_ROAD_CONNECTION
+			road: TRAFFIC_ROAD
+			p: DS_ARRAYED_LIST [EM_VECTOR_2D]
 		do
-				if not has_attribute ("id") then
-					set_error (Mandatory_attribute_missing, <<"id">>)
-				elseif not has_attribute ("from") then
-					set_error (Mandatory_attribute_missing, <<"from">>)
-				elseif not has_attribute ("to") then
-					set_error (Mandatory_attribute_missing, <<"to">>)
-				elseif not has_attribute ("direction") then
-					set_error (Mandatory_attribute_missing, <<"direction">>)
-				elseif not has_attribute ("type") then
-					set_error (Mandatory_attribute_missing, <<"type">>)
-				elseif not map.places.has (attribute ("from")) then
-					set_error (Unknown_source, <<attribute ("from")>>)
-				elseif not map.places.has (attribute ("to")) then
-					set_error (Unknown_destination, << attribute ("to")>> )
-				else
-
-					map_factory.build_road (( attribute ("from")), ( attribute ("to")), map, ( attribute ("type")), ( attribute ("id")),( attribute ("direction")))
-					road := map_factory.road
-
+			if not has_attribute ("id") then
+				set_error (Mandatory_attribute_missing, <<"id">>)
+			elseif not has_attribute ("from") then
+				set_error (Mandatory_attribute_missing, <<"from">>)
+			elseif not has_attribute ("to") then
+				set_error (Mandatory_attribute_missing, <<"to">>)
+			elseif not has_attribute ("direction") then
+				set_error (Mandatory_attribute_missing, <<"direction">>)
+			elseif not has_attribute ("type") then
+				set_error (Mandatory_attribute_missing, <<"type">>)
+			elseif not map.places.has (attribute ("from")) then
+				set_error (Unknown_source, <<attribute ("from")>>)
+			elseif not map.places.has (attribute ("to")) then
+				set_error (Unknown_destination, << attribute ("to")>> )
+			else
+				map_factory.build_road (( attribute ("from")), ( attribute ("to")), map, ( attribute ("type")), ( attribute ("id")),( attribute ("direction")))
+				road := map_factory.road
 				if not has_error and has_subnodes then
 					process_subnodes
 				end
 				if not has_error and polypoints.count >= 2 then
-					road.set_polypoints (polypoints)
+					road.one_way.set_polypoints (polypoints)
+					if attribute ("direction").is_equal ("undirected") then
+						create p.make (polypoints.count)
+						from
+							polypoints.start
+						until
+							polypoints.off
+						loop
+							p.put_first (create{ EM_VECTOR_2D}.make_from_other (polypoints.item_for_iteration))
+							polypoints.forth
+						end
+						road.other_way.set_polypoints (p)
+					end
 					-- adjust the positions of the start and end place of this link
-					 adjust_position (road, polypoints)
+					adjust_position (road.one_way, polypoints)
 				end
 			end
-
-	end
+		end
 
 	zero_vector: EM_VECTOR_2D is
-	once
-		Result := create {EM_VECTOR_2D}.make (0, 0)
-	end
+		once
+			Result := create {EM_VECTOR_2D}.make (0, 0)
+		end
 
 	adjust_position (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [EM_VECTOR_2D]) is
 			-- Adjust positions

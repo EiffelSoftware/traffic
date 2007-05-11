@@ -47,17 +47,17 @@
 <line name="31" type="bus">
 	<color red="153" green="204" blue="255"/>
 	<line_section from="Kunsthaus" to="Neumarkt" direction="undirected">
-			<onroad id="1"/>
+			<onroad id="1" back="false"/>
 			<point x="934" y="218"/>
 			<point x="880" y="164"/>
 	</line_section>
 	<line_section from="Neumarkt" to="Central" direction="undirected">
-			<onroad id="2"/>
+			<onroad id="2" back="false"/>
 			<point x="880" y="164"/>
 			<point x="833" y="117"/>
 	</line_section>
 	<line_section from="Central" to="Hauptbahnhof" direction="undirected">
-			<onroad id="3"/>
+			<onroad id="3" back="false"/>
 			<point x="833" y="117"/>
 			<point x="681" y="117"/>
 	</line_section>

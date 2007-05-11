@@ -15,6 +15,8 @@ inherit
 			internal_end_node as destination_impl,
 			start_node as origin_impl,
 			end_node as destination_impl
+		export {NONE}
+			make_directed_old, make_undirected_old
 		redefine
 			out, is_equal, origin_impl, destination_impl
 		end
@@ -43,20 +45,20 @@ feature -- Initialization
 --			default_weight_function: not user_defined_weight_function
 		end
 
-	make_undirected (a_start_node, a_end_node: like origin_impl) is
-		require
-			nodes_not_void: a_start_node /= Void and a_end_node /= Void
-		do
-			origin_impl := a_start_node
-			destination_impl := a_end_node
-			is_directed := False
-		ensure
-			nodes_not_void: origin_impl /= Void and
-							destination_impl /= Void
-			not_directed: not is_directed
---			weight_set: weight = a_weight
---			default_weight_function: not user_defined_weight_function
-		end
+--	make_undirected (a_start_node, a_end_node: like origin_impl) is
+--		require
+--			nodes_not_void: a_start_node /= Void and a_end_node /= Void
+--		do
+--			origin_impl := a_start_node
+--			destination_impl := a_end_node
+--			is_directed := False
+--		ensure
+--			nodes_not_void: origin_impl /= Void and
+--							destination_impl /= Void
+--			not_directed: not is_directed
+----			weight_set: weight = a_weight
+----			default_weight_function: not user_defined_weight_function
+--		end
 
 feature -- Element change
 
@@ -137,7 +139,7 @@ feature -- Access
 			end
 		end
 
-feature -- Element change
+--feature -- Element change
 
 
 --	is_directed: BOOLEAN
@@ -173,7 +175,7 @@ feature -- Access
 --	is_directed: BOOLEAN
 --			-- Is the current edge directed?
 
-feature -- Comparison
+--feature -- Comparison
 
 feature -- Status report
 
@@ -221,5 +223,6 @@ invariant
 
 	polypoints_exist: polypoints /= Void
 	nodes_exist: origin_impl /= Void and destination_impl /= Void
+	is_directed: is_directed
 
 end

@@ -103,7 +103,7 @@ feature {TRAFFIC_PLACE} -- Basic operations (map)
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.
 		local
-			e: TRAFFIC_ROAD_CONNECTION
+			e: TRAFFIC_EXCHANGE_CONNECTION
 			p: DS_ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			a_map.graph.put_node (Current)
@@ -111,10 +111,16 @@ feature {TRAFFIC_PLACE} -- Basic operations (map)
 			map := a_map
 			-- Connect the stop to the dummy_node
 			if Current /= place.dummy_node then
-				create e.make_invisible (Current, place.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index, "undirected")
+				create e.make_exchange (Current, place.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
 				create p.make (2)
 				p.put_first (position)
 				p.put_last (place.dummy_node.position)
+				e.set_polypoints (p)
+				e.add_to_map (a_map)
+				create e.make_exchange (place.dummy_node, Current, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
+				create p.make (2)
+				p.put_first (place.dummy_node.position)
+				p.put_last (position)
 				e.set_polypoints (p)
 				e.add_to_map (a_map)
 			end

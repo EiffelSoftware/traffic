@@ -79,24 +79,24 @@
 <line name="9" type="tram">
 	<color red="102" green="102" blue="153"/>
 	<line_section from="Paradeplatz" to="Boersenstrasse" direction="undirected">
-				<onroad id="1"/>
+				<onroad id="1" back="false"/>
 		        <point x="660" y="235"/> 
 		        <point x="740" y="315"/>
 	</line_section>
 	<line_section from="Boersenstrasse" to="Buerkliplatz" direction="undirected">
-				<onroad id="2"/>
+				<onroad id="2" back="false"/>
 		        <point x="740" y="315"/>
 		        <point x="744" y="320"/>
 		        <point x="750" y="320"/> 
 	</line_section>
 	<line_section from="Buerkliplatz" to="Bellevue" direction="undirected">
-				<onroad id="3"/>
+				<onroad id="3" back="false"/>
 		        <point x="750" y="320"/> 
 		        <point x="820" y="320"/>
 		        <point x="843" y="295"/>	   
 	</line_section>
 	<line_section from="Bellevue" to="Kunsthaus" direction="undirected">
-				<onroad id="4"/>
+				<onroad id="4" back="false"/>
 		        <point x="843" y="295"/> 
 		        <point x="940" y="197"/> 
 	</line_section>
@@ -106,17 +106,17 @@
 <line name="31" type="bus">
 	<color red="153" green="204" blue="255"/>
 	<line_section from="Kunsthaus" to="Neumarkt" direction="undirected">
-			<onroad id="5"/>
+			<onroad id="5" back="false"/>
 			<point x="934" y="218"/>
 			<point x="880" y="164"/>
 	</line_section>
 	<line_section from="Neumarkt" to="Central" direction="undirected">
-			<onroad id="6"/>
+			<onroad id="6" back="false"/>
 			<point x="880" y="164"/>
 			<point x="833" y="117"/>
 	</line_section>
 	<line_section from="Central" to="Hauptbahnhof" direction="undirected">
-			<onroad id="7"/>
+			<onroad id="7" back="false"/>
 			<point x="833" y="117"/>
 			<point x="681" y="117"/>
 	</line_section>
@@ -127,7 +127,7 @@
 <line name="s7" type="rail">
 	<color red="0" green="0" blue="0"/>
 	<line_section from="Hauptbahnhof" to="Bahnhof Stadelhofen" direction="undirected">
-			<onroad id="8"/>
+			<onroad id="8" back="false"/>
 			<point x="693" y="2"/>
 			<point x="811" y="2"/>
 			<point x="822" y="4"/>

@@ -53,7 +53,7 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			r: TRAFFIC_ROAD_CONNECTION
 			i: INTEGER
 		do
-			create r.make_visible (a_start_node, a_end_node, create {TRAFFIC_TYPE_STREET}.make, id_manager.next_free_index, "undirected")
+			create r.make_visible (a_start_node, a_end_node, create {TRAFFIC_TYPE_STREET}.make, id_manager.next_free_index)
 			a_start_node.put_connection (r)
 			internal_edges.extend (r)
 			id_manager.take (r.id)
@@ -83,7 +83,7 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			-- Insert `a_road' into the graph.
 		require
 			a_road_exists: a_road /= Void
-			not_has_id: not id_manager.is_taken (a_road.id)
+--			not_has_id: not id_manager.is_taken (a_road.id)
 --			not_already_in_graph: not has_edge (a_road)
 			nodes_exist: has_node (a_road.origin_impl) and has_node (a_road.destination_impl)
 		do

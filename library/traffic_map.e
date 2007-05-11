@@ -543,27 +543,27 @@ feature -- Removal
 			line_section_removed: not line_sections.has (a_line_section)
 		end
 
-	remove_road (a_road: TRAFFIC_ROAD_CONNECTION) is
-			-- Remove road `a_road' from map.
-		require
-			road_not_void: a_road /= Void
-		do
-			from
-				roads.start
-			until
-				roads.after
-			loop
-				if equal(roads.item_for_iteration,a_road) then
-					roads.remove (roads.key_for_iteration)
-				end
-				roads.forth
-			end
+--	remove_road (a_road: TRAFFIC_ROAD_CONNECTION) is
+--			-- Remove road `a_road' from map.
+--		require
+--			road_not_void: a_road /= Void
+--		do
+--			from
+--				roads.start
+--			until
+--				roads.after
+--			loop
+--				if equal(roads.item_for_iteration,a_road) then
+--					roads.remove (roads.key_for_iteration)
+--				end
+--				roads.forth
+--			end
 
---			path_found := False
-		ensure
-			-- we can assume, that the line_section was only once inserted
-	--		road_removed: not internal_roads.has_item (a_road)
-		end
+----			path_found := False
+--		ensure
+--			-- we can assume, that the line_section was only once inserted
+--	--		road_removed: not internal_roads.has_item (a_road)
+--		end
 
 
 --	remove_traveler (index: INTEGER) is
@@ -609,7 +609,7 @@ feature -- Access (map objects)
 	lines: TRAFFIC_EVENT_META_HASH_TABLE [TRAFFIC_LINE_CONNECTION, TRAFFIC_LINE, STRING]
 			-- All lines in map
 
-	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD_CONNECTION, INTEGER]
+	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
 			-- All roads in map
 
 	paths: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PATH]

@@ -198,8 +198,16 @@ feature -- Road section building
 			an_id_exists: an_id/=Void
 			a_type_exists: a_type/=Void
 			a_direction_exists: a_direction/=Void
+		local
+			way1, way2: TRAFFIC_ROAD_CONNECTION
 		do
-			internal_road := create_road (a_origin, a_destination, a_map, a_type, an_id, a_direction)
+			way1 := create_road_connection (a_origin, a_destination, a_map, a_type, an_id)
+			if a_direction.is_equal ("undirected") then
+				way2 := create_road_connection (a_destination, a_origin, a_map, a_type, an_id)
+				create internal_road.make (way1, way2)
+			else
+				create internal_road.make_one_way (way1)
+			end
 			internal_road.add_to_map (a_map)
 --			a_map.roads.force_last (internal_road, internal_road.id)
 		ensure
@@ -209,7 +217,7 @@ feature -- Road section building
 			--road_in_map: a_map.has_road (a_origin, a_destination,an_id.to_integer)
 		end
 
-	road: TRAFFIC_ROAD_CONNECTION is
+	road: TRAFFIC_ROAD is
 			-- Generated traffic road object.
 		require
 			road_available: has_road
@@ -325,7 +333,7 @@ feature {NONE} -- Implementation
 	internal_line: TRAFFIC_LINE
 			-- Internal representation of last created traffic line.
 
-	internal_road: TRAFFIC_ROAD_CONNECTION
+	internal_road: TRAFFIC_ROAD
 			-- Internal representation of last created traffic road.
 
 	internal_simple_line: TRAFFIC_SIMPLE_LINE
@@ -386,7 +394,7 @@ feature {NONE} -- Implementation
 		end
 
 
-	create_road (a_origin, a_destination: STRING; a_map: TRAFFIC_MAP; a_type:STRING;an_id:STRING; a_direction: STRING): TRAFFIC_ROAD_CONNECTION is
+	create_road_connection (a_origin, a_destination: STRING; a_map: TRAFFIC_MAP; a_type:STRING;an_id:STRING): TRAFFIC_ROAD_CONNECTION is
 			-- Create road with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_map'.
 		require
 			a_origin_exists: a_origin /= Void
@@ -397,7 +405,6 @@ feature {NONE} -- Implementation
 			a_destination_in_map: a_map.places.has (a_destination)
 			a_type_exists: a_type/=Void
 			an_id_exists: an_id/=Void
-			a_direction_exists: a_direction/=Void
 		local
 			a_road: TRAFFIC_ROAD_CONNECTION
 			origin_place: TRAFFIC_PLACE
@@ -431,7 +438,7 @@ feature {NONE} -- Implementation
 			traffic_type_factory.build(a_type)
 			type?= traffic_type_factory.traffic_type
 			i:=an_id.to_integer
-			create a_road.make_visible (origin_node, destination_node, type, i, a_direction)
+			create a_road.make_visible (origin_node, destination_node, type, i)
 			Result := a_road
 		ensure
 			result_exists: Result /= Void

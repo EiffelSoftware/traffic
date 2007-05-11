@@ -79,7 +79,7 @@ feature -- Insertion
 	add_free_moving (a_moving: TRAFFIC_FREE_MOVING) is
 			-- Add a default representation for `a_moving'.
 		do
-			moving_factory.new_free_moving_member (a_moving).set_as_child_of (moving_root)
+			moving_factory.new_free_moving_member (a_moving).set_as_child_of (free_moving_root)
 		end
 
 	add_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE) is
@@ -108,7 +108,9 @@ feature -- Deletion
 		local
 			node: TE_3D_NODE
 		do
-			node := passenger_root.child_for_item (a_passenger)
+			if passenger_root.has_child (a_passenger) then
+				node := passenger_root.child_for_item (a_passenger)
+			end
 			if node /= Void then
 				passenger_root.remove_child (node)
 			end
@@ -121,7 +123,9 @@ feature -- Deletion
 		local
 			node: TE_3D_NODE
 		do
-			node := taxi_root.child_for_item (a_taxi)
+			if taxi_root.has_child (a_taxi) then
+				node := taxi_root.child_for_item (a_taxi)
+			end
 			if node /= Void then
 				taxi_root.remove_child (node)
 			end
@@ -134,7 +138,9 @@ feature -- Deletion
 		local
 			node: TE_3D_NODE
 		do
-			node := free_moving_root.child_for_item (a_moving)
+			if free_moving_root.has_child (a_moving) then
+				node := free_moving_root.child_for_item (a_moving)
+			end
 			if node /= Void then
 				free_moving_root.remove_child (node)
 			end
@@ -154,7 +160,9 @@ feature -- Deletion
 			until
 				a_taxi_office.taxis.off
 			loop
-				node := taxi_root.child_for_item (a_taxi_office.taxis.item_for_iteration)
+				if taxi_root.has_child (a_taxi_office.taxis.item_for_iteration) then
+					node := taxi_root.child_for_item (a_taxi_office.taxis.item_for_iteration)
+				end
 				if node /= Void then
 					taxi_root.remove_child (node)
 				end
@@ -169,7 +177,9 @@ feature -- Deletion
 		local
 			node: TE_3D_NODE
 		do
-			node := tram_root.child_for_item (a_tram)
+			if tram_root.has_child (a_tram) then
+				node := tram_root.child_for_item (a_tram)
+			end
 			if node /= Void then
 				tram_root.remove_child (node)
 			end
@@ -182,7 +192,9 @@ feature -- Deletion
 		local
 			node: TE_3D_NODE
 		do
-			node := bus_root.child_for_item (a_bus)
+			if bus_root.has_child (a_bus) then
+				node := bus_root.child_for_item (a_bus)
+			end
 			if node /= Void then
 				bus_root.remove_child (node)
 			end

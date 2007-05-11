@@ -9,8 +9,8 @@ inherit
 
 	TRAFFIC_3D_SCENE
 		redefine
---			redraw,
-			make
+			make,
+			open_file
 		end
 
 	TRAFFIC_3D_CONSTANTS
@@ -376,6 +376,34 @@ feature -- Interface
 
 feature -- Event handling
 
+	open_file (a_dlg: EM_FILE_DIALOG) is
+			-- File dialog was closed, now load a map.
+		local
+			loader: TRAFFIC_MAP_LOADER
+			dlg: EM_MESSAGE_DIALOG
+			n,i: INTEGER
+			s: STRING
+			list: LIST [STRING]
+			lbl: EM_LABEL
+		do
+			if a_dlg.was_ok_clicked and a_dlg.is_file_selected then
+				create loader.make (a_dlg.absolute_filename)
+				loader.enable_dump_loading
+				loader.load_map
+				if not loader.has_error then
+					map_widget.set_map (loader.map)
+					loaded_file_name := a_dlg.filename
+					point_randomizer.set_map (loader.map)
+					path_randomizer.set_map (loader.map)
+				else
+					create dlg.make_from_error ("Error parsing" + a_dlg.filename)
+					io.put_string ("bad error!!")
+					dlg.show
+				end
+
+			end
+		end
+
 	taxi_office_output (an_office: TRAFFIC_TAXI_OFFICE): STRING is
 			--
 		do
@@ -481,7 +509,9 @@ feature -- Event handling
 					i > a_slider.current_value - map_widget.map.passengers.count
 				loop
 					path_randomizer.generate_path (6)
-					create passenger.make_with_path (path_randomizer.last_path, 1.5)
+					random.forth
+
+					create passenger.make_with_path (path_randomizer.last_path, random.double_item*3 + 0.1)
 					map_widget.map.passengers.force_last (passenger)
 					passenger.set_reiterate (True)
 					passenger.start
@@ -523,7 +553,7 @@ feature -- Event handling
 					moving.start
 					i := i + 1
 				end
-			elseif a_slider.current_value < map_widget.map.passengers.count then
+			elseif a_slider.current_value < map_widget.map.free_movings.count then
 				-- Remove
 				map_widget.map.free_movings.prune_last (map_widget.map.free_movings.count - a_slider.current_value)
 			end
@@ -542,8 +572,9 @@ feature -- Event handling
 		local
 			vect: GL_VECTOR_3D [DOUBLE]
 		do
+			point_randomizer.generate_point_array (1)
 			vect := map_widget.transform_coords (an_event.x, an_event.y)
-			taxi_combobox.selected_element.call (create {EM_VECTOR_2D}.make (vect.x, vect.z), random_destination)
+			taxi_combobox.selected_element.call (create {EM_VECTOR_2D}.make (vect.x, vect.z), point_randomizer.last_array.first)
 		end
 
 
@@ -791,22 +822,22 @@ feature {NONE} -- Implementation
 --	map: CITY_TIMETABLE_MAP_WIDGET
 			-- The 3 dimensional representation of the map
 
-	random_destination: EM_VECTOR_2D is
-			-- Random destination for taxi
-		require
-			random /= Void
-		local
-			temp_x, temp_y: DOUBLE
-			destination: EM_VECTOR_2D
-		do
-			random.forth
-			temp_x := random.double_item
-			random.forth
-			temp_y := random.double_item
-			create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
-			-- approximated places so that they are on the map
-			random.forth
-			Result := destination
-		end
+--	random_destination: EM_VECTOR_2D is
+--			-- Random destination for taxi
+--		require
+--			random /= Void
+--		local
+--			temp_x, temp_y: DOUBLE
+--			destination: EM_VECTOR_2D
+--		do
+--			random.forth
+--			temp_x := random.double_item
+--			random.forth
+--			temp_y := random.double_item
+--			create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
+--			-- approximated places so that they are on the map
+--			random.forth
+--			Result := destination
+--		end
 
 end
