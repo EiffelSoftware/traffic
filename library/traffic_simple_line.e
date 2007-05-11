@@ -194,12 +194,12 @@ feature -- Cursor movement
 
 feature -- Insertion
 
-	extend (a_line_section: TRAFFIC_LINE_SECTION) is
+	extend (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Add `a_line_section' at beginning or end of existing direction(s).
 		local
 			origin, destination: TRAFFIC_PLACE
 			origin_stop, destination_stop: TRAFFIC_STOP
-			other_line_section: TRAFFIC_LINE_SECTION
+			other_line_section: TRAFFIC_LINE_CONNECTION
 			pp, polypoints:  DS_ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			start_stop := Void
@@ -272,7 +272,7 @@ feature -- Insertion
 			a_place_not_void: a_place /= Void
 			valid_extension: is_valid_extension (a_place)
 		local
-			line_section: TRAFFIC_LINE_SECTION
+			line_section: TRAFFIC_LINE_CONNECTION
 			origin: TRAFFIC_STOP
 			a_stop: TRAFFIC_STOP
 			pp: DS_ARRAYED_LIST [EM_VECTOR_2D]
@@ -340,7 +340,7 @@ feature {NONE} -- Implementation
 --	map: TRAFFIC_MAP
 			-- Map this simple line belongs to.
 
-	insert_one_direction_front (a_line_section: TRAFFIC_LINE_SECTION) is
+	insert_one_direction_front (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Insert `a_line_section' front of one direction.
 		require
 			a_line_section_exists: a_line_section /= Void
@@ -353,13 +353,13 @@ feature {NONE} -- Implementation
 			stops_one_direction_set: stops_one_direction.has (a_line_section.origin_impl)
 		end
 
-	insert_one_direction_end (a_line_section: TRAFFIC_LINE_SECTION) is
+	insert_one_direction_end (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Insert `a_line_section' end of one direction.
 		require
 			a_line_section_exists: a_line_section /= Void
 			not_yet_added: not has_line (a_line_section)
 		local
-			c: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_SECTION]
+			c: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
 		do
 			create c.make (Current)
 			c.start
@@ -376,13 +376,13 @@ feature {NONE} -- Implementation
 			stops_one_direction_set: stops_one_direction.has (a_line_section.destination_impl)
 		end
 
-	insert_other_direction_front (a_line_section: TRAFFIC_LINE_SECTION) is
+	insert_other_direction_front (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Insert `a_line_section' front of other direction.
 		require
 			a_line_section_exists: a_line_section /= Void
 			not_yet_added: not has_line (a_line_section)
 		local
-			c: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_SECTION]
+			c: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
 		do
 			create c.make (Current)
 			c.start
@@ -400,7 +400,7 @@ feature {NONE} -- Implementation
 			stops_other_direction_set: stops_other_direction.has (a_line_section.origin_impl)
 		end
 
-	insert_other_direction_end (a_line_section: TRAFFIC_LINE_SECTION) is
+	insert_other_direction_end (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Insert `a_line_section' end of other direction.
 		require
 			a_line_section_exists: a_line_section /= Void

@@ -103,7 +103,7 @@ feature {TRAFFIC_PLACE} -- Basic operations (map)
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.
 		local
-			e: TRAFFIC_ROAD
+			e: TRAFFIC_ROAD_CONNECTION
 			p: DS_ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			a_map.graph.put_node (Current)

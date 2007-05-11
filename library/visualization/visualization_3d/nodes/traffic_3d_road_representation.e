@@ -64,7 +64,7 @@ feature -- Insertion
 		require
 			map_valid: a_map /= Void
 		local
-			all_roads: DS_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+			all_roads: DS_HASH_TABLE [TRAFFIC_ROAD_CONNECTION, INTEGER]
 		do
 
 			all_roads := map.roads
@@ -78,7 +78,7 @@ feature -- Insertion
 			end
 		end
 
-	add_road (a_road: TRAFFIC_ROAD) is
+	add_road (a_road: TRAFFIC_ROAD_CONNECTION) is
 			-- Add view for `a_road'.
 		require
 			a_road_exists: a_road /= Void
@@ -93,7 +93,7 @@ feature -- Insertion
 
 feature -- Removal
 
-	remove_road (a_road: TRAFFIC_ROAD) is
+	remove_road (a_road: TRAFFIC_ROAD_CONNECTION) is
 			-- Remove representation of `a_road'.
 		require
 			a_road_exists: a_road /= Void
@@ -117,7 +117,7 @@ feature -- Access
 	map: TRAFFIC_MAP
 			-- Map where roads are stored
 
-	road_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_ROAD]
+	road_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_ROAD_CONNECTION]
 			-- Root node for the line sections
 
 end

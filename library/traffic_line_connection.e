@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_LINE_SECTION
+	TRAFFIC_LINE_CONNECTION
 
 inherit
 
@@ -107,7 +107,7 @@ feature -- Access
 	state: TRAFFIC_LINE_SECTION_STATE
 			-- State of line section
 
-	roads: ARRAYED_LIST [TRAFFIC_ROAD]
+	roads: ARRAYED_LIST [TRAFFIC_ROAD_CONNECTION]
 			-- Roads on which the line section lies
 
 	hash_code: INTEGER is
@@ -135,7 +135,7 @@ feature -- Element change
 			state_set: state = a_state
 		end
 
-	set_roads (a_roads: ARRAYED_LIST [TRAFFIC_ROAD]) is
+	set_roads (a_roads: ARRAYED_LIST [TRAFFIC_ROAD_CONNECTION]) is
 			-- Set roads to `a_roads'.
 		require
 			a_roads_exist: a_roads /= Void

@@ -57,6 +57,7 @@ feature -- Interface
 			loaded_file_name := s
 
 			create point_randomizer.set_map (loader.map)
+			create path_randomizer.set_map (loader.map)
 
 			build_tool_bar
 
@@ -417,12 +418,12 @@ feature -- Event handling
 							map_widget.map.trams.put_last (tram)
 							io.put_string (map_widget.map.lines.item_for_iteration.name + " Tram " + tram.position.out + "%N")
 							tram.start
-						elseif map_widget.map.lines.item_for_iteration.type.name.is_equal ("rail") then
-							create tram.make_with_line (map_widget.map.lines.item_for_iteration)
-							tram.set_to_station (map_widget.map.lines.item_for_iteration.item (i).origin)
-							map_widget.map.trams.put_last (tram)
-							io.put_string (map_widget.map.lines.item_for_iteration.name + " Tram " + tram.position.out + "%N")
-							tram.start
+--						elseif map_widget.map.lines.item_for_iteration.type.name.is_equal ("rail") then
+--							create tram.make_with_line (map_widget.map.lines.item_for_iteration)
+--							tram.set_to_station (map_widget.map.lines.item_for_iteration.item (i).origin)
+--							map_widget.map.trams.put_last (tram)
+--							io.put_string (map_widget.map.lines.item_for_iteration.name + " Tram " + tram.position.out + "%N")
+--							tram.start
 						elseif map_widget.map.lines.item_for_iteration.type.name.is_equal ("bus") then
 							create bus.make_with_line (map_widget.map.lines.item_for_iteration)
 							bus.set_to_station (map_widget.map.lines.item_for_iteration.item (i).origin)
@@ -469,16 +470,18 @@ feature -- Event handling
 		local
 			passenger: TRAFFIC_PASSENGER
 			i: INTEGER
+			path_finder: TRAFFIC_PATH_CALCULATOR
 		do
 			if a_slider.current_value > map_widget.map.passengers.count then
+--				create path_finder.make_with_map (map_widget.map)
 				-- Add more
 				from
 					i := 1
 				until
 					i > a_slider.current_value - map_widget.map.passengers.count
 				loop
-					point_randomizer.generate_point_array (7)
---					create passenger.make_with_points (point_randomizer.last_array, 1.5)
+					path_randomizer.generate_path (6)
+					create passenger.make_with_path (path_randomizer.last_path, 1.5)
 					map_widget.map.passengers.force_last (passenger)
 					passenger.set_reiterate (True)
 					passenger.start
@@ -733,6 +736,8 @@ feature -- Access
 	point_randomizer: TRAFFIC_POINT_RANDOMIZER
 			-- Generator for list of random points
 
+	path_randomizer: TRAFFIC_PATH_RANDOMIZER
+			-- Generator for random paths
 
 --	buildings_checkbox: EM_CHECKBOX
 --			-- Checkbox for buildings

@@ -49,42 +49,42 @@ feature -- Basic operations
 			-- Find shortest path.
 		local
 			temp_path: LIST [TRAFFIC_CONNECTION]
-			a_road: TRAFFIC_ROAD
+			a_road: TRAFFIC_ROAD_CONNECTION
 			a_type: TRAFFIC_TYPE_STREET
 			road_id: INTEGER
 			pp: DS_ARRAYED_LIST [EM_VECTOR_2D]
 			current_ps, next_ps: TRAFFIC_PATH_SECTION
 		do
-			create pp.make (2)
-			road_id := road_id.max_value
-			is_path_found := False
-			create a_type.make
-			map.graph.put_node (a_origin.dummy_node)
+--			create pp.make (2)
+--			road_id := road_id.max_value
+--			is_path_found := False
+--			create a_type.make
+--			map.graph.put_node (a_origin.dummy_node)
 			-- Connect the dummy node of the origin with the stops.
-			pp.force_last (a_origin.position)
-			pp.force_last (Void)
-			from a_origin.stops.start until a_origin.stops.after loop
-				create a_road.make_insertable (a_origin.dummy_node, a_origin.stops.item,
-				  a_type, road_id, "undirected")
-				map.graph.search (a_origin.stops.item)
-				pp.force (map.graph.incident_edges.first.polypoints.first, 2)
-				a_road.set_polypoints (pp)
-				map.graph.connect_nodes (a_origin.dummy_node, a_origin.stops.item, 0, 0)
-				a_origin.stops.forth
-			end
+--			pp.force_last (a_origin.position)
+--			pp.force_last (Void)
+--			from a_origin.stops.start until a_origin.stops.after loop
+--				create a_road.make_insertable (a_origin.dummy_node, a_origin.stops.item,
+--				  a_type, road_id, "undirected")
+--				map.graph.search (a_origin.stops.item)
+--				pp.force (map.graph.incident_edges.first.polypoints.first, 2)
+--				a_road.set_polypoints (pp)
+--				map.graph.connect_nodes (a_origin.dummy_node, a_origin.stops.item, 0, 0)
+--				a_origin.stops.forth
+--			end
 
 			-- Connect the stops with the dummy node of the destination
-			map.graph.put_node (a_destination.dummy_node)
-			pp.force (a_destination.position, 1)
-			from a_destination.stops.start until a_destination.stops.after loop
-				create a_road.make_insertable (a_destination.stops.item, a_destination.dummy_node,
-				    a_type, road_id, "undirected")
-				map.graph.search (a_destination.stops.item)
-				pp.force (map.graph.incident_edges.first.polypoints.first, 2)
-				a_road.set_polypoints (pp)
-				map.graph.connect_nodes (a_destination.stops.item, a_destination.dummy_node, 0 , 0)
-				a_destination.stops.forth
-			end
+--			map.graph.put_node (a_destination.dummy_node)
+--			pp.force (a_destination.position, 1)
+--			from a_destination.stops.start until a_destination.stops.after loop
+--				create a_road.make_insertable (a_destination.stops.item, a_destination.dummy_node,
+--				    a_type, road_id, "undirected")
+--				map.graph.search (a_destination.stops.item)
+--				pp.force (map.graph.incident_edges.first.polypoints.first, 2)
+--				a_road.set_polypoints (pp)
+--				map.graph.connect_nodes (a_destination.stops.item, a_destination.dummy_node, 0 , 0)
+--				a_destination.stops.forth
+--			end
 			map.graph.find_shortest_path (a_origin.dummy_node, a_destination.dummy_node)
 
 			if map.graph.path_found then

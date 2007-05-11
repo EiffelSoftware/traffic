@@ -17,7 +17,7 @@ inherit
 			out
 		end
 
-	TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_LINE_SECTION]
+	TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 		rename
 			make as make_linked_list,
 			out as linked_list_out,
@@ -195,7 +195,7 @@ feature -- Status report
 			Result := terminal_2 /= Void
 		end
 
-	is_valid_for_insertion (a_line_section: TRAFFIC_LINE_SECTION): BOOLEAN is
+	is_valid_for_insertion (a_line_section: TRAFFIC_LINE_CONNECTION): BOOLEAN is
 			-- Can `a_line_section' be added to line?
 			--
 			-- This is the case if it can be added in front or back of an existing direction,
@@ -236,7 +236,7 @@ feature -- Measurement
 
 feature -- Basic operations
 
-	extend (a_line_section: TRAFFIC_LINE_SECTION) is
+	extend (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Add `a_line_section' at beginning or end of existing direction(s).
 		require else
 			a_line_section_exists: a_line_section /= Void
@@ -308,7 +308,7 @@ feature -- Basic operations
 			-- returns the polypoints retrieve by the roads
 			-- that belongs to this line
 		local
-			roads:ARRAYED_LIST[TRAFFIC_ROAD]
+			roads:ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]
 			pp: DS_ARRAYED_LIST[EM_VECTOR_2D]
 			invert, is_station: BOOLEAN
 			v: EM_VECTOR_2D
@@ -411,7 +411,7 @@ feature -- Output
 	one_direction_out: STRING is
 			-- Textual representation of one direction
 		local
-			l_line_section: TRAFFIC_LINE_SECTION
+			l_line_section: TRAFFIC_LINE_CONNECTION
 		do
 			if terminal_1 = Void then
 				Result := ""
@@ -433,7 +433,7 @@ feature -- Output
 			-- Textual representation of other direction
 		local
 			position: INTEGER
-			l_line_section: TRAFFIC_LINE_SECTION
+			l_line_section: TRAFFIC_LINE_CONNECTION
 		do
 			if terminal_2 = Void then
 				Result := ""
@@ -466,7 +466,7 @@ feature {NONE} -- Implementation
 			Result := a_stop.place.name.is_equal (a_place.name) and then a_stop.line.name.is_equal (name)
 		end
 
-	start_other_direction: TRAFFIC_LINE_SECTION
+	start_other_direction: TRAFFIC_LINE_CONNECTION
 			-- Starting line section other direction
 			-- Starting line section one direction is first element in list
 

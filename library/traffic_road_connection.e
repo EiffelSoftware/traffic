@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision: 601 $"
 
 class
-	TRAFFIC_ROAD
+	TRAFFIC_ROAD_CONNECTION
 
 inherit
 	TRAFFIC_CONNECTION

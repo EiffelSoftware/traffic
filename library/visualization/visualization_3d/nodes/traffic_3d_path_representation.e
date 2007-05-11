@@ -41,7 +41,7 @@ feature -- Insertion
 			a_path_exists: a_path /= Void
 		local
 			conns: LIST [TRAFFIC_CONNECTION]
-			ls: TRAFFIC_LINE_SECTION
+			ls: TRAFFIC_LINE_CONNECTION
 			node: TE_3D_NODE
 			p: TRAFFIC_3D_RENDERABLE [TRAFFIC_PATH]
 			c: TRAFFIC_3D_RENDERABLE [TRAFFIC_CONNECTION]

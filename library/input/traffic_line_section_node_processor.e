@@ -36,9 +36,9 @@ feature -- Basic operations
 			line: TRAFFIC_LINE
 			simple_line: TRAFFIC_SIMPLE_LINE
 			polypoints_other_direction: DS_ARRAYED_LIST [EM_VECTOR_2D]
-			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_SECTION
+			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_CONNECTION
 
-			sections: LIST [TRAFFIC_LINE_SECTION]
+			sections: LIST [TRAFFIC_LINE_CONNECTION]
 		do
 			if not has_error then
 				line ?= parent.target
@@ -147,7 +147,7 @@ feature -- Basic operations
 		Result := create {EM_VECTOR_2D}.make (0, 0)
 	end
 
-	adjust_position (a_line_section: TRAFFIC_LINE_SECTION; a_polypoints: LIST [EM_VECTOR_2D]) is
+	adjust_position (a_line_section: TRAFFIC_LINE_CONNECTION; a_polypoints: LIST [EM_VECTOR_2D]) is
 			-- Adjust positions.
 		do
 			if a_line_section.origin.position = Void or equal(a_line_section.origin.position, zero_vector) then
@@ -175,7 +175,7 @@ feature -- Basic operations
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
 			position: EM_VECTOR_2D
-			road: TRAFFIC_ROAD
+			road: TRAFFIC_ROAD_CONNECTION
 		do
 			create polypoints.make (0)
 			create roads.make(0)
@@ -220,7 +220,7 @@ feature -- Basic operations
 	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
 			-- Polypoints of this link
 
-	roads: ARRAYED_LIST[TRAFFIC_ROAD]
+	roads: ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]
 		-- Roads of this line_section
 
 end

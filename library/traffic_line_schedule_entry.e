@@ -14,7 +14,7 @@ create
 
 feature -- Initialisation
 
-	make_with_line_section(a_line_section: TRAFFIC_LINE_SECTION) is
+	make_with_line_section(a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Create the object for a given line section
 		require
 			valid_line_section: a_line_section /= Void
@@ -33,7 +33,7 @@ feature -- Access
 	end_time: TIME
 			-- Time the object has to arrive at the target
 
-	line_section: TRAFFIC_LINE_SECTION
+	line_section: TRAFFIC_LINE_CONNECTION
 			-- Line section which the object will travel on¨
 
 feature -- Status report

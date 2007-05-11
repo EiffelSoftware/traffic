@@ -525,7 +525,7 @@ feature -- Removal
 --			end
 --		end
 
-	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
+	remove_line_section (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Remove line_section `a_line_section' from map (bad implementation).
 		require
 			has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
@@ -543,7 +543,7 @@ feature -- Removal
 			line_section_removed: not line_sections.has (a_line_section)
 		end
 
-	remove_road (a_road: TRAFFIC_ROAD) is
+	remove_road (a_road: TRAFFIC_ROAD_CONNECTION) is
 			-- Remove road `a_road' from map.
 		require
 			road_not_void: a_road /= Void
@@ -603,13 +603,13 @@ feature -- Access (map objects)
 	places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
 			-- All places in map
 
-	line_sections: TRAFFIC_LINE_SECTION_LIST
+	line_sections: TRAFFIC_EVENT_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 			-- All line sections in map
 
-	lines: TRAFFIC_EVENT_META_HASH_TABLE [TRAFFIC_LINE_SECTION, TRAFFIC_LINE, STRING]
+	lines: TRAFFIC_EVENT_META_HASH_TABLE [TRAFFIC_LINE_CONNECTION, TRAFFIC_LINE, STRING]
 			-- All lines in map
 
-	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD_CONNECTION, INTEGER]
 			-- All roads in map
 
 	paths: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PATH]
@@ -635,15 +635,15 @@ feature -- Access (map objects)
 
 feature -- Access
 
-	line_sections_of_stop (a_name: STRING; a_line: TRAFFIC_LINE): LIST [TRAFFIC_LINE_SECTION] is
+	line_sections_of_stop (a_name: STRING; a_line: TRAFFIC_LINE): LIST [TRAFFIC_LINE_CONNECTION] is
 			-- Line sections (2 or 1) of the stop specified by `a_name' for the line `a_line'
 		require
 			places.has (a_name) and then places.item (a_name).has_stop (a_line)
 		local
 			a_connections: LIST [TRAFFIC_CONNECTION]
-			ls: TRAFFIC_LINE_SECTION
+			ls: TRAFFIC_LINE_CONNECTION
 		do
-			Result := create {ARRAYED_LIST [TRAFFIC_LINE_SECTION]}.make (2)
+			Result := create {ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]}.make (2)
 			graph.search (places.item (a_name).stop (a_line))
 			a_connections := graph.incident_edges
 			from a_connections.start until a_connections.after loop
@@ -812,7 +812,7 @@ feature {TRAFFIC_MAP_LOADER}
 			the_edges: LIST[TRAFFIC_CONNECTION]
 			p: TRAFFIC_PLACE
 			s: TRAFFIC_STOP
-			a_edge: TRAFFIC_ROAD
+			a_edge: TRAFFIC_ROAD_CONNECTION
 			total_weight: DOUBLE
 			average_weight: DOUBLE
 			w: DOUBLE

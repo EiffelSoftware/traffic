@@ -168,7 +168,7 @@ feature -- Line section building
 			--TODOline_section_in_map: a_map.has_line_section (a_origin, a_destination, a_line.type, a_line)
 		end
 
-	line_section: TRAFFIC_LINE_SECTION is
+	line_section: TRAFFIC_LINE_CONNECTION is
 			-- Generated traffic line section object.
 		require
 			line_section_available: has_line_section
@@ -209,7 +209,7 @@ feature -- Road section building
 			--road_in_map: a_map.has_road (a_origin, a_destination,an_id.to_integer)
 		end
 
-	road: TRAFFIC_ROAD is
+	road: TRAFFIC_ROAD_CONNECTION is
 			-- Generated traffic road object.
 		require
 			road_available: has_road
@@ -319,13 +319,13 @@ feature {NONE} -- Implementation
 	internal_place: TRAFFIC_PLACE
 			-- Internal representation of last created traffic place.
 
-	internal_line_section: TRAFFIC_LINE_SECTION
+	internal_line_section: TRAFFIC_LINE_CONNECTION
 			-- Internal representation of last created traffic line section.
 
 	internal_line: TRAFFIC_LINE
 			-- Internal representation of last created traffic line.
 
-	internal_road: TRAFFIC_ROAD
+	internal_road: TRAFFIC_ROAD_CONNECTION
 			-- Internal representation of last created traffic road.
 
 	internal_simple_line: TRAFFIC_SIMPLE_LINE
@@ -337,7 +337,7 @@ feature {NONE} -- Implementation
 --	dummy_line: TRAFFIC_LINE
 			-- Line used for dummy stops.
 
-	create_line_section (a_origin, a_destination: STRING; a_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]; a_line: TRAFFIC_LINE; a_map: TRAFFIC_MAP): TRAFFIC_LINE_SECTION is
+	create_line_section (a_origin, a_destination: STRING; a_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]; a_line: TRAFFIC_LINE; a_map: TRAFFIC_MAP): TRAFFIC_LINE_CONNECTION is
 			-- Create line section with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_line'.
 		require
 			a_origin_exists: a_origin /= Void
@@ -350,7 +350,7 @@ feature {NONE} -- Implementation
 			a_line_in_map: a_map.lines.has (a_line.name)
 			polypoints_are_list: a_polypoints /= Void and then (a_polypoints.count >= 2 and not a_polypoints.has (Void))
 		local
-			typed_line_section: TRAFFIC_LINE_SECTION
+			typed_line_section: TRAFFIC_LINE_CONNECTION
 			origin_place: TRAFFIC_PLACE
 			destination_place: TRAFFIC_PLACE
 			origin_stop: TRAFFIC_STOP
@@ -386,7 +386,7 @@ feature {NONE} -- Implementation
 		end
 
 
-	create_road (a_origin, a_destination: STRING; a_map: TRAFFIC_MAP; a_type:STRING;an_id:STRING; a_direction: STRING): TRAFFIC_ROAD is
+	create_road (a_origin, a_destination: STRING; a_map: TRAFFIC_MAP; a_type:STRING;an_id:STRING; a_direction: STRING): TRAFFIC_ROAD_CONNECTION is
 			-- Create road with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_map'.
 		require
 			a_origin_exists: a_origin /= Void
@@ -399,7 +399,7 @@ feature {NONE} -- Implementation
 			an_id_exists: an_id/=Void
 			a_direction_exists: a_direction/=Void
 		local
-			a_road: TRAFFIC_ROAD
+			a_road: TRAFFIC_ROAD_CONNECTION
 			origin_place: TRAFFIC_PLACE
 			destination_place: TRAFFIC_PLACE
 			type: TRAFFIC_TYPE_ROAD

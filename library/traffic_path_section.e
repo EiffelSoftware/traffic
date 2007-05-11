@@ -26,11 +26,12 @@ feature --{NONE} -- Creation
 		end
 
 	make (a_connection: TRAFFIC_CONNECTION) is
-			-- Initialize 'current', used if line-type is unknown
+			-- Initialize 'current', used if line-type is unknown.
+			-- `back' states that the undirected `a_connection' is traveled backwards
 		require
 			connections_exists: a_connection /= Void
 		local
-			ls: TRAFFIC_LINE_SECTION
+			ls: TRAFFIC_LINE_CONNECTION
 		do
 			ls ?= a_connection
 			if ls /= Void then
@@ -43,7 +44,7 @@ feature --{NONE} -- Creation
 			connections_impl.extend (a_connection)
 		end
 
-	make_tram (a_line_section: TRAFFIC_LINE_SECTION) is
+	make_tram (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Initialize 'Current' of type tram
 		require
 			line_section_exists: a_line_section /= Void
@@ -57,7 +58,7 @@ feature --{NONE} -- Creation
 			connections_impl.extend (a_line_section)
 		end
 
-	make_bus (a_line_section: TRAFFIC_LINE_SECTION) is
+	make_bus (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Initialize 'Current' of type bus
 		require
 			line_sectin_exists: a_line_section /= Void
@@ -71,7 +72,7 @@ feature --{NONE} -- Creation
 			connections_impl.extend (a_line_section)
 		end
 
-	make_rail (a_line_section: TRAFFIC_LINE_SECTION) is
+	make_rail (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Initialize 'Current' ob type rail
 		require
 			line_section_exists: a_line_section /= Void
@@ -85,7 +86,7 @@ feature --{NONE} -- Creation
 			connections_impl.extend (a_line_section)
 		end
 
-	make_walk (a_road: TRAFFIC_ROAD) is
+	make_walk (a_road: TRAFFIC_ROAD_CONNECTION) is
 			-- Initialize 'Current' of type walk
 		require
 			road_exists: a_road /= Void
@@ -164,12 +165,12 @@ feature -- Status report
 			a_path_section_exists: a_path_section /= Void
 		do
 			Result := destination = a_path_section.origin or
-				(not a_path_section.connections.first.is_directed and destination = a_path_section.connections.first.destination) or
+				((not a_path_section.connections.first.is_directed) and destination = a_path_section.connections.first.destination) or
 				connections_impl = Void
 		end
 
 
-	is_tram (a_line_section: TRAFFIC_LINE_SECTION): BOOLEAN is
+	is_tram (a_line_section: TRAFFIC_LINE_CONNECTION): BOOLEAN is
 			-- is `a_line_section' of type tram?
 		require
 			a_line_section_exists: a_line_section /= Void
@@ -181,7 +182,7 @@ feature -- Status report
 			Result := a_line_section.line.type.name.is_equal (tram_type)
 		end
 
-	is_bus (a_line_section: TRAFFIC_LINE_SECTION): BOOLEAN is
+	is_bus (a_line_section: TRAFFIC_LINE_CONNECTION): BOOLEAN is
 			-- is `a_line_section' of type tram?
 		require
 			a_line_section_exists: a_line_section /= Void
@@ -193,7 +194,7 @@ feature -- Status report
 			Result := a_line_section.line.type.name.is_equal (bus_type)
 		end
 
-	is_rail (a_line_section: TRAFFIC_LINE_SECTION): BOOLEAN is
+	is_rail (a_line_section: TRAFFIC_LINE_CONNECTION): BOOLEAN is
 			-- is `a_line_section' of type tram?
 		require
 			a_line_section_exists: a_line_section /= Void

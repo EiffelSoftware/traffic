@@ -32,7 +32,7 @@ feature -- Basic operations
 	process is
 			-- Process node.
 		local
-			road: TRAFFIC_ROAD
+			road: TRAFFIC_ROAD_CONNECTION
 		do
 				if not has_attribute ("id") then
 					set_error (Mandatory_attribute_missing, <<"id">>)
@@ -70,7 +70,7 @@ feature -- Basic operations
 		Result := create {EM_VECTOR_2D}.make (0, 0)
 	end
 
-	adjust_position (road: TRAFFIC_ROAD; a_polypoints: DS_LIST [EM_VECTOR_2D]) is
+	adjust_position (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [EM_VECTOR_2D]) is
 			-- Adjust positions
 		do
 			if road.origin.position = Void or equal(road.origin.position, zero_vector) then

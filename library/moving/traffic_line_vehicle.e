@@ -356,7 +356,7 @@ feature{NONE} --Implementation
 --			end
 --		end
 
-	line_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_SECTION]
+	line_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
 			-- Line section on which the line vehicle is moving currently
 
 invariant

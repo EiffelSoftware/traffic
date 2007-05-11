@@ -626,8 +626,8 @@ feature {NONE} -- Implementation
 	add_buildings_along_lines is
 			-- Add buildings along all lines (except railway).
 		local
-			line_sections:DS_ARRAYED_LIST [TRAFFIC_LINE_SECTION]
-			line_section: TRAFFIC_LINE_SECTION
+			line_sections:DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+			line_section: TRAFFIC_LINE_CONNECTION
 			building: TRAFFIC_BUILDING
 			center,p1,p2,p3,p4: EM_VECTOR_2D
 			start_point, end_point, temp: EM_VECTOR_2D

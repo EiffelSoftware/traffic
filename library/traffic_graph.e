@@ -50,7 +50,7 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 	connect_nodes (a_start_node, a_end_node: like item; a_label: REAL; a_weight: REAL) is
 			-- Redefined to record weight.
 		local
-			r: TRAFFIC_ROAD
+			r: TRAFFIC_ROAD_CONNECTION
 			i: INTEGER
 		do
 			create r.make_visible (a_start_node, a_end_node, create {TRAFFIC_TYPE_STREET}.make, id_manager.next_free_index, "undirected")
@@ -79,7 +79,7 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 --			end
 --		end
 
-	put_road (a_road: TRAFFIC_ROAD) is
+	put_road (a_road: TRAFFIC_ROAD_CONNECTION) is
 			-- Insert `a_road' into the graph.
 		require
 			a_road_exists: a_road /= Void
@@ -96,7 +96,7 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			end
 		end
 
-	put_line_section (a_section: TRAFFIC_LINE_SECTION) is
+	put_line_section (a_section: TRAFFIC_LINE_CONNECTION) is
 			-- Insert `a_section' into the graph.
 		require
 			a_section_exists: a_section /= Void
@@ -121,8 +121,8 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			nodes_exist: has_node (a_connection.origin_impl) and has_node (a_connection.destination_impl)
 --			has_line: lines.has (a_section.line.name)
 		local
-			r: TRAFFIC_ROAD
-			l: TRAFFIC_LINE_SECTION
+			r: TRAFFIC_ROAD_CONNECTION
+			l: TRAFFIC_LINE_CONNECTION
 		do
 			r ?= a_connection
 			l ?= a_connection

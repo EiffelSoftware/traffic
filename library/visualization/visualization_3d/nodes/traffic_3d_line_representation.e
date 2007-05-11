@@ -61,7 +61,7 @@ feature -- Status report
 
 feature -- Access
 
-	line_section_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_LINE_SECTION]
+	line_section_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_LINE_CONNECTION]
 			-- Root node for the line sections
 
 	line_factory: TRAFFIC_3D_CONNECTION_FACTORY
@@ -112,7 +112,7 @@ feature -- Insertion
 			end
 		end
 
-	add_line_section (a_line_section: TRAFFIC_LINE_SECTION; a_color: EM_COLOR) is
+	add_line_section (a_line_section: TRAFFIC_LINE_CONNECTION; a_color: EM_COLOR) is
 			-- Add view for `a_line_section'.
 		require
 			a_color_exists: a_color /= Void
@@ -128,7 +128,7 @@ feature -- Insertion
 
 feature -- Removal
 
-	remove_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
+	remove_line_section (a_line_section: TRAFFIC_LINE_CONNECTION) is
 			-- Add view for `a_line_section'.
 		require
 			a_line_section_exists: a_line_section /= Void
