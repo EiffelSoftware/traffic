@@ -1,5 +1,5 @@
 indexing
-	description: "A Road of the city."
+	description: "Directed road connections that connect two places"
 	date: "$Date: 2006-03-27 19:42:12 +0200 (Mon, 27 Mar 2006) $"
 	revision: "$Revision: 601 $"
 
@@ -7,6 +7,7 @@ class
 	TRAFFIC_ROAD_CONNECTION
 
 inherit
+
 	TRAFFIC_CONNECTION
 		redefine
 			type
@@ -15,20 +16,18 @@ inherit
 create
 	make_visible
 
-feature{NONE} -- Creation
+feature {NONE} -- Creation
 
 	make_visible (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER) is
 			-- Initialize `Current'.
-			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
-			-- `a_destination' are generated.
 		require
 			a_origin_exists: a_origin /= Void
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
 		do
-			origin_impl := a_origin
-			destination_impl := a_destination
-			make_directed (origin_impl, destination_impl)
+			start_node := a_origin
+			end_node := a_destination
+			make_directed (start_node, end_node)
 			type := a_type
 			is_directed:=true
 			create polypoints.make (0)
@@ -36,8 +35,8 @@ feature{NONE} -- Creation
 			polypoints.force_last (a_destination.place.position)
 			id := an_id
 		ensure
-			origin_set: origin_impl = a_origin
-			destination_set: destination_impl = a_destination
+			origin_set: start_node = a_origin
+			destination_set: end_node = a_destination
 			type_set: type = a_type
 			polypoints_exists: polypoints /= Void
 			id_set: id = an_id
@@ -74,7 +73,6 @@ feature -- Basic operations
 		do
 			is_in_map := False
 			map := Void
-
 		end
 
 feature -- Status report
@@ -83,8 +81,13 @@ feature -- Status report
 			-- Is `Current' insertable into `a_map'?
 			-- E.g. are all needed elements already inserted in the map?
 		do
-			Result := 	origin_impl.is_in_map and destination_impl.is_in_map and
+			Result := 	start_node.is_in_map and end_node.is_in_map and
 						origin.is_in_map and destination.is_in_map
 		end
+
+invariant
+
+	id_set: id > 0
+	type_exists: type /= Void
 
 end

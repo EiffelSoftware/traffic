@@ -21,6 +21,8 @@ inherit
 --			time as traffic_time
 --		end
 
+--	TRAFFIC_MAP_ITEM
+
 feature -- Access
 
 --	traffic_type: TRAFFIC_TYPE

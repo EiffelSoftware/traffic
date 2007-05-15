@@ -24,7 +24,17 @@ inherit
 			extend as put_end
 
 		export
-		{ANY} start, finish, after, before, off, forth, back, item, count, wipe_out, has
+			{NONE}
+				append, append_first, append_last, append_left, append_left_cursor, append_right, append_right_cursor,
+				delete, extend_first, extend_last, extend_left, extend_left_cursor, extend_right, extend_right_cursor,
+				force, force_first, force_last, force_left, force_left_cursor, force_right, force_right_cursor,
+				keep_first, keep_last, make_default, make_equal, make_from_array, make_from_linear, make_linked_list,
+				prune, prune_first, prune_last, prune_left, prune_left_cursor, prune_right, prune_right_cursor,
+				put, put_end, put_first, put_last, put_left, put_left_cursor, put_right, put_right_cursor,
+				remove, remove_at, remove_at_cursor, remove_first, remove_last, remove_left, remove_left_cursor,
+				remove_right, remove_right_cursor, replace, replace_at, replace_at_cursor, swap
+			{ANY}
+				start, finish, after, before, off, forth, back, item, count, wipe_out, has
 		select copy,is_equal
 		end
 
@@ -85,7 +95,7 @@ feature -- Access
 	terminal_2: TRAFFIC_PLACE
 			-- Terminal of line in other direction
 
-	color: TRAFFIC_COLOR
+	color: EM_COLOR
 			-- Line color
 			-- Used as color represenation
 
@@ -131,18 +141,14 @@ feature -- Element change
 			map := Void
 		end
 
-	set_color (a_color: TRAFFIC_COLOR) is
+	set_color (a_color: EM_COLOR) is
 			-- Set color to `a_color'.
 		require
 			a_color_exists: a_color /= Void
 		do
-			if color = Void then
-				create color.make (a_color.red, a_color.green, a_color.blue)
-			else
-				color.copy (a_color)
-			end
+			color := a_color
 		ensure
-			color_set: equal(color, a_color)
+			color_set: color = a_color
 		end
 
 feature -- Removal
@@ -247,8 +253,8 @@ feature -- Basic operations
 			origin, destination: TRAFFIC_PLACE
 			origin_stop, destination_stop: TRAFFIC_STOP
 		do
-			origin_stop := a_line_section.origin_impl
-			destination_stop := a_line_section.destination_impl
+			origin_stop := a_line_section.start_node
+			destination_stop := a_line_section.end_node
 			origin := origin_stop.place
 			destination := destination_stop.place
 

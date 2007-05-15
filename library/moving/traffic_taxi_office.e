@@ -19,6 +19,11 @@ inherit
 			default_create
 		end
 
+	TRAFFIC_MAP_ITEM
+		undefine
+			default_create
+		end
+
 feature {NONE} -- Initialization
 
 	default_create is
@@ -26,7 +31,7 @@ feature {NONE} -- Initialization
 		do
 			create available_taxis.make
 			create taxis.make
-			create color.make (255, 255, 255)
+			create color.make_with_rgb (255, 255, 255)
 		ensure then
 			taxis_exists: taxis /= Void
 			available_taxis_exists: available_taxis /= Void
@@ -41,7 +46,7 @@ feature {NONE} -- Initialization
 			b_valid: b >= 0 and b <= 255
 		do
 			default_create
-			create color.make (r, g, b)
+			create color.make_with_rgb (r, g, b)
 		end
 
 feature -- Access
@@ -52,15 +57,15 @@ feature -- Access
 	taxis: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_TAXI]
 			-- All taxis that work for this office
 
-	color: TRAFFIC_COLOR
+	color: EM_COLOR
 			-- Color of the taxi office
 
 feature -- Basic operations
 
-	add_taxis (a_number: INTEGER) is
-			-- Add `a_number' of new taxis to this office.
+	add_taxi (a_taxi: TRAFFIC_TAXI) is
+			-- Add `a_taxi' to this office.
 		require
-			a_number_valid: a_number > 0
+			a_taxi_valid: a_taxi /= Void
 		deferred
 		end
 
@@ -96,6 +101,33 @@ feature -- Basic operations
 				end
 				nearest_taxi.take(from_location, to_location)
 			end
+		end
+
+feature -- Basic operations (map)
+
+	add_to_map (a_map: TRAFFIC_MAP) is
+			-- Add `Current' to `a_map'.
+		do
+			a_map.taxi_offices.put_last (Current)
+			is_in_map := True
+			map := a_map
+		ensure then
+			map_has: a_map.taxi_offices.has (Current)
+		end
+
+	remove_from_map is
+			-- Remove Current from `a_map'.
+		do
+			is_in_map := False
+			map := Void
+		end
+
+feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := True
 		end
 
 feature {TRAFFIC_TAXI} -- Basic operations for taxis

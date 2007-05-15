@@ -22,8 +22,8 @@ feature -- Initialization
 			a_conn1_exists: a_conn1 /= Void
 			a_conn2_exists: a_conn2 /= Void
 			same_type: a_conn1.type.is_equal (a_conn2.type)
-			same_start: a_conn1.origin_impl = a_conn2.destination_impl
-			same_end: a_conn1.destination_impl = a_conn2.origin_impl
+			same_start: a_conn1.start_node = a_conn2.end_node
+			same_end: a_conn1.end_node = a_conn2.start_node
 			same_id: a_conn1.id = a_conn2.id
 		do
 			one_way := a_conn1
@@ -63,10 +63,13 @@ feature -- Access
 		end
 
 	one_way: TRAFFIC_ROAD_CONNECTION
+			-- Road connection into one direction
 
 	other_way: TRAFFIC_ROAD_CONNECTION
+			-- Road connection into other direction (may be Void if the way is a one way)
 
 	id: INTEGER
+			-- Id of the road
 
 feature -- Basic operations
 
@@ -98,15 +101,17 @@ feature -- Status report
 			-- Is `Current' insertable into `a_map'?
 			-- E.g. are all needed elements already inserted in the map?
 		do
-			Result := 	one_way.origin_impl.is_in_map and one_way.destination_impl.is_in_map and
+			Result := 	one_way.start_node.is_in_map and one_way.end_node.is_in_map and
 						one_way.origin.is_in_map and one_way.destination.is_in_map
 		end
 
 	is_one_way: BOOLEAN
+			-- Is this a one way road?
 
 invariant
 
 	has_connections: is_one_way implies one_way /= Void and other_way = Void
 	has_connections: not is_one_way implies one_way /= Void and other_way /= Void
+	id_set: id > 0 and id = one_way.id
 
 end

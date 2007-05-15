@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Elements that belong to the map"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -39,6 +38,7 @@ feature -- Element change
 feature -- Access
 
 	map: TRAFFIC_MAP
+			-- Map to which the item belongs (may be void)
 
 feature -- Status report
 
@@ -47,6 +47,5 @@ feature -- Status report
 			-- E.g. are all needed elements already inserted in the map?
 		deferred
 		end
-
 
 end

@@ -6,7 +6,7 @@ indexing
 
 class
 	TRAFFIC_LINE_NODE_PROCESSOR
-	
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
 		redefine
@@ -20,15 +20,15 @@ feature -- Access
 
 	Name: STRING is "line"
 			-- Name of element to process
-		
+
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		do
 			Result := << "name", "type" >>
 			Result.compare_objects
 		end
-		
-	color: TRAFFIC_COLOR
+
+	color: EM_COLOR
 			-- Color of line.
 
 feature -- Basic operations
@@ -54,19 +54,19 @@ feature -- Basic operations
 			end
 			if not has_error and color /= Void then
 				if has_attribute ("simple") and then equal (attribute ("simple"), "true") then
-					map_factory.simple_line.set_color (color)		
+					map_factory.simple_line.set_color (color)
 				else
-					map_factory.line.set_color (color)		
+					map_factory.line.set_color (color)
 				end
 			end
 		end
-		
+
 	process_subnodes is
 			-- Process subnodes.
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			c: TRAFFIC_COLOR
+			c: EM_COLOR
 		do
 			from
 				subnodes.start
@@ -90,7 +90,7 @@ feature -- Basic operations
 						-- Has a color been generated?
 						c ?= data
 						if c /= Void then
-							create color.make (c.red, c.green, c.blue)
+							create color.make_with_rgb (c.red, c.green, c.blue)
 						end
 					else
 						set_error (p.error_code, p.slots)
@@ -99,7 +99,7 @@ feature -- Basic operations
 				subnodes.forth
 			end
 		end
-		
+
 	reset is
 			-- Reset processor.
 		do
@@ -110,5 +110,5 @@ feature -- Basic operations
 			set_error (0, << >>)
 			color := Void
 		end
-		
+
 end

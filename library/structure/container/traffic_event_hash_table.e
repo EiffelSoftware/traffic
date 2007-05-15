@@ -1,6 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: 	"[
+		Hash tables that throw events whenever an element is added or removed.
+		Features for manipulation are only available to the map items.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,6 +12,9 @@ class
 inherit
 
 	DS_HASH_TABLE [G, K]
+		export {TRAFFIC_MAP_ITEM}
+			force, force_last, force_new, put, put_last, put_new, remove, remove_found_item, replace, replace_found_item,
+			swap, wipe_out
 		redefine
 			make_sparse_container, make_with_equality_testers, wipe_out,
 			items_put, out
@@ -62,7 +67,7 @@ feature {NONE} -- Intialization
 			removed_initialized: element_removed_event /= Void
 		end
 
-feature -- Removal
+feature {TRAFFIC_MAP_ITEM} -- Removal
 
 	wipe_out
 			-- Remove all items from container.

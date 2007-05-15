@@ -11,17 +11,13 @@ inherit
 	TRAFFIC_CONNECTION
 		redefine
 			out,
-			origin_impl,
-			destination_impl,
---			add_to_map,
---			remove_from_map,
---			is_insertable,
+			start_node,
+			end_node,
 			type
 		end
 
 create
-	make_insertable--,
---	make_non_insertable
+	make_insertable
 
 feature {NONE} -- Initialization
 
@@ -35,8 +31,6 @@ feature {NONE} -- Initialization
 			a_type_exists: a_type /= Void
 			a_list_exists: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
 		do
---			origin_impl := a_origin
---			destination_impl := a_destination
 			make_directed (a_origin, a_destination)
 			create state.make
 			type := a_type
@@ -44,57 +38,15 @@ feature {NONE} -- Initialization
 			set_polypoints (a_list)
 			create roads.make (1)
 			is_directed := True
-
 		ensure
-			origin_set: origin_impl = a_origin
-			destination_set: destination_impl = a_destination
+			origin_set: start_node = a_origin
+			destination_set: end_node = a_destination
 			state_exists: state /= Void
 			has_type: type /=Void
 			type_set: type = a_type
 			polypoints_exists: polypoints /= Void
 			roads_created: roads/=Void
 		end
-
---	make_non_insertable (a_origin, a_destination: TRAFFIC_PLACE; a_type: TRAFFIC_TYPE_LINE; a_list: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
---			-- Make a temporary line_section which shouldn't be inserted into a `TRAFFIC_MAP'.
---		require
---			a_origin_exists: a_origin /= Void
---			a_destination_exists: a_destination /= Void
---			a_type_exists: a_type /= Void
---			a_list_exists: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
---		local
---			origin_stop: TRAFFIC_STOP
---			destination_stop: TRAFFIC_STOP
---		do
---			if not a_origin.stops.is_empty then
---				origin_stop := a_origin.stops.first
---			else
---				create origin_stop.make_non_insertable (a_origin, a_type, a_origin.position)
---			end
-
---			if not a_destination.stops.is_empty then
---				destination_stop := a_destination.stops.first
---			else
---				create destination_stop.make_non_insertable (a_destination, a_type, a_destination.position)
---			end
-
---			origin_impl := origin_stop
---			destination_impl := destination_stop
---			create state.make
---			type := a_type
-
---			create polypoints.make (2)
---			create roads.make (1)
---			set_polypoints (a_list)
---		ensure
---			origin_set: origin = a_origin
---			destination_set: destination = a_destination
---			state_exists: state /= Void
---			has_type: type /=Void
---			type_set: type = a_type
---			polypoints_exists: polypoints /= Void
---			roads_created: roads/=Void
---		end
 
 feature -- Access
 
@@ -161,7 +113,7 @@ feature -- Status report
 			-- Is `Current' insertable into `a_map'?
 			-- (All places, stops, and the line need to be in the map already)
 		do
-			Result := 	origin_impl.is_in_map and destination_impl.is_in_map and
+			Result := 	start_node.is_in_map and end_node.is_in_map and
 						origin.is_in_map and destination.is_in_map
 
 			if line /= Void then
@@ -172,9 +124,9 @@ feature -- Status report
 
 feature -- Access
 
-	origin_impl: TRAFFIC_STOP
+	start_node: TRAFFIC_STOP
 
-	destination_impl: TRAFFIC_STOP
+	end_node: TRAFFIC_STOP
 
 feature -- Output
 
@@ -240,6 +192,7 @@ feature {TRAFFIC_LINE} -- Basic operations (map)
 		end
 
 invariant
+
 	line_has_same_type: line /= Void implies equal (line.type, type) -- Only line with same type can be assigned.
 	origin_set: origin /= Void -- Origin place exists.
 	destination_set: origin /= Void -- Destination place exists.

@@ -109,9 +109,6 @@ feature -- Traffic place building
 			unique_name: not a_map.places.has (a_name)
 		do
 			create internal_place.make_with_position (a_name, a_x, a_y)
---			create dummy_node.make (internal_place, )
---			internal_place.set_dummy_node (dummy_node)
---			a_map.places.force (internal_place, internal_place.name)
 			internal_place.add_to_map (a_map)
 		ensure
 			place_created: place /= Void
@@ -145,10 +142,14 @@ feature -- Line section building
 			a_map_exists: a_map /= Void
 			a_origin_exists: a_map.places.has (a_origin)
 			a_destination_exists: a_map.places.has (a_destination)
---			a_polypoints_exists: a_polypoints /= Void
 			a_line_exists: a_line /= Void
 		local
 			pps: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			origin_place: TRAFFIC_PLACE
+			destination_place: TRAFFIC_PLACE
+			origin_stop: TRAFFIC_STOP
+			destination_stop: TRAFFIC_STOP
+			stop_pos: EM_VECTOR_2D
 		do
 			if a_polypoints = Void or else a_polypoints.count < 2 then
 				create pps.make (2)
@@ -157,15 +158,31 @@ feature -- Line section building
 			else
 				pps := a_polypoints
 			end
-			internal_line_section := create_line_section (a_origin, a_destination, pps, a_line, a_map)
---			a_map.add_line_section (internal_line_section)
+			origin_place := a_map.places.item (a_origin)
+			destination_place := a_map.places.item (a_destination)
+
+			if origin_place.has_stop (a_line) then
+				origin_stop := origin_place.stop (a_line)
+			else
+				create stop_pos.make_from_other (pps.first)
+				create origin_stop.make_stop (origin_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+			end
+
+			if destination_place.has_stop (a_line) then
+				destination_stop := destination_place.stop (a_line)
+			else
+				create stop_pos.make_from_other (pps.last)
+				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+			end
+
+			create internal_line_section.make_insertable (origin_stop, destination_stop, a_line.type, pps)
+			a_line.extend (internal_line_section)
 		ensure
 			line_section_created: line_section /= Void
 			line_section_has_line: line_section.line = a_line
 			line_section_has_type: equal (line_section.type, a_line.type)
 			line_section_has_origin: line_section.origin = a_map.places.item (a_origin)
 			line_section_has_destination: line_section.destination = a_map.places.item (a_destination)
-			--TODOline_section_in_map: a_map.has_line_section (a_origin, a_destination, a_line.type, a_line)
 		end
 
 	line_section: TRAFFIC_LINE_CONNECTION is
@@ -183,7 +200,6 @@ feature -- Line section building
 		do
 			Result := internal_line_section /= Void
 		end
-
 
 feature -- Road section building
 
@@ -209,12 +225,8 @@ feature -- Road section building
 				create internal_road.make_one_way (way1)
 			end
 			internal_road.add_to_map (a_map)
---			a_map.roads.force_last (internal_road, internal_road.id)
 		ensure
 			road_created: road /= Void
-			--TODO:map_has_origin:a_map.has_stop (a_origin)
-			--map_has_destination: a_map.has_stop (a_destination)
-			--road_in_map: a_map.has_road (a_origin, a_destination,an_id.to_integer)
 		end
 
 	road: TRAFFIC_ROAD is
@@ -226,8 +238,6 @@ feature -- Road section building
 		ensure
 			Result_exists: Result /= Void
 		end
-
-
 
 	has_road: BOOLEAN is
 			-- Is there a line section object available?
@@ -251,9 +261,8 @@ feature -- Traffic line building
 		do
 			build_traffic_type (a_type_name)
 			actual_traffic_type ?= internal_traffic_type
-			internal_line := create_line (a_name, actual_traffic_type)
+			create internal_line.make (a_name, actual_traffic_type)
 			internal_line.add_to_map (a_map)
---			a_map.lines.force (internal_line, internal_line.name)
 		ensure
 			line_created: line /= Void
 			line_has_name: equal (line.name, a_name)
@@ -293,9 +302,8 @@ feature -- Traffic simple line building
 		do
 			build_traffic_type (a_type_name)
 			actual_traffic_type ?= internal_traffic_type
-			internal_simple_line := create_simple_line (a_name, actual_traffic_type, a_map)
+			create internal_simple_line.make (a_name, actual_traffic_type, a_map)
 			internal_simple_line.add_to_map (a_map)
---			a_map.lines.force (internal_simple_line, internal_simple_line.name)
 		ensure
 			simple_line_created: simple_line /= Void
 			simple_line_has_name: equal (simple_line.name, a_name)
@@ -342,58 +350,6 @@ feature {NONE} -- Implementation
 	internal_map: TRAFFIC_MAP
 			-- Internal representation of last created traffic map.
 
---	dummy_line: TRAFFIC_LINE
-			-- Line used for dummy stops.
-
-	create_line_section (a_origin, a_destination: STRING; a_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]; a_line: TRAFFIC_LINE; a_map: TRAFFIC_MAP): TRAFFIC_LINE_CONNECTION is
-			-- Create line section with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_line'.
-		require
-			a_origin_exists: a_origin /= Void
-			a_origin_not_empty: not a_origin.is_empty
-			a_origin_in_map: a_map.places.has (a_origin)
-			a_destination_exists: a_destination /= Void
-			a_destination_not_empty: not a_destination.is_empty
-			a_destination_in_map: a_map.places.has (a_destination)
-			a_line_exists: a_line /= Void
-			a_line_in_map: a_map.lines.has (a_line.name)
-			polypoints_are_list: a_polypoints /= Void and then (a_polypoints.count >= 2 and not a_polypoints.has (Void))
-		local
-			typed_line_section: TRAFFIC_LINE_CONNECTION
-			origin_place: TRAFFIC_PLACE
-			destination_place: TRAFFIC_PLACE
-			origin_stop: TRAFFIC_STOP
-			destination_stop: TRAFFIC_STOP
-			stop_pos: EM_VECTOR_2D
-		do
-			origin_place := a_map.places.item (a_origin)
-			destination_place := a_map.places.item (a_destination)
-
-			if origin_place.has_stop (a_line) then
-				origin_stop := origin_place.stop (a_line)
-			else
-				create stop_pos.make_from_other (a_polypoints.first)
-				create origin_stop.make_stop (origin_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
---				origin_place.add_stop (origin_stop)
---				map.add_stop (origin_stop)
-			end
-
-			if destination_place.has_stop (a_line) then
-				destination_stop := destination_place.stop (a_line)
-			else
-				create stop_pos.make_from_other (a_polypoints.last)
-				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
---				destination_place.add_stop (destination_stop)
---				map.add_stop (destination_stop)
-			end
-
-			create typed_line_section.make_insertable (origin_stop, destination_stop, a_line.type, a_polypoints)
-			a_line.extend (typed_line_section) -- typed_line_section.set_line (a_line)
-			Result := typed_line_section
-		ensure
-			result_exists: Result /= Void
-		end
-
-
 	create_road_connection (a_origin, a_destination: STRING; a_map: TRAFFIC_MAP; a_type:STRING;an_id:STRING): TRAFFIC_ROAD_CONNECTION is
 			-- Create road with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_map'.
 		require
@@ -420,52 +376,12 @@ feature {NONE} -- Implementation
 			origin_node := origin_place.dummy_node
 			destination_node := destination_place.dummy_node
 
---			if origin_place.has_stop (a_line) then
---				origin_stop := origin_place.stop (a_line)
---			else
---				create origin_stop.make_with_position (origin_place, a_line, a_polypoints.first.x, a_polypoints.first.y)
---				map.add_stop (origin_stop)
---			end
---
---			if destination_place.has_stop (a_line) then
---				destination_stop := destination_place.stop (a_line)
---			else
---				create destination_stop.make_with_position (destination_place, a_line, a_polypoints.last.x, a_polypoints.last.y)
---				map.add_stop (destination_stop)
---			end
-
 			create traffic_type_factory.make
 			traffic_type_factory.build(a_type)
 			type?= traffic_type_factory.traffic_type
 			i:=an_id.to_integer
 			create a_road.make_visible (origin_node, destination_node, type, i)
 			Result := a_road
-		ensure
-			result_exists: Result /= Void
-		end
-
-
-
-	create_line (a_name: STRING; a_type: TRAFFIC_TYPE_LINE): TRAFFIC_LINE is
-			-- Create line named `a_name'.
-		require
-			a_name_exists: a_name /= Void
-			a_name_not_empty: not a_name.is_empty
-			a_type_exists: a_type /= Void
-		do
-			create Result.make (a_name, a_type)
-		ensure
-			result_exists: Result /= Void
-		end
-
-	create_simple_line (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_map: TRAFFIC_MAP): TRAFFIC_SIMPLE_LINE is
-			-- Create line named `a_name'.
-		require
-			a_name_exists: a_name /= Void
-			a_name_not_empty: not a_name.is_empty
-			a_type_exists: a_type /= Void
-		do
-			create Result.make (a_name, a_type, a_map)
 		ensure
 			result_exists: Result /= Void
 		end

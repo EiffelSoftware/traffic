@@ -38,24 +38,12 @@ feature {NONE} -- Initialization
 
 feature -- Basic operations		
 
-	add_taxis (a_number: INTEGER) is
-			-- Event taxi office. Creates event for taxi communication.
-			-- Add 'number' taxis to the taxi_list of the office.
-		local
-			i:INTEGER
+	add_taxi (a_taxi: TRAFFIC_EVENT_TAXI) is
+			-- Add `a_taxi' to the taxi_list of the office.
 		do
-			from
-				i:= 1
-			until
-				i > a_number
-			loop
-				-- Add to i to a_seed in each loop to ensure that each taxi will use
-				-- another seed for the random generation
-				available_taxis.force_last( create {TRAFFIC_EVENT_TAXI}.make_random (Current, 2))
-				taxis.force_last (available_taxis.last)
-				available_taxis.start
-				i := i +1
-			end
+			available_taxis.force_last(a_taxi)
+			taxis.force_last (available_taxis.last)
+			available_taxis.start
 		end
 
 

@@ -1,6 +1,6 @@
 indexing
 	description: "XML processors for <color> elements."
-					
+
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -36,7 +36,7 @@ feature -- Basic operations
 			if not has_attribute ("red") and has_attribute ("green") and has_attribute ("blue") then
 				set_error (Mandatory_attribute_missing, << "color attribute missing" >>)
 			elseif not valid_color then
-				set_error (Wrong_color_value, << >>)				
+				set_error (Wrong_color_value, << >>)
 			else
 				parent.send_data (new_color)
 			end
@@ -51,7 +51,7 @@ feature {NONE} -- Implementation
 			green_exists: has_attribute ("green")
 			blue_exists: has_attribute ("blue")
 		do
-			Result := valid_color_value ("red") and 
+			Result := valid_color_value ("red") and
 				valid_color_value ("green") and
 				valid_color_value ("blue")
 		end
@@ -70,12 +70,12 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	new_color: TRAFFIC_COLOR is
+	new_color: EM_COLOR is
 			-- Color specified by node
 		require
 			valid_color: valid_color
 		do
-			create Result.make (
+			create Result.make_with_rgb (
 				attribute_integer ("red"),
 				attribute_integer ("green"),
 				attribute_integer ("blue"))

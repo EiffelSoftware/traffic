@@ -14,7 +14,7 @@ create
 
 feature -- Initialization
 
-	make_random (a_taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE; stops: INTEGER) is
+	make_random (a_taxi_office: TRAFFIC_DISPATCHER_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
 			-- Create a taxi with an associated 'a_taxi_office'.
 			-- Random speed and stops at 'stops' random positions.
 			-- Set seed of random_number to 'a_seed'.
@@ -26,9 +26,10 @@ feature -- Initialization
 			random: RANDOM
 		do
 --			traffic_type := create {TRAFFIC_TYPE_DISPATCHER_TAXI}.make
-			create polypoints.make (stops)
+--			create polypoints.make (stops)
 --			create random.set_seed(a_seed)
-			add_random_polypoints (stops)
+--			add_random_polypoints (stops)
+			create polypoints.make_from_linear (a_point_list)
 			create poly_cursor.make (polypoints)
 			poly_cursor.start
 
@@ -84,8 +85,8 @@ feature -- Basic operations
 			if has_finished and busy then
 					-- Taxi has fullfilled a request.
 					-- Add new random directions.
-					polypoints.wipe_out
-					add_random_polypoints (7)
+--					polypoints.wipe_out
+--					add_random_polypoints (7)
 					-- Set new destination
 					origin := position
 					destination := polypoints.first

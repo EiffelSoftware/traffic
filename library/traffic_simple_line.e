@@ -204,8 +204,8 @@ feature -- Insertion
 		do
 			start_stop := Void
 
-			origin_stop := a_line_section.origin_impl
-			destination_stop := a_line_section.destination_impl
+			origin_stop := a_line_section.start_node
+			destination_stop := a_line_section.end_node
 			origin := origin_stop.place
 			destination := destination_stop.place
 
@@ -309,7 +309,7 @@ feature -- Removal
 				off_line
 			loop
 				if map.line_sections.has (item_line) then
-					map.remove_line_section (item_line)
+					item_line.remove_from_map
 				end
 				forth_line
 			end
@@ -347,10 +347,10 @@ feature {NONE} -- Implementation
 			not_yet_added: not has_line (a_line_section)
 		do
 			put_first (a_line_section)
-			stops_one_direction.put_front (a_line_section.origin_impl)
+			stops_one_direction.put_front (a_line_section.start_node)
 		ensure
 			a_line_section_in_simple_line: has_line (a_line_section)
-			stops_one_direction_set: stops_one_direction.has (a_line_section.origin_impl)
+			stops_one_direction_set: stops_one_direction.has (a_line_section.start_node)
 		end
 
 	insert_one_direction_end (a_line_section: TRAFFIC_LINE_CONNECTION) is
@@ -369,11 +369,11 @@ feature {NONE} -- Implementation
 --			search_forth (start_other_direction)
 --			put_left (a_line_section)
 			terminal_1 := a_line_section.destination
-			stops_one_direction.extend (a_line_section.destination_impl)
+			stops_one_direction.extend (a_line_section.end_node)
 		ensure
 			a_line_section_in_simple_line: has_line (a_line_section)
 			terminal_1_set: terminal_1 = a_line_section.destination
-			stops_one_direction_set: stops_one_direction.has (a_line_section.destination_impl)
+			stops_one_direction_set: stops_one_direction.has (a_line_section.end_node)
 		end
 
 	insert_other_direction_front (a_line_section: TRAFFIC_LINE_CONNECTION) is
@@ -392,12 +392,12 @@ feature {NONE} -- Implementation
 --			search_forth (start_other_direction)
 --			put_left (a_line_section)
 			start_other_direction := a_line_section
-			stops_other_direction.put_front (a_line_section.origin_impl)
+			stops_other_direction.put_front (a_line_section.start_node)
 
 		ensure
 			a_line_section_in_simple_line: has_line (a_line_section)
 			start_other_direction_set: start_other_direction = a_line_section
-			stops_other_direction_set: stops_other_direction.has (a_line_section.origin_impl)
+			stops_other_direction_set: stops_other_direction.has (a_line_section.start_node)
 		end
 
 	insert_other_direction_end (a_line_section: TRAFFIC_LINE_CONNECTION) is
@@ -408,11 +408,11 @@ feature {NONE} -- Implementation
 		do
 			put_last (a_line_section)
 			terminal_2 := a_line_section.destination
-			stops_other_direction.extend (a_line_section.destination_impl)
+			stops_other_direction.extend (a_line_section.end_node)
 		ensure
 			a_line_section_in_simple_line: has_line (a_line_section)
 			terminal_2_set: terminal_2 = a_line_section.destination
-			stops_other_direction_set: stops_other_direction.has (a_line_section.destination_impl)
+			stops_other_direction_set: stops_other_direction.has (a_line_section.end_node)
 		end
 
 invariant

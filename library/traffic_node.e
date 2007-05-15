@@ -1,5 +1,5 @@
 indexing
-	description: "Basic Node in Traffic"
+	description: "Node in the graph (a node is an endpoint of a connection)"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -12,12 +12,7 @@ inherit
 			referring_edge as referring_connection,
 			put_edge as put_connection,
 			edge_list as connection_list
-		export {NONE}
---			edge_list
-			--			put_edge --,
---			turn_to
 		redefine
---			turn_to,
 			hash_code,
 			connection_list,
 			referring_connection,
@@ -28,18 +23,11 @@ inherit
 		undefine
 			is_equal
 		end
---inherit
---	COMPARABLE
-
---	HASHABLE
---		undefine
---			is_equal
---		end
 
 create
 	make_with_place
 
-feature {NONE} -- Create
+feature {NONE} -- Initialization
 
 	make_with_place (a_place: TRAFFIC_PLACE; a_position: EM_VECTOR_2D) is
 			-- Initialize `Current'.
@@ -47,7 +35,6 @@ feature {NONE} -- Create
 			place_not_void: a_place /= Void
 			position_not_void: a_position /= Void
 		do
---			make (a_place.name) -- todo distinguish between different nodes!!!
 			create connection_list.make
 
 			item := Current
@@ -76,15 +63,13 @@ feature -- Access
 			-- Position of the node in the map
 
 	connection_list: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
+			-- List of all connections that this node is an startpoint of
 
 	hash_code: INTEGER is
 			-- Hash code value
 		do
 			Result := ([place, position]).hash_code
 		end
-
---	distance: REAL
-			-- Length of the shortest path to `item' until now
 
 feature -- Element change
 
@@ -96,6 +81,14 @@ feature -- Element change
 			position := a_position
 		ensure
 			position_set: position = a_position
+		end
+
+feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := connection_list.is_empty
 		end
 
 feature {TRAFFIC_PLACE} -- Basic operations (map)
@@ -139,43 +132,8 @@ feature {TRAFFIC_GRAPH} -- Element change
 
 	put_connection (a_connection: like referring_connection) is
 			-- Insert `a_connection'.
---		require
---			incident_node: Current = a_connection.origin_impl or Current = a_connection.destination_impl
 		do
 			connection_list.extend (a_connection)
---		ensure
---			connection_inserted: connection_list.has (a_connection)
---			increased_degree: out_degree = old out_degree + 1
-		end
-
---	set_referrer (a_node: like Current; a_edge: like referring_connection; a_distance: like distance) is
---			-- Set the referring connection to `a_edge' and the referring node to `a_node'.
---		require
---			positive_distance: a_distance >= 0
---			less_than_previous: a_distance < distance
---		do
---			referring_node := a_node
---			referring_connection := a_edge
---			distance := a_distance
---		ensure
---			referring_node_set: referring_node = a_node
---			referring_edge_set: referring_connection = a_edge
---			distance_set: distance = a_distance
---			smaller_than_before: distance < old distance
---		end
-
-feature -- Status report
-
---	infix "<" (other: like Current): BOOLEAN is
---			-- Is current path shorter than the one of `other'?
---		do
---			Result := distance < other.distance
---		end
-
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
-		do
-			Result := connection_list.is_empty
 		end
 
 feature {NONE} -- Implementation
@@ -183,19 +141,12 @@ feature {NONE} -- Implementation
 	referring_connection: TRAFFIC_CONNECTION
 			-- Edge where we came from
 
---	referring_node: like Current
---			-- Node where we came from
-
---	processed: BOOLEAN
---			-- Has the node already been processed by the algorithm?
-
-
 invariant
+
 	place_not_void: place /= Void
 	position_not_void: position /= Void
 	item_is_self: item = Current
 	connection_list_exists: connection_list /= Void
 	node_in_map: is_in_map implies map.graph.has_node (Current)
---	node_not_in_map: not is_in_map implies not map.graph.has_node (Current)
---	place_in_map: place.is_in_map implies is_in_map
+
 end

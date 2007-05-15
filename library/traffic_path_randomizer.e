@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Random path generator (used for providing passengers with their paths)"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -30,7 +29,7 @@ feature -- Element change
 feature -- Basic operations
 
 	generate_path (n: INTEGER) is
-			-- Generate a new path with at most `n' random connections to be taken (not counting the invisible connections) on `map'.
+			-- Generate a new path with at most `n' random connections to be taken on `map'.
 			-- Result is accessable via `last_path'.
 		require
 			n_valid: n >= 1
@@ -71,13 +70,13 @@ feature -- Basic operations
 					end
 					if not c.is_directed then
 						-- Find correct no
-						if c.destination_impl /= no then
-							no := c.destination_impl
+						if c.end_node /= no then
+							no := c.end_node
 						else
-							no := c.origin_impl
+							no := c.start_node
 						end
 					else
-						no := c.destination_impl
+						no := c.end_node
 					end
 				end
 				s := t
@@ -96,11 +95,19 @@ feature -- Basic operations
 feature -- Access
 
 	map: TRAFFIC_MAP
+			-- Map used for finding paths
 
 	last_path: TRAFFIC_PATH
+			-- Last path that was generated
 
 feature {NONE} -- Implementation
 
 	random: RANDOM
+			-- Random number generator
+
+invariant
+
+	map_exists: map /= Void
+	random_exists: random /= Void
 
 end

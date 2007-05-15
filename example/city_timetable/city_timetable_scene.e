@@ -61,6 +61,8 @@ feature -- Interface
 
 			build_tool_bar
 
+--			loader.map.lines.item_for_iteration.
+
 			-- Checkboxes
 --			create buildings_checkbox.make_from_text ("Show buildings")
 --			create vehicles_checkbox.make_from_text ("Show vehicles")
@@ -241,14 +243,31 @@ feature -- Interface
 		local
 			et: TRAFFIC_EVENT_TAXI_OFFICE
 			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
+			i: INTEGER
 		do
 			create Result.make_from_dimension (toolbar_panel.width, 20)
 			create et.make_with_color (255, 0, 0)
-			map_widget.map.taxi_offices.force_last (et)
-			et.add_taxis (5)
+			et.add_to_map (map_widget.map)
+			from
+				i := 1
+			until
+				i > 5
+			loop
+				point_randomizer.generate_point_array (5)
+				et.add_taxi (create {TRAFFIC_EVENT_TAXI}.make_random (et, point_randomizer.last_array))
+				i := i + 1
+			end
 			create dt.make_with_color (0, 255, 0)
-			map_widget.map.taxi_offices.force_last (dt)
-			dt.add_taxis (5)
+			dt.add_to_map (map_widget.map)
+			from
+				i := 1
+			until
+				i > 5
+			loop
+				point_randomizer.generate_point_array (5)
+				dt.add_taxi (create {TRAFFIC_DISPATCHER_TAXI}.make_random (dt, point_randomizer.last_array))
+				i := i + 1
+			end
 			time.set (11, 0, 0)
 			create taxi_combobox.make_empty
 			taxi_combobox.set_to_string_agent (agent taxi_office_output)
@@ -512,7 +531,7 @@ feature -- Event handling
 					random.forth
 
 					create passenger.make_with_path (path_randomizer.last_path, random.double_item*3 + 0.1)
-					map_widget.map.passengers.force_last (passenger)
+					map_widget.map.passengers.put_last (passenger)
 					passenger.set_reiterate (True)
 					passenger.start
 					i := i + 1
@@ -548,7 +567,7 @@ feature -- Event handling
 				loop
 					point_randomizer.generate_point_array (7)
 					create moving.make_with_points (point_randomizer.last_array, 1.5)
-					map_widget.map.free_movings.force_last (moving)
+					map_widget.map.free_movings.put_last (moving)
 					moving.set_reiterate (True)
 					moving.start
 					i := i + 1

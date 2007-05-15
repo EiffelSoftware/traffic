@@ -58,11 +58,19 @@ feature -- Basic operations
 feature -- Access
 
 	map: TRAFFIC_MAP
+			-- Map for which the points are generated
 
 	last_array: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			-- Last generated array of points
 
 feature {NONE} -- Implementation
 
 	random: RANDOM
+			-- Random number generator
+
+invariant
+
+	map_exists: map /= Void
+	random_exists: random /= Void
 
 end

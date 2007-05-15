@@ -85,14 +85,14 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			a_road_exists: a_road /= Void
 --			not_has_id: not id_manager.is_taken (a_road.id)
 --			not_already_in_graph: not has_edge (a_road)
-			nodes_exist: has_node (a_road.origin_impl) and has_node (a_road.destination_impl)
+			nodes_exist: has_node (a_road.start_node) and has_node (a_road.end_node)
 		do
-			a_road.origin_impl.put_connection (a_road)
+			a_road.start_node.put_connection (a_road)
 			internal_edges.extend (a_road)
 			id_manager.take (a_road.id)
 			total_weight := total_weight + a_road.length
 			if not a_road.is_directed then
-				a_road.destination_impl.put_connection (a_road)
+				a_road.end_node.put_connection (a_road)
 			end
 		end
 
@@ -101,14 +101,14 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 		require
 			a_section_exists: a_section /= Void
 --			not_already_in_graph: not has_edge (a_section)
-			nodes_exist: has_node (a_section.origin_impl) and has_node (a_section.destination_impl)
+			nodes_exist: has_node (a_section.start_node) and has_node (a_section.end_node)
 --			has_line: lines.has (a_section.line.name)
 		do
-			a_section.origin_impl.put_connection (a_section)
+			a_section.start_node.put_connection (a_section)
 			internal_edges.extend (a_section)
 			total_weight := total_weight + a_section.length
 			if not a_section.is_directed then
-				a_section.destination_impl.put_connection (a_section)
+				a_section.end_node.put_connection (a_section)
 			end
 --			line_sections.force_last (a_section)
 		end
@@ -118,7 +118,7 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 		require
 			a_connection_exists: a_connection /= Void
 --			not_already_in_graph: not has_edge (a_section)
-			nodes_exist: has_node (a_connection.origin_impl) and has_node (a_connection.destination_impl)
+			nodes_exist: has_node (a_connection.start_node) and has_node (a_connection.end_node)
 --			has_line: lines.has (a_section.line.name)
 		local
 			r: TRAFFIC_ROAD_CONNECTION
@@ -131,11 +131,11 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			elseif l /= Void then
 				put_line_section (l)
 			else
-				a_connection.origin_impl.put_connection (a_connection)
+				a_connection.start_node.put_connection (a_connection)
 				internal_edges.extend (a_connection)
 				total_weight := total_weight + a_connection.length
 				if not a_connection.is_directed then
-					a_connection.destination_impl.put_connection (a_connection)
+					a_connection.end_node.put_connection (a_connection)
 				end
 			end
 		end
@@ -197,11 +197,11 @@ feature -- Removal
 			if is_symmetric_graph then
 				linked_edge ?= a_edge
 				if linked_edge /= Void then
-					start_node := linked_edge.origin_impl
-					end_node := linked_edge.destination_impl
+					start_node := linked_edge.start_node
+					end_node := linked_edge.end_node
 				else
-					start_node := linked_node_from_item (a_edge.origin_impl)
-					end_node := linked_node_from_item (a_edge.destination_impl)
+					start_node := linked_node_from_item (a_edge.start_node)
+					end_node := linked_node_from_item (a_edge.end_node)
 				end
 				a_edge.flip
 				prune_edge_impl (a_edge)
@@ -247,11 +247,11 @@ feature -- Removal
 					dangling_edges.after
 				loop
 					edge := dangling_edges.item
-					if edge.origin_impl.is_equal (a_item) then
+					if edge.start_node.is_equal (a_item) then
 						-- Remove edge starting in `a_item'.
 						total_weight := total_weight - edge.length
 						internal_edges.prune (edge)
-					elseif edge.destination_impl.is_equal (a_item) then
+					elseif edge.end_node.is_equal (a_item) then
 						-- Remove edge ending in `a_item'.
 						prune_edge_impl (edge)
 					else
@@ -332,7 +332,7 @@ feature -- Status Report
 			if not off then
 				c := cursor
 			end
-			search (a_edge.origin_impl)
+			search (a_edge.start_node)
 			if off then
 				Result := 0
 			else
@@ -363,9 +363,9 @@ feature -- Status Report
 		do
 			linked_graph_edge ?= a_edge
 			if linked_graph_edge /= Void then
-				node := linked_graph_edge.origin_impl
+				node := linked_graph_edge.start_node
 			else
-				node := linked_node_from_item (a_edge.origin_impl)
+				node := linked_node_from_item (a_edge.start_node)
 			end
 			from
 				index := node.connection_list.index
@@ -384,7 +384,7 @@ feature {NONE} -- Implementation
 	adopt_edge (a_edge: like edge_item)
 			-- Put `a_edge' into current graph.
 		do
-			connect_nodes (a_edge.origin_impl, a_edge.destination_impl, a_edge.label, a_edge.weight)
+			connect_nodes (a_edge.start_node, a_edge.end_node, a_edge.label, a_edge.weight)
 		end
 
 	annotated_nodes: ARRAY [like item]

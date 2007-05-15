@@ -1,6 +1,8 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description:	"[
+		Lists implemented with arrays that throw events whenever an element is added or removed.
+		Features for list manipulation are only available to the map items.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -10,8 +12,18 @@ class
 inherit
 
 	DS_ARRAYED_LIST [G]
-		export {NONE}
+		export
+		{NONE}
 			copy, deep_copy, standard_copy
+		{TRAFFIC_MAP_ITEM}
+			append, append_first, append_last, append_left, append_left_cursor, append_right, append_right_cursor,
+			clear_items, delete, extend, extend_first, extend_last, extend_left, extend_left_cursor, extend_right,
+			extend_right_cursor, force, force_first, force_last, force_left, force_left_cursor, force_right,
+			force_right_cursor, keep_first, keep_last, make_from_array, make_from_linear, prune, prune_first,
+			prune_last, prune_left, prune_left_cursor, prune_right, prune_right_cursor, put, put_first, put_last,
+			put_left, put_left_cursor, put_right, put_right_cursor, remove, remove_at, remove_at_cursor, remove_first,
+			remove_last, remove_left, remove_left_cursor, remove_right, remove_right_cursor, remove_traversing_cursor,
+			replace, replace_at, replace_at_cursor, resize, sort, swap, wipe_out
 		redefine
 			make, make_equal, extend, extend_last, force_last, put, put_last,
 			replace, replace_at, replace_at_cursor,	delete, keep_first,
@@ -59,7 +71,7 @@ feature {NONE} -- Initialization
 			removed_initialized: element_removed_event /= Void
 		end
 
-feature -- Element change
+feature {TRAFFIC_MAP_ITEM} -- Element change
 
 	extend (other: DS_LINEAR [G]; i: INTEGER_32)
 			-- Add items of `other' at `i'-th position.
@@ -175,7 +187,7 @@ feature -- Element change
 			element_inserted_event.publish ([v, a_cursor.index])
 		end
 
-feature -- Removal
+feature {TRAFFIC_MAP_ITEM} -- Removal
 
 	delete (v: G)
 			-- Remove all occurrences of `v'.

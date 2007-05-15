@@ -34,7 +34,6 @@ feature {NONE} -- Initialize
 			create nodes.make (5)
 			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (0.0, 0.0))
 			add_node (dummy_node)
---			set_dummy_node (dummy_node)
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -48,7 +47,6 @@ feature {NONE} -- Initialize
 		do
 			name := a_name
 			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (a_x, a_y))
---			set_dummy_node (dummy_node)
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
@@ -227,20 +225,11 @@ feature {TRAFFIC_NODE} -- Insertion
 				add_stop (s)
 			else
 				nodes.extend (a_node)
---				update_position
 				if is_in_map then
 					a_node.add_to_map (map)
 				end
 			end
 		end
-
---feature {TRAFFIC_MAP_FACTORY} -- Element change
-
---	set_dummy_node (a_node: TRAFFIC_NODE) is
---			-- used for shortest path
---		do
---			dummy_node := a_node
---		end
 
 feature -- Output
 
@@ -280,13 +269,13 @@ feature -- Output
 feature {NONE} -- Implementation
 
 	is_stop_of_line (a_stop: TRAFFIC_STOP; a_line: TRAFFIC_LINE): BOOLEAN is
-			-- does `a_stop' service `a_line'
+			-- Does `a_stop' service `a_line'?
 		do
 			Result := a_stop.line.name.is_equal (a_line.name)
 		end
 
 	update_position is
-			--
+			-- Update the position, breadth, and width of the place using the stops positions.
 		do
 			if stops.count = 1 then
 				width := 0
@@ -311,14 +300,11 @@ feature {NONE} -- Implementation
 		end
 
 invariant
-	name_not_void: name /= Void -- Name exists.
-	name_not_empty: not name.is_empty -- Name not empty.
---	position_not_void: position /= Void -- Position exists.
+	name_valid: name /= Void and then not name.is_empty
+	position_not_void: position /= Void
 	stops_not_void: stops /= Void
 	nodes_not_void: stops /= Void
-	--stops_in_nodes: stops.for_all (agent nodes.has)
 	dummy_node_not_void: dummy_node /= Void
 	place_in_map: is_in_map implies map.places.has (name)
---	place_not_in_map: not is_in_map implies not map.places.has (name) -- This gives an exception!!!
 
 end

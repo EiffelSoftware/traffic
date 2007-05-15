@@ -1,5 +1,8 @@
 indexing
-	description: "Connections that represent the changing from one means of transportation to the other. Will most probably be invisible."
+	description: "[
+		Connections that represent the changing from one means of transportation to the other. 
+		Will most probably be invisible.
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -26,17 +29,17 @@ feature {NONE} -- Initialization
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
 		do
-			origin_impl := a_origin
-			destination_impl := a_destination
-			make_directed (origin_impl, destination_impl)
+			start_node := a_origin
+			end_node := a_destination
+			make_directed (start_node, end_node)
 			type := a_type
 			create polypoints.make (0)
 			polypoints.force_last (a_origin.place.position)
 			polypoints.force_last (a_destination.place.position)
 			id := an_id
 		ensure
-			origin_set: origin_impl = a_origin
-			destination_set: destination_impl = a_destination
+			origin_set: start_node = a_origin
+			destination_set: end_node = a_destination
 			type_set: type = a_type
 			polypoints_exists: polypoints /= Void
 			id_set: id = an_id
@@ -51,11 +54,10 @@ feature -- Access
 		end
 
 	type: TRAFFIC_TYPE_ROAD
-			-- Road type
+			-- Exchange type (always walking!)
 
 	id: INTEGER
 			-- Id of road
-
 
 feature -- Basic operations
 
@@ -83,7 +85,7 @@ feature -- Status report
 			-- Is `Current' insertable into `a_map'?
 			-- E.g. are all needed elements already inserted in the map?
 		do
-			Result := 	origin_impl.is_in_map and destination_impl.is_in_map and
+			Result := 	start_node.is_in_map and end_node.is_in_map and
 						origin.is_in_map and destination.is_in_map
 		end
 

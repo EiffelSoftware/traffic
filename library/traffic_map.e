@@ -32,17 +32,12 @@ feature {NONE} -- Initialization
 			a_name_not_empty: not a_name.is_empty
 		local
 			default_size: INTEGER
---			i: INTEGER
---			temp_list: LINKED_LIST[TRAFFIC_BUILDING]
---			t: TRAFFIC_EVENT_META_LINKED_LIST [TRAFFIC_LINE_SECTION, TRAFFIC_LINE]
 		do
 			default_size := 100
 			name := a_name
 			create graph.make
 			create places.make (default_size * default_size)
 			places.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
---			places.element_inserted_event.subscribe (agent graph.put_node (a_node: [like item] TRAFFIC_NODE))
-
 			create lines.make (default_size)
 			lines.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
 			create line_sections.make (default_size)
@@ -54,20 +49,6 @@ feature {NONE} -- Initialization
 			create paths.make
 			create buildings.make
 			create free_movings.make
-
---			create internal_buildings.make (1,4)
---			from
---				i:=1
---			until
---				i>4
---			loop
---				create temp_list.make
---				internal_buildings[i]:=temp_list
---				i:=i+1
---			end
-
---			create center.make (669.0,718.0)
-
 		ensure
 			name_set: equal (name, a_name)
 			places_not_void: places /= Void
@@ -107,61 +88,6 @@ feature -- Status report
 			end
 		end
 
---	has_place (a_name: STRING): BOOLEAN is
---			-- Does the traffic map have a place called `a_name'?
---		require
---			a_name_exists: a_name /= Void
---			a_name_not_empty: not a_name.is_empty
---		do
---			Result := places.has (a_name)
---		end
-
---	has_connection_between (a_origin_name, a_destination_name: STRING): BOOLEAN is
---			-- Does the traffic map have a connection between places with given names?
---		require
---			a_origin_exists: a_origin_name /= Void and not a_origin_name.is_empty
---			a_destination_exists: a_destination_name /= Void and not a_destination_name.is_empty
---			places.has (a_origin_name)
---			places.has (a_destination_name)
---		local
---			l_origin, l_destination: TRAFFIC_PLACE
---			a_connections: LIST[TRAFFIC_CONNECTION]
---		do
---			l_origin := places.item (a_origin_name)
---			l_destination := places.item (a_destination_name)
-
---			a_connections := connections_of_place (a_origin_name)
---			from
---				a_connections.start
---			until
---				Result = True or else a_connections.after
---			loop
---				if a_connections.item.destination = l_destination then
---					Result := True
---				end
---				a_connections.forth
---			end
---		end
-
-
-
---	has_line (a_name: STRING): BOOLEAN is
---			-- Does the traffic map contain line `a_name'?
---		require
---			a_name_exists: a_name /= Void
---			a_name_not_empty: not a_name.is_empty
---		do
---			Result := lines.has (a_name)
---		end
-
---	has_road_with_id (an_id: INTEGER): BOOLEAN is
---			-- Has traffic map road with `an_id'?
---		require
---			valid_id: an_id>=0
---		do
---			Result := roads.has (an_id)
---		end
-
 feature -- Element change
 
 	set_center (a_center: EM_VECTOR_2D) is
@@ -192,26 +118,6 @@ feature -- Element change
 			description_set: description = a_description
 		end
 
---	change_traveler_speed (divisor: DOUBLE) is
---			-- Divide the speed of each traveler by divisor.
---		require
---			divisor > 0
---		local
---			a_traveler: TRAFFIC_MOVING
---		do
---			from
---				travelers.start
---			until
---				travelers.after
---			loop
---				a_traveler := travelers.item_for_iteration
-----					if a_traveler /= Void then
---					a_traveler.set_speed (a_traveler.virtual_speed / divisor)
-----					end
---				travelers.forth
---			end
---		end
-
 	set_scale_factor (a_scale_factor: DOUBLE) is
 			-- Set `a_scale_factor'.
 		require
@@ -223,53 +129,6 @@ feature -- Element change
 		end
 
 feature -- Insertion
-
---	add_place (a_place: TRAFFIC_PLACE) is
---			-- Add place `a_place' to map.
---		require
---			a_place_exists: a_place /= Void
---			no_place_with_same_name_in_map: not places.has (a_place.name)
---		do
---			places.force (a_place, a_place.name)
-----			internal_place_array.force_last (a_place)
---			--put_node (a_place)
-----			place_inserted_event.publish ([a_place])
---		ensure
---			a_place_in_map: places.has (a_place.name)
---		end
---	add_vehicle_per_line (number: INTEGER) is
---			-- Add `number' trams per line to the map `a_map'.
---		require
---			number_valid: number > 0
---		local
---			a_tram: TRAFFIC_TRAM
---			traveling_points: LINKED_LIST [EM_VECTOR_2D]
---			i: INTEGER
---		do
---			create traveling_points.make
---			from
---				lines.start
---			until
---				lines.after
---			loop
---				if lines.item_for_iteration.type.name.is_equal ("tram") or lines.item_for_iteration.type.name.is_equal ("rail") or lines.item_for_iteration.type.name.is_equal ("bus") then
---					create a_tram.make_with_line (lines.item_for_iteration)
---					from
---						i := 1
---						create a_tram.make_with_line (lines.item_for_iteration)
---					until
---						i > number or i = a_tram.line_count
---					loop
---						create a_tram.make_with_line (lines.item_for_iteration)
---						a_tram.set_to_place (a_tram.place (i))
---						trams.put_last (a_tram)
---						a_tram.start
---						i := i + 1
---					end
---				end
---				lines.forth
---			end
---		end
 
 	add_tram_per_line_with_schedule (a_map: TRAFFIC_MAP; number: INTEGER) is
 			-- Add `number' of trams per line with an automatically generated schedule.
@@ -311,271 +170,25 @@ feature -- Insertion
 			end
 		end
 
---	add_line_section (a_line_section: TRAFFIC_LINE_SECTION) is
---			-- Add line section `a_line_section' to map.
---		require
---			a_line_section_exists: a_line_section /= Void
---			--a_line_section_not_in_map: not has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
---		do
---			line_sections.force_last (a_line_section)
---			graph.put_line_section (a_line_section)
---			-- TODO: connect nodes at origin and destination with their peers (stops of other lines)
-----			line_section_inserted_event.publish ([a_line_section])
---		ensure
---			--a_line_section_in_map: has_line_section (a_line_section.origin.name, a_line_section.destination.name, a_line_section.type, a_line_section.line)
---		end
-
---	add_line (a_line: TRAFFIC_LINE) is
---			-- Add line `a_line' to map.
---		require
---			a_line_exists: a_line /= Void
---			no_line_with_same_name_in_map: not lines.has (a_line.name)
---		do
---			lines.force (a_line, a_line.name)
---		ensure
---			a_line_in_map: lines.has (a_line.name)
---		end
-
-
---	add_road(a_road: TRAFFIC_ROAD) is
---			-- Add road `a_road' to map.
---		require
---			a_road_exists: a_road /= Void
---			no_road_with_same_id: not roads.has (a_road.id)
---		do
---			roads.force (a_road, a_road.id)
---			--TODO: if a road is the only connection (has no line sections) it should be put in the graph.
---			--graph.put_edge (a_road.origin_impl, a_road.destination_impl, a_road, a_road.length)
---			road_inserted_event.publish ([a_road])
---		ensure
---			--a_road_in_map: has_road (a_road.origin.name, a_road.destination.name,a_road.id)
---		end
-
-
---	add_building (a_building: TRAFFIC_BUILDING) is
---			-- Add building `a_building' to map.
---		require
---			a_building_exists: a_building /= Void
---		do
---			if (a_building.corner1.x>=0 and a_building.corner1.y>=0) or
---			   (a_building.corner2.x>=0 and a_building.corner2.y>=0) or
---			   (a_building.corner3.x>=0 and a_building.corner3.y>=0) or
---			   (a_building.corner4.x>=0 and a_building.corner4.y>=0)
---			then
---				internal_buildings.item(1).extend(a_building)
---			end
---			if (a_building.corner1.x<=0 and a_building.corner1.y>=0) or
---			   (a_building.corner2.x<=0 and a_building.corner2.y>=0) or
---			   (a_building.corner3.x<=0 and a_building.corner3.y>=0) or
---			   (a_building.corner4.x<=0 and a_building.corner4.y>=0)
---			then
---				internal_buildings.item(2).extend(a_building)
---			end
---			if (a_building.corner1.x>=0 and a_building.corner1.y<=0) or
---			   (a_building.corner2.x>=0 and a_building.corner2.y<=0) or
---			   (a_building.corner3.x>=0 and a_building.corner3.y<=0) or
---			   (a_building.corner4.x>=0 and a_building.corner4.y<=0)
---			then
---				internal_buildings.item(3).extend(a_building)
---			end
---			if (a_building.corner1.x<=0 and a_building.corner1.y<=0) or
---			   (a_building.corner2.x<=0 and a_building.corner2.y<=0) or
---			   (a_building.corner3.x<=0 and a_building.corner3.y<=0) or
---			   (a_building.corner4.x<=0 and a_building.corner4.y<=0)
---			then
---				internal_buildings.item(4).extend(a_building)
---			end
-
---		end
-
---	add_traveler (a_traveler: TRAFFIC_MOVING) is
---			-- Add traveler 'a_traveler' to map.
---		require
---			a_traveler_exists: a_traveler /= Void
---		do
---			travelers.force (a_traveler, a_traveler.index)
---			moving_inserted_event.publish ([a_traveler])
---		end
-
---	add_taxi_office( a_taxi_office: TRAFFIC_TAXI_OFFICE) is
---			-- Add taxi office 'a_taxi_office' to map.
---		require
---			a_taxi_office_exists: a_taxi_office /= void
---		do
---			internal_taxi_offices.force(a_taxi_office)
---		end
-
---	add_stop (a_stop: TRAFFIC_STOP) is
---			-- Add `a_stop' to map.
---		require
---			a_stop_exists: a_stop /= Void
---		do
---			graph.put_node (a_stop)
---		end
-
---	add_path (a_path: TRAFFIC_PATH) is
---			-- Add `a_path' to map.
---		require
---			a_path_exists: a_path /= Void
---		do
---			a_path.set_scale_factor (scale_factor)
---			internal_path := a_path
---		end
-
-
 feature -- Removal
 
---	delete_buildings is
---			-- Delete all buildings from map.
---		do
---			internal_buildings.item (1).wipe_out
---			internal_buildings.item (2).wipe_out
---			internal_buildings.item (3).wipe_out
---			internal_buildings.item (4).wipe_out
---		end
-
---	remove_one_building (a_building: TRAFFIC_BUILDING) is
---			-- Delete the 'a_building' from the internal_buildings array.
---		local
---			index_to_remove, index: INTEGER
---		do
---			if (a_building.corner1.x>=0 and a_building.corner1.y>=0) or
---			   (a_building.corner2.x>=0 and a_building.corner2.y>=0) or
---			   (a_building.corner3.x>=0 and a_building.corner3.y>=0) or
---			   (a_building.corner4.x>=0 and a_building.corner4.y>=0)
---			then
---				from
---					internal_buildings.item(1).start
---					index := 1
---				until
---					internal_buildings.item(1).after
---				loop
---					if internal_buildings.item(1).item.center = a_building.center then
---						index_to_remove := index
---					end
---					index := index + 1
---					internal_buildings.item (1).forth
---				end
---				internal_buildings.item(1).go_i_th (index_to_remove)
---				internal_buildings.item(1).remove
---			end
-
---			if (a_building.corner1.x<=0 and a_building.corner1.y>=0) or
---			   (a_building.corner2.x<=0 and a_building.corner2.y>=0) or
---			   (a_building.corner3.x<=0 and a_building.corner3.y>=0) or
---			   (a_building.corner4.x<=0 and a_building.corner4.y>=0)
---			then
---				from
---					internal_buildings.item(2).start
---					index := 1
---				until
---					internal_buildings.item(2).after
---				loop
---					if internal_buildings.item(2).item.center = a_building.center then
---						index_to_remove := index
---					end
---					index := index + 1
---					internal_buildings.item (2).forth
---				end
---				internal_buildings.item(2).go_i_th (index_to_remove)
---				internal_buildings.item(2).remove
---			end
-
---			if (a_building.corner1.x>=0 and a_building.corner1.y<=0) or
---			   (a_building.corner2.x>=0 and a_building.corner2.y<=0) or
---			   (a_building.corner3.x>=0 and a_building.corner3.y<=0) or
---			   (a_building.corner4.x>=0 and a_building.corner4.y<=0)
---			then
---				from
---					internal_buildings.item(3).start
---					index := 1
---				until
---					internal_buildings.item(3).after
---				loop
---					if internal_buildings.item(3).item.center = a_building.center then
---						index_to_remove := index
---					end
---					index := index + 1
---					internal_buildings.item (3).forth
---				end
---				internal_buildings.item(3).go_i_th (index_to_remove)
---				internal_buildings.item(3).remove
---			end
-
---			if (a_building.corner1.x<=0 and a_building.corner1.y<=0) or
---			   (a_building.corner2.x<=0 and a_building.corner2.y<=0) or
---			   (a_building.corner3.x<=0 and a_building.corner3.y<=0) or
---			   (a_building.corner4.x<=0 and a_building.corner4.y<=0)
---			then
---				from
---					internal_buildings.item(4).start
---					index := 1
---				until
---					internal_buildings.item(4).after
---				loop
---					if internal_buildings.item(4).item.center = a_building.center then
---						index_to_remove := index
---					end
---					index := index + 1
---					internal_buildings.item (4).forth
---				end
-
---				internal_buildings.item(4).go_i_th (index_to_remove)
---				internal_buildings.item(4).remove
---			end
---		end
-
-	remove_line_section (a_line_section: TRAFFIC_LINE_CONNECTION) is
-			-- Remove line_section `a_line_section' from map (bad implementation).
-		require
-			has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
-		local
-			index: INTEGER
-		do
-			line_sections.start
-			line_sections.search_forth (a_line_section)
-			index := line_sections.index
-			line_sections.remove_at
---			line_section_removed_event.publish ([a_line_section])
---			path_found := False
-		ensure
-			-- we can assume, that the line_section was only once inserted
-			line_section_removed: not line_sections.has (a_line_section)
-		end
-
---	remove_road (a_road: TRAFFIC_ROAD_CONNECTION) is
---			-- Remove road `a_road' from map.
+--	remove_line_section (a_line_section: TRAFFIC_LINE_CONNECTION) is
+--			-- Remove line_section `a_line_section' from map (bad implementation).
 --		require
---			road_not_void: a_road /= Void
+--			has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
+--		local
+--			index: INTEGER
 --		do
---			from
---				roads.start
---			until
---				roads.after
---			loop
---				if equal(roads.item_for_iteration,a_road) then
---					roads.remove (roads.key_for_iteration)
---				end
---				roads.forth
---			end
-
+--			line_sections.start
+--			line_sections.search_forth (a_line_section)
+--			index := line_sections.index
+--			line_sections.remove_at
+----			line_section_removed_event.publish ([a_line_section])
 ----			path_found := False
 --		ensure
 --			-- we can assume, that the line_section was only once inserted
---	--		road_removed: not internal_roads.has_item (a_road)
+--			line_section_removed: not line_sections.has (a_line_section)
 --		end
-
-
---	remove_traveler (index: INTEGER) is
---			-- Remove traveler at position index.
---		require
---			index_valid: index >= 0
---		do
---			travelers.remove (index)
---		ensure
---			not travelers.has (index)
---		end
-
 
 feature -- Access
 
@@ -671,126 +284,6 @@ feature -- Access
 			end
 		end
 
---	retrieve_road (i: INTEGER): TRAFFIC_ROAD is
---			-- Road with given id `i'
---		do
---			Result:=roads.item (i)
---		end
-
---	path: TRAFFIC_PATH is
---			-- path in internal_path
---		do
---			Result := internal_path
---		end
-
-
-
---feature -- Events
-
---	unspecified_place_changed_event: EM_EVENT_CHANNEL [TUPLE []]
---			-- Event to inform views of `Current'
---			-- when `Current' changed such that
---			-- views need to re-render
-
---	place_changed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE]]
---			-- Event to inform views of `Current'
---			-- when item has been changed
---			-- at index passed as argument
-
---	place_inserted_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE]]
---			-- Event to inform views of `Current'
---			-- when item has been inserted
---			-- at index passed as argument
-
---	place_removed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_PLACE]]
---			-- Event to inform views of `Current'
---			-- when item has been removed
---			-- at index passed as argument
-
---	unspecified_line_section_changed_event: EM_EVENT_CHANNEL [TUPLE []]
---			-- Event to inform views of `Current'
---			-- when `Current' changed such that
---			-- views need to re-render
-
---	line_section_changed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE_SECTION]]
---			-- Event to inform views of `Current'
---			-- when item has been changed
---			-- at index passed as argument
-
---	line_section_inserted_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE_SECTION]]
---			-- Event to inform views of `Current'
---			-- when item has been inserted
---			-- at index passed as argument
-
---	line_section_removed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE_SECTION]]
---			-- Event to inform views of `Current'
---			-- when item has been removed
---			-- at index passed as argument
-
---	unspecified_road_changed_event: EM_EVENT_CHANNEL [TUPLE []]
---			-- Event to inform views of `Current'
---			-- when `Current' changed such that
---			-- views need to re-render
-
---	road_changed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_ROAD]]
---			-- Event to inform views of `Current'
---			-- when item has been changed
---			-- at index passed as argument
-
---	road_inserted_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_ROAD]]
---			-- Event to inform views of `Current'
---			-- when item has been inserted
---			-- at index passed as argument
-
---	road_removed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_ROAD]]
---			-- Event to inform views of `Current'
---			-- when item has been removed
---			-- at index passed as argument
-
---	unspecified_line_changed_event: EM_EVENT_CHANNEL [TUPLE []]
---			-- Event to inform views of `Current'
---			-- when `Current' changed such that
---			-- views need to re-render
-
---	line_changed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE]]
---			-- Event to inform views of `Current'
---			-- when item has been changed
---			-- at index passed as argument
-
---	line_inserted_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE]]
---			-- Event to inform views of `Current'
---			-- when item has been inserted
---			-- at index passed as argument
-
---	line_removed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_LINE]]
---			-- Event to inform views of `Current'
---			-- when item has been removed
---			-- at index passed as argument
-
---	moving_inserted_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_MOVING]]
---			-- Event to inform views of `Current'
---			-- when item has been inserted
---			-- at index passed as argument
-
---	moving_removed_event: EM_EVENT_CHANNEL [TUPLE [TRAFFIC_MOVING]]
---			-- Event to inform views of `Current'
---			-- when item has been removed
---			-- at index passed as argument
-
---feature {TRAFFIC_MAP_MODEL} -- Access
-
---	map_places: TRAFFIC_EVENT_ARRAYED_LIST [TRAFFIC_PLACE] is
---			--
---		do
---			Result := internal_place_array
---		end
-
---	map_line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION] is
---			--
---		do
---			Result := internal_line_sections
---		end
-
 feature -- Output
 
 	out: STRING is
@@ -800,8 +293,6 @@ feature -- Output
 				"%N%Nplaces:%N" + places.out --+
 --				"%N%Nlines:%N" + lines.out
 		end
-
---feature -- Basic operations
 
 feature {TRAFFIC_MAP_LOADER}
 
@@ -883,39 +374,6 @@ feature {TRAFFIC_MAP_LOADER}
 
 feature {NONE}-- Implementation
 
---	internal_places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
-			-- Places on map.
-
---	internal_place_array: TRAFFIC_EVENT_ARRAYED_LIST [TRAFFIC_PLACE]
-			-- Array with all places for performant map model implementation.
-
---	internal_lines: HASH_TABLE [TRAFFIC_LINE, STRING]
---			-- Lines on map.
-
---	internal_roads: HASH_TABLE [TRAFFIC_ROAD, INTEGER]
---			--	Roads on map.
-
---	internal_line_sections: ARRAYED_LIST [TRAFFIC_LINE_SECTION]
---			--	Line sections on map.
-
---	internal_buildings: ARRAY[LINKED_LIST [TRAFFIC_BUILDING]]
-			-- Buildings on map.
-
---	internal_travelers: HASH_TABLE [TRAFFIC_MOVING, INTEGER]
---			-- Travelers on map.
-
---	internal_taxi_offices: ARRAYED_LIST[TRAFFIC_TAXI_OFFICE]
-			-- Taxi offices associated with this map
-
---	shortest_path_impl: TRAFFIC_PATH
---			-- Traffic path last calculated
-
---	scale_factor_impl: DOUBLE
-			-- Scale factor used to get real world distances
-
---	internal_path: TRAFFIC_PATH
---			-- path added to map
-
 	place_position (a_name: STRING): INTEGER is
 			-- Position of place `a_name' in places
 		require
@@ -950,77 +408,11 @@ feature {NONE}-- Implementation
 			Result_exists: Result /= Void
 		end
 
---	places_out: STRING is
---			-- Textual representation of places
---		local
---			current_place: TRAFFIC_PLACE
---		do
---			Result := ""
---			if not places.is_empty then
---				from
---					places.start
---				until
---					places.after
---				loop
---					current_place := places.item_for_iteration
---					Result := Result + current_place.out
---					places.forth
---					if not places.after then
---						Result := Result + "%N"
---					end
---				end
---			end
---		end
-
---	lines_out: STRING is
---			-- Textual representation of places
---		local
---			current_line: TRAFFIC_LINE
---		do
---			Result := ""
---			if not lines.is_empty then
---				from
---					lines.start
---				until
---					lines.after
---				loop
---					current_line := lines.item_for_iteration
---					Result := Result + current_line.out + "%N"
---					lines.forth
---					if not lines.after then
---						Result := Result + "%N"
---					end
---				end
---			end
---		end
-
---	line_sections_out: STRING is
---			-- Textual representation of line sections
---		local
---			current_line_section: TRAFFIC_LINE_SECTION
---		do
---			Result := ""
---			if not line_sections.is_empty then
---				from
---					line_sections.start
---				until
---					line_sections.after
---				loop
---					current_line_section := line_sections.item_for_iteration
---					Result := Result + current_line_section.out
---					line_sections.forth
---					if not line_sections.after then
---						Result := Result + "%N"
---					end
---				end
---			end
---		end
-
 	position_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): EM_VECTOR_2D is
 			-- Position of `a_node'
 		do
 
-			if a_connections.first.origin_impl = a_node then
+			if a_connections.first.start_node = a_node then
 				Result := a_connections.first.polypoints.first
 			else
 				Result := a_connections.first.polypoints.last
