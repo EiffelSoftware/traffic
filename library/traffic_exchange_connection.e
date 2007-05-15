@@ -16,11 +16,11 @@ inherit
 		end
 
 create
-	make_exchange
+	make
 
 feature {NONE} -- Initialization
 
-	make_exchange (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER) is
+	make (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER) is
 			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -46,6 +46,12 @@ feature {NONE} -- Initialization
 		end
 
 feature -- Access
+
+	weight_factor: DOUBLE is
+			-- Factor with which the length of the connection is multiplied
+		do
+			Result := 12
+		end
 
 	hash_code: INTEGER is
 			-- Hash code value

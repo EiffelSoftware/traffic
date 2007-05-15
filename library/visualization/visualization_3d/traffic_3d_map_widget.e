@@ -346,6 +346,9 @@ feature -- Element change
 			if buildings_representation /= Void then
 				buildings_representation.buildings_root.remove_all_children
 			end
+			if paths_representation /= Void then
+				paths_representation.path_root.remove_all_children
+			end
 		end
 
 

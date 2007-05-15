@@ -163,15 +163,6 @@ feature {TRAFFIC_TAXI} -- Basic operations for taxis
 		deferred
 		end
 
---feature {TRAFFIC_3D_MAP_WIDGET} -- Access for map widget
-
---	taxi_list: ARRAYED_LIST[TRAFFIC_TAXI] is
---			-- List of available taxis
---			-- Accessed by the map widget to add the taxis to the 3d_traveler_representation.
---		do
---			Result := available_taxi_list
---		end
-
 invariant
 	taxis_exists: taxis /= Void
 	available_taxis_exists: available_taxis /= Void

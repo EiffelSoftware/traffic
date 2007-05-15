@@ -17,11 +17,11 @@ inherit
 		end
 
 create
-	make_insertable
+	make
 
 feature {NONE} -- Initialization
 
-	make_insertable (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_LINE; a_list: DS_ARRAYED_LIST [EM_VECTOR_2D] ) is
+	make (a_origin, a_destination: TRAFFIC_STOP; a_type: TRAFFIC_TYPE_LINE; a_list: DS_ARRAYED_LIST [EM_VECTOR_2D] ) is
 			-- Initialize `Current'.
 			-- If `a_list' is Void, a list of polypoints with the coordinate of `a_origin' and
 			-- `a_destination' are generated.
@@ -56,9 +56,6 @@ feature -- Access
 	line: TRAFFIC_LINE
 			-- Line this line section belongs to
 
-	state: TRAFFIC_LINE_CONNECTION_STATE
-			-- State of line section
-
 	roads: ARRAYED_LIST [TRAFFIC_ROAD_CONNECTION]
 			-- Roads on which the line section lies
 
@@ -77,15 +74,7 @@ feature -- Access
 
 feature -- Element change
 
-	set_state (a_state: TRAFFIC_LINE_CONNECTION_STATE ) is
-			-- Change state to `a_state'.
-		require
-			a_state_exists: a_state /= Void
-		do
-			state := a_state
-		ensure
-			state_set: state = a_state
-		end
+
 
 	set_roads (a_roads: ARRAYED_LIST [TRAFFIC_ROAD_CONNECTION]) is
 			-- Set roads to `a_roads'.
@@ -123,6 +112,20 @@ feature -- Status report
 		end
 
 feature -- Access
+
+	weight_factor: DOUBLE is
+			-- Factor with which the length of the connection is multiplied
+		do
+			if type.is_equal (create {TRAFFIC_TYPE_TRAM}.make) then
+				Result := 5
+			elseif type.is_equal (create {TRAFFIC_TYPE_BUS}.make) then
+				Result := 7
+			elseif type.is_equal (create {TRAFFIC_TYPE_RAIL}.make) then
+				Result := 1
+			else
+				Result := 10
+			end
+		end
 
 	start_node: TRAFFIC_STOP
 

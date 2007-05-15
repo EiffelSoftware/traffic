@@ -85,37 +85,6 @@ feature --Access
 	last_update: INTEGER
 			-- Last second the position was updated
 
-	line_count: INTEGER is
-			-- Number of stops
-		do
-			Result := line.count
-		end
-
---	place (stop: INTEGER): TRAFFIC_PLACE is
---			-- Place at position `stop' on the line
---		require
---			stop <= line_count
---		local
---			i: INTEGER
---		do
---			from
---				i := 1
---				line.start
---			until
---				i = stop or
---				line.after
---			loop
---				line.forth
---				i := i + 1
---			end
---			if i < stop then
---				line.back
---				Result := line.item_for_iteration.destination
---			else
---				Result := line.item_for_iteration.origin
---			end
---		end
-
 feature -- Status report
 
 	is_schedule_active: BOOLEAN
@@ -238,7 +207,6 @@ feature{NONE} --Implementation
 						is_traveling_back := False
 						line_cursor.start
 						create poly_cursor.make (line_cursor.item.polypoints)
---						polypoints := line_cursor.item.polypoints
 						poly_cursor.start
 						destination := poly_cursor.item
 					else
@@ -249,7 +217,6 @@ feature{NONE} --Implementation
 						is_traveling_back := True
 					end
 					create poly_cursor.make (line_cursor.item.polypoints)
---					polypoints := line_cursor.item.polypoints
 					poly_cursor.start
 					destination := poly_cursor.item
 				end
@@ -257,104 +224,7 @@ feature{NONE} --Implementation
 				destination := poly_cursor.item
 			end
 
---			if is_traveling_back then
---				poly_cursor.back
---				if poly_cursor.before then
---					is_traveling_back := False
---					poly_cursor.forth
---					update_coordinates
---				else
---					destination := poly_cursor.item
---				end
-
---			elseif is_reiterating then
---				poly_cursor.forth
---				if poly_cursor.after then
---					is_traveling_back := True
---					poly_cursor.back
---					update_coordinates
---				else
---					destination := poly_cursor.item
---				end
---			else
---				poly_cursor.forth
---				if poly_cursor.after then
---					has_finished := True
---				else
---					destination := poly_cursor.item
---				end
---			end
 		end
-
---	set_line_route_from_roads(a_line: TRAFFIC_LINE) is
---			-- Set the polypoints to follow the route given by the line.
---		require
---			line_not_void: a_line /= void
---		local
---			pp: DS_ARRAYED_LIST[EM_VECTOR_2D]
---		do
---			pp:=a_line.road_points
---			-- Add the whole section item (origin and destination)
---			polypoints.append_last (pp)
---			-- Repetition of the las polypoint to stop also there for a short time.
-----			polypoints.extend (pp.last)
-----			polypoints.extend (pp.last)
-----			polypoints.extend (pp.last)
-----			from
-----				polypoints.start
-----			until
-----				polypoints.off
-----			loop
-----				polypoints.forth
-----			end
-
---			polypoints.start
-
---			-- Not wait at starting point therefore omit first three points
-----			polypoints.forth
-----			polypoints.forth
-----			polypoints.forth
-
---		ensure
---			valid_polypoints: polypoints.count >= old polypoints.count
---		end
-
---	set_coordinates is
---		-- Set the positions to the corresponding ones of the line section.
---		do
---			-- Hopefully this will give a bit performance to the journey
---			-- otherwise just clear out the map_to_gl_coords
-----			origin :=  map_to_gl_coords (polypoints.item)
-----			position := map_to_gl_coords (polypoints.item)
---			origin :=  poly_cursor.item
---			position := poly_cursor.item
-
---			if line.name.is_equal ("4") then
---				io.put_string ("Hello")
---			end
-
---			if is_traveling_back then
---				poly_cursor.back
---				if poly_cursor.before then
---					is_traveling_back := False
---					poly_cursor.forth
---					set_coordinates
---				else
-----					destination := map_to_gl_coords (polypoints.item)
---					destination := poly_cursor.item
---				end
---			else
---				poly_cursor.forth
---				if poly_cursor.after then
---					is_traveling_back := True
---					poly_cursor.back
---					set_coordinates
---				else
-----					destination := map_to_gl_coords (polypoints.item)
---					destination := poly_cursor.item
---				end
---			end
---		end
 
 	line_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
 			-- Line section on which the line vehicle is moving currently
@@ -362,7 +232,6 @@ feature{NONE} --Implementation
 invariant
 
 	line_set: line /= void
-	correct_line_count: line_count = line.count
 	line_cursor_exists: line_cursor /= Void
 
 end

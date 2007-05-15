@@ -104,13 +104,13 @@ feature {TRAFFIC_PLACE} -- Basic operations (map)
 			map := a_map
 			-- Connect the stop to the dummy_node
 			if Current /= place.dummy_node then
-				create e.make_exchange (Current, place.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
+				create e.make (Current, place.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
 				create p.make (2)
 				p.put_first (position)
 				p.put_last (place.dummy_node.position)
 				e.set_polypoints (p)
 				e.add_to_map (a_map)
-				create e.make_exchange (place.dummy_node, Current, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
+				create e.make (place.dummy_node, Current, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
 				create p.make (2)
 				p.put_first (place.dummy_node.position)
 				p.put_last (position)

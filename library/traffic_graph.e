@@ -25,7 +25,8 @@ inherit
 			prune_edge_impl,
 			prune_edge,
 			border_nodes,
-			enable_user_defined_weight_function
+--			enable_user_defined_weight_function,
+			find_shortest_path
 		end
 
 create
@@ -41,7 +42,6 @@ feature {NONE} -- Initialization
 			default_size := 100
 			make_multi_graph
 			shortest_path_mode := normal_distance
-			enable_user_defined_weight_function (agent calculate_weight)
 			create id_manager
 		end
 
@@ -53,7 +53,7 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			r: TRAFFIC_ROAD_CONNECTION
 			i: INTEGER
 		do
-			create r.make_visible (a_start_node, a_end_node, create {TRAFFIC_TYPE_STREET}.make, id_manager.next_free_index)
+			create r.make (a_start_node, a_end_node, create {TRAFFIC_TYPE_STREET}.make, id_manager.next_free_index)
 			a_start_node.put_connection (r)
 			internal_edges.extend (r)
 			id_manager.take (r.id)
@@ -266,6 +266,8 @@ feature -- Removal
 
 feature -- Access
 
+	shortest_path_mode: INTEGER
+
 	id_manager: TRAFFIC_ID_MANAGER
 
 	current_node: TRAFFIC_NODE
@@ -279,6 +281,15 @@ feature -- Access
 			else
 				Result := Void
 			end
+		end
+
+feature -- Basic operations
+
+	find_shortest_path (a_start_node, a_end_node: like item) is
+			-- Enable the weight functions first.
+		do
+			enable_user_defined_weight_function (agent calculate_weight (?))
+			Precursor (a_start_node, a_end_node)
 		end
 
 feature -- Constants
@@ -299,27 +310,6 @@ feature -- Status Setting
 			shortest_path_mode := a_mode
 		ensure
 			path_mode_set: shortest_path_mode = a_mode
-		end
-
-	enable_user_defined_weight_function (a_function: FUNCTION [ANY, TUPLE [TRAFFIC_CONNECTION], REAL]) is
-			-- Use `a_function' to compute edge weight instead of stored value.
-		local
-			edge_list: like edges
-			edge: like edge_item
-		do
-			weight_function := a_function
-			from
-				edge_list := edges
-				edge_list.start
-			until
-				edge_list.after
-			loop
-				edge := edge_list.item
-				if edge.origin = edge.destination then
-					edge.enable_user_defined_weight_function (a_function)
-				end
-				edge_list.forth
-			end
 		end
 
 feature -- Status Report
@@ -408,18 +398,23 @@ feature {NONE} -- Implementation
 	calculate_weight (a_edge: TRAFFIC_CONNECTION): REAL is
 			-- Calculate the edge based on the current status.
 			-- This is only used for "dummy" connections.
+		local
+			e: TRAFFIC_EXCHANGE_CONNECTION
 		do
 			inspect shortest_path_mode
 			when normal_distance then
-				Result := a_edge.length
+				Result := a_edge.length * a_edge.weight_factor
 			when minimal_switches then
-				Result := total_weight
+				e ?= a_edge
+				if e /= Void then
+					Result := average_weight
+				else
+					Result := a_edge.length * a_edge.weight_factor
+				end
 			else
 				(create {EXCEPTIONS}).raise ("Unknown path mode in TRAFFIC_GRAPH")
 			end
 		end
-
-	shortest_path_mode: INTEGER
 
 	total_weight: DOUBLE
 		-- Total length of all TRAFFIC_CONNECTIONs added.

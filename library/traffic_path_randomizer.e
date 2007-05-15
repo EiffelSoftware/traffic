@@ -43,7 +43,7 @@ feature -- Basic operations
 			finished: BOOLEAN
 			c: TRAFFIC_CONNECTION
 		do
-			create last_path.make
+			create last_path
 			random.forth
 			pa := map.places.to_array
 			-- The starting place
@@ -61,8 +61,8 @@ feature -- Basic operations
 				else
 					c := no.connection_list.i_th (random.item \\ no.connection_list.count + 1)
 					create t.make (c)
-					if s /= void and s.is_insertable (t) and s.is_same_place (t) then
-						s.extend (t)
+					if s /= void and s.is_joinable (t) then
+						s.join (t)
 					elseif s /= Void then
 						s.set_next (t)
 					else

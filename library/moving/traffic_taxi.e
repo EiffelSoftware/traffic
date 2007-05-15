@@ -78,60 +78,9 @@ feature{NONE} --Implementation
 			polypoints.start
 			-- Set the new origin and destination.
 			origin := position
---			destination := map_to_gl_coords (from_location)
 			destination := from_location
 			set_reiterate (false)
 		end
-
---	add_random_polypoints(num: INTEGER) is
---		--  Add to the polypoints 'num' random destinations.
---		local
---			i: INTEGER
---			random_number: RANDOM
---			t: TIME
---			temp_x, temp_y: DOUBLE
---		do
---			create t.make_now
---			create random_number.set_seed (t.fine_seconds.floor)
---			random_number.forth
---			from
---				i := 1
---			until
---				i > num
---			loop
---				temp_x := random_number.double_item
---				random_number.forth
---				temp_y := random_number.double_item
---				create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
---				-- approximated places so that they are on the map
---				random_number.forth
---				polypoints.force_last (destination)
---				i := i+1
---			end
---			polypoints.start
---		ensure
---			polypoints_extended: polypoints.count = old polypoints.count + num
---		end
-
---	give_random_direction (random_number: RANDOM) is
---			-- Give a random destination.
---		require
---			random_number /= Void
---		local
---			temp_x, temp_y: DOUBLE
---		do
---			temp_x := random_number.double_item
---			random_number.forth
---			temp_y := random_number.double_item
---			create destination.make (1500 * temp_x - 67, 1500 * temp_y - 32)
---			-- approximated places so that they are on the map
---			random_number.forth
---		ensure
---			destination.x < 1433
---			destination.x > -67
---			destination.y < 1468
---			destination.y > -32
---		end
 
 invariant
 

@@ -188,13 +188,13 @@ feature -- Interface
 			slider: EM_SLIDER
 		do
 			create Result.make_from_dimension (toolbar_panel.width, 20)
-			create label.make_from_text ("0 Vehicles/Line")
+			create label.make_from_text ("0 Veh./Line")
 			label.set_position (50, 0)
 			Result.add_widget (label)
 			create slider.make_from_range_horizontal (0, 5)
 			slider.set_width (40)
 			slider.set_position (155, 0)
-			slider.position_changed_event.subscribe (agent update_tram_count (?, label))
+			slider.position_changed_event.subscribe (agent update_label_count (?, label, "Veh./Line"))
 			Result.add_widget (slider)
 			create button.make_from_text ("Add")
 			button.clicked_event.subscribe (agent add_vehicles (slider))
@@ -296,7 +296,8 @@ feature -- Interface
 			slider.set_height (label.height)
 			slider.set_width (110)
 			slider.set_position (90, 0)
-			slider.position_changed_event.subscribe (agent update_time_slider (?, label))
+			slider.position_changed_event.subscribe (agent update_label_count (?, label, "x"))
+			slider.position_changed_event.subscribe (agent time.set_speedup (?))
 			Result.add_widget (slider)
 			create button.make_from_text ("Start")
 			button.clicked_event.subscribe (agent update_time (button))
@@ -319,7 +320,7 @@ feature -- Interface
 			slider.set_height (label.height)
 			slider.set_width (90)
 			slider.set_position (110, 0)
-			slider.position_changed_event.subscribe (agent update_passenger_count (?, label))
+			slider.position_changed_event.subscribe (agent update_label_count (?, label, "pass."))
 			Result.add_widget (slider)
 			create button.make_from_text ("Add")
 			button.clicked_event.subscribe (agent add_passengers (slider))
@@ -342,12 +343,38 @@ feature -- Interface
 			slider.set_height (label.height)
 			slider.set_width (90)
 			slider.set_position (110, 0)
-			slider.position_changed_event.subscribe (agent update_free_moving_count (?, label))
+			slider.position_changed_event.subscribe (agent update_label_count (?, label, "free mov."))
 			Result.add_widget (slider)
 			create button.make_from_text ("Add")
 			button.clicked_event.subscribe (agent add_free_movings (slider))
 			button.set_position (10, 0)
 			Result.add_widget (button)
+		end
+
+	build_path_tools: EM_PANEL is
+			-- Build the area that steers the path.
+		local
+			label: EM_LABEL
+			button: EM_BUTTON
+			slider: EM_SLIDER
+		do
+			create Result.make_from_dimension (toolbar_panel.width, 40)
+			create label.make_from_text ("0 paths  ")
+			label.set_position (50, 0)
+			Result.add_widget (label)
+			create slider.make_from_range_horizontal (0, 10)
+			slider.set_height (label.height)
+			slider.set_width (90)
+			slider.set_position (110, 0)
+			slider.position_changed_event.subscribe (agent update_label_count (?, label, "paths"))
+			Result.add_widget (slider)
+			create button.make_from_text ("Add")
+			button.clicked_event.subscribe (agent add_paths (slider))
+			button.set_position (10, 0)
+			Result.add_widget (button)
+			create path_checkbox.make_from_text ("Minimum switches")
+			path_checkbox.set_position (10, 20)
+			Result.add_widget (path_checkbox)
 		end
 
 	build_tool_bar is
@@ -390,7 +417,10 @@ feature -- Interface
 			panel := build_free_moving_tools
 			panel.set_position (0, 210)
 			toolbar_panel.add_widget (panel)
-			-- Taxis
+
+			panel := build_path_tools
+			panel.set_position (0, 240)
+			toolbar_panel.add_widget (panel)
 		end
 
 feature -- Event handling
@@ -407,7 +437,7 @@ feature -- Event handling
 		do
 			if a_dlg.was_ok_clicked and a_dlg.is_file_selected then
 				create loader.make (a_dlg.absolute_filename)
-				loader.enable_dump_loading
+				loader.disable_dump_loading
 				loader.load_map
 				if not loader.has_error then
 					map_widget.set_map (loader.map)
@@ -429,12 +459,26 @@ feature -- Event handling
 			Result := an_office.generating_type.substring (9, an_office.generating_type.count)
 		end
 
-	update_tram_count (a_value: INTEGER; a_label: EM_LABEL) is
+	update_label_count (a_value: INTEGER; a_label: EM_LABEL; a_unit: STRING) is
 			-- Update the label for number of trams per line.
 		require
 			a_label_exists: a_label /= Void
 		do
-			a_label.set_text (a_value.out + " Vehicles/Line")
+			a_label.set_text (a_value.out + " " + a_unit)
+		end
+
+	update_time (a_button: EM_BUTTON) is
+			--
+		require
+			a_button_exists: a_button /= Void
+		do
+			if time.is_time_running then
+				time.pause
+				a_button.set_text ("Start")
+			else
+				time.resume
+				a_button.set_text ("Stop")
+			end
 		end
 
 	add_vehicles (a_slider: EM_SLIDER) is
@@ -487,29 +531,6 @@ feature -- Event handling
 			end
 		end
 
-	update_time (a_button: EM_BUTTON) is
-			--
-		require
-			a_button_exists: a_button /= Void
-		do
-			if time.is_time_running then
-				time.pause
-				a_button.set_text ("Start")
-			else
-				time.resume
-				a_button.set_text ("Stop")
-			end
-		end
-
-	update_time_slider (a_value: INTEGER; a_label: EM_LABEL) is
-			--
-		require
-			a_label_exists: a_label /= Void
-		do
-			time.set_speedup (a_value)
-			a_label.set_text (a_value.out + "x")
-		end
-
 	add_passengers (a_slider: EM_SLIDER) is
 			-- Add `slider.current_value' number of passengers.
 		require
@@ -523,9 +544,8 @@ feature -- Event handling
 --				create path_finder.make_with_map (map_widget.map)
 				-- Add more
 				from
-					i := 1
 				until
-					i > a_slider.current_value - map_widget.map.passengers.count
+					map_widget.map.passengers.count >= a_slider.current_value
 				loop
 					path_randomizer.generate_path (6)
 					random.forth
@@ -542,14 +562,6 @@ feature -- Event handling
 			end
 		end
 
-	update_passenger_count (a_value: INTEGER; a_label: EM_LABEL) is
-			-- Update the label for number of passengers.
-		require
-			a_label_exists: a_label /= Void
-		do
-			a_label.set_text (a_value.out + " pass.")
-		end
-
 	add_free_movings (a_slider: EM_SLIDER) is
 			-- Add `slider.current_value' number of free moving objects.
 		require
@@ -561,16 +573,14 @@ feature -- Event handling
 			if a_slider.current_value > map_widget.map.free_movings.count then
 				-- Add more
 				from
-					i := 1
 				until
-					i > a_slider.current_value - map_widget.map.free_movings.count
+					map_widget.map.free_movings.count >= a_slider.current_value
 				loop
 					point_randomizer.generate_point_array (7)
 					create moving.make_with_points (point_randomizer.last_array, 1.5)
 					map_widget.map.free_movings.put_last (moving)
 					moving.set_reiterate (True)
 					moving.start
-					i := i + 1
 				end
 			elseif a_slider.current_value < map_widget.map.free_movings.count then
 				-- Remove
@@ -578,12 +588,47 @@ feature -- Event handling
 			end
 		end
 
-	update_free_moving_count (a_value: INTEGER; a_label: EM_LABEL) is
-			-- Update the label for number of free moving.
+	add_paths (a_slider: EM_SLIDER) is
+			-- Add `slider.current_value' number of free moving objects.
 		require
-			a_label_exists: a_label /= Void
+			a_slider_exists: a_slider /= Void
+		local
+			i, g, b: INTEGER
+			p: ARRAY [TRAFFIC_PLACE]
+			p1, p2: TRAFFIC_PLACE
+			c: TRAFFIC_PATH_CALCULATOR
 		do
-			a_label.set_text (a_value.out + " free mov.")
+			if a_slider.current_value > map_widget.map.paths.count then
+				-- Add more
+				p := map_widget.map.places.to_array
+				create c.set_map (map_widget.map)
+				if path_checkbox.is_checked then
+					c.set_shortest_path_mode (c.shortest_path_mode_minimal_switches)
+				end
+				from
+				until
+					map_widget.map.paths.count >= a_slider.current_value
+				loop
+					random.forth
+					p1 := p.item (random.item \\ p.count + 1)
+					random.forth
+					p2 := p.item (random.item \\ p.count + 1)
+					if p1 /= p2 then
+						c.find_shortest_path (p1, p2)
+						random.forth
+						g := random.item \\ 256
+						random.forth
+						b := random.item \\ 256
+						map_widget.map.paths.put_last (c.path)
+						io.put_string (c.path.out + "%N")
+						map_widget.paths_representation.set_colors (create {EM_COLOR}.make_with_rgb (255, g, b), create {EM_COLOR}.make_with_rgb (255, g, b))
+						event_loop.process_events
+					end
+				end
+			elseif a_slider.current_value < map_widget.map.paths.count then
+				-- Remove
+				map_widget.map.paths.prune_last (map_widget.map.paths.count - a_slider.current_value)
+			end
 		end
 
 	call_taxi (a_place: TRAFFIC_PLACE; an_event: EM_MOUSEBUTTON_EVENT) is
@@ -777,8 +822,11 @@ feature -- Event handling
 
 feature -- Access
 
+	path_checkbox: EM_CHECKBOX
+			-- Checkbox for using minimum switches algorithm
+
 	taxi_combobox: EM_COMBOBOX[TRAFFIC_TAXI_OFFICE]
-			-- Requests will be sent to the selected taxi office.
+			-- Requests will be sent to the selected taxi office
 
 	toolbar_panel: EM_PANEL
 			-- Toolbar panel with all widgets

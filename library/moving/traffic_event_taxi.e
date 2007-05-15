@@ -21,9 +21,6 @@ feature -- Initialization
 			evening_time, morning_time: DOUBLE
 			random: RANDOM
 		do
---			traffic_type := create {TRAFFIC_TYPE_EVENT_TAXI}.make
---			create polypoints.make (stops)
---			add_random_polypoints (stops)
 			create polypoints.make_from_linear (a_point_list)
 			create poly_cursor.make (polypoints)
 			poly_cursor.start
@@ -38,15 +35,6 @@ feature -- Initialization
 
 			speed := 17
 			start
---			virtual_speed := 17
-
-			-- set lit time
---			create random.make
---			random.set_seed (out.hash_code)
---			evening_time := 16.0 +(random.double_item*(2).to_double) --18 + interval[0,2]
---			random.forth
---			morning_time := 32.00 + (random.double_item*(4).to_double) --8 + interval[0,4]
---			light_time := [evening_time, morning_time]
 		end
 
 feature -- Access
@@ -82,6 +70,7 @@ feature -- Basic operations
 			if has_finished and busy then
 				-- Taxi has fullfilled a request.
 				-- Add new random directions.
+				-- TODO
 --				polypoints.wipe_out
 --				add_random_polypoints (7)
 				-- set new destination
@@ -96,9 +85,5 @@ feature -- Basic operations
 				is_marked := false
 			end
 		end
-
-invariant
-
---	random_number_not_void: random_number /= void
 
 end

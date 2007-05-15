@@ -175,7 +175,7 @@ feature -- Line section building
 				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 
-			create internal_line_section.make_insertable (origin_stop, destination_stop, a_line.type, pps)
+			create internal_line_section.make (origin_stop, destination_stop, a_line.type, pps)
 			a_line.extend (internal_line_section)
 		ensure
 			line_section_created: line_section /= Void
@@ -380,7 +380,7 @@ feature {NONE} -- Implementation
 			traffic_type_factory.build(a_type)
 			type?= traffic_type_factory.traffic_type
 			i:=an_id.to_integer
-			create a_road.make_visible (origin_node, destination_node, type, i)
+			create a_road.make (origin_node, destination_node, type, i)
 			Result := a_road
 		ensure
 			result_exists: Result /= Void

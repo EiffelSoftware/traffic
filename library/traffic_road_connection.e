@@ -14,11 +14,11 @@ inherit
 		end
 
 create
-	make_visible
+	make
 
 feature {NONE} -- Creation
 
-	make_visible (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER) is
+	make (a_origin, a_destination: TRAFFIC_NODE; a_type: TRAFFIC_TYPE_ROAD; an_id: INTEGER) is
 			-- Initialize `Current'.
 		require
 			a_origin_exists: a_origin /= Void
@@ -43,6 +43,12 @@ feature {NONE} -- Creation
 		end
 
 feature -- Access
+
+	weight_factor: DOUBLE is
+			-- Factor with which the length of the connection is multiplied
+		do
+			Result := 10
+		end
 
 	hash_code: INTEGER is
 			-- Hash code value

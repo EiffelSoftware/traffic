@@ -222,7 +222,7 @@ feature -- Insertion
 					pp.force_last (polypoints.item_for_iteration.twin)
 					polypoints.back
 				end
-				create other_line_section.make_insertable (destination_stop, origin_stop, a_line_section.type, pp)
+				create other_line_section.make (destination_stop, origin_stop, a_line_section.type, pp)
 --			else
 --				create other_line_section.make (destination_stop, origin_stop, a_line_section.type, Void)
 			end
@@ -292,7 +292,7 @@ feature -- Insertion
 				pp.force_last (origin.place.position)
 				pp.force_last (a_place.position)
 --				map.add_stop (a_stop)
-				create line_section.make_insertable (origin, a_stop, type, pp)
+				create line_section.make (origin, a_stop, type, pp)
 				extend (line_section)
 --				map.add_line_section (line_section)
 			end

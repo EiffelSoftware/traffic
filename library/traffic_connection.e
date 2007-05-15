@@ -12,7 +12,8 @@ inherit
 			make_directed as make_directed_old,
 			make_undirected as make_undirected_old,
 			internal_start_node as start_node,
-			internal_end_node as end_node
+			internal_end_node as end_node,
+			make as make_old
 		export {NONE}
 			make_directed_old, make_undirected_old
 		redefine
@@ -33,6 +34,7 @@ feature -- Initialization
 			start_node := a_start_node
 			end_node := a_end_node
 			is_directed := True
+			create state.make
 		ensure
 			nodes_not_void: start_node /= Void and
 							end_node /= Void
@@ -40,6 +42,16 @@ feature -- Initialization
 		end
 
 feature -- Element change
+
+	set_state (a_state: TRAFFIC_CONNECTION_STATE ) is
+			-- Change state to `a_state'.
+		require
+			a_state_exists: a_state /= Void
+		do
+			state := a_state
+		ensure
+			state_set: state = a_state
+		end
 
 	set_polypoints (a_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
 			-- Set polypoints to `a_polypoints'.
@@ -58,6 +70,9 @@ feature -- Element change
 		end
 
 feature -- Access
+
+	state: TRAFFIC_CONNECTION_STATE
+			-- State of connection
 
 	type: TRAFFIC_TYPE
 			-- Type of the line section
@@ -100,6 +115,13 @@ feature -- Access
 
 feature -- Access
 
+	weight_factor: DOUBLE is
+			-- Factor with which the length of the connection is multiplied
+		deferred
+		ensure
+			weight_factor_valid: Result > 0
+		end
+
 	start_node: TRAFFIC_NODE
 
 	end_node: like start_node
@@ -134,5 +156,6 @@ invariant
 	polypoints_exist: polypoints /= Void
 	nodes_exist: start_node /= Void and end_node /= Void
 	is_directed: is_directed
+	state_valid: state /= Void
 
 end

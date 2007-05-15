@@ -249,7 +249,6 @@ feature -- Basic operations
 			a_line_section_valid_for_insertion: is_valid_for_insertion (a_line_section)
 			a_section_insertable: is_in_map implies a_line_section.is_insertable (map)
 		local
-			position: INTEGER
 			origin, destination: TRAFFIC_PLACE
 			origin_stop, destination_stop: TRAFFIC_STOP
 		do
@@ -438,7 +437,6 @@ feature -- Output
 	other_direction_out: STRING is
 			-- Textual representation of other direction
 		local
-			position: INTEGER
 			l_line_section: TRAFFIC_LINE_CONNECTION
 		do
 			if terminal_2 = Void then

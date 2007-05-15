@@ -6,18 +6,28 @@ indexing
 class
 	TRAFFIC_PATH
 
-create
-	make
+inherit
 
-feature -- Creation
+	ANY
+		redefine
+			out,
+			default_create
+		end
 
-	make is
-			-- Initialize `Current'
+feature -- Initialization
+
+	default_create is
+			-- Initialize `scale_factor'.
 		do
-			create connections_impl.make(10)
+			scale_factor := 1
+		ensure then
+			scale_factor_set: scale_factor = 1
 		end
 
 feature -- Access
+
+	first: TRAFFIC_PATH_SECTION
+			-- First path section
 
 	origin: TRAFFIC_PLACE is
 			-- Origin of the path
@@ -35,37 +45,30 @@ feature -- Access
 			Result := connections.last.destination
 		end
 
-	connections: ARRAYED_LIST [TRAFFIC_CONNECTION] is
-			-- gives all traffic_connection
+	connections: DS_LINKED_LIST [TRAFFIC_CONNECTION] is
+			-- All connections traveled by the path
 		require
 			first_exists: first /= Void
 		local
 			ps: TRAFFIC_PATH_SECTION
 		do
-			if first.next = Void then
-				Result := first.connections
-			else
-				create ps
+			from
+				ps := first
+				create Result.make
+			until
+				ps = Void
+			loop
 				from
-					ps := first
+					ps.connections.start
 				until
-					ps = Void
+					ps.connections.after
 				loop
-					from
-						ps.connections.start
-					until
-						ps.connections.after
-					loop
-						connections_impl.extend(ps.connections.item)
-						ps.connections.forth
-					end
-					ps := ps.next
+					Result.force_last (ps.connections.item_for_iteration)
+					ps.connections.forth
 				end
-					RESULT := connections_impl
+				ps := ps.next
 			end
 		end
-
-
 
 feature -- Status report
 
@@ -73,18 +76,27 @@ feature -- Status report
 			-- Is `a_connection' valid for insertion?
 		require
 			connection_exists: a_connection /= Void
+		local
+			l: TRAFFIC_PATH_SECTION
 		do
-			Result := last = Void or else last.destination = a_connection.origin
+			if first = Void then
+				Result := True
+			else
+				from
+					l := first
+				until
+					l.next = Void
+				loop
+					l := l.next
+				end
+				Result := l.destination = a_connection.origin
+			end
 		end
-
 
 feature -- Output
 
-	textual_description: STRING is
+	out: STRING is
 			-- Description providing information about the path
-		require
-			first_exists: first /= Void
-			scale_factor_exists: scale_factor /= Void
 		local
 			section: TRAFFIC_PATH_SECTION
 			walking_length: DOUBLE
@@ -126,41 +138,46 @@ feature -- Output
 				section := section.next
 			end
 
-			Result.append ("Arriving at: " + destination.name + "%N%NTotal:")
+			Result.append ("Arriving at: " + destination.name + "%NTotal:")
 			if walking_length > 0 then
-				Result.append ("%NWalking: " + scale (walking_length).rounded.out + " m")
+				Result.append ("%NWalking: " + (walking_length* scale_factor).rounded.out + " m")
 			end
 			if tram_length > 0 then
-				Result.append ("%NTram: " + scale (tram_length).rounded.out + " m")
+				Result.append ("%NTram: " + (tram_length * scale_factor).rounded.out + " m")
 			end
 			if bus_length > 0 then
-				Result.append ("%NBus: " + scale (bus_length).rounded.out + " m")
+				Result.append ("%NBus: " + (bus_length * scale_factor).rounded.out + " m")
 			end
 			if train_length > 0 then
-				Result.append ("%NTrain: " + scale (train_length).rounded.out + " m")
+				Result.append ("%NTrain: " + (train_length * scale_factor).rounded.out + " m")
 			end
 		end
 
 feature -- Basic operations
 
-	append_a_path(a_path: TRAFFIC_PATH) is
+	append (a_path: TRAFFIC_PATH) is
 			-- append a TRAFFIC_PATH `a_path' at the end of the actual path
 		require
 			path_exists: a_path /= VOID
 			path_valid_for_insertion: is_valid_for_insertion(a_path.first.connections.first)
+		local
+			l: TRAFFIC_PATH_SECTION
 		do
 			if first = Void then
-				set_first(a_path.first)
-				set_last
+				set_first (a_path.first)
 			else
-				set_last
-				if last.is_insertable(a_path.first) then
-						--extend the last path section with the first path section of 'a_path'
-					last.extend (a_path.first)
-				else
-					last.set_next (a_path.first)
+				from
+					l := first
+				until
+					l.next = Void
+				loop
+					l := l.next
 				end
-				set_last
+				if l.is_joinable (a_path.first) then
+					l.join (a_path.first)
+				else
+					l.set_next (a_path.first)
+				end
 			end
 		end
 
@@ -175,27 +192,6 @@ feature -- Basic operations
 			end
 		end
 
-	set_last is
-			-- sets the pointer 'last' to the last path_section of the path
-		require
-			first_not_void: first /= Void
-		local
-			ps: TRAFFIC_PATH_SECTION
-		do
-			if first.next = Void then
-				last := first
-			else
-				from
-					ps := first
-				until
-					ps = Void
-				loop
-					last := ps
-					ps := ps.next
-				end
-			end
-		end
-
 	set_scale_factor (a_scale_factor: DOUBLE) is
 			-- sets the scale factor
 		require
@@ -204,27 +200,13 @@ feature -- Basic operations
 			scale_factor := a_scale_factor
 		end
 
-
-
-
-feature -- Implementation
-
-	first: TRAFFIC_PATH_SECTION
-			--pointer to the first traffic_path_section of the path
-
-	last: TRAFFIC_PATH_SECTION
-			--pointer to the last traffic_path_section of the path
+feature {NONE} -- Implementation
 
 	scale_factor: DOUBLE
 			-- Scale factor for real world distances
 
-	scale (a_distance: DOUBLE): DOUBLE is
-			-- Real-world distance
-		do
-			Result := a_distance * scale_factor
-		end
+invariant
 
-	connections_impl: ARRAYED_LIST [TRAFFIC_CONNECTION]
-			-- connections of path
+	scale_factor_valid: scale_factor > 0
 
 end
