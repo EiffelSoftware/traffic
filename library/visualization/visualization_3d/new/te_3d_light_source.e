@@ -24,7 +24,7 @@ feature -- Initialization
 			Precursor
 			create diffuse_color.make_xyzt(1.0,1.0,1.0,0.0)
 			create specular_color.make_xyzt(1.0,1.0,1.0,0.0)
-			create ambient_color.make_xyzt(0.0,0.0,0.0,0.0)
+			create ambient_color.make_xyzt(0.0,0.0,0.0,1.0)
 			reset_to_defaults
 		end
 
@@ -34,7 +34,7 @@ feature -- Initialization
 			Precursor(a_parent)
 			create diffuse_color.make_xyzt(1.0,1.0,1.0,0.0)
 			create specular_color.make_xyzt(1.0,1.0,1.0,0.0)
-			create ambient_color.make_xyzt(0.0,0.0,0.0,0.0)
+			create ambient_color.make_xyzt(0.0,0.0,0.0,1.0)
 			reset_to_defaults
 		end
 
@@ -66,8 +66,6 @@ feature -- Access
 		-- returns the position of the node as GL_VECTOR_4D with the last component either 0.0 or 1.0 - 0.0 being an infinite (direct) light and 1.0 a position light
 		deferred
 		end
-
-feature -- Measurement
 
 feature -- Status report
 
@@ -151,22 +149,6 @@ feature -- Status setting
 		end
 
 
-feature -- Cursor movement
-
-feature -- Element change
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
 feature {TE_RENDERPASS} -- Basic operations
 
 	specify(id: INTEGER) is
@@ -174,7 +156,11 @@ feature {TE_RENDERPASS} -- Basic operations
 		require
 			id_is_valid: id >=0 and id <8
 			is_in_hierarchy: parent /= Void
+		local
+			global_ambient: GL_VECTOR_4D [REAL]
 		do
+			create global_ambient.make_xyzt (0.25, 0.25, 0.25, 1.0)
+			gl_light_modelfv (em_gl_light_model_ambient, global_ambient.pointer)
 			--if movable then
 				update_position(id)
 			--end
@@ -187,11 +173,6 @@ feature {TE_RENDERPASS} -- Basic operations
 				--other_parameter_has_changed := false
 			--end
 		end
-
-
-feature -- Obsolete
-
-feature -- Inapplicable
 
 feature {NONE} -- Implementation
 
@@ -220,9 +201,5 @@ feature {NONE} -- Implementation
 			gl_lightfv(em_GL_LIGHT0 + id, em_GL_AMBIENT, ambient_color.pointer)
 			gl_lightfv(em_GL_LIGHT0 + id, em_GL_SPECULAR, specular_color.pointer)
 		end
-
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end

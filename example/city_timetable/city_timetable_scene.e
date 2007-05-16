@@ -60,124 +60,6 @@ feature -- Interface
 			create path_randomizer.set_map (loader.map)
 
 			build_tool_bar
-
---			loader.map.lines.item_for_iteration.
-
-			-- Checkboxes
---			create buildings_checkbox.make_from_text ("Show buildings")
---			create vehicles_checkbox.make_from_text ("Show vehicles")
---			create time_checkbox.make_from_text ("Simulate time")
-
---			-- Labels, Buttons, Lists
---			create load_buildings_button.make_from_text("Load buildings")
---			create time_label.make_from_text("00:00")
---			create delete_buildings_button.make_from_text("Delete buildings")
---			create station_label.make_from_text("Select station")
---			create station_schedule_textlist.make_empty
---			create station_lines_combobox.make_empty
-
-			-- Has to be defined before toolpanel, because otherwise
-			-- gl_clear_color cleans whole screen
---			if video_subsystem.opengl_enabled then
---				map_widget.mouse_clicked_event.subscribe (agent handle_mouse_click (?))
---			else
---				io.put_string ("OpenGL disabled: Map not loaded%N")
---			end
-
-			-- Toolbar Panel
-
-			-- Taxi office type combobox
---			create taxi_office_type_combobox.make_empty
---			taxi_office_type_combobox.put ("Event Taxi Office")
---			taxi_office_type_combobox.put ("Dispatcher Taxi Office")
---			taxi_office_type_combobox.set_selected_element ("Event Taxi Office")
---			taxi_office_type_combobox.set_position (15, 10)
---			taxi_office_type_combobox.set_dimension (160,20)
---			taxi_office_type_combobox.selection_changed_event.subscribe (agent taxi_office_type_changed(?))
---			toolbar_panel.add_widget (taxi_office_type_combobox)
-
-			-- Building buttons
---			load_buildings_button.set_position(20,(traffic_window_height * 0.68).rounded)
---			load_buildings_button.set_dimension (160, load_buildings_button.height)
---			load_buildings_button.clicked_event.subscribe (agent load_buildings_clicked)
-----			toolbar_panel.add_widget (load_buildings_button)
---			delete_buildings_button.set_position (20, (traffic_window_height * 0.73).rounded)
---			delete_buildings_button.set_dimension (160, delete_buildings_button.height)
---			delete_buildings_button.clicked_event.subscribe (agent delete_buildings_clicked)
-----			toolbar_panel.add_widget (delete_buildings_button)
-
-			-- Sun Checkbox
---			toolbar_panel.add_widget (sun_checkbox)
-
-			-- Shadow Checkbox
-
-			-- Buildings Checkbox
---			buildings_checkbox.set_position (17, (traffic_window_height * 0.87).rounded)
---			buildings_checkbox.set_optimal_dimension (110, 20)
---			buildings_checkbox.resize_to_optimal_dimension
---			buildings_checkbox.set_checked
---			buildings_checkbox.checked_event.subscribe (agent buildings_checked)
---			buildings_checkbox.unchecked_event.subscribe (agent buildings_unchecked)
-----			toolbar_panel.add_widget (buildings_checkbox)
-
-
---			-- Time Checkbox
---			time_checkbox.set_position (17, (traffic_window_height * 0.91).rounded)
---			time_checkbox.set_optimal_dimension (110, 20)
---			time_checkbox.resize_to_optimal_dimension
---			time_checkbox.checked_event.subscribe (agent time_checked)
---			time_checkbox.unchecked_event.subscribe (agent time_unchecked)
-----			toolbar_panel.add_widget (time_checkbox)
-
---			-- Time slider
---			create time_slider.make_from_range_horizontal (1, 60)
---			time_slider.set_position (40, (traffic_window_height * 0.95).rounded)
---			time_slider.set_optimal_dimension (120, 20)
---			time_slider.resize_to_optimal_dimension
---			time_slider.set_tooltip ("Day simulation minutes")
---			time_slider.position_changed_event.subscribe (agent number_of_minutes_changed)
-----			toolbar_panel.add_widget (time_slider)
-
-			-- Zoom out Button
---			zoom_out_button.set_position (180-zoom_out_button.width, (traffic_window_height * 0.78).rounded)
---			zoom_out_button.clicked_event.subscribe (agent zoom_out_button_clicked)
---			zoom_out_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
---			toolbar_panel.add_widget (zoom_out_button)
-
-			-- Zoom in Button
---			zoom_in_button.set_position (20, (traffic_window_height * 0.78).rounded)
---			zoom_in_button.set_dimension (zoom_out_button.width, zoom_out_button.height)
---			zoom_in_button.clicked_event.subscribe (agent zoom_in_button_clicked)
---			zoom_in_button.set_background_color (create {EM_COLOR}.make_with_rgb (127, 127, 127))
---			toolbar_panel.add_widget (zoom_in_button)
-
-			-- Time label
---			time_label.set_position(15, 35)
---			time_label.set_optimal_dimension(160,40)
---			time_label.resize_to_optimal_dimension
---			time_label.align_center
-----			toolbar_panel.add_widget (time_label)
-
---			-- Station label
---			station_label.set_position(0, 60)
---			station_label.set_optimal_dimension(200, 40)
---			station_label.resize_to_optimal_dimension
---			station_label.align_center
-----			toolbar_panel.add_widget (station_label)
-
---			-- Station lines combobox
---			station_lines_combobox.set_position(15, 80)
---			station_lines_combobox.set_dimension (160,20)
---			station_lines_combobox.selection_changed_event.subscribe (agent station_lines_selection_changed)
-----			toolbar_panel.add_widget (station_lines_combobox)
-
-			-- Station schedue scrollpanel			
---			create station_schedule_scrollpanel.make_from_dimension (160, 230)
---			station_schedule_scrollpanel.set_position (15, 120)
---			station_schedule_scrollpanel.set_widget (station_schedule_textlist)
-----			toolbar_panel.add_widget (station_schedule_scrollpanel)
-
-
 		end
 
 	build_line_vehicle_tools: EM_PANEL is
@@ -209,17 +91,9 @@ feature -- Interface
 			button: EM_BUTTON
 		do
 			create Result.make_from_dimension (toolbar_panel.width, 70)
-			-- Sun
-			create checkbox.make_from_text ("Show sun")
-			checkbox.set_position (10, 0)
-			checkbox.set_checked
-			checkbox.checked_event.subscribe (agent map_widget.enable_sun_shown)
-			checkbox.unchecked_event.subscribe (agent map_widget.disable_sun_shown)
-			Result.add_widget (checkbox)
-
 			-- Shadows
 			create checkbox.make_from_text ("Enable shadows")
-			checkbox.set_position (10, 20)
+			checkbox.set_position (10, 0)
 			checkbox.set_unchecked
 			checkbox.checked_event.subscribe (agent map_widget.enable_shadows)
 			checkbox.unchecked_event.subscribe (agent map_widget.disable_shadows)
@@ -227,7 +101,7 @@ feature -- Interface
 
 			-- Lines
 			create checkbox.make_from_text ("Show VBZ Lines")
-			checkbox.set_position (10,40)
+			checkbox.set_position (10,20)
 			checkbox.checked_event.subscribe (agent map_widget.enable_lines_shown)
 			checkbox.checked_event.subscribe (agent map_widget.disable_roads_shown)
 			checkbox.unchecked_event.subscribe (agent map_widget.disable_lines_shown)
@@ -399,27 +273,27 @@ feature -- Interface
 			toolbar_panel.add_widget (panel)
 
 			panel := build_time_tools
-			panel.set_position (0, 80)
+			panel.set_position (0, 60)
 			toolbar_panel.add_widget (panel)
 
 			panel := build_line_vehicle_tools
-			panel.set_position (0, 120)
+			panel.set_position (0, 100)
 			toolbar_panel.add_widget (panel)
 
 			panel := build_taxi_tools
-			panel.set_position (0, 150)
+			panel.set_position (0, 130)
 			toolbar_panel.add_widget (panel)
 
 			panel := build_passenger_tools
-			panel.set_position (0, 180)
+			panel.set_position (0, 160)
 			toolbar_panel.add_widget (panel)
 
 			panel := build_free_moving_tools
-			panel.set_position (0, 210)
+			panel.set_position (0, 190)
 			toolbar_panel.add_widget (panel)
 
 			panel := build_path_tools
-			panel.set_position (0, 240)
+			panel.set_position (0, 220)
 			toolbar_panel.add_widget (panel)
 		end
 
@@ -559,6 +433,15 @@ feature -- Event handling
 			elseif a_slider.current_value < map_widget.map.passengers.count then
 				-- Remove
 				map_widget.map.passengers.prune_last (map_widget.map.passengers.count - a_slider.current_value)
+			end
+			io.put_string (map_widget.map.passengers.count.out + "%N")
+			from
+				map_widget.map.passengers.start
+			until
+				map_widget.map.passengers.off
+			loop
+				io.put_string (map_widget.map.passengers.item_for_iteration.position.out + " " + map_widget.map.passengers.item_for_iteration.speed.out + "%N")
+				map_widget.map.passengers.forth
 			end
 		end
 

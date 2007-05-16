@@ -28,7 +28,8 @@ feature {NONE} -- Initialization
 		do
 			theta := 0.6
 			phi := 1.0
-			radius := 5000.0
+			radius := 2000.0
+			time.add_callback_procedure (agent update)
 		ensure
 --			coordinates_initialized : (theta = 0.6) and (phi = 1.0) and (radius = 50.0)
 		end

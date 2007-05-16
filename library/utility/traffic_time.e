@@ -57,6 +57,22 @@ feature  -- Access
 	speedup: INTEGER
 		-- Speedup to let the time run faster than the original time
 
+	duration (a_start_time, a_end_time: like actual_time): TIME_DURATION is
+			-- Duration from `a_start_time' until `a_time2'.
+			-- Takes into account midnight.
+		require
+			both_exist: a_start_time /= Void and a_end_time /= Void
+		do
+			if a_end_time >= a_start_time then
+				create Result.make_by_fine_seconds (a_end_time.fine_seconds - a_start_time.fine_seconds)
+			else
+				create Result.make_by_fine_seconds (a_start_time.seconds_in_day - (a_start_time.fine_seconds - a_end_time.fine_seconds))
+			end
+		ensure
+			Result_exists: Result /= Void
+			Result_positive: Result.is_positive
+		end
+
 feature -- Status report
 
 	is_time_running: BOOLEAN

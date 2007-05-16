@@ -41,7 +41,7 @@ feature {NONE} -- Initialization
 			-- Create the Sun Object and Sunlight
 			create traffic_sun.make
 			create traffic_sun_light.make_as_child(root);
-			beauty_pass.add_light_source(traffic_sun_light)
+			beauty_pass.add_light_source (traffic_sun_light)
 
 			-- Set Sunight values
 			traffic_sun_light.set_diffuse_color (1.0, 1.0, 0.8, 1.0)
@@ -65,7 +65,7 @@ feature {NONE} -- Initialization
 			lensflare_pass.set_camera(beauty_pass.camera)
 			lensflare_pass.trace_3d_node(sun_model)
 			renderpass_manager.add_renderpass (lensflare_pass)
-			update_sun_representation
+			update
 		ensure
 			sun_model_created: sun_model /= Void
 			sun_created: traffic_sun /= Void
@@ -90,47 +90,33 @@ feature -- Status setting
 	enable_sunlight is
 			-- Enable the Sunlight.
 		do
-			--traffic_sun_light.enable
+			traffic_sun_light.enable
 		end
 
 	disable_sunlight is
 			-- Disable the Sunlight.
 		do
-			--traffic_sun_light.disable
+			traffic_sun_light.disable
 		end
 
 	enable_shadows is
 			-- enables shadows at day
 		do
 			shadows_enabled := true
-			update_sun_representation
+			update
 		end
 
 	disable_shadows is
 			-- does not enable shadows at day
 		do
 			shadows_enabled := false
-			update_sun_representation
+			update
 		end
 
 feature -- Basic operations
 
 	update is
 			-- Draw the sun.
-		do
-			if time.is_time_running then
-				-- If the time is running, then update the Sun Coordinates
-				-- using the simulated time				
-				traffic_sun.update
-				update_sun_representation
-			end
-		end
-
-
-feature {NONE} -- Implementation
-
-	update_sun_representation is
-			-- updates the 3d sun representation
 		local
 			sun_pos, up_vector: EM_VECTOR3D
 			sun_3d_pos: EM_VECTOR3D
@@ -151,7 +137,7 @@ feature {NONE} -- Implementation
 				diffuse_B := normalized_angle*(sun_pos.y.sign+1.0).sign
 				traffic_sun_light.set_diffuse_color (diffuse_R*3.0, (diffuse_B+diffuse_R)*1.5, diffuse_B*2.4, 1.0)
 				-- Set Background color
-				beauty_pass.set_background_color(ambient_component*0.2+0.05, ambient_component*0.8+0.05, ambient_component*1.0+0.1)
+				beauty_pass.set_background_color(ambient_component*0.4+0.1, ambient_component*0.8+0.1, ambient_component*1.0+0.2)
 
 				--activate/deactivate shadows at night/day
 				if sun_pos.y > 0 and shadows_enabled then
@@ -161,6 +147,8 @@ feature {NONE} -- Implementation
 				end
 		end
 
+
+feature {NONE} -- Implementation
 
 	traffic_sun: TRAFFIC_SUN
 		-- The Sun Object

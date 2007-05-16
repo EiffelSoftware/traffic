@@ -85,7 +85,7 @@ feature {NONE} -- Implementation
 
 			if not has_finished and last_move_time /= Void then
 				current_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
-				diff := (current_move_time.fine_seconds - last_move_time.fine_seconds)*speed/time.default_scale_factor
+				diff := (time.duration (last_move_time, current_move_time).fine_seconds_count)*speed/time.default_scale_factor
 				if ((position.x - destination.x).abs < diff) and ((position.y - destination.y).abs < diff) or direction.length <= 0 then
 					update_coordinates
 					update_angle

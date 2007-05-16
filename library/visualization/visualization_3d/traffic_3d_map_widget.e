@@ -73,7 +73,7 @@ feature -- Initialisation
 
 			--create the plane
 			create green_material.make
-			green_material.set_color(0.25,0.7,0.06) --(0.45,0.9,0.16)
+			green_material.set_color(0.2,0.4,0.0) --(0.45,0.9,0.16)
 			create primitive_factory.make
 			primitive_factory.set_material(green_material)
 			primitive_factory.create_simple_plane(plane_size, plane_size)
@@ -137,22 +137,6 @@ feature -- Status setting
 			is_map_hidden := False
 		ensure
 			map_not_hidden: not is_map_hidden
-		end
-
-	enable_sun_shown is
-			-- Set `is_sun_shown' to `True'.
-		do
-			is_sun_shown := True
-		ensure
-			sun_shown: is_sun_shown = True
-		end
-
-	disable_sun_shown is
-			-- Set `is_sun_shown' to `False'.
-		do
-			is_sun_shown := False
-		ensure
-			sun_not_shown: is_sun_shown = False
 		end
 
 	enable_shadows is

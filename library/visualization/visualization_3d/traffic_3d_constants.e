@@ -39,7 +39,7 @@ feature -- Constants
 --	Max_building_height: DOUBLE is 1.0
 			-- Maximum height of buildings.
 
-	Plane_size: DOUBLE is 1300.0--50.0
+	Plane_size: DOUBLE is 1600.0--50.0
 			-- Length, resp. width, of plane.
 
 --	Traffic_window_width: INTEGER is 800 -- 1000 -- 1024
