@@ -64,6 +64,7 @@ feature -- Access
 		local
 			l: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
 			c: TRAFFIC_LINE_CONNECTION
+			i: INTEGER
 		do
 			create Result.make (5)
 			from
@@ -73,14 +74,15 @@ feature -- Access
 			loop
 				from
 					l := stops.item.connection_list
+					i := 1
 				until
-					l.off
+					i > l.count
 				loop
-					c ?= l.item
+					c ?= l.i_th (i)
 					if c /= Void and then c.destination /= c.origin then
 						Result.force_last (c)
 					end
-					l.forth
+					i := i + 1
 				end
 				stops.forth
 			end

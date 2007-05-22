@@ -24,7 +24,7 @@ feature  -- Initialization
 			a_map_exists: a_map /= Void
 		do
 			create internal_places_on_route.make
-			create internal_route.make
+			create internal_route
 			internal_route.set_scale_factor (a_map.scale_factor)
 			internal_map := a_map
 		end
@@ -67,7 +67,7 @@ feature -- Basic operations
 --			internal_map_widget.paths_representation. internal_route
 			create traveler.make_with_points (itinerary, 0.5)
 			traveler.set_reiterate (True)
-			internal_map.passengers.force_last (traveler)
+			internal_map.free_movings.force_last (traveler)
 --			traveler.take_tour
 
 			index := internal_map.passengers.count
@@ -132,16 +132,16 @@ feature -- Access
 	places_on_route: LINKED_LIST [TRAFFIC_PLACE] is
 			-- All Places on route of last call to `calculate_shortest_path'.
 		local
-			connections: ARRAYED_LIST [TRAFFIC_CONNECTION]
+			connections: DS_LINKED_LIST [TRAFFIC_CONNECTION]
 		do
-			create connections.make (10)
+			create connections.make
 			connections := internal_route.connections
 			from
 				connections.start
 			until
 				connections.after
 			loop
-				internal_places_on_route.extend(connections.item.origin)
+				internal_places_on_route.extend(connections.item_for_iteration.origin)
 				connections.forth
 			end
 			internal_places_on_route.extend(internal_route.destination)
@@ -165,7 +165,7 @@ feature {NONE} -- Implementation
 
 	itinerary: DS_ARRAYED_LIST [EM_VECTOR_2D]
 
-	traveler: TRAFFIC_PASSENGER
+	traveler: TRAFFIC_FREE_MOVING
 
 	internal_map_widget: TOUCH_3D_MAP_WIDGET
 

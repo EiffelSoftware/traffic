@@ -40,8 +40,6 @@ feature -- Constants
 --	Max_building_height: DOUBLE is 1.0
 			-- Maximum height of buildings.
 
-	Plane_size: DOUBLE is 1600.0--50.0
-			-- Length, resp. width, of plane.
 
 --	Traffic_window_width: INTEGER is 800 -- 1000 -- 1024
 --			-- Window width.
@@ -58,13 +56,6 @@ feature -- Constants
 	Line_width: DOUBLE is 7.0
 			-- Width of the line representation on the map.
 
-	beauty_pass: TE_RENDERPASS_BEAUTY is
-			-- return the first renderpass of the rendermanager assuming this is the beautypass. change it here, if the beautypass isn't the first one
-		do
-			Result ?= (create{TE_3D_SHARED_GLOBALS}).renderpass_manager.renderpasses.i_th(1)
-		ensure
-			beauty_pass_is_first_pass: Result /= Void
-		end
 
 --	Line_height: DOUBLE is 0.01
 --			-- Height of the line representation on the map.

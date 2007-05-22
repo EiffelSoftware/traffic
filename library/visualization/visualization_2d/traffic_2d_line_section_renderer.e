@@ -102,8 +102,8 @@ feature -- Basic operations
 			elseif a_line_section.line /= Void then
 				if a_line_section.line.color /= Void then
 					tcol := a_line_section.line.color
-					create col.make_with_rgb (tcol.red, tcol.green, tcol.blue)
-					polyline.set_line_color (col)
+--					create col.make_with_rgb (tcol.red, tcol.green, tcol.blue)
+					polyline.set_line_color (tcol)
 				end
 			end
 			if traffic_type_line_widths.has (a_line_section.type.name) then

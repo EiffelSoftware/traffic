@@ -64,21 +64,21 @@ feature -- Basic operations
 	render (a_place: TRAFFIC_PLACE) : EM_DRAWABLE is
 				-- Rectangle to visualize `a_place'.
 		local
-			links: LIST [TRAFFIC_CONNECTION]
+			links: DS_LIST [TRAFFIC_CONNECTION]
 			p: EM_VECTOR_2D
 			rectangle: EM_RECTANGLE
 		do
 
 			-- Calculate rectangle to include all outgoing links of `a_place'.
-			links := map.connections_of_place (a_place.name)
+			links := a_place.outgoing_line_connections
 			from
 				links.start
 			until
 				links.after
 			loop
-				if links.item.polypoints /= Void and then links.item.polypoints.count > 0 then
+				if links.item_for_iteration.polypoints /= Void and then links.item_for_iteration.polypoints.count > 0 then
 				-- TODO: this check is only necessary because currently LINE_SECTION seems to be wrong --> see invariant of LINE_SECTION
-					p := links.item.polypoints.first
+					p := links.item_for_iteration.polypoints.first
 					if rectangle = Void then
 						create rectangle.make (p.twin, p.twin)
 					else

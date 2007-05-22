@@ -250,21 +250,21 @@ feature -- Access
 			end
 		end
 
-	connections_of_place (a_name: STRING): LIST [TRAFFIC_CONNECTION] is
-			-- Connections with origin or destination place `a_name'
-		require
-			place_in_map: places.has (a_name)
-		local
-			nodes: LIST [TRAFFIC_NODE]
-		do
-			Result := create {ARRAYED_LIST [TRAFFIC_CONNECTION]}.make (8)
-			nodes := places.item (a_name).nodes
-			from nodes.start until nodes.after loop
-				graph.search (nodes.item)
-				Result.append (graph.incident_edges)
-				nodes.forth
-			end
-		end
+--	connections_of_place (a_name: STRING): LIST [TRAFFIC_CONNECTION] is
+--			-- Connections with origin or destination place `a_name'
+--		require
+--			place_in_map: places.has (a_name)
+--		local
+--			nodes: LIST [TRAFFIC_NODE]
+--		do
+--			Result := create {ARRAYED_LIST [TRAFFIC_CONNECTION]}.make (8)
+--			nodes := places.item (a_name).nodes
+--			from nodes.start until nodes.after loop
+--				graph.search (nodes.item)
+--				Result.append (graph.incident_edges)
+--				nodes.forth
+--			end
+--		end
 
 feature -- Output
 

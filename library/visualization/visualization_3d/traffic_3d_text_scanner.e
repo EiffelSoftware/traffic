@@ -1,5 +1,5 @@
 indexing
-	description: "A tokenzier suited for iterated scanning."
+	description: "A tokenzier suited for iterative scanning."
 	date: "$Date: 2005/06/21 15:16:28 $"
 	revision: "$Revision: 1.4 $"
 

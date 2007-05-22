@@ -141,6 +141,7 @@ feature -- Basic Operations
 			loader: TRAFFIC_MAP_LOADER
 		do
 			create loader.make (map_name)
+			loader.disable_dump_loading
 			if not loader.has_error then
 				loader.load_map
 				if not loader.has_error then

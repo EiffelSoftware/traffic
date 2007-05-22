@@ -52,7 +52,8 @@ feature --Initialization
 			create p2.make (map_to_gl_coords(a_place.position).x+0.5, map_to_gl_coords(a_place.position).y+0.5)
 			create p3.make (map_to_gl_coords(a_place.position).x-0.5, map_to_gl_coords(a_place.position).y+0.5)
 			create p4.make (map_to_gl_coords(a_place.position).x-0.5, map_to_gl_coords(a_place.position).y+1.5)
-			create internal_building.make (p1, p2, p3, p4, internal_building_height, a_place.name)
+			create {TRAFFIC_SKYSCRAPER} internal_building.make_default (a_place.position)
+--			create internal_building.make (p1, p2, p3, p4, internal_building_height, a_place.name)
 			internal_building.set_angle (45)
 
 			create poly_points.make
@@ -81,11 +82,11 @@ feature -- Status report
 
 feature -- Options
 
-	set_id(an_id: INTEGER) is
-			-- Set id to `an_id'.		
-		do
-			internal_building.set_id (an_id)
-		end
+--	set_id(an_id: INTEGER) is
+--			-- Set id to `an_id'.		
+--		do
+--			internal_building.set_id (an_id)
+--		end
 
 	set_angle(an_angle: DOUBLE) is
 			-- Set angle to `a_angle'.
@@ -93,11 +94,11 @@ feature -- Options
 			internal_building.set_angle (an_angle)
 		end
 
-	 set_information(a_information: TRAFFIC_BUILDING_INFORMATION) is
-	 		-- Set information to `a_information'.
-	 	do
-	 		internal_building.set_information (a_information)
-	 	end
+--	 set_information(a_information: TRAFFIC_BUILDING_INFORMATION) is
+--	 		-- Set information to `a_information'.
+--	 	do
+--	 		internal_building.set_information (a_information)
+--	 	end
 
 feature -- Element change
 
@@ -120,7 +121,8 @@ feature -- Element change
 	undo_spotlight is
 			-- Take the spotlighted building out of the building list.
 		do
-			internal_map_widget.buildings_representation.delete_one_building (internal_building)
+			internal_map_widget.map.buildings.delete (internal_building)
+--			internal_map_widget.buildings_representation.delete_one_building (internal_building)
 		end
 
 

@@ -41,7 +41,9 @@ feature {NONE} -- Initialization
 			-- Create the Sun Object and Sunlight
 			create traffic_sun.make
 			create traffic_sun_light.make_as_child(root);
+			beauty_pass ?= (create{TE_3D_SHARED_GLOBALS}).renderpass_manager.renderpasses.i_th(1)
 			beauty_pass.add_light_source (traffic_sun_light)
+
 
 			-- Set Sunight values
 			traffic_sun_light.set_diffuse_color (1.0, 1.0, 0.8, 1.0)
@@ -84,6 +86,8 @@ feature -- Access
 	lensflare_pass: TE_RENDERPASS_LENSFLARE
 
 	shadow_pass: TE_RENDERPASS_STENCILSHADOW
+
+	beauty_pass: TE_RENDERPASS_BEAUTY
 
 feature -- Status setting
 

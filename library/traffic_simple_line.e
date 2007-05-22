@@ -52,7 +52,7 @@ feature {NONE} -- Initialization
 			count_line_section_not_void: count_line >= 0 -- List is initilalized.
 			stops_one_direction_exists: stops_one_direction /= Void
 			stops_other_direction_exists: stops_other_direction /= Void
-			map_set: map = a_map
+--			map_set: map = a_map
 		end
 
 feature -- Access
