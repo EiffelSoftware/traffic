@@ -1,13 +1,11 @@
 # XSI Wavefront OBJ Export v3.0
-# File Created: Tue Nov 21 21:38:31 2006
+# File Created: Thu Nov 23 09:28:56 2006
 # XSI Version: 5.0.2005.1013-1
-mtllib building3.mtl
+mtllib villa_blue_night.mtl
 
-shadow building2_3_shadow.obj
-
-o building3
+o villa_blue
 # Hierarchy (from self to top father)
-g building3
+g villa_blue
 
 #begin 268 vertices
 v 0.078334 0.061638 0.191602
@@ -895,164 +893,164 @@ vt 0.716081 0.992854 0.000000
 #end 304 texture vertices
 
 #begin 80 faces
-usemtl building3
+usemtl villa_blue
 f 55/1/1 20/2/2 4/3/3 2/4/4 
-usemtl building3
+usemtl villa_blue
 f 5/8/8 14/24/24 35/26/26 37/5/5 
-usemtl building3
+usemtl villa_blue
 f 10/23/23 26/9/9 21/10/10 
-usemtl building3
+usemtl villa_blue
 f 19/13/13 21/14/14 26/15/15 6/16/16 
-usemtl building3
+usemtl villa_blue
 f 3/17/17 243/63/63 57/64/64 22/20/20 
-usemtl building3
+usemtl villa_blue
 f 25/18/18 8/19/19 29/11/11 9/12/12 
-usemtl building3
+usemtl villa_blue
 f 24/7/7 27/6/6 12/28/28 11/27/27 
-usemtl building3
+usemtl villa_blue
 f 18/32/32 17/31/31 23/30/30 38/29/29 
-usemtl building3
+usemtl villa_blue
 f 34/43/43 7/38/38 15/34/34 36/33/33 
-usemtl building3
+usemtl villa_blue
 f 15/37/37 7/35/35 18/36/36 
-usemtl building3
+usemtl villa_blue
 f 31/39/39 33/40/40 13/41/41 16/42/42 
-usemtl building3
+usemtl villa_blue
 f 32/25/25 39/47/47 1/44/44 
-usemtl building3
+usemtl villa_blue
 f 46/51/51 59/66/66 58/65/65 43/48/48 
-usemtl building3
+usemtl villa_blue
 f 51/56/56 50/55/55 49/54/54 48/53/53 47/52/52 
-usemtl building3
+usemtl villa_blue
 f 40/45/45 1/46/46 39/58/58 42/57/57 
-usemtl building3
+usemtl villa_blue
 f 54/59/59 41/60/60 52/61/61 53/62/62 
-usemtl building3
+usemtl villa_blue
 f 28/22/22 30/21/21 244/68/68 56/67/67 
-usemtl building3
+usemtl villa_blue
 f 45/50/50 44/49/49 58/70/70 59/69/69 
-usemtl building3
+usemtl villa_blue
 f 60/71/71 71/72/72 63/73/73 61/74/74 
-usemtl building3
+usemtl villa_blue
 f 64/78/78 74/77/77 67/76/76 66/75/75 
-usemtl building3
+usemtl villa_blue
 f 69/93/93 77/79/79 72/80/80 
-usemtl building3
+usemtl villa_blue
 f 70/83/83 72/84/84 77/85/85 65/86/86 
-usemtl building3
+usemtl villa_blue
 f 62/87/87 78/92/92 80/91/91 73/90/90 
-usemtl building3
+usemtl villa_blue
 f 75/88/88 76/89/89 79/81/81 68/82/82 
-usemtl building3
+usemtl villa_blue
 f 127/94/94 83/95/95 130/96/96 82/97/97 
-usemtl building3
+usemtl villa_blue
 f 134/155/155 138/100/100 118/99/99 106/98/98 
-usemtl building3
+usemtl villa_blue
 f 81/102/102 152/172/172 153/173/173 129/105/105 
-usemtl building3
+usemtl villa_blue
 f 82/106/106 130/107/107 150/108/108 86/109/109 
-usemtl building3
+usemtl villa_blue
 f 128/110/110 248/182/182 155/180/180 84/113/113 
-usemtl building3
+usemtl villa_blue
 f 133/111/111 94/112/112 247/181/181 154/179/179 
-usemtl building3
+usemtl villa_blue
 f 90/116/116 150/121/121 130/120/120 
-usemtl building3
+usemtl villa_blue
 f 89/114/114 153/174/174 87/122/122 
-usemtl building3
+usemtl villa_blue
 f 107/124/124 111/125/125 105/126/126 95/127/127 
-usemtl building3
+usemtl villa_blue
 f 110/131/131 123/130/130 98/129/129 104/128/128 
-usemtl building3
+usemtl villa_blue
 f 93/135/135 135/134/134 102/133/133 120/132/132 
-usemtl building3
+usemtl villa_blue
 f 92/139/139 93/138/138 122/137/137 112/136/136 
-usemtl building3
+usemtl villa_blue
 f 96/140/140 108/141/141 97/142/142 91/143/143 
-usemtl building3
+usemtl villa_blue
 f 113/101/101 119/146/146 117/145/145 125/144/144 
-usemtl building3
+usemtl villa_blue
 f 121/150/150 115/149/149 151/148/148 99/147/147 
-usemtl building3
+usemtl villa_blue
 f 124/154/154 109/153/153 103/152/152 114/151/151 
-usemtl building3
+usemtl villa_blue
 f 137/156/156 126/157/157 136/158/158 100/159/159 
-usemtl building3
+usemtl villa_blue
 f 142/163/163 250/184/184 158/183/183 139/160/160 
-usemtl building3
+usemtl villa_blue
 f 146/167/167 145/166/166 251/185/185 161/186/186 
-usemtl building3
+usemtl villa_blue
 f 149/168/168 101/169/169 147/170/170 148/171/171 
-usemtl building3
+usemtl villa_blue
 f 131/103/103 87/104/104 153/176/176 152/175/175 
-usemtl building3
+usemtl villa_blue
 f 129/123/123 153/178/178 89/177/177 
-usemtl building3
+usemtl villa_blue
 f 132/115/115 85/117/117 246/188/188 157/187/187 
-usemtl building3
+usemtl villa_blue
 f 88/119/119 116/118/118 245/190/190 156/189/189 
-usemtl building3
+usemtl villa_blue
 f 141/162/162 140/161/161 249/192/192 159/191/191 
-usemtl building3
+usemtl villa_blue
 f 144/165/165 143/164/164 252/194/194 160/193/193 
-usemtl building3
+usemtl villa_blue
 f 181/197/197 162/196/196 163/195/195 
-usemtl building3
+usemtl villa_blue
 f 164/198/198 174/199/199 175/200/200 165/201/201 
-usemtl building3
+usemtl villa_blue
 f 173/202/202 167/203/203 163/204/204 
-usemtl building3
+usemtl villa_blue
 f 168/215/215 170/207/207 171/206/206 179/205/205 
-usemtl building3
+usemtl villa_blue
 f 166/208/208 178/209/209 169/210/210 177/211/211 
-usemtl building3
+usemtl villa_blue
 f 176/212/212 180/213/213 172/214/214 
-usemtl building3
+usemtl villa_blue
 f 182/216/216 193/217/217 185/218/218 183/219/219 
-usemtl building3
+usemtl villa_blue
 f 186/223/223 196/222/222 189/221/221 188/220/220 
-usemtl building3
+usemtl villa_blue
 f 191/238/238 220/265/265 194/225/225 
-usemtl building3
+usemtl villa_blue
 f 192/228/228 194/229/229 220/264/264 219/263/263 
-usemtl building3
+usemtl villa_blue
 f 184/232/232 254/248/248 213/249/249 195/235/235 
-usemtl building3
+usemtl villa_blue
 f 197/233/233 198/234/234 256/250/250 211/247/247 
-usemtl building3
+usemtl villa_blue
 f 206/242/242 216/252/252 215/251/251 203/239/239 
-usemtl building3
+usemtl villa_blue
 f 210/246/246 209/245/245 217/253/253 218/254/254 
-usemtl building3
+usemtl villa_blue
 f 200/237/237 202/236/236 255/256/256 212/255/255 
-usemtl building3
+usemtl villa_blue
 f 201/226/226 190/227/227 253/258/258 214/257/257 
-usemtl building3
+usemtl villa_blue
 f 205/241/241 204/240/240 215/260/260 216/259/259 
-usemtl building3
+usemtl villa_blue
 f 208/244/244 207/243/243 218/262/262 217/261/261 
-usemtl building3
+usemtl villa_blue
 f 199/230/230 187/231/231 219/267/267 220/266/266 
-usemtl building3
+usemtl villa_blue
 f 199/224/224 220/269/269 191/268/268 
-usemtl building3
+usemtl villa_blue
 f 228/275/275 221/273/273 222/277/277 
-usemtl building3
+usemtl villa_blue
 f 223/276/276 224/271/271 221/272/272 
-usemtl building3
+usemtl villa_blue
 f 226/270/270 225/278/278 227/274/274 
-usemtl building3
+usemtl villa_blue
 f 231/281/281 230/280/280 229/279/279 
-usemtl building3
+usemtl villa_blue
 f 234/284/284 233/283/283 232/282/282 
-usemtl building3
+usemtl villa_blue
 f 257/285/285 237/286/286 238/287/287 236/288/288 
-usemtl building3
+usemtl villa_blue
 f 239/292/292 264/291/291 267/290/290 266/289/289 
-usemtl building3
+usemtl villa_blue
 f 235/293/293 263/294/294 241/295/295 260/296/296 
-usemtl building3
+usemtl villa_blue
 f 258/297/297 261/298/298 242/299/299 240/300/300 
-usemtl building3
+usemtl villa_blue
 f 259/301/301 265/302/302 268/303/303 262/304/304 
 #end 80 faces

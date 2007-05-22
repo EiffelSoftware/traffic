@@ -88,7 +88,7 @@ feature -- Basic operations
 				p2 := p2.rotation (center, -angle*pi/180)
 				p3 := p3.rotation (center, -angle*pi/180)
 				p4 := p4.rotation (center, -angle*pi/180)
-				create building.make (p1,p2,p3,p4, height, building_name)
+--				create building.make (p1,p2,p3,p4, height, building_name)
 
 				building.set_angle (angle)
 				internal_map.buildings_representation.add_building (building)

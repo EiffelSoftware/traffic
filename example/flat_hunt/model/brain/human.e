@@ -11,7 +11,7 @@ inherit
 
 feature -- Basic operations
 
-	choose_next_move (possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: TRAFFIC_PLACE) is
+	choose_next_move (possible_moves: LINKED_LIST [TRAFFIC_LINE_CONNECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: TRAFFIC_PLACE) is
 			-- Choose next move.
 		do
 			chosen_move := Void
@@ -30,6 +30,6 @@ feature -- Basic operations
 			end
 		ensure then
 			result_has_place_if_not_void: chosen_move /= Void implies chosen_move.origin = my_location
-		end		
-		
+		end
+
 end

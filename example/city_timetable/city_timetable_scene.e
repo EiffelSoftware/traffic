@@ -56,7 +56,7 @@ feature -- Interface
 			map_widget.set_map (loader.map)
 			loaded_file_name := s
 
-			create point_randomizer.set_map (loader.map)
+			create point_randomizer.make (loader.map.center, loader.map.radius)
 			create path_randomizer.set_map (loader.map)
 
 			build_tool_bar
@@ -251,6 +251,20 @@ feature -- Interface
 			Result.add_widget (path_checkbox)
 		end
 
+	build_building_tools: EM_PANEL is
+			-- Build the area that steers the building generation.
+		local
+			label: EM_LABEL
+			button: EM_BUTTON
+			slider: EM_SLIDER
+		do
+			create Result.make_from_dimension (toolbar_panel.width, 20)
+			create button.make_from_text ("Add random buildings")
+			button.clicked_event.subscribe (agent add_buildings)
+			button.set_position (10, 0)
+			Result.add_widget (button)
+		end
+
 	build_tool_bar is
 			-- Build the toolbar.
 		require
@@ -295,6 +309,10 @@ feature -- Interface
 			panel := build_path_tools
 			panel.set_position (0, 220)
 			toolbar_panel.add_widget (panel)
+
+			panel := build_building_tools
+			panel.set_position (0, 240)
+			toolbar_panel.add_widget (panel)
 		end
 
 feature -- Event handling
@@ -316,7 +334,7 @@ feature -- Event handling
 				if not loader.has_error then
 					map_widget.set_map (loader.map)
 					loaded_file_name := a_dlg.filename
-					point_randomizer.set_map (loader.map)
+					point_randomizer.make (loader.map.center, loader.map.radius)
 					path_randomizer.set_map (loader.map)
 				else
 					create dlg.make_from_error ("Error parsing" + a_dlg.filename)
@@ -513,6 +531,31 @@ feature -- Event handling
 				map_widget.map.paths.prune_last (map_widget.map.paths.count - a_slider.current_value)
 			end
 		end
+
+	add_buildings is
+			-- Add buildings to the city.
+		local
+			b: TRAFFIC_BUILDING
+			r: TRAFFIC_BUILDING_RANDOMIZER
+		do
+			create r.set_map (map_widget.map)
+			r.generate_random_buildings (10, map_widget.map.radius/3, 3)
+			map_widget.map.buildings.append_last (r.last_buildings)
+			r.generate_random_buildings (15, map_widget.map.radius*2/3, 2)
+			map_widget.map.buildings.append_last (r.last_buildings)
+			r.generate_random_buildings (100, map_widget.map.radius, 1)
+			map_widget.map.buildings.append_last (r.last_buildings)
+--			map_widget.grid_member.set_grid (r.grid)
+--			point_randomizer.generate_point_array (4)
+--			create {TRAFFIC_VILLA} b.make_default (point_randomizer.last_array.item (1))
+--			map_widget.map.buildings.force_last (b)
+--			create {TRAFFIC_SKYSKRAPER} b.make_default (point_randomizer.last_array.item (2))
+--			map_widget.map.buildings.force_last (b)
+--			create {TRAFFIC_APARTMENT_BUILDING} b.make_default (point_randomizer.last_array.item (3))
+--			map_widget.map.buildings.force_last (b)
+--			map_widget.place_buildings_randomly (2)
+		end
+
 
 	call_taxi (a_place: TRAFFIC_PLACE; an_event: EM_MOUSEBUTTON_EVENT) is
 			-- Send a taxi to `a_place'.

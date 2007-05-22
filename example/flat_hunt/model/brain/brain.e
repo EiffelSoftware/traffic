@@ -5,22 +5,22 @@ indexing
 
 deferred class
 	BRAIN
-	
+
 inherit
 	DOUBLE_MATH
-	
+
 	ANY
-		export 
+		export
 			{ANY} generating_type
-		end	
-		
+		end
+
 	SHARED_KNOWLEDGE
-		
+
 feature -- Access
 
-	chosen_move: TRAFFIC_LINE_SECTION
+	chosen_move: TRAFFIC_LINE_CONNECTION
 			-- The move the brain has chosen.
-	
+
 feature -- Status Setting
 
 	set_selected_place (a_place: like selected_place) is
@@ -33,7 +33,7 @@ feature -- Status Setting
 
 feature -- Basic operations
 
-	choose_next_move (possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: TRAFFIC_PLACE) is
+	choose_next_move (possible_moves: LINKED_LIST [TRAFFIC_LINE_CONNECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: TRAFFIC_PLACE) is
 			-- Choose next move.
 		require
 			possible_moves_not_empty: not possible_moves.is_empty
@@ -41,8 +41,8 @@ feature -- Basic operations
 		deferred
 		ensure
 			possible_move_chosen: chosen_move /= Void implies possible_moves.has (chosen_move)
-		end	
-		
+		end
+
 feature {NONE} -- Implementation
 
 	selected_place: TRAFFIC_PLACE
@@ -57,5 +57,5 @@ feature {NONE} -- Implementation
 		   calculation_is_correct: Result * Result >= (location_1.position.x - location_2.position.x) * (location_1.position.x - location_2.position.x) and
 							Result * Result >= (location_1.position.y - location_2.position.y) * (location_1.position.y - location_2.position.y)
 		end
-	
+
 end

@@ -7,14 +7,14 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-class 
-	MAIN_CONTROLLER 
+class
+	MAIN_CONTROLLER
 
 inherit
 	GAME_CONSTANTS
-	
+
 	SHARED_THEME
-	
+
 create
 	make
 
@@ -29,14 +29,14 @@ feature -- Initialization
 			default_create
 			game := a_game
 			game_scene := a_game_scene
-			game_scene.set_pause_callback (agent take_a_pause)			
+			game_scene.set_pause_callback (agent take_a_pause)
 			create status.make (0)
 		ensure
 			game_set: game = a_game
 			game_scene_set: game_scene = a_game_scene
 			status_exists: status /= Void
 		end
-			
+
 feature -- Game operations
 
 	start_game is
@@ -45,12 +45,12 @@ feature -- Game operations
 			end_game_called_once := False
 			game.create_players
 			game_scene.create_players_from_list (game.players)
-			subscribe_to_clicked_place_event (agent process_clicked_place)			
+			subscribe_to_clicked_place_event (agent process_clicked_place)
 			subscribe_to_outside_event (agent idle_action)
 			game.start_game
 			status_before_prepare
 			update_status
-			
+
 			play_called_once := False
 			move_called_once := False
 			take_a_pause (False)
@@ -63,13 +63,13 @@ feature -- Game operations
 	end_game is
 			-- Display end game text, markings and menu when game over.
 		local
-			i: INTEGER		
+			i: INTEGER
 		do
 			if not end_game_called_once then
 				end_game_called_once := True
 				status_game_over
 				update_status
-				
+
 				-- Unmark players.
 				from
 					game.players.start
@@ -79,9 +79,9 @@ feature -- Game operations
 					game.players.item.set_unmarked
 					game.players.forth
 				end
-				
+
 				-- Display players and their defeat marking.
-				game.estate_agent.set_visibility (True)				
+				game.estate_agent.set_visibility (True)
 				if game.state = game.Agent_caught or game.state = game.Agent_stuck then
 					-- Flat hunters win.
 					game.estate_agent.set_defeated (True)
@@ -96,10 +96,10 @@ feature -- Game operations
 						game.players.i_th (i).set_defeated (True)
 						i := i + 1
 					end
-				end	
+				end
 				game_scene.display_end_game
 			end
-		end		
+		end
 
 feature -- Output
 
@@ -113,15 +113,15 @@ feature -- Output
 			elseif game.state = agent_stuck then
 				status := status +"%NEstate agent was encircled in round " + game.current_round_number.out + "%Nat " + game.estate_agent.location.name
 			elseif game.state = agent_escapes then
-				status := status + "%NEstate agent escaped!" + "%NEstate agent: " + game.estate_agent.location.name			
-			end			
+				status := status + "%NEstate agent escaped!" + "%NEstate agent: " + game.estate_agent.location.name
+			end
 		end
-		
+
 	status_before_prepare is
 			-- Status of player before the move
 		do
 			status.wipe_out
-			status_overview			
+			status_overview
 			status := status + "%N%NStatus of current player:%N" + game_scene.player_displayers.i_th (game.current_player_index).statistics
 		end
 
@@ -137,7 +137,7 @@ feature -- Output
 			game_scene.set_status (status)
 			game_scene.update_status_box
 			game_scene.update_player_status_box (game.current_player_index)
-		end		
+		end
 
 feature -- Event handling
 
@@ -165,12 +165,12 @@ feature -- Event handling
 				place_renderer.set_place_color (theme.selected_place_color)
 				game_scene.big_map_widget.set_place_special_renderer (place_renderer, a_place)
 				game.set_selected_place (a_place)
-				
+
 				--Re-Render the scene for the effects to be visible
 				game_scene.big_map_widget.rerender_place (a_place)
 				game_scene.redraw
-			end			
-		end	
+			end
+		end
 
 feature {NONE} -- Game loop implementation
 
@@ -180,26 +180,26 @@ feature {NONE} -- Game loop implementation
 			no_pause_taken: not paused
 			game_state_prepare: game.state = game.Prepare_state
 		do
-			
+
 			-- Update status boxes.
 			if game.current_player = game.estate_agent then
-				game.update_agent_visibility				
+				game.update_agent_visibility
 			end
 			status_before_prepare
-			update_status			
-				
+			update_status
+
 			-- Prepare game and redraw scene.
 			game.prepare
-			
+
 			-- Prepare current player.
 			if game.current_player /= game.estate_agent or game.estate_agent.is_visible then
 				game_scene.center_on_player (game.current_player)
 				game.current_player.set_marked
 			end
-			
+
 		ensure
 			correct_game_state: game.state = game.Prepare_state or game.state = game.Play_state or game.state = game.Agent_stuck or game.state = Agent_escapes
-		end		
+		end
 
 	play is
 			-- Let current player choose next move.
@@ -215,7 +215,7 @@ feature {NONE} -- Game loop implementation
 		ensure
 			correct_game_state: game.state = game.Play_state or game.state = game.Move_state
 		end
-		
+
 	move is
 			-- Perform player's move and update display.
 		require
@@ -225,7 +225,7 @@ feature {NONE} -- Game loop implementation
 			if not move_called_once then
 				move_called_once := True
 				game.move
-				game.last_player.set_unmarked				
+				game.last_player.set_unmarked
 				game_scene.redraw
 				play_called_once := False
 			end
@@ -240,7 +240,7 @@ feature {NONE} -- Implementation
 
 	game_scene: GAME_SCENE
 			-- Where the game is visualized.
-			
+
 	status: STRING
 			-- Status of current `game' to be displayed in `game_scene',
 
@@ -255,7 +255,7 @@ feature {NONE} -- Implementation
 
 	end_game_called_once: BOOLEAN
 			-- Is the game already game over?
-			
+
 	idle_action is
 			-- Things that are done when nothing else is processing.
 		do
@@ -300,9 +300,9 @@ feature {NONE} -- Implementation
 			-- Sleep for `a_time' milliseconds and let event loop process events in the meantime.
 		do
 			game_scene.event_loop.delay_and_process (a_time)
-		end		
+		end
 
-	has_place (a_line_section: TRAFFIC_LINE_SECTION; a_place: TRAFFIC_PLACE): BOOLEAN is
+	has_place (a_line_section: TRAFFIC_LINE_CONNECTION; a_place: TRAFFIC_PLACE): BOOLEAN is
 			-- Is `a_line_section.destination' equal `a_place'?
 		require
 			a_line_section_exists: a_line_section /= Void
@@ -314,5 +314,5 @@ feature {NONE} -- Implementation
 invariant
 	game_exists: game /= Void
 	status_exists: status /= Void
-	
+
 end

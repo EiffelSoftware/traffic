@@ -11,11 +11,11 @@ inherit
 
 feature -- Basic operations
 
-	choose_next_move (possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: TRAFFIC_PLACE) is
+	choose_next_move (possible_moves: LINKED_LIST [TRAFFIC_LINE_CONNECTION]; my_location: TRAFFIC_PLACE; last_estate_agent_location: TRAFFIC_PLACE) is
 			-- Choose next move for a flat hunter.
 		local
-			best_move_so_far: TRAFFIC_LINE_SECTION
-			tmp_move: TRAFFIC_LINE_SECTION
+			best_move_so_far: TRAFFIC_LINE_CONNECTION
+			tmp_move: TRAFFIC_LINE_CONNECTION
 			best_distance: DOUBLE
 			tmp_distance: DOUBLE
 		do
@@ -23,7 +23,7 @@ feature -- Basic operations
 				last_estate_agent_location = Void
 			then
 				chosen_move := possible_moves.first
-			else	
+			else
 				from
 					possible_moves.start
 					best_move_so_far := possible_moves.item
@@ -50,9 +50,9 @@ feature -- Basic operations
 				end
 				chosen_move := best_move_so_far
 			end
-		ensure then 
+		ensure then
 			result_not_void: chosen_move /= Void
 			result_has_place: chosen_move.origin = my_location
-		end		
+		end
 
 end

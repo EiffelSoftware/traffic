@@ -14,7 +14,7 @@ feature -- Basic operations
 			--function for drawing the object
 		require
 			an_object_not_void: an_object /= Void
-		deferred		
+		deferred
 		end
-		
+
 end

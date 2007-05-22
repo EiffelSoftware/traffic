@@ -45,10 +45,10 @@ feature -- Access
 	position: EM_VECTOR_2D
 			-- Position on the map.			
 
-	possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]
+	possible_moves: LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 			-- Locations the player could move to.
 
-	next_move: TRAFFIC_LINE_SECTION
+	next_move: TRAFFIC_LINE_CONNECTION
 			-- Next move (chosen by `brain').
 
 	brain: BRAIN

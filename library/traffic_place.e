@@ -59,6 +59,34 @@ feature {NONE} -- Initialize
 
 feature -- Access
 
+	outgoing_line_connections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION] is
+			-- All outgoing line connections
+		local
+			l: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
+			c: TRAFFIC_LINE_CONNECTION
+		do
+			create Result.make (5)
+			from
+				stops.start
+			until
+				stops.after
+			loop
+				from
+					l := stops.item.connection_list
+				until
+					l.off
+				loop
+					c ?= l.item
+					if c /= Void and then c.destination /= c.origin then
+						Result.force_last (c)
+					end
+					l.forth
+				end
+				stops.forth
+			end
+		end
+
+
 	name: STRING
 			-- Name of place
 

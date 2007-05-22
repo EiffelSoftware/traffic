@@ -334,13 +334,13 @@ feature {NONE} -- Implementation
 			a_player_exists: a_player /= Void
 			traffic_map_exists: traffic_map /= Void
 		local
-			tmp_line_section: TRAFFIC_LINE_SECTION
-			tmp_two_station_line_sections: LINKED_LIST [TRAFFIC_LINE_SECTION]
-			outgoing_line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_SECTION]
-			possible_moves: LINKED_LIST [TRAFFIC_LINE_SECTION]
+			tmp_line_section: TRAFFIC_LINE_CONNECTION
+			tmp_two_station_line_sections: LINKED_LIST [TRAFFIC_LINE_CONNECTION]
+			outgoing_line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+			possible_moves: LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 		do
 			create possible_moves.make
-			outgoing_line_sections := traffic_map.line_sections.items_of_place (a_player.location)
+			outgoing_line_sections := a_player.location.outgoing_line_connections --traffic_map.line_sections.items_of_place (a_player.location)
 			from
 				outgoing_line_sections.start
 			until
@@ -374,18 +374,18 @@ feature {NONE} -- Implementation
 			possible_moves_set: a_player.possible_moves /= Void
 		end
 
-	two_station_tram_line_section (a_line_section: TRAFFIC_LINE_SECTION): LINKED_LIST [TRAFFIC_LINE_SECTION] is
+	two_station_tram_line_section (a_line_section: TRAFFIC_LINE_CONNECTION): LINKED_LIST [TRAFFIC_LINE_CONNECTION] is
 			-- Create line sections to all tram stops that are two segments away from `a_line_section.origin' going  through `a_line_section'.
 		require
 			a_line_section_exists: a_line_section /= Void
 			traffic_map_exists: traffic_map /= Void
 		local
 			destination: TRAFFIC_PLACE
-			outgoing_line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_SECTION]
+			outgoing_line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 			list: ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			create Result.make
-			outgoing_line_sections := traffic_map.line_sections.items_of_place (a_line_section.destination)
+			outgoing_line_sections := a_line_section.destination.outgoing_line_connections --traffic_map.line_sections.items_of_place (a_line_section.destination)
 			from
 				outgoing_line_sections.start
 			until
@@ -397,7 +397,7 @@ feature {NONE} -- Implementation
 					create list.make (2)
 					list.extend (a_line_section.origin.position)
 					list.extend (destination.position)
-					Result.extend (create {TRAFFIC_LINE_SECTION}.make_non_insertable (a_line_section.origin, destination, Tram_type, list))
+--					Result.extend (create {TRAFFIC_LINE_CONNECTION}.make_non_insertable (a_line_section.origin, destination, Tram_type, list))
 				end
 				outgoing_line_sections.forth
 			end

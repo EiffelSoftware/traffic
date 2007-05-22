@@ -7,23 +7,49 @@ class
 	TRAFFIC_POINT_RANDOMIZER
 
 create
-	set_map
+	make
 
-feature -- Element change
+feature -- Initialization
 
-	set_map (a_map: TRAFFIC_MAP) is
-			-- Initialize with `a_map'.
+	make (a_center: EM_VECTOR_2D; a_radius: DOUBLE) is
+			--
 		require
-			a_map_exists: a_map /= Void
+			a_center_exists: a_center /= Void
+			a_radius_valid: a_radius > 0
 		local
 			t: TIME
 		do
 			create t.make_now
 			create random.set_seed (t.compact_time)
 			random.start
-			map := a_map
+			center := a_center
+			radius := a_radius
 		ensure
-			map_set: map = a_map
+			random_set: random /= Void
+			center_set: center = a_center
+			radius_set: radius = a_radius
+		end
+
+feature -- Element change
+
+	set_center (a_center: EM_VECTOR_2D) is
+			-- Set `center' to `a_center'.
+		require
+			a_center_exists: a_center /= Void
+		do
+			center := a_center
+		ensure
+			center_set: center = a_center
+		end
+
+	set_radius (a_radius: DOUBLE) is
+			-- Set `radius' to `a_radius'.
+		require
+			a_radius_valid: a_radius > 0
+		do
+			radius := a_radius
+		ensure
+			radius_set: radius = a_radius
 		end
 
 feature -- Basic operations
@@ -44,9 +70,9 @@ feature -- Basic operations
 				i > n
 			loop
 				random.forth
-				x := random.double_item * map.radius * 2 - map.radius + map.center.x
+				x := random.double_item * radius * 2 - radius + center.x
 				random.forth
-				y := random.double_item * map.radius * 2 - map.radius + map.center.y
+				y := random.double_item * radius * 2 - radius + center.y
 				last_array.put_last (create {EM_VECTOR_2D}.make (x, y))
 				i := i + 1
 			end
@@ -57,11 +83,15 @@ feature -- Basic operations
 
 feature -- Access
 
-	map: TRAFFIC_MAP
+--	map: TRAFFIC_MAP
 			-- Map for which the points are generated
 
 	last_array: DS_ARRAYED_LIST [EM_VECTOR_2D]
 			-- Last generated array of points
+
+	radius: DOUBLE
+
+	center: EM_VECTOR_2D
 
 feature {NONE} -- Implementation
 
@@ -70,7 +100,7 @@ feature {NONE} -- Implementation
 
 invariant
 
-	map_exists: map /= Void
+	center_exists: center /= Void
 	random_exists: random /= Void
 
 end

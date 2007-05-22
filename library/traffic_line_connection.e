@@ -16,6 +16,14 @@ inherit
 			type
 		end
 
+
+	HASHABLE
+		undefine
+			is_equal,
+			out
+		end
+
+
 create
 	make
 

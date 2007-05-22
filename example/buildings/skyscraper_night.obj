@@ -1,11 +1,11 @@
 # XSI Wavefront OBJ Export v3.0
 # File Created: Thu Nov 23 09:00:00 2006
 # XSI Version: 5.0.2005.1013-1
-mtllib building4_night.mtl
+mtllib skyscraper_night.mtl
 
-o building4
+o skyscraper
 # Hierarchy (from self to top father)
-g building4
+g skyscraper
 
 #begin 340 vertices
 v -0.208288 0.001565 0.210989
@@ -1557,404 +1557,404 @@ vt 0.495303 0.619331 0.000000
 #end 600 texture vertices
 
 #begin 200 faces
-usemtl building4
+usemtl skyscraper
 f 3/1/1 4/2/2 160/3/3 
-usemtl building4
+usemtl skyscraper
 f 160/4/4 161/5/5 3/6/6 
-usemtl building4
+usemtl skyscraper
 f 7/7/7 8/8/8 5/9/9 
-usemtl building4
+usemtl skyscraper
 f 5/10/10 6/11/11 7/12/12 
-usemtl building4
+usemtl skyscraper
 f 165/13/13 2/14/14 1/15/15 
-usemtl building4
+usemtl skyscraper
 f 1/16/16 164/17/17 165/18/18 
-usemtl building4
+usemtl skyscraper
 f 166/19/19 170/20/20 162/21/21 
-usemtl building4
+usemtl skyscraper
 f 15/22/22 16/23/23 171/24/24 
-usemtl building4
+usemtl skyscraper
 f 171/25/25 14/26/26 15/27/27 
-usemtl building4
+usemtl skyscraper
 f 18/28/28 10/29/29 9/30/30 
-usemtl building4
+usemtl skyscraper
 f 9/31/31 179/32/32 18/33/33 
-usemtl building4
+usemtl skyscraper
 f 170/34/34 166/35/35 19/36/36 
-usemtl building4
+usemtl skyscraper
 f 19/37/37 20/38/38 170/39/39 
-usemtl building4
+usemtl skyscraper
 f 18/40/40 186/41/41 184/42/42 
-usemtl building4
+usemtl skyscraper
 f 184/43/43 188/44/44 18/45/45 
-usemtl building4
+usemtl skyscraper
 f 7/46/46 6/47/47 22/48/48 
-usemtl building4
+usemtl skyscraper
 f 22/49/49 23/50/50 7/51/51 
-usemtl building4
+usemtl skyscraper
 f 169/52/52 185/53/53 180/54/54 
-usemtl building4
+usemtl skyscraper
 f 180/55/55 24/56/56 169/57/57 
-usemtl building4
+usemtl skyscraper
 f 12/58/58 190/59/59 25/60/60 
-usemtl building4
+usemtl skyscraper
 f 25/61/61 193/62/62 12/63/63 
-usemtl building4
+usemtl skyscraper
 f 191/64/64 181/65/65 17/66/66 
-usemtl building4
+usemtl skyscraper
 f 17/67/67 192/68/68 191/69/69 
-usemtl building4
+usemtl skyscraper
 f 329/70/70 187/71/71 324/72/72 
-usemtl building4
+usemtl skyscraper
 f 324/73/73 332/74/74 329/75/75 
-usemtl building4
+usemtl skyscraper
 f 331/76/76 182/77/77 323/78/78 
-usemtl building4
+usemtl skyscraper
 f 323/79/79 322/80/80 331/81/81 
-usemtl building4
+usemtl skyscraper
 f 188/82/82 10/83/83 18/84/84 
-usemtl building4
+usemtl skyscraper
 f 327/85/85 195/86/86 325/87/87 
-usemtl building4
+usemtl skyscraper
 f 325/88/88 330/89/89 327/90/90 
-usemtl building4
+usemtl skyscraper
 f 36/91/91 202/92/92 29/93/93 
-usemtl building4
+usemtl skyscraper
 f 29/94/94 28/95/95 36/96/96 
-usemtl building4
+usemtl skyscraper
 f 38/97/97 204/98/98 31/99/99 
-usemtl building4
+usemtl skyscraper
 f 31/100/100 30/101/101 38/102/102 
-usemtl building4
+usemtl skyscraper
 f 40/103/103 206/104/104 33/105/105 
-usemtl building4
+usemtl skyscraper
 f 33/106/106 32/107/107 40/108/108 
-usemtl building4
+usemtl skyscraper
 f 42/109/109 208/110/110 35/111/111 
-usemtl building4
+usemtl skyscraper
 f 35/112/112 34/113/113 42/114/114 
-usemtl building4
+usemtl skyscraper
 f 174/115/115 172/116/116 209/117/117 
-usemtl building4
+usemtl skyscraper
 f 209/118/118 45/119/119 174/120/120 
-usemtl building4
+usemtl skyscraper
 f 176/121/121 173/122/122 211/123/123 
-usemtl building4
+usemtl skyscraper
 f 211/124/124 46/125/125 176/126/126 
-usemtl building4
+usemtl skyscraper
 f 178/127/127 175/128/128 213/129/129 
-usemtl building4
+usemtl skyscraper
 f 213/130/130 47/131/131 178/132/132 
-usemtl building4
+usemtl skyscraper
 f 13/133/133 177/134/134 215/135/135 
-usemtl building4
+usemtl skyscraper
 f 215/136/136 44/137/137 13/138/138 
-usemtl building4
+usemtl skyscraper
 f 50/139/139 51/140/140 48/141/141 
-usemtl building4
+usemtl skyscraper
 f 48/142/142 49/143/143 50/144/144 
-usemtl building4
+usemtl skyscraper
 f 54/145/145 55/146/146 52/147/147 
-usemtl building4
+usemtl skyscraper
 f 52/148/148 53/149/149 54/150/150 
-usemtl building4
+usemtl skyscraper
 f 55/151/151 49/152/152 48/153/153 
-usemtl building4
+usemtl skyscraper
 f 48/154/154 52/155/155 55/156/156 
-usemtl building4
+usemtl skyscraper
 f 54/157/157 53/158/158 51/159/159 
-usemtl building4
+usemtl skyscraper
 f 51/160/160 50/161/161 54/162/162 
-usemtl building4
+usemtl skyscraper
 f 58/163/163 59/164/164 56/165/165 
-usemtl building4
+usemtl skyscraper
 f 56/166/166 57/167/167 58/168/168 
-usemtl building4
+usemtl skyscraper
 f 62/169/169 63/170/170 60/171/171 
-usemtl building4
+usemtl skyscraper
 f 60/172/172 61/173/173 62/174/174 
-usemtl building4
+usemtl skyscraper
 f 63/175/175 57/176/176 56/177/177 
-usemtl building4
+usemtl skyscraper
 f 56/178/178 60/179/179 63/180/180 
-usemtl building4
+usemtl skyscraper
 f 62/181/181 61/182/182 59/183/183 
-usemtl building4
+usemtl skyscraper
 f 59/184/184 58/185/185 62/186/186 
-usemtl building4
+usemtl skyscraper
 f 66/187/187 67/188/188 64/189/189 
-usemtl building4
+usemtl skyscraper
 f 64/190/190 65/191/191 66/192/192 
-usemtl building4
+usemtl skyscraper
 f 70/193/193 71/194/194 68/195/195 
-usemtl building4
+usemtl skyscraper
 f 68/196/196 69/197/197 70/198/198 
-usemtl building4
+usemtl skyscraper
 f 71/199/199 65/200/200 64/201/201 
-usemtl building4
+usemtl skyscraper
 f 64/202/202 68/203/203 71/204/204 
-usemtl building4
+usemtl skyscraper
 f 70/205/205 69/206/206 67/207/207 
-usemtl building4
+usemtl skyscraper
 f 67/208/208 66/209/209 70/210/210 
-usemtl building4
+usemtl skyscraper
 f 220/211/211 75/212/212 217/213/213 
-usemtl building4
+usemtl skyscraper
 f 217/214/214 73/215/215 220/216/216 
-usemtl building4
+usemtl skyscraper
 f 74/217/217 225/218/218 223/219/219 
-usemtl building4
+usemtl skyscraper
 f 223/220/220 222/221/221 74/222/222 
-usemtl building4
+usemtl skyscraper
 f 219/223/223 218/224/224 226/225/225 
-usemtl building4
+usemtl skyscraper
 f 226/226/226 79/227/227 219/228/228 
-usemtl building4
+usemtl skyscraper
 f 77/229/229 228/230/230 227/231/231 
-usemtl building4
+usemtl skyscraper
 f 227/232/232 76/233/233 77/234/234 
-usemtl building4
+usemtl skyscraper
 f 229/235/235 81/236/236 198/237/237 
-usemtl building4
+usemtl skyscraper
 f 198/238/238 39/239/239 229/240/240 
-usemtl building4
+usemtl skyscraper
 f 231/241/241 85/242/242 82/243/243 
-usemtl building4
+usemtl skyscraper
 f 82/244/244 83/245/245 231/246/246 
-usemtl building4
+usemtl skyscraper
 f 233/247/247 89/248/248 86/249/249 
-usemtl building4
+usemtl skyscraper
 f 86/250/250 87/251/251 233/252/252 
-usemtl building4
+usemtl skyscraper
 f 234/253/253 91/254/254 199/255/255 
-usemtl building4
+usemtl skyscraper
 f 199/256/256 41/257/257 234/258/258 
-usemtl building4
+usemtl skyscraper
 f 235/259/259 93/260/260 200/261/261 
-usemtl building4
+usemtl skyscraper
 f 200/262/262 43/263/263 235/264/264 
-usemtl building4
+usemtl skyscraper
 f 237/265/265 97/266/266 94/267/267 
-usemtl building4
+usemtl skyscraper
 f 94/268/268 95/269/269 237/270/270 
-usemtl building4
+usemtl skyscraper
 f 238/271/271 99/272/272 197/273/273 
-usemtl building4
+usemtl skyscraper
 f 197/274/274 37/275/275 238/276/276 
-usemtl building4
+usemtl skyscraper
 f 240/277/277 103/278/278 100/279/279 
-usemtl building4
+usemtl skyscraper
 f 100/280/280 101/281/281 240/282/282 
-usemtl building4
+usemtl skyscraper
 f 230/283/283 82/284/284 337/285/285 
-usemtl building4
+usemtl skyscraper
 f 337/286/286 80/287/287 230/288/288 
-usemtl building4
+usemtl skyscraper
 f 221/289/289 224/290/290 78/291/291 
-usemtl building4
+usemtl skyscraper
 f 78/292/292 72/293/293 221/294/294 
-usemtl building4
+usemtl skyscraper
 f 85/295/295 84/296/296 201/297/297 
-usemtl building4
+usemtl skyscraper
 f 201/298/298 333/299/299 85/300/300 
-usemtl building4
+usemtl skyscraper
 f 82/301/301 85/302/302 333/303/303 
-usemtl building4
+usemtl skyscraper
 f 333/304/304 337/305/305 82/306/306 
-usemtl building4
+usemtl skyscraper
 f 232/307/307 86/308/308 338/309/309 
-usemtl building4
+usemtl skyscraper
 f 338/310/310 90/311/311 232/312/312 
-usemtl building4
+usemtl skyscraper
 f 244/313/313 107/314/314 241/315/315 
-usemtl building4
+usemtl skyscraper
 f 241/316/316 105/317/317 244/318/318 
-usemtl building4
+usemtl skyscraper
 f 89/319/319 88/320/320 203/321/321 
-usemtl building4
+usemtl skyscraper
 f 203/322/322 334/323/323 89/324/324 
-usemtl building4
+usemtl skyscraper
 f 86/325/325 89/326/326 334/327/327 
-usemtl building4
+usemtl skyscraper
 f 334/328/328 338/329/329 86/330/330 
-usemtl building4
+usemtl skyscraper
 f 236/331/331 94/332/332 339/333/333 
-usemtl building4
+usemtl skyscraper
 f 339/334/334 92/335/335 236/336/336 
-usemtl building4
+usemtl skyscraper
 f 106/337/337 249/338/338 247/339/339 
-usemtl building4
+usemtl skyscraper
 f 247/340/340 246/341/341 106/342/342 
-usemtl building4
+usemtl skyscraper
 f 97/343/343 96/344/344 205/345/345 
-usemtl building4
+usemtl skyscraper
 f 205/346/346 335/347/347 97/348/348 
-usemtl building4
+usemtl skyscraper
 f 94/349/349 97/350/350 335/351/351 
-usemtl building4
+usemtl skyscraper
 f 335/352/352 339/353/353 94/354/354 
-usemtl building4
+usemtl skyscraper
 f 239/355/355 100/356/356 340/357/357 
-usemtl building4
+usemtl skyscraper
 f 340/358/358 98/359/359 239/360/360 
-usemtl building4
+usemtl skyscraper
 f 243/361/361 242/362/362 250/363/363 
-usemtl building4
+usemtl skyscraper
 f 250/364/364 111/365/365 243/366/366 
-usemtl building4
+usemtl skyscraper
 f 103/367/367 102/368/368 207/369/369 
-usemtl building4
+usemtl skyscraper
 f 207/370/370 336/371/371 103/372/372 
-usemtl building4
+usemtl skyscraper
 f 100/373/373 103/374/374 336/375/375 
-usemtl building4
+usemtl skyscraper
 f 336/376/376 340/377/377 100/378/378 
-usemtl building4
+usemtl skyscraper
 f 109/379/379 252/380/380 251/381/381 
-usemtl building4
+usemtl skyscraper
 f 251/382/382 108/383/383 109/384/384 
-usemtl building4
+usemtl skyscraper
 f 245/385/385 248/386/386 110/387/387 
-usemtl building4
+usemtl skyscraper
 f 110/388/388 104/389/389 245/390/390 
-usemtl building4
+usemtl skyscraper
 f 3/391/391 161/392/392 27/393/393 
-usemtl building4
+usemtl skyscraper
 f 27/394/394 168/395/395 3/396/396 
-usemtl building4
+usemtl skyscraper
 f 210/397/397 216/398/398 214/399/399 
-usemtl building4
+usemtl skyscraper
 f 214/400/400 212/401/401 210/402/402 
-usemtl building4
+usemtl skyscraper
 f 162/403/403 170/404/404 26/405/405 
-usemtl building4
+usemtl skyscraper
 f 26/406/406 163/407/407 162/408/408 
-usemtl building4
+usemtl skyscraper
 f 2/409/409 165/410/410 189/411/411 
-usemtl building4
+usemtl skyscraper
 f 189/412/412 196/413/413 2/414/414 
-usemtl building4
+usemtl skyscraper
 f 11/415/415 318/416/416 315/417/417 
-usemtl building4
+usemtl skyscraper
 f 315/418/418 158/419/419 11/420/420 
-usemtl building4
+usemtl skyscraper
 f 159/421/421 194/422/422 320/423/423 
-usemtl building4
+usemtl skyscraper
 f 320/424/424 317/425/425 159/426/426 
-usemtl building4
+usemtl skyscraper
 f 114/427/427 115/428/428 253/429/429 
-usemtl building4
+usemtl skyscraper
 f 253/430/430 113/431/431 114/432/432 
-usemtl building4
+usemtl skyscraper
 f 116/433/433 262/434/434 112/435/435 
-usemtl building4
+usemtl skyscraper
 f 112/436/436 259/437/437 116/438/438 
-usemtl building4
+usemtl skyscraper
 f 263/439/439 256/440/440 254/441/441 
-usemtl building4
+usemtl skyscraper
 f 254/442/442 117/443/443 263/444/444 
-usemtl building4
+usemtl skyscraper
 f 119/445/445 261/446/446 260/447/447 
-usemtl building4
+usemtl skyscraper
 f 260/448/448 257/449/449 119/450/450 
-usemtl building4
+usemtl skyscraper
 f 264/451/451 258/452/452 255/453/453 
-usemtl building4
+usemtl skyscraper
 f 255/454/454 118/455/455 264/456/456 
-usemtl building4
+usemtl skyscraper
 f 122/457/457 123/458/458 265/459/459 
-usemtl building4
+usemtl skyscraper
 f 265/460/460 121/461/461 122/462/462 
-usemtl building4
+usemtl skyscraper
 f 124/463/463 274/464/464 120/465/465 
-usemtl building4
+usemtl skyscraper
 f 120/466/466 271/467/467 124/468/468 
-usemtl building4
+usemtl skyscraper
 f 275/469/469 268/470/470 266/471/471 
-usemtl building4
+usemtl skyscraper
 f 266/472/472 125/473/473 275/474/474 
-usemtl building4
+usemtl skyscraper
 f 127/475/475 273/476/476 272/477/477 
-usemtl building4
+usemtl skyscraper
 f 272/478/478 269/479/479 127/480/480 
-usemtl building4
+usemtl skyscraper
 f 276/481/481 270/482/482 267/483/483 
-usemtl building4
+usemtl skyscraper
 f 267/484/484 126/485/485 276/486/486 
-usemtl building4
+usemtl skyscraper
 f 130/487/487 131/488/488 277/489/489 
-usemtl building4
+usemtl skyscraper
 f 277/490/490 129/491/491 130/492/492 
-usemtl building4
+usemtl skyscraper
 f 132/493/493 286/494/494 128/495/495 
-usemtl building4
+usemtl skyscraper
 f 128/496/496 283/497/497 132/498/498 
-usemtl building4
+usemtl skyscraper
 f 287/499/499 280/500/500 278/501/501 
-usemtl building4
+usemtl skyscraper
 f 278/502/502 133/503/503 287/504/504 
-usemtl building4
+usemtl skyscraper
 f 135/505/505 285/506/506 284/507/507 
-usemtl building4
+usemtl skyscraper
 f 284/508/508 281/509/509 135/510/510 
-usemtl building4
+usemtl skyscraper
 f 288/511/511 282/512/512 279/513/513 
-usemtl building4
+usemtl skyscraper
 f 279/514/514 134/515/515 288/516/516 
-usemtl building4
+usemtl skyscraper
 f 138/517/517 139/518/518 289/519/519 
-usemtl building4
+usemtl skyscraper
 f 289/520/520 137/521/521 138/522/522 
-usemtl building4
+usemtl skyscraper
 f 140/523/523 298/524/524 136/525/525 
-usemtl building4
+usemtl skyscraper
 f 136/526/526 295/527/527 140/528/528 
-usemtl building4
+usemtl skyscraper
 f 299/529/529 292/530/530 290/531/531 
-usemtl building4
+usemtl skyscraper
 f 290/532/532 141/533/533 299/534/534 
-usemtl building4
+usemtl skyscraper
 f 143/535/535 297/536/536 296/537/537 
-usemtl building4
+usemtl skyscraper
 f 296/538/538 293/539/539 143/540/540 
-usemtl building4
+usemtl skyscraper
 f 300/541/541 294/542/542 291/543/543 
-usemtl building4
+usemtl skyscraper
 f 291/544/544 142/545/545 300/546/546 
-usemtl building4
+usemtl skyscraper
 f 146/547/547 147/548/548 301/549/549 
-usemtl building4
+usemtl skyscraper
 f 301/550/550 145/551/551 146/552/552 
-usemtl building4
+usemtl skyscraper
 f 148/553/553 310/554/554 144/555/555 
-usemtl building4
+usemtl skyscraper
 f 144/556/556 307/557/557 148/558/558 
-usemtl building4
+usemtl skyscraper
 f 311/559/559 304/560/560 302/561/561 
-usemtl building4
+usemtl skyscraper
 f 302/562/562 149/563/563 311/564/564 
-usemtl building4
+usemtl skyscraper
 f 151/565/565 309/566/566 308/567/567 
-usemtl building4
+usemtl skyscraper
 f 308/568/568 305/569/569 151/570/570 
-usemtl building4
+usemtl skyscraper
 f 312/571/571 306/572/572 303/573/573 
-usemtl building4
+usemtl skyscraper
 f 303/574/574 150/575/575 312/576/576 
-usemtl building4
+usemtl skyscraper
 f 154/577/577 155/578/578 313/579/579 
-usemtl building4
+usemtl skyscraper
 f 313/580/580 153/581/581 154/582/582 
-usemtl building4
+usemtl skyscraper
 f 156/583/583 21/584/584 152/585/585 
-usemtl building4
+usemtl skyscraper
 f 152/586/586 319/587/587 156/588/588 
-usemtl building4
+usemtl skyscraper
 f 183/589/589 316/590/590 314/591/591 
-usemtl building4
+usemtl skyscraper
 f 314/592/592 157/593/593 183/594/594 
-usemtl building4
+usemtl skyscraper
 f 321/595/595 167/596/596 326/597/597 
-usemtl building4
+usemtl skyscraper
 f 326/598/598 328/599/599 321/600/600 
 #end 200 faces

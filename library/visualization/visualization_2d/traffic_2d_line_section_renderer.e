@@ -12,13 +12,13 @@ indexing
 class
 	TRAFFIC_2D_LINE_SECTION_RENDERER
 		inherit
-			TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_SECTION]
+			TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_CONNECTION]
 			redefine
 				render
 			end
-create 
+create
 	make_with_map
-	
+
 feature {NONE} -- Initialization
 	make_with_map (a_map: TRAFFIC_MAP) is
 			-- Initialize to render items of `a_map'.
@@ -27,35 +27,35 @@ feature {NONE} -- Initialization
 		do
 			map := a_map
 			line_width := 4.0
-			
+
 			create traffic_type_colors.make (20)
 			create traffic_type_line_widths.make (20)
 		end
 
 feature -- Access		
 	map : TRAFFIC_MAP
-		
+
 	traffic_type_colors: DS_HASH_TABLE [EM_COLOR, STRING]
-			-- Colors for traffic types 
-			--|(identified through their names, 
+			-- Colors for traffic types
+			--|(identified through their names,
 			--|because traffic type not yet HASHABLE, should be?)			
 
 	traffic_type_line_widths: DS_HASH_TABLE [DOUBLE, STRING]
-			-- Line widths for traffic types 
-			--|(identified through their names, 
+			-- Line widths for traffic types
+			--|(identified through their names,
 			--|because traffic type not yet HASHABLE, should be?)
-			
+
 feature -- Status report
 	line_color: EM_COLOR
 			-- Color used to draw traffic line sections
 			-- that have no appropriate `traffic_type_color' set
 			-- (if `Void' either the color of the line is used
 			-- or simply white).
-			
+
 	line_width: DOUBLE
 			-- Line width used to draw traffic line sections.
 			-- (if none set for the traffic			
-			
+
 feature -- Status setting	
 	set_line_color (a_color: EM_COLOR) is
 			-- Set `line_color' to `a_color'.
@@ -63,8 +63,8 @@ feature -- Status setting
 			line_color := a_color
 		ensure
 			line_color_set: line_color = a_color
-		end	
-		
+		end
+
 	set_line_width (a_line_width: DOUBLE) is
 			-- Set `line_width' to `a_line_width'.	
 		require
@@ -74,16 +74,18 @@ feature -- Status setting
 		ensure
 			line_width_set: line_width = a_line_width
 		end
-		
+
 feature -- Basic operations
-	render (a_line_section: TRAFFIC_LINE_SECTION): EM_DRAWABLE is
+	render (a_line_section: TRAFFIC_LINE_CONNECTION): EM_DRAWABLE is
 			-- Polyline to visualize `a_line_section'.				
 		local
 			col: EM_COLOR
-			tcol: TRAFFIC_COLOR
+			tcol: EM_COLOR
 			polyline: EM_POLYLINE
+			l: ARRAYED_LIST [EM_VECTOR_2D]
 		do
-			create polyline.make_from_list (a_line_section.polypoints)
+			create l.make_from_array (a_line_section.polypoints.to_array)
+			create polyline.make_from_list (l)
 
 			-- TODO: the following should not be necessary seem to be a LINE_SECTION bug: --> see invariant of LINE_SECTION
 			if polyline.count < 2 then
@@ -91,8 +93,8 @@ feature -- Basic operations
 				polyline.extend (a_line_section.origin.position)
 				polyline.extend (a_line_section.destination.position)
 			end
-			
-			
+
+
 			if traffic_type_colors.has (a_line_section.type.name) then
 				polyline.set_line_color (traffic_type_colors.item (a_line_section.type.name))
 			elseif line_color /= Void then
@@ -100,17 +102,17 @@ feature -- Basic operations
 			elseif a_line_section.line /= Void then
 				if a_line_section.line.color /= Void then
 					tcol := a_line_section.line.color
-					create col.make_with_rgb (tcol.red, tcol.green, tcol.blue)					
+					create col.make_with_rgb (tcol.red, tcol.green, tcol.blue)
 					polyline.set_line_color (col)
-				end				
+				end
 			end
 			if traffic_type_line_widths.has (a_line_section.type.name) then
 				polyline.set_line_width (traffic_type_line_widths.item (a_line_section.type.name))
 			else
 				polyline.set_line_width (line_width)
-			end	
-			
+			end
+
 			Result := polyline
-		end		
+		end
 
 end

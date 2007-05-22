@@ -63,7 +63,7 @@ feature -- Input
 			place_drawables.mouse_button_down_on_map_item_event.subscribe (an_action)
 		end
 
-	subscribe_to_clicked_line_section_event (an_action: PROCEDURE [ANY, TUPLE [TRAFFIC_LINE_SECTION]]) is
+	subscribe_to_clicked_line_section_event (an_action: PROCEDURE [ANY, TUPLE [TRAFFIC_LINE_CONNECTION]]) is
 		require
 			an_action_not_void: an_action /= Void
 		do
@@ -114,7 +114,7 @@ feature -- Status - Places
 		end
 
 feature -- Status - Line_Sections
-	set_default_line_section_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_SECTION]) is
+	set_default_line_section_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_CONNECTION]) is
 			-- set new default renderer for the line_sections
 		require
 			a_renderer_not_void: a_renderer /= Void
@@ -123,7 +123,7 @@ feature -- Status - Line_Sections
 			line_section_drawables.render
 		end
 
-	set_line_section_special_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_SECTION]; a_line_section: TRAFFIC_LINE_SECTION) is
+	set_line_section_special_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_CONNECTION]; a_line_section: TRAFFIC_LINE_CONNECTION) is
 		--set a proprietary renderer for a line_section, if it exists
 		--does not re-render the scene. call render to see the changes
 		require
@@ -133,7 +133,7 @@ feature -- Status - Line_Sections
 			line_section_drawables.set_renderer_for_item (a_renderer, a_line_section)
 		end
 
-	reset_line_section_special_renderer (a_line_section: TRAFFIC_LINE_SECTION) is
+	reset_line_section_special_renderer (a_line_section: TRAFFIC_LINE_CONNECTION) is
 		--reset the proprietary renderer for a line, if it exists
 		require
 			a_line_section_not_void: a_line_section /= Void
@@ -141,21 +141,21 @@ feature -- Status - Line_Sections
 			line_section_drawables.reset_renderer_for_item (a_line_section)
 		end
 
-	set_line_special_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_SECTION]; a_line: TRAFFIC_LINE) is
+	set_line_special_renderer (a_renderer: TRAFFIC_2D_ITEM_RENDERER [TRAFFIC_LINE_CONNECTION]; a_line: TRAFFIC_LINE) is
 		--set a proprietary renderer for a line, if it exists
 		--does not re-render the scene. call render to see the changes
 		require
 			a_renderer_not_void: a_renderer /= Void
 			a_line_not_void: a_line /= Void
 		local
-			line_section: TRAFFIC_LINE_SECTION
+			line_section: TRAFFIC_LINE_CONNECTION
 		do
 			from
 				a_line.start
 			until
 			 	a_line.after
 			loop
-				line_section := a_line.item
+				line_section := a_line.item_for_iteration
 				line_section_drawables.set_renderer_for_item (a_renderer, line_section)
 			 	a_line.forth
 			end
@@ -166,14 +166,14 @@ feature -- Status - Line_Sections
 		require
 			a_line_not_void: a_line /= Void
 		local
-			line_section: TRAFFIC_LINE_SECTION
+			line_section: TRAFFIC_LINE_CONNECTION
 		do
 			from
 				a_line.start
 			until
 			 	a_line.after
 			loop
-				line_section := a_line.item
+				line_section := a_line.item_for_iteration
 				line_section_drawables.reset_renderer_for_item (line_section)
 			 	a_line.forth
 			end
@@ -209,16 +209,16 @@ feature -- Basic Operation
 				create place_renderer.make_with_map (a_map)
 
 				create place_drawables.make_with_map_and_default_renderer (map, place_renderer)
-				map.places.changed_event.subscribe (agent place_drawables.process_changed_item)
+--				map.places.changed_event.subscribe (agent place_drawables.process_changed_item)
 				map.places.element_inserted_event.subscribe (agent place_drawables.process_inserted_item )
 				map.places.element_removed_event.subscribe (agent place_drawables.process_removed_item )
-				map.places.changed_event.subscribe (agent place_drawables.process_changed_map)
+--				map.places.changed_event.subscribe (agent place_drawables.process_changed_map)
 
 				create line_section_drawables.make_with_map_and_default_renderer (map, line_section_renderer)
-				map.line_sections.changed_event.subscribe (agent line_section_drawables.process_changed_item)
+--				map.line_sections.changed_event.subscribe (agent line_section_drawables.process_changed_item)
 				map.line_sections.element_inserted_event.subscribe (agent line_section_drawables.process_inserted_item )
 				map.line_sections.element_removed_event.subscribe (agent line_section_drawables.process_removed_item )
-				map.line_sections.changed_event.subscribe (agent line_section_drawables.process_changed_map)
+--				map.line_sections.changed_event.subscribe (agent line_section_drawables.process_changed_map)
 
 				render
 

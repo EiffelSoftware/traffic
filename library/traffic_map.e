@@ -32,6 +32,7 @@ feature {NONE} -- Initialization
 			a_name_not_empty: not a_name.is_empty
 		local
 			default_size: INTEGER
+			villa: TRAFFIC_VILLA
 		do
 			default_size := 100
 			name := a_name
@@ -49,6 +50,7 @@ feature {NONE} -- Initialization
 			create paths.make
 			create buildings.make
 			create free_movings.make
+
 		ensure
 			name_set: equal (name, a_name)
 			places_not_void: places /= Void
@@ -169,26 +171,6 @@ feature -- Insertion
 				lines.forth
 			end
 		end
-
-feature -- Removal
-
---	remove_line_section (a_line_section: TRAFFIC_LINE_CONNECTION) is
---			-- Remove line_section `a_line_section' from map (bad implementation).
---		require
---			has_a_line_section: a_line_section /= Void and then line_sections.has (a_line_section)
---		local
---			index: INTEGER
---		do
---			line_sections.start
---			line_sections.search_forth (a_line_section)
---			index := line_sections.index
---			line_sections.remove_at
-----			line_section_removed_event.publish ([a_line_section])
-----			path_found := False
---		ensure
---			-- we can assume, that the line_section was only once inserted
---			line_section_removed: not line_sections.has (a_line_section)
---		end
 
 feature -- Access
 

@@ -17,14 +17,12 @@
 			<option>
 				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="false"/>
 			</option>
+			<cluster name="building" location="d:\work\workspace\traffic_new\example\city_timetable\..\..\library\.\building\"/>
 			<cluster name="factory" location="$|factory\"/>
 			<cluster name="moving" location="$|moving\"/>
 			<cluster name="structure" location="$|structure\">
+				<cluster name="container" location="$|container\"/>
 				<cluster name="graph" location="$|graph\">
-					<cluster name="traffic_dispenser" location="$|dispenser\"/>
-					<cluster name="traffic_topological_sort" location="$|topological_sort\"/>
-					<cluster name="traffic_tree" location="$|tree\"/>
-					<cluster name="traffic_union_find" location="$|union_find\"/>
 					<cluster name="graph_graph" location="$|graph\">
 						<cluster name="graph_implementation" location="$|implementation\">
 							<cluster name="graph_adjacency_matrix_graph" location="$|adjacency_matrix_graph\"/>
@@ -33,8 +31,11 @@
 						<cluster name="graph_structure" location="$|structure\"/>
 						<cluster name="graph_walker" location="$|walker\"/>
 					</cluster>
+					<cluster name="traffic_dispenser" location="$|dispenser\"/>
+					<cluster name="traffic_topological_sort" location="$|topological_sort\"/>
+					<cluster name="traffic_tree" location="$|tree\"/>
+					<cluster name="traffic_union_find" location="$|union_find\"/>
 				</cluster>
-				<cluster name="container" location="$|container\"/>
 			</cluster>
 			<cluster name="traffic_input" location="$|input\"/>
 			<cluster name="traffic_utility" location="$|utility\">

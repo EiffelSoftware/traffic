@@ -10,6 +10,8 @@ feature -- Factory methods
 
 	new_default_member (a_moving: TRAFFIC_MOVING): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_MOVING] is
 			-- New man drawable
+		require
+			a_moving_exists: a_moving /= Void
 		do
 			if error_template = Void then
 				error_template := load_template ("error.obj")
@@ -20,6 +22,8 @@ feature -- Factory methods
 
 	new_free_moving_member (a_moving: TRAFFIC_FREE_MOVING): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_FREE_MOVING] is
 			-- New man drawable
+		require
+			a_moving_exists: a_moving /= Void
 		do
 			if man_template = Void then
 				man_template := load_template ("man.obj")
@@ -31,6 +35,8 @@ feature -- Factory methods
 
 	new_person_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
 			-- New person drawable (toggling between man and woman)
+		require
+			a_passenger_exists: a_passenger /= Void
 		do
 			if not is_woman then
 				Result := new_man_member (a_passenger)
@@ -43,6 +49,8 @@ feature -- Factory methods
 
 	new_man_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
 			-- New man drawable
+		require
+			a_passenger_exists: a_passenger /= Void
 		do
 			if man_template = Void then
 				man_template := load_template ("man.obj")
@@ -53,6 +61,8 @@ feature -- Factory methods
 
 	new_woman_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
 			-- New woman drawable
+		require
+			a_passenger_exists: a_passenger /= Void
 		do
 			if woman_template = Void then
 				woman_template := load_template ("woman.obj")
@@ -63,6 +73,8 @@ feature -- Factory methods
 
 	new_taxi_daynight_member (a_taxi: TRAFFIC_TAXI): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_TAXI] is
 			-- New taxi drawable with two representations
+		require
+			a_taxi_exists: a_taxi /= Void
 		do
 			if taxi_template = Void then
 				taxi_template := load_template ("taxi.obj")
@@ -77,6 +89,8 @@ feature -- Factory methods
 
 	new_tram_daynight_member (a_tram: TRAFFIC_TRAM): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_TRAM] is
 			-- New taxi drawable with two representations
+		require
+			a_tram_exists: a_tram /= Void
 		do
 			if tram_template = Void then
 				tram_template := load_template ("tram2000_small.obj")
@@ -91,6 +105,8 @@ feature -- Factory methods
 
 	new_bus_daynight_member (a_bus: TRAFFIC_BUS): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_BUS] is
 			-- New bus drawable with two representations
+		require
+			a_bus_exists: a_bus /= Void
 		do
 			if tram_template = Void then
 				tram_template := load_template ("tram2000_small.obj")
