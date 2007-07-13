@@ -17,7 +17,7 @@ inherit
 			swap, wipe_out
 		redefine
 			make_sparse_container, make_with_equality_testers, wipe_out,
-			items_put, out
+			out
 		end
 
 	TRAFFIC_EVENT_CONTAINER [G]
@@ -90,21 +90,21 @@ feature {TRAFFIC_MAP_ITEM} -- Removal
 
 feature {DS_ARRAYED_SPARSE_TABLE_CURSOR} -- Implementation
 
-	items_put (v: G; i: INTEGER_32)
-			-- Put `v' at position `i' in items.
-			-- (from DS_ARRAYED_SPARSE_TABLE)
-		local
-			old_el: G
-			dead_item: G
-		do
-			old_el := items_item (i)
-			Precursor (v, i)
-			if v = dead_item then
-				element_removed_event.publish ([old_el])
-			else
-				element_inserted_event.publish ([v])
-			end
-		end
+--	items_put (v: G; i: INTEGER_32)
+--			-- Put `v' at position `i' in items.
+--			-- (from DS_ARRAYED_SPARSE_TABLE)
+--		local
+--			old_el: G
+--			dead_item: G
+--		do
+--			old_el := items_item (i)
+--			Precursor (v, i)
+--			if v = dead_item then
+--				element_removed_event.publish ([old_el])
+--			else
+--				element_inserted_event.publish ([v])
+--			end
+--		end
 
 feature -- Output
 

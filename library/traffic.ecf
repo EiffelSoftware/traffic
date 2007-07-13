@@ -17,7 +17,7 @@
 			<option>
 				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="false"/>
 			</option>
-			<cluster name="building" location="d:\work\workspace\traffic_new\example\city_timetable\..\..\library\.\building\"/>
+			<cluster name="building" location="$|building\"/>
 			<cluster name="factory" location="$|factory\"/>
 			<cluster name="moving" location="$|moving\"/>
 			<cluster name="structure" location="$|structure\">
@@ -45,7 +45,7 @@
 			<cluster name="visualization" location="$|visualization\">
 				<cluster name="visualization_2d" location="$|visualization_2d\"/>
 				<cluster name="visualization_3d" location="$|visualization_3d\">
-					<cluster name="em_9_datastructures" location="$|em_9_datastructures\"/>
+					<!--cluster name="em_9_datastructures" location="$|em_9_datastructures\"/-->
 					<cluster name="new" location="$|new\"/>
 					<cluster name="nodes" location="$|nodes\"/>
 				</cluster>
