@@ -13,9 +13,6 @@ inherit
 			open_file
 		end
 
-	TRAFFIC_3D_CONSTANTS
-		export {NONE} all end
-
 	EXCEPTIONS
 		export {NONE} all end
 
@@ -384,6 +381,7 @@ feature -- Event handling
 			i: INTEGER
 		do
 			map_widget.map.trams.wipe_out
+			map_widget.map.busses.wipe_out
 			if a_slider.current_value > 0 then
 				from
 					map_widget.map.lines.start
@@ -564,7 +562,7 @@ feature -- Event handling
 		do
 			point_randomizer.generate_point_array (1)
 			vect := map_widget.transform_coords (an_event.x, an_event.y)
-			taxi_combobox.selected_element.call (create {EM_VECTOR_2D}.make (vect.x, vect.z), point_randomizer.last_array.first)
+			taxi_combobox.selected_element.call (create {TRAFFIC_COORDINATE}.make (vect.x, vect.z), point_randomizer.last_array.first)
 		end
 
 
