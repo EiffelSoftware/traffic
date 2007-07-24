@@ -111,7 +111,7 @@ feature -- Basic operations
 			-- If there is a schedule, use an other movement code for the schedule.
 		local
 			entry: TRAFFIC_LINE_SCHEDULE_ENTRY
-			direction: EM_VECTOR_2D
+			direction: TRAFFIC_COORDINATE
 			seconds_passed: INTEGER
 			travel_distance: DOUBLE
 		do

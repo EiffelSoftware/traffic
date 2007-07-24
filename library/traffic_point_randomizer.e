@@ -11,7 +11,7 @@ create
 
 feature -- Initialization
 
-	make (a_center: EM_VECTOR_2D; a_radius: DOUBLE) is
+	make (a_center: TRAFFIC_COORDINATE; a_radius: DOUBLE) is
 			--
 		require
 			a_center_exists: a_center /= Void
@@ -32,7 +32,7 @@ feature -- Initialization
 
 feature -- Element change
 
-	set_center (a_center: EM_VECTOR_2D) is
+	set_center (a_center: TRAFFIC_COORDINATE) is
 			-- Set `center' to `a_center'.
 		require
 			a_center_exists: a_center /= Void
@@ -73,7 +73,7 @@ feature -- Basic operations
 				x := random.double_item * radius * 2 - radius + center.x
 				random.forth
 				y := random.double_item * radius * 2 - radius + center.y
-				last_array.put_last (create {EM_VECTOR_2D}.make (x, y))
+				last_array.put_last (create {TRAFFIC_COORDINATE}.make (x, y))
 				i := i + 1
 			end
 		ensure
@@ -86,12 +86,12 @@ feature -- Access
 --	map: TRAFFIC_MAP
 			-- Map for which the points are generated
 
-	last_array: DS_ARRAYED_LIST [EM_VECTOR_2D]
+	last_array: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			-- Last generated array of points
 
 	radius: DOUBLE
 
-	center: EM_VECTOR_2D
+	center: TRAFFIC_COORDINATE
 
 feature {NONE} -- Implementation
 

@@ -6,7 +6,7 @@ indexing
 
 class
 	TRAFFIC_POINT_NODE_PROCESSOR
-	
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
 
@@ -17,7 +17,7 @@ feature -- Access
 
 	Name: STRING is "point"
 			-- Name of node to process
-			
+
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		once
@@ -33,7 +33,7 @@ feature -- Basic operations
 			x: INTEGER
 			y: INTEGER
 			s: STRING
-			p: EM_VECTOR_2D
+			p: TRAFFIC_COORDINATE
 		do
 			if not has_attribute ("x") and has_attribute ("y") then
 				set_error (Mandatory_attribute_missing, << "x", "y" >>)

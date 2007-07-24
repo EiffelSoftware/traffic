@@ -11,7 +11,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_length: INTEGER; a_center: EM_VECTOR_2D; a_radius: DOUBLE) is
+	make (a_length: INTEGER; a_center: TRAFFIC_COORDINATE; a_radius: DOUBLE) is
 			-- Initialize the grid with `a_length'*`a_length' number of fields and coordinate transformations
 			-- such that `a_center' is in the middle of the grid.
 		require
@@ -37,18 +37,18 @@ feature -- Access
 
 	radius: DOUBLE
 
-	center: EM_VECTOR_2D
+	center: TRAFFIC_COORDINATE
 
 feature -- Basic operations
 
-	mark_polyline (a_list: DS_ARRAYED_LIST [EM_VECTOR_2D]; a_line_width: DOUBLE; a_value: BOOLEAN) is
+	mark_polyline (a_list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]; a_line_width: DOUBLE; a_value: BOOLEAN) is
 			-- Mark grid cells for a polyline.
 		require
 			a_line_width_valid: a_line_width > 0
 			a_list_valid: a_list /= Void and then a_list.count >= 2
 		local
-			c: DS_ARRAYED_LIST_CURSOR [EM_VECTOR_2D]
-			v: EM_VECTOR_2D
+			c: DS_ARRAYED_LIST_CURSOR [TRAFFIC_COORDINATE]
+			v: TRAFFIC_COORDINATE
 		do
 			from
 				c := a_list.new_cursor
@@ -64,7 +64,7 @@ feature -- Basic operations
 		end
 
 
-	mark_line (p0, p1: EM_VECTOR_2D; a_line_width: DOUBLE; a_value: BOOLEAN) is
+	mark_line (p0, p1: TRAFFIC_COORDINATE; a_line_width: DOUBLE; a_value: BOOLEAN) is
     		-- Mark grid cells along the line from `p0' to `p1' with `a_value' using a standard line drawing algorithm.
     	require
     		a_line_width_valid: a_line_width > 0
@@ -76,7 +76,7 @@ feature -- Basic operations
 	        dx,dy: DOUBLE
 	        m, b: DOUBLE
 	        t: TUPLE [INTEGER, INTEGER]
-	        v: EM_VECTOR_2D
+	        v: TRAFFIC_COORDINATE
 		do
 			t := grid_coordinate (p0)
 			x0_local := t.integer_item (1)
@@ -127,7 +127,7 @@ feature -- Basic operations
    		 end
 
 
-	mark_rectangle (a_center: EM_VECTOR_2D; a_width, a_breadth: DOUBLE; a_value: BOOLEAN) is
+	mark_rectangle (a_center: TRAFFIC_COORDINATE; a_width, a_breadth: DOUBLE; a_value: BOOLEAN) is
 			-- Mark cells with `a_value' within rectangular area.
 		require
 			a_center_valid: a_center /= Void
@@ -166,7 +166,7 @@ feature -- Basic operations
 
 feature -- Status report
 
-	has_rectangle_collision (a_center: EM_VECTOR_2D; a_width, a_breadth: DOUBLE): BOOLEAN is
+	has_rectangle_collision (a_center: TRAFFIC_COORDINATE; a_width, a_breadth: DOUBLE): BOOLEAN is
 			-- Does the rectangle with `a_center', `a_width' and `a_breadth' have any collision with marked grid cells?
 		require
 			a_center_valid: a_center /= Void
@@ -249,7 +249,7 @@ feature -- Status report
 
 
 
-	has_square_collision (a_center: EM_VECTOR_2D; a_diagonal: DOUBLE): BOOLEAN is
+	has_square_collision (a_center: TRAFFIC_COORDINATE; a_diagonal: DOUBLE): BOOLEAN is
 			-- Does the square with `a_center' and `a_diagonal' have any collision with marked grid cells?
 		require
 			a_center_valid: a_center /= Void
@@ -294,7 +294,7 @@ feature -- Status report
 
 feature -- Conversion
 
-	grid_coordinate (a_coord: EM_VECTOR_2D): TUPLE [INTEGER,INTEGER] is
+	grid_coordinate (a_coord: TRAFFIC_COORDINATE): TUPLE [INTEGER,INTEGER] is
 			-- Grid coordinate for map coordinate `a_coord'
 		local
 			x, y: INTEGER

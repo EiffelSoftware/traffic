@@ -18,7 +18,7 @@ create
 
 feature {NONE} -- Creation
 
-	make_stop (a_place: TRAFFIC_PLACE; a_line: TRAFFIC_LINE; a_position: EM_VECTOR_2D) is
+	make_stop (a_place: TRAFFIC_PLACE; a_line: TRAFFIC_LINE; a_position: TRAFFIC_COORDINATE) is
 			-- Initialize `Current'.
 		require
 			place_not_void: a_place /= Void

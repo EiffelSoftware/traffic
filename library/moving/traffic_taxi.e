@@ -12,7 +12,7 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make_random (a_taxi_office: TRAFFIC_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
+	make_random (a_taxi_office: TRAFFIC_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]) is
 			-- Taxi with an associated 'a_taxi_office'.
 			-- The taxi drives around the center in a certain radius (makes sure that it doesn't disappear)
 		require
@@ -36,7 +36,7 @@ feature -- Status report
 
 feature -- Basic operations
 
-	take(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
+	take(from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
 			-- Pick up somebody at from_location and bring him or her to  to_location.
 		require
 			from_location_not_void: from_location /= void
@@ -46,15 +46,15 @@ feature -- Basic operations
 
 feature{NONE} --Implementation
 
-	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
+	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 
-	set_request_information (from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
+	set_request_information (from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
 			-- Set new origin and destination, new points to drive from from_location to to_location.
 		require
 			valid_from_location: from_location /= void
 			valid_to_locaton: to_location /= void
 		local
-			new_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			new_polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
 			-- New polypoint to travel through.
 			create new_polypoints.make(0)

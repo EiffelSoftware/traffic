@@ -28,9 +28,9 @@ feature -- Element change
 			random.start
 			map := a_map
 			create templates.make (1, 3)
-			templates.force (create {TRAFFIC_VILLA}.make_default (create {EM_VECTOR_2D}.make (0, 0)), 1)
-			templates.force (create {TRAFFIC_APARTMENT_BUILDING}.make_default (create {EM_VECTOR_2D}.make (0, 0)), 2)
-			templates.force (create {TRAFFIC_SKYSCRAPER}.make_default (create {EM_VECTOR_2D}.make (0, 0)), 3)
+			templates.force (create {TRAFFIC_VILLA}.make_default (create {TRAFFIC_COORDINATE}.make (0, 0)), 1)
+			templates.force (create {TRAFFIC_APARTMENT_BUILDING}.make_default (create {TRAFFIC_COORDINATE}.make (0, 0)), 2)
+			templates.force (create {TRAFFIC_SKYSCRAPER}.make_default (create {TRAFFIC_COORDINATE}.make (0, 0)), 3)
 			create grid.make ((map.radius/templates.item (1).width).ceiling*8, map.center, map.radius)
 			mark_occupied
 		ensure
@@ -286,7 +286,7 @@ feature -- Basic operations
 			nr_buildings_placed, j: INTEGER
 			w, b: DOUBLE
 			point_randomizer: TRAFFIC_POINT_RANDOMIZER
-			center: EM_VECTOR_2D
+			center: TRAFFIC_COORDINATE
 			building: TRAFFIC_BUILDING
 		do
 			create last_buildings.make (a_number)
@@ -354,8 +354,8 @@ feature {NONE} -- Implementation
 	mark_occupied is
 			-- Mark all cells of the grid that are already occupied by a map item.
 		local
-			poly_points: DS_ARRAYED_LIST [EM_VECTOR_2D]
-			poly_point: EM_VECTOR_2D
+			poly_points: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			poly_point: TRAFFIC_COORDINATE
 			i,j:INTEGER
 			places: TRAFFIC_EVENT_HASH_TABLE[TRAFFIC_PLACE,STRING_8]
 		do

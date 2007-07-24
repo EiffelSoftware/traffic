@@ -33,7 +33,7 @@ feature -- Basic operations
 			-- Process node.
 		local
 			road: TRAFFIC_ROAD
-			p: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			p: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
 			if not has_attribute ("id") then
 				set_error (Mandatory_attribute_missing, <<"id">>)
@@ -64,7 +64,7 @@ feature -- Basic operations
 						until
 							polypoints.off
 						loop
-							p.put_first (create{ EM_VECTOR_2D}.make_from_other (polypoints.item_for_iteration))
+							p.put_first (create{ TRAFFIC_COORDINATE}.make_from_other (polypoints.item_for_iteration))
 							polypoints.forth
 						end
 						road.other_way.set_polypoints (p)
@@ -75,28 +75,28 @@ feature -- Basic operations
 			end
 		end
 
-	zero_vector: EM_VECTOR_2D is
+	zero_vector: TRAFFIC_COORDINATE is
 		once
-			Result := create {EM_VECTOR_2D}.make (0, 0)
+			Result := create {TRAFFIC_COORDINATE}.make (0, 0)
 		end
 
-	adjust_position (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [EM_VECTOR_2D]) is
+	adjust_position (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [TRAFFIC_COORDINATE]) is
 			-- Adjust positions
 		do
 			if road.origin.position = Void or equal(road.origin.position, zero_vector) then
 				road.origin.set_position
-					(create {EM_VECTOR_2D}.make (a_polypoints.first.x, a_polypoints.first.y))
+					(create {TRAFFIC_COORDINATE}.make (a_polypoints.first.x, a_polypoints.first.y))
 			else
 				road.origin.set_position
-					(create {EM_VECTOR_2D}.make (	(road.origin.position.x + a_polypoints.first.x)/ 2.0,
+					(create {TRAFFIC_COORDINATE}.make (	(road.origin.position.x + a_polypoints.first.x)/ 2.0,
 												(road.origin.position.y + a_polypoints.first.y)/ 2.0))
 			end
 			if road.destination.position = Void or equal(road.destination.position, zero_vector) then
 				road.destination.set_position
-					(create {EM_VECTOR_2D}.make (a_polypoints.last.x, a_polypoints.last.y))
+					(create {TRAFFIC_COORDINATE}.make (a_polypoints.last.x, a_polypoints.last.y))
 			else
 				road.destination.set_position
-					(create {EM_VECTOR_2D}.make (	(road.destination.position.x + a_polypoints.last.x)/ 2.0,
+					(create {TRAFFIC_COORDINATE}.make (	(road.destination.position.x + a_polypoints.last.x)/ 2.0,
 												(road.destination.position.y + a_polypoints.last.y)/ 2.0))
 			end
 		end
@@ -107,7 +107,7 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			position: EM_VECTOR_2D
+			position: TRAFFIC_COORDINATE
 		do
 			create polypoints.make (0)
 			from
@@ -143,7 +143,7 @@ feature -- Basic operations
 			end
 		end
 
-	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
+	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			-- Polypoints of this link
 
 

@@ -39,8 +39,8 @@ feature -- Basic operations
 			height: DOUBLE
 			angle: DOUBLE
 			building_name: STRING
-			p1,p2,p3,p4: EM_VECTOR_2D
-			center: EM_VECTOR_2D
+			p1,p2,p3,p4: TRAFFIC_COORDINATE
+			center: TRAFFIC_COORDINATE
 		do
 			-- Check whether aributes exist and have proper type
 			if not has_attribute ("name") then
@@ -91,7 +91,7 @@ feature -- Basic operations
 --				create building.make (p1,p2,p3,p4, height, building_name)
 
 				building.set_angle (angle)
-				internal_map.buildings_representation.add_building (building)
+				internal_map.buildings.put_last (building)
 			end
 		end
 end

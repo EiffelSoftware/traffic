@@ -28,7 +28,7 @@ feature -- Access
 			Result.compare_objects
 		end
 
-	color: EM_COLOR
+	color: TRAFFIC_COLOR
 			-- Color of line.
 
 feature -- Basic operations
@@ -66,7 +66,7 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			c: EM_COLOR
+			c: TRAFFIC_COLOR
 		do
 			from
 				subnodes.start

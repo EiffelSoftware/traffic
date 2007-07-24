@@ -29,7 +29,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make_with_place (a_place: TRAFFIC_PLACE; a_position: EM_VECTOR_2D) is
+	make_with_place (a_place: TRAFFIC_PLACE; a_position: TRAFFIC_COORDINATE) is
 			-- Initialize `Current'.
 		require
 			place_not_void: a_place /= Void
@@ -59,7 +59,7 @@ feature -- Access
 	place: TRAFFIC_PLACE
 			-- Place that it belongs to
 
-	position: EM_VECTOR_2D
+	position: TRAFFIC_COORDINATE
 			-- Position of the node in the map
 
 	connection_list: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
@@ -73,7 +73,7 @@ feature -- Access
 
 feature -- Element change
 
-	set_position (a_position: EM_VECTOR_2D) is
+	set_position (a_position: TRAFFIC_COORDINATE) is
 			-- Set position to `a_position'.
 		require
 			position_exists: a_position /= Void
@@ -97,7 +97,7 @@ feature {TRAFFIC_PLACE} -- Basic operations (map)
 			-- Add `Current' and all nodes to `a_map'.
 		local
 			e: TRAFFIC_EXCHANGE_CONNECTION
-			p: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			p: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
 			a_map.graph.put_node (Current)
 			is_in_map := True

@@ -22,7 +22,7 @@ feature -- Basic operations
 
 feature {TRAFFIC_TAXI} -- Communication from the taxis to their office
 
-	recall(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
+	recall(from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
 			-- Recall the request again because a taxi rejected to take it.
 		do
 			call(from_location, to_location)

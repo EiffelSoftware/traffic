@@ -134,7 +134,7 @@ feature -- Traffic place building
 
 feature -- Line section building
 
-	build_line_section (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]; a_map: TRAFFIC_MAP; a_line: TRAFFIC_LINE) is
+	build_line_section (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]; a_map: TRAFFIC_MAP; a_line: TRAFFIC_LINE) is
 			-- Generate new traffic line section object going from origin `a_origin' to place named `a_destination'
 			-- belonging to line `a_line' in map `a_map'.
 			-- (Access the generated object through feature `line_section')
@@ -144,12 +144,12 @@ feature -- Line section building
 			a_destination_exists: a_map.places.has (a_destination)
 			a_line_exists: a_line /= Void
 		local
-			pps: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			pps: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			origin_place: TRAFFIC_PLACE
 			destination_place: TRAFFIC_PLACE
 			origin_stop: TRAFFIC_STOP
 			destination_stop: TRAFFIC_STOP
-			stop_pos: EM_VECTOR_2D
+			stop_pos: TRAFFIC_COORDINATE
 		do
 			if a_polypoints = Void or else a_polypoints.count < 2 then
 				create pps.make (2)

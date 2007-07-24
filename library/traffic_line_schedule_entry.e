@@ -7,7 +7,7 @@ class
 	TRAFFIC_LINE_SCHEDULE_ENTRY
 
 inherit
-	TRAFFIC_3D_CONSTANTS
+	TRAFFIC_CONSTANTS
 
 create
 	make_with_line_section
@@ -44,7 +44,7 @@ feature -- Status report
 			-- where all small errors are catched
 		local
 			total_distance: DOUBLE
-			last_position: EM_VECTOR_2D
+			last_position: TRAFFIC_COORDINATE
 			seconds: INTEGER
 		do
 			-- Get the total distance we have by adding the distances of all polypoints

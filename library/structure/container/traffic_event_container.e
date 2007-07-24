@@ -9,10 +9,10 @@ class
 
 feature -- Access
 
-	element_inserted_event: EM_EVENT_CHANNEL [TUPLE [G]]
+	element_inserted_event: TRAFFIC_EVENT_CHANNEL [TUPLE [G]]
 			-- Insertion event (1: New element, 2: Position)
 
-	element_removed_event: EM_EVENT_CHANNEL [TUPLE [G]]
+	element_removed_event: TRAFFIC_EVENT_CHANNEL [TUPLE [G]]
 			-- Deletion event (Removed element)
 
 invariant

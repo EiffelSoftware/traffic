@@ -15,13 +15,13 @@ inherit
 
 feature -- Access
 
-	position: EM_VECTOR_2D
+	position: TRAFFIC_COORDINATE
 			-- Current position on map
 
-	origin: EM_VECTOR_2D
+	origin: TRAFFIC_COORDINATE
 			-- Origin position on map
 
-	destination: EM_VECTOR_2D
+	destination: TRAFFIC_COORDINATE
 			-- Destination position on map
 
 	speed: DOUBLE
@@ -77,24 +77,26 @@ feature {NONE} -- Implementation
 	move is
 			-- Move from origin to destination.
 		local
-			direction: EM_VECTOR_2D
-			step: EM_VECTOR_2D
+			direction: TRAFFIC_COORDINATE
+			step: TRAFFIC_COORDINATE
 			diff: DOUBLE
 		do
 			direction := destination - origin
 
 			if not has_finished and last_move_time /= Void then
 				current_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
-				diff := (time.duration (last_move_time, current_move_time).fine_seconds_count)*speed/time.default_scale_factor
-				if ((position.x - destination.x).abs < diff) and ((position.y - destination.y).abs < diff) or direction.length <= 0 then
-					update_coordinates
-					update_angle
-				else
-					position := position + (direction / direction.length) * diff
+				if not current_move_time.is_equal (last_move_time) then
+					diff := (time.duration (last_move_time, current_move_time).fine_seconds_count)*speed/time.default_scale_factor
+					if ((position.x - destination.x).abs < diff) and ((position.y - destination.y).abs < diff) or direction.length <= 0 then
+						update_coordinates
+						update_angle
+					else
+						position := position + (direction / direction.length) * diff
+					end
+
+
+					last_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
 				end
-
-
-				last_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
 			else
 				create last_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
 				create current_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
@@ -179,7 +181,7 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Implementation
 
-	poly_cursor: DS_ARRAYED_LIST_CURSOR [EM_VECTOR_2D]
+	poly_cursor: DS_ARRAYED_LIST_CURSOR [TRAFFIC_COORDINATE]
 			-- Cursor that guides the moving object
 
 	last_move_time: TIME

@@ -54,7 +54,7 @@ feature -- Basic operations
 					set_error (wrong_attribute_type, << "radius" >>)
 				end
 				if not has_error then
-					map.set_center (create {EM_VECTOR_2D}.make (attribute_double ("center_x"), attribute_double ("center_y")))
+					map.set_center (create {TRAFFIC_COORDINATE}.make (attribute_double ("center_x"), attribute_double ("center_y")))
 					map.set_radius (attribute_double ("radius"))
 				end
 

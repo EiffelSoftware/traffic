@@ -35,7 +35,7 @@ feature -- Basic operations
 		local
 			line: TRAFFIC_LINE
 			simple_line: TRAFFIC_SIMPLE_LINE
-			polypoints_other_direction: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			polypoints_other_direction: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_CONNECTION
 
 			sections: LIST [TRAFFIC_LINE_CONNECTION]
@@ -142,28 +142,28 @@ feature -- Basic operations
 			end
 		end
 
-	zero_vector: EM_VECTOR_2D is
+	zero_vector: TRAFFIC_COORDINATE is
 	once
-		Result := create {EM_VECTOR_2D}.make (0, 0)
+		Result := create {TRAFFIC_COORDINATE}.make (0, 0)
 	end
 
-	adjust_position (a_line_section: TRAFFIC_LINE_CONNECTION; a_polypoints: LIST [EM_VECTOR_2D]) is
+	adjust_position (a_line_section: TRAFFIC_LINE_CONNECTION; a_polypoints: LIST [TRAFFIC_COORDINATE]) is
 			-- Adjust positions.
 		do
 			if a_line_section.origin.position = Void or equal(a_line_section.origin.position, zero_vector) then
 				a_line_section.origin.set_position
-					(create {EM_VECTOR_2D}.make (a_polypoints.first.x, a_polypoints.first.y))
+					(create {TRAFFIC_COORDINATE}.make (a_polypoints.first.x, a_polypoints.first.y))
 			else
 				a_line_section.origin.set_position
-					(create {EM_VECTOR_2D}.make (	(a_line_section.origin.position.x + a_polypoints.first.x)/ 2.0,
+					(create {TRAFFIC_COORDINATE}.make (	(a_line_section.origin.position.x + a_polypoints.first.x)/ 2.0,
 												(a_line_section.origin.position.y + a_polypoints.first.y)/ 2.0))
 			end
 			if a_line_section.destination.position = Void or equal(a_line_section.destination.position, zero_vector) then
 				a_line_section.destination.set_position
-					(create {EM_VECTOR_2D}.make (a_polypoints.last.x, a_polypoints.last.y))
+					(create {TRAFFIC_COORDINATE}.make (a_polypoints.last.x, a_polypoints.last.y))
 			else
 				a_line_section.destination.set_position
-					(create {EM_VECTOR_2D}.make (	(a_line_section.destination.position.x + a_polypoints.last.x)/ 2.0,
+					(create {TRAFFIC_COORDINATE}.make (	(a_line_section.destination.position.x + a_polypoints.last.x)/ 2.0,
 												(a_line_section.destination.position.y + a_polypoints.last.y)/ 2.0))
 			end
 		end
@@ -174,7 +174,7 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			position: EM_VECTOR_2D
+			position: TRAFFIC_COORDINATE
 			road: TRAFFIC_ROAD_CONNECTION
 		do
 			create polypoints.make (0)
@@ -217,7 +217,7 @@ feature -- Basic operations
 			end
 		end
 
-	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
+	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			-- Polypoints of this link
 
 	roads: ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]

@@ -19,7 +19,7 @@ feature -- Initialization
 		require
 			a_path_not_void: a_path /= Void
 		local
-			list: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			path_conns: DS_LINKED_LIST [TRAFFIC_CONNECTION]
 			evening_time, sleep_time: DOUBLE
 		do

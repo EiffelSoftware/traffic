@@ -70,7 +70,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	new_color: EM_COLOR is
+	new_color: TRAFFIC_COLOR is
 			-- Color specified by node
 		require
 			valid_color: valid_color

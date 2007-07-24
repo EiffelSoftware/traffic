@@ -49,7 +49,7 @@ feature -- Basic operations
 
 feature -- Events
 
-	request: EM_EVENT_CHANNEL[TUPLE[EM_VECTOR_2D, EM_VECTOR_2D]]
+	request: EM_EVENT_CHANNEL[TUPLE[TRAFFIC_COORDINATE, TRAFFIC_COORDINATE]]
 			-- Event when a taxi is needed
 			-- Containing the from location and the intended destination as em_vector_2d
 
@@ -59,13 +59,13 @@ feature -- Events
 	taxi_busy: EM_EVENT_CHANNEL[TUPLE[TRAFFIC_EVENT_TAXI]]
 			-- Event when a taxi gets busy
 
-	reject_request: EM_EVENT_CHANNEL[TUPLE[EM_VECTOR_2D, EM_VECTOR_2D]]
+	reject_request: EM_EVENT_CHANNEL[TUPLE[TRAFFIC_COORDINATE, TRAFFIC_COORDINATE]]
 			-- Event when a taxi rejects to take a request
 			-- Containing the from location and the intended destination as em_vector_2d
 
 feature {TRAFFIC_EVENT_TAXI} -- communication from the taxis to their office
 
-	recall (from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
+	recall (from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
 			-- Publish the request again.
 		do
 			request.publish([from_location, to_location])

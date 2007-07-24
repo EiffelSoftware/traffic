@@ -32,7 +32,7 @@ feature {NONE} -- Initialize
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
-			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (0.0, 0.0))
+			create dummy_node.make_with_place (Current, create {TRAFFIC_COORDINATE}.make (0.0, 0.0))
 			add_node (dummy_node)
 		ensure
 			name_set: equal (a_name, name)
@@ -46,7 +46,7 @@ feature {NONE} -- Initialize
 			a_name_not_empty: not a_name.is_empty
 		do
 			name := a_name
-			create dummy_node.make_with_place (Current, create {EM_VECTOR_2D}.make (a_x, a_y))
+			create dummy_node.make_with_place (Current, create {TRAFFIC_COORDINATE}.make (a_x, a_y))
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
@@ -92,7 +92,7 @@ feature -- Access
 	name: STRING
 			-- Name of place
 
-	position: EM_VECTOR_2D is
+	position: TRAFFIC_COORDINATE is
 			-- Position on map
 		do
 			Result := dummy_node.position
@@ -202,7 +202,7 @@ feature -- Element change
 			information_set: information = a_information
 		end
 
-	set_position (a_position: EM_VECTOR_2D) is
+	set_position (a_position: TRAFFIC_COORDINATE) is
 			-- Set position to `a_position'.
 		require
 			a_position_exists: a_position /= Void
@@ -313,17 +313,17 @@ feature {NONE} -- Implementation
 				set_position (stops.first.position)
 			else
 				if stops.last.position.x > position.x + width/2 then
-					set_position (create {EM_VECTOR_2D}.make ((stops.last.position.x + position.x - width/2)/2, position.y))
+					set_position (create {TRAFFIC_COORDINATE}.make ((stops.last.position.x + position.x - width/2)/2, position.y))
 					width := (stops.last.position.x - position.x)*2
 				elseif stops.last.position.x < position.x - width/2 then
-					set_position (create {EM_VECTOR_2D}.make ((stops.last.position.x + position.x + width/2)/2, position.y))
+					set_position (create {TRAFFIC_COORDINATE}.make ((stops.last.position.x + position.x + width/2)/2, position.y))
 					width := (position.x - stops.last.position.x)*2
 				end
 				if stops.last.position.y > position.y + breadth/2 then
-					set_position (create {EM_VECTOR_2D}.make (position.x, (stops.last.position.y + position.y - breadth/2)/2))
+					set_position (create {TRAFFIC_COORDINATE}.make (position.x, (stops.last.position.y + position.y - breadth/2)/2))
 					breadth := (stops.last.position.y - position.y)*2
 				elseif stops.last.position.y < position.y - breadth/2 then
-					set_position (create {EM_VECTOR_2D}.make (position.x, (stops.last.position.y + position.y + breadth/2)/2))
+					set_position (create {TRAFFIC_COORDINATE}.make (position.x, (stops.last.position.y + position.y + breadth/2)/2))
 					breadth := (position.y - stops.last.position.y)*2
 				end
 			end

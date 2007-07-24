@@ -15,7 +15,7 @@ create
 
 feature -- Initialization
 
-	make_random (a_taxi_office: TRAFFIC_EVENT_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
+	make_random (a_taxi_office: TRAFFIC_EVENT_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]) is
 			-- Taxi with an associated 'a_taxi_office'.
 		local
 			evening_time, morning_time: DOUBLE
@@ -44,7 +44,7 @@ feature -- Access
 
 feature -- Basic operations
 
-	take(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
+	take(from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
 			-- Take a request. Pick up somebody at 'from_location' and bring him or her to 'to_location'.
 			-- If busy inform the taxi office to recall it.
 		do

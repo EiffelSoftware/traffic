@@ -53,7 +53,7 @@ feature -- Element change
 			state_set: state = a_state
 		end
 
-	set_polypoints (a_polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]) is
+	set_polypoints (a_polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]) is
 			-- Set polypoints to `a_polypoints'.
 		require
 			a_polypoints_exist: a_polypoints /= Void
@@ -89,7 +89,7 @@ feature -- Access
 			Result := end_node.place
 		end
 
-	polypoints: DS_ARRAYED_LIST [EM_VECTOR_2D]
+	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			-- Position representation of the connection.
 
 	length: DOUBLE is

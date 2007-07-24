@@ -200,7 +200,7 @@ feature -- Insertion
 			origin, destination: TRAFFIC_PLACE
 			origin_stop, destination_stop: TRAFFIC_STOP
 			other_line_section: TRAFFIC_LINE_CONNECTION
-			pp, polypoints:  DS_ARRAYED_LIST [EM_VECTOR_2D]
+			pp, polypoints:  DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
 			start_stop := Void
 
@@ -275,7 +275,7 @@ feature -- Insertion
 			line_section: TRAFFIC_LINE_CONNECTION
 			origin: TRAFFIC_STOP
 			a_stop: TRAFFIC_STOP
-			pp: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
 			create a_stop.make_stop (a_place, Current, a_place.position)
 			if stops_one_direction.count = 0 and then start_stop = Void then

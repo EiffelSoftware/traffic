@@ -68,7 +68,7 @@ feature -- TODO
 
 feature -- Status report
 
-	place_at_position (a_point: EM_VECTOR_2D): TRAFFIC_PLACE	is
+	place_at_position (a_point: TRAFFIC_COORDINATE): TRAFFIC_PLACE	is
 			-- Place that `a_point' is located on
 			-- Returns Void if there is no place at this position
 		require
@@ -92,7 +92,7 @@ feature -- Status report
 
 feature -- Element change
 
-	set_center (a_center: EM_VECTOR_2D) is
+	set_center (a_center: TRAFFIC_COORDINATE) is
 			-- Set city center to `a_center'.
 		require
 			a_center_exists: a_center /= Void
@@ -174,7 +174,7 @@ feature -- Insertion
 
 feature -- Access
 
-	center: EM_VECTOR_2D
+	center: TRAFFIC_COORDINATE
 			-- Position of the city center
 
 	radius: DOUBLE
@@ -291,8 +291,8 @@ feature {TRAFFIC_MAP_LOADER}
 			w: DOUBLE
 			edge_count: INTEGER
 			type: TRAFFIC_TYPE_STREET
-			pp: DS_ARRAYED_LIST [EM_VECTOR_2D]
-			a: EM_VECTOR_2D
+			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			a: TRAFFIC_COORDINATE
 			place_array: ARRAY [TRAFFIC_PLACE]
 			i: INTEGER
 		do
@@ -390,7 +390,7 @@ feature {NONE}-- Implementation
 			Result_exists: Result /= Void
 		end
 
-	position_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): EM_VECTOR_2D is
+	position_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): TRAFFIC_COORDINATE is
 			-- Position of `a_node'
 		do
 

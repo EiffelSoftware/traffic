@@ -95,7 +95,7 @@ feature -- Access
 	terminal_2: TRAFFIC_PLACE
 			-- Terminal of line in other direction
 
-	color: EM_COLOR
+	color: TRAFFIC_COLOR
 			-- Line color
 			-- Used as color represenation
 
@@ -141,7 +141,7 @@ feature -- Element change
 			map := Void
 		end
 
-	set_color (a_color: EM_COLOR) is
+	set_color (a_color: TRAFFIC_COLOR) is
 			-- Set color to `a_color'.
 		require
 			a_color_exists: a_color /= Void
@@ -309,14 +309,14 @@ feature -- Basic operations
 			line_added_to_line_section: a_line_section.line = Current
 		end
 
-	road_points: DS_ARRAYED_LIST[EM_VECTOR_2D] is
+	road_points: DS_ARRAYED_LIST[TRAFFIC_COORDINATE] is
 			-- returns the polypoints retrieve by the roads
 			-- that belongs to this line
 		local
 			roads:ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]
-			pp: DS_ARRAYED_LIST[EM_VECTOR_2D]
+			pp: DS_ARRAYED_LIST[TRAFFIC_COORDINATE]
 			invert, is_station: BOOLEAN
-			v: EM_VECTOR_2D
+			v: TRAFFIC_COORDINATE
 		do
 			create Result.make(1)
 			-- loop on all the line sections
@@ -568,7 +568,7 @@ feature {NONE} -- Implementation
 
 
 
-	angle(st,dest: EM_VECTOR_2D):DOUBLE is
+	angle(st,dest: TRAFFIC_COORDINATE):DOUBLE is
 			-- Set the angles to the x- and y-axis respectively.
 		local
 			x_difference, y_difference, hypo, quad: DOUBLE

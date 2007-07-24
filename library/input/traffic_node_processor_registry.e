@@ -56,7 +56,7 @@ feature -- Status setting
 			Result := Processor_registry.has_item (a_processor)
 		end
 
-	set_map (a_map: TRAFFIC_3D_MAP_WIDGET) is
+	set_map (a_map: TRAFFIC_MAP) is
 			-- Set buildings reference.
 		require
 			map_exists: a_map /= Void
@@ -66,7 +66,7 @@ feature -- Status setting
 			internal_map_set: internal_map = a_map
 		end
 
-	internal_map: TRAFFIC_3D_MAP_WIDGET
+	internal_map: TRAFFIC_MAP
 			-- Reference to internal map
 
 

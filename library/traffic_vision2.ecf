@@ -10,7 +10,7 @@
 			<warning name="vweq" enabled="false"/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
-		<library name="em" location="$EM\library\em.ecf" readonly="true"/>
+		<!--library name="em" location="$EM\library\em.ecf" readonly="true"/-->
 		<library name="gobo" location="$ISE_EIFFEL\library\gobo\gobo.ecf" readonly="true"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf" readonly="true"/>
@@ -44,13 +44,10 @@
 			</cluster>
 			<cluster name="type" location="$|type\"/>
 			<cluster name="visualization" location="$|visualization\">
-				<cluster name="tr_em" location="$|em\">
-					<cluster name="visualization_2d" location="$|visualization_2d\"/>
-					<cluster name="visualization_3d" location="$|visualization_3d\">
-						<cluster name="new" location="$|new\"/>
-						<cluster name="nodes" location="$|nodes\"/>
-					</cluster>
-					<cluster name="tr_time" location="$|time\"/>					
+				<cluster name="tr_vision2" location="$|vision2\">
+					<cluster name="tr_time" location="$|time\"/>
+					<cluster name="drawable" location="$|drawable\"/>
+					<cluster name="displayer" location="$|displayer\"/>
 				</cluster>
 			</cluster>
 		</cluster>

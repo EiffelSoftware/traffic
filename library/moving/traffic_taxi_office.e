@@ -13,7 +13,7 @@ inherit
 			default_create
 		end
 
-	TRAFFIC_3D_CONSTANTS
+	TRAFFIC_CONSTANTS
 		export {NONE} all
 		redefine
 			default_create
@@ -57,7 +57,7 @@ feature -- Access
 	taxis: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_TAXI]
 			-- All taxis that work for this office
 
-	color: EM_COLOR
+	color: TRAFFIC_COLOR
 			-- Color of the taxi office
 
 feature -- Basic operations
@@ -69,7 +69,7 @@ feature -- Basic operations
 		deferred
 		end
 
-	call (from_location:EM_VECTOR_2D; to_location:EM_VECTOR_2D) is
+	call (from_location:TRAFFIC_COORDINATE; to_location:TRAFFIC_COORDINATE) is
 			-- Determine nearest taxi to from_location place, pass request on to this taxi.
 		require
 			from_location_not_void: from_location /= void
@@ -78,7 +78,7 @@ feature -- Basic operations
 			nearest_taxi: TRAFFIC_TAXI
 			minimum_distance: REAL
 			temp_distance: REAL
-			position: EM_VECTOR_2D
+			position: TRAFFIC_COORDINATE
 		do
 			if available_taxis.count > 0 then
 				nearest_taxi := available_taxis.first
@@ -154,7 +154,7 @@ feature {TRAFFIC_TAXI} -- Basic operations for taxis
 				end
 		end
 
-	recall(from_location: EM_VECTOR_2D; to_location: EM_VECTOR_2D) is
+	recall(from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
 				-- Recall request.
 				-- E.g. when a taxi reject to take the request because it picked a passenger up on the street.
 		require

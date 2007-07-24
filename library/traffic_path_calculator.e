@@ -45,7 +45,7 @@ feature -- Basic operations
 			a_road: TRAFFIC_ROAD_CONNECTION
 			a_type: TRAFFIC_TYPE_STREET
 			road_id: INTEGER
-			pp: DS_ARRAYED_LIST [EM_VECTOR_2D]
+			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			current_ps, next_ps: TRAFFIC_PATH_SECTION
 			old_mode: INTEGER
 		do
