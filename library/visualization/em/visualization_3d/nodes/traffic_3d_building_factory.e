@@ -39,7 +39,7 @@ feature -- Factory methods
 			end
 			create Result.make_with_item (a_building, villa_blue_template.create_deep_instance, villa_blue_night_template.create_deep_instance)
 			Result.transform.set_position (a_building.center.x, 0, a_building.center.y)
-			bb := Result.day_graphical.hierarchy_bounding_box
+			bb := Result.hierarchy_bounding_box
 			w := (bb.i_th (1).x - bb.i_th (3).x).abs
 			d := (bb.i_th (1).z - bb.i_th (3).z).abs
 			h := (bb.i_th (1).y - bb.i_th (5).y).abs

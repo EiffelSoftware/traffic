@@ -15,7 +15,7 @@ inherit
 		end
 
 create
-	make_with_item
+	make
 
 feature --
 
@@ -23,8 +23,8 @@ feature --
 			-- Update the position before the node is rendered.
 		do
 			Precursor
-			graphical.transform.set_rotation(0.0, 1.0, 0.0,item.angle_x)
-			graphical.transform.set_position (item.position.x, 0, item.position.y)
+			transform.set_rotation(0.0, 1.0, 0.0,item.angle_x)
+			transform.set_position (item.position.x, 0, item.position.y)
 		end
 
 end

@@ -37,7 +37,8 @@ feature -- Basic operations
 		do
 			border := 4.0
 			create_simple_plane (a_place.width+border, a_place.breadth+border)
-			create Result.make_with_item (a_place, last_3d_member)
+			create Result.make (a_place)
+			Result.add_child (last_3d_member)
 			Result.transform.set_position (a_place.position.x, 0.07, a_place.position.y)
 		ensure
 			Result_exists: Result /= Void

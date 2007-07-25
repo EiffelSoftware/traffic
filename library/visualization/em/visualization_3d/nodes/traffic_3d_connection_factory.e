@@ -130,9 +130,11 @@ feature -- Basic operations
 --			end
 			if polyline_3d.count >= 2 then
 				create_flat_polyline(polyline_3d, width)
-				create Result.make_with_item (a_connection, last_3d_member)
+				create Result.make (a_connection)
+				Result.add_child (last_3d_member)
 			else
-				create Result.make_with_item (a_connection, create {TE_3D_NODE}.make)
+				create Result.make (a_connection)
+				Result.add_child (create {TE_3D_NODE}.make)
 			end
 		ensure
 			Result_exists: Result /= Void

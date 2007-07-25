@@ -16,14 +16,27 @@ inherit
 			is_equal,
 			copy
 		redefine
-			children
+			children,
+			make_as_child
 		end
 
 
 	TRAFFIC_VIEW_CONTAINER [G, TRAFFIC_3D_RENDERABLE [G]]
+		redefine
+			force_last
+		end
 
 create
 	make_as_child
+
+feature -- Initialization
+
+	make_as_child (a_parent: TE_3D_NODE) is
+			--
+		do
+			Precursor (a_parent)
+			make
+		end
 
 feature -- Access
 
@@ -33,7 +46,16 @@ feature -- Access
 			Result := Current
 		end
 
-			--
+
+feature -- Insertion
+
+	force_last (v: like item) is
+			-- Add `v' to end of list.
+			-- Do not move cursors.
+		do
+			Precursor (v)
+			v.set_parent (Current)
+		end
 
 --feature -- Access
 

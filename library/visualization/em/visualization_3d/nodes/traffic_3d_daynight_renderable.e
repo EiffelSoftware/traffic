@@ -10,8 +10,7 @@ class
 inherit
 	TRAFFIC_3D_RENDERABLE [G]
 		rename
-			graphical as day_graphical,
-			make_with_item as make_with_item_orig
+			make as make_with_item_orig
 		redefine
 			render_node
 		end
@@ -30,7 +29,9 @@ feature -- Initialization
 			a_day_graphical_not_empty: a_day_graphical /= Void
 			a_night_graphical_not_empty: a_night_graphical /= Void
 		do
-			make_with_item_orig (a_item, a_day_graphical)
+			make_with_item_orig (a_item)
+			day_graphical := a_day_graphical
+			day_graphical.set_as_child_of (Current)
 
 			night_graphical := a_night_graphical
 			night_graphical.set_as_child_of (Current)
@@ -43,6 +44,8 @@ feature -- Initialization
 		end
 
 feature -- Access
+
+	day_graphical: TE_3D_NODE
 
 	night_graphical: TE_3D_NODE
 

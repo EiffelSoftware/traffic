@@ -46,12 +46,12 @@ feature -- Initialization
 			make_component
 
 			create internal_factory
-			create internal_place_representations.make
-			create internal_line_representations.make
-			create internal_road_representations.make
-			create internal_building_representations.make
-			create internal_moving_representations.make
-			create internal_path_representations.make
+			create internal_place_representations.make_as_child (root)
+			create internal_line_representations.make_as_child (root)
+			create internal_road_representations.make_as_child (root)
+			create internal_building_representations.make_as_child (root)
+			create internal_moving_representations.make_as_child (root)
+			create internal_path_representations.make_as_child (root)
 
 			set_keyboard_sensitive (True)
 			set_width (a_width)
@@ -94,12 +94,12 @@ feature -- Element change
 			if map /= Void then
 				wipe_out
 			end
-			create internal_place_representations.make
-			create internal_line_representations.make
-			create internal_road_representations.make
-			create internal_building_representations.make
-			create internal_moving_representations.make
-			create internal_path_representations.make
+			create internal_place_representations.make_as_child (root)
+			create internal_line_representations.make_as_child (root)
+			create internal_road_representations.make_as_child (root)
+			create internal_building_representations.make_as_child (root)
+			create internal_moving_representations.make_as_child (root)
+			create internal_path_representations.make_as_child (root)
 			Precursor (a_map)
 			is_map_loaded := True
 			root.transform.set_position (-map.center.x, 0, -map.center.y)
@@ -109,12 +109,12 @@ feature -- Element change
 feature {NONE} -- Implementation
 
 	internal_factory: TRAFFIC_3D_VIEW_FACTORY
-	internal_moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_3D_RENDERABLE [TRAFFIC_MOVING]]
-	internal_path_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_3D_RENDERABLE [TRAFFIC_PATH]]
-	internal_line_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE, TRAFFIC_3D_RENDERABLE [TRAFFIC_LINE]]
-	internal_road_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_3D_RENDERABLE [TRAFFIC_ROAD]]
-	internal_place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_3D_RENDERABLE [TRAFFIC_PLACE]]
-	internal_building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_3D_RENDERABLE [TRAFFIC_BUILDING]]
+	internal_moving_representations: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_MOVING]
+	internal_path_representations: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_PATH]
+	internal_line_representations: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_LINE]
+	internal_road_representations: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_ROAD]
+	internal_place_representations: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_PLACE]
+	internal_building_representations: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_BUILDING]
 
 feature -- Access
 

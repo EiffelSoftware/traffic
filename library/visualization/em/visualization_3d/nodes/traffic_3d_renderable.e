@@ -23,35 +23,31 @@ inherit
 	TRAFFIC_CONSTANTS
 
 create
-	make_with_item
+	make
 
 feature -- Initialization
 
 	make (a_item: G) is
 			-- Set `item' to `a_item'.
 		do
-			-- TODO
+			make_node
 			item := a_item
 			create color.make_white
 			create highlight_color.make_white
 			is_highlighted := False
 		end
 
-	make_with_item (an_element: G; a_3d_graphical: TE_3D_NODE) is
-			-- Initialize.
-		require
-			an_element_not_void: an_element /= Void
-			a_3d_graphical_not_empty: a_3d_graphical /= Void
-		do
-			make_node
-			make (an_element)
-			graphical := a_3d_graphical
-			graphical.set_as_child_of (Current)
-		end
-
-feature -- Access
-
-	graphical: TE_3D_NODE
+--	make_with_item (an_element: G; a_3d_graphical: TE_3D_NODE) is
+--			-- Initialize.
+--		require
+--			an_element_not_void: an_element /= Void
+--			a_3d_graphical_not_empty: a_3d_graphical /= Void
+--		do
+--			make_node
+--			make (an_element)
+--			graphical := a_3d_graphical
+--			graphical.set_as_child_of (Current)
+--		end
 
 feature -- Status report
 
@@ -61,7 +57,7 @@ feature -- Status report
 	is_shown: BOOLEAN
 			-- Is the place view shown?
 		do
-			Result := graphical.is_hierarchy_renderable
+			Result := is_hierarchy_renderable
 		end
 
 feature -- Element change
@@ -89,13 +85,13 @@ feature -- Element change
 	show is
 			-- Show the renderable.
 		do
-			graphical.enable_hierarchy_renderable
+			enable_hierarchy_renderable
 		end
 
 	hide is
 			-- Hide the renderable.
 		do
-			graphical.disable_hierarchy_renderable
+			disable_hierarchy_renderable
 		end
 
 	highlight is

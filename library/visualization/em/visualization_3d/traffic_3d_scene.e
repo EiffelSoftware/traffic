@@ -134,7 +134,7 @@ feature -- Basic operations
 			component: EM_COMPONENT
 		do
 			if video_subsystem.opengl_enabled then
-				emgl_clear (Em_gl_color_buffer_bit | Em_gl_depth_buffer_bit)
+				gl_clear (Em_gl_color_buffer_bit | Em_gl_depth_buffer_bit)
 			end
 			from
 				cursor := components_impl.new_cursor

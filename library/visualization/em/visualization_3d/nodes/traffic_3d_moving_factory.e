@@ -16,8 +16,9 @@ feature -- Factory methods
 			if error_template = Void then
 				error_template := load_template ("error.obj")
 			end
-			create Result.make_with_item (a_moving, error_template.create_deep_instance)
-			Result.graphical.transform.set_scaling (50, 50, 50)
+			create Result.make (a_moving)
+			Result.add_child (error_template.create_deep_instance)
+			Result.transform.set_scaling (50, 50, 50)
 		end
 
 	new_free_moving_member (a_moving: TRAFFIC_FREE_MOVING): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_FREE_MOVING] is
@@ -28,8 +29,9 @@ feature -- Factory methods
 			if man_template = Void then
 				man_template := load_template ("man.obj")
 			end
-			create Result.make_with_item (a_moving, man_template.create_deep_instance)
-			Result.graphical.transform.set_scaling (50, 50, 50)
+			create Result.make (a_moving)
+			Result.add_child (man_template.create_deep_instance)
+			Result.transform.set_scaling (50, 50, 50)
 			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (0, 255, 0))
 		end
 
@@ -55,8 +57,9 @@ feature -- Factory methods
 			if man_template = Void then
 				man_template := load_template ("man.obj")
 			end
-			create Result.make_with_item (a_passenger, man_template.create_deep_instance)
-			Result.graphical.transform.set_scaling (50, 50, 50)
+			create Result.make (a_passenger)
+			Result.add_child (man_template.create_deep_instance)
+			Result.transform.set_scaling (50, 50, 50)
 		end
 
 	new_woman_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
@@ -67,8 +70,9 @@ feature -- Factory methods
 			if woman_template = Void then
 				woman_template := load_template ("woman.obj")
 			end
-			create Result.make_with_item (a_passenger, woman_template.create_deep_instance)
-			Result.graphical.transform.set_scaling (50, 50, 50)
+			create Result.make (a_passenger)
+			Result.add_child (woman_template.create_deep_instance)
+			Result.transform.set_scaling (50, 50, 50)
 		end
 
 	new_taxi_daynight_member (a_taxi: TRAFFIC_TAXI): TRAFFIC_3D_MOVING_DAYNIGHT_RENDERABLE [TRAFFIC_TAXI] is
