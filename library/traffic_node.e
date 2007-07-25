@@ -45,6 +45,7 @@ feature {NONE} -- Initialization
 			if place.dummy_node /= Void then
 				place.add_node (Current)
 			end
+			create changed_event_channel
 		ensure
 			no_referrer: (referring_node = Void) and (referring_connection = Void)
 			distance_positive: distance >= 0

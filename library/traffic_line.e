@@ -72,6 +72,7 @@ feature {NONE} -- Initialization
 			end
 			create stops_one_direction.make -- create empty line_sections list for one direction
 			create stops_other_direction.make -- create empty line_sections list for other direction
+			create changed_event_channel
 		ensure
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object

@@ -40,6 +40,9 @@ feature -- Access
 	map: TRAFFIC_MAP
 			-- Map to which the item belongs (may be void)
 
+	changed_event_channel: TRAFFIC_EVENT_CHANNEL [TUPLE []]
+			-- Event channel for notifying observers of a change
+
 feature -- Status report
 
 	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
@@ -48,4 +51,8 @@ feature -- Status report
 		deferred
 		end
 
+invariant
+
+	changed_event_channel_exists: changed_event_channel /= Void
+	
 end

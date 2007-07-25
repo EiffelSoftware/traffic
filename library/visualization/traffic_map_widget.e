@@ -5,23 +5,79 @@ indexing
 
 deferred class TRAFFIC_MAP_WIDGET
 
-feature -- Status setting
+feature -- Access
+
+	map: TRAFFIC_MAP
+			-- Map that is displayed
+
+	factory: TRAFFIC_VIEW_FACTORY
+			-- Factory for creating views
+		deferred
+		end
+
+	line_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE, TRAFFIC_VIEW [TRAFFIC_LINE]] is
+			-- Container for line connection views
+		deferred
+		end
+
+	road_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_VIEW [TRAFFIC_ROAD]] is
+			-- Container for road connection views
+		deferred
+		end
+
+	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VIEW [TRAFFIC_PLACE]]
+			-- Container for place views
+		deferred
+		end
+
+	building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_VIEW [TRAFFIC_BUILDING]]
+			-- Container for building views
+		deferred
+		end
+
+	moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_VIEW [TRAFFIC_MOVING]]
+			-- Container for moving views
+		deferred
+		end
+
+	path_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VIEW [TRAFFIC_PATH]]
+			-- Container for path views
+		deferred
+		end
+
+feature -- Element change
 
 	set_map (a_map: TRAFFIC_MAP) is
 			-- Set map that is displayed to `a_map'.
+		require
+			line_representations_exists: line_representations /= Void
+			place_representations_exists: place_representations /= Void
+			building_representations_exists: building_representations /= Void
+			moving_representations_exists: moving_representations /= Void
+			path_representations_exists: path_representations /= Void
 		local
-			l: TRAFFIC_VIEW [TRAFFIC_LINE_CONNECTION]
+			l: TRAFFIC_VIEW [TRAFFIC_LINE]
 			p: TRAFFIC_VIEW [TRAFFIC_PLACE]
+			r: TRAFFIC_VIEW [TRAFFIC_ROAD]
 		do
 			map := a_map
 			from
-				map.line_sections.start
+				map.roads.start
 			until
-				map.line_sections.off
+				map.roads.off
 			loop
-				l := factory.new_line_connection_view (map.line_sections.item_for_iteration)
+				r := factory.new_road_view (map.roads.item_for_iteration)
+				road_representations.force_last (r)
+				map.roads.forth
+			end
+			from
+				map.lines.start
+			until
+				map.lines.off
+			loop
+				l := factory.new_line_view (map.lines.item_for_iteration)
 				line_representations.force_last (l)
-				map.line_sections.forth
+				map.lines.forth
 			end
 			from
 				map.places.start
@@ -32,8 +88,10 @@ feature -- Status setting
 				place_representations.force_last (p)
 				map.places.forth
 			end
-			map.line_sections.element_inserted_event.subscribe (agent add_line_connection)
-			map.line_sections.element_removed_event.subscribe (agent remove_line_connection)
+			map.lines.element_inserted_event.subscribe (agent add_line)
+			map.lines.element_removed_event.subscribe (agent remove_line)
+			map.roads.element_inserted_event.subscribe (agent add_road)
+			map.roads.element_removed_event.subscribe (agent remove_road)
 			map.places.element_inserted_event.subscribe (agent add_place)
 			map.places.element_removed_event.subscribe (agent remove_place)
 			map.buildings.element_inserted_event.subscribe (agent add_building)
@@ -48,44 +106,34 @@ feature -- Status setting
 			map.passengers.element_removed_event.subscribe (agent remove_passenger)
 			map.paths.element_inserted_event.subscribe (agent add_path)
 			map.paths.element_removed_event.subscribe (agent remove_path)
-
 		ensure
 			map_set: map = a_map
 		end
 
-feature -- Access
+feature -- Status report
 
-	map: TRAFFIC_MAP
-			-- Map that is displayed
+	is_map_hidden: BOOLEAN
+			-- Is the map hidden?
 
-	factory: TRAFFIC_VIEW_FACTORY
-			-- Factory for creating views
-		deferred
+	are_buildings_hidden: BOOLEAN
+			-- Are the buildings displayed?
+
+feature -- Status setting
+
+	enable_map_hidden is
+			-- Set `is_map_hidden' to `True'.
+		do
+			is_map_hidden := True
+		ensure
+			map_hidden: is_map_hidden
 		end
 
-	line_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE_CONNECTION, TRAFFIC_VIEW [TRAFFIC_LINE_CONNECTION]] is
-			--
-		deferred
-		end
-
-	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VIEW [TRAFFIC_PLACE]]
-			--
-		deferred
-		end
-
-	building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_VIEW [TRAFFIC_BUILDING]]
-			--
-		deferred
-		end
-
-	moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_VIEW [TRAFFIC_MOVING]]
-			--
-		deferred
-		end
-
-	path_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VIEW [TRAFFIC_PATH]]
-			--
-		deferred
+	disable_map_hidden is
+			-- Set `is_map_hidden' to `False'.
+		do
+			is_map_hidden := False
+		ensure
+			map_not_hidden: not is_map_hidden
 		end
 
 feature {NONE} -- Implementation (wrappers for agents)
@@ -98,12 +146,20 @@ feature {NONE} -- Implementation (wrappers for agents)
 			place_representations.force_last (factory.new_place_view (a_place))
 		end
 
-	add_line_connection (a_line_connection: TRAFFIC_LINE_CONNECTION) is
-			-- Add line connection view for `a_line_connection'.
+	add_line (a_line: TRAFFIC_LINE) is
+			-- Add line view for `a_line'.
 		require
-			a_line_connection_exists: a_line_connection /= Void
+			a_line_exists: a_line /= Void
 		do
-			line_representations.force_last (factory.new_line_connection_view (a_line_connection))
+			line_representations.force_last (factory.new_line_view (a_line))
+		end
+
+	add_road (a_road: TRAFFIC_ROAD) is
+			-- Add road view for `a_road'.
+		require
+			a_road_exists: a_road /= Void
+		do
+			road_representations.force_last (factory.new_road_view (a_road))
 		end
 
 	add_path (a_path: TRAFFIC_PATH) is
@@ -162,12 +218,20 @@ feature {NONE} -- Implementation (wrappers for agents)
 			place_representations.delete (place_representations.view_for_item (a_place))
 		end
 
-	remove_line_connection (a_line_connection: TRAFFIC_LINE_CONNECTION) is
-			-- Remove view for `a_line_connection'.
+	remove_line (a_line: TRAFFIC_LINE) is
+			-- Remove view for `a_line'.
 		require
-			a_line_connection_exists: a_line_connection /= Void
+			a_line_exists: a_line /= Void
 		do
-			line_representations.delete (line_representations.view_for_item (a_line_connection))
+			line_representations.delete (line_representations.view_for_item (a_line))
+		end
+
+	remove_road (a_road: TRAFFIC_ROAD) is
+			-- Remove view for `a_road'.
+		require
+			a_road_exists: a_road /= Void
+		do
+			road_representations.delete (road_representations.view_for_item (a_road))
 		end
 
 	remove_path (a_path: TRAFFIC_PATH) is
@@ -221,7 +285,11 @@ feature {NONE} -- Implementation (wrappers for agents)
 invariant
 
 	factory_exists: factory /= Void
---	line_representations_exists: line_representations /= Void
---	place_representations_exists: place_representations /= Void
+	line_representations_exists: line_representations /= Void
+	road_representations_exists: road_representations /= Void
+	place_representations_exists: place_representations /= Void
+	building_representations_exists: building_representations /= Void
+	moving_representations_exists: moving_representations /= Void
+	path_representations_exists: path_representations /= Void
 
 end

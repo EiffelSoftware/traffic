@@ -47,24 +47,30 @@ feature -- Commands
 			new_points_not_void: new_points /= Void
 		do
 			points:= new_points
+			invalidate
 		ensure
 			new_points: points = new_points
+			not_valid: not is_valid
 		end
 
 	set_width (a_width: like width) is
 			-- Set the polyline's width to `a_width'
 		do
 			width:= a_width
+			invalidate
 		ensure
 			new_width: width = a_width
+			not_valid: not is_valid
 		end
 
 	enable_dashed_line is
 			-- Draw the line dashed.
 		do
 			dashed := True
+			invalidate
 		ensure
 			dashed_true: dashed
+			not_valid: not is_valid
 		end
 
 feature -- Queries

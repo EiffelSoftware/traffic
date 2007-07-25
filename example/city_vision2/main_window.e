@@ -456,6 +456,26 @@ feature {NONE} -- Implementation, Close event
 			end
 		end
 
+	toggle_map_hidden (a_check_box: EV_CHECK_BUTTON) is
+			--
+		do
+			if a_check_box.is_selected then
+				canvas.disable_map_hidden
+			else
+				canvas.enable_map_hidden
+			end
+		end
+
+	toggle_lines_hidden (a_check_box: EV_CHECK_BUTTON) is
+			--
+		do
+			if a_check_box.is_selected then
+				canvas.line_representations.show
+			else
+				canvas.line_representations.hide
+			end
+		end
+
 	update_status_label is
 			--
 		do
@@ -507,6 +527,7 @@ feature {NONE} -- Implementation
 			fr: EV_FRAME
 			r: EV_HORIZONTAL_RANGE
 			l: EV_LABEL
+			rad: EV_CHECK_BUTTON
 			table: EV_TABLE
 			fixed: EV_FIXED
 		do
@@ -559,7 +580,7 @@ feature {NONE} -- Implementation
 			fixed.set_item_position (l, 5, 82)
 			fixed.set_item_position_and_size (r, 130, 80, 100, 20)
 
-			-- Passengers
+			-- Paths
 			create l.make_with_text ("Paths (0..10):")
 			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
 			r.set_value (0)
@@ -569,6 +590,20 @@ feature {NONE} -- Implementation
 			fixed.extend (r)
 			fixed.set_item_position (l, 5, 122)
 			fixed.set_item_position_and_size (r, 130, 120, 100, 20)
+
+			-- Hide/show map
+			create rad.make_with_text ("Show map")
+			rad.toggle
+			rad.select_actions.extend (agent toggle_map_hidden (rad))
+			fixed.extend (rad)
+			fixed.set_item_position (rad, 5, 162)
+
+			-- Hide/show lines
+			create rad.make_with_text ("Show lines")
+			rad.toggle
+			rad.select_actions.extend (agent toggle_lines_hidden (rad))
+			fixed.extend (rad)
+			fixed.set_item_position (rad, 125, 162)
 
 			vb.extend (fixed)
 			vb.disable_item_expand (fixed)

@@ -68,18 +68,33 @@ feature -- Display
 			end
 		end
 
-	refresh is
-			-- Refresh all items on `Current'.
+	redraw_now is
+			-- Redraw all items on `Current'.
 		do
 			clear
-			from
-				object_list.start
-			until
-				object_list.off
-			loop
-				draw_item(object_list.item_for_iteration)
-				object_list.forth
+			if object_list /= Void then
+				from
+					object_list.start
+				until
+					object_list.off
+				loop
+					draw_item(object_list.item_for_iteration)
+					object_list.forth
+				end
 			end
+			has_pending_redraw := false
+			(create {EV_ENVIRONMENT}).application.idle_actions.prune_all (redraw_agent)
+		end
+
+	redraw is
+			-- Redraw the map as soon as possible.
+		do
+			if not has_pending_redraw then
+				(create {EV_ENVIRONMENT}).application.idle_actions.extend (redraw_agent)
+				has_pending_redraw := true
+			end
+		ensure
+			redraw_pending: has_pending_redraw
 		end
 
 feature -- Queries
@@ -103,6 +118,12 @@ feature {NONE} -- Implementation
 				an_item.draw (Current)
 			end
 		end
+
+	has_pending_redraw : BOOLEAN
+			-- Is there any pending redraw?
+
+	redraw_agent: PROCEDURE [ANY, TUPLE]
+			-- Redraw agent to redraw the map when idle
 
 invariant
 

@@ -14,7 +14,7 @@ inherit
 			object_list
 		redefine
 			make,
-			refresh
+			redraw_now
 		end
 
 	TRAFFIC_MAP_WIDGET
@@ -23,7 +23,9 @@ inherit
 			default_create,
 			is_equal
 		redefine
-			set_map
+			set_map,
+			enable_map_hidden,
+			disable_map_hidden
 		end
 
 create
@@ -39,14 +41,17 @@ feature -- Initialization
 			create internal_factory
 			create internal_place_representations.make
 			create internal_line_representations.make
+			create internal_road_representations.make
 			create internal_building_representations.make
 			create internal_moving_representations.make
 			create internal_path_representations.make
 
 			Precursor
+			create e
+			e.application.add_idle_action (agent fast_redraw_now)
 		end
 
-feature -- Basic operations
+feature -- Element change
 
 	set_map (a_map: TRAFFIC_MAP) is
 			-- Set map that is displayed to `a_map'.
@@ -55,14 +60,29 @@ feature -- Basic operations
 		do
 			create internal_place_representations.make
 			create internal_line_representations.make
+			create internal_road_representations.make
 			create internal_building_representations.make
 			create internal_moving_representations.make
 			create internal_path_representations.make
 			object_list.wipe_out
 			Precursor (a_map)
-			refresh
-			create e
-			e.application.add_idle_action (agent fast_refresh)
+			redraw
+		end
+
+feature -- Status setting
+
+	enable_map_hidden is
+			-- Set `is_map_hidden' to `True'.
+		do
+			is_map_hidden := True
+			redraw
+		end
+
+	disable_map_hidden is
+			-- Set `is_map_hidden' to `False'.
+		do
+			is_map_hidden := False
+			redraw
 		end
 
 feature {NONE} -- Implementation
@@ -70,16 +90,23 @@ feature {NONE} -- Implementation
 	internal_factory: TRAFFIC_VS_VIEW_FACTORY
 	internal_moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_VS_VIEW [TRAFFIC_MOVING]]
 	internal_path_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VS_VIEW [TRAFFIC_PATH]]
-	internal_line_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE_CONNECTION, TRAFFIC_VS_VIEW [TRAFFIC_LINE_CONNECTION]]
+	internal_line_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE, TRAFFIC_VS_VIEW [TRAFFIC_LINE]]
+	internal_road_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_VS_VIEW [TRAFFIC_ROAD]]
 	internal_place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VS_VIEW [TRAFFIC_PLACE]]
 	internal_building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_VS_VIEW [TRAFFIC_BUILDING]]
 
 feature -- Access
 
-	line_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE_CONNECTION, TRAFFIC_VIEW [TRAFFIC_LINE_CONNECTION]] is
+	line_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE, TRAFFIC_VIEW [TRAFFIC_LINE]] is
 			--
 		do
 			Result := internal_line_representations
+		end
+
+	road_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_VIEW [TRAFFIC_ROAD]] is
+			--
+		do
+			Result := internal_road_representations
 		end
 
 	path_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VIEW [TRAFFIC_PATH]] is
@@ -114,58 +141,74 @@ feature -- Access
 
 feature -- Basic operations
 
-	refresh is
+	redraw_now is
 			-- Refresh all items on `Current'.
 		do
 			clear
-			from
-				internal_line_representations.start
-			until
-				internal_line_representations.off
-			loop
-				draw_item (internal_line_representations.item_for_iteration)
-				internal_line_representations.forth
+			if not is_map_hidden then
+				from
+					internal_road_representations.start
+				until
+					internal_road_representations.off
+				loop
+					draw_item (internal_road_representations.item_for_iteration)
+					internal_road_representations.forth
+				end
+				from
+					internal_line_representations.start
+				until
+					internal_line_representations.off
+				loop
+					draw_item (internal_line_representations.item_for_iteration)
+					internal_line_representations.forth
+				end
+				from
+					internal_place_representations.start
+				until
+					internal_place_representations.off
+				loop
+					draw_item (internal_place_representations.item_for_iteration)
+					internal_place_representations.forth
+				end
+				from
+					internal_building_representations.start
+				until
+					internal_building_representations.off
+				loop
+					draw_item (internal_building_representations.item_for_iteration)
+					internal_building_representations.forth
+				end
+				background_image := twin
+				fast_redraw_now
+				has_pending_redraw := false
+				(create {EV_ENVIRONMENT}).application.idle_actions.prune_all (redraw_agent)
 			end
-			from
-				internal_place_representations.start
-			until
-				internal_place_representations.off
-			loop
-				draw_item (internal_place_representations.item_for_iteration)
-				internal_place_representations.forth
-			end
-			from
-				internal_building_representations.start
-			until
-				internal_building_representations.off
-			loop
-				draw_item (internal_building_representations.item_for_iteration)
-				internal_building_representations.forth
-			end
-			background_image := twin
-			fast_refresh
 		end
 
-	fast_refresh is
+	fast_redraw_now is
 			-- Refresh only the objects in mutable_object_list.
 		do
 			clear
-			draw_pixmap (0, 0, background_image)
-			from
-				internal_moving_representations.start
-			until
-				internal_moving_representations.off
-			loop
-				draw_item (internal_moving_representations.item_for_iteration)
-				internal_moving_representations.forth
-			end
-			from
-				internal_path_representations.start
-			until
-				internal_path_representations.off
-			loop
-				draw_item (internal_path_representations.item_for_iteration)
-				internal_path_representations.forth
+			if not is_map_hidden then
+				if background_image /= Void then
+					draw_pixmap (0, 0, background_image)
+				end
+				from
+					internal_moving_representations.start
+				until
+					internal_moving_representations.off
+				loop
+					draw_item (internal_moving_representations.item_for_iteration)
+					internal_moving_representations.forth
+				end
+				from
+					internal_path_representations.start
+				until
+					internal_path_representations.off
+				loop
+					draw_item (internal_path_representations.item_for_iteration)
+					internal_path_representations.forth
+				end
 			end
 		end
 

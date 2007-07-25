@@ -14,13 +14,14 @@ inherit
 			copy,
 			is_equal,
 			set_internal_color,
+			show,
+			hide,
 			draw
 		end
 
 	DRAWABLE_OBJECT_CONTAINER
 		rename
 			make as make_container,
-			item as container_item,
 			set_color as set_internal_color,
 			color as internal_color
 		export {NONE}
@@ -43,6 +44,7 @@ feature -- Initialization
 			c: DRAWABLE_POLYLINE
 			p: DRAWABLE_ROUNDED_RECTANGLE
 		do
+			make_container
 			item := a_item
 			from
 				conns := item.connections
@@ -51,11 +53,11 @@ feature -- Initialization
 				conns.after
 			loop
 				c := new_connection_view (conns.item_for_iteration)
-				extend (c)
+				put_last (c)
 				p := new_place_view (conns.item_for_iteration.origin)
-				extend (p)
+				put_last (p)
 				p := new_place_view (conns.item_for_iteration.destination)
-				extend (p)
+				put_last (p)
 				conns.forth
 			end
 			set_color (create {TRAFFIC_COLOR}.make_with_rgb (255, 0, 0))

@@ -39,12 +39,27 @@ feature -- Creation
 feature -- Element change
 
 	set_position (a_coordinate: REAL_COORDINATE) is
-			--
+			-- Set `position' to `a_coordinate'.
+		require
+			a_coordinate_exists: a_coordinate /= Void
 		do
 			create position.make (a_coordinate.x, a_coordinate.y)
+			invalidate
+		ensure
+			not_valid: not is_valid
+			position_set: position.x = a_coordinate.x and position.y = a_coordinate.y
 		end
 
 feature -- Access
+
+	position: REAL_COORDINATE
+			-- Position of the icon
+
+	pixmap: EV_PIXMAP
+			-- The icon
+
+	area: EV_RECTANGLE
+			-- The area of the icon
 
 	bounding_box : REAL_RECTANGLE is
 			-- The bounding box of the icon
@@ -74,17 +89,6 @@ feature {CANVAS} -- Display
 			scaled_position := real_to_integer_coordinate (coord)
 			canvas.draw_sub_pixmap (scaled_position.x-(pixmap.width/2).floor, scaled_position.y-(pixmap.height/2).floor, pixmap, area)
 		end
-
-feature {NONE} -- Implementation
-
-	position: REAL_COORDINATE
-			-- Position of the icon
-
-	pixmap: EV_PIXMAP
-			-- The icon
-
-	area: EV_RECTANGLE
-			-- The area of the icon
 
 invariant
 

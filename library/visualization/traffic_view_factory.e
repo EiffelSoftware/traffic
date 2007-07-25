@@ -27,10 +27,19 @@ feature -- Factory methods
 			Result_exists: Result /= Void
 		end
 
-	new_line_connection_view (a_connection: TRAFFIC_LINE_CONNECTION): TRAFFIC_VIEW [TRAFFIC_LINE_CONNECTION] is
+	new_line_view (a_line: TRAFFIC_LINE): TRAFFIC_VIEW [TRAFFIC_LINE] is
 			-- New line connection view for `a_connection'
 		require
-			a_connection_exists: a_connection /= Void
+			a_line_exists: a_line /= Void
+		deferred
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	new_road_view (a_road: TRAFFIC_ROAD): TRAFFIC_VIEW [TRAFFIC_ROAD] is
+			-- New road view for `a_road'
+		require
+			a_road_exists: a_road /= Void
 		deferred
 		ensure
 			Result_exists: Result /= Void

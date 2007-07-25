@@ -32,6 +32,7 @@ feature {NONE} -- Initialization
 			create available_taxis.make
 			create taxis.make
 			create color.make_with_rgb (255, 255, 255)
+			create changed_event_channel
 		ensure then
 			taxis_exists: taxis /= Void
 			available_taxis_exists: available_taxis /= Void
@@ -47,6 +48,7 @@ feature {NONE} -- Initialization
 		do
 			default_create
 			create color.make_with_rgb (r, g, b)
+			create changed_event_channel
 		end
 
 feature -- Access

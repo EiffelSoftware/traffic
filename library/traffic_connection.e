@@ -35,6 +35,7 @@ feature -- Initialization
 			end_node := a_end_node
 			is_directed := True
 			create state.make
+			create changed_event_channel
 		ensure
 			nodes_not_void: start_node /= Void and
 							end_node /= Void

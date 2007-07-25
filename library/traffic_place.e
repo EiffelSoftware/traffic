@@ -34,6 +34,7 @@ feature {NONE} -- Initialize
 			create nodes.make (5)
 			create dummy_node.make_with_place (Current, create {TRAFFIC_COORDINATE}.make (0.0, 0.0))
 			add_node (dummy_node)
+			create changed_event_channel
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -51,6 +52,7 @@ feature {NONE} -- Initialize
 			create stops.make (5)
 			create nodes.make (5)
 			add_node (dummy_node)
+			create changed_event_channel
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void

@@ -30,6 +30,7 @@ feature -- Initialization
 			other_way := a_conn2
 			id := a_conn1.id
 			is_one_way := False
+			create changed_event_channel
 		ensure
 			one_way_set: one_way = a_conn1
 			other_way_set: other_way = a_conn2
@@ -45,6 +46,7 @@ feature -- Initialization
 			one_way := a_conn
 			is_one_way := True
 			id := a_conn.id
+			create changed_event_channel
 		ensure
 			one_way_set: one_way = a_conn
 			other_way_not_set: other_way = Void

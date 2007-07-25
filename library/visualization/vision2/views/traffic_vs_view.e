@@ -1,3 +1,4 @@
+
 indexing
 	description: "Objects that ..."
 	author: ""
@@ -59,5 +60,5 @@ feature -- Basic operations
 feature -- Access
 
 	is_highlighted: BOOLEAN
-	
+
 end

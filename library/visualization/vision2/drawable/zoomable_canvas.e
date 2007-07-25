@@ -28,7 +28,7 @@ feature -- Canvas elements
 			set_zoom_limits (0.5, 2)
 			zoom_factor := 1.0
 			has_pending_redraw := false
-			force_redraw_agent := agent force_redraw_agent_impl
+			redraw_agent := agent redraw_now
 			mouse_wheel_actions.extend (agent zoom)
 			pan_agent := agent pan
 			pointer_button_release_actions.extend (agent move_end)
@@ -54,29 +54,6 @@ feature -- Canvas elements
 		do
 			zoom_minimum := min
 			zoom_maximum := max
-		end
-
-	force_redraw is
-			-- Redraw the map immediately.
-		do
-			-- If there are any objects, then repaint.
-			if object_list /= Void then
-				refresh
-			end
-		end
-
-	has_pending_redraw : BOOLEAN
-			-- Is there any pending redraw?
-
-	redraw is
-			-- Redraw the map as soon as possible.
-		do
-			if not has_pending_redraw then
-				(create {EV_ENVIRONMENT}).application.idle_actions.extend(force_redraw_agent)
-				has_pending_redraw := true
-			end
-		ensure
-			redraw_pending: has_pending_redraw
 		end
 
 	update_visible_area is
@@ -155,16 +132,6 @@ feature -- Canvas elements
 
 feature {NONE} -- Implementation
 
-	force_redraw_agent: PROCEDURE [ANY, TUPLE]
-			-- Redraw agent to redraw the map when idle
-
-	force_redraw_agent_impl is
-			-- Redraw the map when idle.
-		do
-			force_redraw
-			has_pending_redraw := false
-			(create {EV_ENVIRONMENT}).application.idle_actions.prune_all (force_redraw_agent)
-		end
 
 	zoom  (y: INTEGER) is
 			-- Zoom in or out.

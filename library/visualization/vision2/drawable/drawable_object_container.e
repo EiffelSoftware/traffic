@@ -9,62 +9,43 @@ class
 
 inherit
 
-	LINKED_LIST [DRAWABLE_OBJECT]
-
 	DRAWABLE_OBJECT
-		undefine
-			is_equal,
-			copy
 		redefine
 			set_color,
+			show,
+			hide,
 			draw
 		end
 
-feature --
+create
+	make
 
-	draw (a_target: CANVAS) is
-			-- Draw `Current' onto `a_target'
+feature {NONE} -- Initialization
+
+	make is
+			-- Initialize.
 		do
-			check
-				color_not_void: color /= Void
-			end
-			canvas := a_target
-			canvas.set_foreground_color (color)
-			if is_shown then
-				from
-					start
-				until
-					off
-				loop
-					item.draw (canvas)
-					forth
-				end
-			end
+			create internal_list.make
 		end
 
-	draw_object is
-			--
+feature -- Access
+
+	first: DRAWABLE_OBJECT is
+			-- First item in list
 		do
+			Result := internal_list.first
 		end
 
-	set_color (a_color: like color) is
-			-- Set the color of the object to `a_color'
+	item_for_iteration: DRAWABLE_OBJECT is
+			-- Item at internal cursor position
+		require
+			not_after: not after
 		do
-			from
-				start
-			until
-				off
-			loop
-				item.set_color (a_color)
-				forth
-			end
-			color := a_color
+			Result := internal_list.item_for_iteration
 		end
-
-feature --
 
 	bounding_box : REAL_RECTANGLE is
-			-- The bounding box of the container
+			-- Bounding box of the container
 		local
 			i: INTEGER
 			upper, lower: REAL_COORDINATE
@@ -80,9 +61,9 @@ feature --
 				from
 					start
 				until
-					off
+					after
 				loop
-					rect := item.bounding_box
+					rect := item_for_iteration.bounding_box
 					l := l.min (rect.left_bound)
 					r := r.max (rect.right_bound)
 					u := u.max (rect.upper_bound)
@@ -92,5 +73,176 @@ feature --
 			end
 			create Result.make (create {REAL_COORDINATE}.make (r, u), create {REAL_COORDINATE}.make (l, d))
 		end
+
+feature -- Element change
+
+	set_color (a_color: like color) is
+			-- Set the color of the object to `a_color'.
+		do
+			from
+				start
+			until
+				after
+			loop
+				item_for_iteration.set_color (a_color)
+				forth
+			end
+			color := a_color
+			invalidate
+		end
+
+	hide is
+			-- Highlight the place view.
+		do
+			from
+				start
+			until
+				after
+			loop
+				item_for_iteration.hide
+				forth
+			end
+			is_shown := False
+			invalidate
+		end
+
+	show is
+			-- Unhighlight the place view.
+		do
+			from
+				start
+			until
+				after
+			loop
+				item_for_iteration.show
+				forth
+			end
+			is_shown := True
+			invalidate
+		end
+
+feature -- Cursor movement
+
+	start is
+			-- Move internal cursor to first position.
+		do
+			internal_list.start
+		end
+
+	forth is
+			-- Move internal cursor to next position.
+		require
+			not_after: not after
+		do
+			internal_list.forth
+		end
+
+feature -- Status report
+
+	is_empty: BOOLEAN is
+			-- Is container empty?
+		do
+			Result := internal_list.is_empty
+		end
+
+	after: BOOLEAN is
+			-- Is there no valid position to right of internal cursor?
+		do
+			Result := internal_list.after
+		end
+
+feature -- Insertion
+
+	put_last (a_drawable: DRAWABLE_OBJECT) is
+			-- Add `a_drawable' to end of list.
+			-- Do not move cursors.
+		do
+			internal_list.force_last (a_drawable)
+			invalidate
+		ensure
+			is_in_list: internal_list.has (a_drawable)
+			not_valid: not is_valid
+		end
+
+	put_first (a_drawable: DRAWABLE_OBJECT) is
+			-- Add `a_drawable' to beginning of list.
+			-- Do not move cursors.
+		do
+			internal_list.force_first (a_drawable)
+			invalidate
+		ensure
+			is_in_list: internal_list.has (a_drawable)
+			not_valid: not is_valid
+		end
+
+	put_right (a_drawable: DRAWABLE_OBJECT) is
+			-- Add `a_drawable' to right of internal cursor position.
+			-- Do not move cursors.
+		require
+			not_after: not after
+		do
+			internal_list.force_right (a_drawable)
+			invalidate
+		ensure
+			is_in_list: internal_list.has (a_drawable)
+			not_valid: not is_valid
+		end
+
+feature -- Removal
+
+	wipe_out is
+			-- Remove all items from list.
+			-- Move all cursors off.
+		do
+			internal_list.wipe_out
+			invalidate
+		ensure
+			wiped_out: is_empty
+			not_valid: not is_valid
+		end
+
+	delete (a_drawable: DRAWABLE_OBJECT) is
+			-- Remove all occurrences of `v'.
+			-- Move all cursors off.
+		do
+			internal_list.delete (a_drawable)
+			invalidate
+		ensure
+			deleted: not internal_list.has (a_drawable)
+			not_valid: not is_valid
+		end
+
+feature {CANVAS} -- Basic operations
+
+	draw (a_target: CANVAS) is
+			-- Draw `Current' onto `a_target'
+		do
+			canvas := a_target
+			if is_shown then
+				from
+					start
+				until
+					after
+				loop
+					item_for_iteration.draw (canvas)
+					forth
+				end
+				validate
+			end
+		end
+
+	draw_object is
+			-- Draw `Current' (nothing to be done).
+		do
+		end
+
+feature {NONE} -- Implementation
+
+	internal_list: DS_LINKED_LIST [DRAWABLE_OBJECT]
+			-- List of all drawables in the container
+
+invariant
+
+	list_not_void: internal_list /= Void
 
 end

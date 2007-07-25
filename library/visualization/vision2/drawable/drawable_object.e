@@ -19,14 +19,17 @@ feature -- Commands
 			a_color_not_void: a_color /= Void
 		do
 			color := a_color
+			invalidate
 		ensure
 			color_set: color = a_color
+			not_valid: not is_valid
 		end
 
 	hide is
 			-- Highlight the place view.
 		do
 			is_shown := False
+			invalidate
 		ensure
 			hidden: not is_shown
 		end
@@ -35,6 +38,7 @@ feature -- Commands
 			-- Unhighlight the place view.
 		do
 			is_shown := True
+			invalidate
 		ensure
 			shown: is_shown
 		end
@@ -44,37 +48,22 @@ feature -- Status report
 	is_shown: BOOLEAN
 			-- Is the place view shown?
 
-feature -- Display
+	is_valid: BOOLEAN
+			-- Is there no change to `Current'?
+
+feature -- Access
+
+	canvas : CANVAS
+			-- Reference to the canvas
+
+	color: EV_COLOR
+			-- The color of the drawable object
 
 	bounding_box: REAL_RECTANGLE is
 			-- The bounding box of `Current'
 		deferred
 		ensure
 			bounding_box_not_void: Result /= Void
-		end
-
-	draw (a_target: CANVAS) is
-			-- Draw `Current' onto `a_target'
-		require
-			a_target_not_void: a_target /= Void
-		do
-			check
-				color_not_void: color /= Void
-			end
-			canvas := a_target
-			canvas.set_foreground_color (color)
-			if is_shown then
-				draw_object
-			end
-		ensure
-			canvas_set: canvas = a_target
-			-- Should work -> Vision2 bug?
-			-- canvas_foreground_color_set: canvas.foreground_color = color
-		end
-
-	draw_object is
-			-- Draw the object.
-		deferred
 		end
 
 	real_to_integer_coordinate (a_real_coordinate: REAL_COORDINATE): EV_COORDINATE	is
@@ -115,13 +104,50 @@ feature -- Display
 			result_not_void: Result /= Void
 		end
 
-feature -- Implementation
+feature {CANVAS, DRAWABLE_OBJECT} -- Display
 
-	canvas : CANVAS
-			-- Reference to the canvas
+	draw (a_target: CANVAS) is
+			-- Draw `Current' onto `a_target'
+		require
+			a_target_not_void: a_target /= Void
+		do
+			check
+				color_not_void: color /= Void
+			end
+			canvas := a_target
+			canvas.set_foreground_color (color)
+			if is_shown then
+				draw_object
+				validate
+			end
+		ensure
+			canvas_set: canvas = a_target
+			shown_implies_valid: is_shown implies is_valid
+		end
 
-	color: EV_COLOR
-			-- The color of the drawable object
+	draw_object is
+			-- Draw the object.
+		deferred
+		end
+
+feature {NONE} -- Implementation
+
+	invalidate is
+			-- Some property of `Current' has changed.
+		do
+			is_valid := False
+			if canvas /= Void then
+				canvas.redraw
+			end
+		end
+
+	validate is
+			-- `Current' has been updated by a projector.
+		do
+			if not is_valid then
+				is_valid := True
+			end
+		end
 
 invariant
 

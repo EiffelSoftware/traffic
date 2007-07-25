@@ -45,7 +45,7 @@ feature -- Initialization
 feature -- Access
 
 	bounding_box: REAL_RECTANGLE
-			-- The bounding box of the pixmap
+			-- Bounding box of the pixmap
 
 feature {EV_CANVAS} -- Display
 

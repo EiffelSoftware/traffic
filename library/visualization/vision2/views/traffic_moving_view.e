@@ -10,6 +10,9 @@ class
 inherit
 
 	TRAFFIC_VS_VIEW [G]
+		undefine
+			invalidate
+		end
 
 	DRAWABLE_CIRCLE
 		rename
@@ -21,6 +24,7 @@ inherit
 			set_internal_color,
 			make_circle
 		redefine
+			invalidate,
 			draw_object
 		end
 
@@ -40,7 +44,7 @@ feature -- Initialization
 			set_diameter (10)
 			set_color (create {TRAFFIC_COLOR}.make_with_rgb (255, 0, 0))
 			set_highlight_color (create {TRAFFIC_COLOR}.make_with_rgb (255, 0, 0))
-			set_filled
+			enable_filled
 			is_shown := True
 			is_highlighted := False
 		ensure then
@@ -57,6 +61,12 @@ feature -- Implementation
 		do
 			set_center (create {REAL_COORDINATE}.make (item.position.x, -item.position.y))
 			Precursor
+		end
+
+	invalidate is
+			-- Some property of `Current' has changed.
+		do
+			is_valid := False
 		end
 
 end

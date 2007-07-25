@@ -6,7 +6,7 @@ indexing
 	date: "$Date: 2004/10/20 10:03:03 $"
 	revision: "$Revision: 1.3 $"
 
-class 	DRAWABLE_POLYGON inherit
+class DRAWABLE_POLYGON inherit
 
 	DRAWABLE_OBJECT
 
@@ -37,8 +37,10 @@ feature -- Commands
 			new_points_not_void: new_points /= Void
 		do
 			points:= new_points
+			invalidate
 		ensure
 			new_points: points = new_points
+			not_valid: not is_valid
 		end
 
 feature{EV_CANVAS} -- Display

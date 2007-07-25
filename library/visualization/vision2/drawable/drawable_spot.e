@@ -32,53 +32,62 @@ feature -- Creation
 		ensure
 			width_set: width = default_width
 			diameter_set: diameter = default_diameter
-			center_set: center_position = a_center
+			center_set: center = a_center
 			shown: is_shown
 		end
 
-feature -- Commands
-
-	set_filled is
-			-- Fille the circle.
-			do
-				filled:= True
-			ensure
-				filled_true: filled
-			end
+feature -- Element change
 
 	set_width (a_width: like width)  is
 			-- Set the circle's edge width to `a_width'.
-			do
-				width:= a_width
-			ensure
-				new_width: width = a_width
-			end
+		do
+			width:= a_width
+			invalidate
+		ensure
+			new_width: width = a_width
+			not_valid: not is_valid
+		end
 
 	set_diameter (a_diameter: like diameter) is
 			-- Set the circle's diameter to `a_diameter'.
-			do
-				diameter := a_diameter
-			ensure
-				new_diameter: diameter = a_diameter
-			end
+		do
+			diameter := a_diameter
+			invalidate
+		ensure
+			new_diameter: diameter = a_diameter
+			not_valid: not is_valid
+		end
 
 	set_center (a_center: like center) is
 			-- Set the center of the spot to `a_center'.
-			require
-				a_center_not_void: a_center /= Void
-			do
-				center_position := a_center
-			ensure
-				new_center: center_position = a_center
-			end
+		require
+			a_center_not_void: a_center /= Void
+		do
+			center := a_center
+			invalidate
+		ensure
+			new_center: center = a_center
+			not_valid: not is_valid
+		end
 
-feature {CANVAS} -- Display
+feature -- Access
+
+	diameter : INTEGER
+			-- The diameter of the spot
+
+	width: INTEGER
+			-- The width of the spot's edge
+
+	center: REAL_COORDINATE
+			-- Center attribute
 
 	bounding_box: REAL_RECTANGLE is
 			-- The bounding-box of the spot
 		do
 			create Result.make (center, center)
 		end
+
+feature {CANVAS} -- Implementation
 
 	draw_object is
 			-- Draw the spot
@@ -100,35 +109,44 @@ feature {CANVAS} -- Display
 			end
 		end
 
-feature {NONE} -- Implementation
+feature -- Status report
 
-	diameter : INTEGER
-			-- The diameter of the spot
+	is_filled: BOOLEAN
+			-- Is the circle drawn filled
+
+feature -- Status setting
+
+	enable_filled is
+			-- Fill the circle.
+		do
+			is_filled:= True
+			invalidate
+		ensure
+			is_filled: is_filled
+			not_valid: not is_valid
+		end
+
+	disable_filled is
+			-- Unfill the circle.
+		do
+			is_filled:= False
+			invalidate
+		ensure
+			not_filled: not is_filled
+			not_valid: not is_valid
+		end
+
+feature {NONE} -- Implementation
 
 	Default_diameter: INTEGER is 5
 			-- The default diameter of the spot
 
-	filled: BOOLEAN
-			-- Fill flag
-
-	width: INTEGER
-			-- The width of the spot's edge
-
 	Default_width: INTEGER is 1
 			-- The default width of the spot's edge
 
-	center_position : REAL_COORDINATE
-			-- Center attribute
-
-	center : REAL_COORDINATE is
-			-- Center feature used so we can overwrite
-		do
-			Result := center_position
-		end
-
 invariant
 
-	center_position_not_void: center_position /= Void
+	center_not_void: center /= Void
 
 end
 

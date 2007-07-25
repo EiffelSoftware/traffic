@@ -14,7 +14,7 @@ create
 
 	make
 
-feature -- Creation
+feature -- Initialization
 
 	make (a_center: like center) is
 			-- Create a circle that scales at `a_center' with default diameter and edge width.
@@ -33,43 +33,16 @@ feature -- Creation
 			shown: is_shown
 		end
 
-feature -- Commands
+feature -- Access
 
-	set_diameter (a_diameter: INTEGER) is
-			-- Change the circle's diameter to `a_diameter'.
-		do
-			diameter:= a_diameter
-		ensure
-			new_diameter: diameter = a_diameter
-		end
+	width: INTEGER
+			-- The width of the cirle's line
 
-	set_center (a_center: REAL_COORDINATE) is
-			-- Change the circle's center to `a_center'.
-		require
-			a_center_not_void: a_center /= Void
-		do
-			center:= a_center
-		ensure
-			new_center: center = a_center
-		end
+	diameter: INTEGER
+			-- The circle's diameter
 
-	set_filled is
-			-- Fill the circle.
-		do
-			filled:= True
-		ensure
-			is_filled: filled
-		end
-
-	set_width (a_width: INTEGER)  is
-			-- Change the circle's edge width to `a_width'.
-		do
-			width:= a_width
-		ensure
-			new_width: width= a_width
-		end
-
-feature -- Queries
+	center: REAL_COORDINATE
+			-- The circle's center
 
 	bounding_box: REAL_RECTANGLE is
 			-- The bounding box of the circle
@@ -79,7 +52,68 @@ feature -- Queries
 									create {REAL_COORDINATE}.make (center.x + (diameter/2), center.y + (diameter/2)))
 		end
 
-feature {CANVAS} -- Display
+feature -- Element change
+
+	set_diameter (a_diameter: INTEGER) is
+			-- Change the circle's diameter to `a_diameter'.
+		do
+			diameter:= a_diameter
+			invalidate
+		ensure
+			new_diameter: diameter = a_diameter
+			not_valid: not is_valid
+		end
+
+	set_center (a_center: REAL_COORDINATE) is
+			-- Change the circle's center to `a_center'.
+		require
+			a_center_not_void: a_center /= Void
+		do
+			center:= a_center
+			invalidate
+		ensure
+			new_center: center = a_center
+			not_valid: not is_valid
+		end
+
+	set_width (a_width: INTEGER)  is
+			-- Change the circle's edge width to `a_width'.
+		do
+			width:= a_width
+			invalidate
+		ensure
+			new_width: width= a_width
+			not_valid: not is_valid
+		end
+
+feature -- Status report
+
+	is_filled: BOOLEAN
+			-- Is the circle drawn filled
+
+feature -- Status setting
+
+	enable_filled is
+			-- Fill the circle.
+		do
+			is_filled:= True
+			invalidate
+		ensure
+			is_filled: is_filled
+			not_valid: not is_valid
+		end
+
+	disable_filled is
+			-- Unfill the circle.
+		do
+			is_filled:= False
+			invalidate
+		ensure
+			not_filled: not is_filled
+			not_valid: not is_valid
+		end
+
+feature {CANVAS} -- Basic operations
 
 	draw_object is
 			-- Draw the circle.
@@ -90,27 +124,13 @@ feature {CANVAS} -- Display
 			scaled_p2 := real_to_integer_coordinate (bounding_box.lower_right)
 			canvas.set_line_width (width)
 			if
-				filled
+				is_filled
 			then
 				canvas.fill_ellipse (scaled_p1.x, scaled_p1.y, scaled_p2.x - scaled_p1.x, scaled_p2.y - scaled_p1.y)
 			else
 				canvas.draw_ellipse (scaled_p1.x, scaled_p1.y, scaled_p2.x - scaled_p1.x, scaled_p2.y - scaled_p1.y)
 			end
 		end
-
-feature {NONE} -- Implementation
-
-	filled: BOOLEAN
-			-- Is the circle drawn filled
-
-	width: INTEGER
-			-- The width of the cirle's line
-
-	diameter: INTEGER
-			-- The circle's diameter
-
-	center: REAL_COORDINATE
-			-- The circle's center
 
 feature {NONE} -- Constants for implementation
 

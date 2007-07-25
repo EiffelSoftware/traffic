@@ -19,10 +19,19 @@ feature -- Factory methods
 			create Result.make (a_place)
 		end
 
-	new_line_connection_view (a_connection: TRAFFIC_LINE_CONNECTION): TRAFFIC_LINE_CONNECTION_VIEW is
-			-- New line connection view for `a_connection'
+	new_line_view (a_line: TRAFFIC_LINE): TRAFFIC_LINE_VIEW is
+			-- New line view for `a_line'
 		do
-			create Result.make (a_connection)
+			create Result.make (a_line)
+			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (a_line.color.red, a_line.color.green, a_line.color.blue))
+		end
+
+	new_road_view (a_road: TRAFFIC_ROAD): TRAFFIC_ROAD_VIEW is
+			-- New road view for `a_road'
+		do
+			create Result.make (a_road)
+			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (150, 110, 40))
+			Result.set_width (10)
 		end
 
 	new_path_view (a_path: TRAFFIC_PATH): TRAFFIC_PATH_VIEW is

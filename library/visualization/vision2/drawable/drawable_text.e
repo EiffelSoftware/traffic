@@ -47,8 +47,10 @@ feature -- Commands
 			a_font_not_void: a_font /= Void
 		do
 			font:= a_font
+			invalidate
 		ensure
 			new_font: font = a_font
+			not_valid: not is_valid
 		end
 
 	set_text (a_text: like text) is
@@ -57,8 +59,10 @@ feature -- Commands
 			a_text_not_void: a_text /= Void
 		do
 			text := a_text
+			invalidate
 		ensure
 			new_text: text = a_text
+			not_valid: not is_valid
 		end
 
 	set_position (a_position: like position) is
@@ -69,9 +73,19 @@ feature -- Commands
 			position := a_position
 		ensure
 			new_position: position = a_position
+			not_valid: not is_valid
 		end
 
 feature -- Access
+
+	position: REAL_COORDINATE
+			-- The position of the text
+
+	font: EV_FONT
+			-- The font of the text
+
+	text: STRING
+			-- The string
 
 	text_width: INTEGER is
 			-- Width of text
@@ -106,17 +120,6 @@ feature {EV_CANVAS} -- Display
 			canvas.set_font (font)
 			canvas.draw_text_top_left (scaled_position.x, scaled_position.y, text)
 		end
-
-feature {NONE} -- Implementation
-
-	position: REAL_COORDINATE
-			-- The position of the text
-
-	font: EV_FONT
-			-- The font of the text
-
-	text: STRING
-			-- The string
 
 invariant
 
