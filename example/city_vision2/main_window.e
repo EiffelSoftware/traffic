@@ -296,6 +296,7 @@ feature {NONE} -- Implementation, Close event
 				add_buildings
 				canvas.map.time.set_speedup (50)
 				canvas.map.time.start
+				move_to_center
 			else
 				create dlg.make_with_text ("Error parsing" + a_dlg.file_name)
 				io.put_string ("bad error!!")
@@ -476,6 +477,16 @@ feature {NONE} -- Implementation, Close event
 			end
 		end
 
+	toggle_roads_hidden (a_check_box: EV_CHECK_BUTTON) is
+			--
+		do
+			if a_check_box.is_selected then
+				canvas.road_representations.show
+			else
+				canvas.road_representations.hide
+			end
+		end
+
 	update_status_label is
 			--
 		do
@@ -495,6 +506,23 @@ feature {NONE} -- Implementation, Close event
 			canvas.set_size (w, h)
 			canvas.set_minimum_size (w, h)
 			viewport.set_item_size (w, h)
+		end
+
+	move_to_center is
+			-- Center map on screen.
+		local
+			r: EV_RECTANGLE
+			xdiff, ydiff: DOUBLE
+			map_center, canvas_center: REAL_COORDINATE
+		do
+			canvas_center := client_to_map_coordinates ((canvas.width/2).floor, (canvas.height/2).floor)
+			xdiff := canvas.map.center.x - canvas_center.x
+			ydiff := (-1)*canvas.map.center.y - canvas_center.y
+			if xdiff /= 0 or ydiff /= 0 then
+				canvas.go_down (ydiff)
+				canvas.go_left (xdiff)
+			end
+			canvas.redraw
 		end
 
 feature {NONE} -- Implementation
@@ -532,6 +560,7 @@ feature {NONE} -- Implementation
 			fixed: EV_FIXED
 		do
 			create viewport
+			viewport.set_offset (0, 0)
 			create vb
 			create hb1
 			create fr
@@ -603,7 +632,14 @@ feature {NONE} -- Implementation
 			rad.toggle
 			rad.select_actions.extend (agent toggle_lines_hidden (rad))
 			fixed.extend (rad)
-			fixed.set_item_position (rad, 125, 162)
+			fixed.set_item_position (rad, 85, 162)
+
+			-- Hide/show lines
+			create rad.make_with_text ("Show roads")
+			rad.toggle
+			rad.select_actions.extend (agent toggle_roads_hidden (rad))
+			fixed.extend (rad)
+			fixed.set_item_position (rad, 165, 162)
 
 			vb.extend (fixed)
 			vb.disable_item_expand (fixed)
@@ -633,6 +669,34 @@ feature {NONE} -- Implementation
 
 		ensure
 			main_container_created: main_container /= Void
+		end
+
+feature -- Conversion
+
+	client_to_map_coordinates (x, y: INTEGER): REAL_COORDINATE is
+			-- Map position corresponding to client coordinates (`x', `y')
+		local
+			lx: DOUBLE
+			ly: DOUBLE
+			xperc: DOUBLE
+			yperc: DOUBLE
+			h: INTEGER
+			org: REAL_COORDINATE
+		do
+			lx := x / 1
+			ly := y / 1
+
+			xperc := lx / (canvas.parent.client_width)
+			h := (canvas.parent.client_height).max (1)
+			yperc := (h - ly) / h
+
+			org := canvas.visible_area.lower_left
+			create Result.make (
+				(org.x + xperc * canvas.visible_area.width).rounded,
+				(org.y + yperc * canvas.visible_area.height).rounded)
+
+		ensure
+			Result_exists: Result /= Void
 		end
 
 feature {NONE} -- Implementation / Constants

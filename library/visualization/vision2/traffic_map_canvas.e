@@ -194,20 +194,20 @@ feature -- Basic operations
 					draw_pixmap (0, 0, background_image)
 				end
 				from
-					internal_moving_representations.start
-				until
-					internal_moving_representations.off
-				loop
-					draw_item (internal_moving_representations.item_for_iteration)
-					internal_moving_representations.forth
-				end
-				from
 					internal_path_representations.start
 				until
 					internal_path_representations.off
 				loop
 					draw_item (internal_path_representations.item_for_iteration)
 					internal_path_representations.forth
+				end
+				from
+					internal_moving_representations.start
+				until
+					internal_moving_representations.off
+				loop
+					draw_item (internal_moving_representations.item_for_iteration)
+					internal_moving_representations.forth
 				end
 			end
 		end
