@@ -171,22 +171,11 @@ feature {NONE} -- ToolBar Implementation
 
 			create toolbar_item
 			create toolbar_pixmap
-			toolbar_pixmap.set_with_named_file ("new.png")
-			toolbar_item.set_pixmap (toolbar_pixmap)
-			standard_toolbar.extend (toolbar_item)
-
-			create toolbar_item
-			create toolbar_pixmap
 			toolbar_pixmap.set_with_named_file ("open.png")
 			toolbar_item.set_pixmap (toolbar_pixmap)
 			toolbar_item.select_actions.extend (agent choose_file)
 			standard_toolbar.extend (toolbar_item)
 
-			create toolbar_item
-			create toolbar_pixmap
-			toolbar_pixmap.set_with_named_file ("save.png")
-			toolbar_item.set_pixmap (toolbar_pixmap)
-			standard_toolbar.extend (toolbar_item)
 		ensure
 			toolbar_created: standard_toolbar /= Void and then  not standard_toolbar.is_empty
 		end
