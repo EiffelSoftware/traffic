@@ -99,10 +99,10 @@ feature -- Interface
 			-- Lines
 			create checkbox.make_from_text ("Show VBZ Lines")
 			checkbox.set_position (10,20)
-			checkbox.checked_event.subscribe (agent map_widget.enable_lines_shown)
-			checkbox.checked_event.subscribe (agent map_widget.disable_roads_shown)
-			checkbox.unchecked_event.subscribe (agent map_widget.disable_lines_shown)
-			checkbox.unchecked_event.subscribe (agent map_widget.enable_roads_shown)
+			checkbox.checked_event.subscribe (agent (map_widget.line_representations).show)
+			checkbox.checked_event.subscribe (agent (map_widget.road_representations).show)
+			checkbox.unchecked_event.subscribe (agent (map_widget.line_representations).hide)
+			checkbox.unchecked_event.subscribe (agent (map_widget.road_representations).hide)
 			checkbox.set_checked
 			Result.add_widget (checkbox)
 		end
@@ -520,7 +520,7 @@ feature -- Event handling
 						b := random.item \\ 256
 						map_widget.map.paths.put_last (c.path)
 						io.put_string (c.path.out + "%N")
-						map_widget.paths_representation.set_colors (create {EM_COLOR}.make_with_rgb (255, g, b), create {EM_COLOR}.make_with_rgb (255, g, b))
+--						map_widget.paths_representation.set_colors (create {EM_COLOR}.make_with_rgb (255, g, b), create {EM_COLOR}.make_with_rgb (255, g, b))
 						event_loop.process_events
 					end
 				end

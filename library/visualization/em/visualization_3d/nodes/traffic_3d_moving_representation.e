@@ -72,7 +72,7 @@ feature -- Insertion
 		do
 			if not taxi_root.has_child (a_taxi) then
 				moving_factory.new_taxi_daynight_member (a_taxi).set_as_child_of (taxi_root)
-				taxi_root.child_for_item (a_taxi).set_color (create {EM_COLOR}.make_with_rgb (a_taxi.office.color.red, a_taxi.office.color.green, a_taxi.office.color.blue))
+				taxi_root.child_for_item (a_taxi).set_color (create {TRAFFIC_COLOR}.make_with_rgb (a_taxi.office.color.red, a_taxi.office.color.green, a_taxi.office.color.blue))
 			end
 		end
 

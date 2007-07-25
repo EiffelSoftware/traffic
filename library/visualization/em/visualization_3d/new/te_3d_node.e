@@ -33,7 +33,7 @@ feature -- Initialization
 		do
 			create transform.make
 			--transform.event_channel.subscribe(agent feature name)
-			create children.make(0)
+			create internal_children.make(0)
 			create hierarchy_bounding_box.make(6)
 			enable_hierarchy_renderable
 		ensure
@@ -47,7 +47,7 @@ feature {TE_3D_SHARED_GLOBALS} -- Initialization
 			-- Create as root node (only callable from TE_3D_SHARED_ROOT so that there is only one root).
 		do
 			create transform.make
-			create children.make(0)
+			create internal_children.make(0)
 			create hierarchy_bounding_box.make(6)
 			name := "scene_root"
 			enable_hierarchy_renderable
@@ -86,8 +86,11 @@ feature -- Access
 	parent: TE_3D_NODE
 			-- Parent node (if this is void, this is the root of the hirarchy)
 
-	children : ARRAYED_LIST[TE_3D_NODE]
+	children : DS_LIST [TE_3D_NODE] is
 			-- List of all children nodes in the hierarchy
+		do
+			Result := internal_children
+		end
 
 	--key_frame_player: TE_3D_KEY_FRAME_PLAYER
 			-- Keyframe player to use keyframe animations
@@ -152,11 +155,11 @@ feature -- Element change
 				a_child.parent.remove_child (a_child)
 			end
 			-- Add a_child to the current nodes' childlist
-			children.extend (a_child)
+			children.force_last (a_child)
 			-- Set the childs parent to the current node
 			a_child.set_parent (Current)
 		ensure
-			child_is_inserted: children.is_inserted (a_child) = true
+			child_is_inserted: children.has (a_child) = true
 			child_has_right_parent: a_child.parent = current
 		end
 
@@ -165,7 +168,7 @@ feature -- Element change
 		require
 			has_child: is_parent_of (a_child)
 		do
-			children.prune_all (a_child)
+			children.delete (a_child)
 			a_child.set_parent (Void)
 		ensure
 			child_removed: not is_parent_of (a_child)
@@ -179,7 +182,7 @@ feature -- Element change
 			until
 				children.off
 			loop
-				children.item.set_parent (Void)
+				children.item_for_iteration.set_parent (Void)
 				children.forth
 			end
 			children.wipe_out
@@ -208,7 +211,7 @@ feature -- Status report
 			until
 				children.after
 			loop
-				if children.item = a_node then
+				if children.item_for_iteration = a_node then
 					Result := true
 				end
 				children.forth
@@ -252,7 +255,7 @@ feature -- Basic operations
 			until
 				children.after
 			loop
-				current_node := children.item
+				current_node := children.item_for_iteration
 				current_node.calculate_hierarchy_bounding_box
 				from
 					current_node.hierarchy_bounding_box.start
@@ -312,7 +315,7 @@ feature -- Cloning
 			until
 				children.after
 			loop
-				Result.add_child (children.item.create_deep_instance)
+				Result.add_child (children.item_for_iteration.create_deep_instance)
 				children.forth
 			end
 		end
@@ -363,7 +366,7 @@ feature {TE_3D_NODE, TE_RENDERPASS} -- Drawing
 				until
 					children.after
 				loop
-					children.item.draw
+					children.item_for_iteration.draw
 					children.forth
 				end
 				gl_pop_matrix
@@ -375,6 +378,10 @@ feature {TE_3D_NODE, TE_RENDERPASS} -- Drawing
 		do
 			-- Do nothing, since the simple 3D_node has got no graphical representation
 		end
+
+feature {NONE} -- Implementation
+
+	internal_children: DS_ARRAYED_LIST [TE_3D_NODE]
 
 invariant
 

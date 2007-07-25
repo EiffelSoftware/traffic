@@ -12,6 +12,9 @@ class TRAFFIC_3D_MAP_WIDGET
 inherit
 
 	TRAFFIC_MAP_WIDGET
+		redefine
+			set_map
+		end
 
 	EM_COMPONENT
 
@@ -30,17 +33,25 @@ inherit
 	TE_3D_SHARED_GLOBALS
 
 create
-	make
+	make_with_size
 
-feature -- Initialisation
+feature -- Initialization
 
-	make (a_width, a_height: INTEGER) is
+	make_with_size (a_width, a_height: INTEGER) is
 			-- Initialize the map widget.
 		local
 			green_material: TE_MATERIAL_SIMPLE
 			primitive_factory: TE_3D_MEMBER_FACTORY_PRIMITIVE
 		do
 			make_component
+
+			create internal_factory
+			create internal_place_representations.make
+			create internal_line_representations.make
+			create internal_road_representations.make
+			create internal_building_representations.make
+			create internal_moving_representations.make
+			create internal_path_representations.make
 
 			set_keyboard_sensitive (True)
 			set_width (a_width)
@@ -72,10 +83,84 @@ feature -- Initialisation
 			sun_repr_created: sun_representation /= Void
 		end
 
-feature -- Status report
+feature -- Element change
 
-	is_map_hidden: BOOLEAN
-			-- Is the map currently hidden?
+	set_map (a_map: TRAFFIC_MAP) is
+			-- Set map that is displayed to `a_map'.
+		local
+			green_material: TE_MATERIAL_SIMPLE
+			primitive_factory: TE_3D_MEMBER_FACTORY_PRIMITIVE
+		do
+			if map /= Void then
+				wipe_out
+			end
+			create internal_place_representations.make
+			create internal_line_representations.make
+			create internal_road_representations.make
+			create internal_building_representations.make
+			create internal_moving_representations.make
+			create internal_path_representations.make
+			Precursor (a_map)
+			is_map_loaded := True
+			root.transform.set_position (-map.center.x, 0, -map.center.y)
+			plane.transform.set_position (map.center.x, 0.0, map.center.y)
+		end
+
+feature {NONE} -- Implementation
+
+	internal_factory: TRAFFIC_3D_VIEW_FACTORY
+	internal_moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_3D_RENDERABLE [TRAFFIC_MOVING]]
+	internal_path_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_3D_RENDERABLE [TRAFFIC_PATH]]
+	internal_line_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE, TRAFFIC_3D_RENDERABLE [TRAFFIC_LINE]]
+	internal_road_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_3D_RENDERABLE [TRAFFIC_ROAD]]
+	internal_place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_3D_RENDERABLE [TRAFFIC_PLACE]]
+	internal_building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_3D_RENDERABLE [TRAFFIC_BUILDING]]
+
+feature -- Access
+
+	line_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE, TRAFFIC_VIEW [TRAFFIC_LINE]] is
+			--
+		do
+			Result := internal_line_representations
+		end
+
+	road_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_VIEW [TRAFFIC_ROAD]] is
+			--
+		do
+			Result := internal_road_representations
+		end
+
+	path_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VIEW [TRAFFIC_PATH]] is
+			--
+		do
+			Result := internal_path_representations
+		end
+
+	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VIEW [TRAFFIC_PLACE]]
+			--
+		do
+			Result := internal_place_representations
+		end
+
+	building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_VIEW [TRAFFIC_BUILDING]]
+			--
+		do
+			Result := internal_building_representations
+		end
+
+	moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_VIEW [TRAFFIC_MOVING]]
+			--
+		do
+			Result := internal_moving_representations
+		end
+
+	factory: TRAFFIC_VIEW_FACTORY is
+			--
+		do
+			Result := internal_factory
+		end
+
+feature -- Status report
 
 	is_sun_shown: BOOLEAN
 			-- Is the sun displayed?
@@ -100,22 +185,6 @@ feature -- Status report
 
 feature -- Status setting
 
-	enable_map_hidden is
-			-- Set `is_map_hidden' to `True'.
-		do
-			is_map_hidden := True
-		ensure
-			map_hidden: is_map_hidden
-		end
-
-	disable_map_hidden is
-			-- Set `is_map_hidden' to `False'.
-		do
-			is_map_hidden := False
-		ensure
-			map_not_hidden: not is_map_hidden
-		end
-
 	enable_shadows is
 			-- enables shadows
 		do
@@ -130,94 +199,94 @@ feature -- Status setting
 			sun_representation.disable_shadows
 		end
 
-	enable_buildings_shown is
-			-- Set `are_buildings_shown' to `True'.
-		do
-			are_buildings_shown := True
-		ensure
-			buildings_shown: are_buildings_shown = True
-		end
+--	enable_buildings_shown is
+--			-- Set `are_buildings_shown' to `True'.
+--		do
+--			are_buildings_shown := True
+--		ensure
+--			buildings_shown: are_buildings_shown = True
+--		end
 
-	disable_buildings_shown is
-			-- Set `are_buildings_shown' to `False'.
-		do
-			are_buildings_shown := False
-		ensure
-			buildings_not_shown: are_buildings_shown = False
-		end
+--	disable_buildings_shown is
+--			-- Set `are_buildings_shown' to `False'.
+--		do
+--			are_buildings_shown := False
+--		ensure
+--			buildings_not_shown: are_buildings_shown = False
+--		end
 
-	enable_lines_shown is
-			-- Set `are_lines_shown' to `True'.
-		do
-			are_lines_shown := True
-			lines_representation.unhide
-		ensure
-			lines_shown: are_lines_shown = True
-		end
+--	enable_lines_shown is
+--			-- Set `are_lines_shown' to `True'.
+--		do
+--			are_lines_shown := True
+--			lines_representation.unhide
+--		ensure
+--			lines_shown: are_lines_shown = True
+--		end
 
-	disable_lines_shown is
-			-- Set `are_lines_shown' to `False'.
-		do
-			are_lines_shown := False
-			lines_representation.hide
-		ensure
-			lines_not_shown: are_lines_shown = False
-		end
+--	disable_lines_shown is
+--			-- Set `are_lines_shown' to `False'.
+--		do
+--			are_lines_shown := False
+--			lines_representation.hide
+--		ensure
+--			lines_not_shown: are_lines_shown = False
+--		end
 
-	enable_roads_shown is
-			-- Set `are_roads_shown' to `True'.
-		do
-			are_roads_shown := True
-			roads_representation.unhide
-		end
+--	enable_roads_shown is
+--			-- Set `are_roads_shown' to `True'.
+--		do
+--			are_roads_shown := True
+--			roads_representation.unhide
+--		end
 
-	disable_roads_shown is
-			-- Set `are_lines_shown' to `False'.
-		do
-			are_roads_shown := False
-			roads_representation.hide
-		end
+--	disable_roads_shown is
+--			-- Set `are_lines_shown' to `False'.
+--		do
+--			are_roads_shown := False
+--			roads_representation.hide
+--		end
 
-	enable_shortest_path_shown is
-			-- Set `is_shortest_path_shown' to `True'.
-		do
-			is_shortest_path_shown := True
-		ensure
-			shortest_path_shown: is_shortest_path_shown = True
-		end
+--	enable_shortest_path_shown is
+--			-- Set `is_shortest_path_shown' to `True'.
+--		do
+--			is_shortest_path_shown := True
+--		ensure
+--			shortest_path_shown: is_shortest_path_shown = True
+--		end
 
-	disable_shortest_path_shown is
-			-- Set `is_shortest_path_shown' to `False'.
-		do
-			is_shortest_path_shown := False
-		ensure
-			shortest_path_not_shown: is_shortest_path_shown = False
-		end
+--	disable_shortest_path_shown is
+--			-- Set `is_shortest_path_shown' to `False'.
+--		do
+--			is_shortest_path_shown := False
+--		ensure
+--			shortest_path_not_shown: is_shortest_path_shown = False
+--		end
 
 feature -- Access
 
 --	coordinates: TE_3D_NODE
 
-	movings_representation: TRAFFIC_3D_MOVING_REPRESENTATION
-		-- Representation for all travelers
+--	movings_representation: TRAFFIC_3D_MOVING_REPRESENTATION
+--		-- Representation for all travelers
 
-	lines_representation: TRAFFIC_3D_LINE_REPRESENTATION
-		-- Representation for all lines
+--	lines_representation: TRAFFIC_3D_LINE_REPRESENTATION
+--		-- Representation for all lines
 
-	roads_representation: TRAFFIC_3D_ROAD_REPRESENTATION
-		-- Representation for all roads
+--	roads_representation: TRAFFIC_3D_ROAD_REPRESENTATION
+--		-- Representation for all roads
 
-	places_representation: TRAFFIC_3D_PLACE_REPRESENTATION
-		-- Representation for all places
+--	places_representation: TRAFFIC_3D_PLACE_REPRESENTATION
+--		-- Representation for all places
 
-	buildings_representation: TRAFFIC_3D_BUILDING_REPRESENTATION
-		-- Representation for all buildings				
+--	buildings_representation: TRAFFIC_3D_BUILDING_REPRESENTATION
+--		-- Representation for all buildings				
 
 	sun_representation: TRAFFIC_3D_SUN_REPRESENTATION
 		-- Representation for the sun & sunlight
 
-	paths_representation: TRAFFIC_3D_PATH_REPRESENTATION
-		-- Representation for all paths
+--	paths_representation: TRAFFIC_3D_PATH_REPRESENTATION
+--		-- Representation for all paths
 
 	beauty_pass: TE_RENDERPASS_BEAUTY is
 			-- return the first renderpass of the rendermanager assuming this is the beautypass. change it here, if the beautypass isn't the first one
@@ -268,54 +337,27 @@ feature -- Constants
 
 feature -- Element change
 
-	set_map (a_map: TRAFFIC_MAP) is
-			-- Use `a_map' to be displayed.
-		local
-			green_material: TE_MATERIAL_SIMPLE
-			primitive_factory: TE_3D_MEMBER_FACTORY_PRIMITIVE
-		do
-			map := a_map
-			if map /= Void then
-				wipe_out
-				is_map_loaded := True
-				create places_representation.make (map)
-				create lines_representation.make (map)
-				create roads_representation.make (map)
-				create movings_representation.make (map)
-				create paths_representation.make (map)
-				create buildings_representation.make (map)
-
-				root.transform.set_position (-map.center.x, 0, -map.center.y)
-
---				beauty_pass.camera.set_target (create {EM_VECTOR3D}.make_from_tuple ([map.city_center.x, 0.0, map.city_center.y]))
-				plane.transform.set_position (map.center.x, 0.0, map.center.y)
---				plane.transform.set_scaling (plane.bounding_box., y, z: REAL_64)
---				disable_sun_shown
-			else
-				-- Todo remove everything
-			end
-		end
 
 	wipe_out is
 			-- Remove all map elements.
 		do
-			if places_representation /= Void then
-				places_representation.place_root.remove_all_children
+			if place_representations /= Void then
+				place_representations.wipe_out
 			end
-			if lines_representation /= Void then
-				lines_representation.line_section_root.remove_all_children
+			if line_representations /= Void then
+				line_representations.wipe_out
 			end
-			if movings_representation /= Void then
-				movings_representation.moving_root.remove_all_children
+			if moving_representations /= Void then
+				moving_representations.wipe_out
 			end
-			if roads_representation /= Void then
-				roads_representation.road_root.remove_all_children
+			if road_representations /= Void then
+				road_representations.wipe_out
 			end
-			if buildings_representation /= Void then
-				buildings_representation.buildings_root.remove_all_children
+			if building_representations /= Void then
+				building_representations.wipe_out
 			end
-			if paths_representation /= Void then
-				paths_representation.path_root.remove_all_children
+			if path_representations /= Void then
+				path_representations.wipe_out
 			end
 		end
 

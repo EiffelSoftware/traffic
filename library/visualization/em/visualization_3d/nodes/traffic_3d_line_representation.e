@@ -95,7 +95,7 @@ feature -- Insertion
 		require
 			a_line_exists: a_line /= Void
 		local
-			c: EM_COLOR
+			c: TRAFFIC_COLOR
 		do
 			if a_line.color /= Void then
 				create c.make_with_rgb (a_line.color.red, a_line.color.green, a_line.color.blue)
@@ -112,7 +112,7 @@ feature -- Insertion
 			end
 		end
 
-	add_line_section (a_line_section: TRAFFIC_LINE_CONNECTION; a_color: EM_COLOR) is
+	add_line_section (a_line_section: TRAFFIC_LINE_CONNECTION; a_color: TRAFFIC_COLOR) is
 			-- Add view for `a_line_section'.
 		require
 			a_color_exists: a_color /= Void

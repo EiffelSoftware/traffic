@@ -35,7 +35,7 @@ feature -- Initialization
 
 feature -- Basic operations
 
-	highlight_place (a_place: TRAFFIC_PLACE; a_color: EM_COLOR) is
+	highlight_place (a_place: TRAFFIC_PLACE; a_color: TRAFFIC_COLOR) is
 			-- Highlight the marked place.
 		require
 			place_valid: a_place /= Void
@@ -115,7 +115,7 @@ feature -- Access
 	place_factory: TRAFFIC_3D_PLACE_FACTORY
 			-- Factory for places
 
-	color: EM_COLOR
+	color: TRAFFIC_COLOR
 			-- Default color for places
 
 feature -- Element change
@@ -130,7 +130,7 @@ feature -- Element change
 			factory_set: place_factory = a_factory
 		end
 
-	set_color (a_color: EM_COLOR) is
+	set_color (a_color: TRAFFIC_COLOR) is
 			-- Set `color' to `a_color'. May also be Void.
 		require
 			a_color_exists: a_color /= Void

@@ -212,7 +212,7 @@ feature -- Cloning
 			until
 				children.after
 			loop
-				Result.add_child (children.item.create_deep_instance)
+				Result.add_child (children.item_for_iteration.create_deep_instance)
 				children.forth
 			end
 		end

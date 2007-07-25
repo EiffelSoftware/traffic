@@ -46,7 +46,7 @@ feature {NONE} -- Initialization
 			-- Has to be defined before toolpanel, because otherwise
 			-- gl_clear_color cleans whole screen
 			if video_subsystem.opengl_enabled then
-				create map_widget.make (width, height - 30)
+				create map_widget.make_with_size (width, height - 30)
 				map_widget.set_position (0, 30)
 				map_widget.mouse_dragged_event.subscribe (agent rotate (?))
 				map_widget.mouse_wheel_up_event.subscribe (agent map_widget.zoom_in)

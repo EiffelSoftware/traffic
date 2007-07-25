@@ -175,14 +175,14 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 					a_node.children.after
 				loop
 					gl_push_matrix
-					gl_mult_matrixd(a_node.children.item.transform.to_opengl)
+					gl_mult_matrixd(a_node.children.item_for_iteration.transform.to_opengl)
 
-					current_member ?= a_node.children.item
+					current_member ?= a_node.children.item_for_iteration
 					if current_member /= Void and then current_member.casts_shadows then -- if the current node is a 3d_member
 						current_member.update_shadow_volume (a_light_source)
 						current_member.render_shadow_volume
 					end
-					update_and_draw_shadows_of_children(a_node.children.item, a_light_source) -- do the same recursively with the children of the current node
+					update_and_draw_shadows_of_children(a_node.children.item_for_iteration, a_light_source) -- do the same recursively with the children of the current node
 					a_node.children.forth
 
 					gl_pop_matrix
@@ -202,13 +202,13 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 					a_node.children.after
 				loop
 					gl_push_matrix
-					gl_mult_matrixd(a_node.children.item.transform.to_opengl)
+					gl_mult_matrixd(a_node.children.item_for_iteration.transform.to_opengl)
 
-					current_member ?= a_node.children.item
+					current_member ?= a_node.children.item_for_iteration
 					if current_member /= Void and then current_member.casts_shadows then -- if the current node is a 3d_member
 						current_member.render_shadow_volume
 					end
-					draw_shadows_and_unlit_faces_of_children(a_node.children.item) -- do the same recursively with the children of the current node
+					draw_shadows_and_unlit_faces_of_children(a_node.children.item_for_iteration) -- do the same recursively with the children of the current node
 					a_node.children.forth
 
 					gl_pop_matrix
@@ -228,9 +228,9 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 					a_node.children.after
 				loop
 					gl_push_matrix
-					gl_mult_matrixd(a_node.children.item.transform.to_opengl)
+					gl_mult_matrixd(a_node.children.item_for_iteration.transform.to_opengl)
 
-					current_member ?= a_node.children.item
+					current_member ?= a_node.children.item_for_iteration
 					if current_member /= Void and then current_member.casts_shadows then -- if the current node is a 3d_member
 						current_member.render_shadow_volume
 						gl_push_attrib(em_GL_POLYGON_BIT | em_GL_STENCIL_BUFFER_BIT)
@@ -240,7 +240,7 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 							current_member.render_unlit_faces
 						gl_pop_attrib
 					end
-					draw_shadows_and_unlit_faces_of_children(a_node.children.item) -- do the same recursively with the children of the current node
+					draw_shadows_and_unlit_faces_of_children(a_node.children.item_for_iteration) -- do the same recursively with the children of the current node
 					a_node.children.forth
 
 					gl_pop_matrix

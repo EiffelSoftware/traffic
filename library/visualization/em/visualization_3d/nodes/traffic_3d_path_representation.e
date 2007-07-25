@@ -89,7 +89,7 @@ feature -- Removal
 
 feature -- Element change
 
-	set_colors (a_place_color, a_connection_color: EM_COLOR) is
+	set_colors (a_place_color, a_connection_color: TRAFFIC_COLOR) is
 			-- Set the colors to be used for showing paths.
 		require
 			a_place_color_exists: a_place_color /= Void
@@ -104,10 +104,10 @@ feature -- Element change
 
 feature -- Access
 
-	connection_color: EM_COLOR
+	connection_color: TRAFFIC_COLOR
 			-- Color for connections
 
-	place_color: EM_COLOR
+	place_color: TRAFFIC_COLOR
 			-- Color for places
 
 	path_root: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_PATH]

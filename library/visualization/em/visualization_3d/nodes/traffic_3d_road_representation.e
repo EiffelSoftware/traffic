@@ -108,7 +108,7 @@ feature -- Removal
 
 feature -- Access
 
-	color: EM_COLOR
+	color: TRAFFIC_COLOR
 			-- Color for drawing the roads
 
 	road_factory: TRAFFIC_3D_CONNECTION_FACTORY

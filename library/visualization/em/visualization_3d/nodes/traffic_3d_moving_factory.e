@@ -30,7 +30,7 @@ feature -- Factory methods
 			end
 			create Result.make_with_item (a_moving, man_template.create_deep_instance)
 			Result.graphical.transform.set_scaling (50, 50, 50)
-			Result.set_color (create {EM_COLOR}.make_with_rgb (0, 255, 0))
+			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (0, 255, 0))
 		end
 
 	new_person_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is
@@ -115,7 +115,7 @@ feature -- Factory methods
 				tram_night_template := load_template ("tram2000_small_night.obj")
 			end
 			create Result.make_with_item (a_bus, tram_template.create_deep_instance, tram_night_template.create_deep_instance)
-			Result.set_color (create {EM_COLOR}.make_with_rgb (255, 0, 0))
+			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (255, 0, 0))
 			Result.day_graphical.transform.set_scaling (50, 50, 50)
 			Result.night_graphical.transform.set_scaling (50, 50, 50)
 		end
