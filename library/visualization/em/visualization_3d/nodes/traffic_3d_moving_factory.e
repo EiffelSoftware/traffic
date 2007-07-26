@@ -32,7 +32,6 @@ feature -- Factory methods
 			create Result.make (a_moving)
 			Result.add_child (man_template.create_deep_instance)
 			Result.transform.set_scaling (50, 50, 50)
-			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (0, 255, 0))
 		end
 
 	new_person_member (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_3D_MOVING_RENDERABLE [TRAFFIC_PASSENGER] is

@@ -88,6 +88,62 @@ feature -- Element change
 				place_representations.force_last (p)
 				map.places.forth
 			end
+			from
+				map.buildings.start
+			until
+				map.buildings.off
+			loop
+				add_building (map.buildings.item_for_iteration)
+				map.buildings.forth
+			end
+			from
+				map.trams.start
+			until
+				map.trams.off
+			loop
+				add_tram (map.trams.item_for_iteration)
+				map.trams.forth
+			end
+			from
+				map.busses.start
+			until
+				map.busses.off
+			loop
+				add_bus (map.busses.item_for_iteration)
+				map.busses.forth
+			end
+			from
+				map.free_movings.start
+			until
+				map.free_movings.off
+			loop
+				add_free_moving (map.free_movings.item_for_iteration)
+				map.free_movings.forth
+			end
+			from
+				map.passengers.start
+			until
+				map.passengers.off
+			loop
+				add_passenger (map.passengers.item_for_iteration)
+				map.passengers.forth
+			end
+			from
+				map.paths.start
+			until
+				map.paths.off
+			loop
+				add_path (map.paths.item_for_iteration)
+				map.paths.forth
+			end
+			from
+				map.taxi_offices.start
+			until
+				map.taxi_offices.off
+			loop
+				add_taxi_office (map.taxi_offices.item_for_iteration)
+				map.taxi_offices.forth
+			end
 			map.lines.element_inserted_event.subscribe (agent add_line)
 			map.lines.element_removed_event.subscribe (agent remove_line)
 			map.roads.element_inserted_event.subscribe (agent add_road)
@@ -106,6 +162,8 @@ feature -- Element change
 			map.passengers.element_removed_event.subscribe (agent remove_passenger)
 			map.paths.element_inserted_event.subscribe (agent add_path)
 			map.paths.element_removed_event.subscribe (agent remove_path)
+			map.taxi_offices.element_inserted_event.subscribe (agent add_taxi_office)
+			map.taxi_offices.element_removed_event.subscribe (agent remove_taxi_office)
 		ensure
 			map_set: map = a_map
 		end
@@ -136,7 +194,7 @@ feature -- Status setting
 			map_not_hidden: not is_map_hidden
 		end
 
-feature {NONE} -- Implementation (wrappers for agents)
+feature {NONE} -- Implementation (view adding)
 
 	add_place (a_place: TRAFFIC_PLACE) is
 			-- Add place view for `a_place'.
@@ -210,6 +268,35 @@ feature {NONE} -- Implementation (wrappers for agents)
 			moving_representations.force_last (factory.new_passenger_view (a_passenger))
 		end
 
+	add_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE) is
+			-- Add `a_taxi_office' to the list of items where a view is added for each new taxi.
+		require
+			a_taxi_office_exists: a_taxi_office /= Void
+		do
+			a_taxi_office.taxis.element_inserted_event.subscribe (add_taxi_agent)
+			a_taxi_office.taxis.element_removed_event.subscribe (remove_taxi_agent)
+			-- In case the taxi office has already some taxis...
+			if not a_taxi_office.taxis.is_empty then
+				from
+					a_taxi_office.taxis.start
+				until
+					a_taxi_office.taxis.off
+				loop
+					add_taxi (a_taxi_office.taxis.item_for_iteration)
+				end
+			end
+		end
+
+	add_taxi (a_taxi: TRAFFIC_TAXI) is
+			-- Add taxi view for `a_taxi'.
+		require
+			a_taxi_not_void: a_taxi /= Void
+		do
+			moving_representations.force_last (factory.new_taxi_view (a_taxi))
+		end
+
+feature {NONE} -- Implementation (view removing)
+
 	remove_place (a_place: TRAFFIC_PLACE) is
 			-- Remove view for `a_place'.
 		require
@@ -282,6 +369,37 @@ feature {NONE} -- Implementation (wrappers for agents)
 			building_representations.delete (building_representations.view_for_item (a_building))
 		end
 
+	remove_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE) is
+			-- Remove `a_taxi_office' and all its taxi views.
+		require
+			a_taxi_office_exists: a_taxi_office /= Void
+		do
+			a_taxi_office.taxis.element_inserted_event.unsubscribe (add_taxi_agent)
+			a_taxi_office.taxis.element_removed_event.unsubscribe (remove_taxi_agent)
+			from
+				a_taxi_office.taxis.start
+			until
+				a_taxi_office.taxis.off
+			loop
+				remove_taxi (a_taxi_office.taxis.item_for_iteration)
+				a_taxi_office.taxis.forth
+			end
+		end
+
+	remove_taxi (a_taxi: TRAFFIC_TAXI) is
+			-- Remove view for `a_taxi'.
+		require
+			a_taxi_exists: a_taxi /= Void
+		do
+			moving_representations.delete (moving_representations.view_for_item (a_taxi))
+		end
+
+feature {NONE} -- Implementation (Agent references)
+
+	add_taxi_agent: PROCEDURE [ANY, TUPLE [TRAFFIC_TAXI]]
+
+	remove_taxi_agent: PROCEDURE [ANY, TUPLE [TRAFFIC_TAXI]]
+
 invariant
 
 	factory_exists: factory /= Void
@@ -291,5 +409,7 @@ invariant
 	building_representations_exists: building_representations /= Void
 	moving_representations_exists: moving_representations /= Void
 	path_representations_exists: path_representations /= Void
+	add_taxi_agent_exists: add_taxi_agent /= Void
+	remove_taxi_agent_exists: remove_taxi_agent /= Void
 
 end

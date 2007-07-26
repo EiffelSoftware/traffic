@@ -47,11 +47,18 @@ feature -- Initialization
 
 			create internal_factory
 			create internal_place_representations.make_as_child (root)
+			internal_place_representations.transform.set_position (0.0,0.07,0.0)
 			create internal_line_representations.make_as_child (root)
+			internal_line_representations.transform.set_position (0.0,0.04,0.0)
 			create internal_road_representations.make_as_child (root)
+			internal_road_representations.transform.set_position(0.0, 0.02, 0.0)
 			create internal_building_representations.make_as_child (root)
 			create internal_moving_representations.make_as_child (root)
 			create internal_path_representations.make_as_child (root)
+			internal_path_representations.transform.set_position(0.0, 0.4, 0.0)
+
+			add_taxi_agent := agent add_taxi (?)
+			remove_taxi_agent := agent remove_taxi (?)
 
 			set_keyboard_sensitive (True)
 			set_width (a_width)
@@ -95,11 +102,15 @@ feature -- Element change
 				wipe_out
 			end
 			create internal_place_representations.make_as_child (root)
+			internal_place_representations.transform.set_position (0.0,0.07,0.0)
 			create internal_line_representations.make_as_child (root)
+			internal_line_representations.transform.set_position (0.0,0.04,0.0)
 			create internal_road_representations.make_as_child (root)
+			internal_road_representations.transform.set_position(0.0, 0.02, 0.0)
 			create internal_building_representations.make_as_child (root)
 			create internal_moving_representations.make_as_child (root)
 			create internal_path_representations.make_as_child (root)
+			internal_path_representations.transform.set_position(0.0, 0.4, 0.0)
 			Precursor (a_map)
 			is_map_loaded := True
 			root.transform.set_position (-map.center.x, 0, -map.center.y)

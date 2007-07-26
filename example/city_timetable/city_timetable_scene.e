@@ -99,10 +99,10 @@ feature -- Interface
 			-- Lines
 			create checkbox.make_from_text ("Show VBZ Lines")
 			checkbox.set_position (10,20)
-			checkbox.checked_event.subscribe (agent (map_widget.line_representations).show)
-			checkbox.checked_event.subscribe (agent (map_widget.road_representations).show)
-			checkbox.unchecked_event.subscribe (agent (map_widget.line_representations).hide)
-			checkbox.unchecked_event.subscribe (agent (map_widget.road_representations).hide)
+			checkbox.checked_event.subscribe (agent show_lines)
+--			checkbox.checked_event.subscribe (agent (map_widget.road_representations).show)
+			checkbox.unchecked_event.subscribe (agent hide_lines)
+--			checkbox.unchecked_event.subscribe (agent (map_widget.road_representations).hide)
 			checkbox.set_checked
 			Result.add_widget (checkbox)
 		end
@@ -563,6 +563,18 @@ feature -- Event handling
 			point_randomizer.generate_point_array (1)
 			vect := map_widget.transform_coords (an_event.x, an_event.y)
 			taxi_combobox.selected_element.call (create {TRAFFIC_COORDINATE}.make (vect.x, vect.z), point_randomizer.last_array.first)
+		end
+
+	hide_lines is
+			-- Hide the lines.
+		do
+			map_widget.line_representations.hide
+		end
+
+	show_lines is
+			-- Hide the lines.
+		do
+			map_widget.line_representations.show
 		end
 
 

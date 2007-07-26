@@ -67,9 +67,6 @@ feature -- Element change
 			-- TODO: Does not work yet.
 		do
 			color := a_color
-			if not is_highlighted then
-				set_internal_color (create {EM_COLOR}.make_with_rgb (color.red, color.green, color.blue))
-			end
 		end
 
 	set_highlight_color (a_color: TRAFFIC_COLOR) is
@@ -77,9 +74,6 @@ feature -- Element change
 			-- TODO: Does not work yet.
 		do
 			highlight_color := a_color
-			if is_highlighted then
-				set_internal_color (create {EM_COLOR}.make_with_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
-			end
 		end
 
 	show is
@@ -98,14 +92,12 @@ feature -- Element change
 			-- Highlight the renderable.
 		do
 			-- TODO
-			set_internal_color (create {EM_COLOR}.make_with_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 			is_highlighted := True
 		end
 
 	unhighlight is
 			-- Unighlight the renderable.
 		do
-			set_internal_color (create {EM_COLOR}.make_with_rgb (color.red, color.green, color.blue))
 			is_highlighted := False
 		end
 
@@ -116,27 +108,18 @@ feature -- Basic operations
 		local
 			color_3d: GL_VECTOR_3D [REAL]
 		do
-			if color /= Void then
+			if color /= Void and then not(color.red = 255 and color.blue = 255 and color.green = 255) then
 				create color_3d.make_xyz (color.red/255, color.green/255, color.blue/255)
+				gl_enable (em_gl_color_material)
+				gl_color3fv(color_3d.pointer)
+			elseif is_highlighted and highlight_color /= Void then
+				create color_3d.make_xyz (highlight_color.red/255, highlight_color.green/255, highlight_color.blue/255)
 				gl_enable (em_gl_color_material)
 				gl_color3fv(color_3d.pointer)
 			end
 			Precursor
 			gl_disable (em_gl_color_material)
 		end
-
-feature {NONE} -- Implementation
-
-	set_internal_color (a_color: EM_COLOR) is
-			-- Set `color' to `a_color'. May also be Void.
-			-- TODO: Does not work yet.
-		do
-			internal_color := a_color
-		ensure
-			color_set: internal_color = a_color
-		end
-
-	internal_color: EM_COLOR
 
 invariant
 

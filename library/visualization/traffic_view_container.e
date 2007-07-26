@@ -36,6 +36,27 @@ feature -- Access
 			end
 		end
 
+feature -- Status report
+
+	has_view_for_item (a_item: G): BOOLEAN is
+			-- Is there a view for `a_item'?
+			-- (Result may be Void!)
+		local
+			cursor: DS_LINKED_LIST_CURSOR [H]
+		do
+			from
+				cursor := new_cursor
+				cursor.start
+			until
+				cursor.item.item = a_item or cursor.off
+			loop
+				cursor.forth
+			end
+			if not cursor.off then
+				Result := True
+			end
+		end
+
 feature -- Basic operations
 
 	hide is
