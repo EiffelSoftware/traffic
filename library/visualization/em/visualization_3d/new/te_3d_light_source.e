@@ -95,8 +95,6 @@ feature -- Status setting
 
 	reset_to_defaults is
 			-- resets settings to default values
-		local
-			default_color: GL_VECTOR_4D[DOUBLE]
 		do
 			enabled := true
 			specular := true

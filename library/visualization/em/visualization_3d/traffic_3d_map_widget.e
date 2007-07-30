@@ -94,9 +94,6 @@ feature -- Element change
 
 	set_map (a_map: TRAFFIC_MAP) is
 			-- Set map that is displayed to `a_map'.
-		local
-			green_material: TE_MATERIAL_SIMPLE
-			primitive_factory: TE_3D_MEMBER_FACTORY_PRIMITIVE
 		do
 			if map /= Void then
 				wipe_out

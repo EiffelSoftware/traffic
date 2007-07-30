@@ -57,8 +57,6 @@ feature -- Element change
 
 	set_map (a_map: TRAFFIC_MAP) is
 			-- Set map that is displayed to `a_map'.
-		local
-			e: EV_ENVIRONMENT
 		do
 			create internal_place_representations.make
 			create internal_line_representations.make
@@ -183,7 +181,7 @@ feature -- Basic operations
 				background_image := twin
 				fast_redraw_now
 				has_pending_redraw := false
-				(create {EV_ENVIRONMENT}).application.idle_actions.prune_all (redraw_agent)
+				(create {EV_ENVIRONMENT}).application.remove_idle_action (redraw_agent)
 			end
 		end
 

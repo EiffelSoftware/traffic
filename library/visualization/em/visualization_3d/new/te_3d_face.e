@@ -70,8 +70,8 @@ feature -- Basic operations
 
 	calculate_face_lit(light_position: EM_VECTOR3D) is
 			-- calculates wether the face is lit by the lightsource. LIGHTPOSITION MUST BE PASSED IN OBJECTSPACE!!
-		local
-			angle: DOUBLE
+--		local
+--			angle: DOUBLE
 		do
 			--angle := arc_cosine(face_normal.dot_product (light_position)/(face_normal.length * light_position.length))
 			--is_lit := angle <= PI/2.0

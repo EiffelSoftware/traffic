@@ -123,7 +123,6 @@ feature -- Basic operations
 			-- Draw the sun.
 		local
 			sun_pos, up_vector: EM_VECTOR3D
-			sun_3d_pos: EM_VECTOR3D
 			normalized_angle, ambient_component, diffuse_B, diffuse_R: DOUBLE
 		do
 				sun_pos.set(traffic_sun.position.x,traffic_sun.position.y,traffic_sun.position.z)

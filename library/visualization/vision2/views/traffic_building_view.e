@@ -37,9 +37,6 @@ feature -- Initialization
 
 	make (a_item: like item) is
 			-- Initialize view for `a_item'.
-		local
-			pp: ARRAY [REAL_COORDINATE]
-			i: INTEGER
 		do
 			item := a_item
 			make_rectangle (create {REAL_COORDINATE}.make (a_item.corner_1.x, -a_item.corner_1.y),

@@ -34,7 +34,7 @@ inherit
 			parent,
 			readable_child
 		end
-	
+
 create
 	make
 
@@ -271,7 +271,7 @@ feature -- Comparison
 						  (object_comparison = other.object_comparison) and
 						  (arity = other.arity) and
 						  (child_capacity = other.child_capacity)
-				
+
 				-- Compare items.
 				ic1 := item_cursor
 				ic2 := other.item_cursor
@@ -287,7 +287,7 @@ feature -- Comparison
 				end
 				item_go_to (ic1)
 				other.item_go_to (ic2)
-				
+
 				-- Compare children
 				cc1 := child_cursor
 				cc2 := other.child_cursor
@@ -402,7 +402,7 @@ feature -- Status report
 					end
 				end
 			end
-			
+
 			-- Propagate search result to parent (if possible).
 			if not is_root then
 				parent.set_matching_node (matching_node)
@@ -528,7 +528,7 @@ feature -- Element change
 					b_tree.item_forth
 				end
 				b_tree.item_go_to (c)
-				
+
 				-- And all children of `other'.
 				c := b_tree.child_cursor
 				from
@@ -625,6 +625,13 @@ feature -- Miscellaneous
 			--| TODO |--
 		end
 
+	copy_node (n: like Current) is
+			-- Copy node contents but no tree information into `Current'.
+		do
+			--| TODO |--
+		end
+
+
 feature -- Basic operations
 
 	sort is
@@ -682,7 +689,7 @@ feature {B_TREE} -- Implementation
 			-- Find insertion position by binary search.
 			pos := binary_search (v)
 			put_into_fixed (item_list, v, pos)
-			
+
 			-- Put child node at following position (if non-void).
 			if c /= Void then
 				put_into_fixed (children_list, c, pos+1)
@@ -705,7 +712,7 @@ feature {B_TREE} -- Implementation
 		do
 			create sibling.make (order)
 			m := (item_count+1) // 2
-			
+
 			-- Put upper half of `item_list' into sibling node.
 			from
 				item_list.go_i_th (m+1)
@@ -715,7 +722,7 @@ feature {B_TREE} -- Implementation
 				sibling.item_list.extend (item)
 				item_list.remove
 			end
-			
+
 			-- Not leaf: put upper half of `children_list' into sibling node
 			if not is_leaf then
 				from
@@ -728,7 +735,7 @@ feature {B_TREE} -- Implementation
 				end
 				sibling.reparent_all_children
 			end
-			
+
 			middle_item := item_list.i_th (m)
 			item_list.go_i_th (m)
 			item_list.remove
@@ -750,7 +757,7 @@ feature {B_TREE} -- Implementation
 				-- Remove all existing data from current node.
 				create item_list.make (item_capacity + 1)
 				create children_list.make (child_capacity + 1)
-				
+
 				-- Put new item value of into root node.
 				item_list.extend (middle_item)
 
@@ -783,7 +790,7 @@ feature {B_TREE} -- Implementation
 				index := binary_search (v)
 				item_list.go_i_th (index)
 				item_list.remove
-				
+
 				-- Handle possible underflow in node.
 				if (not is_root) and (item_count < item_capacity // 2) then
 					handle_underflow
@@ -873,7 +880,7 @@ feature {B_TREE} -- Implementation
 			index := parent.children_list.index_of (Current, 1) - 1
 			it := parent.item_list.i_th (index)
 			left_sibling.item_list.extend (it)
-			
+
 			-- Put all items into left sibling.
 			il := left_sibling.item_list
 			il.fill (item_list)
@@ -888,7 +895,7 @@ feature {B_TREE} -- Implementation
 			parent.item_list.remove
 			parent.children_list.go_i_th (index + 1)
 			parent.children_list.remove
-			
+
 			-- Handle possible underflow in `parent'.
 			if parent.item_count < (item_capacity // 2) then
 				parent.handle_underflow
@@ -925,7 +932,7 @@ feature {B_TREE} -- Implementation
 		do
 			-- Backup child cursor.
 			c := child_cursor
-			
+
 			-- Reparent all children.
 			from
 				child_start
@@ -935,7 +942,7 @@ feature {B_TREE} -- Implementation
 				child.attach_to_parent (Current)
 				child_forth
 			end
-			
+
 			-- Restore child cursor.
 			child_go_to (c)
 		end
@@ -1039,7 +1046,7 @@ feature {B_TREE} -- Implementation
 				end
 				item_go_to (ic)
 				child_go_to (cc)
-				
+
 				-- Put items of last child into `al'.
 				child.fill_list (al)
 			end
@@ -1065,7 +1072,7 @@ feature {B_TREE} -- Implementation
 				item_forth
 			end
 			item_go_to (c)
-			
+
 			-- Check child nodes for item uniqueness.
 			c := child_cursor
 			from
@@ -1119,7 +1126,7 @@ feature {B_TREE} -- Implementation
 				-- Copy items from `other' (`COLLECTION' type is necessary!).
 				il := item_list
 				il.fill (other.item_list)
-				
+
 				-- Copy children of `other' (`COLLECTION' type is necessary!).
 				cl := children_list
 				cl.fill (other.children_list)
@@ -1131,7 +1138,7 @@ feature {NONE} -- Implementation
 
 	matching_node: like Current
 			-- Tree node where the last `has' query has ended
-	
+
 
 	valid_index (a_index: INTEGER): BOOLEAN is
 			-- Is `a_index' a valid index of `item_list'?

@@ -105,7 +105,6 @@ feature -- Implementation
 			-- renders all renderpasses
 		local
 			i:INTEGER
-			ambient_color: GL_VECTOR_4D[REAL]
 			--debug_var: SPECIAL[ANY]
 		do
 			-- DEBUG

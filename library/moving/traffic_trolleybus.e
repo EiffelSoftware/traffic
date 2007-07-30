@@ -10,6 +10,8 @@ class
 inherit
 
 	TRAFFIC_TRAM
+		undefine
+			is_valid_line
 		select
 			capacity,
 			engine_capacity
@@ -19,8 +21,9 @@ inherit
 		rename
 			unit_capacity as bus_unit_capacity,
 			Default_virtual_speed as bus_speed,
-			capacity as bus_capacity,
-	 		make_default_with_line as bus_make
+			capacity as bus_capacity
+		undefine
+			make_with_line
 	 	end
 
 end

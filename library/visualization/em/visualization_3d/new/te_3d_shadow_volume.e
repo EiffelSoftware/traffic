@@ -67,7 +67,6 @@ feature -- Basic operations
 			ressource_exists: a_3d_ressource /= Void
 		local
 			lit_faces: LINKED_LIST[TE_3D_FACE]
-			current_quad: LINKED_LIST[EM_VECTOR3D]
 			p1,p2,p3,p4: EM_VECTOR3D
 			light_vector: EM_VECTOR3D
 			i:INTEGER

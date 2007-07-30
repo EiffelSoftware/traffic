@@ -49,17 +49,17 @@ feature -- Basic operations
 
 feature -- Events
 
-	request: EM_EVENT_CHANNEL[TUPLE[TRAFFIC_COORDINATE, TRAFFIC_COORDINATE]]
+	request: TRAFFIC_EVENT_CHANNEL[TUPLE[TRAFFIC_COORDINATE, TRAFFIC_COORDINATE]]
 			-- Event when a taxi is needed
 			-- Containing the from location and the intended destination as em_vector_2d
 
-	taxi_available: EM_EVENT_CHANNEL[TUPLE[TRAFFIC_EVENT_TAXI]]
+	taxi_available: TRAFFIC_EVENT_CHANNEL[TUPLE[TRAFFIC_EVENT_TAXI]]
 			-- Event when a taxi gets available
 
-	taxi_busy: EM_EVENT_CHANNEL[TUPLE[TRAFFIC_EVENT_TAXI]]
+	taxi_busy: TRAFFIC_EVENT_CHANNEL[TUPLE[TRAFFIC_EVENT_TAXI]]
 			-- Event when a taxi gets busy
 
-	reject_request: EM_EVENT_CHANNEL[TUPLE[TRAFFIC_COORDINATE, TRAFFIC_COORDINATE]]
+	reject_request: TRAFFIC_EVENT_CHANNEL[TUPLE[TRAFFIC_COORDINATE, TRAFFIC_COORDINATE]]
 			-- Event when a taxi rejects to take a request
 			-- Containing the from location and the intended destination as em_vector_2d
 

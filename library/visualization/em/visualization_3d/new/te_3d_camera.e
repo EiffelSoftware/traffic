@@ -29,9 +29,6 @@ feature {NONE} -- Initialize
 
 	make_as_child (a_parent: TE_3D_NODE) is
 			--create camera as child of 'a_parent'
-		local
-			horizon_angle: DOUBLE
-			tangent_of_fov: DOUBLE
 		do
 			Precursor(a_parent)
 			create target.make_from_tuple ([0.0, 0.0, 0.0])
@@ -51,8 +48,6 @@ feature {NONE} -- Initialize
 
 	make is
 			-- creates camera without a parent. Insert the camera into the hierarchy if you want to use it
-		local
-			f: DOUBLE
 		do
 			Precursor
 			create target.make_from_tuple ([0.0, 0.0, 0.0])
@@ -159,7 +154,6 @@ feature -- Basic operations
 			-- specifies the current camera settings. MUST BE CALLED WHEN THE MODELVIEW MATRIX IS IN ROOT SPACE! I.E. BEFORE THE HIERARCHY GETS DRAWN!
 		local
 			pos,tar,up: EM_VECTOR3D
-			inversed_model_matrix: EM_MATRIX44
 			wt: TE_3D_TRANSFORM
 		do
 			gl_push_attrib(em_GL_TRANSFORM_BIT)
@@ -250,7 +244,6 @@ feature -- Implementation
 	point_is_within_frustum (a_point: EM_VECTOR3D): BOOLEAN is
 			-- returns true if the point is within the view_frustum. POINT MUST BE IN WORLDSPACE!!
 		local
-			i : INTEGER
 			break:BOOLEAN
 		do
 			Result := true
@@ -270,7 +263,6 @@ feature -- Implementation
 	sphere_is_within_frustum (a_sphere: TUPLE[EM_VECTOR3D, DOUBLE]): BOOLEAN is
 			-- returns true if the sphere is partially within the view_frustum. PIVOT MUST BE IN WORLDSPACE!!
 		local
-			i : INTEGER
 			break: BOOLEAN
 			a_point: EM_VECTOR3D
 			a_radius: DOUBLE

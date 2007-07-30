@@ -32,10 +32,6 @@ feature {NONE} -- Initialization
 
 	make is
 			-- Create all checkboxes and gui elements.
-		local
-			loader: TRAFFIC_MAP_LOADER
-			s: STRING
-			fs: KL_FILE_SYSTEM
 		do
 			make_component_scene
 
@@ -157,10 +153,6 @@ feature -- Event handling
 		local
 			loader: TRAFFIC_MAP_LOADER
 			dlg: EM_MESSAGE_DIALOG
-			n,i: INTEGER
-			s: STRING
-			list: LIST [STRING]
-			lbl: EM_LABEL
 		do
 			if a_dlg.was_ok_clicked and a_dlg.is_file_selected then
 				create loader.make (a_dlg.absolute_filename)

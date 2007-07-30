@@ -348,9 +348,6 @@ feature {TE_3D_NODE, TE_RENDERPASS} -- Drawing
 
 	draw is
 			-- Draw the hierarchy if `is_hierarchy_renderable'.
-		local
-			rotation_quat: EM_QUATERNION
-			aor: EM_VECTOR3D --axis of rotation
 		do
 			if is_hierarchy_renderable then
 				gl_push_matrix

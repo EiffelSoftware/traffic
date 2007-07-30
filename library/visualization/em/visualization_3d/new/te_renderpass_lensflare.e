@@ -27,8 +27,6 @@ feature -- Initialization
 
 	make is
 			-- creates the lensflare pass and loads the images
-		local
-			bitmap_factory: EM_BITMAP_FACTORY
 		do
 			Precursor
 			create camera.make_as_child(root)
@@ -314,10 +312,7 @@ feature {TE_RENDERPASS_MANAGER} -- rendering
 				position3d: EM_VECTOR3D
 				pj: ARRAY[DOUBLE]
 				mm: ARRAY[DOUBLE]
-				model_matrix_c: ANY
 				viewport: GL_VECTOR_4D [INTEGER]
-				winx,winy,winz: REAL
-				success:INTEGER
 
 				projection_matrix, model_matrix:EM_MATRIX44
 				position4d: EM_VECTOR4D

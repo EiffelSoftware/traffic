@@ -97,7 +97,7 @@ feature {CANVAS} -- Implementation
 			scaled_center := real_to_integer_coordinate (center)
 			canvas.set_line_width (width)
 			if
-				filled
+				is_filled
 			then
 				canvas.fill_ellipse (scaled_center.x - (diameter / 2).rounded,
 									 scaled_center.y - (diameter / 2).rounded,

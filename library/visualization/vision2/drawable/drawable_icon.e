@@ -63,17 +63,7 @@ feature -- Access
 
 	bounding_box : REAL_RECTANGLE is
 			-- The bounding box of the icon
-		local
-			p1: REAL_COORDINATE
-			p2: REAL_COORDINATE
-			w: DOUBLE
-			h: DOUBLE
 		do
---			h := (pixmap.height * Map.width_ratio) / 2
---			w := (pixmap.width * Map.height_ratio) / 2
---			create p1.make (position.x - w, position.y - h)
---			create p2.make (position.x + w, position.y + h)
---			create Result.make (p1, p2)
 			create Result.make (position, create {REAL_COORDINATE}.make (position.x + pixmap.width, position.y + pixmap.height))
 		end
 

@@ -83,14 +83,14 @@ feature -- Display
 				end
 			end
 			has_pending_redraw := false
-			(create {EV_ENVIRONMENT}).application.idle_actions.prune_all (redraw_agent)
+			(create {EV_ENVIRONMENT}).application.remove_idle_action (redraw_agent)
 		end
 
 	redraw is
 			-- Redraw the map as soon as possible.
 		do
 			if not has_pending_redraw then
-				(create {EV_ENVIRONMENT}).application.idle_actions.extend (redraw_agent)
+				(create {EV_ENVIRONMENT}).application.add_idle_action (redraw_agent)
 				has_pending_redraw := true
 			end
 		ensure

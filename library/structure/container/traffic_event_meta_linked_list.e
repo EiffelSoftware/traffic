@@ -81,9 +81,9 @@ feature {NONE} -- Implementation
 
 feature -- Access
 
-	sub_element_inserted_event: EM_EVENT_CHANNEL [TUPLE [G]]
+	sub_element_inserted_event: TRAFFIC_EVENT_CHANNEL [TUPLE [G]]
 
-	sub_element_removed_event: EM_EVENT_CHANNEL [TUPLE [G]]
+	sub_element_removed_event: TRAFFIC_EVENT_CHANNEL [TUPLE [G]]
 
 feature {NONE} -- Implementation
 

@@ -27,8 +27,6 @@ feature -- Initialization
 
 	make is
 			-- Initialize time counter.
-		local
-			font: EM_FONT
 		do
 			Precursor
 			str.set_value("??:??:??")

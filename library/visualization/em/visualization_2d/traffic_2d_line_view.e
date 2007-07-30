@@ -33,8 +33,6 @@ feature -- Initialization
 
 	make (a_item: like item) is
 			-- Set `item' to `a_item'.
-		local
-			l: ARRAYED_LIST [EM_VECTOR_2D]
 		do
 			item := a_item
 			make_container

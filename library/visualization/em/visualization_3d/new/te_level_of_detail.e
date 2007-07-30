@@ -92,7 +92,6 @@ feature -- Implementation
 		local
 			bs_center: EM_VECTOR3D
 			screenspace_percentage, distance_to_camera, screen_height, ang2rad: DOUBLE
-			level:INTEGER
 			radius: DOUBLE
 		do
 			ang2rad := 3.14159265358979323846/180.0

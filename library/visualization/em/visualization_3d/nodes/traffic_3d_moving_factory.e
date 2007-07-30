@@ -154,9 +154,7 @@ feature {NONE} -- Implementation
 		local
 			fs: KL_FILE_SYSTEM
 			s: STRING --path string
-			i:INTEGER
 			scene_importer: TE_3D_SCENE_IMPORTER
-			current_building: TE_3D_NODE
 		do
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 			scene_importer := (create {TE_3D_SHARED_GLOBALS}).scene_importer

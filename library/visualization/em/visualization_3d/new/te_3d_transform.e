@@ -5,7 +5,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TE_3D_TRANSFORM 
+	TE_3D_TRANSFORM
 
 create
 	make, make_from_matrix
@@ -48,9 +48,6 @@ feature -- Access
 
 	x_axis: EM_VECTOR3D
 		-- x_axis
-		local
-			x_unit:EM_VECTOR4D
-			x_axis_4d: EM_VECTOR4D
 		do
 			Result.set(model_matrix.element(1,1),model_matrix.element(2,1),model_matrix.element(3,1))
 			Result.normalize
@@ -58,9 +55,6 @@ feature -- Access
 
 	y_axis: EM_VECTOR3D
 		-- y_axis
-		local
-			y_unit:EM_VECTOR4D
-			y_axis_4d: EM_VECTOR4D
 		do
 			Result.set(model_matrix.element(1,2),model_matrix.element(2,2),model_matrix.element(3,2))
 			Result.normalize
@@ -68,9 +62,6 @@ feature -- Access
 
 	z_axis: EM_VECTOR3D
 		-- z_axis
-		local
-			z_unit:EM_VECTOR4D
-			z_axis_4d: EM_VECTOR4D
 		do
 			Result.set(model_matrix.element(1,3),model_matrix.element(2,3),model_matrix.element(3,3))
 			Result.normalize

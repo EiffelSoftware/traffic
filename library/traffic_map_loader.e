@@ -50,7 +50,6 @@ feature -- Basic operations
 		local
 			directory: DIRECTORY
 			log_file: RAW_FILE
-			w_min, w_max, h_min, h_max: DOUBLE
 		do
 			if not has_error then
 				if is_dump_loading_enabled then

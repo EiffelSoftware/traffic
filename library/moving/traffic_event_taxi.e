@@ -17,9 +17,6 @@ feature -- Initialization
 
 	make_random (a_taxi_office: TRAFFIC_EVENT_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]) is
 			-- Taxi with an associated 'a_taxi_office'.
-		local
-			evening_time, morning_time: DOUBLE
-			random: RANDOM
 		do
 			create polypoints.make_from_linear (a_point_list)
 			create poly_cursor.make (polypoints)

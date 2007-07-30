@@ -41,11 +41,7 @@ feature -- Initialization
 	make (a_item: like item) is
 			-- Initialize view for `a_item'.
 		local
-			pp: ARRAY [REAL_COORDINATE]
-			i: INTEGER
-			conns: DS_LINKED_LIST [TRAFFIC_CONNECTION]
 			c: DRAWABLE_POLYLINE
-			p: DRAWABLE_ROUNDED_RECTANGLE
 		do
 			make_container
 			item := a_item

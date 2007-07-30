@@ -8,17 +8,17 @@ class
 
 inherit
 	TRAFFIC_XML_INPUT_FILE_PARSER
-		
+
 	TRAFFIC_NODE_PROCESSOR_REGISTRY
 
 create
 	make_with_map
-	
+
 feature -- Initialization
 
-	make_with_map(a_map:TRAFFIC_3D_MAP_WIDGET)  is
+	make_with_map (a_map:TRAFFIC_MAP)  is
 			-- Create parser.
-			
+
 		require
 			map_valid: a_map /= void
 		do
@@ -34,18 +34,18 @@ feature -- Initialization
 		end
 
 feature -- Status report		
-	
+
 	can_process: BOOLEAN is
 			-- Can document tree be processed?
-		
+
 		do
 			Result := is_parsed and then has_processor (root_element.name)
 		end
-		
+
 feature -- Basic operations
-		
+
 	process is
-		
+
 			-- Process document tree.
 		local
 			p: TRAFFIC_NODE_PROCESSOR
@@ -63,5 +63,5 @@ feature -- Basic operations
 					is_parsed := False
 				end
 			end
-		end		
+		end
 end

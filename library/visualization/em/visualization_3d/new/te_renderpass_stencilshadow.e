@@ -96,8 +96,6 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 			-- renders the current pass
 		require else
 			shadow_light_exists: shadow_light /= Void
-		local
-		i:INTEGER
 		do
 			gl_Push_Attrib( em_GL_COLOR_BUFFER_BIT | em_GL_DEPTH_BUFFER_BIT | em_GL_ENABLE_BIT | em_GL_POLYGON_BIT | em_GL_STENCIL_BUFFER_BIT | em_GL_LIGHTING_BIT | em_GL_CURRENT_BIT)
 			gl_push_client_attrib(em_GL_CLIENT_VERTEX_ARRAY_BIT)

@@ -59,7 +59,6 @@ feature -- Canvas elements
 	update_visible_area is
 			-- Updates the visible area according to `width', `height' and `zoom_factor'.
 		local
-			new_visible_area: REAL_RECTANGLE
 			old_center: REAL_COORDINATE
 		do
 			old_center := visible_area.center

@@ -79,8 +79,6 @@ feature -- Access
 	bounding_box : REAL_RECTANGLE is
 			-- Bounding box of the container
 		local
-			i: INTEGER
-			upper, lower: REAL_COORDINATE
 			rect: REAL_RECTANGLE
 			l, r, u, d: REAL
 		do

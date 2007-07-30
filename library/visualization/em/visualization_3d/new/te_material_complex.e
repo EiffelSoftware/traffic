@@ -247,8 +247,6 @@ feature {NONE} -- Implementation
 	material_in_gl_use: BOOLEAN
 
 	default_pass
-		local
-			temp_gl_vect: GL_VECTOR_4D [REAL_64]
 		do
 			material_in_gl_use := True
 			gl_push_attrib (em_gl_enable_bit | em_gl_polygon_bit | em_GL_COLOR_BUFFER_BIT | em_GL_DEPTH_BUFFER_BIT | em_GL_LIGHTING_BIT)
