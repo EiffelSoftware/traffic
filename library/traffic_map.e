@@ -32,7 +32,6 @@ feature {NONE} -- Initialization
 			a_name_not_empty: not a_name.is_empty
 		local
 			default_size: INTEGER
-			villa: TRAFFIC_VILLA
 		do
 			default_size := 100
 			name := a_name
@@ -283,18 +282,10 @@ feature {TRAFFIC_MAP_LOADER}
 			-- In addition, the stops of different lines are connected at nodes.
 		local
 			the_edges: LIST[TRAFFIC_CONNECTION]
-			p: TRAFFIC_PLACE
-			s: TRAFFIC_STOP
-			a_edge: TRAFFIC_ROAD_CONNECTION
 			total_weight: DOUBLE
 			average_weight: DOUBLE
 			w: DOUBLE
 			edge_count: INTEGER
-			type: TRAFFIC_TYPE_STREET
-			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
-			a: TRAFFIC_COORDINATE
-			place_array: ARRAY [TRAFFIC_PLACE]
-			i: INTEGER
 		do
 			-- Recalculate edge weights.
 			the_edges := graph.edges

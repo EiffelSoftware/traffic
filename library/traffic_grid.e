@@ -76,7 +76,6 @@ feature -- Basic operations
 	        dx,dy: DOUBLE
 	        m, b: DOUBLE
 	        t: TUPLE [INTEGER, INTEGER]
-	        v: TRAFFIC_COORDINATE
 		do
 			t := grid_coordinate (p0)
 			x0_local := t.integer_item (1)

@@ -72,7 +72,6 @@ feature{NONE} -- Implementation
 		local
 			real_ms: INTEGER
 			sim_ms: INTEGER
-			old_hour: INTEGER
 			t: TIME
 		do
 			if is_time_running then

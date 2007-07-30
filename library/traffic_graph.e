@@ -51,7 +51,6 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			-- Redefined to record weight.
 		local
 			r: TRAFFIC_ROAD_CONNECTION
-			i: INTEGER
 		do
 			create r.make (a_start_node, a_end_node, create {TRAFFIC_TYPE_STREET}.make, id_manager.next_free_index)
 			a_start_node.put_connection (r)
@@ -162,7 +161,6 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			-- The cursor is not moved.
 		local
 			index: INTEGER
-			node: like current_node
 		do
 			if not node_list.has (a_node) then
 				-- Compute item index of new element.
@@ -190,7 +188,7 @@ feature -- Removal
 			-- Remove `a_edge' from the graph.
 			-- (from LINKED_GRAPH)
 		local
-			linked_edge, symmetric_edge: like edge_item
+			linked_edge: like edge_item
 			start_node, end_node: like current_node
 		do
 			prune_edge_impl (a_edge)

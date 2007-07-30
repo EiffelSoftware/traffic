@@ -18,9 +18,6 @@ feature -- Initialization
 			-- Create a taxi with an associated 'a_taxi_office'.
 			-- Random speed and stops at 'stops' random positions.
 			-- Set seed of random_number to 'a_seed'.
-		local
-			evening_time, morning_time: DOUBLE
-			random: RANDOM
 		do
 			create polypoints.make_from_linear (a_point_list)
 			create poly_cursor.make (polypoints)

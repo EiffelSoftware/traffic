@@ -21,7 +21,6 @@ feature -- Element change
 			a_map_exists: a_map /= Void
 		local
 			t: TIME
-			b: TRAFFIC_BUILDING
 		do
 			create t.make_now
 			create random.set_seed (t.compact_time)

@@ -78,7 +78,6 @@ feature {NONE} -- Implementation
 			-- Move from origin to destination.
 		local
 			direction: TRAFFIC_COORDINATE
-			step: TRAFFIC_COORDINATE
 			diff: DOUBLE
 		do
 			direction := destination - origin

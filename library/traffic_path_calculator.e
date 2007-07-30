@@ -42,10 +42,6 @@ feature -- Basic operations
 			not_same: a_destination /= a_origin
 		local
 			temp_path: LIST [TRAFFIC_CONNECTION]
-			a_road: TRAFFIC_ROAD_CONNECTION
-			a_type: TRAFFIC_TYPE_STREET
-			road_id: INTEGER
-			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			current_ps, next_ps: TRAFFIC_PATH_SECTION
 			old_mode: INTEGER
 		do

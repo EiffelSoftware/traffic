@@ -186,8 +186,6 @@ feature -- Element change
 	 		-- Set `center' to `a_center'.
 	 	require
 	 		a_center_valid: a_center /= Void
-	 	local
-	 		old_center: TRAFFIC_COORDINATE
 	 	do
 	 		center := a_center
 		ensure

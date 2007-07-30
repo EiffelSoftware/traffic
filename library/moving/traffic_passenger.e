@@ -21,7 +21,6 @@ feature -- Initialization
 		local
 			list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			path_conns: DS_LINKED_LIST [TRAFFIC_CONNECTION]
-			evening_time, sleep_time: DOUBLE
 		do
 			path := a_path
 			position := a_path.origin.position

@@ -31,8 +31,6 @@ feature -- Access
 	view_for_item (a_item: G): H is
 			-- View for `a_item' if it exists
 			-- (Result may be Void!)
-		local
-			cursor: DS_LIST_CURSOR [H]
 		do
 			from
 				start
@@ -68,8 +66,6 @@ feature -- Status report
 	has_view_for_item (a_item: G): BOOLEAN is
 			-- Is there a view for `a_item'?
 			-- (Result may be Void!)
-		local
-			cursor: DS_LIST_CURSOR [H]
 		do
 			from
 				start
@@ -215,8 +211,6 @@ feature -- Basic operations
 
 	hide is
 			-- Hide all elements.
-		local
-			cursor: DS_LIST_CURSOR [TRAFFIC_VIEW [G]]
 		do
 			from
 				start
@@ -230,8 +224,6 @@ feature -- Basic operations
 
 	show is
 			-- Show all elements.
-		local
-			cursor: DS_LIST_CURSOR [TRAFFIC_VIEW [G]]
 		do
 			from
 				start
