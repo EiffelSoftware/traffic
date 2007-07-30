@@ -38,6 +38,8 @@ feature -- Initialization
 		local
 			e: EV_ENVIRONMENT
 		do
+			add_taxi_agent := agent add_taxi (?)
+			remove_taxi_agent := agent remove_taxi (?)
 			create internal_factory
 			create internal_place_representations.make
 			create internal_line_representations.make
@@ -88,12 +90,12 @@ feature -- Status setting
 feature {NONE} -- Implementation
 
 	internal_factory: TRAFFIC_VS_VIEW_FACTORY
-	internal_moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_VS_VIEW [TRAFFIC_MOVING]]
-	internal_path_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VS_VIEW [TRAFFIC_PATH]]
-	internal_line_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE, TRAFFIC_VS_VIEW [TRAFFIC_LINE]]
-	internal_road_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_VS_VIEW [TRAFFIC_ROAD]]
-	internal_place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VS_VIEW [TRAFFIC_PLACE]]
-	internal_building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_VS_VIEW [TRAFFIC_BUILDING]]
+	internal_moving_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_MOVING]
+	internal_path_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PATH]
+	internal_line_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_LINE]
+	internal_road_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_ROAD]
+	internal_place_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PLACE]
+	internal_building_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_BUILDING]
 
 feature -- Access
 
@@ -149,7 +151,7 @@ feature -- Basic operations
 				from
 					internal_road_representations.start
 				until
-					internal_road_representations.off
+					internal_road_representations.after
 				loop
 					draw_item (internal_road_representations.item_for_iteration)
 					internal_road_representations.forth
@@ -157,7 +159,7 @@ feature -- Basic operations
 				from
 					internal_line_representations.start
 				until
-					internal_line_representations.off
+					internal_line_representations.after
 				loop
 					draw_item (internal_line_representations.item_for_iteration)
 					internal_line_representations.forth
@@ -165,7 +167,7 @@ feature -- Basic operations
 				from
 					internal_place_representations.start
 				until
-					internal_place_representations.off
+					internal_place_representations.after
 				loop
 					draw_item (internal_place_representations.item_for_iteration)
 					internal_place_representations.forth
@@ -173,7 +175,7 @@ feature -- Basic operations
 				from
 					internal_building_representations.start
 				until
-					internal_building_representations.off
+					internal_building_representations.after
 				loop
 					draw_item (internal_building_representations.item_for_iteration)
 					internal_building_representations.forth
@@ -196,7 +198,7 @@ feature -- Basic operations
 				from
 					internal_path_representations.start
 				until
-					internal_path_representations.off
+					internal_path_representations.after
 				loop
 					draw_item (internal_path_representations.item_for_iteration)
 					internal_path_representations.forth
@@ -204,7 +206,7 @@ feature -- Basic operations
 				from
 					internal_moving_representations.start
 				until
-					internal_moving_representations.off
+					internal_moving_representations.after
 				loop
 					draw_item (internal_moving_representations.item_for_iteration)
 					internal_moving_representations.forth

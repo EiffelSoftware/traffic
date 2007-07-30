@@ -144,7 +144,8 @@ feature -- Event handling
 	subscribe_to_clicked_place_event (an_agent: PROCEDURE [ANY, TUPLE [TRAFFIC_PLACE]]) is
 			-- Subscribe `an_agent' to clicked place event
 		do
-			game_scene.big_map_widget.subscribe_to_clicked_place_event (an_agent)
+--			todo
+--			game_scene.big_map_widget.subscribe_to_clicked_place_event (an_agent)
 		end
 
 	subscribe_to_outside_event (a_procedure: PROCEDURE [ANY, TUPLE]) is
@@ -163,11 +164,11 @@ feature -- Event handling
 				--Color place red
 				create place_renderer.make_with_map (game.traffic_map)
 				place_renderer.set_place_color (theme.selected_place_color)
-				game_scene.big_map_widget.set_place_special_renderer (place_renderer, a_place)
+				game_scene.big_map_widget.place_representations.view_for_item (a_place).highlight
 				game.set_selected_place (a_place)
 
 				--Re-Render the scene for the effects to be visible
-				game_scene.big_map_widget.rerender_place (a_place)
+--				game_scene.big_map_widget.rerender_place (a_place)
 				game_scene.redraw
 			end
 		end

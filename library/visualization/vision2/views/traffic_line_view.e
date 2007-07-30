@@ -15,18 +15,21 @@ inherit
 			show,
 			copy,
 			is_equal,
-			set_internal_color,
 			draw
+		redefine
+			unhighlight,
+			highlight,
+			set_color,
+			set_highlight_color
 		end
 
-	DRAWABLE_OBJECT_CONTAINER
+	DRAWABLE_OBJECT_CONTAINER [DRAWABLE_POLYLINE]
 		rename
-			make as make_container,
+			color as internal_color,
 			set_color as set_internal_color,
-			color as internal_color
+			make as make_container,
+			item as container_item
 		export {NONE}
-			internal_color,
-			set_internal_color,
 			make_container
 		end
 
@@ -55,18 +58,152 @@ feature -- Initialization
 				put_last (c)
 				item.forth
 			end
-			set_color (create {TRAFFIC_COLOR}.make_with_rgb (item.color.red, item.color.green, item.color.blue))
-			set_highlight_color (create {TRAFFIC_COLOR}.make_with_rgb (0, 255, 0))
+			if item.color /= Void  then
+				from
+					start
+				until
+					after
+				loop
+					item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (item.color.red, item.color.green, item.color.blue))
+					forth
+				end
+			else
+				from
+					start
+				until
+					after
+				loop
+					item_for_iteration.set_color (default_color)
+					forth
+				end
+			end
 			is_shown := True
 			is_highlighted := False
-		ensure then
-			is_shown: is_shown
-			not_highlighted: not is_highlighted
-			color_exists: color /= Void
-			highlight_color_exists: highlight_color /= Void
 		end
 
-feature -- Implementation
+feature -- Constants
+
+	default_color: EV_COLOR is
+			-- Default color
+		once
+			create Result.make_with_8_bit_rgb (100, 100, 100)
+		end
+
+	default_highlight_color: EV_COLOR is
+			-- Default highlight color
+		once
+			create Result.make_with_8_bit_rgb (255, 0, 0)
+		end
+
+feature -- Element change
+
+feature -- Basic operations
+
+	highlight is
+			-- Highlight the place view.
+		do
+			if highlight_color /= Void then
+				from
+					start
+				until
+					after
+				loop
+					item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+					forth
+				end
+			else
+				from
+					start
+				until
+					after
+				loop
+					item_for_iteration.set_color (default_highlight_color)
+					forth
+				end
+			end
+			is_highlighted := True
+		end
+
+	unhighlight is
+			-- Unhighlight the place view.
+		do
+			if color /= Void then
+				from
+					start
+				until
+					after
+				loop
+					item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+					forth
+				end
+			else
+				from
+					start
+				until
+					after
+				loop
+					item_for_iteration.set_color (default_color)
+					forth
+				end
+			end
+			is_highlighted := False
+		end
+
+	set_color (a_color: TRAFFIC_COLOR) is
+			-- Set the color of the place view to `a_color'.
+		do
+			color := a_color
+			if not is_highlighted then
+				if color /= Void then
+					from
+						start
+					until
+						after
+					loop
+						item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+						forth
+					end
+				else
+					from
+						start
+					until
+						after
+					loop
+						item_for_iteration.set_color (default_color)
+						forth
+					end
+				end
+			end
+		end
+
+	set_highlight_color (a_color: TRAFFIC_COLOR) is
+			-- Set the color of the place view to `a_color'.
+		do
+			highlight_color := a_color
+			if is_highlighted then
+				if highlight_color /= Void then
+					from
+						start
+					until
+						after
+					loop
+						item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+						forth
+					end
+				else
+					from
+						start
+					until
+						after
+					loop
+						item_for_iteration.set_color (default_highlight_color)
+						forth
+					end
+				end
+			end
+		end
+
+feature {NONE} -- Implementation
 
 	new_connection_view (a_item: TRAFFIC_CONNECTION): DRAWABLE_POLYLINE is
 			-- Generate connection view for `a_item'.

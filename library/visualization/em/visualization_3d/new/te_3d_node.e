@@ -86,7 +86,7 @@ feature -- Access
 	parent: TE_3D_NODE
 			-- Parent node (if this is void, this is the root of the hirarchy)
 
-	children : DS_LIST [TE_3D_NODE] is
+	children : like internal_children is
 			-- List of all children nodes in the hierarchy
 		do
 			Result := internal_children

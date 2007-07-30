@@ -5,13 +5,12 @@ indexing
 	revision: "$Revision$"
 
 class
-	DRAWABLE_OBJECT_CONTAINER
+	DRAWABLE_OBJECT_CONTAINER [G->DRAWABLE_OBJECT]
 
 inherit
 
 	DRAWABLE_OBJECT
 		redefine
-			set_color,
 			show,
 			hide,
 			draw
@@ -26,22 +25,55 @@ feature {NONE} -- Initialization
 			-- Initialize.
 		do
 			create internal_list.make
+			create color.make_with_8_bit_rgb (255, 255, 255)
+		ensure
+			internal_list_exists: internal_list /= Void
+			color_exists: color /= Void
 		end
 
 feature -- Access
 
-	first: DRAWABLE_OBJECT is
-			-- First item in list
+	count: INTEGER is
+			-- Number of items in list
 		do
-			Result := internal_list.first
+			Result := internal_list.count
 		end
 
-	item_for_iteration: DRAWABLE_OBJECT is
+	first: like item_for_iteration is
+			-- First item in list
+		require
+			not_empty: not is_empty
+		do
+			Result := internal_list.first
+		ensure
+			has_first: has (Result)
+		end
+
+	item_for_iteration: G is
 			-- Item at internal cursor position
 		require
 			not_after: not after
 		do
 			Result := internal_list.item_for_iteration
+		end
+
+	item (i: INTEGER_32): G
+			-- Item at index `i'
+		require
+			valid_index: 1 <= i and i <= count
+		do
+			Result := internal_list.item (i)
+		end
+
+	last: G
+			-- Last item in list
+		require
+			not_empty: not is_empty
+		do
+			Result := internal_list.last
+		ensure
+			definition: Result = item (count)
+			has_last: has (Result)
 		end
 
 	bounding_box : REAL_RECTANGLE is
@@ -75,21 +107,6 @@ feature -- Access
 		end
 
 feature -- Element change
-
-	set_color (a_color: like color) is
-			-- Set the color of the object to `a_color'.
-		do
-			from
-				start
-			until
-				after
-			loop
-				item_for_iteration.set_color (a_color)
-				forth
-			end
-			color := a_color
-			invalidate
-		end
 
 	hide is
 			-- Highlight the place view.
@@ -139,6 +156,14 @@ feature -- Cursor movement
 
 feature -- Status report
 
+	has (v: G): BOOLEAN
+			-- Does list include `v'?
+		do
+			Result := internal_list.has (v)
+		ensure
+			not_empty: Result implies not is_empty
+		end
+
 	is_empty: BOOLEAN is
 			-- Is container empty?
 		do
@@ -153,7 +178,7 @@ feature -- Status report
 
 feature -- Insertion
 
-	put_last (a_drawable: DRAWABLE_OBJECT) is
+	put_last (a_drawable: like item_for_iteration) is
 			-- Add `a_drawable' to end of list.
 			-- Do not move cursors.
 		do
@@ -164,7 +189,7 @@ feature -- Insertion
 			not_valid: not is_valid
 		end
 
-	put_first (a_drawable: DRAWABLE_OBJECT) is
+	put_first (a_drawable: like item_for_iteration) is
 			-- Add `a_drawable' to beginning of list.
 			-- Do not move cursors.
 		do
@@ -175,20 +200,70 @@ feature -- Insertion
 			not_valid: not is_valid
 		end
 
-	put_right (a_drawable: DRAWABLE_OBJECT) is
-			-- Add `a_drawable' to right of internal cursor position.
+	replace (v: G; i: INTEGER) is
+			-- Replace item at index `i' by `v'.
 			-- Do not move cursors.
 		require
-			not_after: not after
+			valid_index: 1 <= i and i <= count
 		do
-			internal_list.force_right (a_drawable)
+			internal_list.replace (v, i)
 			invalidate
 		ensure
-			is_in_list: internal_list.has (a_drawable)
-			not_valid: not is_valid
+			same_count: count = old count
+			replaced: item (i) = v
+		end
+
+	put (v: G; i: INTEGER) is
+			-- Add `v' at `i'-th position.
+			-- Do not move cursors.
+		require
+			valid_index: 1 <= i and i <= (count + 1)
+		do
+			internal_list.put (v, i)
+			invalidate
+		ensure
+			one_more: count = old count + 1
+			inserted: item (i) = v
 		end
 
 feature -- Removal
+
+	remove_first
+			-- Remove item at beginning of list.
+			-- Move any cursors at this position forth.
+		require
+			not_empty: not is_empty
+		do
+			internal_list.remove_first
+			invalidate
+		ensure -- from DS_INDEXABLE
+			one_less: count = old count - 1
+		end
+
+	remove_last
+			-- Remove item at end of list.
+			-- Move any cursors at this position forth.
+		require
+			not_empty: not is_empty
+		do
+			internal_list.remove_last
+			invalidate
+		ensure
+			one_less: count = old count - 1
+		end
+
+	remove (i: INTEGER_32)
+			-- Remove item at `i'-th position.
+			-- Move any cursors at this position forth.
+		require
+			not_empty: not is_empty
+			valid_index: 1 <= i and i <= count
+		do
+			internal_list.remove (i)
+			invalidate
+		ensure
+			one_less: count = old count - 1
+		end
 
 	wipe_out is
 			-- Remove all items from list.
@@ -201,7 +276,7 @@ feature -- Removal
 			not_valid: not is_valid
 		end
 
-	delete (a_drawable: DRAWABLE_OBJECT) is
+	delete (a_drawable: like item_for_iteration) is
 			-- Remove all occurrences of `v'.
 			-- Move all cursors off.
 		do
@@ -238,7 +313,7 @@ feature {CANVAS} -- Basic operations
 
 feature {NONE} -- Implementation
 
-	internal_list: DS_LINKED_LIST [DRAWABLE_OBJECT]
+	internal_list: DS_LINKED_LIST [like item_for_iteration]
 			-- List of all drawables in the container
 
 invariant

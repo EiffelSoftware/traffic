@@ -5,10 +5,10 @@ indexing
 
 class
 	GAME_SCENE
-	
-inherit 
+
+inherit
 	FLAT_HUNT_SCENE
-		rename 
+		rename
 			make_scene as make_scene_default
 		redefine
 			handle_key_down_event, initialize_scene
@@ -32,9 +32,9 @@ feature -- Initialization
 			hunter_count := a_hunter_count
 			build_big_map_widget
 			build_little_map_widget
-			
+
 			-- Set defaults.
-			create status.make (0)	
+			create status.make (0)
 			create hash_from_button_to_player_displayer.make (0)
 			create player_displayers.make (0)
 			paused := False
@@ -43,18 +43,18 @@ feature -- Initialization
 			traffic_map_set: traffic_map = a_traffic_map
 			hunter_count_set: hunter_count = a_hunter_count
 		end
-		
+
 	initialize_scene is
 			-- Build 'main_container' containing zoomable map.
-		do			
-		
+		do
+
 			set_background_color (theme.background_color)
 
 			-- Build map widgets.
 			-- Build navigation widget to connect
 			-- little map to big map for navigation.
-			create navigation_widget.make (little_map_widget, big_map_widget)	
-			
+			create navigation_widget.make (little_map_widget, big_map_widget)
+
 			-- Build status box.
 			create status_box.make_from_coordinates (Map_area_width + 2 * Margin, flathunt_window_width - Map_area_width - 2 * Margin, flathunt_window_width - Margin, Map_area_height, "Status")
 			status_box.set_font (theme.Status_font)
@@ -72,11 +72,11 @@ feature -- Initialization
 			player_status_box.set_padding (-3)
 			player_status_box.set_visible (False)
 			main_container.extend (player_status_box)
-			
+
 			-- Build the menus.
 			build_pause_menu
 			build_game_over_menu
-			
+
 			-- Build the overlay for when the game is `paused'
 			theme.bitmap_factory.create_bitmap_from_image (theme.Image_directory + "scanlines.png")
 			overlay := theme.bitmap_factory.last_bitmap
@@ -89,7 +89,7 @@ feature -- Initialization
 			status_box_added: main_container.has (status_box)
 			player_status_box_added: main_container.has (player_status_box)
 		end
-	
+
 	create_players_from_list (a_player_list: ARRAYED_LIST [PLAYER]) is
 			-- Create views for players on the scene.
 		require
@@ -132,14 +132,14 @@ feature -- Initialization
 		end
 
 feature -- Access
-			
+
 	player_displayers: ARRAYED_LIST [PLAYER_DISPLAYER]
 			-- Holds all player displayers.
 
 	big_map_widget: TRAFFIC_2D_MAP_WIDGET
 			-- Map widget to visualize `traffic_map'
 			-- for big zoomable map.
-			
+
 	update_status_box is
 			-- Update the overview status box.
 		do
@@ -153,16 +153,17 @@ feature -- Access
 		do
 			if player_status_box /= Void and then player_status_box.is_visible and then player_status_box.title.value.has_substring (player_displayers.i_th (current_player_index).out) then
 				player_status_box.set_title ("Status of " + player_displayers.i_th (current_player_index).out)
-				player_status_box.set_text (player_displayers.i_th (current_player_index).statistics)							
+				player_status_box.set_text (player_displayers.i_th (current_player_index).statistics)
 			end
 		end
 
 	center_on_player (a_player: PLAYER) is
 			-- Center map on `a_player'.
 		do
-			big_map_widget.center_on (a_player.position)
+--			todo
+--			big_map_widget.center_on (a_player.position)
 		end
-		
+
 	display_end_game is
 			-- Display game over stats and the `game_over_menu'.
 		do
@@ -172,7 +173,7 @@ feature -- Access
 			gom_container_added: main_container.has (game_over_menu_container)
 			game_over_set: game_over = True
 		end
-		
+
 feature -- Status setting
 
 	set_traffic_map (a_traffic_map: like traffic_map) is
@@ -184,11 +185,11 @@ feature -- Status setting
 		ensure
 			traffic_map_correct: traffic_map = a_traffic_map
 		end
-		
+
 	set_number_of_hunters (a_hunter_count: like hunter_count) is
 			-- Set `hunter_count' to `a_hunter_count'.
 		require
-			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)			
+			a_hunter_count_valid: (1 <= a_hunter_count) and (a_hunter_count <= 8)
 		do
 			hunter_count := a_hunter_count
 		ensure
@@ -213,8 +214,8 @@ feature -- Status setting
 			pause_callback := a_callback
 		ensure
 			pause_callback_set: pause_callback = a_callback
-		end		
-		
+		end
+
 feature {NONE} -- Event Handling
 
 	handle_key_down_event (a_keyboard_event: EM_KEYBOARD_EVENT) is
@@ -224,20 +225,20 @@ feature {NONE} -- Event Handling
 			if paused then
 				pause_menu.handle_key_down_event (a_keyboard_event)
 			elseif game_over then
-				game_over_menu.handle_key_down_event (a_keyboard_event)	
+				game_over_menu.handle_key_down_event (a_keyboard_event)
 			else
 				if a_keyboard_event.key = Sdlk_p then
 					-- Set game to pause mode and show pause menu
 					paused := True
 					if pause_callback /= Void then
-						pause_callback.call ([paused])						
+						pause_callback.call ([paused])
 					end
 					main_container.extend (overlay)
 					main_container.extend (pause_menu_container)
 				end
 			end
 		end
-		
+
 	process_clicked_player_button (a_button: BUTTON) is
 			-- What to do when user clicked on a player button.
 		require
@@ -263,22 +264,22 @@ feature {NONE} -- Menu Handling
 
 	pause_menu: NORMAL_MENU
 		-- Menu to be shown when game is `paused'.
-		
+
 	game_over_menu: NORMAL_MENU
 		-- Menu to be shown when game over.
-			
+
 	pause_menu_container: TEXT_BOX
 		-- Container in which `pause_menu' gets displayed.
-	
+
 	game_over_menu_container: TEXT_BOX
 		-- Container in which `game_over_menu' gets displayed.		
-		
+
 	overlay: EM_DRAWABLE
 		-- To be blended over the whole game scene when game is `paused'.
 
 	build_pause_menu is
 			-- Build `pause_menu'.
-		do	
+		do
 			create pause_menu.make_with_custom_fonts (theme.Small_menu_font, theme.Small_menu_selected_font)
 			pause_menu.add_entry ("continue", agent continue_callback, True)
 			pause_menu.add_entry ("new game", agent newgame_callback, False)
@@ -293,7 +294,7 @@ feature {NONE} -- Menu Handling
 			pause_menu_container.set_text ("The game is paused.")
 			pause_menu_container.extend (pause_menu)
 		end
-		
+
 	build_game_over_menu is
 			-- Build `game_over_menu'.
 		do
@@ -310,20 +311,20 @@ feature {NONE} -- Menu Handling
 			game_over_menu_container.set_text ("G A M E   O V E R")
 			game_over_menu_container.extend (game_over_menu)
 		end
-		
+
 	continue_callback is
 			-- What happens when "Continue" is selected in the `pause_menu'.
 		do
 			paused := False
 			if pause_callback /= Void then
-				pause_callback.call ([paused])				
+				pause_callback.call ([paused])
 			end
 			-- Remove the `pause_menu_container' from the scene
 			main_container.remove_last
 			-- Remove the `overlay' from the scene
 			main_container.remove_last
 		end
-		
+
 	newgame_callback is
 			-- What happens when "New game" is selected in a menu.
 		do
@@ -338,38 +339,38 @@ feature {NONE} -- Menu Handling
 --			music_player.dispose
 			next_scene := Void
 			event_loop.stop
-		end		
-		
+		end
+
 feature {NONE} -- Views
 
 	little_map_widget: TRAFFIC_2D_MAP_WIDGET
 			-- Map widget to visualize 'traffic_map'
 			-- for little navigation map.
-			
+
 	navigation_widget: NAVIGATOR
 			-- Widget to navigate in `big_zoomable_widget'
 			-- using `little_map_widget'.
-		
+
 feature {NONE} -- Implementation
 
 	traffic_map: TRAFFIC_MAP
 			-- Reference to the map where the game takes place.
-			
+
 	hunter_count: INTEGER
 			-- Reference to number of hunters.
 
 	paused: BOOLEAN
 			-- Is game paused?
-			
+
 	game_over: BOOLEAN
 			-- Is the game over?
-			
+
 	status: STRING
 			-- Current game status, to be displayed in `status_box'.
-			
+
 	status_box: TEXT_BOX
 			-- Status box to display state of current player and general overview.
-			
+
 	player_status_box: TEXT_BOX
 			-- Status box to be displayed when a player button gets clicked.
 
@@ -381,12 +382,12 @@ feature {NONE} -- Implementation
 
 	pause_callback: PROCEDURE [ANY, TUPLE [BOOLEAN]]
 			-- Gets called when game paused
-			
+
 	display_players is
 			-- Visualize players on the scene.
 		do
 			from
-				hash_from_button_to_player_displayer.start	
+				hash_from_button_to_player_displayer.start
 			until
 				hash_from_button_to_player_displayer.after
 			loop
@@ -403,8 +404,9 @@ feature {NONE} -- Implementation
 			traffic_map_not_void: traffic_map /= Void
 		local
 			tmp_place_renderer: TRAFFIC_2D_PLACE_RENDERER
-		do			
-			create big_map_widget.make_with_map (map_area_width, map_area_height, traffic_map)
+		do
+			create big_map_widget.make_with_size (map_area_width, map_area_height)
+			big_map_widget.set_map (traffic_map)
 			big_map_widget.set_x_y (Margin, Margin)
 			big_map_widget.set_background_color (create {EM_COLOR}.make_white)
 			big_map_widget.calculate_object_area
@@ -412,42 +414,43 @@ feature {NONE} -- Implementation
 			big_map_widget.scroll_and_zoom_to_rectangle (big_map_widget.object_area)
 			big_map_widget.enable_scroll_and_zoom_by_mouse
 
-			create tmp_place_renderer.make_with_map (traffic_map)
-			tmp_place_renderer.set_place_color (theme.default_place_color)
-			big_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
-			big_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
-			big_map_widget.line_section_renderer.traffic_type_line_widths.put (2, "bus")
-			big_map_widget.set_default_place_renderer (tmp_place_renderer)
-			big_map_widget.render
+--			create tmp_place_renderer.make_with_map (traffic_map)
+--			tmp_place_renderer.set_place_color (theme.default_place_color)
+--			big_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
+--			big_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
+--			big_map_widget.line_section_renderer.traffic_type_line_widths.put (2, "bus")
+--			big_map_widget.set_default_place_renderer (tmp_place_renderer)
+--			big_map_widget.render
 
-			main_container.extend (big_map_widget)		
-		end		
+			main_container.extend (big_map_widget)
+		end
 
 	build_little_map_widget is
-			-- Build `little_map_widget' to visualize `traffic_map' 
+			-- Build `little_map_widget' to visualize `traffic_map'
 			-- within a dedicated box and add it to `main_container'
 		require
 			traffic_map_not_void: traffic_map /= Void
 		local
 			tmp_place_renderer: TRAFFIC_2D_PLACE_RENDERER
-		do	
-			create little_map_widget.make_with_map (flathunt_window_width - Map_area_width - 3 * Margin , flathunt_window_width - Map_area_width - 3 * Margin, traffic_map)
+		do
+			create little_map_widget.make_with_size (flathunt_window_width - Map_area_width - 3 * Margin , flathunt_window_width - Map_area_width - 3 * Margin)
+			little_map_widget.set_map (traffic_map)
 			little_map_widget.set_x_y (map_area_width + 2 * margin, margin)
 			little_map_widget.set_background_color (create {EM_COLOR}.make_white)
 			little_map_widget.calculate_object_area
 			little_map_widget.scroll_and_zoom_to_rectangle (little_map_widget.object_area)
 
 			-- Customize map widget and render (to affect changes)
-			little_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
-			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
-			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Tram_color, "tram")
-			create tmp_place_renderer.make_with_map (traffic_map)
-			tmp_place_renderer.set_place_color (theme.default_place_color)
-			little_map_widget.set_default_place_renderer (tmp_place_renderer)
-			little_map_widget.render
+--			little_map_widget.line_section_renderer.traffic_type_line_widths.put (8, "rail")
+--			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Rail_color, "rail")
+--			little_map_widget.line_section_renderer.traffic_type_colors.put (theme.Tram_color, "tram")
+--			create tmp_place_renderer.make_with_map (traffic_map)
+--			tmp_place_renderer.set_place_color (theme.default_place_color)
+--			little_map_widget.set_default_place_renderer (tmp_place_renderer)
+--			little_map_widget.render
 
-			main_container.extend (little_map_widget)		
-		end	
+			main_container.extend (little_map_widget)
+		end
 
 invariant
 	traffic_map_exists: traffic_map /= Void

@@ -16,8 +16,6 @@ feature -- Initialization
 		deferred
 		ensure
 			item_set: item = a_item
-			color_exists: color /= Void
-			highlight_color_exists: highlight_color /= Void
 			is_shown: is_shown
 			not_highlighted: not is_highlighted
 		end
@@ -36,15 +34,11 @@ feature -- Status setting
 
 	set_color (a_color: TRAFFIC_COLOR) is
 			-- Set the color of the place view to `a_color'.
-		require
-			a_color_exists: a_color /= Void
 		deferred
 		end
 
 	set_highlight_color (a_color: TRAFFIC_COLOR) is
 			-- Set the color of the place view to `a_color'.
-		require
-			a_color_exists: a_color /= Void
 		deferred
 		end
 
@@ -104,7 +98,7 @@ feature -- Element change
 
 invariant
 
-	color_set: color /= Void
-	highlight_color_set: highlight_color /= Void
+--	color_set: color /= Void
+--	highlight_color_set: highlight_color /= Void
 
 end

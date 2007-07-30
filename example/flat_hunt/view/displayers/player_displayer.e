@@ -11,12 +11,12 @@ inherit
 		redefine
 			publish_mouse_event, out
 		end
-		
+
 	HASHABLE
 		undefine
 			default_create, copy, is_equal, out
 		end
-		
+
 	SHARED_THEME
 		undefine
 			out
@@ -28,7 +28,7 @@ inherit
 		end
 
 feature -- Initialization
-		
+
 	make_from_player (a_player: PLAYER; a_pic: like picture; a_traffic_map: like traffic_map; a_map_widget: like map_widget) is
 			-- Initialize displayer for `a_player'.
 		require
@@ -39,7 +39,7 @@ feature -- Initialization
 		do
 			player := a_player
 			picture := a_pic
-			traffic_map := a_traffic_map			
+			traffic_map := a_traffic_map
 			map_widget := a_map_widget
 
 			-- Build marking circle.
@@ -52,7 +52,7 @@ feature -- Initialization
 			possible_moves_unmarked := True
 
 			update_position
-			
+
 			-- Subscribe to event
 			player.marked_changed_event.subscribe (agent toggle_possible_moves (?))
 		ensure
@@ -61,7 +61,7 @@ feature -- Initialization
 			traffic_map_set: traffic_map = a_traffic_map
 			map_widget_set: map_widget = a_map_widget
 		end
-		
+
 feature -- Access
 
 	width: INTEGER is
@@ -69,13 +69,13 @@ feature -- Access
 		do
 			Result := picture.width
 		end
-		
+
 	height: INTEGER is
 			-- Height of player's picture.
 		do
 			Result := picture.height
 		end
-		
+
 feature -- Output
 
 	statistics: STRING is
@@ -84,14 +84,14 @@ feature -- Output
 		ensure
 			result_exists: Result /= Void
 		end
-		
+
 	out: STRING is
 		do
 			Result := player.name
 		ensure then
-			result_set: Result = player.name			
+			result_set: Result = player.name
 		end
-	
+
 feature -- Status setting
 
 	set_picture (a_pic: like picture) is
@@ -104,9 +104,9 @@ feature -- Status setting
 		ensure
 			picture_set: picture = a_pic
 		end
-		
+
 feature -- Basic operations
-		
+
 	mark_defeat (a_surface: EM_SURFACE) is
 			-- Mark the defeat of the player.
 		require
@@ -131,7 +131,7 @@ feature -- Basic operations
 				-- Fill
 			until
 				-- Replace `True' and fill.
-				True				
+				True
 			loop
 				-- Fill
 			end
@@ -143,10 +143,10 @@ feature -- Event handling
 			-- Publish mouse events.
 		do
 			if bounding_box.has (a_mouse_event.proportional_position) then
-				dispatch_mouse_event (a_mouse_event)								
-			end			
-		end		
-		
+				dispatch_mouse_event (a_mouse_event)
+			end
+		end
+
 feature {NONE} -- Implementation
 
 	player: PLAYER
@@ -157,34 +157,34 @@ feature {NONE} -- Implementation
 
 	marking_circle: EM_CIRCLE
 			-- Circle for marking current player.
-	
+
 	traffic_map: TRAFFIC_MAP
 			-- Reference to map where game takes place.
-	
+
 	map_widget: TRAFFIC_2D_MAP_WIDGET
 			-- Reference to map widget where player gets displayed.
-			
+
 	possible_moves_unmarked: BOOLEAN
 			-- Are the possible moves unmarked?
 
 	hash_code: INTEGER
 			-- Hash code of this button.
-			
+
 	update_position is
 			-- Update position to passenger's position.
 		local
-			pos: EM_VECTOR_2D
+			pos: TRAFFIC_COORDINATE
 		do
 			pos := player.position
 			x := (pos.x.floor - (picture.width // 2))
 			y := (pos.y.floor - (picture.height // 2))
-			picture.set_x_y (x, y)		
+			picture.set_x_y (x, y)
 			marking_circle.set_x_y (x, y)
 		ensure
 			picture_positioned: picture.x = x and picture.y = y
 			marking_circle_positioned: marking_circle.x = x and marking_circle.y = y
-		end	
-		
+		end
+
 	toggle_possible_moves (a_value: BOOLEAN) is
 			-- Toggle between marked and unmarked possible moves
 		do
@@ -194,12 +194,12 @@ feature {NONE} -- Implementation
 				unmark_possible_moves
 			end
 		end
-		
+
 
 	mark_possible_moves is
 			-- Mark all possible places that the player can move to.
 		local
-			place_renderer: FLAT_HUNT_PLACE_RENDERER		
+			place_renderer: FLAT_HUNT_PLACE_RENDERER
 		do
 			if player.possible_moves /= Void then
 
@@ -213,8 +213,8 @@ feature {NONE} -- Implementation
 				until
 					player.possible_moves.after
 				loop
-					map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
-					map_widget.rerender_place (player.possible_moves.item.destination)				
+					map_widget.place_representations.view_for_item (player.possible_moves.item.destination).highlight
+--					map_widget.rerender_place (player.possible_moves.item.destination)
 					player.possible_moves.forth
 				end
 
@@ -241,9 +241,9 @@ feature {NONE} -- Implementation
 				until
 					player.possible_moves.after
 				loop
-					map_widget.set_place_special_renderer (place_renderer, player.possible_moves.item.destination)
-					map_widget.rerender_place (player.possible_moves.item.destination)				
-					player.possible_moves.forth					
+					map_widget.place_representations.view_for_item (player.possible_moves.item.destination).unhighlight
+--					map_widget.rerender_place (player.possible_moves.item.destination)
+					player.possible_moves.forth
 				end
 
 			end
@@ -251,7 +251,7 @@ feature {NONE} -- Implementation
 		ensure
 			possible_moves_unmarked_set: possible_moves_unmarked = True
 		end
-		
+
 	draw (surface: EM_SURFACE) is
 			-- Draw 'Current' onto `surf'.
 		do
@@ -274,5 +274,5 @@ invariant
 	picture_exists: picture /= Void
 	map_widget_exists: map_widget /= Void
 	traffic_map_exists: traffic_map /= Void
-	
+
 end

@@ -42,7 +42,7 @@ feature -- Access
 	location: TRAFFIC_PLACE
 			-- Current location.
 
-	position: EM_VECTOR_2D
+	position: TRAFFIC_COORDINATE
 			-- Position on the map.			
 
 	possible_moves: LINKED_LIST [TRAFFIC_LINE_CONNECTION]

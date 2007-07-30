@@ -42,10 +42,10 @@ feature {NONE} -- Intialization
 			-- Use `=' as comparison criterion.
 			-- (from DS_SPARSE_CONTAINER)
 		do
-			Precursor (n)
 			-- Create event channels
 			create element_inserted_event
 			create element_removed_event
+			Precursor (n)
 		ensure then
 			inserted_initialized: element_inserted_event /= Void
 			removed_initialized: element_removed_event /= Void
@@ -58,10 +58,10 @@ feature {NONE} -- Intialization
 			-- Use `a_key_tester' as comparison criterion for keys.
 			-- (from DS_SPARSE_TABLE)
 		do
-			Precursor (n, an_item_tester, a_key_tester)
 			-- Create event channels
 			create element_inserted_event
 			create element_removed_event
+			Precursor (n, an_item_tester, a_key_tester)
 		ensure then
 			inserted_initialized: element_inserted_event /= Void
 			removed_initialized: element_removed_event /= Void

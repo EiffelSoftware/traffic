@@ -13,7 +13,6 @@ inherit
 		undefine
 			copy,
 			is_equal,
-			set_internal_color,
 			draw
 		end
 
@@ -50,15 +49,25 @@ feature -- Initialization
 				i := i + 1
 			end
 			make_polyline (pp, 634.0)
-			set_color (create {TRAFFIC_COLOR}.make_with_rgb (0, 0, 0))
-			set_highlight_color (create {TRAFFIC_COLOR}.make_with_rgb (255, 0, 0))
+			set_internal_color (default_color)
 			is_shown := True
 			is_highlighted := False
 		ensure then
-			is_shown: is_shown
-			not_highlighted: not is_highlighted
-			color_exists: color /= Void
-			highlight_color_exists: highlight_color /= Void
+			internal_color_exists: internal_color /= Void
+		end
+
+feature -- Constants
+
+	default_color: EV_COLOR is
+			-- Default color
+		once
+			create Result.make_with_8_bit_rgb (0, 0, 0)
+		end
+
+	default_highlight_color: EV_COLOR is
+			-- Default highlight color
+		once
+			create Result.make_with_8_bit_rgb (255, 0, 0)
 		end
 
 end

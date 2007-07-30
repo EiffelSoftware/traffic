@@ -383,7 +383,7 @@ feature {NONE} -- Implementation
 		local
 			destination: TRAFFIC_PLACE
 			outgoing_line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
-			list: ARRAYED_LIST [EM_VECTOR_2D]
+			list: ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
 			create Result.make
 			outgoing_line_sections := a_line_section.destination.outgoing_line_connections --traffic_map.line_sections.items_of_place (a_line_section.destination)

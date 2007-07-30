@@ -4,57 +4,211 @@ indexing
 	date: "$Date$"
 	revision: "$Revision$"
 
-class
+deferred class
 	TRAFFIC_VIEW_CONTAINER [G, H->TRAFFIC_VIEW [G]]
 
-inherit
-
-	DS_LINKED_LIST [H]
-
-create
-
-	make
-
 feature -- Access
+
+	count: INTEGER is
+			-- Number of items in list
+		deferred
+		end
+
+	item_for_iteration: H is
+			-- Item at internal cursor position
+		require
+			not_after: not after
+		deferred
+		end
+
+	item (i: INTEGER_32): H
+			-- Item at index `i'
+		require
+			valid_index: 1 <= i and i <= count
+		deferred
+		end
 
 	view_for_item (a_item: G): H is
 			-- View for `a_item' if it exists
 			-- (Result may be Void!)
 		local
-			cursor: DS_LINKED_LIST_CURSOR [H]
+			cursor: DS_LIST_CURSOR [H]
 		do
 			from
-				cursor := new_cursor
-				cursor.start
+				start
 			until
-				cursor.item.item = a_item or cursor.off
+				item_for_iteration.item = a_item or after
 			loop
-				cursor.forth
+				forth
 			end
-			if not cursor.off then
-				Result := cursor.item
+			if not after then
+				Result := item_for_iteration
 			end
 		end
 
 feature -- Status report
 
+	has (v: H): BOOLEAN
+			-- Does list include `v'?
+		deferred
+		ensure
+			not_empty: Result implies not is_empty
+		end
+
+	is_empty: BOOLEAN
+			-- Is container empty?
+		deferred
+		end
+
+	after: BOOLEAN is
+			-- Is there no item at internal cursor position?
+		deferred
+		end
+
 	has_view_for_item (a_item: G): BOOLEAN is
 			-- Is there a view for `a_item'?
 			-- (Result may be Void!)
 		local
-			cursor: DS_LINKED_LIST_CURSOR [H]
+			cursor: DS_LIST_CURSOR [H]
 		do
 			from
-				cursor := new_cursor
-				cursor.start
+				start
 			until
-				cursor.item.item = a_item or cursor.off
+				item_for_iteration.item = a_item or after
 			loop
-				cursor.forth
+				forth
 			end
-			if not cursor.off then
+			if not after then
 				Result := True
 			end
+		end
+
+	first: H is
+			-- First item in list
+		require
+			not_empty: not is_empty
+		deferred
+		ensure
+			has_first: has (Result)
+		end
+
+	last: H
+			-- Last item in list
+		require
+			not_empty: not is_empty
+		deferred
+		ensure
+			definition: Result = item (count)
+			has_last: has (Result)
+		end
+
+feature -- Insertion
+
+	put_first (v: H)
+			-- Add `v' to beginning of list.
+			-- Do not move cursors.
+		deferred
+		ensure
+			one_more: count = old count + 1
+			inserted: first = v
+		end
+
+	put_last (v: H) is
+			-- Add `v' to end of list.
+			-- Do not move cursors.
+		deferred
+		ensure
+			added: has (v)
+			one_more: count = old count + 1
+			inserted: last = v
+		end
+
+	replace (v: H; i: INTEGER) is
+			-- Replace item at index `i' by `v'.
+			-- Do not move cursors.
+		require
+			valid_index: 1 <= i and i <= count
+		deferred
+		ensure
+			same_count: count = old count
+			replaced: item (i) = v
+		end
+
+	put (v: H; i: INTEGER) is
+			-- Add `v' at `i'-th position.
+			-- Do not move cursors.
+		require
+			valid_index: 1 <= i and i <= (count + 1)
+		deferred
+		ensure
+			one_more: count = old count + 1
+			inserted: item (i) = v
+		end
+
+feature -- Removal
+
+	remove_first
+			-- Remove item at beginning of list.
+			-- Move any cursors at this position forth.
+		require
+			not_empty: not is_empty
+		deferred
+		ensure -- from DS_INDEXABLE
+			one_less: count = old count - 1
+		end
+
+	remove_last
+			-- Remove item at end of list.
+			-- Move any cursors at this position forth.
+		require
+			not_empty: not is_empty
+		deferred
+		ensure
+			one_less: count = old count - 1
+		end
+
+	remove (i: INTEGER_32)
+			-- Remove item at `i'-th position.
+			-- Move any cursors at this position forth.
+		require
+			not_empty: not is_empty
+			valid_index: 1 <= i and i <= count
+		deferred
+		ensure
+			one_less: count = old count - 1
+		end
+
+	delete (v: H)
+			-- Remove all occurrences of `v'.
+			-- Move all cursors off.
+		deferred
+		ensure
+			deleted: not has (v)
+		end
+
+	wipe_out
+			-- Remove all items from list.
+			-- Move all cursors off.
+		deferred
+		ensure
+			wiped_out: is_empty
+		end
+
+feature -- Cursor movement
+
+	start
+			-- Move internal cursor to first position.
+		deferred
+		ensure
+			empty_behavior: is_empty implies after
+			not_empty_behavior: not is_empty implies item_for_iteration = first
+		end
+
+	forth is
+			-- Move internal cursor to next position.
+		require
+			not_after: not after
+		deferred
 		end
 
 feature -- Basic operations
@@ -62,32 +216,30 @@ feature -- Basic operations
 	hide is
 			-- Hide all elements.
 		local
-			cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_VIEW [G]]
+			cursor: DS_LIST_CURSOR [TRAFFIC_VIEW [G]]
 		do
 			from
-				cursor := new_cursor
-				cursor.start
+				start
 			until
-				cursor.off
+				after
 			loop
-				cursor.item.hide
-				cursor.forth
+				item_for_iteration.hide
+				forth
 			end
 		end
 
 	show is
 			-- Show all elements.
 		local
-			cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_VIEW [G]]
+			cursor: DS_LIST_CURSOR [TRAFFIC_VIEW [G]]
 		do
 			from
-				cursor := new_cursor
-				cursor.start
+				start
 			until
-				cursor.off
+				after
 			loop
-				cursor.item.show
-				cursor.forth
+				item_for_iteration.show
+				forth
 			end
 		end
 

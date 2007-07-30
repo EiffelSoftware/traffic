@@ -12,7 +12,7 @@ inherit
 			player, statistics, draw
 		end
 
-create 
+create
 	make_from_player
 
 feature -- Output
@@ -33,7 +33,7 @@ feature -- Output
 				Result := "Location: " + last_visible_location + "Tickets: Rail: " + player.rail_tickets.out + ", Tram: " + player.tram_tickets.out + ", Bus: " + player.bus_tickets.out + "%N" + last_visible_travel_history
 			end
 		end
-		
+
 feature -- Status setting
 
 	set_last_visible_location_picture (a_pic: like last_visible_location_picture) is
@@ -45,8 +45,8 @@ feature -- Status setting
 			update_position
 		ensure
 			lvl_pic_set: last_visible_location_picture = a_pic
-		end		
-		
+		end
+
 feature {NONE} -- Implementation
 
 	player: ESTATE_AGENT
@@ -58,23 +58,23 @@ feature {NONE} -- Implementation
 	update_last_visible_position is
 			-- Update position to passenger's position.
 		local
-			pos: EM_VECTOR_2D
+			pos: TRAFFIC_COORDINATE
 			tmp_x, tmp_y: INTEGER
 		do
 			pos := player.last_visible_location.position.twin
 			tmp_x := (pos.x.floor - (picture.width // 2))
 			tmp_y := (pos.y.floor - (picture.height // 2))
 			last_visible_location_picture.set_x_y (tmp_x, tmp_y)
-		end	
-		
+		end
+
 	travel_history: STRING is
 			-- Types ot transport taken etc.
 		do
 			Result := ""
-			from 
+			from
 				player.taken_transports.start
 				player.visited_places.start
-			until 
+			until
 				player.taken_transports.after
 			loop
 				if not player.taken_transports.islast then
@@ -94,11 +94,11 @@ feature {NONE} -- Implementation
 			i: INTEGER
 		do
 			Result := ""
-			from 
+			from
 				player.taken_transports.start
 				player.visited_places.start
 				i := 1
-			until 
+			until
 				player.taken_transports.after
 			loop
 				if not (i >= player.last_visible_round) then
@@ -112,7 +112,7 @@ feature {NONE} -- Implementation
 		ensure
 			result_exists: Result /= Void
 		end
-		
+
 	draw (surface: EM_SURFACE) is
 			-- Draw `Current' onto `surface'.
 		do
@@ -136,7 +136,7 @@ feature {NONE} -- Implementation
 				if player.last_visible_location /= Void then
 					update_last_visible_position
 					surface.draw_object (last_visible_location_picture)
-				end	
+				end
 			end
 		end
 

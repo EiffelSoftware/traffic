@@ -67,7 +67,7 @@ feature -- Element change
 				map.roads.off
 			loop
 				r := factory.new_road_view (map.roads.item_for_iteration)
-				road_representations.force_last (r)
+				road_representations.put_last (r)
 				map.roads.forth
 			end
 			from
@@ -76,7 +76,7 @@ feature -- Element change
 				map.lines.off
 			loop
 				l := factory.new_line_view (map.lines.item_for_iteration)
-				line_representations.force_last (l)
+				line_representations.put_last (l)
 				map.lines.forth
 			end
 			from
@@ -85,7 +85,7 @@ feature -- Element change
 				map.places.off
 			loop
 				p := factory.new_place_view (map.places.item_for_iteration)
-				place_representations.force_last (p)
+				place_representations.put_last (p)
 				map.places.forth
 			end
 			from
@@ -201,7 +201,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_place_exists: a_place /= Void
 		do
-			place_representations.force_last (factory.new_place_view (a_place))
+			place_representations.put_last (factory.new_place_view (a_place))
 		end
 
 	add_line (a_line: TRAFFIC_LINE) is
@@ -209,7 +209,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_line_exists: a_line /= Void
 		do
-			line_representations.force_last (factory.new_line_view (a_line))
+			line_representations.put_last (factory.new_line_view (a_line))
 		end
 
 	add_road (a_road: TRAFFIC_ROAD) is
@@ -217,7 +217,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_road_exists: a_road /= Void
 		do
-			road_representations.force_last (factory.new_road_view (a_road))
+			road_representations.put_last (factory.new_road_view (a_road))
 		end
 
 	add_path (a_path: TRAFFIC_PATH) is
@@ -225,7 +225,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_path_exists: a_path /= Void
 		do
-			path_representations.force_last (factory.new_path_view (a_path))
+			path_representations.put_last (factory.new_path_view (a_path))
 		end
 
 	add_building (a_building: TRAFFIC_BUILDING) is
@@ -233,7 +233,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_building_exists: a_building /= Void
 		do
-			building_representations.force_last (factory.new_building_view (a_building))
+			building_representations.put_last (factory.new_building_view (a_building))
 		end
 
 	add_tram (a_tram: TRAFFIC_TRAM) is
@@ -241,7 +241,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_tram_exists: a_tram /= Void
 		do
-			moving_representations.force_last (factory.new_tram_view (a_tram))
+			moving_representations.put_last (factory.new_tram_view (a_tram))
 		end
 
 	add_bus (a_bus: TRAFFIC_BUS) is
@@ -249,7 +249,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_bus_exists: a_bus /= Void
 		do
-			moving_representations.force_last (factory.new_bus_view (a_bus))
+			moving_representations.put_last (factory.new_bus_view (a_bus))
 		end
 
 	add_free_moving (a_free_moving: TRAFFIC_FREE_MOVING) is
@@ -257,7 +257,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_free_moving_exists: a_free_moving /= Void
 		do
-			moving_representations.force_last (factory.new_free_moving_view (a_free_moving))
+			moving_representations.put_last (factory.new_free_moving_view (a_free_moving))
 		end
 
 	add_passenger (a_passenger: TRAFFIC_PASSENGER) is
@@ -265,7 +265,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_passenger_exists: a_passenger /= Void
 		do
-			moving_representations.force_last (factory.new_passenger_view (a_passenger))
+			moving_representations.put_last (factory.new_passenger_view (a_passenger))
 		end
 
 	add_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE) is
@@ -292,7 +292,7 @@ feature {NONE} -- Implementation (view adding)
 		require
 			a_taxi_not_void: a_taxi /= Void
 		do
-			moving_representations.force_last (factory.new_taxi_view (a_taxi))
+			moving_representations.put_last (factory.new_taxi_view (a_taxi))
 		end
 
 feature {NONE} -- Implementation (view removing)
