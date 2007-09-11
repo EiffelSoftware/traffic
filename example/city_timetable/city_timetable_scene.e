@@ -36,7 +36,7 @@ feature -- Interface
 
 			create random.set_seed (198273)
 
-			set_frame_counter_visibility (False)
+			set_frame_counter_visibility (True)
 
 			Precursor
 

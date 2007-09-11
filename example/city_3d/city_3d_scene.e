@@ -9,8 +9,8 @@ inherit
 
 	EM_COMPONENT_SCENE
 
-	TRAFFIC_3D_CONSTANTS
-		export {NONE} all end
+	--TRAFFIC_3D_CONSTANTS
+		--export {NONE} all end
 
 	EXCEPTIONS
 		export {NONE} all end
@@ -53,8 +53,8 @@ feature -- Interface
 			create bg_color.make_with_rgb (211,211,211)
 
 			-- Toolbar
-			create toolbar_panel.make_from_dimension (200, Traffic_window_height)
-			create toolbar_panel_left.make_from_dimension (200, Traffic_window_height)
+			create toolbar_panel.make_from_dimension (200, height)
+			create toolbar_panel_left.make_from_dimension (200, height)
 
 			-- Checkboxes
 			create highlighting_checkbox.make_from_text ("Highlight lines")
@@ -132,7 +132,7 @@ feature -- Interface
 			load_buildings_button.clicked_event.subscribe (agent load_buildings_clicked)
 			toolbar_panel_left.add_widget (load_buildings_button)
 			load_buildings_along_lines_button.set_position(10,225)
-			load_buildings_along_lines_button.clicked_event.subscribe (agent map_widget.place_buildings_randomly (2))
+			load_buildings_along_lines_button.clicked_event.subscribe (agent add_buildings)
 			toolbar_panel_left.add_widget (load_buildings_along_lines_button)
 			delete_buildings_button.set_position (10, 275)
 			delete_buildings_button.clicked_event.subscribe (agent delete_buildings_clicked)
@@ -342,6 +342,31 @@ feature -- Interface
 
 		end
 
+
+	add_buildings is
+			-- Add buildings to the city.
+		local
+			b: TRAFFIC_BUILDING
+			r: TRAFFIC_BUILDING_RANDOMIZER
+		do
+			create r.set_map (map_widget.map)
+			r.generate_random_buildings (10, map_widget.map.radius/3, 3)
+			map_widget.map.buildings.append_last (r.last_buildings)
+			r.generate_random_buildings (15, map_widget.map.radius*2/3, 2)
+			map_widget.map.buildings.append_last (r.last_buildings)
+			r.generate_random_buildings (100, map_widget.map.radius, 1)
+			map_widget.map.buildings.append_last (r.last_buildings)
+--			map_widget.grid_member.set_grid (r.grid)
+--			point_randomizer.generate_point_array (4)
+--			create {TRAFFIC_VILLA} b.make_default (point_randomizer.last_array.item (1))
+--			map_widget.map.buildings.force_last (b)
+--			create {TRAFFIC_SKYSKRAPER} b.make_default (point_randomizer.last_array.item (2))
+--			map_widget.map.buildings.force_last (b)
+--			create {TRAFFIC_APARTMENT_BUILDING} b.make_default (point_randomizer.last_array.item (3))
+--			map_widget.map.buildings.force_last (b)
+--			map_widget.place_buildings_randomly (2)
+		end
+
 feature -- Event handling
 
 	zoom_in_button_clicked is
@@ -451,13 +476,13 @@ feature -- Event handling
 	highlighting_checked is
 			-- Checkbox has been checked.
 		do
-			map_widget.lines_representation.highlight_all_lines
+--			map_widget.lines_representation.highlight_all_lines
 		end
 
 	highlighting_unchecked is
 			-- Checkbox has been unchecked.
 		do
-			map_widget.lines_representation.unhighlight_all_lines
+--			map_widget.lines_representation.unhighlight_all_lines
 		end
 
 	load_button_clicked is
@@ -512,7 +537,7 @@ feature -- Event handling
 			event_valid: an_event /= void
 		do
 			if an_event.is_left_button then
-				traffic_building_name.set_text (a_building.name)
+				traffic_building_name.set_text (a_building.description)
 			end
 		end
 
@@ -537,7 +562,7 @@ feature -- Event handling
 	delete_buildings_clicked is
 			-- Delete buildings from representation.
 		do
-			map_widget.delete_buildings
+--			map_widget.delete_buildings
 --			buildings_slider.set_current_value (0)
 		end
 

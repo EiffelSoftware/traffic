@@ -59,6 +59,7 @@ feature {NONE} -- Implementation
 
 	load_mtl_file(a_filename:STRING)
 			--loads the obj file information
+			--IMPORTANT: mtl files must have an empty line at the end of the file!
 		require
 			must_be_mtl: a_filename.substring (a_filename.count - 2, a_filename.count).is_equal ("mtl")
 		local

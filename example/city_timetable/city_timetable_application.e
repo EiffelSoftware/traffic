@@ -1,3 +1,4 @@
+
 indexing
 	description: "Root class for application CityTimeTable"
 	date: "$Date: 2006-03-27 17:13:45 +0200 (Mon, 27 Mar 2006) $"

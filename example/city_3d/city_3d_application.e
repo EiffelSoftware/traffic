@@ -15,8 +15,8 @@ inherit
 	EM_SHARED_WIDGET_OPTIONS
 		export {NONE} all end
 
-	TRAFFIC_3D_CONSTANTS
-		export {NONE} all end
+	--TRAFFIC_3D_CONSTANTS
+		--export {NONE} all end
 
 create
 	make

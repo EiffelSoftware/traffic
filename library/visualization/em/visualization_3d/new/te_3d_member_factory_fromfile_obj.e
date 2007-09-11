@@ -12,7 +12,22 @@ class
 		TE_3D_MEMBER_FACTORY_FROMFILE
 
 
-feature -- Access
+feature -- Status setting
+
+	enable_shadowvolume_calculation is
+			-- all subsequent models will be processed for shadowvolume creation
+		do
+			shadowvolume_calculation := true
+		end
+
+	disable_shadowvolume_calculation is
+			-- all subsequent models won't be processed for shadowvolume creation
+		do
+			shadowvolume_calculation := false
+		end
+
+	shadowvolume_calculation : BOOLEAN
+
 
 feature -- 3D Member Creation
 
@@ -21,7 +36,7 @@ feature -- 3D Member Creation
 		require else
 			must_be_obj: a_filename.substring (a_filename.count - 2, a_filename.count).is_equal ("obj")
 		do
-			load_obj_file(a_filename)
+			load_obj_file(a_filename, shadowvolume_calculation)
 			build_ressource_list
 			last_3d_member := build_3D_member
 		end
@@ -74,7 +89,7 @@ feature {NONE} -- Implementation
 
 	has_normals: BOOLEAN
 
-	load_obj_file(a_filename:STRING)
+	load_obj_file(a_filename:STRING; calc_shadow_volume: BOOLEAN)
 			--loads the obj file information
 			--TODO: currently, the path of the obj file gets extracted from the filename string to find the path for the mtl file. Maybe there's a better way to do so...
 		require
@@ -92,6 +107,7 @@ feature {NONE} -- Implementation
 			shadow_factory: TE_3D_MEMBER_FACTORY_FROMFILE_OBJ
 			path_name: STRING
 			current_texture_coordinates: EM_VECTOR3D
+			counter: INTEGER
 		do
 			-- DEBUG
 				io.put_string("load file: " + a_filename +"%N")
@@ -118,6 +134,17 @@ feature {NONE} -- Implementation
 				obj_file.after
 			loop
 				obj_file.read_line
+
+				--STATUSPUNKTE
+				if (obj_file.position)/(obj_file.count) > 0.1 * counter then
+					io.put_string (".")
+					counter := counter + 1
+					if counter = 10 then
+						io.new_line
+					end
+				end
+				--/STATUSPUNKTE
+
 				if not obj_file.last_string.is_empty then
 					tokenizer.set_source_string (obj_file.last_string)
 
@@ -193,7 +220,9 @@ feature {NONE} -- Implementation
 					end
 				end
 			end
-			calculate_face_neighbours -- loop through all faces to set the neighbour lists for each face for stencil shadows
+			if calc_shadow_volume then
+				calculate_face_neighbours -- loop through all faces to set the neighbour lists for each face for stencil shadows
+			end
 			uvw_sets.force(current_uvw_set)
 		end
 

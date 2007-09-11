@@ -13,6 +13,7 @@ inherit
 			map_widget
 		end
 
+
 creation
 	make
 
@@ -24,7 +25,7 @@ feature {NONE} -- Initialization
 			if video_subsystem.opengl_enabled then
 				create map_widget.make_with_size (width, height - 30)
 				map_widget.set_position (0, 30)
-				map_widget.mouse_dragged_event.subscribe (agent rotate (?))
+				map_widget.mouse_dragged_event.subscribe (agent rotate_zoom_pan (?))
 				map_widget.mouse_wheel_up_event.subscribe (agent map_widget.zoom_in)
 				map_widget.mouse_wheel_down_event.subscribe (agent map_widget.zoom_out)
 				add_component (map_widget)
@@ -42,12 +43,17 @@ feature {NONE} -- Initialization
 
 feature -- Event handling
 
-	rotate (an_event: EM_MOUSEMOTION_EVENT) is
+	rotate_zoom_pan (an_event: EM_MOUSEMOTION_EVENT) is
 			-- Rotate camera around
 		do
 			if an_event.button_state_right then
 				map_widget.rotate_camera (an_event.x_motion, an_event.y_motion)
+			elseif an_event.button_state_middle then
+				map_widget.zoom(an_event.y_motion)
+			elseif an_event.button_state_left then
+				map_widget.pan (an_event.x_motion, an_event.y_motion)
 			end
+
 		end
 
 	zoom_in_button_clicked is

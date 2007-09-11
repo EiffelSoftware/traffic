@@ -13,6 +13,8 @@ class
 
 		GL_FUNCTIONS export {NONE} all end
 
+		GLU_FUNCTIONS
+
 		EM_GL_CONSTANTS export {NONE} all end
 
 	create
@@ -97,6 +99,8 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 			-- renders the current pass
 		local
 		i:INTEGER
+		test, pos, tar, up: EM_VECTOR3D
+		testmat, wt: EM_MATRIX44
 		do
 			gl_push_attrib(em_GL_ENABLE_BIT | em_GL_DEPTH_BUFFER_BIT | em_GL_LIGHTING_BIT | em_GL_CURRENT_BIT)
 
@@ -116,9 +120,6 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 			gl_clear_color_external (background_color.x, background_color.y, background_color.z, background_color.w)
 			gl_clear_external (em_gl_color_buffer_bit)
 
-
-			--specify the camera for this pass
-			camera.specify
 			--enable and specify lightsources of the current pass
 			gl_matrix_mode(em_GL_MODELVIEW)
 			gl_load_identity
@@ -147,6 +148,19 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 				i := i+1
 			end
 
+			--TEST
+--			gl_matrix_mode (em_GL_PROJECTION)
+--			gl_load_identity
+--			glu_perspective (45, 1, 1.0, 1000.0)
+
+--			tar.set(0,0,0)
+--			up.set(0,1,0)
+--			glu_look_at(300,300,300, tar.x,tar.y,tar.z, up.x,up.y,up.z)
+			camera.specify
+			--TEST
+
+
+			--gl_hint(em_gl_perspective_correction_hint, em_gl_nicest)
 			root.draw
 
 			gl_pop_attrib

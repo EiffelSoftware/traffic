@@ -42,6 +42,7 @@ feature -- Initialization
 		local
 			green_material: TE_MATERIAL_SIMPLE
 			primitive_factory: TE_3D_MEMBER_FACTORY_PRIMITIVE
+			member_factory: TE_3D_MEMBER_FACTORY_FROMFILE_OBJ
 		do
 			make_component
 
@@ -75,12 +76,18 @@ feature -- Initialization
 
 
 			--create the plane
-			create green_material.make
-			green_material.set_color(0.2,0.4,0.0) --(0.45,0.9,0.16)
-			create primitive_factory.make
-			primitive_factory.set_material(green_material)
-			primitive_factory.create_simple_plane(Default_plane_size, Default_plane_size)
-			plane := primitive_factory.last_3d_member; --<- I NEED A `;' HAHA :D
+--			create green_material.make
+--			green_material.set_color(0.2,0.4,0.0) --(0.45,0.9,0.16)
+--			create primitive_factory.make
+--			primitive_factory.set_material(green_material)
+--			primitive_factory.create_simple_plane(Default_plane_size, Default_plane_size)
+--			plane := primitive_factory.last_3d_member;
+--			(create{TE_3D_SHARED_GLOBALS}).root.add_child (plane)
+
+			--create the environment
+			create member_factory
+			member_factory.create_3d_member_from_file ("..\objects\environment.obj")
+			plane := member_factory.last_3d_member;
 			(create{TE_3D_SHARED_GLOBALS}).root.add_child (plane)
 
 			mouse_clicked_event.subscribe (agent publish_mouse_event (?))
@@ -207,69 +214,80 @@ feature -- Status setting
 			sun_representation.disable_shadows
 		end
 
---	enable_buildings_shown is
---			-- Set `are_buildings_shown' to `True'.
---		do
---			are_buildings_shown := True
---		ensure
---			buildings_shown: are_buildings_shown = True
---		end
+	enable_sun_shown is
+			--
+		do
+		end
 
---	disable_buildings_shown is
---			-- Set `are_buildings_shown' to `False'.
---		do
---			are_buildings_shown := False
---		ensure
---			buildings_not_shown: are_buildings_shown = False
---		end
+	disable_sun_shown is
+			--
+		do
+		end
 
---	enable_lines_shown is
---			-- Set `are_lines_shown' to `True'.
---		do
---			are_lines_shown := True
+
+	enable_buildings_shown is
+			-- Set `are_buildings_shown' to `True'.
+		do
+			are_buildings_shown := True
+		ensure
+			buildings_shown: are_buildings_shown = True
+		end
+
+	disable_buildings_shown is
+			-- Set `are_buildings_shown' to `False'.
+		do
+			are_buildings_shown := False
+		ensure
+			buildings_not_shown: are_buildings_shown = False
+		end
+
+	enable_lines_shown is
+			-- Set `are_lines_shown' to `True'.
+		do
+			are_lines_shown := True
 --			lines_representation.unhide
---		ensure
---			lines_shown: are_lines_shown = True
---		end
+		ensure
+			lines_shown: are_lines_shown = True
+		end
 
---	disable_lines_shown is
---			-- Set `are_lines_shown' to `False'.
---		do
---			are_lines_shown := False
+	disable_lines_shown is
+			-- Set `are_lines_shown' to `False'.
+		do
+			are_lines_shown := False
 --			lines_representation.hide
---		ensure
---			lines_not_shown: are_lines_shown = False
---		end
+		ensure
+			lines_not_shown: are_lines_shown = False
+		end
 
---	enable_roads_shown is
---			-- Set `are_roads_shown' to `True'.
---		do
---			are_roads_shown := True
+	enable_roads_shown is
+			-- Set `are_roads_shown' to `True'.
+		do
+			are_roads_shown := True
 --			roads_representation.unhide
---		end
+		end
 
---	disable_roads_shown is
---			-- Set `are_lines_shown' to `False'.
---		do
---			are_roads_shown := False
+	disable_roads_shown is
+			-- Set `are_lines_shown' to `False'.
+		do
+			are_roads_shown := False
 --			roads_representation.hide
---		end
+		end
 
---	enable_shortest_path_shown is
---			-- Set `is_shortest_path_shown' to `True'.
---		do
---			is_shortest_path_shown := True
---		ensure
---			shortest_path_shown: is_shortest_path_shown = True
---		end
+	enable_shortest_path_shown is
+			-- Set `is_shortest_path_shown' to `True'.
+		do
+			is_shortest_path_shown := True
+		ensure
+			shortest_path_shown: is_shortest_path_shown = True
+		end
 
---	disable_shortest_path_shown is
---			-- Set `is_shortest_path_shown' to `False'.
---		do
---			is_shortest_path_shown := False
---		ensure
---			shortest_path_not_shown: is_shortest_path_shown = False
---		end
+	disable_shortest_path_shown is
+			-- Set `is_shortest_path_shown' to `False'.
+		do
+			is_shortest_path_shown := False
+		ensure
+			shortest_path_not_shown: is_shortest_path_shown = False
+		end
 
 feature -- Access
 
@@ -381,21 +399,56 @@ feature -- Basic operations
 			camera := beauty_pass.camera
 
 			--carth to spherical
-			radius:=camera.transform.position.length
-			zx_comp_length:=sqrt(camera.transform.position.z^2.0 + camera.transform.position.x^2)
+			radius:=(camera.transform.position-camera.target).length
+			zx_comp_length:=sqrt((camera.transform.position.z-camera.target.z)^2.0 + (camera.transform.position.x-camera.target.x)^2)
 			if camera.transform.position.x >=0 then
-				azimut:=arc_cosine(camera.transform.position.z/zx_comp_length)
+				azimut:=arc_cosine((camera.transform.position.z-camera.target.z)/zx_comp_length)
 			else
-				azimut:=2*PI - arc_cosine(camera.transform.position.z/zx_comp_length)
+				azimut:=2*PI - arc_cosine((camera.transform.position.z-camera.target.z)/zx_comp_length)
 			end
-			polar:=PI/2 - arc_tangent(camera.transform.position.y/zx_comp_length)
+			polar:=PI/2 - arc_tangent((camera.transform.position.y-camera.target.y)/zx_comp_length)
 
 			--rotate camera arround 000
 			polar := polar - y_distance/50.0
 			azimut := azimut - x_distance/50.0
 
 			--spherical to carthesian
-			camera.transform.set_position (radius*sine(polar)*sine(azimut), radius*cosine(polar), radius*sine(polar)*cosine(azimut))
+			camera.transform.set_position (radius*sine(polar)*sine(azimut)+camera.target.x, radius*cosine(polar)+camera.target.y, radius*sine(polar)*cosine(azimut)+camera.target.z)
+		end
+
+	pan(x_distance, y_distance: DOUBLE) is
+			-- pans using the left mouse button while dragging
+		local
+			camera: TE_3D_CAMERA
+			translation: EM_VECTOR3D
+			dir, right, up: EM_VECTOR3D
+		do
+			if (x_distance+y_distance)*(x_distance+y_distance)>0.00005 then
+
+				camera := beauty_pass.camera
+				dir := camera.target - camera.transform.position
+				up.set(0,1,0)
+				right := -dir.cross_product (up)
+				right.normalize
+				up := right.cross_product(dir)
+				up.normalize
+
+				translation := (right * x_distance + up * y_distance)*5
+				camera.transform.translate(translation.x, translation.y, translation.z)
+				camera.set_target(camera.target + (right * x_distance + up * y_distance)*5)
+			end
+		end
+
+
+	zoom(y_distance:DOUBLE) is
+			-- zooms by pressing the middle mouse button
+		local
+			camera: TE_3D_CAMERA
+			z_axis: EM_VECTOR3D
+		do
+			camera := beauty_pass.camera
+			z_axis := (camera.transform.position-camera.target).normalized * 20 * y_distance
+			camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
 		end
 
 	zoom_out is
@@ -405,7 +458,7 @@ feature -- Basic operations
 			z_axis: EM_VECTOR3D
 		do
 			camera := beauty_pass.camera
-			z_axis := camera.transform.position * (1.0/10.0)
+			z_axis := (camera.transform.position-camera.target) * (1.0/10.0)
 			camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
 		end
 
@@ -416,7 +469,7 @@ feature -- Basic operations
 			z_axis: EM_VECTOR3D
 		do
 			camera := beauty_pass.camera
-			z_axis := camera.transform.position * (1.0/10.0)
+			z_axis := (camera.transform.position-camera.target) * (1.0/10.0)
 			camera.transform.translate(-z_axis.x, -z_axis.y, -z_axis.z)
 		end
 

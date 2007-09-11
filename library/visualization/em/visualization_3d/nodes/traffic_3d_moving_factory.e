@@ -112,10 +112,10 @@ feature -- Factory methods
 			a_bus_exists: a_bus /= Void
 		do
 			if tram_template = Void then
-				tram_template := load_template ("tram2000_small.obj")
+				tram_template := load_template ("bus.obj")
 			end
 			if tram_night_template = Void then
-				tram_night_template := load_template ("tram2000_small_night.obj")
+				tram_night_template := load_template ("bus.obj")
 			end
 			create Result.make_with_item (a_bus, tram_template.create_deep_instance, tram_night_template.create_deep_instance)
 			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (255, 0, 0))

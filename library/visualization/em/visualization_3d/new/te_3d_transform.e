@@ -1,3 +1,4 @@
+
 indexing
 	description: "Objects that ..."
 	author: ""
@@ -35,7 +36,7 @@ feature -- Access
 	position: EM_VECTOR3D is
 		-- position
 		do
-			result.set(model_matrix.element (4,1), model_matrix.element (4,2), model_matrix.element (4,3))
+			result.set(model_matrix.element (1,4), model_matrix.element (2,4), model_matrix.element (3,4))
 		end
 
 	rotation: EM_QUATERNION is
@@ -97,9 +98,9 @@ feature -- Transformation
 	set_position(x,y,z:DOUBLE) is
 		-- sets the position
 		do
-			model_matrix.set_element(x,4,1)
-			model_matrix.set_element(y,4,2)
-			model_matrix.set_element(z,4,3)
+			model_matrix.set_element(x,1,4)
+			model_matrix.set_element(y,2,4)
+			model_matrix.set_element(z,3,4)
 			event_channel.publish([])
 		end
 
@@ -115,7 +116,7 @@ feature -- Transformation
 			S.set_diagonal (scale_vec)
 			T.set_from_translation (position)
 			R.set_from_rotation (rotation_axis, alpha)
-			model_matrix := T*R*S
+			model_matrix := T * R * S
 			event_channel.publish([])
 		end
 
@@ -150,7 +151,7 @@ feature -- Transformation
 		do
 			direction_vect.set(x,y,z)
 			rot_mat.set_from_rotation(direction_vect, alpha)
-			model_matrix :=rot_mat * model_matrix
+			model_matrix :=model_matrix * rot_mat
 			event_channel.publish([])
 		end
 

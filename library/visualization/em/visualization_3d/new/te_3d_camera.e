@@ -78,10 +78,10 @@ feature -- Access
 	aspect: DOUBLE is 1.0 -- 1:1
 			-- aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 
-	near: DOUBLE is 100.0--250.0--1.05
+	near: DOUBLE is 40.0--250.0--1.05
 		-- distance from the viewer to the near clipping plane (always positive).
 
-	far: DOUBLE is 5000.0-- 500.0
+	far: DOUBLE is 150000.0-- 500.0
 		-- distance from the viewer to the far clipping plane (always positive).
 
 	direction: EM_VECTOR3D is
@@ -165,10 +165,10 @@ feature -- Basic operations
 
 			wt := world_transform
 			pos := wt.position
-			tar := pos - wt.z_axis
+			--tar := pos - wt.z_axis
 
 			up.set(0.0,1.0,0.0)
-			glu_look_at(pos.x,pos.y,pos.z, tar.x,tar.y,tar.z, up.x,up.y,up.z)
+			glu_look_at(pos.x,pos.y,pos.z, target.x,target.y,target.z, up.x,up.y,up.z)
 			gl_pop_attrib
 		end
 
@@ -303,10 +303,15 @@ feature {NONE} -- Implementation
 			right := front.cross_product(cameraUp).normalized
 			up := right.cross_product(front).normalized
 
-			LookAt.set (right.x, right.y, right.z, transform.position.x,
-						up.x, up.y, up.z, transform.position.y,
-						-front.x, -front.y, -front.z, transform.position.z,
-						target.x, target.y, target.z, 1.0)--0.0,0.0,0.0,1.0)
+--			LookAt.set (right.x, right.y, right.z, transform.position.x,
+--						up.x, up.y, up.z, transform.position.y,
+--						-front.x, -front.y, -front.z, transform.position.z,
+--						target.x, target.y, target.z, 1.0)--0.0,0.0,0.0,1.0)
+
+			LookAt.set (right.x, up.x, -front.x, transform.position.x,
+						right.y, up.y, -front.y, transform.position.y,
+						right.z, up.z, -front.z, transform.position.z,
+						0.0, 0.0, 0.0, 1.0)--0.0,0.0,0.0,1.0)
 
 			transform.set_model_matrix (LookAt)
 		end

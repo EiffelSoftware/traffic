@@ -9,7 +9,6 @@ inherit
 
 	TRAFFIC_3D_MAP_WIDGET
 		redefine
-			make,
 			prepare_drawing,
 			draw
 		end

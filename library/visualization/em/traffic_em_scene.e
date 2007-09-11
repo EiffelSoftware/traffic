@@ -107,8 +107,10 @@ feature -- Basic operations
 			cursor: DS_BILINKED_LIST_CURSOR [EM_COMPONENT]
 			component: EM_COMPONENT
 		do
+
 			if video_subsystem.opengl_enabled then
-				gl_clear (Em_gl_color_buffer_bit | Em_gl_depth_buffer_bit)
+				gl_color3f_external(1.0, 1.0, 1.0)
+				emgl_clear (Em_gl_color_buffer_bit | Em_gl_depth_buffer_bit)
 			end
 			from
 				cursor := components_impl.new_cursor
@@ -132,6 +134,7 @@ feature -- Basic operations
 				video_subsystem.video_surface.enable_opengl_blitting
 			end
 			time_counter.draw (screen)
+
 			screen.redraw
 		end
 
