@@ -32,7 +32,7 @@ feature {NONE} -- Initialization
 			create available_taxis.make
 			create taxis.make
 			create color.make_with_rgb (255, 255, 255)
-			create changed_event_channel
+			create changed_event
 		ensure then
 			taxis_exists: taxis /= Void
 			available_taxis_exists: available_taxis /= Void
@@ -48,7 +48,7 @@ feature {NONE} -- Initialization
 		do
 			default_create
 			create color.make_with_rgb (r, g, b)
-			create changed_event_channel
+			create changed_event
 		end
 
 feature -- Access
@@ -103,25 +103,6 @@ feature -- Basic operations
 				end
 				nearest_taxi.take(from_location, to_location)
 			end
-		end
-
-feature -- Basic operations (map)
-
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' to `a_map'.
-		do
-			a_map.taxi_offices.put_last (Current)
-			is_in_map := True
-			map := a_map
-		ensure then
-			map_has: a_map.taxi_offices.has (Current)
-		end
-
-	remove_from_map is
-			-- Remove Current from `a_map'.
-		do
-			is_in_map := False
-			map := Void
 		end
 
 feature -- Status report

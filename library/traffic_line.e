@@ -49,6 +49,11 @@ inherit
 			is_equal,
 			copy,
 			out
+		redefine
+			highlight,
+			unhighlight,
+			add_to_map,
+			remove_from_map
 		end
 create
 	make
@@ -72,7 +77,7 @@ feature {NONE} -- Initialization
 			end
 			create stops_one_direction.make -- create empty line_sections list for one direction
 			create stops_other_direction.make -- create empty line_sections list for other direction
-			create changed_event_channel
+			create changed_event
 		ensure
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
@@ -117,22 +122,64 @@ feature -- Access
 
 feature -- Element change
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all nodes to `a_map'.
+	highlight is
+			-- Highlight all line sections
 		do
-			a_map.lines.force (Current, name)
-			is_in_map := True
-			map := a_map
+			is_highlighted := True
 			from
 				start
 			until
 				after
 			loop
-				item_for_iteration.add_to_map (a_map)
+				item_for_iteration.highlight
 				forth
 			end
-		ensure then
-			line_in_map: a_map.lines.has (name)
+			changed_event.publish ([])
+		end
+
+	unhighlight is
+			-- Highlight all line sections
+		do
+			is_highlighted := False
+			from
+				start
+			until
+				after
+			loop
+				item_for_iteration.unhighlight
+				forth
+			end
+			changed_event.publish ([])
+		end
+
+	set_color (a_color: TRAFFIC_COLOR) is
+			-- Set color to `a_color'.
+		require
+			a_color_exists: a_color /= Void
+		do
+			color := a_color
+			changed_event.publish ([])
+		ensure
+			color_set: color = a_color
+		end
+
+feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
+
+	add_to_map (a_map: TRAFFIC_MAP) is
+			-- Add `Current' and all nodes to `a_map'.
+		do
+			is_in_map := True
+			map := a_map
+--			a_map.lines.force_last (Current, name)
+			from
+				start
+			until
+				after
+			loop
+--				a_map.line_sections
+				map.line_sections.put_last (item_for_iteration)
+				forth
+			end
 		end
 
 	remove_from_map is
@@ -142,22 +189,13 @@ feature -- Element change
 			map := Void
 		end
 
-	set_color (a_color: TRAFFIC_COLOR) is
-			-- Set color to `a_color'.
-		require
-			a_color_exists: a_color /= Void
-		do
-			color := a_color
-		ensure
-			color_set: color = a_color
-		end
-
 feature -- Removal
 
 	remove_color is
 			-- Remove color.
 		do
 			color := Void
+			changed_event.publish ([])
 		ensure
 			color_removed: color = Void
 		end
@@ -175,7 +213,10 @@ feature -- Status report
 			until
 				off or not Result
 			loop
-				if not item_for_iteration.is_insertable (a_map) then
+				if item_for_iteration.start_node.is_in_map and item_for_iteration.end_node.is_in_map and
+						item_for_iteration.origin.is_in_map and item_for_iteration.destination.is_in_map then
+					Result := True
+				else
 					Result := False
 				end
 				forth
@@ -303,8 +344,9 @@ feature -- Basic operations
 			end
 			a_line_section.set_line (Current)
 			if is_in_map then
-				a_line_section.add_to_map (map)
+				map.line_sections.put_last (a_line_section)
 			end
+			changed_event.publish ([])
 		ensure
 			a_line_section_in_line: has (a_line_section)
 			line_added_to_line_section: a_line_section.line = Current

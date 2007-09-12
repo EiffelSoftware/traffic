@@ -18,7 +18,7 @@ inherit
 			set_color as set_internal_color
 		end
 
-feature -- Access
+feature -- Obsolete
 
 	is_highlighted: BOOLEAN
 

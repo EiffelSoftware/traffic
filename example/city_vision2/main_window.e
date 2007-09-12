@@ -165,7 +165,13 @@ feature {NONE} -- ToolBar Implementation
 		local
 			toolbar_item: EV_TOOL_BAR_BUTTON
 			toolbar_pixmap: EV_PIXMAP
+--			a: TRAFFIC_EVENT_ARRAYED_LIST [INTEGER]
+--			b: TRAFFIC_EVENT_HASH_TABLE [INTEGER, INTEGER]
+--			c: TRAFFIC_EVENT_LINKED_LIST [INTEGER]
+--			d: TRAFFIC_EVENT_META_HASH_TABLE [INTEGER, TRAFFIC_EVENT_LINKED_LIST [INTEGER], INTEGER]
 		do
+
+
 				-- Create the toolbar.
 			create standard_toolbar
 
@@ -301,11 +307,33 @@ feature {NONE} -- Implementation, Close event
 		do
 			create r.set_map (canvas.map)
 			r.generate_random_buildings (10, canvas.map.radius/3, 3)
-			canvas.map.buildings.append_last (r.last_buildings)
+			from
+				r.last_buildings.start
+			until
+				r.last_buildings.off
+			loop
+				canvas.map.buildings.put_last (r.last_buildings.item_for_iteration)
+				r.last_buildings.forth
+			end
 			r.generate_random_buildings (15, canvas.map.radius*2/3, 2)
-			canvas.map.buildings.append_last (r.last_buildings)
+			from
+				r.last_buildings.start
+			until
+				r.last_buildings.off
+			loop
+				canvas.map.buildings.put_last (r.last_buildings.item_for_iteration)
+				r.last_buildings.forth
+			end
 			r.generate_random_buildings (100, canvas.map.radius, 1)
-			canvas.map.buildings.append_last (r.last_buildings)
+			from
+				r.last_buildings.start
+			until
+				r.last_buildings.off
+			loop
+				canvas.map.buildings.put_last (r.last_buildings.item_for_iteration)
+				r.last_buildings.forth
+			end
+--			canvas.map.buildings.append_last (r.last_buildings)
 		end
 
 	add_line_vehicles (a_value: INTEGER) is
@@ -446,6 +474,120 @@ feature {NONE} -- Implementation, Close event
 			end
 		end
 
+	add_place is
+			-- Add random map items
+		local
+			p: TRAFFIC_PLACE
+			x, y: INTEGER
+		do
+			-- Create new place
+			random.forth
+			create p.make ("New place" + random.item.out)
+			random.forth
+			x := random.item \\ (2*canvas.map.radius.floor)
+			random.forth
+			y := random.item \\ (2*canvas.map.radius.floor)
+			p.set_position (create {TRAFFIC_COORDINATE}.make (canvas.map.center.x + x - canvas.map.radius, canvas.map.center.y + y - canvas.map.radius))
+			canvas.map.places.force (p, p.name)
+			canvas.redraw
+		end
+
+	add_line is
+			-- Add random map items
+		local
+			l: TRAFFIC_LINE
+			lc: TRAFFIC_LINE_CONNECTION
+			r, g, b: INTEGER
+			p1, p2: TRAFFIC_PLACE
+			s1, s2: TRAFFIC_STOP
+			p: ARRAY [TRAFFIC_PLACE]
+			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+		do
+			random.forth
+			r := random.item \\ 256
+			random.forth
+			g := random.item \\ 256
+			random.forth
+			b := random.item \\ 256
+			create l.make ("Line" + random.item.out, create {TRAFFIC_TYPE_TRAM}.make)
+			l.set_color (create {TRAFFIC_COLOR}.make_with_rgb (r, g, b))
+			p := canvas.map.places.to_array
+			p1 := p.item (random.item \\ p.count + 1)
+			random.forth
+			p2 := p.item (random.item \\ p.count + 1)
+			if p1.has_stop (l) then
+				s1 := p1.stop (l)
+			else
+				create s1.make_stop (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
+			end
+			if p2.has_stop (l) then
+				s2 := p2.stop (l)
+			else
+				create s2.make_stop (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
+			end
+			create pp.make (2)
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+			create lc.make (s1, s2, l.type, pp)
+			l.extend (lc)
+			canvas.map.lines.force (l, l.name)
+		end
+
+	add_line_connection is
+			-- Add random map items
+		local
+			l: TRAFFIC_LINE
+			lc: TRAFFIC_LINE_CONNECTION
+			r, g, b: INTEGER
+			p1, p2: TRAFFIC_PLACE
+			s1, s2: TRAFFIC_STOP
+			pt: ARRAY [TRAFFIC_PLACE]
+			lt: ARRAY [TRAFFIC_LINE]
+			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+		do
+			lt := canvas.map.lines.to_array
+			l := lt.item ((random.item \\ lt.count) + 1)
+			lc := l.last
+			s1 := lc.end_node
+			pt := canvas.map.places.to_array
+			random.forth
+			p2 := pt.item ((random.item \\ pt.count) + 1)
+			if p2.has_stop (l) then
+				s2 := p2.stop (l)
+			else
+				create s2.make_stop (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
+			end
+			create pp.make (2)
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+			create lc.make (s1, s2, l.type, pp)
+			l.extend (lc)
+			canvas.redraw
+--			canvas.map.lines.force (l, l.name)
+		end
+
+	add_road is
+			-- Add random map items
+		local
+			r: TRAFFIC_ROAD
+			rc1, rc2: TRAFFIC_ROAD_CONNECTION
+			n1, n2: TRAFFIC_NODE
+			pt: ARRAY [TRAFFIC_PLACE]
+		do
+			pt := canvas.map.places.to_array
+			random.forth
+			n1 := pt.item ((random.item \\ pt.count) + 1).dummy_node
+			random.forth
+			n2 := pt.item ((random.item \\ pt.count) + 1).dummy_node
+
+			create rc1.make (n1, n2, create {TRAFFIC_TYPE_STREET}.make, canvas.map.graph.id_manager.next_free_index)
+			create rc2.make (n2, n1, create {TRAFFIC_TYPE_STREET}.make, canvas.map.graph.id_manager.next_free_index)
+			create r.make (rc1, rc2)
+			canvas.map.roads.force (r, r.id)
+			canvas.redraw
+--			canvas.map.lines.force (l, l.name)
+		end
+
 	toggle_map_hidden (a_check_box: EV_CHECK_BUTTON) is
 			--
 		do
@@ -475,6 +617,27 @@ feature {NONE} -- Implementation, Close event
 				canvas.road_representations.hide
 			end
 		end
+
+	toggle_highlight (a_toggle: EV_TOGGLE_BUTTON) is
+			--
+		do
+			if a_toggle.is_selected then
+				canvas.map.places.first.highlight
+				canvas.map.lines.first.highlight
+				canvas.map.line_sections.last.highlight
+				canvas.map.roads.first.highlight
+				canvas.map.buildings.first.highlight
+				canvas.redraw
+			else
+				canvas.map.places.first.unhighlight
+				canvas.map.lines.first.unhighlight
+				canvas.map.line_sections.last.unhighlight
+				canvas.map.roads.first.unhighlight
+				canvas.map.buildings.first.unhighlight
+				canvas.redraw
+			end
+		end
+
 
 	update_status_label is
 			--
@@ -547,6 +710,8 @@ feature {NONE} -- Implementation
 			rad: EV_CHECK_BUTTON
 			table: EV_TABLE
 			fixed: EV_FIXED
+			toggle: EV_TOGGLE_BUTTON
+			button: EV_BUTTON
 		do
 			create viewport
 			viewport.set_offset (0, 0)
@@ -629,6 +794,33 @@ feature {NONE} -- Implementation
 			rad.select_actions.extend (agent toggle_roads_hidden (rad))
 			fixed.extend (rad)
 			fixed.set_item_position (rad, 165, 162)
+
+			-- Test highlight/unhighlight feature
+			create toggle.make_with_text ("Highlight random map items")
+			toggle.select_actions.extend (agent toggle_highlight (toggle))
+			fixed.extend (toggle)
+			fixed.set_item_position (toggle, 5, 202)
+
+			-- Test creation
+			create button.make_with_text ("+place")
+			button.select_actions.extend (agent add_place)
+			fixed.extend (button)
+			fixed.set_item_position (button, 5, 242)
+
+			create button.make_with_text ("+line")
+			button.select_actions.extend (agent add_line)
+			fixed.extend (button)
+			fixed.set_item_position (button, 65, 242)
+
+			create button.make_with_text ("+connection")
+			button.select_actions.extend (agent add_line_connection)
+			fixed.extend (button)
+			fixed.set_item_position (button, 115, 242)
+
+			create button.make_with_text ("+road")
+			button.select_actions.extend (agent add_road)
+			fixed.extend (button)
+			fixed.set_item_position (button, 200, 242)
 
 			vb.extend (fixed)
 			vb.disable_item_expand (fixed)

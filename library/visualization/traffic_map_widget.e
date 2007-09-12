@@ -64,7 +64,7 @@ feature -- Element change
 			from
 				map.roads.start
 			until
-				map.roads.off
+				map.roads.after
 			loop
 				r := factory.new_road_view (map.roads.item_for_iteration)
 				road_representations.put_last (r)
@@ -73,7 +73,7 @@ feature -- Element change
 			from
 				map.lines.start
 			until
-				map.lines.off
+				map.lines.after
 			loop
 				l := factory.new_line_view (map.lines.item_for_iteration)
 				line_representations.put_last (l)
@@ -82,7 +82,7 @@ feature -- Element change
 			from
 				map.places.start
 			until
-				map.places.off
+				map.places.after
 			loop
 				p := factory.new_place_view (map.places.item_for_iteration)
 				place_representations.put_last (p)
@@ -91,7 +91,7 @@ feature -- Element change
 			from
 				map.buildings.start
 			until
-				map.buildings.off
+				map.buildings.after
 			loop
 				add_building (map.buildings.item_for_iteration)
 				map.buildings.forth
@@ -99,7 +99,7 @@ feature -- Element change
 			from
 				map.trams.start
 			until
-				map.trams.off
+				map.trams.after
 			loop
 				add_tram (map.trams.item_for_iteration)
 				map.trams.forth
@@ -107,7 +107,7 @@ feature -- Element change
 			from
 				map.busses.start
 			until
-				map.busses.off
+				map.busses.after
 			loop
 				add_bus (map.busses.item_for_iteration)
 				map.busses.forth
@@ -115,7 +115,7 @@ feature -- Element change
 			from
 				map.free_movings.start
 			until
-				map.free_movings.off
+				map.free_movings.after
 			loop
 				add_free_moving (map.free_movings.item_for_iteration)
 				map.free_movings.forth
@@ -123,7 +123,7 @@ feature -- Element change
 			from
 				map.passengers.start
 			until
-				map.passengers.off
+				map.passengers.after
 			loop
 				add_passenger (map.passengers.item_for_iteration)
 				map.passengers.forth
@@ -131,7 +131,7 @@ feature -- Element change
 			from
 				map.paths.start
 			until
-				map.paths.off
+				map.paths.after
 			loop
 				add_path (map.paths.item_for_iteration)
 				map.paths.forth
@@ -139,7 +139,7 @@ feature -- Element change
 			from
 				map.taxi_offices.start
 			until
-				map.taxi_offices.off
+				map.taxi_offices.after
 			loop
 				add_taxi_office (map.taxi_offices.item_for_iteration)
 				map.taxi_offices.forth

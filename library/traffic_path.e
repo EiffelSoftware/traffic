@@ -8,7 +8,7 @@ class
 
 inherit
 
-	ANY
+	TRAFFIC_MAP_ITEM
 		redefine
 			out,
 			default_create
@@ -20,6 +20,7 @@ feature -- Initialization
 			-- Initialize `scale_factor'.
 		do
 			scale_factor := 1
+			create changed_event
 		ensure then
 			scale_factor_set: scale_factor = 1
 		end
@@ -71,6 +72,12 @@ feature -- Access
 		end
 
 feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := True
+		end
 
 	is_valid_for_insertion (a_connection: TRAFFIC_CONNECTION): BOOLEAN is
 			-- Is `a_connection' valid for insertion?

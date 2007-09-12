@@ -23,7 +23,7 @@ inherit
 			set_highlight_color
 		end
 
-	DRAWABLE_OBJECT_CONTAINER [DRAWABLE_POLYLINE]
+	DRAWABLE_OBJECT_CONTAINER [TRAFFIC_LINE_CONNECTION_VIEW]
 		rename
 			color as internal_color,
 			set_color as set_internal_color,
@@ -41,7 +41,7 @@ feature -- Initialization
 	make (a_item: like item) is
 			-- Initialize view for `a_item'.
 		local
-			c: DRAWABLE_POLYLINE
+			c: TRAFFIC_LINE_CONNECTION_VIEW
 		do
 			make_container
 			item := a_item
@@ -50,7 +50,7 @@ feature -- Initialization
 			until
 				item.after
 			loop
-				c := new_connection_view (item.item_for_iteration)
+				create c.make (item.item_for_iteration)
 				put_last (c)
 				item.forth
 			end
@@ -60,7 +60,7 @@ feature -- Initialization
 				until
 					after
 				loop
-					item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (item.color.red, item.color.green, item.color.blue))
+					item_for_iteration.set_color (item.color)
 					forth
 				end
 			else
@@ -69,12 +69,14 @@ feature -- Initialization
 				until
 					after
 				loop
-					item_for_iteration.set_color (default_color)
+					item_for_iteration.set_color (create {TRAFFIC_COLOR}.make_with_rgb (default_color.red_8_bit, default_color.green_8_bit, default_color.blue_8_bit))
 					forth
 				end
 			end
 			is_shown := True
 			is_highlighted := False
+			item.changed_event.subscribe (agent update)
+			item.element_inserted_event.subscribe (agent add_connection_view (?))
 		end
 
 feature -- Constants
@@ -95,6 +97,56 @@ feature -- Element change
 
 feature -- Basic operations
 
+	update is
+			--
+		do
+			if count /= item.count then
+				-- Todo
+			end
+--			if item.is_highlighted then
+--				if highlight_color /= Void then
+--					from
+--						start
+--					until
+--						after
+--					loop
+--						item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+--						forth
+--					end
+--				else
+--					from
+--						start
+--					until
+--						after
+--					loop
+--						item_for_iteration.set_color (default_highlight_color)
+--						forth
+--					end
+--				end
+--			else
+--				if color /= Void then
+--					from
+--						start
+--					until
+--						after
+--					loop
+--						item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+--						forth
+--					end
+--				else
+--					from
+--						start
+--					until
+--						after
+--					loop
+--						item_for_iteration.set_color (default_color)
+--						forth
+--					end
+--				end
+--			end
+--			-- todo
+		end
+
 	highlight is
 			-- Highlight the place view.
 		do
@@ -104,7 +156,7 @@ feature -- Basic operations
 				until
 					after
 				loop
-					item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+					item_for_iteration.set_color (highlight_color)
 					forth
 				end
 			else
@@ -113,7 +165,7 @@ feature -- Basic operations
 				until
 					after
 				loop
-					item_for_iteration.set_color (default_highlight_color)
+					item_for_iteration.set_color (create {TRAFFIC_COLOR}.make_with_rgb (default_highlight_color.red_8_bit, default_highlight_color.green_8_bit, default_highlight_color.blue_8_bit))
 					forth
 				end
 			end
@@ -129,7 +181,7 @@ feature -- Basic operations
 				until
 					after
 				loop
-					item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+					item_for_iteration.set_color (color)
 					forth
 				end
 			else
@@ -138,7 +190,7 @@ feature -- Basic operations
 				until
 					after
 				loop
-					item_for_iteration.set_color (default_color)
+					item_for_iteration.set_color (create {TRAFFIC_COLOR}.make_with_rgb (default_color.red_8_bit, default_color.green_8_bit, default_color.blue_8_bit))
 					forth
 				end
 			end
@@ -156,7 +208,7 @@ feature -- Basic operations
 					until
 						after
 					loop
-						item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+						item_for_iteration.set_color (color)
 						forth
 					end
 				else
@@ -165,7 +217,7 @@ feature -- Basic operations
 					until
 						after
 					loop
-						item_for_iteration.set_color (default_color)
+						item_for_iteration.set_color (create {TRAFFIC_COLOR}.make_with_rgb (default_color.red_8_bit, default_color.green_8_bit, default_color.blue_8_bit))
 						forth
 					end
 				end
@@ -183,7 +235,7 @@ feature -- Basic operations
 					until
 						after
 					loop
-						item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+						item_for_iteration.set_color (highlight_color)
 						forth
 					end
 				else
@@ -192,7 +244,7 @@ feature -- Basic operations
 					until
 						after
 					loop
-						item_for_iteration.set_color (default_highlight_color)
+						item_for_iteration.set_color (create {TRAFFIC_COLOR}.make_with_rgb (default_highlight_color.red_8_bit, default_highlight_color.green_8_bit, default_highlight_color.blue_8_bit))
 						forth
 					end
 				end
@@ -200,6 +252,21 @@ feature -- Basic operations
 		end
 
 feature {NONE} -- Implementation
+
+	add_connection_view (a_item: TRAFFIC_LINE_CONNECTION) is
+			-- Add new view for inserted item.
+		local
+			c: TRAFFIC_LINE_CONNECTION_VIEW
+		do
+			create c.make (a_item)
+			put_last (c)
+			if item.color /= Void  then
+				c.set_color (item.color)
+			else
+				c.set_color (create {TRAFFIC_COLOR}.make_with_rgb (default_color.red_8_bit, default_color.green_8_bit, default_color.blue_8_bit))
+			end
+		end
+
 
 	new_connection_view (a_item: TRAFFIC_CONNECTION): DRAWABLE_POLYLINE is
 			-- Generate connection view for `a_item'.

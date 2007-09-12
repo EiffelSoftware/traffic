@@ -87,6 +87,12 @@ feature -- Element change
 
 feature -- Basic operations
 
+	update is
+			--
+		do
+
+		end
+
 	highlight is
 			-- Highlight the place view.
 		local

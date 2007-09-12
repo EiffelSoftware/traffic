@@ -32,6 +32,7 @@ feature -- Initialization
 
 			speed := 17
 			start
+			create changed_event
 		end
 
 feature -- Access
@@ -54,6 +55,7 @@ feature -- Basic operations
 				-- Is_marked is set to true so that the view will draw the busy taxi marked.
 				is_marked := True
 				update_angle
+				changed_event.publish ([])
 			else
 				office.reject_request.publish([from_location, to_location])
 			end
@@ -81,6 +83,14 @@ feature -- Basic operations
 				-- Set is_marked to false so that the view will draw the taxi normally.
 				is_marked := false
 			end
+		end
+
+feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := True
 		end
 
 end

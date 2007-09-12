@@ -530,7 +530,7 @@ feature {NONE} -- Implementation
 	publish_building_events (a_point: GL_VECTOR_3D[DOUBLE]; event: EM_MOUSEBUTTON_EVENT) is
 			-- Publish mouse event if a building was clicked.
 		local
-			buildings: DS_LINKED_LIST[TRAFFIC_BUILDING]
+			buildings: TRAFFIC_MAP_ITEM_LINKED_LIST[TRAFFIC_BUILDING]
 			found: BOOLEAN
 		do
 			buildings := map.buildings

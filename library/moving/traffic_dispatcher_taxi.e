@@ -32,6 +32,7 @@ feature -- Initialization
 
 			speed := 17
 			start
+			create changed_event
 		end
 
 feature -- Access
@@ -53,6 +54,7 @@ feature -- Basic operations
 				is_marked := True
 				office.delist(Current)
 				update_angle
+				changed_event.publish ([])
 			else
 				office.recall(from_location, to_location)
 			end
@@ -79,6 +81,14 @@ feature -- Basic operations
 					is_marked := false
 					office.enlist(Current)
 			end
+		end
+
+feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := True
 		end
 
 end

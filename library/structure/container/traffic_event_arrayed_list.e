@@ -38,9 +38,7 @@ inherit
 create
 	make,
 	make_equal,
-	make_default,
-	make_from_linear,
-	make_from_array
+	make_default
 
 feature {NONE} -- Initialization
 

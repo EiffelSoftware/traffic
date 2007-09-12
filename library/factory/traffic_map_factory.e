@@ -91,7 +91,7 @@ feature -- Traffic place building
 			unique_name: not a_map.places.has (a_name)
 		do
 			create internal_place.make (a_name)
-			internal_place.add_to_map (a_map)
+			a_map.places.force (internal_place, internal_place.name)
 		ensure
 			place_created: place /= Void
 			place_has_name: equal (place.name, a_name)
@@ -109,7 +109,7 @@ feature -- Traffic place building
 			unique_name: not a_map.places.has (a_name)
 		do
 			create internal_place.make_with_position (a_name, a_x, a_y)
-			internal_place.add_to_map (a_map)
+			a_map.places.force (internal_place, internal_place.name)
 		ensure
 			place_created: place /= Void
 			place_has_name: equal (place.name, a_name)
@@ -224,7 +224,7 @@ feature -- Road section building
 			else
 				create internal_road.make_one_way (way1)
 			end
-			internal_road.add_to_map (a_map)
+			a_map.roads.force (internal_road, internal_road.id)
 		ensure
 			road_created: road /= Void
 		end
@@ -262,7 +262,8 @@ feature -- Traffic line building
 			build_traffic_type (a_type_name)
 			actual_traffic_type ?= internal_traffic_type
 			create internal_line.make (a_name, actual_traffic_type)
-			internal_line.add_to_map (a_map)
+			a_map.lines.force (internal_line, internal_line.name)
+--			internal_line.add_to_map (a_map)
 		ensure
 			line_created: line /= Void
 			line_has_name: equal (line.name, a_name)
@@ -303,7 +304,8 @@ feature -- Traffic simple line building
 			build_traffic_type (a_type_name)
 			actual_traffic_type ?= internal_traffic_type
 			create internal_simple_line.make (a_name, actual_traffic_type, a_map)
-			internal_simple_line.add_to_map (a_map)
+			a_map.lines.force (internal_simple_line, internal_simple_line.name)
+--			internal_simple_line.add_to_map (a_map)
 		ensure
 			simple_line_created: simple_line /= Void
 			simple_line_has_name: equal (simple_line.name, a_name)

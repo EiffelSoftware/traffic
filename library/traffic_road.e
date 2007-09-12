@@ -10,11 +10,15 @@ class
 inherit
 
 	TRAFFIC_MAP_ITEM
+		redefine
+			add_to_map,
+			remove_from_map
+		end
 
 create
 	make, make_one_way
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
 	make (a_conn1, a_conn2: TRAFFIC_ROAD_CONNECTION) is
 			-- Initialize a two way road with `a_conn1' and `a_conn2'.
@@ -30,7 +34,7 @@ feature -- Initialization
 			other_way := a_conn2
 			id := a_conn1.id
 			is_one_way := False
-			create changed_event_channel
+			create changed_event
 		ensure
 			one_way_set: one_way = a_conn1
 			other_way_set: other_way = a_conn2
@@ -46,7 +50,7 @@ feature -- Initialization
 			one_way := a_conn
 			is_one_way := True
 			id := a_conn.id
-			create changed_event_channel
+			create changed_event
 		ensure
 			one_way_set: one_way = a_conn
 			other_way_not_set: other_way = Void
@@ -73,7 +77,7 @@ feature -- Access
 	id: INTEGER
 			-- Id of the road
 
-feature -- Basic operations
+feature {TRAFFIC_MAP_ITEM_CONTAINER}-- Basic operations
 
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.
@@ -82,11 +86,8 @@ feature -- Basic operations
 			if not is_one_way then
 				other_way.add_to_map (a_map)
 			end
-			a_map.roads.force (Current, id)
 			is_in_map := True
 			map := a_map
-		ensure then
-			map_has: a_map.roads.has (id)
 		end
 
 	remove_from_map is

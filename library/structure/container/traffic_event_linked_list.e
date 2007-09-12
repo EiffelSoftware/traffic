@@ -7,13 +7,16 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_EVENT_LINKED_LIST [G]
+	TRAFFIC_EVENT_LINKED_LIST [G->TRAFFIC_MAP_ITEM]
 
 inherit
 
 	DS_LINKED_LIST [G]
 		export {NONE}
 			copy, deep_copy, standard_copy
+		{TRAFFIC_MAP_ITEM}
+			append_left, append_right, extend_left, extend_right, force_left, force_right, put_left, put_right,
+			prune_left, prune_right, prune_last, remove_at, keep_last, remove_left, remove_right
 		redefine
 			make, make_equal, append, append_first, append_last, append_left_cursor, append_right_cursor, extend,
 			extend_first, extend_last, extend_left_cursor, extend_right_cursor, force, force_first,
@@ -31,9 +34,7 @@ inherit
 create
 	make,
 	make_equal,
-	make_default,
-	make_from_linear,
-	make_from_array
+	make_default
 
 feature {NONE} -- Initialization
 
@@ -63,7 +64,7 @@ feature {NONE} -- Initialization
 			removed_initialized: element_removed_event /= Void
 		end
 
-feature -- Element change
+feature {TRAFFIC_MAP_ITEM, TRAFFIC_PATH_SECTION} -- Element change
 
 	append (other: DS_LINEAR [G]; i: INTEGER_32)
 			-- Add items of `other' at `i'-th position.
@@ -416,7 +417,7 @@ feature -- Element change
 			-- No event is thrown.
 		end
 
-feature -- Removal
+feature {TRAFFIC_MAP_ITEM} -- Removal
 
 	delete (v: G)
 			-- Remove all occurrences of `v'.

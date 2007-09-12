@@ -21,7 +21,9 @@ inherit
 
 	TRAFFIC_MAP_ITEM
 		undefine
-			is_equal
+			is_equal,
+			add_to_map,
+			remove_from_map
 		end
 
 create
@@ -45,7 +47,7 @@ feature {NONE} -- Initialization
 			if place.dummy_node /= Void then
 				place.add_node (Current)
 			end
-			create changed_event_channel
+			create changed_event
 		ensure
 			no_referrer: (referring_node = Void) and (referring_connection = Void)
 			distance_positive: distance >= 0
@@ -80,6 +82,7 @@ feature -- Element change
 			position_exists: a_position /= Void
 		do
 			position := a_position
+			changed_event.publish ([])
 		ensure
 			position_set: position = a_position
 		end
@@ -135,6 +138,7 @@ feature {TRAFFIC_GRAPH} -- Element change
 			-- Insert `a_connection'.
 		do
 			connection_list.extend (a_connection)
+			changed_event.publish ([])
 		end
 
 feature {NONE} -- Implementation

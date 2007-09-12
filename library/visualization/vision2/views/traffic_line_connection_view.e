@@ -5,11 +5,11 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_ROAD_VIEW
+	TRAFFIC_LINE_CONNECTION_VIEW
 
 inherit
 
-	TRAFFIC_VS_VIEW [TRAFFIC_ROAD]
+	TRAFFIC_VS_VIEW [TRAFFIC_LINE_CONNECTION]
 		undefine
 			copy,
 			is_equal,
@@ -39,13 +39,13 @@ feature -- Initialization
 			i: INTEGER
 		do
 			item := a_item
-			create pp.make (1, item.one_way.polypoints.count)
+			create pp.make (1, item.polypoints.count)
 			from
 				i := 1
 			until
-				i > item.one_way.polypoints.count
+				i > item.polypoints.count
 			loop
-				pp.put (create {REAL_COORDINATE}.make (item.one_way.polypoints.item (i).x, -item.one_way.polypoints.item (i).y), i)
+				pp.put (create {REAL_COORDINATE}.make (item.polypoints.item (i).x, -item.polypoints.item (i).y), i)
 				i := i + 1
 			end
 			make_polyline (pp, 634.0)
@@ -78,13 +78,13 @@ feature -- Basic operations
 					set_internal_color (default_color)
 				end
 			end
-			create pp.make (1, item.one_way.polypoints.count)
+			create pp.make (1, item.polypoints.count)
 			from
 				i := 1
 			until
-				i > item.one_way.polypoints.count
+				i > item.polypoints.count
 			loop
-				pp.put (create {REAL_COORDINATE}.make (item.one_way.polypoints.item (i).x, -item.one_way.polypoints.item (i).y), i)
+				pp.put (create {REAL_COORDINATE}.make (item.polypoints.item (i).x, -item.polypoints.item (i).y), i)
 				i := i + 1
 			end
 			set_points (pp)
@@ -95,13 +95,13 @@ feature -- Constants
 	default_color: EV_COLOR is
 			-- Default color
 		once
-			create Result.make_with_8_bit_rgb (0, 0, 0)
+			create Result.make_with_8_bit_rgb (100, 100, 100)
 		end
 
 	default_highlight_color: EV_COLOR is
 			-- Default highlight color
 		once
-			create Result.make_with_8_bit_rgb (255, 255,0)
+			create Result.make_with_8_bit_rgb (0, 0, 255)
 		end
 
 end

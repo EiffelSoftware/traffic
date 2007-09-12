@@ -10,7 +10,9 @@ inherit
 
 	TRAFFIC_CONNECTION
 		redefine
-			type
+			type,
+			add_to_map,
+			remove_from_map
 		end
 
 create
@@ -62,7 +64,7 @@ feature -- Access
 	id: INTEGER
 			-- Id of road
 
-feature -- Basic operations
+feature {TRAFFIC_ROAD} -- Basic operations
 
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.

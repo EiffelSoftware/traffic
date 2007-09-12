@@ -356,7 +356,7 @@ feature {NONE} -- Implementation
 			poly_points: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			poly_point: TRAFFIC_COORDINATE
 			i,j:INTEGER
-			places: TRAFFIC_EVENT_HASH_TABLE[TRAFFIC_PLACE,STRING_8]
+			places: TRAFFIC_MAP_ITEM_HASH_TABLE[TRAFFIC_PLACE,STRING_8]
 		do
 			-- Mark cells for each of the line sections
 			from

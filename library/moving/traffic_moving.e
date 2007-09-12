@@ -13,6 +13,8 @@ inherit
 
 	TRAFFIC_SHARED_TIME
 
+	TRAFFIC_MAP_ITEM
+
 feature -- Access
 
 	position: TRAFFIC_COORDINATE

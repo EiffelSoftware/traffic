@@ -62,6 +62,13 @@ feature -- Status report
 
 feature -- Element change
 
+	update is
+			--
+		do
+			
+		end
+
+
 	set_color (a_color: TRAFFIC_COLOR) is
 			-- Set `color' to `a_color'. May also be Void.
 			-- TODO: Does not work yet.

@@ -21,6 +21,7 @@ feature -- Initialization
 			set_line (a_line)
 			speed := Default_virtual_speed
 			unit_capacity := Default_capacity
+			create changed_event
 		end
 
 feature -- Basic operations
@@ -31,6 +32,7 @@ feature -- Basic operations
 			a_line_not_void: a_line /= void
 		do
 			set_line (a_line)
+			changed_event.publish ([])
 		ensure
 			new_line_set:  line = a_line
 		end
@@ -44,6 +46,12 @@ feature-- Constants
 		-- Default speed of a bus
 
 feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := True
+		end
 
 	is_valid_line (a_line: TRAFFIC_LINE): BOOLEAN is
 			-- Is `a_line' valid for a tram to move on?

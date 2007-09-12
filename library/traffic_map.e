@@ -36,20 +36,21 @@ feature {NONE} -- Initialization
 			default_size := 100
 			name := a_name
 			create graph.make
-			create places.make (default_size * default_size)
-			places.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
-			create lines.make (default_size)
-			lines.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
-			create line_sections.make (default_size)
-			create roads.make (default_size)
-			create passengers.make
-			create trams.make
-			create busses.make
-			create taxi_offices.make
-			create paths.make
-			create buildings.make
-			create free_movings.make
+			create places.make (default_size * default_size, Current)
+--			places.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
+			create lines.make (default_size, Current)
+--			lines.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
+			create line_sections.make (Current)
+			create roads.make (default_size, Current)
+			create passengers.make (Current)
+			create trams.make (Current)
+			create busses.make (Current)
+			create taxi_offices.make (Current)
+			create paths.make (Current)
+			create buildings.make (Current)
+			create free_movings.make (Current)
 
+--			create changed_items.make
 		ensure
 			name_set: equal (name, a_name)
 			places_not_void: places /= Void
@@ -65,7 +66,21 @@ feature -- TODO
 			-- TODO
 		end
 
+feature -- Status change
+
+--	update is
+--			-- The display of map items have been updated, reset `is_changed'.
+--		do
+--			changed_items.wipe_out
+--		end
+
 feature -- Status report
+
+--	is_changed: BOOLEAN is
+--			-- Has the map changed since last update?
+--		do
+--			Result := not changed_items.is_empty
+--		end
 
 	place_at_position (a_point: TRAFFIC_COORDINATE): TRAFFIC_PLACE	is
 			-- Place that `a_point' is located on
@@ -79,7 +94,7 @@ feature -- Status report
 			from
 				places.start
 			until
-				places.off or Result /= Void
+				places.after or Result /= Void
 			loop
 				if a_point.x > places.item_for_iteration.position.x - places.item_for_iteration.width/2 - tolerance and a_point.x < places.item_for_iteration.position.x + places.item_for_iteration.width/2 + tolerance and
 					a_point.y > places.item_for_iteration.position.y - places.item_for_iteration.breadth/2 - tolerance and a_point.y < places.item_for_iteration.position.y + places.item_for_iteration.breadth/2 + tolerance then
@@ -173,6 +188,9 @@ feature -- Insertion
 
 feature -- Access
 
+--	changed_items: DS_LINKED_LIST [TRAFFIC_MAP_ITEM]
+--			-- Items that have changed since last update
+
 	center: TRAFFIC_COORDINATE
 			-- Position of the city center
 
@@ -194,37 +212,37 @@ feature -- Access
 
 feature -- Access (map objects)
 
-	places: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_PLACE, STRING]
+	places: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_PLACE, STRING]
 			-- All places in map
 
-	line_sections: TRAFFIC_EVENT_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+	line_sections: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 			-- All line sections in map
 
-	lines: TRAFFIC_EVENT_META_HASH_TABLE [TRAFFIC_LINE_CONNECTION, TRAFFIC_LINE, STRING]
+	lines: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_LINE, STRING]
 			-- All lines in map
 
-	roads: TRAFFIC_EVENT_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+	roads: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
 			-- All roads in map
 
-	paths: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PATH]
+	paths: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_PATH]
 			-- Paths of the map
 
-	buildings: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_BUILDING]
+	buildings: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_BUILDING]
 			-- Buildings of the map
 
-	taxi_offices: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_TAXI_OFFICE]
+	taxi_offices: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_TAXI_OFFICE]
 			-- All taxi offices associated with this map
 
-	passengers: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_PASSENGER]
+	passengers: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_PASSENGER]
 			-- All passengers moving around the city
 
-	trams: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_TRAM]
+	trams: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_TRAM]
 			-- All trams in the city
 
-	busses: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_BUS]
+	busses: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_BUS]
 			-- All busses in the city
 
-	free_movings: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_FREE_MOVING]
+	free_movings: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_FREE_MOVING]
 			-- All free moving objects in the city
 
 feature -- Access

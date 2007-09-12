@@ -34,6 +34,7 @@ feature -- Initialization
 			wagons := create {ARRAYED_LIST[TRAFFIC_WAGON]}.make(wagon_limitation)
 
 			speed := Default_virtual_speed
+			create changed_event
 
 		end
 
@@ -61,6 +62,7 @@ feature -- Initialization
 
 			-- Never reiterate
 			set_reiterate (False)
+			create changed_event
 		ensure
 			schedule_set: schedule = a_schedule
 			schedule_offset_set: schedule_offset_minutes = an_offset
@@ -157,6 +159,12 @@ feature -- Constants
 			-- Default speed
 
 feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := True
+		end
 
 	is_valid_line (a_line: TRAFFIC_LINE): BOOLEAN is
 			-- Is `a_line' valid for a tram to move on?

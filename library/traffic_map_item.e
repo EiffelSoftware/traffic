@@ -11,7 +11,7 @@ feature -- Status report
 	is_in_map: BOOLEAN
 		-- Is `Current' a member of the map?
 
-feature -- Element change
+feature {TRAFFIC_EVENT_CONTAINER} -- Basic operations (map)
 
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' to `a_map'.
@@ -19,7 +19,9 @@ feature -- Element change
 			a_map_exists: a_map /= Void
 			not_in_map: not is_in_map
 			insertable: is_insertable (a_map)
-		deferred
+		do
+			is_in_map := True
+			map := a_map
 		ensure
 			is_in_map: is_in_map
 			map_set: map = a_map
@@ -29,10 +31,42 @@ feature -- Element change
 			-- Remove `Current' from `map'.
 		require
 			is_in_map: is_in_map
-		deferred
+		do
+			is_in_map := False
+			map := Void
 		ensure
 			not_in_map: not is_in_map
 			map_unset: map = Void
+		end
+
+feature -- Status setting
+
+--	set_changed is
+--			-- Add `current' to the map's `changed_items'.
+--		require
+--			not_changed_yet: not is_changed
+--		do
+--			map.changed_items.force_last (Current)
+--		ensure
+--			is_changed: is_changed
+--		end
+
+	highlight is
+			-- Highlight.
+		do
+			is_highlighted := True
+			changed_event.publish ([])
+		ensure
+			highlighted: is_highlighted
+		end
+
+	unhighlight is
+			-- Unhighlight.
+		do
+			is_highlighted := False
+			changed_event.publish ([])
+		ensure
+			unhighlighted: not is_highlighted
 		end
 
 feature -- Access
@@ -40,8 +74,7 @@ feature -- Access
 	map: TRAFFIC_MAP
 			-- Map to which the item belongs (may be void)
 
-	changed_event_channel: TRAFFIC_EVENT_CHANNEL [TUPLE []]
-			-- Event channel for notifying observers of a change
+	changed_event: TRAFFIC_EVENT_CHANNEL [TUPLE []]
 
 feature -- Status report
 
@@ -51,8 +84,21 @@ feature -- Status report
 		deferred
 		end
 
+--	is_changed: BOOLEAN is
+--			-- Has a property changed since last update?
+--		require
+--			map_exists: map /= Void
+--		do
+--			Result := map.changed_items.has (Current)
+--		ensure
+--			Result_set: Result = map.changed_items.has (Current)
+--		end
+
+	is_highlighted: BOOLEAN
+			-- Is `Current' highlighted?
+
 invariant
 
-	changed_event_channel_exists: changed_event_channel /= Void
-	
+	changed_event_exists: changed_event /= Void
+
 end

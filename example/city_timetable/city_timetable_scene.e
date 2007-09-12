@@ -118,7 +118,7 @@ feature -- Interface
 		do
 			create Result.make_from_dimension (toolbar_panel.width, 20)
 			create et.make_with_color (255, 0, 0)
-			et.add_to_map (map_widget.map)
+			map_widget.map.taxi_offices.put_last (et)
 			from
 				i := 1
 			until
@@ -129,7 +129,7 @@ feature -- Interface
 				i := i + 1
 			end
 			create dt.make_with_color (0, 255, 0)
-			dt.add_to_map (map_widget.map)
+			map_widget.map.taxi_offices.put_last (dt)
 			from
 				i := 1
 			until
@@ -454,7 +454,7 @@ feature -- Event handling
 			from
 				map_widget.map.passengers.start
 			until
-				map_widget.map.passengers.off
+				map_widget.map.passengers.after
 			loop
 				io.put_string (map_widget.map.passengers.item_for_iteration.position.out + " " + map_widget.map.passengers.item_for_iteration.speed.out + "%N")
 				map_widget.map.passengers.forth
@@ -538,11 +538,11 @@ feature -- Event handling
 		do
 			create r.set_map (map_widget.map)
 			r.generate_random_buildings (10, map_widget.map.radius/3, 3)
-			map_widget.map.buildings.append_last (r.last_buildings)
+			map_widget.map.buildings.append (r.last_buildings, map_widget.map.buildings.count + 1)
 			r.generate_random_buildings (15, map_widget.map.radius*2/3, 2)
-			map_widget.map.buildings.append_last (r.last_buildings)
+			map_widget.map.buildings.append (r.last_buildings, map_widget.map.buildings.count + 1)
 			r.generate_random_buildings (100, map_widget.map.radius, 1)
-			map_widget.map.buildings.append_last (r.last_buildings)
+			map_widget.map.buildings.append (r.last_buildings, map_widget.map.buildings.count + 1)
 --			map_widget.grid_member.set_grid (r.grid)
 --			point_randomizer.generate_point_array (4)
 --			create {TRAFFIC_VILLA} b.make_default (point_randomizer.last_array.item (1))

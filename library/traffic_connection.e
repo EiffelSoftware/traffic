@@ -25,7 +25,7 @@ inherit
 			out, is_equal
 		end
 
-feature -- Initialization
+feature {NONE} -- Initialization
 
 	make_directed (a_start_node, a_end_node: like start_node) is
 		require
@@ -35,7 +35,7 @@ feature -- Initialization
 			end_node := a_end_node
 			is_directed := True
 			create state.make
-			create changed_event_channel
+			create changed_event
 		ensure
 			nodes_not_void: start_node /= Void and
 							end_node /= Void
@@ -50,6 +50,7 @@ feature -- Element change
 			a_state_exists: a_state /= Void
 		do
 			state := a_state
+			changed_event.publish ([])
 		ensure
 			state_set: state = a_state
 		end
@@ -60,6 +61,7 @@ feature -- Element change
 			a_polypoints_exist: a_polypoints /= Void
 		do
 			polypoints.copy (a_polypoints)
+			changed_event.publish ([])
 		ensure
 			polypoints_exists: polypoints /= Void
 		end
@@ -68,6 +70,9 @@ feature -- Element change
 			-- Remove polypoints.
 		do
 			polypoints.wipe_out
+			changed_event.publish ([])
+		ensure
+			polypoints_empty: polypoints.is_empty
 		end
 
 feature -- Access

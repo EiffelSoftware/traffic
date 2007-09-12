@@ -43,6 +43,7 @@ feature -- Initialization
 			set_edge_color (default_color)
 			is_shown := True
 			is_highlighted := False
+			item.changed_event.subscribe (agent update)
 		ensure then
 			internal_color_exists: internal_color /= Void
 		end
@@ -81,6 +82,30 @@ feature -- Status setting
 
 feature -- Basic operations
 
+	update is
+			--
+		do
+			if item.is_highlighted then
+				if highlight_color /= Void then
+					set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+					set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+				else
+					set_internal_color (default_highlight_color)
+					set_edge_color (default_highlight_color)
+				end
+			else
+				if color /= Void then
+					set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+					set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+				else
+					set_internal_color (default_color)
+					set_edge_color (default_color)
+				end
+			end
+			set_points (    create {REAL_COORDINATE}.make ((item.position.x-(item.width/2).max(5)), (-item.position.y-(item.breadth/2).max(5))),
+							create {REAL_COORDINATE}.make ((item.position.x+(item.width/2).max(5)), (-item.position.y+(item.breadth/2).max(5))))
+		end
+
 	highlight is
 			-- Highlight the place view.
 		do
@@ -118,7 +143,7 @@ feature -- Constants
 	default_highlight_color: EV_COLOR is
 			-- Default highlight color
 		once
-			create Result.make_with_8_bit_rgb (255, 0, 0)
+			create Result.make_with_8_bit_rgb (0, 255, 0)
 		end
 
 end

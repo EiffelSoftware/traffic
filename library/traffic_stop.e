@@ -30,7 +30,7 @@ feature {NONE} -- Creation
 			position := a_position
 			item := Current
 			create connection_list.make
-			create changed_event_channel
+			create changed_event
 			place.add_stop (Current)
 		ensure
 			stop_added: place.stops.has (Current)

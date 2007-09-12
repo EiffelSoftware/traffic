@@ -13,7 +13,9 @@ inherit
 			out,
 			start_node,
 			end_node,
-			type
+			type,
+			add_to_map,
+			remove_from_map
 		end
 
 
@@ -90,6 +92,7 @@ feature -- Element change
 			a_roads_exist: a_roads /= Void
 		do
 			roads.copy (a_roads)
+			changed_event.publish ([])
 		ensure
 			equal (roads, a_roads)
 			roads_exists: roads /= Void
@@ -102,6 +105,9 @@ feature -- Basic operations
 			-- Remove roads.
 		do
 			roads.wipe_out
+			changed_event.publish ([])
+		ensure
+			roads_empty: roads.is_empty
 		end
 
 feature -- Status report
@@ -166,6 +172,7 @@ feature {TRAFFIC_LINE} -- Status setting
 			line_not_set: line = Void
 		do
 			line := a_line
+			changed_event.publish ([])
 		ensure
 			line_set: line = a_line
 		end
@@ -176,6 +183,7 @@ feature {TRAFFIC_LINE} -- Status setting
 			line_set: line /= Void
 		do
 			line := Void
+			changed_event.publish ([])
 		ensure
 			line_void: line = Void
 		end
@@ -186,11 +194,9 @@ feature {TRAFFIC_LINE} -- Basic operations (map)
 			-- Add `Current' and all nodes to `a_map'.
 		do
 			a_map.graph.put_line_section (Current)
-			a_map.line_sections.force_last (Current)
 			is_in_map := True
 			map := a_map
 		ensure then
-			map_has: a_map.line_sections.has (Current)
 			graph_has: a_map.graph.has_edge (Current)
 		end
 
@@ -199,7 +205,6 @@ feature {TRAFFIC_LINE} -- Basic operations (map)
 		do
 			is_in_map := False
 			map := Void
-
 		end
 
 invariant

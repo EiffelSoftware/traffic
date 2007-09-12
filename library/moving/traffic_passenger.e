@@ -39,6 +39,7 @@ feature -- Initialization
 			update_coordinates
 			update_angle
 			speed := a_speed
+			create changed_event
 		end
 
 feature -- Access
@@ -62,6 +63,12 @@ feature -- Access
 			-- Number of stops from line start until where to get off
 
 feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := True
+		end
 
 	direction_line_back: BOOLEAN
 			-- In which direction to travel?

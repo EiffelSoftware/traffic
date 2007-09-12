@@ -45,6 +45,7 @@ feature -- Initialization
 			set_internal_color (default_color)
 			is_shown := True
 			is_highlighted := False
+			item.changed_event.subscribe (agent update)
 		ensure then
 			internal_color_exists: internal_color /= Void
 			edge_color_exists: edge_color /= Void
@@ -83,6 +84,32 @@ feature -- Status setting
 		end
 
 feature -- Basic operations
+
+	update is
+			-- Update view to represent item.
+		do
+			if item.is_highlighted then
+				if highlight_color /= Void then
+					set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+					set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+				else
+					set_edge_color (default_highlight_color)
+					set_internal_color (default_highlight_color)
+				end
+			else
+				if color /= Void then
+					set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+					set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+				else
+					set_edge_color (default_color)
+					set_internal_color (default_color)
+				end
+			end
+			set_points (    create {REAL_COORDINATE}.make (item.corner_1.x, -item.corner_1.y),
+							create {REAL_COORDINATE}.make (item.corner_3.x, -item.corner_3.y))
+
+		end
+
 
 	highlight is
 			-- Highlight the place view.

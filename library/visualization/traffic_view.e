@@ -44,6 +44,11 @@ feature -- Status setting
 
 feature -- Basic operations
 
+	update is
+			-- Update `Current' to reflect changes in `item'.
+		deferred
+		end
+
 	highlight is
 			-- Highlight the place view.
 		deferred

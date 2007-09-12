@@ -210,6 +210,7 @@ feature -- Basic operations
 					internal_moving_representations.forth
 				end
 			end
+
 		end
 
 	background_image: EV_PIXMAP

@@ -14,7 +14,9 @@ inherit
 
 	TRAFFIC_MAP_ITEM
 		undefine
-			out
+			out,
+			add_to_map,
+			remove_from_map
 		end
 
 create
@@ -29,12 +31,12 @@ feature {NONE} -- Initialize
 			a_name_not_empty: not a_name.is_empty
 		do
 			name := a_name
+			create changed_event
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
 			create dummy_node.make_with_place (Current, create {TRAFFIC_COORDINATE}.make (0.0, 0.0))
 			add_node (dummy_node)
-			create changed_event_channel
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -47,12 +49,12 @@ feature {NONE} -- Initialize
 			a_name_not_empty: not a_name.is_empty
 		do
 			name := a_name
+			create changed_event
 			create dummy_node.make_with_place (Current, create {TRAFFIC_COORDINATE}.make (a_x, a_y))
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
 			add_node (dummy_node)
-			create changed_event_channel
 		ensure
 			name_set: equal (a_name, name)
 			position_exists: position /= Void
@@ -165,12 +167,11 @@ feature -- Status report
 			end
 		end
 
-feature -- Basic operations (map)
+feature {TRAFFIC_MAP_ITEM_LINKED_LIST}-- Basic operations (map)
 
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.
 		do
-			a_map.places.force (Current, name)
 			is_in_map := True
 			map := a_map
 			from
@@ -181,8 +182,6 @@ feature -- Basic operations (map)
 				nodes.item.add_to_map (a_map)
 				nodes.forth
 			end
-		ensure then
-			map_has: a_map.places.has (name)
 		end
 
 	remove_from_map is
@@ -200,6 +199,7 @@ feature -- Element change
 			a_information_exists: a_information /= Void
 		do
 			information := a_information
+			changed_event.publish ([])
 		ensure
 			information_set: information = a_information
 		end
@@ -210,6 +210,7 @@ feature -- Element change
 			a_position_exists: a_position /= Void
 		do
 			dummy_node.set_position (a_position)
+			changed_event.publish ([])
 		ensure
 			position_set: position = a_position
 		end
@@ -245,6 +246,7 @@ feature {TRAFFIC_NODE} -- Insertion
 			if is_in_map then
 				a_stop.add_to_map (map)
 			end
+			changed_event.publish ([])
 		end
 
 	add_node (a_node: TRAFFIC_NODE) is
@@ -261,6 +263,7 @@ feature {TRAFFIC_NODE} -- Insertion
 					a_node.add_to_map (map)
 				end
 			end
+			changed_event.publish ([])
 		end
 
 feature -- Output

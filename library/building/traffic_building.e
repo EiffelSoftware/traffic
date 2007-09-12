@@ -16,6 +16,8 @@ inherit
 	MATH_CONST
 		export {NONE} all end
 
+	TRAFFIC_MAP_ITEM
+
 feature {NONE} -- Initialization
 
 	make_new (a_width, a_depth, a_height: DOUBLE; a_center: TRAFFIC_COORDINATE) is
@@ -28,12 +30,13 @@ feature {NONE} -- Initialization
 			height := a_height
 			depth := a_depth
 			center := a_center
+			create changed_event
 		ensure
 			size_set: width = a_width and height = a_height and depth = a_depth
 			center_set: center = a_center
 		end
 
-feature -- Access
+feature -- Status report
 
 	is_villa: BOOLEAN
 			-- Is the building a villa?
@@ -43,6 +46,15 @@ feature -- Access
 
 	is_skyscraper: BOOLEAN
 			-- Is the building a skyscraper?
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+			-- (All nodes need to be insertable. See `TRAFFIC_NODE is_insertable' for requirements.)
+		do
+			Result := True
+		end
+
+feature -- Access
 
 	center: TRAFFIC_COORDINATE
 			-- Center of the building
@@ -168,6 +180,7 @@ feature -- Element change
 			a_description_valid: a_description /= void
 		do
 			description := a_description
+			changed_event.publish ([])
 		ensure
 			description_set: description = a_description
 		end
@@ -178,6 +191,7 @@ feature -- Element change
 			angle_valid: an_angle >= -70 and an_angle <=70
 		do
 			angle := an_angle
+			changed_event.publish ([])
 		ensure
 			angle_set: angle = an_angle
 		end
@@ -188,6 +202,7 @@ feature -- Element change
 	 		a_center_valid: a_center /= Void
 	 	do
 	 		center := a_center
+			changed_event.publish ([])
 		ensure
 			center_set: center = a_center
 	 	end

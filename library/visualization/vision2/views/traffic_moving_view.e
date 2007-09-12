@@ -47,6 +47,15 @@ feature -- Initialization
 			internal_color_exists: internal_color /= Void
 		end
 
+feature -- Basic operations
+
+	update is
+			--
+		do
+
+		end
+
+
 feature -- Constants
 
 	default_color: EV_COLOR is

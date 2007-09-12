@@ -111,16 +111,16 @@ feature -- Factory methods
 		require
 			a_bus_exists: a_bus /= Void
 		do
-			if tram_template = Void then
-				tram_template := load_template ("bus.obj")
+			if bus_template = Void then
+				bus_template := load_template ("bus.obj")
 			end
-			if tram_night_template = Void then
-				tram_night_template := load_template ("bus.obj")
+			if bus_night_template = Void then
+				bus_night_template := load_template ("bus.obj")
 			end
-			create Result.make_with_item (a_bus, tram_template.create_deep_instance, tram_night_template.create_deep_instance)
-			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (255, 0, 0))
-			Result.day_graphical.transform.set_scaling (50, 50, 50)
-			Result.night_graphical.transform.set_scaling (50, 50, 50)
+			create Result.make_with_item (a_bus, bus_template.create_deep_instance, bus_night_template.create_deep_instance)
+--			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (255, 0, 0))
+			Result.day_graphical.transform.set_scaling (0.1, 0.1, 0.1)
+			Result.night_graphical.transform.set_scaling (0.1, 0.1, 0.1)
 		end
 
 feature {NONE} -- Implementation
@@ -133,6 +133,12 @@ feature {NONE} -- Implementation
 
 	tram_template: TE_3D_NODE
 			-- template to create a tram traveler
+
+	bus_template: TE_3D_NODE
+			-- template to create a bus traveler
+
+	bus_night_template: TE_3D_NODE
+			-- template to create a bus traveler
 
 	tram_night_template: TE_3D_NODE
 			-- template to create a tram traveler
