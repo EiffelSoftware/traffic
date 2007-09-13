@@ -79,6 +79,7 @@ feature {TRAFFIC_ROAD} -- Basic operations
 	remove_from_map is
 			-- Remove all nodes from `a_map'.
 		do
+			map.graph.prune_edge (Current)
 			is_in_map := False
 			map := Void
 		end
@@ -91,6 +92,12 @@ feature -- Status report
 		do
 			Result := 	start_node.is_in_map and end_node.is_in_map and
 						origin.is_in_map and destination.is_in_map
+		end
+
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
 		end
 
 invariant

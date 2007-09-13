@@ -167,6 +167,36 @@ feature -- Status report
 			end
 		end
 
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+			-- Only internal exchange connections are allowed...
+		local
+			l: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
+			ex: TRAFFIC_EXCHANGE_CONNECTION
+			i: INTEGER
+		do
+			Result := True
+			from
+				nodes.start
+			until
+				nodes.after
+			loop
+				l := nodes.item.connection_list
+				from
+					i := 1
+				until
+					i > l.count
+				loop
+					ex ?= l.i_th (i)
+					if ex = Void then
+						Result := False
+					end
+					i := i + 1
+				end
+				nodes.forth
+			end
+		end
+
 feature {TRAFFIC_MAP_ITEM_LINKED_LIST}-- Basic operations (map)
 
 	add_to_map (a_map: TRAFFIC_MAP) is
@@ -187,6 +217,14 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST}-- Basic operations (map)
 	remove_from_map is
 			-- Remove all nodes from `a_map'.
 		do
+			from
+				nodes.start
+			until
+				nodes.after
+			loop
+				nodes.item.remove_from_map
+				nodes.forth
+			end
 			is_in_map := False
 			map := Void
 		end

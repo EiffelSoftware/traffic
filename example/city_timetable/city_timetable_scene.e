@@ -395,7 +395,7 @@ feature -- Event handling
 					loop
 						if map_widget.map.lines.item_for_iteration.type.name.is_equal ("tram") then
 							create tram.make_with_line (map_widget.map.lines.item_for_iteration)
-							tram.set_to_station (map_widget.map.lines.item_for_iteration.item (i).origin)
+							tram.set_to_station (map_widget.map.lines.item_for_iteration.i_th (i))
 							map_widget.map.trams.put_last (tram)
 							io.put_string (map_widget.map.lines.item_for_iteration.name + " Tram " + tram.position.out + "%N")
 							tram.start
@@ -407,7 +407,7 @@ feature -- Event handling
 --							tram.start
 						elseif map_widget.map.lines.item_for_iteration.type.name.is_equal ("bus") then
 							create bus.make_with_line (map_widget.map.lines.item_for_iteration)
-							bus.set_to_station (map_widget.map.lines.item_for_iteration.item (i).origin)
+							bus.set_to_station (map_widget.map.lines.item_for_iteration.i_th (i))
 							bus.set_speed (5)
 							map_widget.map.busses.put_last (bus)
 							io.put_string (map_widget.map.lines.item_for_iteration.name + " Bus " + bus.position.out + "%N")

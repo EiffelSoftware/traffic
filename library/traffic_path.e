@@ -79,6 +79,12 @@ feature -- Status report
 			Result := True
 		end
 
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
+		end
+
 	is_valid_for_insertion (a_connection: TRAFFIC_CONNECTION): BOOLEAN is
 			-- Is `a_connection' valid for insertion?
 		require

@@ -9,6 +9,10 @@ deferred class
 inherit
 
 	TRAFFIC_VEHICLE
+		export {TRAFFIC_TAXI_OFFICE}
+			add_to_map,
+			remove_from_map
+		end
 
 feature {NONE} -- Initialization
 
@@ -30,6 +34,18 @@ feature -- Access
 			-- Taxi office the taxi works for
 
 feature -- Status report
+
+	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
+			-- Is `Current' insertable into `a_map'?
+		do
+			Result := True
+		end
+
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
+		end
 
 	busy: BOOLEAN
 			--Is taxi busy?

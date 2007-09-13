@@ -44,6 +44,9 @@ feature -- Basic operations
 			available_taxis.force_last(a_taxi)
 			taxis.force_last (available_taxis.last)
 			available_taxis.start
+			if is_in_map then
+				a_taxi.add_to_map (map)
+			end
 		end
 
 

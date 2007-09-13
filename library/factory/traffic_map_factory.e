@@ -26,7 +26,8 @@ feature {NONE} -- Initialization
 		ensure then
 			everything_void: internal_map = Void and
 							 internal_place = Void and
-							 internal_line_section = Void and
+							 internal_one_direction = Void and
+							 internal_other_direction = Void and
 							 internal_line = Void
 							 internal_road=Void
 		end
@@ -38,12 +39,14 @@ feature -- Initialization
 		do
 			internal_map := Void
 			internal_place := Void
-			internal_line_section := Void
+			internal_one_direction := Void
+			internal_other_direction := Void
 			internal_line := Void
 		ensure
 			everything_void: internal_map = Void and
 							 internal_place = Void and
-							 internal_line_section = Void and
+							 internal_one_direction = Void and
+							 internal_other_direction = Void and
 							 internal_line = Void
 							 internal_road= Void
 		end
@@ -175,22 +178,57 @@ feature -- Line section building
 				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 
-			create internal_line_section.make (origin_stop, destination_stop, a_line.type, pps)
-			a_line.extend (internal_line_section)
+			create internal_one_direction.make (origin_stop, destination_stop, a_line.type, pps)
+
+			if a_polypoints = Void or else a_polypoints.count < 2 then
+				create pps.make (2)
+				pps.force_last (a_map.places.item (a_destination).position)
+				pps.force_last (a_map.places.item (a_origin).position)
+			else
+				pps := a_polypoints
+			end
+			origin_place := a_map.places.item (a_destination)
+			destination_place := a_map.places.item (a_origin)
+
+			if origin_place.has_stop (a_line) then
+				origin_stop := origin_place.stop (a_line)
+			else
+				create stop_pos.make_from_other (pps.first)
+				create origin_stop.make_stop (origin_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+			end
+
+			if destination_place.has_stop (a_line) then
+				destination_stop := destination_place.stop (a_line)
+			else
+				create stop_pos.make_from_other (pps.last)
+				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+			end
+			create internal_other_direction.make (origin_stop, destination_stop, a_line.type, pps)
+			a_line.put_last (internal_one_direction, internal_other_direction)
 		ensure
-			line_section_created: line_section /= Void
-			line_section_has_line: line_section.line = a_line
-			line_section_has_type: equal (line_section.type, a_line.type)
-			line_section_has_origin: line_section.origin = a_map.places.item (a_origin)
-			line_section_has_destination: line_section.destination = a_map.places.item (a_destination)
+			line_section_created: connection_one_direction /= Void and connection_other_direction /= Void
+			line_section_has_line: connection_one_direction.line = a_line and connection_other_direction.line = a_line
+			line_section_has_type: equal (connection_one_direction.type, a_line.type) and equal (connection_one_direction.type, a_line.type)
+			line_section_has_origin: connection_one_direction.origin = a_map.places.item (a_origin) and connection_other_direction.destination = a_map.places.item (a_origin)
+			line_section_has_destination: connection_one_direction.destination = a_map.places.item (a_destination) and connection_other_direction.origin = a_map.places.item (a_destination)
 		end
 
-	line_section: TRAFFIC_LINE_CONNECTION is
+	connection_one_direction: TRAFFIC_LINE_CONNECTION is
 			-- Generated traffic line section object.
 		require
 			line_section_available: has_line_section
 		do
-			Result := internal_line_section
+			Result := internal_one_direction
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	connection_other_direction: TRAFFIC_LINE_CONNECTION is
+			-- Generated traffic line section object.
+		require
+			line_section_available: has_line_section
+		do
+			Result := internal_other_direction
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -198,7 +236,7 @@ feature -- Line section building
 	has_line_section: BOOLEAN is
 			-- Is there a line section object available?
 		do
-			Result := internal_line_section /= Void
+			Result := internal_one_direction /= Void and internal_other_direction /= Void
 		end
 
 feature -- Road section building
@@ -263,7 +301,6 @@ feature -- Traffic line building
 			actual_traffic_type ?= internal_traffic_type
 			create internal_line.make (a_name, actual_traffic_type)
 			a_map.lines.force (internal_line, internal_line.name)
---			internal_line.add_to_map (a_map)
 		ensure
 			line_created: line /= Void
 			line_has_name: equal (line.name, a_name)
@@ -287,48 +324,6 @@ feature -- Traffic line building
 			Result := internal_line /= Void
 		end
 
-feature -- Traffic simple line building
-
-	build_simple_line (a_name: STRING; a_type_name: STRING; a_map: TRAFFIC_MAP) is
-			-- Generate new traffic simple line object with name `name' and type `type'
-			-- belonging to map `a_map'.
-			-- (Access the generated object through feature `simple_line')
-		require
-			a_name_exists: a_name /= Void
-			a_name_not_empty: not a_name.is_empty
-			a_map_exists: a_map /= Void
-			type_name_is_valid: valid_name (a_type_name)
-		local
-			actual_traffic_type: TRAFFIC_TYPE_LINE
-		do
-			build_traffic_type (a_type_name)
-			actual_traffic_type ?= internal_traffic_type
-			create internal_simple_line.make (a_name, actual_traffic_type, a_map)
-			a_map.lines.force (internal_simple_line, internal_simple_line.name)
---			internal_simple_line.add_to_map (a_map)
-		ensure
-			simple_line_created: simple_line /= Void
-			simple_line_has_name: equal (simple_line.name, a_name)
-			simple_line_has_type: equal (simple_line.type.name, a_type_name)
-			simple_line_in_map: a_map.lines.has (a_name)
-		end
-
-	simple_line: TRAFFIC_SIMPLE_LINE is
-			-- Generated traffic simple line object.
-		require
-			simple_line_available: has_simple_line
-		do
-			Result := internal_simple_line
-		ensure
-			Result_exists: Result /= Void
-		end
-
-	has_simple_line: BOOLEAN is
-			-- Is there a traffic simple line object available?
-		do
-			Result := internal_simple_line /= Void
-		end
-
 feature {NONE} -- Implementation
 
 	traffic_type_factory: TRAFFIC_TYPE_FACTORY
@@ -337,7 +332,7 @@ feature {NONE} -- Implementation
 	internal_place: TRAFFIC_PLACE
 			-- Internal representation of last created traffic place.
 
-	internal_line_section: TRAFFIC_LINE_CONNECTION
+	internal_one_direction, internal_other_direction: TRAFFIC_LINE_CONNECTION
 			-- Internal representation of last created traffic line section.
 
 	internal_line: TRAFFIC_LINE
@@ -345,9 +340,6 @@ feature {NONE} -- Implementation
 
 	internal_road: TRAFFIC_ROAD
 			-- Internal representation of last created traffic road.
-
-	internal_simple_line: TRAFFIC_SIMPLE_LINE
-			-- Internal representation of last created traffic simple line.
 
 	internal_map: TRAFFIC_MAP
 			-- Internal representation of last created traffic map.

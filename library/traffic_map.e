@@ -40,7 +40,7 @@ feature {NONE} -- Initialization
 --			places.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
 			create lines.make (default_size, Current)
 --			lines.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
-			create line_sections.make (Current)
+			create line_sections.make
 			create roads.make (default_size, Current)
 			create passengers.make (Current)
 			create trams.make (Current)
@@ -215,7 +215,7 @@ feature -- Access (map objects)
 	places: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_PLACE, STRING]
 			-- All places in map
 
-	line_sections: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
+	line_sections: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 			-- All line sections in map
 
 	lines: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_LINE, STRING]

@@ -95,6 +95,12 @@ feature -- Status report
 			Result := connection_list.is_empty
 		end
 
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
+		end
+
 feature {TRAFFIC_PLACE} -- Basic operations (map)
 
 	add_to_map (a_map: TRAFFIC_MAP) is
@@ -128,6 +134,7 @@ feature {TRAFFIC_PLACE} -- Basic operations (map)
 	remove_from_map is
 			-- Remove all nodes from `a_map'.
 		do
+			map.graph.prune_node (Current)
 			is_in_map := False
 			map := Void
 		end
@@ -152,6 +159,5 @@ invariant
 	position_not_void: position /= Void
 	item_is_self: item = Current
 	connection_list_exists: connection_list /= Void
-	node_in_map: is_in_map implies map.graph.has_node (Current)
 
 end

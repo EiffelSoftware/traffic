@@ -85,12 +85,4 @@ feature -- Basic operations
 			end
 		end
 
-feature -- Status report
-
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
-		do
-			Result := True
-		end
-
 end

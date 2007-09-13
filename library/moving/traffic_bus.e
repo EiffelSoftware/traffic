@@ -53,6 +53,12 @@ feature -- Status report
 			Result := True
 		end
 
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
+		end
+
 	is_valid_line (a_line: TRAFFIC_LINE): BOOLEAN is
 			-- Is `a_line' valid for a tram to move on?
 		do

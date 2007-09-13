@@ -22,6 +22,9 @@ inherit
 	TRAFFIC_MAP_ITEM
 		undefine
 			default_create
+		redefine
+			add_to_map,
+			remove_from_map
 		end
 
 feature {NONE} -- Initialization
@@ -111,6 +114,44 @@ feature -- Status report
 			-- Is `Current' insertable into `a_map'?
 		do
 			Result := True
+		end
+
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
+		end
+
+feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
+
+	add_to_map (a_map: TRAFFIC_MAP) is
+			-- Add `Current' and all taxis to `a_map'.
+		do
+			is_in_map := True
+			map := a_map
+			from
+				taxis.start
+			until
+				taxis.after
+			loop
+				taxis.item_for_iteration.add_to_map (map)
+				taxis.forth
+			end
+		end
+
+	remove_from_map is
+			-- Remove all nodes from `a_map'.
+		do
+			from
+				taxis.start
+			until
+				taxis.off
+			loop
+				taxis.item_for_iteration.remove_from_map
+				taxis.forth
+			end
+			is_in_map := False
+			map := Void
 		end
 
 feature {TRAFFIC_TAXI} -- Basic operations for taxis

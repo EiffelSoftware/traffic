@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Linked list that contains map items, calls add_to_map and remove_from_map on insertion and deletion, and throws events when a new item is added/removed"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -136,6 +135,7 @@ feature -- Insertion
 				c.off
 			loop
 				element_inserted_event.publish ([c.item])
+				c.item.add_to_map (map)
 				c.forth
 			end
 		ensure
@@ -177,6 +177,7 @@ feature -- Insertion
 		require
 			is_insertable: v.is_insertable (map)
 			not_in_map: not v.is_in_map
+			is_removable: item (i).is_removable
 			valid_index: 1 <= i and i <= count
 		do
 			element_removed_event.publish ([internal_list.item (i)])
@@ -211,6 +212,7 @@ feature -- Removal
 			-- Move any cursors at this position forth.
 		require
 			not_empty: not is_empty
+			is_removable: item (1).is_removable
 		do
 			element_removed_event.publish ([internal_list.first])
 			internal_list.first.remove_from_map
@@ -224,6 +226,7 @@ feature -- Removal
 			-- Move any cursors at this position forth.
 		require
 			not_empty: not is_empty
+			is_removable: item (count).is_removable
 		do
 			element_removed_event.publish ([internal_list.last])
 			internal_list.last.remove_from_map
@@ -238,6 +241,7 @@ feature -- Removal
 		require
 			not_empty: not is_empty
 			valid_index: 1 <= i and i <= count
+			is_removable: item (i).is_removable
 		do
 			element_removed_event.publish ([internal_list.item (i)])
 			internal_list.item (i).remove_from_map
@@ -252,6 +256,7 @@ feature -- Removal
 			-- (Performance: O(count-n).)
 		require
 			valid_n: 0 <= n and n <= count
+			-- all items need to be removable...
 		local
 			c: DS_LINKED_LIST_CURSOR [G]
 		do
@@ -274,6 +279,8 @@ feature -- Removal
 	wipe_out is
 			-- Remove all items from list.
 			-- Move all cursors off.
+		require
+			-- All items need to be removable
 		do
 			from
 				start
@@ -292,6 +299,8 @@ feature -- Removal
 	delete (v: like item_for_iteration) is
 			-- Remove all occurrences of `v'.
 			-- Move all cursors off.
+		require
+			is_removable: v.is_removable
 		do
 			internal_list.delete (v)
 			v.remove_from_map

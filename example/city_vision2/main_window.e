@@ -27,36 +27,28 @@ feature {NONE} -- Initialization
 
 	initialize is
 			-- Build the interface for this window.
+		local
+			t: TIME
 		do
 			Precursor {EV_TITLED_WINDOW}
-
-				-- Create and add the menu bar.
---			build_standard_menu_bar
---			set_menu_bar (standard_menu_bar)
-
 				-- Create and add the toolbar.
 			build_standard_toolbar
 			upper_bar.extend (create {EV_HORIZONTAL_SEPARATOR})
 			upper_bar.extend (standard_toolbar)
-
 				-- Create and add the status bar.
 			build_standard_status_bar
 			lower_bar.extend (standard_status_bar)
-
 			build_main_container
 			extend (main_container)
-
 				-- Execute `request_close_window' when the user clicks
 				-- on the cross in the title bar.
 			close_request_actions.extend (agent request_close_window)
-
 				-- Set the title of the window
 			set_title (Window_title)
-
 				-- Set the initial size of the window
 			set_size ((canvas.width*1.2).floor, (canvas.height*1.2).floor)
-
-			create random.set_seed (198273)
+			create t.make_now
+			create random.set_seed (t.compact_time)
 		end
 
 
@@ -211,7 +203,7 @@ feature {NONE} -- StatusBar Implementation
 			standard_status_bar.set_border_width (2)
 
 				-- Populate the status bar.
-			create standard_status_label.make_with_text ("Add your status text here...")
+			create standard_status_label.make_with_text ("Please open a map...")
 			standard_status_label.align_text_left
 			standard_status_bar.extend (standard_status_label)
 
@@ -262,7 +254,7 @@ feature {NONE} -- Implementation, Close event
 		do
 			create dlg.make_with_title ("Open map file")
 			dlg.filters.extend (["*.xml", "Traffic xml files (*.xml)"] )
-			dlg.ok_actions.extend (agent open_file (dlg))
+			dlg.open_actions.extend (agent open_file (dlg))
 			dlg.show_modal_to_window (Current)
 		end
 
@@ -271,14 +263,9 @@ feature {NONE} -- Implementation, Close event
 		local
 			loader: TRAFFIC_MAP_LOADER
 			dlg: EV_MESSAGE_DIALOG
-			n,i: INTEGER
-			s: STRING
-			list: LIST [STRING]
-			w: INTEGER
-			h: INTEGER
 		do
 			create loader.make (a_dlg.file_name)
-			loader.enable_dump_loading
+			loader.disable_dump_loading
 			loader.load_map
 			if not loader.has_error then
 				if canvas.map /= Void and then canvas.map.time.is_time_running then
@@ -292,9 +279,16 @@ feature {NONE} -- Implementation, Close event
 				canvas.map.time.set_speedup (50)
 				canvas.map.time.start
 				move_to_center
+				from
+					fixed.start
+				until
+					fixed.after
+				loop
+					fixed.item.enable_sensitive
+					fixed.forth
+				end
 			else
 				create dlg.make_with_text ("Error parsing" + a_dlg.file_name)
-				io.put_string ("bad error!!")
 				dlg.show
 			end
 		end
@@ -302,7 +296,6 @@ feature {NONE} -- Implementation, Close event
 	add_buildings is
 			-- Add buildings to the city.
 		local
-			b: TRAFFIC_BUILDING
 			r: TRAFFIC_BUILDING_RANDOMIZER
 		do
 			create r.set_map (canvas.map)
@@ -340,7 +333,6 @@ feature {NONE} -- Implementation, Close event
 			-- Add as many line vehicles to the city, so that there are `a_value' per line (or remove some if needed).
 		local
 			tram: TRAFFIC_TRAM
-			train: TRAFFIC_TRAM -- Todo add trains
 			bus: TRAFFIC_BUS
 			i: INTEGER
 		do
@@ -356,20 +348,18 @@ feature {NONE} -- Implementation, Close event
 						from
 							i := 1
 						until
-							i > a_value or else i = canvas.map.lines.item_for_iteration.count
+							i > a_value or else i > canvas.map.lines.item_for_iteration.count
 						loop
 							if canvas.map.lines.item_for_iteration.type.name.is_equal ("tram") then
 								create tram.make_with_line (canvas.map.lines.item_for_iteration)
-								tram.set_to_station (canvas.map.lines.item_for_iteration.item (i).origin)
+								tram.set_to_station (canvas.map.lines.item_for_iteration.i_th (i))
 								canvas.map.trams.put_last (tram)
-								io.put_string (canvas.map.lines.item_for_iteration.name + " Tram " + tram.position.out + "%N")
 								tram.start
 							elseif canvas.map.lines.item_for_iteration.type.name.is_equal ("bus") then
 								create bus.make_with_line (canvas.map.lines.item_for_iteration)
-								bus.set_to_station (canvas.map.lines.item_for_iteration.item (i).origin)
+								bus.set_to_station (canvas.map.lines.item_for_iteration.i_th (i))
 								bus.set_speed (5)
 								canvas.map.busses.put_last (bus)
-								io.put_string (canvas.map.lines.item_for_iteration.name + " Bus " + bus.position.out + "%N")
 								bus.start
 							end
 							i := i + 1
@@ -410,7 +400,6 @@ feature {NONE} -- Implementation, Close event
 		local
 			passenger: TRAFFIC_PASSENGER
 			i: INTEGER
-			path_finder: TRAFFIC_PATH_CALCULATOR
 		do
 			if a_value > canvas.map.passengers.count then
 				-- Add more
@@ -420,11 +409,12 @@ feature {NONE} -- Implementation, Close event
 				loop
 					path_randomizer.generate_path (6)
 					random.forth
-
-					create passenger.make_with_path (path_randomizer.last_path, random.double_item*3 + 0.1)
-					canvas.map.passengers.put_last (passenger)
-					passenger.set_reiterate (True)
-					passenger.start
+					if path_randomizer.last_path.first /= Void then
+						create passenger.make_with_path (path_randomizer.last_path, random.double_item*3 + 0.1)
+						canvas.map.passengers.put_last (passenger)
+						passenger.set_reiterate (True)
+						passenger.start
+					end
 					i := i + 1
 				end
 			elseif a_value < canvas.map.passengers.count then
@@ -436,7 +426,7 @@ feature {NONE} -- Implementation, Close event
 	add_paths (a_value: INTEGER) is
 			-- Add `a_value' number of paths to the city (or remove if needed).
 		local
-			i, g, b: INTEGER
+			g, b: INTEGER
 			p: ARRAY [TRAFFIC_PLACE]
 			p1, p2: TRAFFIC_PLACE
 			c: TRAFFIC_PATH_CALCULATOR
@@ -458,14 +448,13 @@ feature {NONE} -- Implementation, Close event
 					p2 := p.item (random.item \\ p.count + 1)
 					if p1 /= p2 then
 						c.find_shortest_path (p1, p2)
-						random.forth
-						g := random.item \\ 256
-						random.forth
-						b := random.item \\ 256
-						canvas.map.paths.put_last (c.path)
-						io.put_string (c.path.out + "%N")
---						canvas.paths_representation.set_colors (create {EM_COLOR}.make_with_rgb (255, g, b), create {EM_COLOR}.make_with_rgb (255, g, b))
---						event_loop.process_events
+						if c.path /= Void then
+							random.forth
+							g := random.item \\ 256
+							random.forth
+							b := random.item \\ 256
+							canvas.map.paths.put_last (c.path)
+						end
 					end
 				end
 			elseif a_value < canvas.map.paths.count then
@@ -496,7 +485,7 @@ feature {NONE} -- Implementation, Close event
 			-- Add random map items
 		local
 			l: TRAFFIC_LINE
-			lc: TRAFFIC_LINE_CONNECTION
+			lc1, lc2: TRAFFIC_LINE_CONNECTION
 			r, g, b: INTEGER
 			p1, p2: TRAFFIC_PLACE
 			s1, s2: TRAFFIC_STOP
@@ -528,8 +517,12 @@ feature {NONE} -- Implementation, Close event
 			create pp.make (2)
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
-			create lc.make (s1, s2, l.type, pp)
-			l.extend (lc)
+			create lc1.make (s1, s2, l.type, pp)
+			create pp.make (2)
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+			create lc2.make (s2, s1, l.type, pp)
+			l.put_last (lc1, lc2)
 			canvas.map.lines.force (l, l.name)
 		end
 
@@ -537,8 +530,7 @@ feature {NONE} -- Implementation, Close event
 			-- Add random map items
 		local
 			l: TRAFFIC_LINE
-			lc: TRAFFIC_LINE_CONNECTION
-			r, g, b: INTEGER
+			lc1, lc2: TRAFFIC_LINE_CONNECTION
 			p1, p2: TRAFFIC_PLACE
 			s1, s2: TRAFFIC_STOP
 			pt: ARRAY [TRAFFIC_PLACE]
@@ -547,9 +539,22 @@ feature {NONE} -- Implementation, Close event
 		do
 			lt := canvas.map.lines.to_array
 			l := lt.item ((random.item \\ lt.count) + 1)
-			lc := l.last
-			s1 := lc.end_node
 			pt := canvas.map.places.to_array
+			if l.terminal_2 /= Void then
+				if l.terminal_2.has_stop (l) then
+					s1 := l.terminal_2.stop (l)
+				else
+					create s1.make_stop (l.terminal_2, l, create {TRAFFIC_COORDINATE}.make_from_other (l.terminal_2.position))
+				end
+			else
+				random.forth
+				p1 := pt.item ((random.item \\ pt.count) + 1)
+				if p1 /= Void and then p1.has_stop (l) then
+					s1 := p1.stop (l)
+				else
+					create s1.make_stop (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
+				end
+			end
 			random.forth
 			p2 := pt.item ((random.item \\ pt.count) + 1)
 			if p2.has_stop (l) then
@@ -560,10 +565,13 @@ feature {NONE} -- Implementation, Close event
 			create pp.make (2)
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
-			create lc.make (s1, s2, l.type, pp)
-			l.extend (lc)
+			create lc1.make (s1, s2, l.type, pp)
+			create pp.make (2)
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+			create lc2.make (s2, s1, l.type, pp)
+			l.put_last (lc1, lc2)
 			canvas.redraw
---			canvas.map.lines.force (l, l.name)
 		end
 
 	add_road is
@@ -586,6 +594,78 @@ feature {NONE} -- Implementation, Close event
 			canvas.map.roads.force (r, r.id)
 			canvas.redraw
 --			canvas.map.lines.force (l, l.name)
+		end
+
+	remove_place is
+			-- Remove random map items
+		local
+			p: TRAFFIC_PLACE
+			pt: ARRAY [TRAFFIC_PLACE]
+		do
+			pt := canvas.map.places.to_array
+			if pt.count > 0 then
+				p := pt.item ((random.item \\ pt.count) + 1)
+				if p.is_removable then
+					canvas.map.places.remove (p.name)
+				end
+			end
+			canvas.redraw
+		end
+
+	remove_line is
+			-- Add random map items
+		local
+			l: TRAFFIC_LINE
+			lt: ARRAY [TRAFFIC_LINE]
+		do
+			lt := canvas.map.lines.to_array
+			if lt.count > 0 then
+				l := lt.item ((random.item \\ lt.count) + 1)
+				canvas.map.lines.remove (l.name)
+			end
+		end
+
+	remove_line_connection is
+			-- Add random map items
+		local
+			l: TRAFFIC_LINE
+			lt: ARRAY [TRAFFIC_LINE]
+			s: TRAFFIC_STOP
+		do
+			lt := canvas.map.lines.to_array
+			if lt.count > 0 then
+				l := lt.item ((random.item \\ lt.count) + 1)
+				l.remove_all_connections
+				random.forth
+				l := lt.item ((random.item \\ lt.count) + 1)
+				if l.count >= 1 then
+					l.start
+					s := l.item_for_iteration.start_node
+					l.remove_first
+				end
+				random.forth
+				l := lt.item ((random.item \\ lt.count) + 1)
+				if l.count >= 1 then
+					l.remove_last
+				end
+			end
+		end
+
+	remove_road is
+			-- Add random map items
+		local
+			r: TRAFFIC_ROAD
+			rt: ARRAY [TRAFFIC_ROAD]
+		do
+			rt := canvas.map.roads.to_array
+			random.forth
+			if rt.count > 0 then
+				r := rt.item ((random.item \\ rt.count) + 1)
+				if r.is_removable then
+					canvas.map.roads.remove (r.id)
+				end
+			end
+			canvas.redraw
 		end
 
 	toggle_map_hidden (a_check_box: EV_CHECK_BUTTON) is
@@ -663,9 +743,8 @@ feature {NONE} -- Implementation, Close event
 	move_to_center is
 			-- Center map on screen.
 		local
-			r: EV_RECTANGLE
 			xdiff, ydiff: DOUBLE
-			map_center, canvas_center: REAL_COORDINATE
+			canvas_center: REAL_COORDINATE
 		do
 			canvas_center := client_to_map_coordinates ((canvas.width/2).floor, (canvas.height/2).floor)
 			xdiff := canvas.map.center.x - canvas_center.x
@@ -697,19 +776,21 @@ feature {NONE} -- Implementation
 	viewport: EV_VIEWPORT
 			-- To display the canvas
 
+	fixed: EV_FIXED
+			-- Map manipulation area
+
 	build_main_container is
 			-- Create and populate `main_container'.
 		require
 			main_container_not_yet_created: main_container = Void
 		local
 			vb: EV_VERTICAL_SPLIT_AREA
-			hb1, hb2: EV_HORIZONTAL_BOX
+			hb1: EV_HORIZONTAL_BOX
 			fr: EV_FRAME
 			r: EV_HORIZONTAL_RANGE
 			l: EV_LABEL
 			rad: EV_CHECK_BUTTON
 			table: EV_TABLE
-			fixed: EV_FIXED
 			toggle: EV_TOGGLE_BUTTON
 			button: EV_BUTTON
 		do
@@ -822,8 +903,38 @@ feature {NONE} -- Implementation
 			fixed.extend (button)
 			fixed.set_item_position (button, 200, 242)
 
+			-- Test deletion
+			create button.make_with_text ("-place")
+			button.select_actions.extend (agent remove_place)
+			fixed.extend (button)
+			fixed.set_item_position (button, 5, 272)
+
+			create button.make_with_text ("-line")
+			button.select_actions.extend (agent remove_line)
+			fixed.extend (button)
+			fixed.set_item_position (button, 65, 272)
+
+			create button.make_with_text ("-connection")
+			button.select_actions.extend (agent remove_line_connection)
+			fixed.extend (button)
+			fixed.set_item_position (button, 115, 272)
+
+			create button.make_with_text ("-road")
+			button.select_actions.extend (agent remove_road)
+			fixed.extend (button)
+			fixed.set_item_position (button, 200, 272)
+
 			vb.extend (fixed)
 			vb.disable_item_expand (fixed)
+
+			from
+				fixed.start
+			until
+				fixed.after
+			loop
+				fixed.item.disable_sensitive
+				fixed.forth
+			end
 
 
 --			table.add (create {EV_HORIZONTAL_BOX}, 1, 3, 2, 1)

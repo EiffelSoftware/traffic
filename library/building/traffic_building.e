@@ -54,6 +54,12 @@ feature -- Status report
 			Result := True
 		end
 
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
+		end
+
 feature -- Access
 
 	center: TRAFFIC_COORDINATE
@@ -109,41 +115,6 @@ feature -- Access
 		ensure
 			Result_exists: Result /= Void
 		end
-
---	make (a_p1, a_p2, a_p3, a_p4: EM_VECTOR_2D; an_height: DOUBLE; a_name: STRING) is
---			-- Sets the corner to `a_p1', `a_p2', `a_p3', `a_p4' and the name to `a_name'.
---			-- Calculates the breadth, width and center.
---		require
---			points_valid: a_p1 /= void and a_p2 /= void and a_p3 /= void and a_p4 /= void
---			name_valid: a_name /= void
---			height_valdi: an_height > 0
---		local
---			random: RANDOM
---			evening_time, sleep_time: DOUBLE
---		do
---			corner1 := a_p1
---			corner2 := a_p2
---			corner3 := a_p3
---			corner4 := a_p4
---			name := a_name
---			angle := 0
---			depth := sqrt((corner1.x-corner2.x)*(corner1.x-corner2.x)+(corner1.y-corner2.y)*(corner1.y-corner2.y))
---			width := sqrt((corner1.x-corner4.x)*(corner1.x-corner4.x)+(corner1.y-corner4.y)*(corner1.y-corner4.y))
---			height := an_height
---			create center.make((corner2.x+corner4.x)/2,(corner1.y+corner3.y)/2)
-
---			--calculate light times
---			create random.make
---			random.set_seed (out.hash_code)
---			evening_time := 16.0 +(random.double_item*(2).to_double) --18 + interval[0,2]
---			random.forth
---			sleep_time := 21.0 + (random.double_item*(6).to_double) --21 + interval[0,6]
---			light_time := [evening_time, sleep_time]
---		ensure
---			points_set: corner1 = a_p1 and corner2 = a_p2 and corner3 = a_p3 and corner4 = a_p4
---			name_set: name = a_name
---			height_set: height = an_height
---		end
 
 feature -- Status report
 

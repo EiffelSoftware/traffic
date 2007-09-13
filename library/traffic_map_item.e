@@ -31,6 +31,7 @@ feature {TRAFFIC_EVENT_CONTAINER} -- Basic operations (map)
 			-- Remove `Current' from `map'.
 		require
 			is_in_map: is_in_map
+			is_removable: is_removable
 		do
 			is_in_map := False
 			map := Void
@@ -81,6 +82,12 @@ feature -- Status report
 	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
 			-- Is `Current' insertable into `a_map'?
 			-- E.g. are all needed elements already inserted in the map?
+		deferred
+		end
+
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+			-- E.g. no other elements need it any more?
 		deferred
 		end
 

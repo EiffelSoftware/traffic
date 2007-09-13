@@ -8,34 +8,17 @@ class
 
 inherit
 	HASHABLE
-		undefine
-			copy,
-			is_equal
 		redefine
 		 	out
 		select
-			out
+			out,
+			copy,
+			is_equal
 		end
 
-	TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
-		rename
-			make as make_linked_list,
-			out as linked_list_out,
-			extend as put_end
-
-		export
-			{NONE}
-				append, append_first, append_last, append_left, append_left_cursor, append_right, append_right_cursor,
-				delete, extend_first, extend_last, extend_left, extend_left_cursor, extend_right, extend_right_cursor,
-				force, force_first, force_last, force_left, force_left_cursor, force_right, force_right_cursor,
-				keep_first, keep_last, make_default, make_equal, make_from_array, make_from_linear, make_linked_list,
-				prune, prune_first, prune_last, prune_left, prune_left_cursor, prune_right, prune_right_cursor,
-				put, put_end, put_first, put_last, put_left, put_left_cursor, put_right, put_right_cursor,
-				remove, remove_at, remove_at_cursor, remove_first, remove_last, remove_left, remove_left_cursor,
-				remove_right, remove_right_cursor, replace, replace_at, replace_at_cursor, swap
-			{ANY}
-				start, finish, after, before, off, forth, back, item, count, wipe_out, has
-		select copy,is_equal
+	TRAFFIC_EVENT_CONTAINER [TRAFFIC_LINE_CONNECTION]
+		undefine
+			out
 		end
 
 	DOUBLE_MATH
@@ -69,31 +52,66 @@ feature {NONE} -- Initialization
 		local
 			temp_type: TRAFFIC_TYPE_LINE
 		do
-			make_linked_list -- create empty line_sections list
 			name := a_name
 			temp_type ?= a_type
 			if a_type/=Void then
-				type:=temp_type
+				type:= temp_type
 			end
-			create stops_one_direction.make -- create empty line_sections list for one direction
-			create stops_other_direction.make -- create empty line_sections list for other direction
+			create one_direction.make
+			create other_direction.make
+			create internal_cursor.make (one_direction)
 			create changed_event
+			create element_inserted_event
+			create element_removed_event
 		ensure
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
 			type_set: type=a_type
 			count_line_section_not_void: count >= 0 -- List is initilalized.
-			stops_one_direction_exists: stops_one_direction /= Void
-			stops_other_direction_exists: stops_other_direction /= Void
 		end
 
 feature -- Access
+
+	count: INTEGER is
+			-- Number of connections per direction in line
+		do
+			Result := one_direction.count
+		end
+
+	place_count: INTEGER is
+			-- Number of stations in line
+		do
+			Result := count + 1
+		end
+
+	i_th (i: INTEGER): TRAFFIC_PLACE is
+			-- i'th place on line
+		require
+			i_valid: i >= 1 and i <= place_count
+		do
+			if i = count + 1 then
+				Result := terminal_2
+			else
+				Result := one_direction.item (i).origin
+			end
+		end
+
+	item_for_iteration: TRAFFIC_LINE_CONNECTION is
+			-- Item at internal cursor position of line
+		require
+			not_after: not after
+		do
+			Result := internal_cursor.item
+		end
 
 	name: STRING
 			-- Name of line
 
 	type: TRAFFIC_TYPE_LINE
 			-- Type of line
+
+	old_terminal_1: TRAFFIC_PLACE
+			-- Old terminal (after deletion via `remove_all_connections'
 
 	terminal_1: TRAFFIC_PLACE
 			-- Terminal of line in one direction
@@ -105,19 +123,60 @@ feature -- Access
 			-- Line color
 			-- Used as color represenation
 
-	start_to_terminal (a_terminal: TRAFFIC_PLACE): TRAFFIC_PLACE is
-			-- Start place to existing terminal `a_terminal'
-		require
-			a_terminal_exists: a_terminal /= Void
-			a_terminal_valid: is_terminal (a_terminal)
+feature -- Cursor movement
+
+	set_cursor_direction (forward: BOOLEAN) is
+			-- Set internal cursor direction either from `terminal_1' to `terminal_2' (forward) or the other way.
 		do
-			if equal (a_terminal, terminal_1) then -- terminal of one direction
-				Result := first.origin
-			else -- terminal of other direction
-				Result := start_other_direction.origin
+			if forward then
+				create internal_cursor.make (one_direction)
+			else
+				create internal_cursor.make (other_direction)
 			end
 		ensure
-			result_exists: Result /= Void
+			list_set: (forward implies internal_cursor.container = one_direction) and ((not forward) implies internal_cursor.container = other_direction)
+		end
+
+	start is
+			-- Move internal cursor to first position.
+		do
+			internal_cursor.start
+		end
+
+	forth is
+			-- Move internal cursor to next position.
+		require
+			not_after: not after
+		do
+			internal_cursor.forth
+		end
+
+feature -- Status report
+
+	has (v: like item_for_iteration): BOOLEAN
+			-- Does list include `v'?
+		do
+			Result := one_direction.has (v) or other_direction.has (v)
+		ensure
+			not_empty: Result implies not is_empty
+		end
+
+	is_empty: BOOLEAN is
+			-- Is container empty?
+		do
+			Result := one_direction.is_empty
+		end
+
+	is_cursor_one_direction: BOOLEAN is
+			-- Is the cursor currently working on the direction from `terminal_1' to `terminal_2'?
+		do
+			Result := internal_cursor.container = one_direction
+		end
+
+	after: BOOLEAN is
+			-- Is there no valid position to right of internal cursor?
+		do
+			Result := internal_cursor.after
 		end
 
 feature -- Element change
@@ -170,14 +229,22 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
 		do
 			is_in_map := True
 			map := a_map
---			a_map.lines.force_last (Current, name)
 			from
+				set_cursor_direction (True)
 				start
 			until
 				after
 			loop
---				a_map.line_sections
-				map.line_sections.put_last (item_for_iteration)
+				item_for_iteration.add_to_map (map)
+				forth
+			end
+			from
+				set_cursor_direction (False)
+				start
+			until
+				after
+			loop
+				item_for_iteration.add_to_map (map)
 				forth
 			end
 		end
@@ -185,11 +252,43 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
 	remove_from_map is
 			-- Remove all nodes from `a_map'.
 		do
+			wipe_out
 			is_in_map := False
 			map := Void
 		end
 
 feature -- Removal
+
+	remove_all_connections, wipe_out is
+			-- Remove all connections.
+		do
+			from
+				one_direction.start
+			until
+				one_direction.off
+			loop
+				element_removed_event.publish ([one_direction.item_for_iteration])
+				one_direction.item_for_iteration.remove_from_map
+				one_direction.forth
+			end
+			one_direction.wipe_out
+			from
+				other_direction.start
+			until
+				other_direction.off
+			loop
+				other_direction.item_for_iteration.remove_from_map
+				element_removed_event.publish ([other_direction.item_for_iteration])
+				other_direction.forth
+			end
+			other_direction.wipe_out
+			terminal_1 := Void
+			terminal_2 := Void
+		ensure
+			count: count = 0
+			terminals_void: terminal_1 = Void and terminal_2 = Void
+		end
+
 
 	remove_color is
 			-- Remove color.
@@ -198,6 +297,61 @@ feature -- Removal
 			changed_event.publish ([])
 		ensure
 			color_removed: color = Void
+		end
+
+	remove_last is
+			-- Remove end of the line.
+		require
+			count_valid: count >= 1
+		do
+			element_removed_event.publish ([one_direction.last])
+			if one_direction.last.is_in_map then
+				one_direction.last.remove_from_map
+			end
+			one_direction.remove_last
+			element_removed_event.publish ([other_direction.first])
+			if other_direction.first.is_in_map then
+				other_direction.first.remove_from_map
+			end
+			other_direction.remove_first
+			if count >= 1 then
+				terminal_2 := one_direction.last.destination
+			elseif count = 0 then
+				terminal_2 := Void
+				terminal_1 := Void
+			end
+		ensure
+			count_smaller: count = old count - 1
+			terminals_set: count /= 0 implies (terminal_1 = old terminal_1 and terminal_2 /= Void and old_terminal_1 = old terminal_1)
+			terminals_set: count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
+		end
+
+	remove_first is
+			-- Remove start of the line.
+		require
+			count_valid: count >= 1
+		do
+			element_removed_event.publish ([one_direction.first])
+			element_removed_event.publish ([other_direction.last])
+			if one_direction.first.is_in_map then
+				one_direction.first.remove_from_map
+			end
+			if other_direction.last.is_in_map then
+				other_direction.last.remove_from_map
+			end
+			one_direction.remove_first
+			other_direction.remove_last
+			if count >= 1 then
+				terminal_1 := one_direction.first.origin
+				old_terminal_1 := terminal_1
+			elseif count = 0 then
+				terminal_2 := Void
+				terminal_1 := Void
+			end
+		ensure
+			count_smaller: count = old count - 1
+			terminals_set: count /= 0 implies (terminal_2 = old terminal_2 and terminal_1 /= Void and old_terminal_1 = terminal_1)
+			terminals_set: count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
 		end
 
 feature -- Status report
@@ -211,7 +365,7 @@ feature -- Status report
 			from
 				start
 			until
-				off or not Result
+				after or not Result
 			loop
 				if item_for_iteration.start_node.is_in_map and item_for_iteration.end_node.is_in_map and
 						item_for_iteration.origin.is_in_map and item_for_iteration.destination.is_in_map then
@@ -223,6 +377,12 @@ feature -- Status report
 			end
 		end
 
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
+		end
+
 	is_terminal (a_terminal: TRAFFIC_PLACE): BOOLEAN is
 			-- Is `a_terminal' a terminal of line?
 		require
@@ -231,48 +391,49 @@ feature -- Status report
 			Result := equal (a_terminal, terminal_1) or equal (a_terminal, terminal_2)
 		end
 
-	one_direction_exists: BOOLEAN is
-			-- Does line have line section(s) in one direction?
-		do
-			Result := terminal_1 /= Void
-		end
+--	one_direction_exists: BOOLEAN is
+--			-- Does line have line section(s) in one direction?
+--		do
+--			Result := terminal_1 /= Void
+--		end
 
-	other_direction_exists: BOOLEAN is
-			-- Does line have line section(s) in other direction?
-		do
-			Result := terminal_2 /= Void
-		end
+--	other_direction_exists: BOOLEAN is
+--			-- Does line have line section(s) in other direction?
+--		do
+--			Result := terminal_2 /= Void
+--		end
 
-	is_valid_for_insertion (a_line_section: TRAFFIC_LINE_CONNECTION): BOOLEAN is
-			-- Can `a_line_section' be added to line?
-			--
-			-- This is the case if it can be added in front or back of an existing direction,
-			-- or at least one direction does not yet exists.
-			-- The destination of `a_line_section' is
-			-- not place allready use in this direction (circle).
-			-- A line section can not be added twice to the same line.
-			-- A line section can not be added to two lines at the same time.
-		require
-			a_line_section_exists: a_line_section /= Void
-		do
-			if a_line_section.line /= Void or has (a_line_section) then -- `a_line_section' is in other line or in this
-				Result := False
-			else
-				Result := is_valid_insertion_one_direction (a_line_section.origin, a_line_section.destination) or
-						is_valid_insertion_other_direction (a_line_section.origin, a_line_section.destination)
-			end
-		end
+--	is_valid_for_insertion (a_line_section: TRAFFIC_LINE_CONNECTION): BOOLEAN is
+--			-- Can `a_line_section' be added to line?
+--			--
+--			-- This is the case if it can be added in front or back of an existing direction,
+--			-- or at least one direction does not yet exists.
+--			-- The destination of `a_line_section' is
+--			-- not place allready use in this direction (circle).
+--			-- A line section can not be added twice to the same line.
+--			-- A line section can not be added to two lines at the same time.
+--		require
+--			a_line_section_exists: a_line_section /= Void
+--		do
+--			if a_line_section.line /= Void or has (a_line_section) then -- `a_line_section' is in other line or in this
+--				Result := False
+--			else
+--				Result := is_valid_insertion_one_direction (a_line_section.origin, a_line_section.destination) or
+--						is_valid_insertion_other_direction (a_line_section.origin, a_line_section.destination)
+--			end
+--		end
 
-	is_valid_insertion (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
-			-- Can a line_section from `a_origin' to `a_destination' be added
-			-- in front or back of this line?
-		require
-			a_origin_exists: a_origin /= Void
-			a_destination_exists: a_destination /= Void
-		do
-			Result := is_valid_insertion_one_direction (a_origin, a_destination) or
-					is_valid_insertion_other_direction (a_origin, a_destination)
-		end
+--	is_valid_insertion (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
+--			-- Can a line_section from `a_origin' to `a_destination' be added
+--			-- in front or back of this line?
+--		require
+--			a_origin_exists: a_origin /= Void
+--			a_destination_exists: a_destination /= Void
+--		do
+--			Result := is_valid_insertion_one_direction (a_origin, a_destination) or
+--					is_valid_insertion_other_direction (a_origin, a_destination)
+--		end
+
 
 feature -- Measurement
 
@@ -284,73 +445,215 @@ feature -- Measurement
 
 feature -- Basic operations
 
-	extend (a_line_section: TRAFFIC_LINE_CONNECTION) is
-			-- Add `a_line_section' at beginning or end of existing direction(s).
-		require else
-			a_line_section_exists: a_line_section /= Void
-			a_line_section_valid_for_insertion: is_valid_for_insertion (a_line_section)
-			a_section_insertable: is_in_map implies a_line_section.is_insertable (map)
-		local
-			origin, destination: TRAFFIC_PLACE
-			origin_stop, destination_stop: TRAFFIC_STOP
+	put_first (l1, l2: TRAFFIC_LINE_CONNECTION) is
+			--
+		require
+			l1_exists: l1 /= Void
+			l2_exists: l2 /= Void
+			l1_fits: terminal_1 /= Void implies l1.destination = terminal_1
+			l2_fits: terminal_1 /= Void implies l2.origin = terminal_1
+			l1_fits_l2: l1.start_node = l2.end_node and l1.end_node = l2.start_node
 		do
-			origin_stop := a_line_section.start_node
-			destination_stop := a_line_section.end_node
-			origin := origin_stop.place
-			destination := destination_stop.place
+			one_direction.put_first (l1)
+			other_direction.put_last (l2)
+			terminal_1 := l1.origin
+			old_terminal_1 := terminal_1
+			if terminal_2 = Void then
+				terminal_2 := l1.destination
+			end
+			l1.set_line (Current)
+			l2.set_line (Current)
+			if is_in_map then
+				l1.add_to_map (map)
+				l2.add_to_map (map)
+			end
+			element_inserted_event.publish ([l1])
+			element_inserted_event.publish ([l2])
+		end
 
-			if terminal_1 = Void then -- no direction exists yet
-				put_first (a_line_section)
-				terminal_1 := destination
-				stops_one_direction.extend (origin_stop)
-				stops_one_direction.extend (destination_stop)
-			else
-				if is_valid_insertion_one_direction_end (origin, destination) then
-					if other_direction_exists then -- put left of other direction
-						start
-						search_forth (start_other_direction)
-						put_left (a_line_section)
-					else -- put at end of list
-						put_last (a_line_section)
-					end
-					terminal_1 := destination
-					stops_one_direction.extend (destination_stop)
+	put_last (l1, l2: TRAFFIC_LINE_CONNECTION) is
+			--
+		require
+			l1_exists: l1 /= Void
+			l2_exists: l2 /= Void
+			l1_fits: terminal_2 /= Void implies l1.origin = terminal_2
+			l2_fits: terminal_2 /= Void implies l2.destination = terminal_2
+			l1_fits_l2: l1.start_node = l2.end_node and l1.end_node = l2.start_node
+		do
+			one_direction.put_last (l1)
+			other_direction.put_first (l2)
+			if terminal_1 = Void then
+				terminal_1 := l1.origin
+				old_terminal_1 := terminal_1
+			end
+			terminal_2 := l1.destination
+			l1.set_line (Current)
+			l2.set_line (Current)
+			if is_in_map then
+				l1.add_to_map (map)
+				l2.add_to_map (map)
+			end
+			element_inserted_event.publish ([l1])
+			element_inserted_event.publish ([l2])
+		end
+
+	extend (a_place: TRAFFIC_PLACE) is
+			--
+		require
+			has_terminal_1: old_terminal_1 /= Void
+		local
+			l1, l2: TRAFFIC_LINE_CONNECTION
+			lc: TRAFFIC_LINE_CONNECTION
+			r, g, b: INTEGER
+			p1, p2: TRAFFIC_PLACE
+			s1, s2: TRAFFIC_STOP
+			pt: ARRAY [TRAFFIC_PLACE]
+			lt: ARRAY [TRAFFIC_LINE]
+			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+		do
+			if terminal_2 /= Void then
+				-- We already have line connections, use terminal_2 to extend
+				if terminal_2.has_stop (Current) then
+					s1 := terminal_2.stop (Current)
 				else
-					if is_valid_insertion_one_direction_front (origin, destination) then -- put front of list
-						put_first (a_line_section)
-						stops_one_direction.extend (origin_stop)
-					else
-						if terminal_2 = Void then -- start other direction
-							put_last (a_line_section)
-							start_other_direction := a_line_section
-							terminal_2 := destination
-							stops_other_direction.extend (origin_stop)
-							stops_other_direction.extend (destination_stop)
-						else
-							if is_valid_insertion_other_direction_end (origin, destination) then -- put end of list
-								put_last (a_line_section)
-								terminal_2 := destination
-								stops_other_direction.extend (destination_stop)
-							else --is_valid_insertion_other_direction_front
-								start
-								search_forth (start_other_direction)
-								put_left (a_line_section)
-								start_other_direction := a_line_section
-								stops_other_direction.extend (origin_stop)
-							end
-						end
-					end
+					create s1.make_stop (terminal_2, Current, create {TRAFFIC_COORDINATE}.make_from_other (terminal_2.position))
+				end
+			else
+				-- Only old_terminal_1 is given, the line is empty
+				if old_terminal_1.has_stop (Current) then
+					s1 := old_terminal_1.stop (Current)
+				else
+					create s1.make_stop (old_terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (old_terminal_1.position))
 				end
 			end
-			a_line_section.set_line (Current)
-			if is_in_map then
-				map.line_sections.put_last (a_line_section)
+			if a_place.has_stop (Current) then
+				s2 := a_place.stop (Current)
+			else
+				create s2.make_stop (a_place, Current, create {TRAFFIC_COORDINATE}.make_from_other (a_place.position))
 			end
-			changed_event.publish ([])
-		ensure
-			a_line_section_in_line: has (a_line_section)
-			line_added_to_line_section: a_line_section.line = Current
+			create pp.make (2)
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+			create l1.make (s1, s2, type, pp)
+			create pp.make (2)
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+			create l1.make (s2, s1, type, pp)
+
+			put_last (l1, l2)
 		end
+
+	prepend (a_place: TRAFFIC_PLACE) is
+			--
+		require
+			has_terminal_1: old_terminal_1 /= Void
+		local
+			l1, l2: TRAFFIC_LINE_CONNECTION
+			lc: TRAFFIC_LINE_CONNECTION
+			r, g, b: INTEGER
+			p1, p2: TRAFFIC_PLACE
+			s1, s2: TRAFFIC_STOP
+			pt: ARRAY [TRAFFIC_PLACE]
+			lt: ARRAY [TRAFFIC_LINE]
+			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+		do
+			if a_place.has_stop (Current) then
+				s1 := a_place.stop (Current)
+			else
+				create s1.make_stop (a_place, Current, create {TRAFFIC_COORDINATE}.make_from_other (a_place.position))
+			end
+			if terminal_1 /= Void then
+				if terminal_1.has_stop (Current) then
+					s2 := terminal_1.stop (Current)
+				else
+					create s2.make_stop (terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (terminal_1.position))
+				end
+			else
+				if old_terminal_1.has_stop (Current) then
+					s2 := old_terminal_1.stop (Current)
+				else
+					create s2.make_stop (old_terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (old_terminal_1.position))
+				end
+			end
+			create pp.make (2)
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+			create l1.make (s1, s2, type, pp)
+			create pp.make (2)
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+			create l1.make (s2, s1, type, pp)
+
+			put_first (l1, l2)
+		end
+
+--	extend (a_line_section: TRAFFIC_LINE_CONNECTION) is
+--			-- Add `a_line_section' at beginning or end of existing direction(s).
+--		require else
+--			a_line_section_exists: a_line_section /= Void
+--			a_line_section_valid_for_insertion: is_valid_for_insertion (a_line_section)
+--			a_section_insertable: is_in_map implies a_line_section.is_insertable (map)
+--		local
+--			origin, destination: TRAFFIC_PLACE
+--			origin_stop, destination_stop: TRAFFIC_STOP
+--		do
+--			origin_stop := a_line_section.start_node
+--			destination_stop := a_line_section.end_node
+--			origin := origin_stop.place
+--			destination := destination_stop.place
+
+--			if terminal_1 = Void then -- no direction exists yet
+--				put_first (a_line_section)
+--				terminal_1 := destination
+--				stops_one_direction.extend (origin_stop)
+--				stops_one_direction.extend (destination_stop)
+--			else
+--				if is_valid_insertion_one_direction_end (origin, destination) then
+--					if other_direction_exists then -- put left of other direction
+--						start
+--						search_forth (start_other_direction)
+--						put_left (a_line_section)
+--					else -- put at end of list
+--						put_last (a_line_section)
+--					end
+--					terminal_1 := destination
+--					stops_one_direction.extend (destination_stop)
+--				else
+--					if is_valid_insertion_one_direction_front (origin, destination) then -- put front of list
+--						put_first (a_line_section)
+--						stops_one_direction.extend (origin_stop)
+--					else
+--						if terminal_2 = Void then -- start other direction
+--							put_last (a_line_section)
+--							start_other_direction := a_line_section
+--							terminal_2 := destination
+--							stops_other_direction.extend (origin_stop)
+--							stops_other_direction.extend (destination_stop)
+--						else
+--							if is_valid_insertion_other_direction_end (origin, destination) then -- put end of list
+--								put_last (a_line_section)
+--								terminal_2 := destination
+--								stops_other_direction.extend (destination_stop)
+--							else --is_valid_insertion_other_direction_front
+--								start
+--								search_forth (start_other_direction)
+--								put_left (a_line_section)
+--								start_other_direction := a_line_section
+--								stops_other_direction.extend (origin_stop)
+--							end
+--						end
+--					end
+--				end
+--			end
+--			a_line_section.set_line (Current)
+--			if is_in_map then
+--				map.line_sections.put_last (a_line_section)
+--			end
+--			changed_event.publish ([])
+--		ensure
+--			a_line_section_in_line: has (a_line_section)
+--			line_added_to_line_section: a_line_section.line = Current
+--		end
 
 	road_points: DS_ARRAYED_LIST[TRAFFIC_COORDINATE] is
 			-- returns the polypoints retrieve by the roads
@@ -445,6 +748,7 @@ feature -- Output
 			-- Textual representation
 		local
 			color_text: STRING
+			c: TRAFFIC_LINE_CURSOR
 		do
 			if color /= Void then
 				color_text := color.out
@@ -452,162 +756,184 @@ feature -- Output
 				color_text := ""
 			end
 			Result := "Traffic " + type.out + " line: " + name + ", " + color_text +
-				"%N   one direction: " + one_direction_out +
-				"%N   other direction: " + other_direction_out
-		end
-
-	one_direction_out: STRING is
-			-- Textual representation of one direction
-		local
-			l_line_section: TRAFFIC_LINE_CONNECTION
-		do
-			if terminal_1 = Void then
-				Result := ""
-			else
-				Result := first.origin.name
-				from
-					start
-				until
-					after or equal (item_for_iteration, start_other_direction)
-				loop
-					l_line_section := item_for_iteration
-					Result := Result + ", " + l_line_section.destination.name
-					forth
-				end
+				"%N  one direction"
+			from
+				create c.make (Current)
+				c.start
+			until
+				c.after
+			loop
+				Result := Result + "%T" + c.item_for_iteration.out + "%N"
+				c.forth
+			end
+			Result := Result + "%N  one direction"
+			from
+				c.set_cursor_direction (False)
+				c.start
+			until
+				c.after
+			loop
+				Result := Result + "%T" + c.item_for_iteration.out + "%N"
+				c.forth
 			end
 		end
 
-	other_direction_out: STRING is
-			-- Textual representation of other direction
-		local
-			l_line_section: TRAFFIC_LINE_CONNECTION
-		do
-			if terminal_2 = Void then
-				Result := ""
-			else
-				Result := start_other_direction.origin.name
-				start
-				search_forth (start_other_direction)
-				from
-				until
-					after
-				loop
-					l_line_section := item_for_iteration
-					Result := Result + ", " + l_line_section.destination.name
-					forth
-				end
-			end
-		end
+--	one_direction_out: STRING is
+--			-- Textual representation of one direction
+--		local
+--			l_line_section: TRAFFIC_LINE_CONNECTION
+--		do
+--			if terminal_1 = Void then
+--				Result := ""
+--			else
+--				Result := first.origin.name
+--				from
+--					start
+--				until
+--					after or equal (item_for_iteration, start_other_direction)
+--				loop
+--					l_line_section := item_for_iteration
+--					Result := Result + ", " + l_line_section.destination.name
+--					forth
+--				end
+--			end
+--		end
 
-feature {NONE} -- Implementation
+--	other_direction_out: STRING is
+--			-- Textual representation of other direction
+--		local
+--			l_line_section: TRAFFIC_LINE_CONNECTION
+--		do
+--			if terminal_2 = Void then
+--				Result := ""
+--			else
+--				Result := start_other_direction.origin.name
+--				start
+--				search_forth (start_other_direction)
+--				from
+--				until
+--					after
+--				loop
+--					l_line_section := item_for_iteration
+--					Result := Result + ", " + l_line_section.destination.name
+--					forth
+--				end
+--			end
+--		end
 
-	stops_one_direction, stops_other_direction: LINKED_LIST [TRAFFIC_STOP]
-			-- Stops in each direction
+feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
-	is_stop_of_place (a_stop: TRAFFIC_STOP; a_place: TRAFFIC_PLACE): BOOLEAN is
-			--Is `a_stop' at the given place `a_place' and sevices the current line?
-		require
-			a_stop_exists: a_stop /= Void
-			a_place_exists: a_place /= Void
-		do
-			Result := a_stop.place.name.is_equal (a_place.name) and then a_stop.line.name.is_equal (name)
-		end
+	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 
-	start_other_direction: TRAFFIC_LINE_CONNECTION
-			-- Starting line section other direction
-			-- Starting line section one direction is first element in list
+	internal_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
 
-	is_valid_insertion_one_direction (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
-			-- Can line section from `a_origin' to `a_destination' be added in one direction?
-		require
-			a_origin_exists: a_origin /= Void
-			a_destination_exists: a_destination /= Void
-		do
-			if terminal_1 = Void then -- no line sections added so far
-				Result := True
-			else
-				Result := is_valid_insertion_one_direction_front (a_origin, a_destination) or
-						is_valid_insertion_one_direction_end (a_origin, a_destination)
-			end
-		end
+--	stops_one_direction, stops_other_direction: LINKED_LIST [TRAFFIC_STOP]
+--			-- Stops in each direction
 
-	is_valid_insertion_one_direction_front (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
-			-- Can line section from `a_origin' to `a_destination' be added in front of one direction?
-		require
-			a_origin_exists: a_origin /= Void
-			a_destination_exists: a_destination /= Void
-			terminal_1_exists: terminal_1 /= Void
-		do
-			Result := False
-			if equal (a_destination, start_to_terminal (terminal_1)) then
-				--if not stops_one_direction.has (a_origin) then -- no circle
-				if not stops_one_direction.there_exists (agent is_stop_of_place (?, a_origin)) then
-					Result := True
-				end
-			end
-		end
+--	is_stop_of_place (a_stop: TRAFFIC_STOP; a_place: TRAFFIC_PLACE): BOOLEAN is
+--			--Is `a_stop' at the given place `a_place' and sevices the current line?
+--		require
+--			a_stop_exists: a_stop /= Void
+--			a_place_exists: a_place /= Void
+--		do
+--			Result := a_stop.place.name.is_equal (a_place.name) and then a_stop.line.name.is_equal (name)
+--		end
 
-	is_valid_insertion_one_direction_end (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
-			-- Can line section from `a_origin' to `a_destination' be added at end of one direction?
-		require
-			a_origin_exists: a_origin /= Void
-			a_destination_exists: a_destination /= Void
-			terminal_1_exists: terminal_1 /= Void
-		do
-			Result := False
-			if equal (a_origin, terminal_1) then
-				--if not stops_one_direction.has (a_destination) then
-				if not stops_one_direction.there_exists (agent is_stop_of_place (?, a_destination)) then
-					Result := True
-				end
-			end
-		end
+--	start_other_direction: TRAFFIC_LINE_CONNECTION
+--			-- Starting line section other direction
+--			-- Starting line section one direction is first element in list
 
-	is_valid_insertion_other_direction (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
-			-- Can line section from `a_origin' to `a_destination' be added in other direction?
-		require
-			a_origin_exists: a_origin /= Void
-			a_destination_exists: a_destination /= Void
-		do
-			if terminal_2 = Void then
-				Result := True
-			else
-				Result := is_valid_insertion_other_direction_front (a_origin, a_destination) or
-						is_valid_insertion_other_direction_end (a_origin, a_destination)
-			end
-		end
+--	is_valid_insertion_one_direction (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
+--			-- Can line section from `a_origin' to `a_destination' be added in one direction?
+--		require
+--			a_origin_exists: a_origin /= Void
+--			a_destination_exists: a_destination /= Void
+--		do
+--			if terminal_1 = Void then -- no line sections added so far
+--				Result := True
+--			else
+--				Result := is_valid_insertion_one_direction_front (a_origin, a_destination) or
+--						is_valid_insertion_one_direction_end (a_origin, a_destination)
+--			end
+--		end
 
-	is_valid_insertion_other_direction_front (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
-			-- Can line section from `a_origin' to `a_destination' be added in front of other direction?
-		require
-			a_origin_exists: a_origin /= Void
-			a_destination_exists: a_destination /= Void
-			terminal_2_exists: terminal_2 /= Void
-		do
-			Result := False
-			if equal (a_destination, start_to_terminal (terminal_2)) then
-				--if not stops_other_direction.has (a_origin) then
-				if not stops_other_direction.there_exists (agent is_stop_of_place (?, a_origin)) then
-					Result := True
-				end
-			end
-		end
+--	is_valid_insertion_one_direction_front (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
+--			-- Can line section from `a_origin' to `a_destination' be added in front of one direction?
+--		require
+--			a_origin_exists: a_origin /= Void
+--			a_destination_exists: a_destination /= Void
+--			terminal_1_exists: terminal_1 /= Void
+--		do
+--			Result := False
+--			if equal (a_destination, start_to_terminal (terminal_1)) then
+--				--if not stops_one_direction.has (a_origin) then -- no circle
+--				if not stops_one_direction.there_exists (agent is_stop_of_place (?, a_origin)) then
+--					Result := True
+--				end
+--			end
+--		end
 
-	is_valid_insertion_other_direction_end (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
-			-- Can line section from `a_origin' to `a_destination' be added at end of other direction?
-		require
-			a_origin_exists: a_origin /= Void
-			a_destination_exists: a_destination /= Void
-			terminal_2_exists: terminal_2 /= Void
-		do
-			Result := False
-			if equal (a_origin, terminal_2) then
-				--if not stops_other_direction.has (a_destination) then
-				if not stops_one_direction.there_exists (agent is_stop_of_place (?, a_destination)) then
-					Result := True
-				end
-			end
-		end
+--	is_valid_insertion_one_direction_end (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
+--			-- Can line section from `a_origin' to `a_destination' be added at end of one direction?
+--		require
+--			a_origin_exists: a_origin /= Void
+--			a_destination_exists: a_destination /= Void
+--			terminal_1_exists: terminal_1 /= Void
+--		do
+--			Result := False
+--			if equal (a_origin, terminal_1) then
+--				--if not stops_one_direction.has (a_destination) then
+--				if not stops_one_direction.there_exists (agent is_stop_of_place (?, a_destination)) then
+--					Result := True
+--				end
+--			end
+--		end
+
+--	is_valid_insertion_other_direction (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
+--			-- Can line section from `a_origin' to `a_destination' be added in other direction?
+--		require
+--			a_origin_exists: a_origin /= Void
+--			a_destination_exists: a_destination /= Void
+--		do
+--			if terminal_2 = Void then
+--				Result := True
+--			else
+--				Result := is_valid_insertion_other_direction_front (a_origin, a_destination) or
+--						is_valid_insertion_other_direction_end (a_origin, a_destination)
+--			end
+--		end
+
+--	is_valid_insertion_other_direction_front (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
+--			-- Can line section from `a_origin' to `a_destination' be added in front of other direction?
+--		require
+--			a_origin_exists: a_origin /= Void
+--			a_destination_exists: a_destination /= Void
+--			terminal_2_exists: terminal_2 /= Void
+--		do
+--			Result := False
+--			if equal (a_destination, start_to_terminal (terminal_2)) then
+--				--if not stops_other_direction.has (a_origin) then
+--				if not stops_other_direction.there_exists (agent is_stop_of_place (?, a_origin)) then
+--					Result := True
+--				end
+--			end
+--		end
+
+--	is_valid_insertion_other_direction_end (a_origin, a_destination: TRAFFIC_PLACE): BOOLEAN is
+--			-- Can line section from `a_origin' to `a_destination' be added at end of other direction?
+--		require
+--			a_origin_exists: a_origin /= Void
+--			a_destination_exists: a_destination /= Void
+--			terminal_2_exists: terminal_2 /= Void
+--		do
+--			Result := False
+--			if equal (a_origin, terminal_2) then
+--				--if not stops_other_direction.has (a_destination) then
+--				if not stops_one_direction.there_exists (agent is_stop_of_place (?, a_destination)) then
+--					Result := True
+--				end
+--			end
+--		end
 
 
 
@@ -670,13 +996,15 @@ invariant
 
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
-	count_line_section_not_void: count >= 0 -- List is initilalized.
+	connections_not_void: one_direction /= Void and other_direction /= Void
 	type_exists: type /= Void -- Line has type.
-	stops_one_direction_exists: stops_one_direction /= Void -- List places one direction exists.
-	stops_other_direction_exists: stops_other_direction /= Void -- List places other direction exists.
-	terminal_1_exists_implies_one_direction_exists: terminal_1 /= Void implies one_direction_exists -- One direction exists if terminal_1 defined.
-	terminal_2_exists_implies_other_direction_exists: terminal_2 /= Void implies other_direction_exists -- Other direction exists if terminal_2 defined.
-	one_direction_exists_implies_places_in_stops_one_direction: one_direction_exists implies stops_one_direction.count >= 2 -- One direction exists if at least two places in places one direction.
-	other_direction_exists_implies_places_in_stops_other_direction: other_direction_exists implies stops_other_direction.count >= 2 -- Other direction exists if at least two places in places other direction.
+--	stops_one_direction_exists: stops_one_direction /= Void -- List places one direction exists.
+--	stops_other_direction_exists: stops_other_direction /= Void -- List places other direction exists.
+--	terminal_1_exists_implies_one_direction_exists: terminal_1 /= Void implies one_direction_exists -- One direction exists if terminal_1 defined.
+--	terminal_2_exists_implies_other_direction_exists: terminal_2 /= Void implies other_direction_exists -- Other direction exists if terminal_2 defined.
+--	one_direction_exists_implies_places_in_stops_one_direction: one_direction_exists implies stops_one_direction.count >= 2 -- One direction exists if at least two places in places one direction.
+--	other_direction_exists_implies_places_in_stops_other_direction: other_direction_exists implies stops_other_direction.count >= 2 -- Other direction exists if at least two places in places other direction.
+
+	counts_are_equal: one_direction.count = other_direction.count
 
 end

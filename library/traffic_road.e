@@ -93,9 +93,12 @@ feature {TRAFFIC_MAP_ITEM_CONTAINER}-- Basic operations
 	remove_from_map is
 			-- Remove all nodes from `a_map'.
 		do
+			one_way.remove_from_map
+			if not is_one_way then
+				other_way.remove_from_map
+			end
 			is_in_map := False
 			map := Void
-
 		end
 
 feature -- Status report
@@ -106,6 +109,40 @@ feature -- Status report
 		do
 			Result := 	one_way.start_node.is_in_map and one_way.end_node.is_in_map and
 						one_way.origin.is_in_map and one_way.destination.is_in_map
+		end
+
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		local
+			l: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+		do
+			Result := True
+			if is_in_map then
+				l := one_way.origin.outgoing_line_connections
+				from
+					l.start
+				until
+					l.after or not Result
+				loop
+					if l.item_for_iteration.roads.has (Current.one_way) then
+						Result := False
+					end
+					l.forth
+				end
+				if not is_one_way and Result then
+					l := other_way.origin.outgoing_line_connections
+					from
+						l.start
+					until
+						l.after or not Result
+					loop
+						if l.item_for_iteration.roads.has (Current.other_way) then
+							Result := False
+						end
+						l.forth
+					end
+				end
+			end
 		end
 
 	is_one_way: BOOLEAN

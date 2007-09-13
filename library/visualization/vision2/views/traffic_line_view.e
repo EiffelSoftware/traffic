@@ -77,6 +77,7 @@ feature -- Initialization
 			is_highlighted := False
 			item.changed_event.subscribe (agent update)
 			item.element_inserted_event.subscribe (agent add_connection_view (?))
+			item.element_removed_event.subscribe (agent remove_connection_view (?))
 		end
 
 feature -- Constants
@@ -267,6 +268,24 @@ feature {NONE} -- Implementation
 			end
 		end
 
+	remove_connection_view (a_item: TRAFFIC_LINE_CONNECTION) is
+			-- Add new view for inserted item.
+		local
+			found: BOOLEAN
+		do
+			from
+				start
+			until
+				after or found
+			loop
+				if item_for_iteration.item.is_equal (a_item) then
+					found := True
+					delete (item_for_iteration)
+				else
+					forth
+				end
+			end
+		end
 
 	new_connection_view (a_item: TRAFFIC_CONNECTION): DRAWABLE_POLYLINE is
 			-- Generate connection view for `a_item'.

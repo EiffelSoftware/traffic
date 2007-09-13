@@ -76,7 +76,7 @@ feature -- Factory methods
 			from
 				a_line.start
 			until
-				a_line.off
+				a_line.after
 			loop
 				l := line_connection_view_factory.new_connection (a_line.item_for_iteration)
 				l.set_color (a_line.color)

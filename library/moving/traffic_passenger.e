@@ -70,6 +70,12 @@ feature -- Status report
 			Result := True
 		end
 
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
+		end
+
 	direction_line_back: BOOLEAN
 			-- In which direction to travel?
 			-- If the deboarding_stop is less than the boarding_stop the passenger has to use
@@ -102,7 +108,6 @@ feature {NONE} -- Implementation
 			-- Board 'a_line_transportation'.
 		require
 			inteded_line: a_line_transport.line = intended_line
-			intended_direction: a_line_transport.is_traveling_back = direction_line_back
 		do
 			current_vehicle := a_line_transport
 			current_vehicle.load (1)

@@ -700,7 +700,11 @@ feature {NONE} -- Implementation
 			current_node := start_node
 			turn_to_edge (a_edge)
 			current_node.edge_list.remove
-			internal_edges.prune (linked_edge)
+
+			if internal_edges.has (linked_edge) then
+				internal_edges.start
+				internal_edges.prune (linked_edge)
+			end
 
 			-- Restore cursor.
 			if c /= Void then

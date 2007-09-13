@@ -192,6 +192,7 @@ feature -- Removal
 			start_node, end_node: like current_node
 		do
 			prune_edge_impl (a_edge)
+--			a_edge.start_node.remove_connection (a_edge)
 			if is_symmetric_graph then
 				linked_edge ?= a_edge
 				if linked_edge /= Void then

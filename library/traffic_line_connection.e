@@ -125,6 +125,13 @@ feature -- Status report
 
 		end
 
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+			-- In general yes. The line needs to make sure that there is no problem...
+		do
+			Result := True
+		end
+
 feature -- Access
 
 	weight_factor: DOUBLE is
@@ -194,6 +201,7 @@ feature {TRAFFIC_LINE} -- Basic operations (map)
 			-- Add `Current' and all nodes to `a_map'.
 		do
 			a_map.graph.put_line_section (Current)
+			a_map.line_sections.put_last (Current)
 			is_in_map := True
 			map := a_map
 		ensure then
@@ -203,6 +211,8 @@ feature {TRAFFIC_LINE} -- Basic operations (map)
 	remove_from_map is
 			-- Remove all nodes from `a_map'.
 		do
+			map.graph.prune_edge (Current)
+			map.line_sections.delete (Current)
 			is_in_map := False
 			map := Void
 		end

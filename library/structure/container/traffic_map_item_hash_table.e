@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Hash table that contains map items, calls add_to_map and remove_from_map on insertion and deletion, and throws events when a new item is added/removed"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -147,6 +146,7 @@ feature -- Insertion
 			-- (from DS_SPARSE_TABLE)
 		require -- from DS_TABLE
 			has_k: has (k)
+			is_removable: item (k).is_removable
 		do
 			element_removed_event.publish ([internal_table.item (k)])
 			internal_table.item (k).remove_from_map
@@ -163,10 +163,14 @@ feature -- Removal
 	remove (k: H)
 			-- Remove item associated with `k'.
 			-- Move any cursors at this position forth.
+		require
+			is_removable: has (k) implies item (k).is_removable
 		do
-			element_removed_event.publish ([internal_table.item (k)])
-			internal_table.item (k).remove_from_map
-			internal_table.remove (k)
+			if has (k) then
+				element_removed_event.publish ([internal_table.item (k)])
+				internal_table.item (k).remove_from_map
+				internal_table.remove (k)
+			end
 		ensure -- from DS_TABLE
 			same_count: (not old has (k)) implies (count = old count)
 			one_less: (old has (k)) implies (count = old count - 1)
@@ -176,6 +180,8 @@ feature -- Removal
 	wipe_out
 			-- Remove all items from container.
 			-- Move all cursors off.
+		require
+			-- Can't express this: all items need to be `is_removable'
 		do
 			from
 				start

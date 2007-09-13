@@ -39,4 +39,10 @@ feature -- Status report
 			Result := True
 		end
 
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_map'?
+		do
+			Result := True
+		end
+
 end

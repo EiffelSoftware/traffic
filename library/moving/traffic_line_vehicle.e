@@ -25,7 +25,7 @@ feature -- Element change
 
 			create line_cursor.make (a_line)
 			line_cursor.start
-			create poly_cursor.make (line_cursor.item.polypoints)
+			create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
 			poly_cursor.start
 			update_coordinates
 			update_angle
@@ -46,8 +46,8 @@ feature -- Element change
 			until
 				line_cursor.after or found
 			loop
-				if line_cursor.item.origin = a_place then
-					create poly_cursor.make (line_cursor.item.polypoints)
+				if line_cursor.item_for_iteration.origin = a_place then
+					create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
 					poly_cursor.start
 
 					update_coordinates
@@ -169,13 +169,10 @@ feature -- Basic operations
 					travel_distance := (schedule_speed * seconds_passed)
 
 					if ((position.x - destination.x).abs < travel_distance) and ((position.y - destination.y).abs < travel_distance) then
---						origin := map_to_gl_coords (polypoints.item)
---						position := map_to_gl_coords (polypoints.item)
 						origin := poly_cursor.item
 						position := poly_cursor.item
 						poly_cursor.forth
 						if not poly_cursor.after then
---							destination := map_to_gl_coords (polypoints.item)
 							destination := poly_cursor.item
 							update_angle
 						end
@@ -204,19 +201,16 @@ feature{NONE} --Implementation
 				line_cursor.forth
 				if line_cursor.after then
 					if is_reiterating then
-						is_traveling_back := False
+						line_cursor.set_cursor_direction (not line_cursor.is_cursor_one_direction)
 						line_cursor.start
-						create poly_cursor.make (line_cursor.item.polypoints)
+						create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
 						poly_cursor.start
 						destination := poly_cursor.item
 					else
 						has_finished := True
 					end
 				else
-					if line_cursor.item.origin = line.terminal_2 then
-						is_traveling_back := True
-					end
-					create poly_cursor.make (line_cursor.item.polypoints)
+					create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
 					poly_cursor.start
 					destination := poly_cursor.item
 				end
@@ -226,7 +220,7 @@ feature{NONE} --Implementation
 
 		end
 
-	line_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
+	line_cursor: TRAFFIC_LINE_CURSOR
 			-- Line section on which the line vehicle is moving currently
 
 invariant
