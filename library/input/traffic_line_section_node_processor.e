@@ -34,11 +34,8 @@ feature -- Basic operations
 			-- Process node.
 		local
 			line: TRAFFIC_LINE
---			simple_line: TRAFFIC_SIMPLE_LINE
 			polypoints_other_direction: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_CONNECTION
-
-			sections: LIST [TRAFFIC_LINE_CONNECTION]
 		do
 			if not has_error then
 				line ?= parent.target

@@ -12,7 +12,7 @@ create
 feature -- Initialization
 
 	make (a_center: TRAFFIC_COORDINATE; a_radius: DOUBLE) is
-			--
+			-- Initialize with `a_center' and `a_radius'.
 		require
 			a_center_exists: a_center /= Void
 			a_radius_valid: a_radius > 0
@@ -83,15 +83,14 @@ feature -- Basic operations
 
 feature -- Access
 
---	map: TRAFFIC_MAP
-			-- Map for which the points are generated
-
 	last_array: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			-- Last generated array of points
 
 	radius: DOUBLE
+			-- Radius in which points are generated
 
 	center: TRAFFIC_COORDINATE
+			-- Center around which points are generated
 
 feature {NONE} -- Implementation
 

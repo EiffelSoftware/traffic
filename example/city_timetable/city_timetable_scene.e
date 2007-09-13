@@ -29,8 +29,6 @@ feature -- Interface
 			loader: TRAFFIC_MAP_LOADER
 			s: STRING
 			fs: KL_FILE_SYSTEM
-			et: TRAFFIC_EVENT_TAXI_OFFICE
-			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
 		do
 			make_component_scene
 
@@ -85,7 +83,6 @@ feature -- Interface
 			-- Build the area which steers map display options.
 		local
 			checkbox: EM_CHECKBOX
-			button: EM_BUTTON
 		do
 			create Result.make_from_dimension (toolbar_panel.width, 70)
 			-- Shadows
@@ -251,9 +248,7 @@ feature -- Interface
 	build_building_tools: EM_PANEL is
 			-- Build the area that steers the building generation.
 		local
-			label: EM_LABEL
 			button: EM_BUTTON
-			slider: EM_SLIDER
 		do
 			create Result.make_from_dimension (toolbar_panel.width, 20)
 			create button.make_from_text ("Add random buildings")
@@ -267,11 +262,6 @@ feature -- Interface
 		require
 			map_exists: map_widget.map /= Void
 		local
-			label: EM_LABEL
-			checkbox: EM_CHECKBOX
-			button: EM_BUTTON
-			slider: EM_SLIDER
-			combobox: EM_COMBOBOX [TRAFFIC_TAXI_OFFICE]
 			panel: EM_PANEL
 		do
 			create toolbar_panel.make_from_dimension (200, height)
@@ -319,10 +309,6 @@ feature -- Event handling
 		local
 			loader: TRAFFIC_MAP_LOADER
 			dlg: EM_MESSAGE_DIALOG
-			n,i: INTEGER
-			s: STRING
-			list: LIST [STRING]
-			lbl: EM_LABEL
 		do
 			if a_dlg.was_ok_clicked and a_dlg.is_file_selected then
 				create loader.make (a_dlg.absolute_filename)
@@ -376,7 +362,6 @@ feature -- Event handling
 			a_slider_exists: a_slider /= Void
 		local
 			tram: TRAFFIC_TRAM
-			train: TRAFFIC_TRAM -- Todo add trains
 			bus: TRAFFIC_BUS
 			i: INTEGER
 		do
@@ -426,9 +411,8 @@ feature -- Event handling
 		require
 			a_slider_exists: a_slider /= Void
 		local
-			passenger: TRAFFIC_PASSENGER
 			i: INTEGER
-			path_finder: TRAFFIC_PATH_CALCULATOR
+			passenger: TRAFFIC_PASSENGER
 		do
 			if a_slider.current_value > map_widget.map.passengers.count then
 --				create path_finder.make_with_map (map_widget.map)
@@ -467,7 +451,6 @@ feature -- Event handling
 			a_slider_exists: a_slider /= Void
 		local
 			moving: TRAFFIC_FREE_MOVING
-			i: INTEGER
 		do
 			if a_slider.current_value > map_widget.map.free_movings.count then
 				-- Add more
@@ -492,7 +475,7 @@ feature -- Event handling
 		require
 			a_slider_exists: a_slider /= Void
 		local
-			i, g, b: INTEGER
+			g, b: INTEGER
 			p: ARRAY [TRAFFIC_PLACE]
 			p1, p2: TRAFFIC_PLACE
 			c: TRAFFIC_PATH_CALCULATOR
@@ -533,7 +516,6 @@ feature -- Event handling
 	add_buildings is
 			-- Add buildings to the city.
 		local
-			b: TRAFFIC_BUILDING
 			r: TRAFFIC_BUILDING_RANDOMIZER
 		do
 			create r.set_map (map_widget.map)

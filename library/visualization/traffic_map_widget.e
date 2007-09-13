@@ -283,6 +283,7 @@ feature {NONE} -- Implementation (view adding)
 					a_taxi_office.taxis.off
 				loop
 					add_taxi (a_taxi_office.taxis.item_for_iteration)
+					a_taxi_office.taxis.forth
 				end
 			end
 		end

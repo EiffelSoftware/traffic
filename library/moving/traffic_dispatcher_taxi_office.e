@@ -20,6 +20,16 @@ feature -- Basic operations
 			taxis.force_last (available_taxis.last)
 		end
 
+	remove_taxi (a_taxi: TRAFFIC_TAXI) is
+			-- Remove `a_taxi' from current taxi office.
+		do
+			available_taxis.delete (a_taxi)
+			taxis.delete (a_taxi)
+			if a_taxi.is_in_map then
+				a_taxi.remove_from_map
+			end
+		end
+
 feature {TRAFFIC_TAXI} -- Communication from the taxis to their office
 
 	recall(from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is

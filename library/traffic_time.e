@@ -36,13 +36,13 @@ feature -- Initialization
 feature  -- Access
 
 	actual_time: TIME
-		-- Simulated time
+			-- Simulated time
 
 	actual_day: INTEGER
-		-- Simulated days since time counting started
+			-- Simulated days since time counting started
 
 	speedup: INTEGER
-		-- Speedup to let the time run faster than the original time
+			-- Speedup to let the time run faster than the original time
 
 	duration (a_start_time, a_end_time: like actual_time): TIME_DURATION is
 			-- Duration from `a_start_time' until `a_time2'.
@@ -138,28 +138,27 @@ feature -- Constants
 feature -- Output
 
 	out: STRING is
-			--
+			-- Output
 		do
 			Result := actual_time.hour.out + ":" + actual_time.minute.out + ":" + actual_time.second.out
 		end
 
-
 feature{NONE} -- Implementation		
 
 	all_procedures: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
-		-- container for all procedures except tours.	
+			-- Container for all procedures except tours.	
 
 	all_tours: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
-		-- container for all tours.
+			-- Container for all tours.
 
 	real_ms_start: INTEGER
-		-- Value of `ticks' in EM_TIME when our time counting started
+			-- Value of `ticks' in EM_TIME when our time counting started
 
 	simulated_ms_start: INTEGER
-		-- Start counting with this value
+			-- Start counting with this value
 
 	update_agent: PROCEDURE [ANY, TUPLE]
-		-- Agent used for updating current simulated time
+			-- Agent used for updating current simulated time
 
 	update_time is
 			-- Update the time count
@@ -173,44 +172,50 @@ feature{NONE} -- Implementation
 feature -- Procedures
 
 	add_callback_procedure (a_procedure: PROCEDURE[ANY, TUPLE]) is
-			-- add a procedure.
+			-- Add a procedure.
+		require
+			a_procedure_exists: a_procedure /= Void
 		do
 			all_procedures.force (a_procedure)
 		end
 
 	add_callback_tour (a_tour_procedure: PROCEDURE[ANY, TUPLE]) is
-			-- add the tour algorithms here.
-			do
-				all_tours.force (a_tour_procedure)
-			end
+			-- Add the tour algorithms here.
+		require
+			a_procedure_exists: a_tour_procedure /= Void
+		do
+			all_tours.force (a_tour_procedure)
+		end
 
 	call_tours is
-			-- call all procedures all 'an_interval' milliseconds.
-			do
-				from
-					all_tours.start
-				until
-					all_tours.after
-				loop
-					all_tours.item.call ([Void])
-					all_tours.forth
-				end
+			-- Call all procedures all 'an_interval' milliseconds.
+		do
+			from
+				all_tours.start
+			until
+				all_tours.after
+			loop
+				all_tours.item.call ([Void])
+				all_tours.forth
 			end
+		end
 
 	call_procedure is
-			-- call all procedures all 'an_interval' milliseconds.
-			do
-				from
-					all_procedures.start
-				until
-					all_procedures.after
-				loop
-					all_procedures.item.call ([Void])
-					all_procedures.forth
-				end
+			-- Call all procedures all 'an_interval' milliseconds.
+		do
+			from
+				all_procedures.start
+			until
+				all_procedures.after
+			loop
+				all_procedures.item.call ([Void])
+				all_procedures.forth
 			end
+		end
 
 invariant
+
 	actual_time.hour >= 0
 	actual_time.minute >= 0
+
 end

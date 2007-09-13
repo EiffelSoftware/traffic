@@ -42,16 +42,6 @@ feature {TRAFFIC_EVENT_CONTAINER} -- Basic operations (map)
 
 feature -- Status setting
 
---	set_changed is
---			-- Add `current' to the map's `changed_items'.
---		require
---			not_changed_yet: not is_changed
---		do
---			map.changed_items.force_last (Current)
---		ensure
---			is_changed: is_changed
---		end
-
 	highlight is
 			-- Highlight.
 		do
@@ -76,6 +66,7 @@ feature -- Access
 			-- Map to which the item belongs (may be void)
 
 	changed_event: TRAFFIC_EVENT_CHANNEL [TUPLE []]
+			-- Event to publish when `Current' is changed
 
 feature -- Status report
 
@@ -90,16 +81,6 @@ feature -- Status report
 			-- E.g. no other elements need it any more?
 		deferred
 		end
-
---	is_changed: BOOLEAN is
---			-- Has a property changed since last update?
---		require
---			map_exists: map /= Void
---		do
---			Result := map.changed_items.has (Current)
---		ensure
---			Result_set: Result = map.changed_items.has (Current)
---		end
 
 	is_highlighted: BOOLEAN
 			-- Is `Current' highlighted?

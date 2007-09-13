@@ -74,6 +74,13 @@ feature -- Basic operations
 		deferred
 		end
 
+	remove_taxi (a_taxi: TRAFFIC_TAXI) is
+			-- Remove `a_taxi' from current taxi office.
+		require
+			a_taxi_valid: a_taxi /= Void
+		deferred
+		end
+
 	call (from_location:TRAFFIC_COORDINATE; to_location:TRAFFIC_COORDINATE) is
 			-- Determine nearest taxi to from_location place, pass request on to this taxi.
 		require

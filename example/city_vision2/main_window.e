@@ -326,7 +326,6 @@ feature {NONE} -- Implementation, Close event
 				canvas.map.buildings.put_last (r.last_buildings.item_for_iteration)
 				r.last_buildings.forth
 			end
---			canvas.map.buildings.append_last (r.last_buildings)
 		end
 
 	add_line_vehicles (a_value: INTEGER) is
@@ -435,9 +434,6 @@ feature {NONE} -- Implementation, Close event
 				-- Add more
 				p := canvas.map.places.to_array
 				create c.set_map (canvas.map)
---				if path_checkbox.is_checked then
---					c.set_shortest_path_mode (c.shortest_path_mode_minimal_switches)
---				end
 				from
 				until
 					canvas.map.paths.count >= a_value
@@ -464,7 +460,7 @@ feature {NONE} -- Implementation, Close event
 		end
 
 	add_place is
-			-- Add random map items
+			-- Add place.
 		local
 			p: TRAFFIC_PLACE
 			x, y: INTEGER
@@ -482,7 +478,7 @@ feature {NONE} -- Implementation, Close event
 		end
 
 	add_line is
-			-- Add random map items
+			-- Add line.
 		local
 			l: TRAFFIC_LINE
 			lc1, lc2: TRAFFIC_LINE_CONNECTION
@@ -527,7 +523,7 @@ feature {NONE} -- Implementation, Close event
 		end
 
 	add_line_connection is
-			-- Add random map items
+			-- Add line connection.
 		local
 			l: TRAFFIC_LINE
 			lc1, lc2: TRAFFIC_LINE_CONNECTION
@@ -575,7 +571,7 @@ feature {NONE} -- Implementation, Close event
 		end
 
 	add_road is
-			-- Add random map items
+			-- Add road.
 		local
 			r: TRAFFIC_ROAD
 			rc1, rc2: TRAFFIC_ROAD_CONNECTION
@@ -593,11 +589,109 @@ feature {NONE} -- Implementation, Close event
 			create r.make (rc1, rc2)
 			canvas.map.roads.force (r, r.id)
 			canvas.redraw
---			canvas.map.lines.force (l, l.name)
+		end
+
+	add_taxi_office is
+			-- Add taxi office.
+		local
+			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
+			et: TRAFFIC_EVENT_TAXI_OFFICE
+			r, g, b: INTEGER
+			td: TRAFFIC_DISPATCHER_TAXI
+			te: TRAFFIC_EVENT_TAXI
+		do
+			random.forth
+			r := random.item \\ 256
+			random.forth
+			g := random.item \\ 256
+			random.forth
+			b := random.item \\ 256
+			random.forth
+			if not canvas.map.taxi_offices.is_empty then
+				if canvas.map.taxi_offices.last.generating_type.is_equal ("TRAFFIC_EVENT_TAXI_OFFICE") then
+					create dt.make_with_color (r, g, b)
+					point_randomizer.generate_point_array (5)
+					create td.make_random (dt, point_randomizer.last_array)
+					dt.add_taxi (td)
+					canvas.map.taxi_offices.put_last (dt)
+					point_randomizer.generate_point_array (5)
+					create td.make_random (dt, point_randomizer.last_array)
+					dt.add_taxi (td)
+				else
+					create et.make_with_color (r, g, b)
+					point_randomizer.generate_point_array (5)
+					create te.make_random (et, point_randomizer.last_array)
+					et.add_taxi (te)
+					canvas.map.taxi_offices.put_last (et)
+					point_randomizer.generate_point_array (5)
+					create te.make_random (et, point_randomizer.last_array)
+					et.add_taxi (te)
+				end
+			else
+				create et.make_with_color (r, g, b)
+				point_randomizer.generate_point_array (5)
+				create te.make_random (et, point_randomizer.last_array)
+				et.add_taxi (te)
+				canvas.map.taxi_offices.put_last (et)
+				point_randomizer.generate_point_array (5)
+				create te.make_random (et, point_randomizer.last_array)
+				et.add_taxi (te)
+			end
+		end
+
+	add_taxi (a_value: INTEGER) is
+			-- Add taxi.
+		local
+			td: TRAFFIC_DISPATCHER_TAXI
+			te: TRAFFIC_EVENT_TAXI
+			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
+			et: TRAFFIC_EVENT_TAXI_OFFICE
+		do
+			if not canvas.map.taxi_offices.is_empty then
+				dt ?= canvas.map.taxi_offices.last
+				et ?= canvas.map.taxi_offices.last
+				if et /= Void then
+					if et.taxis.count <= a_value then
+						from
+						until
+							et.taxis.count >= a_value
+						loop
+							point_randomizer.generate_point_array (5)
+							create te.make_random (et, point_randomizer.last_array)
+							et.add_taxi (te)
+						end
+					else
+						from
+						until
+							et.taxis.count <= a_value
+						loop
+							et.remove_taxi (et.taxis.last)
+						end
+					end
+				elseif dt /= Void then
+					if dt.taxis.count <= a_value then
+						from
+						until
+							dt.taxis.count >= a_value
+						loop
+							point_randomizer.generate_point_array (5)
+							create td.make_random (dt, point_randomizer.last_array)
+							dt.add_taxi (td)
+						end
+					else
+						from
+						until
+							dt.taxis.count <= a_value
+						loop
+							dt.remove_taxi (dt.taxis.last)
+						end
+					end
+				end
+			end
 		end
 
 	remove_place is
-			-- Remove random map items
+			-- Remove random map items.
 		local
 			p: TRAFFIC_PLACE
 			pt: ARRAY [TRAFFIC_PLACE]
@@ -819,8 +913,8 @@ feature {NONE} -- Implementation
 			r.change_actions.extend (agent add_free_movings)
 			fixed.extend (l)
 			fixed.extend (r)
-			fixed.set_item_position (l, 5, 7)
-			fixed.set_item_position_and_size (r, 130, 5, 100, 20)
+			fixed.set_item_position (l, 5, 3)
+			fixed.set_item_position_and_size (r, 130, 1, 100, 20)
 
 			-- Line vehicles
 			create l.make_with_text ("Vehicles/Line (0..10):")
@@ -830,8 +924,8 @@ feature {NONE} -- Implementation
 			r.change_actions.extend (agent add_line_vehicles)
 			fixed.extend (l)
 			fixed.extend (r)
-			fixed.set_item_position (l, 5, 42)
-			fixed.set_item_position_and_size (r, 130, 40, 100, 20)
+			fixed.set_item_position (l, 5, 33)
+			fixed.set_item_position_and_size (r, 130, 31, 100, 20)
 
 			-- Passengers
 			create l.make_with_text ("Passengers (0..100):")
@@ -841,8 +935,8 @@ feature {NONE} -- Implementation
 			r.change_actions.extend (agent add_passengers)
 			fixed.extend (l)
 			fixed.extend (r)
-			fixed.set_item_position (l, 5, 82)
-			fixed.set_item_position_and_size (r, 130, 80, 100, 20)
+			fixed.set_item_position (l, 5, 63)
+			fixed.set_item_position_and_size (r, 130, 61, 100, 20)
 
 			-- Paths
 			create l.make_with_text ("Paths (0..10):")
@@ -852,8 +946,24 @@ feature {NONE} -- Implementation
 			r.change_actions.extend (agent add_paths)
 			fixed.extend (l)
 			fixed.extend (r)
-			fixed.set_item_position (l, 5, 122)
-			fixed.set_item_position_and_size (r, 130, 120, 100, 20)
+			fixed.set_item_position (l, 5, 93)
+			fixed.set_item_position_and_size (r, 130, 91, 100, 20)
+
+			-- Taxis
+			create button.make_with_text ("+office")
+			button.select_actions.extend (agent add_taxi_office)
+			fixed.extend (button)
+			fixed.set_item_position (button, 5, 121)
+			create l.make_with_text ("taxis (0..10):")
+			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
+			r.set_value (0)
+			r.set_minimum_width (100)
+			r.change_actions.extend (agent add_taxi)
+			fixed.extend (l)
+			fixed.extend (r)
+			fixed.set_item_position (l, 80, 123)
+			fixed.set_item_position_and_size (r, 130, 121, 100, 20)
+
 
 			-- Hide/show map
 			create rad.make_with_text ("Show map")

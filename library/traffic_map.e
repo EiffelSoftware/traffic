@@ -37,9 +37,7 @@ feature {NONE} -- Initialization
 			name := a_name
 			create graph.make
 			create places.make (default_size * default_size, Current)
---			places.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
 			create lines.make (default_size, Current)
---			lines.set_key_equality_tester (create {UC_STRING_EQUALITY_TESTER})
 			create line_sections.make
 			create roads.make (default_size, Current)
 			create passengers.make (Current)
@@ -49,8 +47,6 @@ feature {NONE} -- Initialization
 			create paths.make (Current)
 			create buildings.make (Current)
 			create free_movings.make (Current)
-
---			create changed_items.make
 		ensure
 			name_set: equal (name, a_name)
 			places_not_void: places /= Void
@@ -66,21 +62,7 @@ feature -- TODO
 			-- TODO
 		end
 
-feature -- Status change
-
---	update is
---			-- The display of map items have been updated, reset `is_changed'.
---		do
---			changed_items.wipe_out
---		end
-
 feature -- Status report
-
---	is_changed: BOOLEAN is
---			-- Has the map changed since last update?
---		do
---			Result := not changed_items.is_empty
---		end
 
 	place_at_position (a_point: TRAFFIC_COORDINATE): TRAFFIC_PLACE	is
 			-- Place that `a_point' is located on
@@ -188,9 +170,6 @@ feature -- Insertion
 
 feature -- Access
 
---	changed_items: DS_LINKED_LIST [TRAFFIC_MAP_ITEM]
---			-- Items that have changed since last update
-
 	center: TRAFFIC_COORDINATE
 			-- Position of the city center
 
@@ -267,30 +246,13 @@ feature -- Access
 			end
 		end
 
---	connections_of_place (a_name: STRING): LIST [TRAFFIC_CONNECTION] is
---			-- Connections with origin or destination place `a_name'
---		require
---			place_in_map: places.has (a_name)
---		local
---			nodes: LIST [TRAFFIC_NODE]
---		do
---			Result := create {ARRAYED_LIST [TRAFFIC_CONNECTION]}.make (8)
---			nodes := places.item (a_name).nodes
---			from nodes.start until nodes.after loop
---				graph.search (nodes.item)
---				Result.append (graph.incident_edges)
---				nodes.forth
---			end
---		end
-
 feature -- Output
 
 	out: STRING is
 			-- Textual representation.
 		do
 			Result := "Traffic map%Nnamed: " + name + "%Ndescription: " + description_out +
-				"%N%Nplaces:%N" + places.out --+
---				"%N%Nlines:%N" + lines.out
+				"%N%Nplaces:%N" + places.out
 		end
 
 feature {TRAFFIC_MAP_LOADER}
@@ -322,45 +284,6 @@ feature {TRAFFIC_MAP_LOADER}
 			if edge_count > 0 then
 				average_weight := total_weight / edge_count
 			end
-
---			create type.make
---			-- Connect stops.
---			-- TODO: If the roads should be used for transport, the nodes must be connected as well.
---			create pp.make (2)
-----			pp.force_last (Void)
-----			pp.force_last (Void)
-
---			from
---				places.start
---			until
---				places.off
---			loop
---				from
---					p := place_array.item (i)
---					p.stops.start
---				until
---					p.stops.after
---				loop
---					s := p.stops.item
---					graph.search (s)
---					pp.force (position_from_connections (p.stops.item.connection_list, s), 1)
---					p.stops.forth
---					if not p.stops.after then
---						graph.search (p.stops.item)
---						pp.force (p.position, 2)
---						create a_edge.make_invisible (s, p.dummy_node, type, graph.id_manager.next_free_index, "undirected")
---						a_edge.set_polypoints (pp)
---						a_edge.add_to_map (Current)
-
-----						a := pp.first
-----						pp.force (pp.last, 1)
-----						pp.force (a, 2)
-----						a_edge.set_polypoints (pp)
-----						a_edge.add_to_map (Current)
---					end
---				end
---				i := i + 1
---			end
 		end
 
 feature {NONE}-- Implementation
@@ -411,11 +334,9 @@ feature {NONE}-- Implementation
 		end
 
 invariant
+
 	name_not_void: name /= Void -- Map name exists.
 	name_not_empty: not name.is_empty -- Map name not empty.
 	places_not_void: places /= Void -- Places exist.
---	lines_not_void: lines /= Void -- Lines exist.
---	line_sections_not_void: line_sections /= Void -- Line sections exist
---	travelers_not_void: travelers /= Void -- Travelers exist
---	internal_taxi_offices_not_void: internal_taxi_offices /= Void
+
 end
