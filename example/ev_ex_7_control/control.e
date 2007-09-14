@@ -38,9 +38,13 @@ feature -- Path building
 			until
 				Line8.after
 			loop
-				Line8.item.highlight
-				wait
-				Line8.item.unhighlight
+				if Line8.item.is_hub then
+					show_big_red_spot (Line8.item.position)
+				elseif Line8.item.is_exchange then
+					show_green_spot (Line8.item.position)
+				else
+					show_spot (line8.item.position)
+				end
 				Line8.forth
 			end
 		end

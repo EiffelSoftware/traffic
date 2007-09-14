@@ -142,6 +142,22 @@ feature -- Access
 
 feature -- Status report
 
+	is_exchange: BOOLEAN is
+			-- Is this an exchange station (where multiple transportation lines stop)
+		do
+			if outgoing_line_connections.count > 2 then
+				Result := True
+			end
+		end
+
+	is_hub: BOOLEAN is
+			-- Is this an exchange station (where multiple transportation lines stop)
+		do
+			if outgoing_line_connections.count > 8 then
+				Result := True
+			end
+		end
+
 	has_stop (a_line: TRAFFIC_LINE): BOOLEAN is
 			-- Does the place have a stop for `a_line'?
 		require

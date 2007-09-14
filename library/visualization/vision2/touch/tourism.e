@@ -121,6 +121,48 @@ feature -- Access (Paris)
 
 feature -- Basic operations
 
+	show_spot (a_location: TRAFFIC_COORDINATE) is
+			--
+		local
+			s: DRAWABLE_SPOT
+		do
+			create s.make (create {REAL_COORDINATE}.make (a_location.x, -a_location.y))
+			s.set_color (create {EV_COLOR}.make_with_8_bit_rgb (255, 255, 0))
+			s.enable_filled
+			s.set_diameter (10)
+			main_window.canvas.object_list.put_last (s)
+			wait
+			main_window.canvas.object_list.delete (s)
+		end
+
+	show_big_red_spot (a_location: TRAFFIC_COORDINATE) is
+			--
+		local
+			s: DRAWABLE_SPOT
+		do
+			create s.make (create {REAL_COORDINATE}.make (a_location.x, -a_location.y))
+			s.set_color (create {EV_COLOR}.make_with_8_bit_rgb (255, 0, 0))
+			s.enable_filled
+			s.set_diameter (20)
+			main_window.canvas.object_list.put_last (s)
+			wait
+			main_window.canvas.object_list.delete (s)
+		end
+
+	show_green_spot (a_location: TRAFFIC_COORDINATE) is
+			--
+		local
+			s: DRAWABLE_SPOT
+		do
+			create s.make (create {REAL_COORDINATE}.make (a_location.x, -a_location.y))
+			s.set_color (create {EV_COLOR}.make_with_8_bit_rgb (0, 255, 0))
+			s.enable_filled
+			s.set_diameter (15)
+			main_window.canvas.object_list.put_last (s)
+			wait
+			main_window.canvas.object_list.delete (s)
+		end
+
 	wait is
 			-- Wait for three seconds.
 		local

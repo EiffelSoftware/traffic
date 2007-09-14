@@ -138,7 +138,7 @@ feature -- Status setting
 
 feature {NONE} -- Implementation
 
-	Default_diameter: INTEGER is 5
+	Default_diameter: INTEGER is 20
 			-- The default diameter of the spot
 
 	Default_width: INTEGER is 1

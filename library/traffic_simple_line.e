@@ -30,12 +30,15 @@ feature -- Measurement
 
 feature -- Access
 
+	index: INTEGER
+			-- Internal cursor index
+
 	i_th (i: INTEGER): TRAFFIC_PLACE is
 			-- The station of index i on this line		
 		do
 		end
 
-	item_for_iteration: TRAFFIC_LINE_CONNECTION is
+	item: TRAFFIC_PLACE is
 			-- Item at internal cursor position of line
 		do
 		end
@@ -52,7 +55,7 @@ feature -- Access
 			-- Type of line
 
 	old_terminal_1: TRAFFIC_PLACE
-			-- Old terminal (after deletion via `remove_all_connections'
+			-- Old terminal (after deletion via `remove_all_connections')
 
 	terminal_1: TRAFFIC_PLACE
 			-- Terminal of line in one direction
@@ -65,17 +68,11 @@ feature -- Access
 			-- Used as color represenation
 
 	road_points: DS_ARRAYED_LIST[TRAFFIC_COORDINATE] is
-			-- Polypoints retrieved by the roads
-			-- that belong to this line
+			-- Polypoints from the roads belonging to this line
 		do
 		end
 
 feature -- Cursor movement
-
-	set_cursor_direction (forward: BOOLEAN) is
-			-- Set internal cursor direction either from `terminal_1' to `terminal_2' (forward) or the other way.
-		do
-		end
 
 	start is
 			-- Move internal cursor to first position.
@@ -89,18 +86,13 @@ feature -- Cursor movement
 
 feature -- Status report
 
-	has (v: like item_for_iteration): BOOLEAN
+	has (v: TRAFFIC_LINE_CONNECTION): BOOLEAN
 			-- Does list include `v'?
 		do
 		end
 
 	is_empty: BOOLEAN is
 			-- Is container empty?
-		do
-		end
-
-	is_cursor_one_direction: BOOLEAN is
-			-- Is the cursor currently working on the direction from `terminal_1' to `terminal_2'?
 		do
 		end
 
@@ -162,6 +154,7 @@ feature -- Removal
 
 feature -- Status report
 
+
 	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
 			-- Is `Current' insertable into `a_map'?
 			-- E.g. are all needed elements already inserted in the map?
@@ -203,8 +196,6 @@ feature -- Basic operations
 feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
 	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
-
-	internal_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
 
 	angle(st,dest: TRAFFIC_COORDINATE):DOUBLE is
 			-- Set the angles to the x- and y-axis respectively.

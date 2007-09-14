@@ -9,8 +9,6 @@ class
 inherit
 
 	ZOOMABLE_CANVAS
-		export {NONE}
-			object_list
 		redefine
 			make,
 			redraw_now
@@ -216,7 +214,14 @@ feature -- Basic operations
 					internal_moving_representations.forth
 				end
 			end
-
+			from
+				object_list.start
+			until
+				object_list.after
+			loop
+				draw_item (object_list.item_for_iteration)
+				object_list.forth
+			end
 		end
 
 	background_image: EV_PIXMAP
