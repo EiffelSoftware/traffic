@@ -225,9 +225,9 @@ feature -- Passengers
 			create s.make_tram (tram11_Place_Republique_Place_Hotel_de_Ville)
 			s.extend (tram11_Place_Hotel_de_Ville_Place_Chatelet)
 			p.set_first (s)
-			create s.make_rail (rail_Place_Chatelet_Place_Opera)
+			create s.make_rail (rera_place_chatelet_place_opera)
 			p.first.set_next (s)
-			create Result.make_with_path (p, 2.0)
+			create Result.make_with_path (p, 10.0)
 			Paris.passengers.put_last (Result)
 		end
 
@@ -277,7 +277,8 @@ feature --Predefined objects (Line-Sections)
 			from
 				line_sections.start
 			until
-				line_sections.off or else (line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.type.is_equal (create {TRAFFIC_TYPE_TRAM}.make))
+				line_sections.off or else (	line_sections.item_for_iteration.destination = p2 and
+											line_sections.item_for_iteration.type.is_equal (create {TRAFFIC_TYPE_TRAM}.make))
 			loop
 				line_sections.forth
 			end
@@ -301,8 +302,7 @@ feature --Predefined objects (Line-Sections)
 				line_sections.start
 			until
 				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.type.is_equal (create {TRAFFIC_TYPE_TRAM}.make) and
-				line_sections.item_for_iteration.line.name.is_equal ("tram 11"))
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("tram 11"))
 			loop
 				line_sections.forth
 			end
@@ -326,8 +326,7 @@ feature --Predefined objects (Line-Sections)
 				line_sections.start
 			until
 				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.type.is_equal (create {TRAFFIC_TYPE_TRAM}.make) and
-				line_sections.item_for_iteration.line.name.is_equal ("tram 11"))
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("tram 11"))
 			loop
 				line_sections.forth
 			end
@@ -336,7 +335,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	rail_Place_Chatelet_Place_Opera: TRAFFIC_LINE_CONNECTION is
+	rerA_Place_Chatelet_Place_Opera: TRAFFIC_LINE_CONNECTION is
 			--the line section connecting Place Republique and Place Opera
 		require
 			Paris_exists: is_paris_loaded
@@ -350,7 +349,8 @@ feature --Predefined objects (Line-Sections)
 			from
 				line_sections.start
 			until
-				line_sections.off or else (line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.type.is_equal (create {TRAFFIC_TYPE_RAIL}.make))
+				line_sections.off or else
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER A"))
 			loop
 				line_sections.forth
 			end
@@ -359,7 +359,31 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	rail_Place_Invalides_Place_Champs_de_Mars: TRAFFIC_LINE_CONNECTION is
+	rerB_Place_Chatelet_Place_Notre_Dame: TRAFFIC_LINE_CONNECTION is
+			--the line section connecting Place Republique and Place Opera
+		require
+			Paris_exists: is_paris_loaded
+		local
+			p1, p2: TRAFFIC_PLACE
+			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+		once
+			p1 := Paris.places.item ("place Chatelet")
+			p2 := Paris.places.item ("place St Michel - Notre Dame")
+			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
+			from
+				line_sections.start
+			until
+				line_sections.off or else
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER B"))
+			loop
+				line_sections.forth
+			end
+			Result := line_sections.item_for_iteration
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	rerca_Place_Invalides_Place_Champs_de_Mars: TRAFFIC_LINE_CONNECTION is
 			--the line section connecting Place Invalides and Place Champs de Mars
 		require
 			Paris_exists: is_paris_loaded
@@ -373,7 +397,8 @@ feature --Predefined objects (Line-Sections)
 			from
 				line_sections.start
 			until
-				line_sections.off or else (line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.type.is_equal (create {TRAFFIC_TYPE_RAIL}.make))
+				line_sections.off or else
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER C(a)"))
 			loop
 				line_sections.forth
 			end
@@ -382,6 +407,29 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
+	rerca_Place_Notre_Dame_Place_Invalides: TRAFFIC_LINE_CONNECTION is
+			--the line section connecting Place Invalides and Place Champs de Mars
+		require
+			Paris_exists: is_paris_loaded
+		local
+			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+			p1, p2: TRAFFIC_PLACE
+		once
+			p1 := Paris.places.item ("place St Michel - Notre Dame")
+			p2 := Paris.places.item ("place Invalides")
+			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
+			from
+				line_sections.start
+			until
+				line_sections.off or else
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER C(a)"))
+			loop
+				line_sections.forth
+			end
+			Result := line_sections.item_for_iteration
+		ensure
+			Result_exists: Result /= Void
+		end
 
 feature --Predefined Objects (Roads)
 
@@ -415,12 +463,12 @@ feature --Predefined Objects (Roads)
 			Result_exists: Result /= Void
 		end
 
-	Road_Tour_Eiffel_to_station_Champs_de_Mars: TRAFFIC_ROAD_CONNECTION is
+	Road_station_Champs_de_Mars_to_Tour_Eiffel: TRAFFIC_ROAD_CONNECTION is
 			-- Road from Tour Eiffel to the metro station Champs de Mars
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.roads.item (91).one_way
+			Result := Paris.roads.item (91).other_way
 		ensure
 			Result_exists: Result /= Void
 		end

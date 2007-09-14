@@ -155,7 +155,7 @@ feature -- Status report
 						Result := False
 					end
 				end
-				Result := Result and (a_connection.origin = connections.last.destination)
+				Result := Result and (a_connection.origin = connections.last.destination) and a_connection.type.is_equal (connections.last.type)
 			end
 		end
 
@@ -239,7 +239,13 @@ feature -- Basic operations
 		require
 			a_connection_exists: a_connection /= Void
 			a_connection_fits: is_insertable (a_connection)
+		local
+			l: TRAFFIC_LINE_CONNECTION
 		do
+			l ?= a_connection
+			if (l /= Void and connections.is_empty) and then l.line /= Void then
+				line := l.line
+			end
 			connections.force_last (a_connection)
 			length := length + a_connection.length
 		ensure
