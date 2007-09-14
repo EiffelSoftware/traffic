@@ -335,6 +335,54 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
+	tram6_Place_Etoile_Place_Trocadero: TRAFFIC_LINE_CONNECTION is
+			-- the line section connecting Place Pere Lachaise and Place Republique
+		require
+			Paris_exists: is_paris_loaded
+		local
+			p1, p2: TRAFFIC_PLACE
+			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+		once
+			p1 := Paris.places.item ("place Charles de Gaulle - Etoile")
+			p2 := Paris.places.item ("place Trocadero")
+			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
+			from
+				line_sections.start
+			until
+				line_sections.off or else
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("tram 6"))
+			loop
+				line_sections.forth
+			end
+			Result := line_sections.item_for_iteration
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	tram6_Place_Trocadero_Place_Champs_De_Mars: TRAFFIC_LINE_CONNECTION is
+			-- the line section connecting Place Pere Lachaise and Place Republique
+		require
+			Paris_exists: is_paris_loaded
+		local
+			p1, p2: TRAFFIC_PLACE
+			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+		once
+			p1 := Paris.places.item ("place Trocadero")
+			p2 := Paris.places.item ("place Champs de Mars, Tour Eiffel, Bir-Hakeim")
+			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
+			from
+				line_sections.start
+			until
+				line_sections.off or else
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("tram 6"))
+			loop
+				line_sections.forth
+			end
+			Result := line_sections.item_for_iteration
+		ensure
+			Result_exists: Result /= Void
+		end
+
 	rerA_Place_Chatelet_Place_Opera: TRAFFIC_LINE_CONNECTION is
 			--the line section connecting Place Republique and Place Opera
 		require
@@ -432,6 +480,16 @@ feature --Predefined objects (Line-Sections)
 		end
 
 feature --Predefined Objects (Roads)
+
+	Road_Place_Etoile: TRAFFIC_ROAD_CONNECTION is
+			-- the road from Etoile to place Etoile
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.roads.item (93).one_way
+		ensure
+			Result_exists: Result /= Void
+		end
 
 	Road_Place_de_la_Nation: TRAFFIC_ROAD_CONNECTION is
 			-- the road from Place de la Opera to place Opera

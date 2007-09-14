@@ -806,8 +806,6 @@ feature {NONE} -- Implementation
 				random.forth
 				l := lt.item ((random.item \\ lt.count) + 1)
 				if l.connection_count >= 1 then
-					l.start
-					s := l.item_for_iteration.start_node
 					l.remove_first
 				end
 				random.forth

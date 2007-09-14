@@ -43,8 +43,10 @@ feature -- Cursor movement
 		do
 			if forward then
 				create internal_cursor.make (line.one_direction)
+				internal_cursor.start
 			else
 				create internal_cursor.make (line.other_direction)
+				internal_cursor.start
 			end
 		ensure
 			internal_cursor_exists: internal_cursor /= Void

@@ -71,17 +71,19 @@ feature -- Factory methods
 		local
 			l_v: TRAFFIC_3D_RENDERABLE [TRAFFIC_LINE]
 			l: TRAFFIC_3D_RENDERABLE [TRAFFIC_CONNECTION]
+			lc: TRAFFIC_LINE_CURSOR
 		do
 			create l_v.make (a_line)
 			from
-				a_line.start
+				create lc.make (a_line)
+				lc.start
 			until
-				a_line.after
+				lc.after
 			loop
-				l := line_connection_view_factory.new_connection (a_line.item_for_iteration)
+				l := line_connection_view_factory.new_connection (lc.item_for_iteration)
 				l.set_color (a_line.color)
 				l_v.add_child (l)
-				a_line.forth
+				lc.forth
 			end
 			Result := l_v
 			l_v.set_color (a_line.color)

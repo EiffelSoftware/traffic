@@ -60,10 +60,11 @@ feature {NONE} -- Initialization
 			end
 			create one_direction.make
 			create other_direction.make
-			create internal_cursor.make (one_direction)
+
 			create changed_event
 			create element_inserted_event
 			create element_removed_event
+			index := 1
 		ensure
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
@@ -91,6 +92,9 @@ feature -- Measurement
 
 feature -- Access
 
+	index: INTEGER
+			-- Internal cursor index
+
 	i_th (i: INTEGER): TRAFFIC_PLACE is
 			-- The station of index i on this line		
 		require
@@ -104,12 +108,12 @@ feature -- Access
 			end
 		end
 
-	item_for_iteration: TRAFFIC_LINE_CONNECTION is
+	item: TRAFFIC_PLACE is
 			-- Item at internal cursor position of line
 		require
 			not_after: not after
 		do
-			Result := internal_cursor.item
+			Result := i_th (index)
 		end
 
 	hash_code: INTEGER is
@@ -144,26 +148,28 @@ feature -- Access
 			pp: DS_ARRAYED_LIST[TRAFFIC_COORDINATE]
 			invert, is_station: BOOLEAN
 			v: TRAFFIC_COORDINATE
+			lc: TRAFFIC_LINE_CURSOR
 		do
 			create Result.make(1)
 			-- loop on all the line sections
 			from
-				start
+				create lc.make (Current)
+				lc.start
 			until
-				after
+				lc.after
 			loop
-				roads:=item_for_iteration.roads
+				roads:=lc.item_for_iteration.roads
 				is_station:=true
 				-- loop on all the roads
 
-				if item_for_iteration.origin=roads.first.origin and item_for_iteration.destination=roads.last.destination then
+				if lc.item_for_iteration.origin=roads.first.origin and lc.item_for_iteration.destination=roads.last.destination then
 					invert:=false
-				elseif item_for_iteration.origin=roads.last.destination and item_for_iteration.destination=roads.first.origin then
+				elseif lc.item_for_iteration.origin=roads.last.destination and lc.item_for_iteration.destination=roads.first.origin then
 
 					invert:=true
 				else
 					io.putstring ("Invalid roads for given line section%N")
-					io.putstring("Line section origin: "+item_for_iteration.origin.name+" - Line section destination:"+item_for_iteration.destination.name+"%N")
+					io.putstring("Line section origin: "+lc.item_for_iteration.origin.name+" - Line section destination:"+lc.item_for_iteration.destination.name+"%N")
 				end
 				if invert then
 					from
@@ -213,22 +219,13 @@ feature -- Access
 
 feature -- Cursor movement
 
-	set_cursor_direction (forward: BOOLEAN) is
-			-- Set internal cursor direction either from `terminal_1' to `terminal_2' (forward) or the other way.
-		do
-			if forward then
-				create internal_cursor.make (one_direction)
-			else
-				create internal_cursor.make (other_direction)
-			end
-		ensure
-			list_set: (forward implies internal_cursor.container = one_direction) and ((not forward) implies internal_cursor.container = other_direction)
-		end
-
 	start is
 			-- Move internal cursor to first position.
 		do
-			internal_cursor.start
+			index := 1
+		ensure
+			at_first: (not is_empty) implies (index = 1)
+			empty_convention: (is_empty) implies (after)
 		end
 
 	forth is
@@ -236,12 +233,14 @@ feature -- Cursor movement
 		require
 			not_after: not after
 		do
-			internal_cursor.forth
+			index := index + 1
+		ensure
+			moved_forth: index = old index + 1
 		end
 
 feature -- Status report
 
-	has (v: like item_for_iteration): BOOLEAN
+	has (v: TRAFFIC_LINE_CONNECTION): BOOLEAN
 			-- Does list include `v'?
 		do
 			Result := one_direction.has (v) or other_direction.has (v)
@@ -255,46 +254,64 @@ feature -- Status report
 			Result := one_direction.is_empty
 		end
 
-	is_cursor_one_direction: BOOLEAN is
-			-- Is the cursor currently working on the direction from `terminal_1' to `terminal_2'?
-		do
-			Result := internal_cursor.container = one_direction
-		end
-
 	after: BOOLEAN is
 			-- Is there no valid position to right of internal cursor?
 		do
-			Result := internal_cursor.after
+			Result := index > count
 		end
 
 feature -- Element change
 
 	highlight is
 			-- Highlight all line sections
+		local
+			lc: TRAFFIC_LINE_CURSOR
 		do
 			is_highlighted := True
+			create lc.make (Current)
 			from
-				start
+				lc.start
 			until
-				after
+				lc.after
 			loop
-				item_for_iteration.highlight
-				forth
+				lc.item_for_iteration.highlight
+				lc.forth
+			end
+			from
+				lc.start
+				lc.set_cursor_direction (False)
+			until
+				lc.after
+			loop
+				lc.item_for_iteration.highlight
+				lc.forth
 			end
 			changed_event.publish ([])
 		end
 
 	unhighlight is
 			-- Highlight all line sections
+		local
+			lc: TRAFFIC_LINE_CURSOR
 		do
 			is_highlighted := False
+			create lc.make (Current)
 			from
-				start
+				lc.start
 			until
-				after
+				lc.after
 			loop
-				item_for_iteration.unhighlight
-				forth
+				lc.item_for_iteration.unhighlight
+				lc.forth
+			end
+			from
+				lc.start
+				lc.set_cursor_direction (False)
+			until
+				lc.after
+			loop
+				lc.item_for_iteration.unhighlight
+				lc.forth
 			end
 			changed_event.publish ([])
 		end
@@ -314,26 +331,29 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
 
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.
+		local
+			lc: TRAFFIC_LINE_CURSOR
 		do
 			is_in_map := True
 			map := a_map
 			from
-				set_cursor_direction (True)
-				start
+				create lc.make (Current)
+				lc.start
+				lc.set_cursor_direction (True)
 			until
-				after
+				lc.after
 			loop
-				item_for_iteration.add_to_map (map)
-				forth
+				lc.item_for_iteration.add_to_map (map)
+				lc.forth
 			end
 			from
-				set_cursor_direction (False)
-				start
+				lc.start
+				lc.set_cursor_direction (False)
 			until
-				after
+				lc.after
 			loop
-				item_for_iteration.add_to_map (map)
-				forth
+				lc.item_for_iteration.add_to_map (map)
+				lc.forth
 			end
 		end
 
@@ -451,20 +471,23 @@ feature -- Status report
 	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
 			-- Is `Current' insertable into `a_map'?
 			-- E.g. are all needed elements already inserted in the map?
+		local
+			lc: TRAFFIC_LINE_CURSOR
 		do
 			Result := True
 			from
-				start
+				create lc.make (Current)
+				lc.start
 			until
-				after or not Result
+				lc.after or not Result
 			loop
-				if item_for_iteration.start_node.is_in_map and item_for_iteration.end_node.is_in_map and
-						item_for_iteration.origin.is_in_map and item_for_iteration.destination.is_in_map then
+				if lc.item_for_iteration.start_node.is_in_map and lc.item_for_iteration.end_node.is_in_map and
+						lc.item_for_iteration.origin.is_in_map and lc.item_for_iteration.destination.is_in_map then
 					Result := True
 				else
 					Result := False
 				end
-				forth
+				lc.forth
 			end
 		end
 
@@ -665,7 +688,7 @@ feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
 	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 
-	internal_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
+--	internal_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
 
 	angle(st,dest: TRAFFIC_COORDINATE):DOUBLE is
 			-- Set the angles to the x- and y-axis respectively.
@@ -729,5 +752,5 @@ invariant
 	counts_are_equal: one_direction.count = other_direction.count
 	terminal_1_is_first: terminal_1 = i_th (1)
 	terminal_2_is_last: terminal_2 = i_th (count)
-
+	after: after = (index = count + 1)
 end

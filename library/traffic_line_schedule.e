@@ -34,7 +34,7 @@ feature -- Intialization
 			llist : LINKED_LIST[TUPLE[STRING,LINKED_LIST[TUPLE[STRING,INTEGER,INTEGER]]]]
 			line : TUPLE[STRING,LINKED_LIST[TUPLE[STRING,INTEGER,INTEGER]]]
 			line_name : STRING
-
+			lc: TRAFFIC_LINE_CURSOR
 		do
 			make_list (0)
 
@@ -64,16 +64,17 @@ feature -- Intialization
 				loop
 					-- First direction
 					from
-						a_line.start
+						create lc.make (a_line)
+						lc.start
 					until
-						a_line.after
+						lc.after
 					loop
 						-- Create schedule entry
-						create new_entry.make_with_line_section(a_line.item_for_iteration)
+						create new_entry.make_with_line_section(lc.item_for_iteration)
 						new_entry.set_start_time(act_time.twin)
 
 						-- Add time for traveling
-						distance := a_line.item_for_iteration.origin.position.distance (a_line.item_for_iteration.destination.position).abs
+						distance := lc.item_for_iteration.origin.position.distance (lc.item_for_iteration.destination.position).abs
 						act_time.minute_add (((distance.rounded) // 80).max(1))
 
 						-- Set end time in schedule entry
@@ -86,7 +87,7 @@ feature -- Intialization
 						act_time.minute_add (2)
 
 						-- Next stop
-						a_line.forth
+						lc.forth
 					end
 				end
 			end

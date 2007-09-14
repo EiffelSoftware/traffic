@@ -253,13 +253,15 @@ feature -- Basic operations
 		end
 
 	set_next (a_path_section: TRAFFIC_PATH_SECTION) is
-			-- set pointer to next path section `a_path_section'
+			-- Set pointer to next path section `a_path_section'.
 		require
 			a_path_section_exists: a_path_section /= Void
 			is_realy_next: is_valid_next (a_path_section)
 			is_different_type_of_line: not is_joinable (a_path_section)
 		do
 			next := a_path_section
+		ensure
+			next_set: next = a_path_section
 		end
 
 end

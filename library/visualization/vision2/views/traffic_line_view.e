@@ -41,17 +41,19 @@ feature -- Initialization
 			-- Initialize view for `a_item'.
 		local
 			c: TRAFFIC_LINE_CONNECTION_VIEW
+			lc: TRAFFIC_LINE_CURSOR
 		do
 			make_container
 			item := a_item
 			from
-				item.start
+				create lc.make (item)
+				lc.start
 			until
-				item.after
+				lc.after
 			loop
-				create c.make (item.item_for_iteration)
+				create c.make (lc.item_for_iteration)
 				put_last (c)
-				item.forth
+				lc.forth
 			end
 			if item.color /= Void  then
 				from

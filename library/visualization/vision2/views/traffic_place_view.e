@@ -142,7 +142,7 @@ feature -- Constants
 	default_highlight_color: EV_COLOR is
 			-- Default highlight color
 		once
-			create Result.make_with_8_bit_rgb (0, 255, 0)
+			create Result.make_with_8_bit_rgb (255, 62, 150)
 		end
 
 end
