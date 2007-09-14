@@ -1,7 +1,6 @@
 
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Deferred class for all vision2 map item views"
 	date: "$Date$"
 	revision: "$Revision$"
 

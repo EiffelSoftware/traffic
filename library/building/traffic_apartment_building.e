@@ -25,8 +25,9 @@ feature {NONE} -- Initialization
 			center_valid: a_center /= Void
 		do
 			make_new (default_width, default_depth, default_height, a_center)
+			is_apartment_building := True
 		ensure
-			is_apartment_building: is_apartment_building and not is_villa and not is_skyscraper
+			is_apartment_building: is_apartment_building and not is_villa and not is_skyscraper and not is_landmark
 			size_set: width = default_width and height = default_height and depth = default_depth
 			center_set: center = a_center
 		end
@@ -37,7 +38,7 @@ feature {NONE} -- Initialization
 			Precursor (a_width, a_depth, a_height, a_center)
 			is_apartment_building := True
 		ensure then
-			is_apartment_building: is_apartment_building and not is_villa and not is_skyscraper
+			is_apartment_building: is_apartment_building and not is_villa and not is_skyscraper and not is_landmark
 		end
 
 feature -- Constants

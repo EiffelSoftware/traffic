@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "View for places"
 	date: "$Date$"
 	revision: "$Revision$"
 

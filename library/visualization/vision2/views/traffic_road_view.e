@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "View for roads"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -95,7 +94,7 @@ feature -- Constants
 	default_color: EV_COLOR is
 			-- Default color
 		once
-			create Result.make_with_8_bit_rgb (0, 0, 0)
+			create Result.make_with_8_bit_rgb (200, 200, 200)
 		end
 
 	default_highlight_color: EV_COLOR is

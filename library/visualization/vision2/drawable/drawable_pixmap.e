@@ -47,6 +47,20 @@ feature -- Access
 	bounding_box: REAL_RECTANGLE
 			-- Bounding box of the pixmap
 
+feature -- Element change
+
+	set_position (a_coordinate: REAL_COORDINATE) is
+			-- Set center of icon to `a_coordinate'.
+		require
+			a_coordinate_exists: a_coordinate /= Void
+		do
+			create bounding_box.make_from_reals
+				(a_coordinate.x, a_coordinate.y,
+				a_coordinate.x + pixmap.width,
+				a_coordinate.y + pixmap.height)
+
+		end
+
 feature {EV_CANVAS} -- Display
 
 	draw_object is
@@ -63,6 +77,7 @@ feature {EV_CANVAS} -- Display
 			-- unit: coordinate system of the pixmap
 			lower_left_x, lower_left_y, upper_right_x, upper_right_y, copy_area_height, copy_area_width: INTEGER
 		do
+			if is_shown then
 				-- calculate lower left corner of copy_area rounded towards the lower integer
 				-- in order to be outside the canvas.visible_area
 				lower_left_x:= real_to_integer_x_floor (canvas.visible_area.left_bound - bounding_box.left_bound).max (0)
@@ -98,6 +113,7 @@ feature {EV_CANVAS} -- Display
 				copied_pixmap_coordinate:= real_to_integer_coordinate (canvas_pixmap_coordinate)
 				canvas.draw_sub_pixmap (copied_pixmap_coordinate.x, copied_pixmap_coordinate.y, stretched_pixmap,
 										create {EV_RECTANGLE}.make (0, 0, stretched_pixmap.width,stretched_pixmap.height))
+			end
 		end
 
 feature {NONE} -- Implementation/Calculations

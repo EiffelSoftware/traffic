@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Map widget for vision2"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -37,6 +36,7 @@ feature -- Initialization
 			-- Initialize
 		local
 			e: EV_ENVIRONMENT
+			t: EV_TIMEOUT
 		do
 			add_taxi_agent := agent add_taxi (?)
 			remove_taxi_agent := agent remove_taxi (?)
@@ -101,36 +101,42 @@ feature -- Access
 			--
 		do
 			Result := internal_line_representations
+			internal_line_representations.draw (Current)
 		end
 
 	road_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_VIEW [TRAFFIC_ROAD]] is
 			--
 		do
 			Result := internal_road_representations
+			internal_road_representations.draw (Current)
 		end
 
 	path_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VIEW [TRAFFIC_PATH]] is
 			--
 		do
 			Result := internal_path_representations
+			internal_path_representations.draw (Current)
 		end
 
 	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VIEW [TRAFFIC_PLACE]]
 			--
 		do
 			Result := internal_place_representations
+			internal_place_representations.draw (Current)
 		end
 
 	building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_VIEW [TRAFFIC_BUILDING]]
 			--
 		do
 			Result := internal_building_representations
+			internal_building_representations.draw (Current)
 		end
 
 	moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_VIEW [TRAFFIC_MOVING]]
 			--
 		do
 			Result := internal_moving_representations
+			internal_moving_representations.draw (Current)
 		end
 
 	factory: TRAFFIC_VIEW_FACTORY is

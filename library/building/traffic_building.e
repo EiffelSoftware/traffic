@@ -47,6 +47,9 @@ feature -- Status report
 	is_skyscraper: BOOLEAN
 			-- Is the building a skyscraper?
 
+	is_landmark: BOOLEAN
+			-- Is the building a landmark?
+
 	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
 			-- Is `Current' insertable into `a_map'?
 			-- (All nodes need to be insertable. See `TRAFFIC_NODE is_insertable' for requirements.)
@@ -145,6 +148,18 @@ feature -- Status report
 
 feature -- Element change
 
+	set_size (a_width, a_height, a_depth: DOUBLE) is
+			-- Set `width' to `a_width', `height' to `a_height', and `depth' to `a_depth'.
+		require
+			size_valid: a_width > 0.0 and a_height > 0.0 and a_depth > 0.0
+		do
+			width := a_width
+			height := a_height
+			depth := a_depth
+		ensure
+			size_set: width = a_width and height = a_height and depth = a_depth
+		end
+
 	set_description (a_description: STRING) is
 			-- Set description to `a_description'.
 		require
@@ -184,6 +199,6 @@ invariant
 	breadth_valid: depth > 0
 	width_valid: width > 0
 	heigth_valid: height > 0
-	is_one_type: is_villa xor is_apartment_building xor is_skyscraper
+	is_one_type: is_villa xor is_apartment_building xor is_skyscraper xor is_landmark
 
 end

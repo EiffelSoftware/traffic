@@ -8,6 +8,9 @@ class
 
 inherit
 		TRAFFIC_MOVING
+			rename
+				start as walk
+			end
 
 create
 	make_with_path

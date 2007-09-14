@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Container for vision2 map item views"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -19,5 +18,5 @@ inherit
 
 create
 	make
-	
+
 end

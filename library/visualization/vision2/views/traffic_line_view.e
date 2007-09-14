@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "View for transportation lines"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -104,48 +103,6 @@ feature -- Basic operations
 			if count /= item.count then
 				-- Todo
 			end
---			if item.is_highlighted then
---				if highlight_color /= Void then
---					from
---						start
---					until
---						after
---					loop
---						item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
---						forth
---					end
---				else
---					from
---						start
---					until
---						after
---					loop
---						item_for_iteration.set_color (default_highlight_color)
---						forth
---					end
---				end
---			else
---				if color /= Void then
---					from
---						start
---					until
---						after
---					loop
---						item_for_iteration.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
---						forth
---					end
---				else
---					from
---						start
---					until
---						after
---					loop
---						item_for_iteration.set_color (default_color)
---						forth
---					end
---				end
---			end
---			-- todo
 		end
 
 	highlight is

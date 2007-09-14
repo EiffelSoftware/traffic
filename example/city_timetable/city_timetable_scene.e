@@ -427,7 +427,7 @@ feature -- Event handling
 					create passenger.make_with_path (path_randomizer.last_path, random.double_item*3 + 0.1)
 					map_widget.map.passengers.put_last (passenger)
 					passenger.set_reiterate (True)
-					passenger.start
+					passenger.walk
 					i := i + 1
 				end
 			elseif a_slider.current_value < map_widget.map.passengers.count then

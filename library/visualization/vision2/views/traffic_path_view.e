@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "View for paths"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -66,6 +65,7 @@ feature -- Initialization
 			end
 			is_shown := True
 			is_highlighted := False
+			item.changed_event.subscribe (agent update)
 		end
 
 
@@ -90,7 +90,11 @@ feature -- Basic operations
 	update is
 			--
 		do
-
+			if item.is_highlighted then
+				highlight
+			else
+				unhighlight
+			end
 		end
 
 	highlight is

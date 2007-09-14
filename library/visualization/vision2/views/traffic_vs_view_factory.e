@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Factory for vision2 map item views"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -30,7 +29,6 @@ feature -- Factory methods
 			-- New road view for `a_road'
 		do
 			create Result.make (a_road)
-			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (150, 110, 40))
 			Result.set_width (10)
 		end
 
@@ -42,8 +40,15 @@ feature -- Factory methods
 
 	new_building_view (a_building: TRAFFIC_BUILDING): TRAFFIC_BUILDING_VIEW is
 			-- New building view for `a_building'
+		local
+			l: TRAFFIC_LANDMARK
 		do
-			create Result.make (a_building)
+			if not a_building.is_landmark then
+				create {TRAFFIC_BUILDING_SIMPLE_VIEW} Result.make (a_building)
+			else
+				l ?= a_building
+				create {TRAFFIC_BUILDING_ICON_VIEW} Result.make_with_filename (a_building, l.filename)
+			end
 		end
 
 	new_tram_view (a_tram: TRAFFIC_TRAM): TRAFFIC_MOVING_VIEW [TRAFFIC_TRAM] is

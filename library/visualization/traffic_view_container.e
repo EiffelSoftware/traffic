@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Container for map item views of a certain type"
 	date: "$Date$"
 	revision: "$Revision$"
 

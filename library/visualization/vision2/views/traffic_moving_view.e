@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "View for moving items such as trams, passengers, etc."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -52,9 +51,12 @@ feature -- Basic operations
 	update is
 			--
 		do
-
+			if item.is_highlighted then
+				highlight
+			else
+				unhighlight
+			end
 		end
-
 
 feature -- Constants
 

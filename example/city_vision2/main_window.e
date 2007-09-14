@@ -13,13 +13,6 @@ inherit
 			initialize
 		end
 
-	INTERFACE_NAMES
-		export
-			{NONE} all
-		undefine
-			default_create, copy
-		end
-
 create
 	default_create
 
@@ -51,134 +44,10 @@ feature {NONE} -- Initialization
 			create random.set_seed (t.compact_time)
 		end
 
-
-feature {NONE} -- Menu Implementation
-
-	standard_menu_bar: EV_MENU_BAR
-			-- Standard menu bar for this window.
-
-	file_menu: EV_MENU
-			-- "File" menu for this window (contains New, Open, Close, Exit...)
-
-	help_menu: EV_MENU
-			-- "Help" menu for this window (contains About...)
-
-	build_standard_menu_bar is
-			-- Create and populate `standard_menu_bar'.
-		require
-			menu_bar_not_yet_created: standard_menu_bar = Void
-		do
-				-- Create the menu bar.
-			create standard_menu_bar
-
-				-- Add the "File" menu
-			build_file_menu
-			standard_menu_bar.extend (file_menu)
-
-				-- Add the "Help" menu
-			build_help_menu
-			standard_menu_bar.extend (help_menu)
-		ensure
-			menu_bar_created:
-				standard_menu_bar /= Void and then
-				not standard_menu_bar.is_empty
-		end
-
-	build_file_menu is
-			-- Create and populate `file_menu'.
-		require
-			file_menu_not_yet_created: file_menu = Void
-		local
-			menu_item: EV_MENU_ITEM
-		do
-			create file_menu.make_with_text (Menu_file_item)
-
-			create menu_item.make_with_text (Menu_file_new_item)
-				--| TODO: Add the action associated with "New" here.
-			file_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_file_open_item)
-			menu_item.select_actions.extend (agent choose_file)
-				--| TODO: Add the action associated with "Open" here.
-			file_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_file_save_item)
-				--| TODO: Add the action associated with "Save" here.
-			file_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_file_saveas_item)
-				--| TODO: Add the action associated with "Save As..." here.
-			file_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_file_close_item)
-				--| TODO: Add the action associated with "Close" here.
-			file_menu.extend (menu_item)
-
-			file_menu.extend (create {EV_MENU_SEPARATOR})
-
-				-- Create the File/Exit menu item and make it call
-				-- `request_close_window' when it is selected.
-			create menu_item.make_with_text (Menu_file_exit_item)
-			menu_item.select_actions.extend (agent request_close_window)
-			file_menu.extend (menu_item)
-		ensure
-			file_menu_created: file_menu /= Void and then not file_menu.is_empty
-		end
-
-	build_help_menu is
-			-- Create and populate `help_menu'.
-		require
-			help_menu_not_yet_created: help_menu = Void
-		local
-			menu_item: EV_MENU_ITEM
-		do
-			create help_menu.make_with_text (Menu_help_item)
-
-			create menu_item.make_with_text (Menu_help_contents_item)
-				--| TODO: Add the action associated with "Contents and Index" here.
-			help_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_help_about_item)
-			menu_item.select_actions.extend (agent on_about)
-			help_menu.extend (menu_item)
-		ensure
-			help_menu_created: help_menu /= Void and then not help_menu.is_empty
-		end
-
-feature {NONE} -- ToolBar Implementation
+feature {NONE} -- Widgets
 
 	standard_toolbar: EV_TOOL_BAR
 			-- Standard toolbar for this window
-
-	build_standard_toolbar is
-			-- Create and populate the standard toolbar.
-		require
-			toolbar_not_yet_created: standard_toolbar = Void
-		local
-			toolbar_item: EV_TOOL_BAR_BUTTON
-			toolbar_pixmap: EV_PIXMAP
---			a: TRAFFIC_EVENT_ARRAYED_LIST [INTEGER]
---			b: TRAFFIC_EVENT_HASH_TABLE [INTEGER, INTEGER]
---			c: TRAFFIC_EVENT_LINKED_LIST [INTEGER]
---			d: TRAFFIC_EVENT_META_HASH_TABLE [INTEGER, TRAFFIC_EVENT_LINKED_LIST [INTEGER], INTEGER]
-		do
-
-
-				-- Create the toolbar.
-			create standard_toolbar
-
-			create toolbar_item
-			create toolbar_pixmap
-			toolbar_pixmap.set_with_named_file ("open.png")
-			toolbar_item.set_pixmap (toolbar_pixmap)
-			toolbar_item.select_actions.extend (agent choose_file)
-			standard_toolbar.extend (toolbar_item)
-
-		ensure
-			toolbar_created: standard_toolbar /= Void and then  not standard_toolbar.is_empty
-		end
-
-feature {NONE} -- StatusBar Implementation
 
 	standard_status_bar: EV_STATUS_BAR
 			-- Standard status bar for this window
@@ -188,6 +57,39 @@ feature {NONE} -- StatusBar Implementation
 			--
 			-- Note: Call `standard_status_label.set_text (...)' to change the text
 			--       displayed in the status bar.
+
+	main_container: EV_VERTICAL_BOX
+			-- Main container (contains all widgets displayed in this window)
+
+	canvas: TRAFFIC_MAP_CANVAS
+			-- The Canvas Widget
+
+	viewport: EV_VIEWPORT
+			-- To display the canvas
+
+	fixed: EV_FIXED
+			-- Map manipulation area
+
+feature {NONE} -- GUI building
+
+	build_standard_toolbar is
+			-- Create and populate the standard toolbar.
+		require
+			toolbar_not_yet_created: standard_toolbar = Void
+		local
+			toolbar_item: EV_TOOL_BAR_BUTTON
+			toolbar_pixmap: EV_PIXMAP
+		do
+			create standard_toolbar
+			create toolbar_item
+			create toolbar_pixmap
+			toolbar_pixmap.set_with_named_file ("open.png")
+			toolbar_item.set_pixmap (toolbar_pixmap)
+			toolbar_item.select_actions.extend (agent choose_file)
+			standard_toolbar.extend (toolbar_item)
+		ensure
+			toolbar_created: standard_toolbar /= Void and then  not standard_toolbar.is_empty
+		end
 
 	build_standard_status_bar is
 			-- Create and populate the standard toolbar.
@@ -215,18 +117,188 @@ feature {NONE} -- StatusBar Implementation
 				standard_status_label /= Void
 		end
 
-feature {NONE} -- About Dialog Implementation
-
-	on_about is
-			-- Display the About dialog.
+	build_main_container is
+			-- Create and populate `main_container'.
+		require
+			main_container_not_yet_created: main_container = Void
 		local
-			about_dialog: ABOUT_DIALOG
+			vb: EV_VERTICAL_SPLIT_AREA
+			hb1: EV_HORIZONTAL_BOX
+			fr: EV_FRAME
+			r: EV_HORIZONTAL_RANGE
+			l: EV_LABEL
+			rad: EV_CHECK_BUTTON
+			table: EV_TABLE
+			toggle: EV_TOGGLE_BUTTON
+			button: EV_BUTTON
 		do
-			create about_dialog
-			about_dialog.show_modal_to_window (Current)
+			create viewport
+			viewport.set_offset (0, 0)
+			create vb
+			create hb1
+			create fr
+			create canvas.make
+			create main_container
+			create table
+			create fixed
+
+			viewport.set_minimum_height (400)
+			viewport.set_minimum_width (600)
+			viewport.extend (canvas)
+			fr.extend (viewport)
+			canvas.set_zoom_limits (0.5, 10.0)
+			viewport.resize_actions.force_extend (agent resize_canvas)
+
+			-- free movings
+			create l.make_with_text ("Free movings (0..100):")
+			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 100))
+			r.set_value (0)
+			r.set_minimum_width (100)
+			r.change_actions.extend (agent add_free_movings)
+			fixed.extend (l)
+			fixed.extend (r)
+			fixed.set_item_position (l, 5, 3)
+			fixed.set_item_position_and_size (r, 130, 1, 100, 20)
+
+			-- Line vehicles
+			create l.make_with_text ("Vehicles/Line (0..10):")
+			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
+			r.set_value (0)
+			r.set_minimum_width (100)
+			r.change_actions.extend (agent add_line_vehicles)
+			fixed.extend (l)
+			fixed.extend (r)
+			fixed.set_item_position (l, 5, 33)
+			fixed.set_item_position_and_size (r, 130, 31, 100, 20)
+
+			-- Passengers
+			create l.make_with_text ("Passengers (0..100):")
+			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 100))
+			r.set_value (0)
+			r.set_minimum_width (100)
+			r.change_actions.extend (agent add_passengers)
+			fixed.extend (l)
+			fixed.extend (r)
+			fixed.set_item_position (l, 5, 63)
+			fixed.set_item_position_and_size (r, 130, 61, 100, 20)
+
+			-- Paths
+			create l.make_with_text ("Paths (0..10):")
+			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
+			r.set_value (0)
+			r.set_minimum_width (100)
+			r.change_actions.extend (agent add_paths)
+			fixed.extend (l)
+			fixed.extend (r)
+			fixed.set_item_position (l, 5, 93)
+			fixed.set_item_position_and_size (r, 130, 91, 100, 20)
+
+			-- Taxis
+			create button.make_with_text ("+office")
+			button.select_actions.extend (agent add_taxi_office)
+			fixed.extend (button)
+			fixed.set_item_position (button, 5, 121)
+			create l.make_with_text ("taxis (0..10):")
+			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
+			r.set_value (0)
+			r.set_minimum_width (100)
+			r.change_actions.extend (agent add_taxi)
+			fixed.extend (l)
+			fixed.extend (r)
+			fixed.set_item_position (l, 80, 123)
+			fixed.set_item_position_and_size (r, 130, 121, 100, 20)
+
+
+			-- Hide/show map
+			create rad.make_with_text ("Show map")
+			rad.toggle
+			rad.select_actions.extend (agent toggle_map_hidden (rad))
+			fixed.extend (rad)
+			fixed.set_item_position (rad, 5, 162)
+
+			-- Hide/show lines
+			create rad.make_with_text ("Show lines")
+			rad.toggle
+			rad.select_actions.extend (agent toggle_lines_hidden (rad))
+			fixed.extend (rad)
+			fixed.set_item_position (rad, 85, 162)
+
+			-- Hide/show lines
+			create rad.make_with_text ("Show roads")
+			rad.toggle
+			rad.select_actions.extend (agent toggle_roads_hidden (rad))
+			fixed.extend (rad)
+			fixed.set_item_position (rad, 165, 162)
+
+			-- Test highlight/unhighlight feature
+			create toggle.make_with_text ("Highlight random map items")
+			toggle.select_actions.extend (agent toggle_highlight (toggle))
+			fixed.extend (toggle)
+			fixed.set_item_position (toggle, 5, 202)
+
+			-- Test creation
+			create button.make_with_text ("+place")
+			button.select_actions.extend (agent add_place)
+			fixed.extend (button)
+			fixed.set_item_position (button, 5, 242)
+
+			create button.make_with_text ("+line")
+			button.select_actions.extend (agent add_line)
+			fixed.extend (button)
+			fixed.set_item_position (button, 65, 242)
+
+			create button.make_with_text ("+connection")
+			button.select_actions.extend (agent add_line_connection)
+			fixed.extend (button)
+			fixed.set_item_position (button, 115, 242)
+
+			create button.make_with_text ("+road")
+			button.select_actions.extend (agent add_road)
+			fixed.extend (button)
+			fixed.set_item_position (button, 200, 242)
+
+			-- Test deletion
+			create button.make_with_text ("-place")
+			button.select_actions.extend (agent remove_place)
+			fixed.extend (button)
+			fixed.set_item_position (button, 5, 272)
+
+			create button.make_with_text ("-line")
+			button.select_actions.extend (agent remove_line)
+			fixed.extend (button)
+			fixed.set_item_position (button, 65, 272)
+
+			create button.make_with_text ("-connection")
+			button.select_actions.extend (agent remove_line_connection)
+			fixed.extend (button)
+			fixed.set_item_position (button, 115, 272)
+
+			create button.make_with_text ("-road")
+			button.select_actions.extend (agent remove_road)
+			fixed.extend (button)
+			fixed.set_item_position (button, 200, 272)
+
+			vb.extend (fixed)
+			vb.disable_item_expand (fixed)
+
+			from
+				fixed.start
+			until
+				fixed.after
+			loop
+				fixed.item.disable_sensitive
+				fixed.forth
+			end
+			hb1.extend (vb)
+			hb1.disable_item_expand (vb)
+			hb1.extend (fr)
+			main_container.extend (hb1)
+			main_container.set_padding (10)
+		ensure
+			main_container_created: main_container /= Void
 		end
 
-feature {NONE} -- Implementation, Close event
+feature {NONE} -- Implementation
 
 	request_close_window is
 			-- The user wants to close the window
@@ -412,7 +484,7 @@ feature {NONE} -- Implementation, Close event
 						create passenger.make_with_path (path_randomizer.last_path, random.double_item*3 + 0.1)
 						canvas.map.passengers.put_last (passenger)
 						passenger.set_reiterate (True)
-						passenger.start
+						passenger.walk
 					end
 					i := i + 1
 				end
@@ -474,7 +546,7 @@ feature {NONE} -- Implementation, Close event
 			y := random.item \\ (2*canvas.map.radius.floor)
 			p.set_position (create {TRAFFIC_COORDINATE}.make (canvas.map.center.x + x - canvas.map.radius, canvas.map.center.y + y - canvas.map.radius))
 			canvas.map.places.force (p, p.name)
-			canvas.redraw
+--			canvas.redraw
 		end
 
 	add_line is
@@ -567,7 +639,7 @@ feature {NONE} -- Implementation, Close event
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
 			create lc2.make (s2, s1, l.type, pp)
 			l.put_last (lc1, lc2)
-			canvas.redraw
+--			canvas.redraw
 		end
 
 	add_road is
@@ -588,7 +660,7 @@ feature {NONE} -- Implementation, Close event
 			create rc2.make (n2, n1, create {TRAFFIC_TYPE_STREET}.make, canvas.map.graph.id_manager.next_free_index)
 			create r.make (rc1, rc2)
 			canvas.map.roads.force (r, r.id)
-			canvas.redraw
+--			canvas.redraw
 		end
 
 	add_taxi_office is
@@ -703,7 +775,7 @@ feature {NONE} -- Implementation, Close event
 					canvas.map.places.remove (p.name)
 				end
 			end
-			canvas.redraw
+--			canvas.redraw
 		end
 
 	remove_line is
@@ -759,7 +831,7 @@ feature {NONE} -- Implementation, Close event
 					canvas.map.roads.remove (r.id)
 				end
 			end
-			canvas.redraw
+--			canvas.redraw
 		end
 
 	toggle_map_hidden (a_check_box: EV_CHECK_BUTTON) is
@@ -801,14 +873,14 @@ feature {NONE} -- Implementation, Close event
 				canvas.map.line_sections.last.highlight
 				canvas.map.roads.first.highlight
 				canvas.map.buildings.first.highlight
-				canvas.redraw
+--				canvas.redraw
 			else
 				canvas.map.places.first.unhighlight
 				canvas.map.lines.first.unhighlight
 				canvas.map.line_sections.last.unhighlight
 				canvas.map.roads.first.unhighlight
 				canvas.map.buildings.first.unhighlight
-				canvas.redraw
+--				canvas.redraw
 			end
 		end
 
@@ -861,218 +933,6 @@ feature {NONE} -- Implementation
 	random: RANDOM
 			-- Random number generator for passenger speed
 
-	main_container: EV_VERTICAL_BOX
-			-- Main container (contains all widgets displayed in this window)
-
-	canvas: TRAFFIC_MAP_CANVAS
-			-- The Canvas Widget
-
-	viewport: EV_VIEWPORT
-			-- To display the canvas
-
-	fixed: EV_FIXED
-			-- Map manipulation area
-
-	build_main_container is
-			-- Create and populate `main_container'.
-		require
-			main_container_not_yet_created: main_container = Void
-		local
-			vb: EV_VERTICAL_SPLIT_AREA
-			hb1: EV_HORIZONTAL_BOX
-			fr: EV_FRAME
-			r: EV_HORIZONTAL_RANGE
-			l: EV_LABEL
-			rad: EV_CHECK_BUTTON
-			table: EV_TABLE
-			toggle: EV_TOGGLE_BUTTON
-			button: EV_BUTTON
-		do
-			create viewport
-			viewport.set_offset (0, 0)
-			create vb
-			create hb1
-			create fr
-			create canvas.make
-			create main_container
-			create table
-			create fixed
-
-			viewport.set_minimum_height (400)
-			viewport.set_minimum_width (600)
-			viewport.extend (canvas)
-			fr.extend (viewport)
-			canvas.set_zoom_limits (0.5, 10.0)
-			viewport.resize_actions.force_extend (agent resize_canvas)
-
-			-- free movings
-			create l.make_with_text ("Free movings (0..100):")
-			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 100))
-			r.set_value (0)
-			r.set_minimum_width (100)
-			r.change_actions.extend (agent add_free_movings)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 5, 3)
-			fixed.set_item_position_and_size (r, 130, 1, 100, 20)
-
-			-- Line vehicles
-			create l.make_with_text ("Vehicles/Line (0..10):")
-			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
-			r.set_value (0)
-			r.set_minimum_width (100)
-			r.change_actions.extend (agent add_line_vehicles)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 5, 33)
-			fixed.set_item_position_and_size (r, 130, 31, 100, 20)
-
-			-- Passengers
-			create l.make_with_text ("Passengers (0..100):")
-			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 100))
-			r.set_value (0)
-			r.set_minimum_width (100)
-			r.change_actions.extend (agent add_passengers)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 5, 63)
-			fixed.set_item_position_and_size (r, 130, 61, 100, 20)
-
-			-- Paths
-			create l.make_with_text ("Paths (0..10):")
-			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
-			r.set_value (0)
-			r.set_minimum_width (100)
-			r.change_actions.extend (agent add_paths)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 5, 93)
-			fixed.set_item_position_and_size (r, 130, 91, 100, 20)
-
-			-- Taxis
-			create button.make_with_text ("+office")
-			button.select_actions.extend (agent add_taxi_office)
-			fixed.extend (button)
-			fixed.set_item_position (button, 5, 121)
-			create l.make_with_text ("taxis (0..10):")
-			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
-			r.set_value (0)
-			r.set_minimum_width (100)
-			r.change_actions.extend (agent add_taxi)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 80, 123)
-			fixed.set_item_position_and_size (r, 130, 121, 100, 20)
-
-
-			-- Hide/show map
-			create rad.make_with_text ("Show map")
-			rad.toggle
-			rad.select_actions.extend (agent toggle_map_hidden (rad))
-			fixed.extend (rad)
-			fixed.set_item_position (rad, 5, 162)
-
-			-- Hide/show lines
-			create rad.make_with_text ("Show lines")
-			rad.toggle
-			rad.select_actions.extend (agent toggle_lines_hidden (rad))
-			fixed.extend (rad)
-			fixed.set_item_position (rad, 85, 162)
-
-			-- Hide/show lines
-			create rad.make_with_text ("Show roads")
-			rad.toggle
-			rad.select_actions.extend (agent toggle_roads_hidden (rad))
-			fixed.extend (rad)
-			fixed.set_item_position (rad, 165, 162)
-
-			-- Test highlight/unhighlight feature
-			create toggle.make_with_text ("Highlight random map items")
-			toggle.select_actions.extend (agent toggle_highlight (toggle))
-			fixed.extend (toggle)
-			fixed.set_item_position (toggle, 5, 202)
-
-			-- Test creation
-			create button.make_with_text ("+place")
-			button.select_actions.extend (agent add_place)
-			fixed.extend (button)
-			fixed.set_item_position (button, 5, 242)
-
-			create button.make_with_text ("+line")
-			button.select_actions.extend (agent add_line)
-			fixed.extend (button)
-			fixed.set_item_position (button, 65, 242)
-
-			create button.make_with_text ("+connection")
-			button.select_actions.extend (agent add_line_connection)
-			fixed.extend (button)
-			fixed.set_item_position (button, 115, 242)
-
-			create button.make_with_text ("+road")
-			button.select_actions.extend (agent add_road)
-			fixed.extend (button)
-			fixed.set_item_position (button, 200, 242)
-
-			-- Test deletion
-			create button.make_with_text ("-place")
-			button.select_actions.extend (agent remove_place)
-			fixed.extend (button)
-			fixed.set_item_position (button, 5, 272)
-
-			create button.make_with_text ("-line")
-			button.select_actions.extend (agent remove_line)
-			fixed.extend (button)
-			fixed.set_item_position (button, 65, 272)
-
-			create button.make_with_text ("-connection")
-			button.select_actions.extend (agent remove_line_connection)
-			fixed.extend (button)
-			fixed.set_item_position (button, 115, 272)
-
-			create button.make_with_text ("-road")
-			button.select_actions.extend (agent remove_road)
-			fixed.extend (button)
-			fixed.set_item_position (button, 200, 272)
-
-			vb.extend (fixed)
-			vb.disable_item_expand (fixed)
-
-			from
-				fixed.start
-			until
-				fixed.after
-			loop
-				fixed.item.disable_sensitive
-				fixed.forth
-			end
-
-
---			table.add (create {EV_HORIZONTAL_BOX}, 1, 3, 2, 1)
-
---			vb.extend (table)
---			vb.disable_item_expand (table)
-			hb1.extend (vb)
-			hb1.disable_item_expand (vb)
-
-			hb1.extend (fr)
-
---			hb1.extend (tool_bar)
---			hb1.extend (fr)
---			hb1.disable_item_expand (tool_bar)
-
---			vb.extend (hb1)
-----			vb.extend (traffic_console)
---			hb2.extend (vb)
---			hb2.extend (button_panel)
---			hb2.disable_item_expand (button_panel)
-			main_container.extend (hb1)
-			main_container.set_padding (10)
-
-
-		ensure
-			main_container_created: main_container /= Void
-		end
-
 feature -- Conversion
 
 	client_to_map_coordinates (x, y: INTEGER): REAL_COORDINATE is
@@ -1111,5 +971,9 @@ feature {NONE} -- Implementation / Constants
 
 	Window_height: INTEGER is 400
 			-- Initial height for this window.
+
+	Label_confirm_close_window: STRING is "You are about to close this window.%NClick OK to proceed."
+			-- String for the confirmation dialog box that appears
+			-- when the user try to close the first window.
 
 end -- class MAIN_WINDOW

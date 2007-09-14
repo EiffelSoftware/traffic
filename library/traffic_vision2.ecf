@@ -48,6 +48,7 @@
 					<cluster name="tr_time" location="$|time\"/>
 					<cluster name="drawable" location="$|drawable\"/>
 					<cluster name="views" location="$|views\"/>
+					<cluster name="touch" location="$|touch\"/>
 				</cluster>
 			</cluster>
 		</cluster>

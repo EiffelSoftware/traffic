@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "View for line connections"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -88,6 +87,9 @@ feature -- Basic operations
 				i := i + 1
 			end
 			set_points (pp)
+			if canvas /= Void then
+				canvas.redraw
+			end
 		end
 
 feature -- Constants
