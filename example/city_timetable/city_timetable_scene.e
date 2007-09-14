@@ -376,7 +376,7 @@ feature -- Event handling
 					from
 						i := 1
 					until
-						i > a_slider.current_value or else i = map_widget.map.lines.item_for_iteration.count
+						i > a_slider.current_value or else i = map_widget.map.lines.item_for_iteration.connection_count
 					loop
 						if map_widget.map.lines.item_for_iteration.type.name.is_equal ("tram") then
 							create tram.make_with_line (map_widget.map.lines.item_for_iteration)
@@ -427,7 +427,7 @@ feature -- Event handling
 					create passenger.make_with_path (path_randomizer.last_path, random.double_item*3 + 0.1)
 					map_widget.map.passengers.put_last (passenger)
 					passenger.set_reiterate (True)
-					passenger.walk
+					passenger.go
 					i := i + 1
 				end
 			elseif a_slider.current_value < map_widget.map.passengers.count then

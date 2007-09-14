@@ -19,11 +19,11 @@ feature -- Explore Paris
 			wait
 			Line8.highlight
 			wait
-			Route1.highlight
+			Route1.illuminate
 			wait
-			Michela.walk
+			Michela.go
 			wait
-			Louvre.highlight
+			Louvre.spotlight
 			Console.show (Line8)
 			Console.show (Route1)
 		end

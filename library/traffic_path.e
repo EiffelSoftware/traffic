@@ -9,6 +9,10 @@ class
 inherit
 
 	TRAFFIC_MAP_ITEM
+		rename
+			is_highlighted as is_illuminated,
+			highlight as illuminate,
+			unhighlight as unilluminate
 		redefine
 			out,
 			default_create

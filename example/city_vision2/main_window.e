@@ -419,7 +419,7 @@ feature {NONE} -- Implementation
 						from
 							i := 1
 						until
-							i > a_value or else i > canvas.map.lines.item_for_iteration.count
+							i > a_value or else i > canvas.map.lines.item_for_iteration.connection_count
 						loop
 							if canvas.map.lines.item_for_iteration.type.name.is_equal ("tram") then
 								create tram.make_with_line (canvas.map.lines.item_for_iteration)
@@ -484,7 +484,7 @@ feature {NONE} -- Implementation
 						create passenger.make_with_path (path_randomizer.last_path, random.double_item*3 + 0.1)
 						canvas.map.passengers.put_last (passenger)
 						passenger.set_reiterate (True)
-						passenger.walk
+						passenger.go
 					end
 					i := i + 1
 				end
@@ -606,40 +606,41 @@ feature {NONE} -- Implementation
 			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
 			lt := canvas.map.lines.to_array
-			l := lt.item ((random.item \\ lt.count) + 1)
-			pt := canvas.map.places.to_array
-			if l.terminal_2 /= Void then
-				if l.terminal_2.has_stop (l) then
-					s1 := l.terminal_2.stop (l)
+			if lt.count > 0 then
+				l := lt.item ((random.item \\ lt.count) + 1)
+				pt := canvas.map.places.to_array
+				if l.terminal_2 /= Void then
+					if l.terminal_2.has_stop (l) then
+						s1 := l.terminal_2.stop (l)
+					else
+						create s1.make_stop (l.terminal_2, l, create {TRAFFIC_COORDINATE}.make_from_other (l.terminal_2.position))
+					end
 				else
-					create s1.make_stop (l.terminal_2, l, create {TRAFFIC_COORDINATE}.make_from_other (l.terminal_2.position))
+					random.forth
+					p1 := pt.item ((random.item \\ pt.count) + 1)
+					if p1 /= Void and then p1.has_stop (l) then
+						s1 := p1.stop (l)
+					else
+						create s1.make_stop (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
+					end
 				end
-			else
 				random.forth
-				p1 := pt.item ((random.item \\ pt.count) + 1)
-				if p1 /= Void and then p1.has_stop (l) then
-					s1 := p1.stop (l)
+				p2 := pt.item ((random.item \\ pt.count) + 1)
+				if p2.has_stop (l) then
+					s2 := p2.stop (l)
 				else
-					create s1.make_stop (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
+					create s2.make_stop (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
 				end
+				create pp.make (2)
+				pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+				pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+				create lc1.make (s1, s2, l.type, pp)
+				create pp.make (2)
+				pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+				pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+				create lc2.make (s2, s1, l.type, pp)
+				l.put_last (lc1, lc2)
 			end
-			random.forth
-			p2 := pt.item ((random.item \\ pt.count) + 1)
-			if p2.has_stop (l) then
-				s2 := p2.stop (l)
-			else
-				create s2.make_stop (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
-			end
-			create pp.make (2)
-			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
-			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
-			create lc1.make (s1, s2, l.type, pp)
-			create pp.make (2)
-			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
-			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
-			create lc2.make (s2, s1, l.type, pp)
-			l.put_last (lc1, lc2)
---			canvas.redraw
 		end
 
 	add_road is
@@ -804,14 +805,14 @@ feature {NONE} -- Implementation
 				l.remove_all_connections
 				random.forth
 				l := lt.item ((random.item \\ lt.count) + 1)
-				if l.count >= 1 then
+				if l.connection_count >= 1 then
 					l.start
 					s := l.item_for_iteration.start_node
 					l.remove_first
 				end
 				random.forth
 				l := lt.item ((random.item \\ lt.count) + 1)
-				if l.count >= 1 then
+				if l.connection_count >= 1 then
 					l.remove_last
 				end
 			end
@@ -872,14 +873,14 @@ feature {NONE} -- Implementation
 				canvas.map.lines.first.highlight
 				canvas.map.line_sections.last.highlight
 				canvas.map.roads.first.highlight
-				canvas.map.buildings.first.highlight
+				canvas.map.buildings.first.spotlight
 --				canvas.redraw
 			else
 				canvas.map.places.first.unhighlight
 				canvas.map.lines.first.unhighlight
 				canvas.map.line_sections.last.unhighlight
 				canvas.map.roads.first.unhighlight
-				canvas.map.buildings.first.unhighlight
+				canvas.map.buildings.first.unspotlight
 --				canvas.redraw
 			end
 		end

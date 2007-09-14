@@ -90,7 +90,7 @@ feature -- Basic operations
 	update is
 			--
 		do
-			if item.is_highlighted then
+			if item.is_illuminated then
 				highlight
 			else
 				unhighlight

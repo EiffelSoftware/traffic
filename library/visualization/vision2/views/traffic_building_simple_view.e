@@ -36,7 +36,7 @@ feature -- Basic operations
 	update is
 			-- Update view to represent item.
 		do
-			if item.is_highlighted then
+			if item.is_spotlighted then
 				if highlight_color /= Void then
 					rectangle.set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 					rectangle.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
@@ -62,7 +62,7 @@ feature -- Basic operations
 			-- Set the color of the place view to `a_color'.
 		do
 			color := a_color
-			if not is_highlighted then
+			if not item.is_spotlighted then
 				if color /= Void then
 					rectangle.set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
 					rectangle.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
@@ -77,7 +77,7 @@ feature -- Basic operations
 			-- Set the color of the place view to `a_color'.
 		do
 			highlight_color := a_color
-			if is_highlighted then
+			if item.is_spotlighted then
 				if highlight_color /= Void then
 					rectangle.set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 					rectangle.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))

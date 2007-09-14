@@ -100,7 +100,7 @@ feature -- Basic operations
 	update is
 			--
 		do
-			if count /= item.count then
+			if count /= item.connection_count then
 				-- Todo
 			end
 		end

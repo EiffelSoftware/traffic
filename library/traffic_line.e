@@ -7,6 +7,7 @@ class
 	TRAFFIC_LINE
 
 inherit
+
 	HASHABLE
 		redefine
 		 	out
@@ -67,7 +68,7 @@ feature {NONE} -- Initialization
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
 			type_set: type=a_type
-			count_line_section_not_void: count >= 0 -- List is initilalized.
+			count_line_section_not_void: connection_count >= 0 -- List is initilalized.
 			element_inserted_event_exists: element_inserted_event /= Void
 			element_removed_event_exists: element_removed_event /= Void
 			one_direction_exists: one_direction /= Void
@@ -76,26 +77,27 @@ feature {NONE} -- Initialization
 
 feature -- Measurement
 
-	count: INTEGER is
+	connection_count: INTEGER is
 			-- Number of connections per direction in line
 		do
 			Result := one_direction.count
 		end
 
-	place_count: INTEGER is
-			-- Number of stations in line
+	count: INTEGER is
+			-- Number of stations in this line
 		do
-			Result := count + 1
+			Result := connection_count + 1
 		end
 
 feature -- Access
 
 	i_th (i: INTEGER): TRAFFIC_PLACE is
-			-- i'th place on line
+			-- The station of index i on this line		
 		require
-			i_valid: i >= 1 and i <= place_count
+			not_too_small: i >= 1
+			not_too_big: i <= count
 		do
-			if i = count + 1 then
+			if i = connection_count + 1 then
 				Result := terminal_2
 			else
 				Result := one_direction.item (i).origin
@@ -123,7 +125,7 @@ feature -- Access
 			-- Type of line
 
 	old_terminal_1: TRAFFIC_PLACE
-			-- Old terminal (after deletion via `remove_all_connections'
+			-- Old terminal (after deletion via `remove_all_connections')
 
 	terminal_1: TRAFFIC_PLACE
 			-- Terminal of line in one direction
@@ -134,6 +136,80 @@ feature -- Access
 	color: TRAFFIC_COLOR
 			-- Line color
 			-- Used as color represenation
+
+	road_points: DS_ARRAYED_LIST[TRAFFIC_COORDINATE] is
+			-- Polypoints from the roads belonging to this line
+		local
+			roads:ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]
+			pp: DS_ARRAYED_LIST[TRAFFIC_COORDINATE]
+			invert, is_station: BOOLEAN
+			v: TRAFFIC_COORDINATE
+		do
+			create Result.make(1)
+			-- loop on all the line sections
+			from
+				start
+			until
+				after
+			loop
+				roads:=item_for_iteration.roads
+				is_station:=true
+				-- loop on all the roads
+
+				if item_for_iteration.origin=roads.first.origin and item_for_iteration.destination=roads.last.destination then
+					invert:=false
+				elseif item_for_iteration.origin=roads.last.destination and item_for_iteration.destination=roads.first.origin then
+
+					invert:=true
+				else
+					io.putstring ("Invalid roads for given line section%N")
+					io.putstring("Line section origin: "+item_for_iteration.origin.name+" - Line section destination:"+item_for_iteration.destination.name+"%N")
+				end
+				if invert then
+					from
+						roads.finish
+					until
+						roads.before
+					loop
+						pp:=roads.item.polypoints
+						-- loop on all the polypoints
+						from
+							pp.finish
+						until
+							pp.before
+						loop
+							v:=pp.item_for_iteration
+							Result.force_last (v)
+							pp.back
+						end
+
+						roads.back
+					end
+				else
+					from
+						roads.start
+					until
+						roads.after
+					loop
+						pp:=roads.item.polypoints
+						-- loop on all the polypoints
+						from
+							pp.start
+						until
+							pp.after
+						loop
+							v:=pp.item_for_iteration
+							Result.force_last (v)
+							pp.forth
+						end
+
+						roads.forth
+					end
+				end
+
+				forth
+			end
+		end
 
 feature -- Cursor movement
 
@@ -272,7 +348,9 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
 feature -- Removal
 
 	remove_all_connections, wipe_out is
-			-- Remove all connections.
+			-- Remove all connections (keep `terminal_1').
+		require
+			old_terminal_set: old_terminal_1 /= Void
 		do
 			from
 				one_direction.start
@@ -297,8 +375,9 @@ feature -- Removal
 			terminal_1 := Void
 			terminal_2 := Void
 		ensure
-			count: count = 0
+			count: connection_count = 0
 			terminals_void: terminal_1 = Void and terminal_2 = Void
+			only_one_left: count = 1
 		end
 
 
@@ -314,7 +393,7 @@ feature -- Removal
 	remove_last is
 			-- Remove end of the line.
 		require
-			count_valid: count >= 1
+			count_valid: connection_count >= 1
 		do
 			element_removed_event.publish ([one_direction.last])
 			if one_direction.last.is_in_map then
@@ -326,22 +405,22 @@ feature -- Removal
 				other_direction.first.remove_from_map
 			end
 			other_direction.remove_first
-			if count >= 1 then
+			if connection_count >= 1 then
 				terminal_2 := one_direction.last.destination
-			elseif count = 0 then
+			elseif connection_count = 0 then
 				terminal_2 := Void
 				terminal_1 := Void
 			end
 		ensure
-			count_smaller: count = old count - 1
-			terminals_set: count /= 0 implies (terminal_1 = old terminal_1 and terminal_2 /= Void and old_terminal_1 = old terminal_1)
-			terminals_set: count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
+			count_smaller: connection_count = old connection_count - 1
+			terminals_set: connection_count /= 0 implies (terminal_1 = old terminal_1 and terminal_2 /= Void and old_terminal_1 = old terminal_1)
+			terminals_set: connection_count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
 		end
 
 	remove_first is
 			-- Remove start of the line.
 		require
-			count_valid: count >= 1
+			count_valid: connection_count >= 1
 		do
 			element_removed_event.publish ([one_direction.first])
 			element_removed_event.publish ([other_direction.last])
@@ -353,17 +432,17 @@ feature -- Removal
 			end
 			one_direction.remove_first
 			other_direction.remove_last
-			if count >= 1 then
+			if connection_count >= 1 then
 				terminal_1 := one_direction.first.origin
 				old_terminal_1 := terminal_1
-			elseif count = 0 then
+			elseif connection_count = 0 then
 				terminal_2 := Void
 				terminal_1 := Void
 			end
 		ensure
-			count_smaller: count = old count - 1
-			terminals_set: count /= 0 implies (terminal_2 = old terminal_2 and terminal_1 /= Void and old_terminal_1 = terminal_1)
-			terminals_set: count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
+			count_smaller: connection_count = old connection_count - 1
+			terminals_set: connection_count /= 0 implies (terminal_2 = old terminal_2 and terminal_1 /= Void and old_terminal_1 = terminal_1)
+			terminals_set: connection_count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
 		end
 
 feature -- Status report
@@ -406,7 +485,7 @@ feature -- Status report
 feature -- Basic operations
 
 	put_first (l1, l2: TRAFFIC_LINE_CONNECTION) is
-			--
+			-- Add l1 and l2 at beginning (l2 connects the same two places in reverse order).
 		require
 			l1_exists: l1 /= Void
 			l2_exists: l2 /= Void
@@ -432,7 +511,7 @@ feature -- Basic operations
 		end
 
 	put_last (l1, l2: TRAFFIC_LINE_CONNECTION) is
-			--
+			-- Add l1 and l2 at end (l2 connects the same two places in reverse order).
 		require
 			l1_exists: l1 /= Void
 			l2_exists: l2 /= Void
@@ -458,7 +537,7 @@ feature -- Basic operations
 		end
 
 	extend (a_place: TRAFFIC_PLACE) is
-			--
+			-- Add connection to `a_place' at end.
 		require
 			has_terminal_1: old_terminal_1 /= Void
 		local
@@ -496,10 +575,14 @@ feature -- Basic operations
 			create l2.make (s2, s1, type, pp)
 
 			put_last (l1, l2)
+		ensure
+			new_place_added: i_th (count) = a_place
+			added_at_end: terminal_2 = a_place
+			one_more: count = old count + 1
 		end
 
 	prepend (a_place: TRAFFIC_PLACE) is
-			--
+			-- Add connection from `a_place' to the beginning of the line.
 		require
 			has_terminal_1: old_terminal_1 /= Void
 		local
@@ -535,82 +618,12 @@ feature -- Basic operations
 			create l2.make (s2, s1, type, pp)
 
 			put_first (l1, l2)
+		ensure
+			new_place_added: i_th (1) = a_place
+			added_at_end: terminal_1 = a_place
+			one_more: count = old count + 1
 		end
 
-	road_points: DS_ARRAYED_LIST[TRAFFIC_COORDINATE] is
-			-- returns the polypoints retrieve by the roads
-			-- that belongs to this line
-		local
-			roads:ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]
-			pp: DS_ARRAYED_LIST[TRAFFIC_COORDINATE]
-			invert, is_station: BOOLEAN
-			v: TRAFFIC_COORDINATE
-		do
-			create Result.make(1)
-			-- loop on all the line sections
-			from
-				start
-			until
-				after
-			loop
-				roads:=item_for_iteration.roads
-				is_station:=true
-				-- loop on all the roads
-
-				if item_for_iteration.origin=roads.first.origin and item_for_iteration.destination=roads.last.destination then
-					invert:=false
-				elseif item_for_iteration.origin=roads.last.destination and item_for_iteration.destination=roads.first.origin then
-
-					invert:=true
-				else
-					io.putstring ("Invalid roads for given line section%N")
-					io.putstring("Line section origin: "+item_for_iteration.origin.name+" - Line section destination:"+item_for_iteration.destination.name+"%N")
-				end
-				if invert then
-					from
-						roads.finish
-					until
-						roads.before
-					loop
-						pp:=roads.item.polypoints
-						-- loop on all the polypoints
-						from
-							pp.finish
-						until
-							pp.before
-						loop
-							v:=pp.item_for_iteration
-							Result.force_last (v)
-							pp.back
-						end
-
-						roads.back
-					end
-				else
-					from
-						roads.start
-					until
-						roads.after
-					loop
-						pp:=roads.item.polypoints
-						-- loop on all the polypoints
-						from
-							pp.start
-						until
-							pp.after
-						loop
-							v:=pp.item_for_iteration
-							Result.force_last (v)
-							pp.forth
-						end
-
-						roads.forth
-					end
-				end
-
-				forth
-			end
-		end
 
 feature -- Output
 
@@ -714,5 +727,7 @@ invariant
 	connections_not_void: one_direction /= Void and other_direction /= Void
 	type_exists: type /= Void -- Line has type.
 	counts_are_equal: one_direction.count = other_direction.count
+	terminal_1_is_first: terminal_1 = i_th (1)
+	terminal_2_is_last: terminal_2 = i_th (count)
 
 end

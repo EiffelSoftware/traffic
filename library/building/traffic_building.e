@@ -17,6 +17,11 @@ inherit
 		export {NONE} all end
 
 	TRAFFIC_MAP_ITEM
+		rename
+			highlight as spotlight,
+			unhighlight as unspotlight,
+			is_highlighted as is_spotlighted
+		end
 
 feature {NONE} -- Initialization
 

@@ -197,10 +197,12 @@ feature{NONE} --Implementation
 			-- Do not distinguish between traveling_back and traveling_forward
 			poly_cursor.forth
 			if poly_cursor.after then
-				-- Set line cursor correctly
-				line_cursor.forth
+				if not line_cursor.after  then
+					-- Set line cursor correctly
+					line_cursor.forth
+				end
 				if line_cursor.after then
-					if is_reiterating then
+					if is_reiterating and line_cursor.line.connection_count >= 1 then
 						line_cursor.set_cursor_direction (not line_cursor.is_cursor_one_direction)
 						line_cursor.start
 						create poly_cursor.make (line_cursor.item_for_iteration.polypoints)

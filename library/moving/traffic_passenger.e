@@ -9,7 +9,7 @@ class
 inherit
 		TRAFFIC_MOVING
 			rename
-				start as walk
+				start as go
 			end
 
 create
@@ -90,8 +90,8 @@ feature {NONE} -- Implementation
 			-- Set where 'Current' intends to board and to get off.
 		require
 			line_not_empty: a_line /= Void
-			valid_stop: a_boarding_stop > 0 and a_boarding_stop <= a_line.count
-			valid_stop: a_deboarding_stop > 0 and a_deboarding_stop <= a_line.count
+			valid_stop: a_boarding_stop > 0 and a_boarding_stop <= a_line.connection_count
+			valid_stop: a_deboarding_stop > 0 and a_deboarding_stop <= a_line.connection_count
 		do
 			intended_line := a_line
 			boarding_stop := a_boarding_stop
