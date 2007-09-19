@@ -24,6 +24,12 @@
     <set name="system_dir" value="."/>
   </target>
 
+  <target name="release_em" depend="init">
+	<copy to_directory="../../release_em/example/city_timetable">
+   		<fileset include="@(**/*.e|*.ecf|*.xml|*.dtd)" exclude="@(EIFGENs)"/>
+	</copy>
+  </target>
+
   <target name="release" depend="init">
 	<copy to_directory="../../release/example/city_timetable">
    		<fileset include="@(**/*.e|*.ecf|*.xml|*.dtd)" exclude="@(EIFGENs)"/>

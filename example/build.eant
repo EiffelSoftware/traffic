@@ -12,68 +12,61 @@
 
 	<target name="help">
 		<echo message="usage:"/>
-		<echo message="   geant clean"/>
-		<echo message="   geant clobber"/>
-		<echo message="   geant install"/>
-		<echo message="   geant install_develop"/>
-		<echo message="   geant compile"/>
+		<echo message="   geant release_em"/>
+		<echo message="   geant release_ev"/>
+		<echo message="   geant release_all"/>
 		<echo message="   geant release"/>
 	</target>
 
-	<target name="clean" depend="init">
+	<target name="release_em" depend="init">
 		<description>
-			Remove intermediary generated files.
+			Move all necessary files to release_em.
 		</description>
-
-		<set name="target" value="clean"/>
-		<geant target="do_all"/>
+		
+		<mkdir directory="../release_em/example"/>
+		<copy to_directory="../release_em/example/map">
+    		<fileset directory="map" include="@(**/*.dtd|**/*.xml|**/*.png)"/>
+  		</copy>
+		<copy to_directory="../release_em/example/buildings">
+    		<fileset directory="buildings" include="@(**/*.obj|**/*.tga|**/*.dtd|**/*.xml)"/>
+  		</copy>
+		<copy to_directory="../release_em/example/image">
+    		<fileset directory="image" include="@(**/*.png)"/>
+  		</copy>
+		<copy to_directory="../release_em/example/objects">
+    		<fileset directory="objects" include="@(**/*.obj|**/*.tga)"/>
+  		</copy>
+		<copy to_directory="../release_em/example/flares">
+    		<fileset directory="flares" include="@(**/*.flr|**/*.tga)"/>
+  		</copy>
+		<set name="target" value="release_em"/>
+		<geant target="do_all_em"/>
 	</target>
 
-	<target name="clobber" depend="init">
+	<target name="release_ev" depend="init">
 		<description>
-			Remove all generated files.
+			Move all necessary files to release_em.
 		</description>
-
-		<set name="target" value="clobber"/>
-		<geant target="do_all"/>
+		
+		<mkdir directory="../release_ev/example"/>
+		<copy to_directory="../release_ev/example/map">
+    		<fileset directory="map" include="@(**/*.dtd|**/*.xml|**/*.png)"/>
+  		</copy>
+		<copy to_directory="../release_ev/example/image">
+    		<fileset directory="image" include="@(**/*.png)"/>
+  		</copy>
+		<set name="target" value="release_ev"/>
+		<geant target="do_all_ev"/>
 	</target>
 
-	<target name="install" depend="init">
-		<set name="target" value="install"/>
-		<geant target="do_all"/>
-	</target>
-
-	<target name="install_develop" depend="init">
-		<set name="target" value="install_develop"/>
-		<geant target="do_all"/>
-	</target>
-
-	<target name="compile" depend="init">
-		<description>
-			Compile examples.
-		</description>
-
-		<set name="target" value="compile"/>
-		<geant target="do_all"/>
-	</target>
-	
-	<target name="compile_debug" depend="init">
-		<description>
-			Compile examples.
-		</description>
-
-		<set name="target" value="compile_debug"/>
-		<geant target="do_all"/>
-	</target>
-	
 	<target name="release" depend="init">
 		<description>
-			Move xml files, 3d obj files, and all examples to release.
+			Move all necessary files to release_em.
 		</description>
 		
 		<mkdir directory="../release/example"/>
 		<copy to_directory="../release/example/map">
-    		<fileset directory="map" include="@(**/*.dtd|**/*.xml)"/>
+    		<fileset directory="map" include="@(**/*.dtd|**/*.xml|**/*.png)"/>
   		</copy>
 		<copy to_directory="../release/example/buildings">
     		<fileset directory="buildings" include="@(**/*.obj|**/*.tga|**/*.dtd|**/*.xml)"/>
@@ -83,6 +76,9 @@
   		</copy>
 		<copy to_directory="../release/example/objects">
     		<fileset directory="objects" include="@(**/*.obj|**/*.tga)"/>
+  		</copy>
+		<copy to_directory="../release/example/flares">
+    		<fileset directory="flares" include="@(**/*.flr|**/*.tga)"/>
   		</copy>
 		<set name="target" value="release"/>
 		<geant target="do_all"/>
@@ -104,16 +100,23 @@
 			<echo message="   successfully ${target}ed: application  $a_dir"/>
 	</target>
 
-	<target name="do_all">
+	<target name="do_all_em">
 		<geant target="do_one" arguments="flat_hunt"/>
-		<geant target="do_one" arguments="city_3d"/>
 		<geant target="do_one" arguments="city_timetable"/>
-		<geant target="do_one" arguments="city_time"/>
-		<geant target="do_one" arguments="city_timetable"/>
-		<geant target="do_one" arguments="chapter2_preview"/>
-		<geant target="do_one" arguments="chapter3_queries"/>
-		<geant target="do_one" arguments="chapter3_commands"/>
-		<geant target="do_one" arguments="chapter6_road_creation"/>
+		<geant target="do_one" arguments="city_em_2d"/>
+	</target>
+
+	<target name="do_all_ev">
+		<geant target="do_one" arguments="city_vision2"/>
+		<geant target="do_one" arguments="ev_ex_2_preview"/>
+		<geant target="do_one" arguments="ev_ex_4_queries_commands"/>
+		<geant target="do_one" arguments="ev_ex_6_path_building"/>
+		<geant target="do_one" arguments="ev_ex_7_control"/>
+	</target>
+
+	<target name="do_all">
+		<geant target="do_all_em"/>
+		<geant target="do_all_ev"/>
 	</target>
 
 </project>

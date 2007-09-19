@@ -169,40 +169,46 @@ feature -- Basic operations
 		do
 			background_color.set_rgb (1.0, 1.0, 1.0)
 			clear
-			if not is_map_hidden then
-				from
-					i := 1
-				until
-					i > internal_road_representations.count
-				loop
-					draw_item (internal_road_representations.item (i))
-					i := i + 1
-				end
-				from
-					i := 1
-				until
-					i > internal_line_representations.count
-				loop
-					draw_item (internal_line_representations.item (i))
-					i := i + 1
-				end
-				from
-					i := 1
-				until
-					i > internal_place_representations.count
-				loop
-					draw_item (internal_place_representations.item (i))
-					i := i + 1
-				end
-				from
-					i := 1
-				until
-					i > internal_building_representations.count
-				loop
-					draw_item (internal_building_representations.item (i))
-					i := i + 1
-				end
-				create background_image.make_with_pixel_buffer (create {EV_PIXEL_BUFFER}.make_with_pixmap (Current))
+			if not is_map_hidden and map /= Void then
+				clear
+				internal_road_representations.draw (Current)
+				internal_line_representations.draw (Current)
+				internal_place_representations.draw (Current)
+				internal_building_representations.draw (Current)
+--				from
+--					i := 1
+--				until
+--					i > internal_road_representations.count
+--				loop
+--					draw_item (internal_road_representations.item (i))
+--					i := i + 1
+--				end
+--				from
+--					i := 1
+--				until
+--					i > internal_line_representations.count
+--				loop
+--					draw_item (internal_line_representations.item (i))
+--					i := i + 1
+--				end
+--				from
+--					i := 1
+--				until
+--					i > internal_place_representations.count
+--				loop
+--					draw_item (internal_place_representations.item (i))
+--					i := i + 1
+--				end
+--				from
+--					i := 1
+--				until
+--					i > internal_building_representations.count
+--				loop
+--					draw_item (internal_building_representations.item (i))
+--					i := i + 1
+--				end
+				create background_image.make_with_size (width, height)
+				background_image.draw_pixmap (0, 0, Current)
 				fast_redraw_now
 				has_pending_redraw := false
 				(create {EV_ENVIRONMENT}).application.remove_idle_action (redraw_agent)
@@ -219,29 +225,31 @@ feature -- Basic operations
 				if background_image /= Void then
 					draw_pixmap (0, 0, background_image)
 				end
-				from
-					i := 1
-				until
-					i > internal_path_representations.count
-				loop
-					draw_item (internal_path_representations.item (i))
-					i := i + 1
-				end
-				from
-					i := 1
-				until
-					i > internal_moving_representations.count
-				loop
-					draw_item (internal_moving_representations.item (i))
-					i := i + 1
-				end
+				internal_path_representations.draw (Current)
+				internal_moving_representations.draw (Current)
+--				from
+--					i := 1
+--				until
+--					i > internal_path_representations.count
+--				loop
+--					draw_item (internal_path_representations.item (i))
+--					i := i + 1
+--				end
+--				from
+--					i := 1
+--				until
+--					i > internal_moving_representations.count
+--				loop
+--					draw_item (internal_moving_representations.item (i))
+--					i := i + 1
+--				end
 			end
 			from
 				object_list.start
 			until
 				object_list.after
 			loop
-				draw_item (object_list.item_for_iteration)
+				object_list.item_for_iteration.draw (Current)
 				object_list.forth
 			end
 		end

@@ -26,6 +26,7 @@ feature {NONE} -- Initialization
 		do
 			create internal_list.make
 			create color.make_with_8_bit_rgb (255, 255, 255)
+			is_shown := True
 		ensure
 			internal_list_exists: internal_list /= Void
 			color_exists: color /= Void
@@ -289,18 +290,18 @@ feature {CANVAS} -- Basic operations
 
 	draw (a_target: CANVAS) is
 			-- Draw `Current' onto `a_target'
+		local
+			i: INTEGER
 		do
 			canvas := a_target
 			if is_shown then
 				from
-					start
+					i := 1
 				until
-					after
+					i > count
 				loop
-					item_for_iteration.draw (canvas)
-					if not after then
-						forth
-					end
+					item (i).draw (canvas)
+					i := i + 1
 				end
 				validate
 			end

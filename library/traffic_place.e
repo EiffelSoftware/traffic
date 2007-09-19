@@ -148,14 +148,19 @@ feature -- Status report
 			if outgoing_line_connections.count > 2 then
 				Result := True
 			end
+		ensure
+			is_exchange: Result = (outgoing_line_connections.count > 2)
 		end
 
 	is_hub: BOOLEAN is
 			-- Is this an exchange station (where multiple transportation lines stop)
 		do
-			if outgoing_line_connections.count > 8 then
+			if outgoing_line_connections.count > Hub_size then
 				Result := True
 			end
+		ensure
+			is_exchange: Result implies is_exchange
+			is_hub: Result = (outgoing_line_connections.count > Hub_size)
 		end
 
 	has_stop (a_line: TRAFFIC_LINE): BOOLEAN is
@@ -355,6 +360,11 @@ feature -- Output
 			Result := "Traffic place " + name + " at position " + position.out + information_string
 		end
 
+feature -- Constants
+
+	Hub_size: INTEGER is 8
+			-- A place is considered a hub if it has more than `Hub_size' outgoing connections (or since lines are bidirection `Hub_size'/2 lines)
+			
 feature {NONE} -- Implementation
 
 	is_stop_of_line (a_stop: TRAFFIC_STOP; a_line: TRAFFIC_LINE): BOOLEAN is

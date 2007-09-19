@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Trolleybusses (not yet included in the map)"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -11,7 +10,9 @@ inherit
 
 	TRAFFIC_TRAM
 		undefine
-			is_valid_line
+			is_valid_line,
+			is_insertable,
+			is_removable
 		select
 			capacity,
 			engine_capacity

@@ -12,82 +12,56 @@
 
 	<target name="help">
 		<echo message="usage:"/>
-		<echo message="   geant install"/>
-		<echo message="   geant install_develop"/>
-		<echo message="   geant clobber"/>
-		<echo message="   geant clean"/>
-		<echo message="   geant compile"/>
-		<echo message="   geant compile_debug"/>
+		<echo message="   geant release_em"/>
+		<echo message="   geant release_ev"/>
 		<echo message="   geant release"/>
+		<echo message="   geant release_all"/>
+	</target>
+	
+	<target name="release_all">
+		<echo mesage = "Build release for all variants."/>
+		<geant target="release"/>
+		<geant target="release_em"/>
+		<geant target="release_ev"/>
 	</target>
 
-	<target name="install" depend="init">
-		<geant file="build.eant" target="install" dir="example"/>
-	</target>
-	
-	<target name="install_develop" depend="init">
-		<geant file="build.eant" target="install_develop" dir="example"/>
-	</target>
-	
-	<target name="clobber" depend="init">
+	<target name="release">
 		<description>
-			Remove all generated files.
+			Build release for EiffelMedia and Vision2.
 		</description>
-		<geant file="build.eant" target="clobber" dir="doc"/>
-		<geant file="build.eant" target="clobber" dir="example"/>
-	</target>
-
-	<target name="clean" depend="init">
-		<description>
-			Remove intermediary generated files.
-		</description>
-		<geant file="build.eant" target="clean" dir="doc"/>
-		<geant file="build.eant" target="clean" dir="example"/>
-	</target>
-
-	<target name="compile" depend="init">
-		<geant file="build.eant" target="compile" dir="example"/>
-	</target>
-
-	<target name="compile_debug" depend="init">
-		<geant file="build.eant" target="compile_debug" dir="example"/>
-	</target>
-	
-	<target name="release" depend="init">
 		<mkdir directory="release"/>
-		<geant file="build.eant" target="release_no_doc" dir="doc"/>
+		<!--geant file="build.eant" target="release_no_doc" dir="doc"/-->
 		<geant file="build.eant" target="release" dir="example"/>
-		<copy to_directory="release/library">
-	   		<fileset directory="library" include="@(**/*.e|**/*.ecf)"/>
-		</copy>
+		<geant file="build.eant" target="release" dir="library"/>
 		<copy to_directory="release">
 	   		<fileset include="@(*.txt)"/>
 		</copy>
-		
+	</target>
+
+	<target name="release_em">
+		<description>
+			Build release for EiffelMedia only.
+		</description>
+		<mkdir directory="release_em"/>
+		<!--geant file="build.eant" target="release_no_doc" dir="doc"/-->
+		<geant file="build.eant" target="release_em" dir="example"/>
+		<geant file="build.eant" target="release_em" dir="library"/>
+		<copy to_directory="release_em">
+	   		<fileset include="@(*.txt)"/>
+		</copy>		
+	</target>
+
+	<target name="release_ev">
+		<description>
+			Build release for Vision2 only.
+		</description>
+		<mkdir directory="release_ev"/>
+		<!--geant file="build.eant" target="release_no_doc" dir="doc"/-->
+		<geant file="build.eant" target="release_ev" dir="example"/>
+		<geant file="build.eant" target="release_ev" dir="library"/>
+		<copy to_directory="release_ev">
+	   		<fileset include="@(*.txt)"/>
+		</copy>
 	</target>
 		
-<!-- Implementation -->
-
-	<target name="init">
-		<geant target="init_os"/>
-	</target>
-
-	<target name="init_os">
-		<geant target="init_windows"/>
-		<geant target="init_unix"/>
-		<geant target="init_gobo_eiffel"/>
-	</target>
-
-	<target name="init_windows" if="${GOBO_OS}=windows">
-		<set name="exe" value=".exe"/>
-	</target>
-
-	<target name="init_unix" unless="${GOBO_OS}=windows">
-		<set name="exe" value=""/>
-	</target>
-
-	<target name="init_gobo_eiffel" unless="${GOBO_EIFFEL}">
-		<set name="GOBO_EIFFEL" value="ise"/>
-	</target>
-
 </project>

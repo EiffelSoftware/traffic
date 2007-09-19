@@ -175,7 +175,7 @@ feature -- Basic operations
 			from
 				create t2.make_now
 			until
-				(t2.compact_time - t1.compact_time).abs > 1
+				(t2.compact_time - t1.compact_time).abs > 3
 			loop
 				create t2.make_now
 				if not env.application.is_destroyed then
