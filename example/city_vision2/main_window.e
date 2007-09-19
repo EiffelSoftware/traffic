@@ -67,7 +67,7 @@ feature {NONE} -- Widgets
 	viewport: EV_VIEWPORT
 			-- To display the canvas
 
-	fixed: EV_FIXED
+	vb: EV_VERTICAL_BOX
 			-- Map manipulation area
 
 feature {NONE} -- GUI building
@@ -122,8 +122,7 @@ feature {NONE} -- GUI building
 		require
 			main_container_not_yet_created: main_container = Void
 		local
-			vb: EV_VERTICAL_SPLIT_AREA
-			hb1: EV_HORIZONTAL_BOX
+			hb1, hb: EV_HORIZONTAL_BOX
 			fr: EV_FRAME
 			r: EV_HORIZONTAL_RANGE
 			l: EV_LABEL
@@ -140,7 +139,6 @@ feature {NONE} -- GUI building
 			create canvas.make
 			create main_container
 			create table
-			create fixed
 
 			viewport.set_minimum_height (400)
 			viewport.set_minimum_width (600)
@@ -149,16 +147,18 @@ feature {NONE} -- GUI building
 			canvas.set_zoom_limits (0.5, 10.0)
 			viewport.resize_actions.force_extend (agent resize_canvas)
 
+
 			-- free movings
 			create l.make_with_text ("Free movings (0..100):")
 			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 100))
 			r.set_value (0)
 			r.set_minimum_width (100)
 			r.change_actions.extend (agent add_free_movings)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 5, 3)
-			fixed.set_item_position_and_size (r, 130, 1, 100, 20)
+
+			create hb
+			hb.extend (l)
+			hb.extend (r)
+			vb.extend (hb)
 
 			-- Line vehicles
 			create l.make_with_text ("Vehicles/Line (0..10):")
@@ -166,10 +166,10 @@ feature {NONE} -- GUI building
 			r.set_value (0)
 			r.set_minimum_width (100)
 			r.change_actions.extend (agent add_line_vehicles)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 5, 33)
-			fixed.set_item_position_and_size (r, 130, 31, 100, 20)
+			create hb
+			hb.extend (l)
+			hb.extend (r)
+			vb.extend (hb)
 
 			-- Passengers
 			create l.make_with_text ("Passengers (0..100):")
@@ -177,10 +177,10 @@ feature {NONE} -- GUI building
 			r.set_value (0)
 			r.set_minimum_width (100)
 			r.change_actions.extend (agent add_passengers)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 5, 63)
-			fixed.set_item_position_and_size (r, 130, 61, 100, 20)
+			create hb
+			hb.extend (l)
+			hb.extend (r)
+			vb.extend (hb)
 
 			-- Paths
 			create l.make_with_text ("Paths (0..10):")
@@ -188,107 +188,91 @@ feature {NONE} -- GUI building
 			r.set_value (0)
 			r.set_minimum_width (100)
 			r.change_actions.extend (agent add_paths)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 5, 93)
-			fixed.set_item_position_and_size (r, 130, 91, 100, 20)
+			create hb
+			hb.extend (l)
+			hb.extend (r)
+			vb.extend (hb)
 
 			-- Taxis
 			create button.make_with_text ("+office")
 			button.select_actions.extend (agent add_taxi_office)
-			fixed.extend (button)
-			fixed.set_item_position (button, 5, 121)
 			create l.make_with_text ("taxis (0..10):")
 			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
 			r.set_value (0)
 			r.set_minimum_width (100)
 			r.change_actions.extend (agent add_taxi)
-			fixed.extend (l)
-			fixed.extend (r)
-			fixed.set_item_position (l, 80, 123)
-			fixed.set_item_position_and_size (r, 130, 121, 100, 20)
+			create hb
+			hb.extend (button)
+			hb.extend (l)
+			hb.extend (r)
+			vb.extend (hb)
 
 
 			-- Hide/show map
 			create rad.make_with_text ("Show map")
 			rad.toggle
 			rad.select_actions.extend (agent toggle_map_hidden (rad))
-			fixed.extend (rad)
-			fixed.set_item_position (rad, 5, 162)
+			create hb
+			hb.extend (rad)
 
 			-- Hide/show lines
 			create rad.make_with_text ("Show lines")
 			rad.toggle
 			rad.select_actions.extend (agent toggle_lines_hidden (rad))
-			fixed.extend (rad)
-			fixed.set_item_position (rad, 85, 162)
+			hb.extend (rad)
 
 			-- Hide/show lines
 			create rad.make_with_text ("Show roads")
 			rad.toggle
 			rad.select_actions.extend (agent toggle_roads_hidden (rad))
-			fixed.extend (rad)
-			fixed.set_item_position (rad, 165, 162)
+			hb.extend (rad)
+			vb.extend (hb)
 
 			-- Test highlight/unhighlight feature
 			create toggle.make_with_text ("Highlight random map items")
 			toggle.select_actions.extend (agent toggle_highlight (toggle))
-			fixed.extend (toggle)
-			fixed.set_item_position (toggle, 5, 202)
+			vb.extend (toggle)
 
 			-- Test creation
+			create hb
 			create button.make_with_text ("+place")
 			button.select_actions.extend (agent add_place)
-			fixed.extend (button)
-			fixed.set_item_position (button, 5, 242)
+			hb.extend (button)
 
 			create button.make_with_text ("+line")
 			button.select_actions.extend (agent add_line)
-			fixed.extend (button)
-			fixed.set_item_position (button, 65, 242)
+			hb.extend (button)
 
 			create button.make_with_text ("+connection")
 			button.select_actions.extend (agent add_line_connection)
-			fixed.extend (button)
-			fixed.set_item_position (button, 115, 242)
+			hb.extend (button)
 
 			create button.make_with_text ("+road")
 			button.select_actions.extend (agent add_road)
-			fixed.extend (button)
-			fixed.set_item_position (button, 200, 242)
+			hb.extend (button)
+			vb.extend (hb)
 
 			-- Test deletion
+			create hb
 			create button.make_with_text ("-place")
 			button.select_actions.extend (agent remove_place)
-			fixed.extend (button)
-			fixed.set_item_position (button, 5, 272)
+			hb.extend (button)
 
 			create button.make_with_text ("-line")
 			button.select_actions.extend (agent remove_line)
-			fixed.extend (button)
-			fixed.set_item_position (button, 65, 272)
+			hb.extend (button)
 
 			create button.make_with_text ("-connection")
 			button.select_actions.extend (agent remove_line_connection)
-			fixed.extend (button)
-			fixed.set_item_position (button, 115, 272)
+			hb.extend (button)
 
 			create button.make_with_text ("-road")
 			button.select_actions.extend (agent remove_road)
-			fixed.extend (button)
-			fixed.set_item_position (button, 200, 272)
+			hb.extend (button)
 
-			vb.extend (fixed)
-			vb.disable_item_expand (fixed)
+			vb.extend (hb)
+			vb.disable_sensitive
 
-			from
-				fixed.start
-			until
-				fixed.after
-			loop
-				fixed.item.disable_sensitive
-				fixed.forth
-			end
 			hb1.extend (vb)
 			hb1.disable_item_expand (vb)
 			hb1.extend (fr)
@@ -351,14 +335,7 @@ feature {NONE} -- Implementation
 				canvas.map.time.set_speedup (50)
 				canvas.map.time.start
 				move_to_center
-				from
-					fixed.start
-				until
-					fixed.after
-				loop
-					fixed.item.enable_sensitive
-					fixed.forth
-				end
+				vb.enable_sensitive
 			else
 				create dlg.make_with_text ("Error parsing" + a_dlg.file_name)
 				dlg.show
@@ -965,7 +942,7 @@ feature {NONE} -- Implementation / Constants
 	Window_title: STRING is "city_vision2"
 			-- Title of the window.
 
-	Window_width: INTEGER is 400
+	Window_width: INTEGER is 800
 			-- Initial width for this window.
 
 	Window_height: INTEGER is 400

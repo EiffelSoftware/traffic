@@ -61,7 +61,6 @@ feature -- Element change
 			invalidate
 		ensure
 			new_diameter: diameter = a_diameter
-			not_valid: not is_valid
 		end
 
 	set_center (a_center: REAL_COORDINATE) is
@@ -73,7 +72,6 @@ feature -- Element change
 			invalidate
 		ensure
 			new_center: center = a_center
-			not_valid: not is_valid
 		end
 
 	set_width (a_width: INTEGER)  is
@@ -83,7 +81,6 @@ feature -- Element change
 			invalidate
 		ensure
 			new_width: width= a_width
-			not_valid: not is_valid
 		end
 
 feature -- Status report
@@ -100,7 +97,6 @@ feature -- Status setting
 			invalidate
 		ensure
 			is_filled: is_filled
-			not_valid: not is_valid
 		end
 
 	disable_filled is
@@ -110,7 +106,6 @@ feature -- Status setting
 			invalidate
 		ensure
 			not_filled: not is_filled
-			not_valid: not is_valid
 		end
 
 feature {CANVAS} -- Basic operations
@@ -123,6 +118,9 @@ feature {CANVAS} -- Basic operations
 			scaled_p1 := real_to_integer_coordinate (bounding_box.upper_left)
 			scaled_p2 := real_to_integer_coordinate (bounding_box.lower_right)
 			canvas.set_line_width (width)
+			if color /= Void then
+				canvas.set_foreground_color (color)
+			end
 			if
 				is_filled
 			then

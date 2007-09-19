@@ -22,7 +22,6 @@ feature -- Commands
 			invalidate
 		ensure
 			color_set: color = a_color
-			not_valid: not is_valid
 		end
 
 	hide is
@@ -115,14 +114,13 @@ feature {CANVAS, DRAWABLE_OBJECT} -- Display
 				color_not_void: color /= Void
 			end
 			canvas := a_target
-			canvas.set_foreground_color (color)
 			if is_shown then
+				canvas.set_foreground_color (color)
 				draw_object
 				validate
 			end
 		ensure
 			canvas_set: canvas = a_target
-			shown_implies_valid: is_shown implies is_valid
 		end
 
 	draw_object is

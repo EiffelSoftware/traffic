@@ -108,14 +108,16 @@ feature -- Element change
 
 	hide is
 			-- Highlight the place view.
+		local
+			i: INTEGER
 		do
 			from
-				start
+				i := 1
 			until
-				after
+				i > count
 			loop
-				item_for_iteration.hide
-				forth
+				item (i).hide
+				i := i + 1
 			end
 			is_shown := False
 			invalidate
@@ -123,14 +125,16 @@ feature -- Element change
 
 	show is
 			-- Unhighlight the place view.
+		local
+			i: INTEGER
 		do
 			from
-				start
+				i := 1
 			until
-				after
+				i > count
 			loop
-				item_for_iteration.show
-				forth
+				item (i).show
+				i := i + 1
 			end
 			is_shown := True
 			invalidate
@@ -184,7 +188,6 @@ feature -- Insertion
 			invalidate
 		ensure
 			is_in_list: internal_list.has (a_drawable)
-			not_valid: not is_valid
 		end
 
 	put_first (a_drawable: like item_for_iteration) is
@@ -195,7 +198,6 @@ feature -- Insertion
 			invalidate
 		ensure
 			is_in_list: internal_list.has (a_drawable)
-			not_valid: not is_valid
 		end
 
 	replace (v: G; i: INTEGER) is
@@ -271,7 +273,6 @@ feature -- Removal
 			invalidate
 		ensure
 			wiped_out: is_empty
-			not_valid: not is_valid
 		end
 
 	delete (a_drawable: like item_for_iteration) is
@@ -282,7 +283,6 @@ feature -- Removal
 			invalidate
 		ensure
 			deleted: not internal_list.has (a_drawable)
-			not_valid: not is_valid
 		end
 
 feature {CANVAS} -- Basic operations
@@ -298,7 +298,9 @@ feature {CANVAS} -- Basic operations
 					after
 				loop
 					item_for_iteration.draw (canvas)
-					forth
+					if not after then
+						forth
+					end
 				end
 				validate
 			end

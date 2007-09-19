@@ -50,7 +50,6 @@ feature -- Commands
 			invalidate
 		ensure
 			new_points: points = new_points
-			not_valid: not is_valid
 		end
 
 	set_width (a_width: like width) is
@@ -60,7 +59,6 @@ feature -- Commands
 			invalidate
 		ensure
 			new_width: width = a_width
-			not_valid: not is_valid
 		end
 
 	enable_dashed_line is
@@ -70,7 +68,6 @@ feature -- Commands
 			invalidate
 		ensure
 			dashed_true: dashed
-			not_valid: not is_valid
 		end
 
 feature -- Queries
@@ -145,6 +142,9 @@ feature{EV_CANVAS} -- Display
 			end
 			current_width:= line_width
 			canvas.set_line_width (line_width)
+			if color /= Void then
+				canvas.set_foreground_color (color)
+			end
 			if
 				dashed
 			then

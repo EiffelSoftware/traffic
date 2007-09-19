@@ -65,7 +65,6 @@ feature -- Element change
 		ensure
 			a_new_point_a_set: point_a = a_new_point_a
 			a_new_point_b_set: point_b = a_new_point_b
-			not_valid: not is_valid
 		end
 
 	set_edge_color (a_color: EV_COLOR) is
@@ -77,7 +76,6 @@ feature -- Element change
 			invalidate
 		ensure
 			new_edge_color: edge_color = a_color
-			not_valid: not is_valid
 		end
 
 feature -- Status report
@@ -94,7 +92,6 @@ feature -- Status setting
 			invalidate
 		ensure
 			is_filled: is_filled
-			not_valid: not is_valid
 		end
 
 	disable_filled is
@@ -104,7 +101,6 @@ feature -- Status setting
 			invalidate
 		ensure
 			not_filled: not is_filled
-			not_valid: not is_valid
 		end
 
 feature{CANVAS} -- Display

@@ -127,7 +127,7 @@ feature {NONE} -- Implementation
 
 invariant
 
-	visible_area_set: visible_area /= Void
+--	visible_area_set: visible_area /= Void
 
 end
 

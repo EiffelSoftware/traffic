@@ -33,11 +33,10 @@ feature -- Initialization
 	make is
 			-- Initialize
 		local
+			figure_world : EV_FIGURE_WORLD
 			e: EV_ENVIRONMENT
 			t: EV_TIMEOUT
 		do
-			add_taxi_agent := agent add_taxi (?)
-			remove_taxi_agent := agent remove_taxi (?)
 			create internal_factory
 			create internal_place_representations.make
 			create internal_line_representations.make
@@ -45,8 +44,26 @@ feature -- Initialization
 			create internal_building_representations.make
 			create internal_moving_representations.make
 			create internal_path_representations.make
+			default_create
+			create visible_area.make (
+				create {REAL_COORDINATE}.make(0.0,0.0),
+				create {REAL_COORDINATE}.make(1.0,1.0)
+			)
+			add_taxi_agent := agent add_taxi (?)
+			remove_taxi_agent := agent remove_taxi (?)
+			create figure_world
+			create object_list.make
+			create projector.make (figure_world,Current)
+			set_zoom_limits (0.5, 2)
+			zoom_factor := 1.0
+			has_pending_redraw := false
+			redraw_agent := agent redraw_now
+			mouse_wheel_actions.extend (agent zoom)
+			pan_agent := agent pan
+			pointer_button_release_actions.extend (agent move_end)
+			pointer_button_press_actions.extend (agent move_start)
+			pointer_leave_actions.extend (agent release)
 
-			Precursor
 			create e
 			e.application.add_idle_action (agent fast_redraw_now)
 		end
@@ -99,42 +116,42 @@ feature -- Access
 			--
 		do
 			Result := internal_line_representations
-			internal_line_representations.draw (Current)
+--			internal_line_representations.draw (Current)
 		end
 
 	road_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_VIEW [TRAFFIC_ROAD]] is
 			--
 		do
 			Result := internal_road_representations
-			internal_road_representations.draw (Current)
+--			internal_road_representations.draw (Current)
 		end
 
 	path_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VIEW [TRAFFIC_PATH]] is
 			--
 		do
 			Result := internal_path_representations
-			internal_path_representations.draw (Current)
+--			internal_path_representations.draw (Current)
 		end
 
 	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VIEW [TRAFFIC_PLACE]]
 			--
 		do
 			Result := internal_place_representations
-			internal_place_representations.draw (Current)
+--			internal_place_representations.draw (Current)
 		end
 
 	building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_VIEW [TRAFFIC_BUILDING]]
 			--
 		do
 			Result := internal_building_representations
-			internal_building_representations.draw (Current)
+--			internal_building_representations.draw (Current)
 		end
 
 	moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_VIEW [TRAFFIC_MOVING]]
 			--
 		do
 			Result := internal_moving_representations
-			internal_moving_representations.draw (Current)
+--			internal_moving_representations.draw (Current)
 		end
 
 	factory: TRAFFIC_VIEW_FACTORY is
@@ -147,42 +164,45 @@ feature -- Basic operations
 
 	redraw_now is
 			-- Refresh all items on `Current'.
+		local
+			i: INTEGER
 		do
+			background_color.set_rgb (1.0, 1.0, 1.0)
 			clear
 			if not is_map_hidden then
 				from
-					internal_road_representations.start
+					i := 1
 				until
-					internal_road_representations.after
+					i > internal_road_representations.count
 				loop
-					draw_item (internal_road_representations.item_for_iteration)
-					internal_road_representations.forth
+					draw_item (internal_road_representations.item (i))
+					i := i + 1
 				end
 				from
-					internal_line_representations.start
+					i := 1
 				until
-					internal_line_representations.after
+					i > internal_line_representations.count
 				loop
-					draw_item (internal_line_representations.item_for_iteration)
-					internal_line_representations.forth
+					draw_item (internal_line_representations.item (i))
+					i := i + 1
 				end
 				from
-					internal_place_representations.start
+					i := 1
 				until
-					internal_place_representations.after
+					i > internal_place_representations.count
 				loop
-					draw_item (internal_place_representations.item_for_iteration)
-					internal_place_representations.forth
+					draw_item (internal_place_representations.item (i))
+					i := i + 1
 				end
 				from
-					internal_building_representations.start
+					i := 1
 				until
-					internal_building_representations.after
+					i > internal_building_representations.count
 				loop
-					draw_item (internal_building_representations.item_for_iteration)
-					internal_building_representations.forth
+					draw_item (internal_building_representations.item (i))
+					i := i + 1
 				end
-				background_image := twin
+				create background_image.make_with_pixel_buffer (create {EV_PIXEL_BUFFER}.make_with_pixmap (Current))
 				fast_redraw_now
 				has_pending_redraw := false
 				(create {EV_ENVIRONMENT}).application.remove_idle_action (redraw_agent)
@@ -191,6 +211,8 @@ feature -- Basic operations
 
 	fast_redraw_now is
 			-- Refresh only the objects in mutable_object_list.
+		local
+			i: INTEGER
 		do
 			clear
 			if not is_map_hidden then
@@ -198,20 +220,20 @@ feature -- Basic operations
 					draw_pixmap (0, 0, background_image)
 				end
 				from
-					internal_path_representations.start
+					i := 1
 				until
-					internal_path_representations.after
+					i > internal_path_representations.count
 				loop
-					draw_item (internal_path_representations.item_for_iteration)
-					internal_path_representations.forth
+					draw_item (internal_path_representations.item (i))
+					i := i + 1
 				end
 				from
-					internal_moving_representations.start
+					i := 1
 				until
-					internal_moving_representations.after
+					i > internal_moving_representations.count
 				loop
-					draw_item (internal_moving_representations.item_for_iteration)
-					internal_moving_representations.forth
+					draw_item (internal_moving_representations.item (i))
+					i := i + 1
 				end
 			end
 			from
