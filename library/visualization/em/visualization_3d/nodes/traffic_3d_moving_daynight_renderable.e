@@ -72,12 +72,12 @@ feature -- Basic operations
 			if is_night then
 				day_graphical.disable_hierarchy_renderable
 				night_graphical.enable_hierarchy_renderable
-				night_graphical.transform.set_rotation(0,1.0,0,item.angle_x)
+				night_graphical.transform.set_rotation(0,1.0,0,-item.angle_x)
 				night_graphical.transform.set_position (item.position.x, 0, item.position.y)
 			else
 				night_graphical.disable_hierarchy_renderable
 				day_graphical.enable_hierarchy_renderable
-				day_graphical.transform.set_rotation(0,1.0,0,item.angle_x)
+				day_graphical.transform.set_rotation(0,1.0,0,-item.angle_x)
 				day_graphical.transform.set_position (item.position.x, 0, item.position.y)
 			end
 		end

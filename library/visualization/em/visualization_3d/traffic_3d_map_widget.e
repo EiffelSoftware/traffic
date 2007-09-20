@@ -18,6 +18,8 @@ inherit
 
 	EM_COMPONENT
 
+	EMGL_SETTINGS
+
 	DOUBLE_MATH
 		export {NONE} all end
 
@@ -48,15 +50,15 @@ feature -- Initialization
 
 			create internal_factory
 			create internal_place_representations.make_as_child (root)
-			internal_place_representations.transform.set_position (0.0,0.07,0.0)
+			internal_place_representations.transform.set_position (0.0,2.70,0.0)
 			create internal_line_representations.make_as_child (root)
-			internal_line_representations.transform.set_position (0.0,0.04,0.0)
+			internal_line_representations.transform.set_position (0.0,1.80,0.0)
 			create internal_road_representations.make_as_child (root)
-			internal_road_representations.transform.set_position(0.0, 0.02, 0.0)
+			internal_road_representations.transform.set_position(0.0, 0.30, 0.0)
 			create internal_building_representations.make_as_child (root)
 			create internal_moving_representations.make_as_child (root)
 			create internal_path_representations.make_as_child (root)
-			internal_path_representations.transform.set_position(0.0, 0.4, 0.0)
+			internal_path_representations.transform.set_position(0.0, 3.6, 0.0)
 
 			add_taxi_agent := agent add_taxi (?)
 			remove_taxi_agent := agent remove_taxi (?)
@@ -90,6 +92,7 @@ feature -- Initialization
 			plane := member_factory.last_3d_member;
 			(create{TE_3D_SHARED_GLOBALS}).root.add_child (plane)
 
+
 			mouse_clicked_event.subscribe (agent publish_mouse_event (?))
 			create building_clicked_event.default_create
 			create place_clicked_event
@@ -101,24 +104,29 @@ feature -- Element change
 
 	set_map (a_map: TRAFFIC_MAP) is
 			-- Set map that is displayed to `a_map'.
+		local
+			camtarget: EM_VECTOR3D
 		do
 			if map /= Void then
 				wipe_out
 			end
 			create internal_place_representations.make_as_child (root)
-			internal_place_representations.transform.set_position (0.0,0.07,0.0)
+			internal_place_representations.transform.set_position (0.0,0.7,0.0)
 			create internal_line_representations.make_as_child (root)
-			internal_line_representations.transform.set_position (0.0,0.04,0.0)
+			internal_line_representations.transform.set_position (0.0,0.4,0.0)
 			create internal_road_representations.make_as_child (root)
-			internal_road_representations.transform.set_position(0.0, 0.02, 0.0)
+			internal_road_representations.transform.set_position(0.0, 0.2, 0.0)
 			create internal_building_representations.make_as_child (root)
 			create internal_moving_representations.make_as_child (root)
 			create internal_path_representations.make_as_child (root)
-			internal_path_representations.transform.set_position(0.0, 0.4, 0.0)
+			internal_path_representations.transform.set_position(0.0, 0.5, 0.0)
 			Precursor (a_map)
 			is_map_loaded := True
-			root.transform.set_position (-map.center.x, 0, -map.center.y)
+			--der sceneroot DARF NICHT verschoben werden!! er definiert den Szenen ursprung und muss unbedingt mit dem openGL Ursprung übereinstimmen!
 			plane.transform.set_position (map.center.x, 0.0, map.center.y)
+			camtarget := plane.transform.position
+			camtarget.y := 30
+			renderpass_manager.camera.set_target (camtarget)
 		end
 
 feature {NONE} -- Implementation
@@ -130,6 +138,18 @@ feature {NONE} -- Implementation
 	internal_road_representations: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_ROAD]
 	internal_place_representations: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_PLACE]
 	internal_building_representations: TRAFFIC_3D_RENDERABLE_CONTAINER [TRAFFIC_BUILDING]
+
+	max(val1,val2: DOUBLE): DOUBLE is
+			--
+		do
+			if val1 > val2 then result:=val1 else result:=val2 end
+		end
+
+	min(val1,val2: DOUBLE): DOUBLE is
+			--
+		do
+			if val1 < val2 then result:=val1 else result:=val2 end
+		end
 
 feature -- Access
 
@@ -390,18 +410,60 @@ feature -- Element change
 
 feature -- Basic operations
 
+	pick_selection (mouse_x, mouse_y: INTEGER) is
+			-- clicked position in (-1.0) - 1.0 space
+		local
+			selectionlist: LINKED_LIST[TUPLE[TE_3D_MEMBER, NATURAL_32]]
+			viewport: EM_VECTOR4I
+			x_pos, y_pos: DOUBLE
+			scale: DOUBLE
+			cam: TE_3D_CAMERA
+			camdirection, newcampos, corner1, corner2, memberpos: EM_VECTOR3D
+			member: TE_3D_MEMBER
+			member_diameter: DOUBLE
+		do
+			viewport := emgl_get_viewport
+			--x_pos := (2.0*(mouse_x/viewport.z)-1.0)
+			--y_pos := 2.0*(1.0-(mouse_y/viewport.w))-1.0
+			--io.put_string("viewport: " + viewport.z.out + "   " + viewport.w.out + "%N")
+			io.put_string ("clicked " + mouse_x.out + "   " +  mouse_y.out + "%N")
+			--io.put_string ("clicked " + x_pos.out + "   " +  y_pos.out + "%N")
+			selectionlist := renderpass_manager.select_objects (mouse_x,mouse_y,2,2, [x, Video_subsystem.video_surface.height - height - y , width, height])
+
+
+			--FOCUS ON THE NEAREST SELECTED OBJECT
+			if not selectionlist.empty then
+				member ?= selectionlist.i_th (0).item (1)
+				if member /= Void then
+					scale := (member.transform.scaling.x + member.transform.scaling.y + member.transform.scaling.z)/3.0
+					member_diameter := ((member.bounding_box.i_th(1) - member.bounding_box.i_th (7)).length) * scale
+					memberpos := member.world_transform.position
+					cam := renderpass_manager.camera
+					camdirection := cam.world_transform.position - memberpos
+					camdirection.normalize
+					newcampos := memberpos + ((camdirection*member_diameter * 5.0))
+					if (newcampos-cam.target).length > 30000.0 then
+						newcampos :=  memberpos + ((camdirection.normalized * 30000.0))
+					end
+					cam.transform.set_position (newcampos.x, newcampos.y, newcampos.z)
+					cam.set_target (member.world_transform.position)
+				end
+			end
+		end
+
+
 	rotate_camera (x_distance, y_distance: DOUBLE) is
 			-- Rotate camera by x_distance and y_distance around the city map centre.
 		local
 			camera: TE_3D_CAMERA
 			radius,polar,azimut,zx_comp_length:DOUBLE
 		do
-			camera := beauty_pass.camera
+			camera := renderpass_manager.camera
 
 			--carth to spherical
 			radius:=(camera.transform.position-camera.target).length
 			zx_comp_length:=sqrt((camera.transform.position.z-camera.target.z)^2.0 + (camera.transform.position.x-camera.target.x)^2)
-			if camera.transform.position.x >=0 then
+			if camera.transform.position.x-camera.target.x >=0 then
 				azimut:=arc_cosine((camera.transform.position.z-camera.target.z)/zx_comp_length)
 			else
 				azimut:=2*PI - arc_cosine((camera.transform.position.z-camera.target.z)/zx_comp_length)
@@ -433,9 +495,9 @@ feature -- Basic operations
 				up := right.cross_product(dir)
 				up.normalize
 
-				translation := (right * x_distance + up * y_distance)*5
+				translation := (right * x_distance - up * y_distance)*5
 				camera.transform.translate(translation.x, translation.y, translation.z)
-				camera.set_target(camera.target + (right * x_distance + up * y_distance)*5)
+				camera.set_target(camera.target + (right * x_distance - up * y_distance)*5)
 			end
 		end
 
@@ -444,11 +506,17 @@ feature -- Basic operations
 			-- zooms by pressing the middle mouse button
 		local
 			camera: TE_3D_CAMERA
-			z_axis: EM_VECTOR3D
+			z_axis, newpos: EM_VECTOR3D
 		do
-			camera := beauty_pass.camera
-			z_axis := (camera.transform.position-camera.target).normalized * 20 * y_distance
-			camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
+				camera := beauty_pass.camera
+				if (camera.world_transform.position-camera.target).length > 25.0 then
+					z_axis := (camera.transform.position-camera.target).normalized * 20 * y_distance
+					camera.transform.translate(z_axis.x, z_axis.y, z_axis.z)
+				else
+					z_axis := (camera.transform.position-camera.target).normalized
+					newpos := camera.target - z_axis*35.0
+					camera.transform.set_position(newpos.x, newpos.y, newpos.z)
+				end
 		end
 
 	zoom_out is
@@ -485,12 +553,16 @@ feature -- Basic operations
 
 	draw is
 			-- Draw the map.
+		local
+			temp: DOUBLE
 		do
+
+
 			-- Enable Sunlight and draw Sun
 			if is_map_loaded then
 				sun_representation.update
 			end
-
+			renderpass_manager.camera.specify
 			renderpass_manager.render
 		end
 

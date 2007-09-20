@@ -148,17 +148,7 @@ feature {TE_RENDERPASS_MANAGER} -- Implementation
 				i := i+1
 			end
 
-			--TEST
---			gl_matrix_mode (em_GL_PROJECTION)
---			gl_load_identity
---			glu_perspective (45, 1, 1.0, 1000.0)
-
---			tar.set(0,0,0)
---			up.set(0,1,0)
---			glu_look_at(300,300,300, tar.x,tar.y,tar.z, up.x,up.y,up.z)
-			camera.specify
-			--TEST
-
+			--camera.specify
 
 			--gl_hint(em_gl_perspective_correction_hint, em_gl_nicest)
 			root.draw

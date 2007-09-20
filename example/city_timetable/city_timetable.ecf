@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1"?><system xmlns="http://www.eiffel.com/developers/xml/configuration-1-0-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-0-0 http://www.eiffel.com/developers/xml/configuration-1-0-0.xsd" name="city_timetable" uuid="3792E728-5CF2-4E9B-9FB4-3CE4145B84F1">
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-2-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-2-0 http://www.eiffel.com/developers/xml/configuration-1-2-0.xsd" name="city_timetable" uuid="3792E728-5CF2-4E9B-9FB4-3CE4145B84F1">
 	<target name="city_timetable">
 		<root class="CITY_TIMETABLE_APPLICATION" feature="make"/>
 		<option trace="false" profile="false" debug="false" warning="true">
-			<assertions precondition="true" postcondition="false" check="false" invariant="false" loop="false"/>
+			<assertions precondition="true"/>
 			<warning name="export_class_missing" enabled="false"/>
 			<warning name="old_verbatim_strings" enabled="false"/>
 			<warning name="syntax" enabled="false"/>

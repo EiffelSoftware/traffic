@@ -41,4 +41,7 @@ feature -- Singleton access
 			renderpass_manager_not_void: Result /= Void
 		end
 
+invariant
+	root_MUST_NOT_BE_MOVED: root.transform.position.x = 0 and root.transform.position.y = 0 and root.transform.position.z = 0
+
 end

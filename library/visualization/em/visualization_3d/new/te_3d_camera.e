@@ -78,10 +78,10 @@ feature -- Access
 	aspect: DOUBLE is 1.0 -- 1:1
 			-- aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x (width) to y (height).
 
-	near: DOUBLE is 40.0--250.0--1.05
+	near: DOUBLE is 28.5--250.0--1.05
 		-- distance from the viewer to the near clipping plane (always positive).
 
-	far: DOUBLE is 150000.0-- 500.0
+	far: DOUBLE is 120000.0-- 500.0
 		-- distance from the viewer to the far clipping plane (always positive).
 
 	direction: EM_VECTOR3D is

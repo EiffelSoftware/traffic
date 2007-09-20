@@ -12,10 +12,16 @@ class
 				make as make_node,
 				make_as_child as make_node_as_child
 			redefine
+				draw,
 				render_node,
 				create_deep_instance,
 				calculate_hierarchy_bounding_box
 			end
+
+		IDENTIFIED
+		rename is_equal as has_equal_id, copy as copy_by_id
+		select has_equal_id, copy_by_id
+		end
 
 		TE_3D_SHARED_GLOBALS
 
@@ -421,6 +427,33 @@ feature {NONE} -- Implementation
 					lod_level := 1;
 					ressource_list [lod_level].draw_geometry
 				end
+			end
+		end
+
+	draw is
+			-- Draw the hierarchy if `is_hierarchy_renderable'.
+		do
+			if is_hierarchy_renderable then
+				gl_push_matrix
+				gl_push_name(0)
+				gl_load_name(object_id)
+
+				gl_mult_matrixd(transform.to_opengl)
+
+				--render the node
+				render_node
+
+				--draw the children
+				from
+					children.start
+				until
+					children.after
+				loop
+					children.item_for_iteration.draw
+					children.forth
+				end
+				gl_pop_matrix
+				gl_pop_name
 			end
 		end
 

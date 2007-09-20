@@ -11,6 +11,7 @@
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
 		<library name="em" location="$EM\library\em.ecf" readonly="true"/>
+		<library name="ewg_runtime" location="C:\Program Files\eiffelmedia\dependency\ewg\ewg_runtime.ecf"/>
 		<library name="gobo" location="$ISE_EIFFEL\library\gobo\gobo.ecf" readonly="true"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf" readonly="true"/>
@@ -50,7 +51,7 @@
 						<cluster name="new" location="$|new\"/>
 						<cluster name="nodes" location="$|nodes\"/>
 					</cluster>
-					<cluster name="tr_time" location="$|time\"/>					
+					<cluster name="tr_time" location="$|time\"/>
 				</cluster>
 			</cluster>
 		</cluster>
