@@ -13,6 +13,12 @@ inherit
 			initialize
 		end
 
+	KL_SHARED_FILE_SYSTEM
+		undefine
+			default_create,
+			copy
+		end
+
 create
 	default_create
 
@@ -83,9 +89,21 @@ feature {NONE} -- GUI building
 			create standard_toolbar
 			create toolbar_item
 			create toolbar_pixmap
-			toolbar_pixmap.set_with_named_file ("open.png")
+			toolbar_pixmap.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\open.png", Windows_file_system)))
 			toolbar_item.set_pixmap (toolbar_pixmap)
 			toolbar_item.select_actions.extend (agent choose_file)
+			standard_toolbar.extend (toolbar_item)
+			create toolbar_item
+			create toolbar_pixmap
+			toolbar_pixmap.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\zoom_in.png", Windows_file_system)))
+			toolbar_item.set_pixmap (toolbar_pixmap)
+			toolbar_item.select_actions.extend (agent zoom_in)
+			standard_toolbar.extend (toolbar_item)
+			create toolbar_item
+			create toolbar_pixmap
+			toolbar_pixmap.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\zoom_out.png", Windows_file_system)))
+			toolbar_item.set_pixmap (toolbar_pixmap)
+			toolbar_item.select_actions.extend (agent zoom_out)
 			standard_toolbar.extend (toolbar_item)
 		ensure
 			toolbar_created: standard_toolbar /= Void and then  not standard_toolbar.is_empty
@@ -894,6 +912,18 @@ feature {NONE} -- Implementation
 			canvas.redraw
 		end
 
+	zoom_in is
+			-- Zoom in.
+		do
+			Canvas.zoom_in (Zoom_factor_stepwise)
+		end
+
+	zoom_out is
+			-- Zoom out.
+		do
+			Canvas.zoom_out (Zoom_factor_stepwise)
+		end
+
 feature {NONE} -- Implementation
 
 	point_randomizer: TRAFFIC_POINT_RANDOMIZER
@@ -947,5 +977,8 @@ feature {NONE} -- Implementation / Constants
 	Label_confirm_close_window: STRING is "You are about to close this window.%NClick OK to proceed."
 			-- String for the confirmation dialog box that appears
 			-- when the user try to close the first window.
+
+	Zoom_factor_stepwise: REAL is 0.05
+			-- Stepwise zoom factor
 
 end -- class MAIN_WINDOW

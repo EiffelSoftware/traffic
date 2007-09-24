@@ -12,6 +12,12 @@ inherit
 			initialize
 		end
 
+	KL_SHARED_FILE_SYSTEM
+		undefine
+			default_create,
+			copy
+		end
+
 create
 	default_create
 
@@ -22,6 +28,9 @@ feature {NONE} -- Initialization
 		do
 			Precursor {EV_TITLED_WINDOW}
 				-- Create and add the status bar.
+			build_standard_toolbar
+			upper_bar.extend (create {EV_HORIZONTAL_SEPARATOR})
+			upper_bar.extend (standard_toolbar)
 			build_standard_status_bar
 			lower_bar.extend (standard_status_bar)
 			build_main_container
@@ -116,6 +125,31 @@ feature {NONE} -- GUI building
 				standard_status_label /= Void
 		end
 
+	build_standard_toolbar is
+			-- Create and populate the standard toolbar.
+		require
+			toolbar_not_yet_created: standard_toolbar = Void
+		local
+			toolbar_item: EV_TOOL_BAR_BUTTON
+			toolbar_pixmap: EV_PIXMAP
+		do
+			create standard_toolbar
+			create toolbar_item
+			create toolbar_pixmap
+			toolbar_pixmap.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\zoom_in.png", Windows_file_system)))
+			toolbar_item.set_pixmap (toolbar_pixmap)
+			toolbar_item.select_actions.extend (agent zoom_in)
+			standard_toolbar.extend (toolbar_item)
+			create toolbar_item
+			create toolbar_pixmap
+			toolbar_pixmap.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\zoom_out.png", Windows_file_system)))
+			toolbar_item.set_pixmap (toolbar_pixmap)
+			toolbar_item.select_actions.extend (agent zoom_out)
+			standard_toolbar.extend (toolbar_item)
+		ensure
+			toolbar_created: standard_toolbar /= Void and then  not standard_toolbar.is_empty
+		end
+
 feature {NONE} -- Implementation
 
 	request_close_window is
@@ -146,6 +180,9 @@ feature {NONE} -- Implementation
 		end
 
 feature -- Widgets
+
+	standard_toolbar: EV_TOOL_BAR
+			-- Standard toolbar for this window
 
 	standard_status_bar: EV_STATUS_BAR
 			-- Standard status bar for this window
@@ -202,6 +239,18 @@ feature -- Basic operations
 			canvas.redraw
 		end
 
+	zoom_in is
+			-- Zoom in.
+		do
+			Canvas.zoom_in (Zoom_factor_stepwise)
+		end
+
+	zoom_out is
+			-- Zoom out.
+		do
+			Canvas.zoom_out (Zoom_factor_stepwise)
+		end
+
 feature -- Conversion
 
 	client_to_map_coordinates (x, y: INTEGER): REAL_COORDINATE is
@@ -245,4 +294,6 @@ feature {NONE} -- Implementation / Constants
 			-- String for the confirmation dialog box that appears
 			-- when the user try to close the first window.
 
+	Zoom_factor_stepwise: REAL is 0.05
+			-- Stepwise zoom factor
 end
