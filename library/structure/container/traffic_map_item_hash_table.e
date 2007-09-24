@@ -10,7 +10,6 @@ inherit
 
 	TRAFFIC_EVENT_CONTAINER [G]
 
-
 create
 	make
 
@@ -44,7 +43,7 @@ feature -- Access
 
 	first: G
 			-- First item in container
-		require -- from DS_LINEAR
+		require
 			not_empty: not is_empty
 		do
 			Result := internal_table.first
@@ -54,7 +53,7 @@ feature -- Access
 
 	item (k: H): G
 			-- Item associated with `k'
-		require -- from DS_TABLE
+		require
 			has_k: has (k)
 		do
 			Result := internal_table.item (k)
@@ -143,8 +142,7 @@ feature -- Insertion
 	replace (v: G; k: H)
 			-- Replace item associated with `k' by `v'.
 			-- Do not move cursors.
-			-- (from DS_SPARSE_TABLE)
-		require -- from DS_TABLE
+		require
 			has_k: has (k)
 			is_removable: item (k).is_removable
 		do

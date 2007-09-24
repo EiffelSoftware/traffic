@@ -1,24 +1,26 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Schedule parsing node for lines"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
 	TRAFFIC_SCHEDULER_LINES_NODE_PROCESSOR
+
+obsolete "Needs reworking"
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
-	
+
 create
 	make
-	
+
 feature -- Access
 
 	Name: STRING is "slines"
-			-- Name of node to process.
-			
+			-- Name of node to process
+
 	Mandatory_attributes: ARRAY [STRING] is
-			-- Table of mandatory attributes.
+			-- Table of mandatory attributes
 		once
 			Result := <<  >>
 			Result.compare_objects
@@ -27,28 +29,11 @@ feature -- Access
 feature -- Basic operations
 
 	process is
-			-- Process node
+			-- Process node.
 		do
 			if has_subnodes then
 				process_subnodes
 			end
-		end		
-		
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
-feature {NONE} -- Implementation
-
-invariant
-	invariant_clause: True -- Your invariant here
+		end
 
 end

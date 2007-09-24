@@ -38,7 +38,7 @@ feature -- Canvas elements
 
 
 	zoom_factor: REAL
-			-- The zooming factor
+			-- Zooming factor
 
 	zoom_maximum: REAL
 			-- Max zoom out factor

@@ -1,6 +1,5 @@
 indexing
 	description: "XML processors for <line> nodes."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -29,7 +28,7 @@ feature -- Access
 		end
 
 	color: TRAFFIC_COLOR
-			-- Color of line.
+			-- Color of line
 
 feature -- Basic operations
 

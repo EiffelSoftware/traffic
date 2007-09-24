@@ -4,11 +4,14 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_DISPATCHER_TAXI inherit
-		TRAFFIC_TAXI
-			redefine
-				make_random, move
-			end
+	TRAFFIC_DISPATCHER_TAXI
+
+inherit
+	TRAFFIC_TAXI
+		redefine
+			make_random, move
+		end
+
 create
 	make_random
 
@@ -38,7 +41,7 @@ feature -- Initialization
 feature -- Access
 
 	office : TRAFFIC_DISPATCHER_TAXI_OFFICE
-			-- Taxi office 'Current' works for.
+			-- Taxi office `Current' works for
 
 feature -- Basic operations
 
@@ -68,9 +71,6 @@ feature -- Basic operations
 			if has_finished and busy then
 					-- Taxi has fullfilled a request.
 					-- Add new random directions.
-					-- TODO
---					polypoints.wipe_out
---					add_random_polypoints (7)
 					-- Set new destination
 					origin := position
 					destination := polypoints.first

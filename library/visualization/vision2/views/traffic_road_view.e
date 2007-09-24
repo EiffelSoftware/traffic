@@ -59,7 +59,7 @@ feature -- Initialization
 feature -- Basic operations
 
 	update is
-			--
+			-- Update to reflect changes in map item.
 		local
 			pp: ARRAY [REAL_COORDINATE]
 			i: INTEGER

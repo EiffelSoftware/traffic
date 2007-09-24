@@ -1,16 +1,17 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Parser for schedules"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
 	TRAFFIC_SCHEDULE_PARSER
-	
+
+obsolete "Needs reworking"
+
 inherit
 	TRAFFIC_XML_INPUT_FILE_PARSER
 	TRAFFIC_NODE_PROCESSOR_REGISTRY
-	
+
 create
 	make_with_factory
 
@@ -27,11 +28,11 @@ feature -- Initialization
 			until
 				Processor_registry.off
 			loop
-				Processor_registry.item_for_iteration.set_schedule_factory (a_traffic_schedule_factory)
+--				Processor_registry.item_for_iteration.set_schedule_factory (a_traffic_schedule_factory)
 				Processor_registry.forth
 			end
 		end
-		
+
 feature -- Status report
 
 	can_process: BOOLEAN is
@@ -39,9 +40,9 @@ feature -- Status report
 		do
 			Result := is_parsed and then has_processor (root_element.name)
 		end
-	
+
 feature -- Basic operations
-	
+
 	process is
 			-- Process document tree.
 		local
@@ -60,12 +61,12 @@ feature -- Basic operations
 					is_parsed := False
 				end
 			end
-			set_schedule_factory (p.schedule_factory)
+--			set_schedule_factory (p.schedule_factory)
 		end
-				
+
 invariant
 
-	can_process_definition: can_process = (is_parsed and 
+	can_process_definition: can_process = (is_parsed and
 			has_processor (root_element.name))
 
 end

@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Color objects (independent of the visualization to be used, vision2 or em)"
 	date: "$Date$"
 	revision: "$Revision$"
 

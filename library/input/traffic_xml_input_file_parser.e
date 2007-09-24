@@ -1,23 +1,19 @@
 indexing
 	description: "Parser for XML input files."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
 	TRAFFIC_XML_INPUT_FILE_PARSER
-	
+
 inherit
 	TRAFFIC_PARSE_ERROR_CONSTANTS
 		redefine
 			error_description, has_error
 		end
-	
+
 	KL_SHARED_FILE_SYSTEM
-	
-	
-	
-	
+
 feature {NONE} -- Initialization
 
 	make is
@@ -84,12 +80,12 @@ feature -- Status report
 		do
 			Result := file_name /= Void and then not file_name.is_empty
 		end
-	
+
 	can_process: BOOLEAN is
 			-- Can document tree be processed?
 		deferred
 		end
-		
+
 feature -- Status setting
 
 	set_file_name (a_name: STRING) is
@@ -118,7 +114,7 @@ feature -- Basic operations
 			my_dir: STRING
 		do
 			create execution_environment
-			old_working_directory := execution_environment.current_working_directory			
+			old_working_directory := execution_environment.current_working_directory
 			execution_environment.change_working_directory (directory_name)
 			my_dir := execution_environment.current_working_directory
 			set_error (0, << >>)
@@ -165,10 +161,10 @@ feature {NONE} -- Implementation
 				create {XM_EIFFEL_PARSER} Result.make
 			end
 		end
-		
+
 	old_working_directory: STRING
 			-- Old working directory
-		
+
 invariant
 
 	xml_parser_exists: xml_parser /= Void

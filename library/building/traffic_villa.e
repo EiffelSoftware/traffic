@@ -43,9 +43,12 @@ feature {NONE} -- Initialization
 feature -- Constants
 
 	default_width: DOUBLE is 18.0
+			-- Default width of a villa
 
 	default_depth: DOUBLE is 16.0
+			-- Default depth of a villa
 
 	default_height: DOUBLE is 9.3
+			-- Default height of a villa
 
 end

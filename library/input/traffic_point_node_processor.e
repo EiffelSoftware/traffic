@@ -1,6 +1,5 @@
 indexing
 	description: "XML processors for <point> elements. Example: <point x="3.2" y="1.7">."
-
 	date: "$Date$"
 	revision: "$Revision$"
 

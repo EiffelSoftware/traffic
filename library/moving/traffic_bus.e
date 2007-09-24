@@ -4,8 +4,11 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_BUS inherit
-		TRAFFIC_LINE_VEHICLE
+	TRAFFIC_BUS
+
+inherit
+	TRAFFIC_LINE_VEHICLE
+
 create
 	make_with_line
 
@@ -66,6 +69,5 @@ feature -- Status report
 				Result := True
 			end
 		end
-
 
 end

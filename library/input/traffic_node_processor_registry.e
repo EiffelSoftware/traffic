@@ -1,6 +1,5 @@
 indexing
 	description: "Shared registry of known XML node processors."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -22,33 +21,28 @@ feature {NONE} -- Access
 			Result_exists: Result /= Void
 		end
 
-feature -- Status setting
-	schedule_factory: TRAFFIC_SCHEDULE_FACTORY
-			-- Reference to the traffic schedule factory
+feature -- Access
 
 	map_factory: TRAFFIC_MAP_FACTORY
-			-- Reference to the traffic map factory.
+			-- Traffic map factory
 
 	map: TRAFFIC_MAP is
-			-- Map that is built.
+			-- Map that is built
 		do
 			Result := map_factory.map
 		end
-	set_schedule_factory(a_factory: TRAFFIC_SCHEDULE_FACTORY) is
-			-- Set a schedule factory
-		do
-			schedule_factory := a_factory
-		ensure
-			schedule_factory_set: schedule_factory = a_factory
-		end
+
+feature -- Status setting
 
 	set_map_factory (a_factory: TRAFFIC_MAP_FACTORY) is
-			-- Set map reference.
+			-- Set map factory to `a_factory'.
 		do
 			map_factory := a_factory
 		ensure
 			map_factory_set: map_factory = a_factory
 		end
+
+feature -- Status report
 
 	processor_registered (a_processor: TRAFFIC_NODE_PROCESSOR): BOOLEAN is
 			-- Is `a_processor' registered?
@@ -56,19 +50,14 @@ feature -- Status setting
 			Result := Processor_registry.has_item (a_processor)
 		end
 
-	set_map (a_map: TRAFFIC_MAP) is
-			-- Set buildings reference.
+	has_processor (a_name: STRING): BOOLEAN is
+			-- Is processor named `a_name' available?
 		require
-			map_exists: a_map /= Void
+			name_exists: a_name /= Void
+			name_not_empty: not a_name.is_empty
 		do
-			internal_map:= a_map
-		ensure
-			internal_map_set: internal_map = a_map
+			Result := Processor_registry.has (a_name)
 		end
-
-	internal_map: TRAFFIC_MAP
-			-- Reference to internal map
-
 
 feature -- Basic operations
 
@@ -97,17 +86,6 @@ feature -- Basic operations
 				a.compare_objects
 				Allowed_subnode_registry.force ( a, a_parent_name)
 			end
-		end
-
-feature {NONE} -- Status report
-
-	has_processor (a_name: STRING): BOOLEAN is
-			-- Is processor named `a_name' available?
-		require
-			name_exists: a_name /= Void
-			name_not_empty: not a_name.is_empty
-		do
-			Result := Processor_registry.has (a_name)
 		end
 
 feature {NONE} -- Constants

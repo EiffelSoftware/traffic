@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Drawable object that is a container for other drawable objects"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -108,7 +107,7 @@ feature -- Access
 feature -- Element change
 
 	hide is
-			-- Highlight the place view.
+			-- Hide all children.
 		local
 			i: INTEGER
 		do
@@ -125,7 +124,7 @@ feature -- Element change
 		end
 
 	show is
-			-- Unhighlight the place view.
+			-- Show all children.
 		local
 			i: INTEGER
 		do

@@ -1,7 +1,6 @@
 indexing
 	description: "[
 					Contains all the predefines and classes to run 'explore'.
-					NOTE: 'Paris', 'Line8', 'Louvre' are not of the type of any TRAFFIC class.
 					]"
 	date: "2005/08/25"
 	revision: "1.0"
@@ -44,7 +43,6 @@ feature -- Access
 	console: TRAFFIC_CONSOLE
 			-- Console for output
 
-
 feature -- Status report
 
 	is_zurich_loaded: BOOLEAN
@@ -57,8 +55,6 @@ feature -- Access (Paris)
 
 	Paris: TRAFFIC_MAP is
 			-- Object representing the city of Paris
-		require else
---			map_widget_exists: map_widget /= Void
 		local
 			loader: TRAFFIC_MAP_LOADER
 			s: STRING
@@ -125,7 +121,7 @@ feature -- Access (Paris)
 feature -- Basic operations
 
 	show_spot (a_location: TRAFFIC_COORDINATE) is
-			--
+			-- Show a yellow small spot at `a_location' for `Wait_time' seconds.
 		local
 			s: DRAWABLE_SPOT
 		do
@@ -139,7 +135,7 @@ feature -- Basic operations
 		end
 
 	show_big_red_spot (a_location: TRAFFIC_COORDINATE) is
-			--
+			--  Show a red big spot at `a_location' for `Wait_time' seconds.
 		local
 			s: DRAWABLE_SPOT
 		do
@@ -153,7 +149,7 @@ feature -- Basic operations
 		end
 
 	show_green_spot (a_location: TRAFFIC_COORDINATE) is
-			--
+			-- Show a green medium spot at `a_location' for `Wait_time' seconds.
 		local
 			s: DRAWABLE_SPOT
 		do
@@ -167,7 +163,7 @@ feature -- Basic operations
 		end
 
 	wait is
-			-- Wait for three seconds.
+			-- Wait for `Wait_time' seconds.
 		local
 			env: EV_ENVIRONMENT
 			t1, t2: TIME

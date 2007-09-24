@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Event channel that implements a publish-subscribe mechanism"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -14,10 +13,10 @@ inherit
 			default_create
 		end
 
-feature {NONE} -- Initialisation
+feature {NONE} -- Initialization
 
 	default_create is
-			-- Initialise list.
+			-- Initialize list.
 		do
 			create subscriptions_impl.make_equal
 			create once_subscriptions_impl.make_equal
@@ -26,7 +25,7 @@ feature {NONE} -- Initialisation
 feature -- Access
 
 	subscriptions: DS_LINEAR [PROCEDURE [ANY, EVENT_DATA]] is
-			-- List of subscriptions.
+			-- List of subscriptions
 		do
 			Result := subscriptions_impl
 		ensure
@@ -34,7 +33,7 @@ feature -- Access
 		end
 
 	once_subscriptions: DS_LINEAR [PROCEDURE [ANY, EVENT_DATA]] is
-			-- List of once subscriptions.
+			-- List of once subscriptions
 		do
 			Result := once_subscriptions_impl
 		ensure

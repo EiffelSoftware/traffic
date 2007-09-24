@@ -1,6 +1,5 @@
 indexing
 	description: "Interface for error constant classes."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -13,16 +12,16 @@ inherit
 feature  -- Access
 
 	error_code: INTEGER
-			-- Code of error.
+			-- Code of error
 
 	file_name: STRING
-			-- Name of file where error occurred.
+			-- Name of file where error occurred
 
 	directory_name: STRING
-			-- Directory where file is located.
+			-- Directory where file is located
 
 	error_description: STRING is
-			-- Textual description of error.
+			-- Textual description of error
 		require
 			has_error: has_error
 		do
@@ -55,7 +54,7 @@ feature -- Status report
 feature {NONE} -- Status report
 
 	is_complete (a_code: INTEGER; an_error_string_array: ARRAY [STRING]): BOOLEAN is
-			-- Does `an_error_string_error' contain complete info for error `a_code'
+			-- Does `an_error_string_error' contain complete info for error `a_code'?
 		require
 			code_positive: a_code >= 0
 			array_exists: an_error_string_array /= Void
@@ -96,17 +95,17 @@ feature {NONE} -- Status setting
 feature {NONE} -- Constants
 
 	Slot_character: CHARACTER is '$'
-			-- Character that represents an information slot.
+			-- Character that represents an information slot
 
 feature {TRAFFIC_ERROR_CONSTANTS} -- Implementation
 
 	slots: ARRAY [STRING]
-			-- Slots for additional information.
+			-- Slots for additional information
 
 feature {NONE} -- Implementation
 
 	slot_count (a_string: STRING): INTEGER is
-			-- Number of information slots in error string `a_string'.
+			-- Number of information slots in error string `a_string'
 		require
 			string_exists: a_string /= Void
 		do
@@ -116,7 +115,7 @@ feature {NONE} -- Implementation
 		end
 
 	full_message: STRING is
-			-- Full error message with filled in information slots.
+			-- Full error message with filled in information slots
 		require
 			has_error: has_error
 		local

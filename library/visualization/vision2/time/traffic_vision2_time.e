@@ -20,10 +20,8 @@ feature -- Basic operations
 		local
 			t: TIME
 		do
---			create timeout.make_with_interval (100)
 			is_time_running := True
 			application.add_idle_action (update_agent)
---			timeout.actions.extend (agent update_time)
 			create t.make_now
 			real_ms_start := t.seconds*1000 + t.milli_second
 			simulated_ms_start := 0
@@ -33,9 +31,7 @@ feature -- Basic operations
 			-- Pause the time count.
 		do
 			is_time_running := False
---			timeout.destroy
 			application.remove_idle_action (update_agent)
---			running_scene.event_loop.update_event.unsubscribe (update_agent)
 			simulated_ms_start := actual_time.seconds*1000
 		end
 
@@ -46,8 +42,6 @@ feature -- Basic operations
 		do
 			is_time_running := True
 			application.add_idle_action (update_agent)
---			create timeout.make_with_interval (100)
---			timeout.actions.extend (agent update_time)
 			create t.make_now
 			real_ms_start := t.seconds*1000 + t.milli_second
 		end
@@ -61,7 +55,6 @@ feature -- Basic operations
 			is_time_running := False
 			real_ms_start := 0
 			simulated_ms_start := 0
---			create timeout.make_with_interval (10)
 		end
 
 feature{NONE} -- Implementation		
@@ -98,7 +91,4 @@ feature{NONE} -- Implementation
 			Result := (create {EV_ENVIRONMENT}).application
 		end
 
-	timeout: EV_TIMEOUT
-
--- TODO use EV_TIMEOUT!!!
 end

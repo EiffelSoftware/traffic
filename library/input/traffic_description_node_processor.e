@@ -1,12 +1,11 @@
 indexing
 	description: "XML processors for <description> nodes."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
 	TRAFFIC_DESCRIPTION_NODE_PROCESSOR
-	
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
 
@@ -16,13 +15,13 @@ create
 feature -- Access
 
 	Name: STRING is
-			-- Name of node to process.
+			-- Name of node to process
 		once
 			Result := "description"
 		end
-		
+
 	Mandatory_attributes: ARRAY [STRING] is
-			-- Table of mandatory attributes.
+			-- Table of mandatory attributes
 		do
 			Result := << "text" >>
 			Result.compare_objects
@@ -37,13 +36,6 @@ feature -- Basic operations
 		local
 			description: STRING
 		do
---			if has_text then
---				target.set_description (text)
---			end
---
---			if has_subnodes then
---				process_subnodes
---			end
 			if has_attribute ("text") then
 				create description.make_from_string (attribute ("text"))
 				parent.send_data (description)

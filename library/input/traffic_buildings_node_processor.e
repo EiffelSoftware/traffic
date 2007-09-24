@@ -6,9 +6,11 @@ indexing
 class
 	TRAFFIC_BUILDINGS_NODE_PROCESSOR
 
+obsolete "Needs reworking"
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
-	
+
 create
 	make
 
@@ -16,7 +18,7 @@ feature -- Access
 
 	Name: STRING is "buildings"
 			-- Name of node to process
-			
+
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		once
@@ -33,5 +35,5 @@ feature -- Basic operations
 				process_subnodes
 			end
 		end
-		
+
 end

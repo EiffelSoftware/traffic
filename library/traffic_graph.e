@@ -25,7 +25,6 @@ inherit
 			prune_edge_impl,
 			prune_edge,
 			border_nodes,
---			enable_user_defined_weight_function,
 			find_shortest_path
 		end
 
@@ -59,31 +58,10 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			total_weight := total_weight + r.length
 		end
 
---	put_connection (a_connection: like edge_item) is
---			-- Insert `a_connection' into the graph.
---		require
---			a_connection_exists: a_connection /= Void
---		local
---			r: TRAFFIC_ROAD
---		do
---			a_connection.origin_impl.put_connection (a_connection)
---			internal_edges.extend (a_connection)
---			r ?= a_connection
---			if r /= Void then
---				id_manager.take (r.id)
---			end
---			total_weight := total_weight + a_connection.length
---			if not a_connection.is_directed then
---				a_connection.destination_impl.put_connection (a_connection)
---			end
---		end
-
 	put_road (a_road: TRAFFIC_ROAD_CONNECTION) is
 			-- Insert `a_road' into the graph.
 		require
 			a_road_exists: a_road /= Void
---			not_has_id: not id_manager.is_taken (a_road.id)
---			not_already_in_graph: not has_edge (a_road)
 			nodes_exist: has_node (a_road.start_node) and has_node (a_road.end_node)
 		do
 			a_road.start_node.put_connection (a_road)
@@ -99,9 +77,7 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			-- Insert `a_section' into the graph.
 		require
 			a_section_exists: a_section /= Void
---			not_already_in_graph: not has_edge (a_section)
 			nodes_exist: has_node (a_section.start_node) and has_node (a_section.end_node)
---			has_line: lines.has (a_section.line.name)
 		do
 			a_section.start_node.put_connection (a_section)
 			internal_edges.extend (a_section)
@@ -109,16 +85,13 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 			if not a_section.is_directed then
 				a_section.end_node.put_connection (a_section)
 			end
---			line_sections.force_last (a_section)
 		end
 
 	put_connection (a_connection: TRAFFIC_CONNECTION) is
 			-- Insert `a_connection' into the graph.
 		require
 			a_connection_exists: a_connection /= Void
---			not_already_in_graph: not has_edge (a_section)
 			nodes_exist: has_node (a_connection.start_node) and has_node (a_connection.end_node)
---			has_line: lines.has (a_section.line.name)
 		local
 			r: TRAFFIC_ROAD_CONNECTION
 			l: TRAFFIC_LINE_CONNECTION
@@ -138,23 +111,6 @@ feature {TRAFFIC_MAP_ITEM} -- Insertion
 				end
 			end
 		end
-
-
---	put_line (a_line: TRAFFIC_LINE) is
---			-- Insert `a_line' into the graph.
---		require
---			a_line_exists: a_line /= Void
-----			not_already_in_map: not has
---		do
---			from
---				a_line.start
---			until
---				a_line.off
---			loop
---				put_line_section (a_line.item_for_iteration)
---				a_line.forth
---			end
---		end
 
 	put_node (a_node: like item) is
 			-- Insert a new node in the graph if it is not already present.
@@ -192,7 +148,6 @@ feature -- Removal
 			start_node, end_node: like current_node
 		do
 			prune_edge_impl (a_edge)
---			a_edge.start_node.remove_connection (a_edge)
 			if is_symmetric_graph then
 				linked_edge ?= a_edge
 				if linked_edge /= Void then
@@ -266,8 +221,10 @@ feature -- Removal
 feature -- Access
 
 	shortest_path_mode: INTEGER
+			-- Mode to calculate shortest paths
 
 	id_manager: TRAFFIC_ID_MANAGER
+			-- Manager for road ids
 
 	current_node: TRAFFIC_NODE
 			-- Value of the currently focused node

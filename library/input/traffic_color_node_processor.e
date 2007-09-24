@@ -1,6 +1,5 @@
 indexing
 	description: "XML processors for <color> elements."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -16,13 +15,13 @@ create
 feature -- Access
 
 	Name: STRING is
-			-- Name of element to process.
+			-- Name of element to process
 		once
 			Result := "color"
 		end
 
 	Mandatory_attributes: ARRAY [STRING] is
-			-- Table of mandatory attributes.
+			-- Table of mandatory attributes
 		once
 			Result := << "red", "green", "blue" >>
 			Result.compare_objects

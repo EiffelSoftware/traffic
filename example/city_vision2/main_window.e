@@ -774,7 +774,6 @@ feature {NONE} -- Implementation
 		local
 			l: TRAFFIC_LINE
 			lt: ARRAY [TRAFFIC_LINE]
-			s: TRAFFIC_STOP
 		do
 			lt := canvas.map.lines.to_array
 			if lt.count > 0 then
@@ -807,7 +806,6 @@ feature {NONE} -- Implementation
 					canvas.map.roads.remove (r.id)
 				end
 			end
---			canvas.redraw
 		end
 
 	toggle_map_hidden (a_check_box: EV_CHECK_BUTTON) is
@@ -849,14 +847,12 @@ feature {NONE} -- Implementation
 				canvas.map.line_sections.last.highlight
 				canvas.map.roads.first.highlight
 				canvas.map.buildings.first.spotlight
---				canvas.redraw
 			else
 				canvas.map.places.first.unhighlight
 				canvas.map.lines.first.unhighlight
 				canvas.map.line_sections.last.unhighlight
 				canvas.map.roads.first.unhighlight
 				canvas.map.buildings.first.unspotlight
---				canvas.redraw
 			end
 		end
 

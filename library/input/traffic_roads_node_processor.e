@@ -1,10 +1,11 @@
 indexing
 	description: "XML processors for <roads> elements."
-
+	date: "$Date: 2007-07-24 11:47:24 +0200 (Tue, 24 Jul 2007) $"
+	revision: "$Revision: 901 $"
 
 class
 	TRAFFIC_ROADS_NODE_PROCESSOR
-	
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
 
@@ -15,7 +16,7 @@ feature -- Access
 
 	Name: STRING is "roads"
 			-- Name of node to process
-			
+
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		once

@@ -57,9 +57,9 @@ feature {NONE} -- Initialization
 feature -- TODO
 
 	display is
-			--
+			-- Just for the first example of touch of class.
 		do
-			-- TODO
+			-- Do nothing
 		end
 
 feature -- Status report

@@ -84,8 +84,6 @@ feature -- Access
 
 feature -- Element change
 
-
-
 	set_roads (a_roads: ARRAYED_LIST [TRAFFIC_ROAD_CONNECTION]) is
 			-- Set roads to `a_roads'.
 		require

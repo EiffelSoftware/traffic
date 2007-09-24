@@ -1,12 +1,11 @@
 indexing
 	description: "XML processors for background <file> elements."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
 	TRAFFIC_FILE_NODE_PROCESSOR
-	
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
 
@@ -15,7 +14,7 @@ create
 
 feature -- Access
 
-	Name: STRING is	
+	Name: STRING is
 			-- Name of element to process
 		do
 			Result := "file"
@@ -40,7 +39,7 @@ feature -- Basic operations
 				set_error (Mandatory_attribute_missing, << "name" >>)
 			end
 		end
-	
+
 	file: STRING
 			-- String in which the filename is stored
 

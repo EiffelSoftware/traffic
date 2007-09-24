@@ -1,14 +1,16 @@
 indexing
 	description: "XML processors for <schedule> nodes."
-	author: "Adrian Helfenstein, adrianh@student.ethz.ch"
 	date: "23.06.2006"
 	revision: "$Revision$"
 
 class
 	TRAFFIC_SCHEDULER_NODE_PROCESSOR
+
+obsolete "Needs reworking"
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
-	
+
 create
 	make
 
@@ -16,17 +18,17 @@ feature -- Access
 
 	Name: STRING is "entry"
 			-- Name of element to process
-		
+
 	Mandatory_attributes: ARRAY [STRING] is
 			-- Table of mandatory attributes
 		do
 			Result := << "station","arrival", "departure" >>
 			Result.compare_objects
 		end
-		
+
 feature -- Basic operations
 	process is
-			-- Process node
+			-- Process node.
 		local
 			arrival,departure: INTEGER
 			station:STRING
@@ -45,8 +47,8 @@ feature -- Basic operations
 				station := attribute("station")
 				arrival := attribute_integer("arrival")
 				departure := attribute_integer("departure")
-				schedule_factory.put_entry (station,arrival,departure)
-			
+--				schedule_factory.put_entry (station,arrival,departure)
+
 			end
 	end
 end

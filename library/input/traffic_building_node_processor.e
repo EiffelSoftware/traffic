@@ -6,6 +6,8 @@ indexing
 class
 	TRAFFIC_BUILDING_NODE_PROCESSOR
 
+obsolete "Needs reworking"
+
 inherit
 	TRAFFIC_NODE_PROCESSOR
 
@@ -14,6 +16,7 @@ inherit
 
 create
 	make
+
 
 feature -- Access
 
@@ -91,7 +94,7 @@ feature -- Basic operations
 --				create building.make (p1,p2,p3,p4, height, building_name)
 
 				building.set_angle (angle)
-				internal_map.buildings.put_last (building)
+				map.buildings.put_last (building)
 			end
 		end
 end

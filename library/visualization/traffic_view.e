@@ -22,6 +22,7 @@ feature -- Initialization
 feature -- Access
 
 	item: G
+			-- Item the view represents
 
 	color: TRAFFIC_COLOR
 			-- Color for displaying the place
@@ -99,10 +100,5 @@ feature -- Element change
 		ensure
 			item_set: item = a_item
 		end
-
-invariant
-
---	color_set: color /= Void
---	highlight_color_set: highlight_color /= Void
 
 end

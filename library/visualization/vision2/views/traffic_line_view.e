@@ -95,15 +95,18 @@ feature -- Constants
 			create Result.make_with_8_bit_rgb (255, 0, 0)
 		end
 
-feature -- Element change
-
 feature -- Basic operations
 
 	update is
-			--
+			-- Update the view to represent changes in the map item.
 		do
-			if count /= item.connection_count then
-				-- Todo
+			from
+				start
+			until
+				after
+			loop
+				item_for_iteration.update
+				forth
 			end
 		end
 

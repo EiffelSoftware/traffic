@@ -144,7 +144,6 @@ feature -- Status report
 	is_path_found: BOOLEAN
 			-- Was a shortest path found on graph?
 
-
 invariant
 
 	map_exists: map /= Void

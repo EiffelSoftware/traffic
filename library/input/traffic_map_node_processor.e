@@ -1,6 +1,5 @@
 indexing
 	description: "XML processors for <map> nodes."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -16,10 +15,10 @@ create
 feature -- Access
 
 	Name: STRING is "map"
-			-- Name of node to process.
+			-- Name of node to process
 
 	Mandatory_attributes: ARRAY [STRING] is
-			-- Table of mandatory attributes.
+			-- Table of mandatory attributes
 		once
 			Result := << "name", "scale_factor", "center_x", "center_y", "radius" >>
 			Result.compare_objects

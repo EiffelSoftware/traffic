@@ -1,6 +1,5 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Coordinate objects for visualization independent traffic representations"
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -1,6 +1,5 @@
 indexing
 	description:"Error constants used for XML parsing."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -13,7 +12,7 @@ inherit
 feature {NONE} -- Access
 
 	error_text (a_code: INTEGER): STRING is
-			-- Raw error text for error `a_code'.
+			-- Raw error text for error `a_code'
 		do
 			inspect
 				a_code

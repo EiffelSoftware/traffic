@@ -87,12 +87,10 @@ feature -- Constants
 	Default_highlight_width_delta: INTEGER is 5
 			-- Delta to make lines thicker when highlighted
 
-feature -- Element change
-
 feature -- Basic operations
 
 	update is
-			--
+			-- Update to reflect changes in map item.
 		do
 			if item.is_illuminated then
 				highlight

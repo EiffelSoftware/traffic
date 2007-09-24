@@ -43,9 +43,12 @@ feature {NONE} -- Initialization
 feature -- Constants
 
 	default_width: DOUBLE is 33.0
+			-- Default width of a skyscrapter
 
 	default_depth: DOUBLE is 33.0
+			-- Default depth of a skyscrapter
 
 	default_height: DOUBLE is 81.0
+			-- Default height of a skyscrapter
 
 end

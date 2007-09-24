@@ -1,6 +1,5 @@
 indexing
 	description: "Abstract processors for XML nodes."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -31,7 +30,7 @@ feature -- Initialization
 feature -- Access
 
 	name: STRING is
-			-- Name of node to process.
+			-- Name of node to process
 		deferred
 		ensure
 			name_exists: Result /= Void
@@ -39,19 +38,19 @@ feature -- Access
 		end
 
 	source: XM_ELEMENT
-			-- Source to process.
+			-- Source to process
 
 	target: ANY--CITY_ELEMENT
-			-- Target to build.
+			-- Target to build
 
 	parent: TRAFFIC_NODE_PROCESSOR
-			-- Parent processor.
+			-- Parent processor
 
 	data: ANY
-			-- Data from subnodes for parent.
+			-- Data from subnodes for parent
 
 	attribute (a_name: STRING): STRING is
-			-- Attribute named `a_name'.
+			-- Attribute named `a_name'
 		require
 			has_source: has_source
 			name_exists: a_name /= Void
@@ -64,7 +63,7 @@ feature -- Access
 		end
 
 	attribute_integer (a_name: STRING): INTEGER is
-			-- Integer attribute named `a_name'.
+			-- Integer attribute named `a_name'
 		require
 			has_source: has_source
 			name_exists: a_name /= Void
@@ -76,7 +75,7 @@ feature -- Access
 		end
 
 	attribute_double (a_name: STRING): DOUBLE is
-			-- Double attribute named `a_name'.
+			-- Double attribute named `a_name'
 		require
 			has_source: has_source
 			name_exists: a_name /= Void
@@ -94,7 +93,7 @@ feature -- Access
 		end
 
 	attribute_boolean (a_name: STRING): BOOLEAN is
-			-- Boolean attribute named `a_name'.
+			-- Boolean attribute named `a_name'
 		require
 			has_source: has_source
 			name_exists: a_name /= Void
@@ -106,7 +105,7 @@ feature -- Access
 		end
 
 	text: STRING is
-			-- Text of element.
+			-- Text of element
 		require
 			has_source: has_source
 			has_text: has_text
@@ -134,7 +133,7 @@ feature -- Access
 		end
 
 	allowed_subnode_types: ARRAY [STRING] is
-			-- Table of allowed subnode types.
+			-- Table of allowed subnode types
 		do
 			if Allowed_subnode_registry.has (name) then
 				Result := Allowed_subnode_registry.item (name)
@@ -147,7 +146,7 @@ feature -- Access
 		end
 
 	mandatory_attributes: ARRAY [STRING] is
-			-- Table of mandatory attributes.
+			-- Table of mandatory attributes
 		deferred
 		ensure
 			Result_exists: Result /= Void
@@ -156,12 +155,12 @@ feature -- Access
 
 
 	subnodes: LIST [XM_ELEMENT]
-			-- List of subnodes.
+			-- List of subnodes
 
 feature -- Measurement
 
 	subnode_count: INTEGER is
-			-- Number of subnodes.
+			-- Number of subnodes
 		do
 			Result := subnodes.count
 		end
@@ -325,9 +324,10 @@ feature {TRAFFIC_NODE_PROCESSOR} -- Status setting
 feature {TRAFFIC_NODE_PROCESSOR} -- Status report
 
 	is_complete	(a_code: INTEGER; an_error_string_array: ARRAY [STRING]): BOOLEAN is
-		-- redefined to provide visibility as it is used in the precondition of set_error
+			-- Does `an_error_string_error' contain complete info for error `a_code'?
+			-- (Redefined to provide visibility as it is used in the precondition of set_error)
 		do
-			Result := Precursor(a_code, an_error_string_array)
+			Result := Precursor (a_code, an_error_string_array)
 		end
 
 feature -- Basic operations

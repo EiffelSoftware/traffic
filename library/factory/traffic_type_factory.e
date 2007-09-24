@@ -5,10 +5,10 @@ indexing
 
 class
 	TRAFFIC_TYPE_FACTORY
-	
+
 create
 	make
-	
+
 feature {NONE} -- Initialization
 
 	make is
@@ -23,11 +23,11 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	traffic_type: TRAFFIC_TYPE is
-			-- Traffic type last created by `build'.
+			-- Traffic type last created by `build'
 		do
 			Result := internal_traffic_type
 		end
-		
+
 feature -- Basic operation
 
 	reset is
@@ -37,7 +37,7 @@ feature -- Basic operation
 		ensure
 			internal_traffic_type_is_void: internal_traffic_type = Void
 		end
-		
+
 	build (a_name: STRING) is
 			-- Build traffic type depending on type name `a_name'.
 			-- Access traffic type with `traffic_type'.
@@ -50,7 +50,7 @@ feature -- Basic operation
 			type_created: internal_traffic_type/=Void
 			type_exists: has_type
 		end
-		
+
 feature -- Status report
 
 	valid_name (a_name: STRING): BOOLEAN is
@@ -61,64 +61,62 @@ feature -- Status report
 		do
 			Result := type_table.has (a_name)
 		end
-		
+
 	has_type: BOOLEAN is
 			-- Has a type object been generated?
 		do
 			Result := internal_traffic_type /= Void
 		end
-		
+
 feature {NONE} -- Implementation
 
 	internal_traffic_type: TRAFFIC_TYPE
-			-- Traffic type last created.
+			-- Traffic type last created
 
 	bus_type: TRAFFIC_TYPE_BUS is
-			-- Bus traffic type.
+			-- Bus traffic type
 		once
 			create Result.make
 		end
-			
+
 	rail_type: TRAFFIC_TYPE_RAIL is
-			-- Rail traffic type.
+			-- Rail traffic type
 		once
 			create Result.make
 		end
-			
-			
+
 	tram_type: TRAFFIC_TYPE_TRAM is
-			-- Tram traffic type.
+			-- Tram traffic type
 		once
 			create Result.make
 		end
-			
+
 	walking_type: TRAFFIC_TYPE_WALKING is
-			-- Walking traffic type.
+			-- Walking traffic type
 		once
 			create Result.make
 		end
-	
+
 	street_type: TRAFFIC_TYPE_STREET is
-			-- Street type.
+			-- Street type
 		once
 			create Result.make
 		end
-			
+
 	lightrail_type: TRAFFIC_TYPE_LIGHTRAIL is
-			-- Lightrail type.
+			-- Lightrail type
 		once
 			create Result.make
 		end
-	
+
 	railroad_type: TRAFFIC_TYPE_RAILROAD is
-			-- Railroad type.
+			-- Railroad type
 		once
 			create Result.make
-		end	
-	
-	
+		end
+
 	type_table: HASH_TABLE [TRAFFIC_TYPE, STRING] is
-			-- Table with all types.
+			-- Table with all types
 		once
 			create Result.make (9)
 			-- TRAFFIC_LINE_TYPEs
@@ -132,5 +130,5 @@ feature {NONE} -- Implementation
 			Result.extend (walking_type, walking_type.name)
 			Result.compare_objects
 		end
-			
+
 end

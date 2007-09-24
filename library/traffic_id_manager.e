@@ -1,5 +1,5 @@
 indexing
-	description: "Objects that ..."
+	description: "Manager for road ids"
 	date: "$Date$"
 	revision: "$Revision$"
 

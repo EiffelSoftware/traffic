@@ -31,7 +31,7 @@ create
 feature -- Initialization
 
 	make is
-			-- Initialize
+			-- Initialize canvas.
 		local
 			figure_world : EV_FIGURE_WORLD
 			e: EV_ENVIRONMENT
@@ -99,62 +99,46 @@ feature -- Status setting
 			redraw
 		end
 
-feature {NONE} -- Implementation
-
-	internal_factory: TRAFFIC_VS_VIEW_FACTORY
-	internal_moving_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_MOVING]
-	internal_path_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PATH]
-	internal_line_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_LINE]
-	internal_road_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_ROAD]
-	internal_place_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PLACE]
-	internal_building_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_BUILDING]
-
 feature -- Access
 
 	line_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE, TRAFFIC_VIEW [TRAFFIC_LINE]] is
-			--
+			-- Container for line views
 		do
 			Result := internal_line_representations
---			internal_line_representations.draw (Current)
 		end
 
 	road_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_VIEW [TRAFFIC_ROAD]] is
-			--
+			-- Container for road views
 		do
 			Result := internal_road_representations
---			internal_road_representations.draw (Current)
 		end
 
 	path_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VIEW [TRAFFIC_PATH]] is
-			--
+			-- Container for path views
 		do
 			Result := internal_path_representations
---			internal_path_representations.draw (Current)
 		end
 
 	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VIEW [TRAFFIC_PLACE]]
-			--
+			-- Container for place views
 		do
 			Result := internal_place_representations
---			internal_place_representations.draw (Current)
 		end
 
 	building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_VIEW [TRAFFIC_BUILDING]]
-			--
+			-- Container for building views
 		do
 			Result := internal_building_representations
---			internal_building_representations.draw (Current)
 		end
 
 	moving_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_MOVING, TRAFFIC_VIEW [TRAFFIC_MOVING]]
-			--
+			-- Container for moving views
 		do
 			Result := internal_moving_representations
---			internal_moving_representations.draw (Current)
 		end
 
 	factory: TRAFFIC_VIEW_FACTORY is
-			--
+			-- Factory for creating views
 		do
 			Result := internal_factory
 		end
@@ -201,6 +185,15 @@ feature -- Basic operations
 			end
 		end
 
+feature {NONE} -- Implementation
+
+	internal_factory: TRAFFIC_VS_VIEW_FACTORY
+	internal_moving_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_MOVING]
+	internal_path_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PATH]
+	internal_line_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_LINE]
+	internal_road_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_ROAD]
+	internal_place_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PLACE]
+	internal_building_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_BUILDING]
 	background_image: EV_PIXMAP
 
 end

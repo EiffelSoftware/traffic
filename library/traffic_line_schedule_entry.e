@@ -50,16 +50,12 @@ feature -- Status report
 			-- Get the total distance we have by adding the distances of all polypoints
 			from
 				line_section.polypoints.start
---				last_position := map_to_gl_coords (line_section.polypoints.first)
 				last_position := line_section.polypoints.first
 				total_distance := 0
 			until
 				line_section.polypoints.after
 			loop
---				total_distance := total_distance + last_position.distance (map_to_gl_coords (line_section.polypoints.item)).abs
 				total_distance := total_distance + last_position.distance (line_section.polypoints.item_for_iteration).abs
-
---				last_position := map_to_gl_coords (line_section.polypoints.item)
 				last_position := line_section.polypoints.item_for_iteration
 
 				line_section.polypoints.forth

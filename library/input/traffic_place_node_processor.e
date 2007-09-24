@@ -1,6 +1,5 @@
 indexing
 	description: "XML processors for <place> nodes."
-
 	date: "$Date$"
 	revision: "$Revision$"
 

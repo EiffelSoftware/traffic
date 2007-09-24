@@ -6,6 +6,8 @@ indexing
 class
 	TRAFFIC_BUILDING_PARSER
 
+obsolete "Needs reworking"
+
 inherit
 	TRAFFIC_XML_INPUT_FILE_PARSER
 
@@ -45,7 +47,6 @@ feature -- Status report
 feature -- Basic operations
 
 	process is
-
 			-- Process document tree.
 		local
 			p: TRAFFIC_NODE_PROCESSOR

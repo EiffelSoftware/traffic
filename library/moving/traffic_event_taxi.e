@@ -4,11 +4,13 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_EVENT_TAXI inherit
-		TRAFFIC_TAXI
-			redefine
-				make_random, move
-			end
+	TRAFFIC_EVENT_TAXI
+
+inherit
+	TRAFFIC_TAXI
+		redefine
+			make_random, move
+		end
 
 create
 	make_random
@@ -16,7 +18,7 @@ create
 feature -- Initialization
 
 	make_random (a_taxi_office: TRAFFIC_EVENT_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]) is
-			-- Taxi with an associated 'a_taxi_office'.
+			-- Taxi with an associated `a_taxi_office'.
 		do
 			create polypoints.make_from_linear (a_point_list)
 			create poly_cursor.make (polypoints)
@@ -37,12 +39,12 @@ feature -- Initialization
 
 feature -- Access
 
-	office : TRAFFIC_EVENT_TAXI_OFFICE
+	office: TRAFFIC_EVENT_TAXI_OFFICE
 		-- Taxi office the taxi works for
 
 feature -- Basic operations
 
-	take(from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
+	take (from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
 			-- Take a request. Pick up somebody at 'from_location' and bring him or her to 'to_location'.
 			-- If busy inform the taxi office to recall it.
 		do
@@ -69,10 +71,6 @@ feature -- Basic operations
 			if has_finished and busy then
 				-- Taxi has fullfilled a request.
 				-- Add new random directions.
-				-- TODO
---				polypoints.wipe_out
---				add_random_polypoints (7)
-				-- set new destination
 				origin := position
 				destination := polypoints.first
 				has_finished := false

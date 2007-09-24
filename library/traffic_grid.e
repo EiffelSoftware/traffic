@@ -36,8 +36,10 @@ feature -- Access
 			--	False means the cell is free
 
 	radius: DOUBLE
+			-- Radius around which the city is located
 
 	center: TRAFFIC_COORDINATE
+			-- Center of the city
 
 feature -- Basic operations
 
@@ -210,43 +212,6 @@ feature -- Status report
 			end
 			Result := res
 		end
-
-
---	mark_grid_cells_for_quadratic_area (grid_x, grid_y:INTEGER; a_width:DOUBLE) is
---			-- mark boolean_grid cells within quadratic area with center at (grid_x, grid_y) to true.
---		local
---			nr_cells_to_cover_area: INTEGER
---			start_x, end_x,start_y,end_y:INTEGER
---		do
---			if 1 <= grid_x and grid_x <= boolean_grid.width and 1 <= grid_y and grid_y <= boolean_grid.width then
---				boolean_grid.put (True, grid_x, grid_y)
---			end
---			if  a_width > 0 then
-----				nr_cells_to_cover_area := (a_width/(Plane_size/Grid_size)).ceiling
---				from
---					start_x := grid_x - (nr_cells_to_cover_area/2).floor
---					end_x := grid_x + (nr_cells_to_cover_area/2).floor
---				until
---					start_x > end_x
---				loop
---					from
---						start_y := grid_y - (nr_cells_to_cover_area/2).floor
---						end_y := grid_y + (nr_cells_to_cover_area/2).floor
---					until
---						start_y > end_y
---					loop
---						if 1 <= start_x and start_x <= boolean_grid.width and 1 <= start_y and start_y <= boolean_grid.height then
---							boolean_grid.put (True, start_x , start_y)
---						end
---						start_y := start_y + 1
---					end
---					start_x := start_x + 1
---				end
---			end
---		end
-
-
-
 
 	has_square_collision (a_center: TRAFFIC_COORDINATE; a_diagonal: DOUBLE): BOOLEAN is
 			-- Does the square with `a_center' and `a_diagonal' have any collision with marked grid cells?

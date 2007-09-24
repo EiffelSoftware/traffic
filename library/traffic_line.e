@@ -688,8 +688,6 @@ feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
 	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 
---	internal_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
-
 	angle(st,dest: TRAFFIC_COORDINATE):DOUBLE is
 			-- Set the angles to the x- and y-axis respectively.
 		local

@@ -1,6 +1,5 @@
 indexing
 	description: "XML processors for <line section> nodes."
-
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -69,66 +68,15 @@ feature -- Basic operations
 						polypoints := Void
 						polypoints_other_direction := Void
 					end
---					simple_line ?= line
---					if simple_line /= Void then
-						if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
---							if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
---								set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
---							else
-								map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
-								line_section_one_direction := map_factory.connection_one_direction
-								line_section_other_direction := map_factory.connection_other_direction
-								map_factory.connection_other_direction.set_polypoints (polypoints_other_direction)
-								-- line_section_other_direction is generated but not accessible
-								-- search for line section other direction
---								sections := map.line_sections_of_stop ( (attribute("to")), line)
---								from
---									sections.start
---								until
---									sections.after or else line_section_other_direction /= Void
---								loop
---									if sections.item.origin.name.is_equal (( attribute ("to"))) and then
---									   sections.item.destination.name.is_equal (( attribute ("from"))) then -- and then
---										line_section_other_direction := sections.item
---									end
---									sections.forth
---								end
---							end
-						else -- directed
-							set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
-						end
-						set_target (line_section_one_direction)
---					else
---						if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
---							if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
---								set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
---							else
---								map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
---								line_section_one_direction := map_factory.line_section
---							end
---							if not line.is_valid_insertion (map.places.item ( attribute ("to")), map.places.item (attribute ("from"))) then
---								set_error (Invalid_line_section, << line.name, attribute ("to"), attribute ("from") >>)
---							else
---								map_factory.build_line_section (( attribute ("to")), (attribute ("from")), polypoints_other_direction, map, line)
---								line_section_other_direction := map_factory.line_section
---							end
---						else -- directed
---							if not line.is_valid_insertion (map.places.item (attribute ("from")), map.places.item (attribute ("to"))) then
---								set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
---							else
---								map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
---								line_section_one_direction := map_factory.line_section
---							end
---						end
---						set_target (line_section_one_direction)
---					end
-
-					--adjust_position (line_section_one_direction, polypoints)
-
---					if line_section_other_direction /= Void then
---						adjust_position (line_section_other_direction, polypoints)
---					end
-
+					if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
+							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, map, line)
+							line_section_one_direction := map_factory.connection_one_direction
+							line_section_other_direction := map_factory.connection_other_direction
+							map_factory.connection_other_direction.set_polypoints (polypoints_other_direction)
+					else -- directed
+						set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
+					end
+					set_target (line_section_one_direction)
 				end
 
 
@@ -140,33 +88,6 @@ feature -- Basic operations
 				end
 			end
 		end
-
-	zero_vector: TRAFFIC_COORDINATE is
-	once
-		Result := create {TRAFFIC_COORDINATE}.make (0, 0)
-	end
-
-	adjust_position (a_line_section: TRAFFIC_LINE_CONNECTION; a_polypoints: LIST [TRAFFIC_COORDINATE]) is
-			-- Adjust positions.
-		do
-			if a_line_section.origin.position = Void or equal(a_line_section.origin.position, zero_vector) then
-				a_line_section.origin.set_position
-					(create {TRAFFIC_COORDINATE}.make (a_polypoints.first.x, a_polypoints.first.y))
-			else
-				a_line_section.origin.set_position
-					(create {TRAFFIC_COORDINATE}.make (	(a_line_section.origin.position.x + a_polypoints.first.x)/ 2.0,
-												(a_line_section.origin.position.y + a_polypoints.first.y)/ 2.0))
-			end
-			if a_line_section.destination.position = Void or equal(a_line_section.destination.position, zero_vector) then
-				a_line_section.destination.set_position
-					(create {TRAFFIC_COORDINATE}.make (a_polypoints.last.x, a_polypoints.last.y))
-			else
-				a_line_section.destination.set_position
-					(create {TRAFFIC_COORDINATE}.make (	(a_line_section.destination.position.x + a_polypoints.last.x)/ 2.0,
-												(a_line_section.destination.position.y + a_polypoints.last.y)/ 2.0))
-			end
-		end
-
 
 	process_subnodes is
 			-- Process subnodes.
@@ -216,10 +137,12 @@ feature -- Basic operations
 			end
 		end
 
+feature {NONE} -- Implementation
+
 	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			-- Polypoints of this link
 
 	roads: ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]
-		-- Roads of this line_section
+			-- Roads of this line_section
 
 end

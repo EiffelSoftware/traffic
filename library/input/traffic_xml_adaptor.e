@@ -1,6 +1,5 @@
 indexing
 	description: "Adaptor used to adapt the city parser to parse and process visualization elements"
-		 
 	date: "$Date$"
 	revision: "$Revision$"
 

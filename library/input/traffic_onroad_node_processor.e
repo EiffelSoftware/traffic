@@ -1,6 +1,7 @@
 indexing
 	description: "XML processors for <onroad> nodes."
-
+	date: "$Date: 2007-07-24 11:47:24 +0200 (Tue, 24 Jul 2007) $"
+	revision: "$Revision: 901 $"
 
 class
 	TRAFFIC_ONROAD_NODE_PROCESSOR

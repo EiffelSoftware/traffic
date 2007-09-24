@@ -67,7 +67,7 @@ feature -- Traffic map building
 		end
 
 	map: TRAFFIC_MAP is
-			-- Generated traffic map object.
+			-- Generated traffic map object
 		require
 			map_available: has_map
 		do
@@ -120,7 +120,7 @@ feature -- Traffic place building
 		end
 
 	place: TRAFFIC_PLACE is
-			-- Generated traffic place object.
+			-- Generated traffic place object
 		require
 			place_available: has_place
 		do
@@ -214,7 +214,7 @@ feature -- Line section building
 		end
 
 	connection_one_direction: TRAFFIC_LINE_CONNECTION is
-			-- Generated traffic line section object.
+			-- Generated traffic line section object
 		require
 			line_section_available: has_line_section
 		do
@@ -224,7 +224,7 @@ feature -- Line section building
 		end
 
 	connection_other_direction: TRAFFIC_LINE_CONNECTION is
-			-- Generated traffic line section object.
+			-- Generated traffic line section object
 		require
 			line_section_available: has_line_section
 		do
@@ -268,7 +268,7 @@ feature -- Road section building
 		end
 
 	road: TRAFFIC_ROAD is
-			-- Generated traffic road object.
+			-- Generated traffic road object
 		require
 			road_available: has_road
 		do
@@ -309,7 +309,7 @@ feature -- Traffic line building
 		end
 
 	line: TRAFFIC_LINE is
-			-- Generated traffic line object.
+			-- Generated traffic line object
 		require
 			line_available: has_line
 		do
@@ -327,22 +327,22 @@ feature -- Traffic line building
 feature {NONE} -- Implementation
 
 	traffic_type_factory: TRAFFIC_TYPE_FACTORY
-			-- Traffic type factory.
+			-- Traffic type factory
 
 	internal_place: TRAFFIC_PLACE
-			-- Internal representation of last created traffic place.
+			-- Internal representation of last created traffic place
 
 	internal_one_direction, internal_other_direction: TRAFFIC_LINE_CONNECTION
-			-- Internal representation of last created traffic line section.
+			-- Internal representation of last created traffic line section
 
 	internal_line: TRAFFIC_LINE
-			-- Internal representation of last created traffic line.
+			-- Internal representation of last created traffic line
 
 	internal_road: TRAFFIC_ROAD
-			-- Internal representation of last created traffic road.
+			-- Internal representation of last created traffic road
 
 	internal_map: TRAFFIC_MAP
-			-- Internal representation of last created traffic map.
+			-- Internal representation of last created traffic map
 
 	create_road_connection (a_origin, a_destination: STRING; a_map: TRAFFIC_MAP; a_type:STRING;an_id:STRING): TRAFFIC_ROAD_CONNECTION is
 			-- Create road with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_map'.

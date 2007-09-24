@@ -1,11 +1,12 @@
 indexing
-	description: "Objects that ..."
-	author: ""
+	description: "Schedule loader"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
 	TRAFFIC_SCHEDULE_LOADER
+
+obsolete "Needs reworking"
 
 inherit
 
@@ -109,8 +110,5 @@ feature {NONE} -- Implementation
 				has_error := False
 			end
 		end
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end
