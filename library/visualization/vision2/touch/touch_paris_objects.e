@@ -251,13 +251,14 @@ feature -- Predefined objects (Routes)
 		require
 			Paris_exists: is_paris_loaded
 		local
-				temp_places: LINKED_LIST [TRAFFIC_PLACE]
+			s: TRAFFIC_PATH_SECTION
 		once
- 			create temp_places.make
-			temp_places.force (Paris.places.item ("place Bastille"))
-			temp_places.force (Paris.places.item ("place La Motte - Picquet - Grenelle"))
-
---			Result := Paris.new_route (temp_places)
+			create Result
+			create s.make_tram (tram11_Place_Republique_Place_Hotel_de_Ville)
+			s.extend (tram11_Place_Hotel_de_Ville_Place_Chatelet)
+			Result.set_first (s)
+			create s.make_rail (rera_place_chatelet_place_opera)
+			Result.first.set_next (s)
 		end
 
 feature --Predefined objects (Line-Sections)
