@@ -30,7 +30,7 @@ feature -- Initialization
 			until
 				Processor_registry.off
 			loop
-				Processor_registry.item_for_iteration.set_map(a_map)
+--				Processor_registry.item_for_iteration.set_map(a_map)
 				Processor_registry.forth
 			end
 		end
