@@ -4,7 +4,6 @@ all:
 - check that all classes use gobo data structures
 
 Travelers:
-- Improve EM_OBJ_LOADER for more advanced file versions
 - First person view walks
 - Real itineraries and delays for trams
 - Tram depots where all the trams start until they are on their route.
@@ -12,7 +11,6 @@ Travelers:
 - Drawing of deboard and board of TRAFFIC_PASSENGERs
 
 Buildings:
-- improve speed of randomly generated buildings
 - randomize buildings along lines more
 - randomize look and feel of buildings
 - Fix surface normals of buildings (for lighting)
@@ -27,24 +25,8 @@ Map_widgets:
 - 3d_widget, representation, and factory classes: check contracts
 - check whether all constants are constants
 - Remove plane_size to be a constant and adapt map_to_gl_coords accordingly
-- Design a better method of generating representations -->either reading 3D objects from a file or getting an OpenGL function generating a displaylist
-- Remove TRAFFIC_3D_TRAVELER_REPRESENTATION and add for each of the TRAFFIC_MOVING subtypes a representation.
-- Check that MVC is strictly followed
-- Use map coordinates for drawing as well 
-- Improve visualization of roads
-- Use ARRAYED_LIST for TRAFFIC_3D_PLACE_REPRESENTATION as well (see TRAFFIC_3D_LINE_REPRESENTATION)
-- Use ARRAYED_LIST for TRAFFIC_3D_ROAD_REPRESENTATION as well (see TRAFFIC_3D_LINE_REPRESENTATION)
 - Use separate threads for handling mouse events (see Alan Fehr's report 5.3)
 - Use logarithmic search for finding clicked places (see Alan Fehr's report 5.3)
-- Improve random building generation (see Alan Fehr's report 5.3)
-
-
-Performance:
-- All representations should be stored in an arrayed list, keep the hash table for lookup
-  iterating is faster this way, which is done every frame.
-
-Visualization:
-- Possibly refactor the representation factories into one class.
 
 Map loading:
 - improve error handling and messages
@@ -52,22 +34,12 @@ Map loading:
 
 Roads:
 - Add more roads to xml
-- Add the roads to the graph for path calculations
-- Make PASSENGER walk on roads
 
 Touch examples:
-- improve console window to be scrollable and flashier
 - Add example for "redefinition for efficiency" and "redefinition for correctness" (see Sarah Hauser's report 4.1.1)
 - Add example for weakening and strengthening pre and postconditions (see Sarah Hauser's report 4.1.3)
 
 Exercises:
 - Event exercise: see Sarah Hauser's report 4.1.2
 
-general:
-- have gobo mounted into a subcluster
-	-> This is being looked into by Eric from gobosoft, it is not possible at the moment
-- rearrange the touch_examples into another directory
-
-Documentation:
-- Remove unneeded image files and make format of file names uniformly (only lowercase)
 last change $Date$

@@ -1,3 +1,8 @@
+Version 3.2     (svn xxx)       24.9.2007
+	* Vision2 widget support (no eiffelmedia installation needed any more for running traffic)
+	* More examples are implemented
+	* Improved overall design and structure
+
 Version 3.1	(snv 800)	25.10.2006
 
 	* Taxis, trams, passengers, and other vehicles
