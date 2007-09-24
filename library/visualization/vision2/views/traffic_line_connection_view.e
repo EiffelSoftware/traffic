@@ -24,6 +24,8 @@ inherit
 			internal_color,
 			set_internal_color,
 			make_polyline
+		redefine
+			set_width
 		end
 
 create
@@ -52,11 +54,20 @@ feature -- Initialization
 			is_shown := True
 			is_highlighted := False
 			item.changed_event.subscribe (agent update)
+			old_width := width
 		ensure then
 			internal_color_exists: internal_color /= Void
 		end
 
 feature -- Basic operations
+
+	set_width (a_width: like width) is
+			-- Set the polyline's width to `a_width'
+		do
+			width:= a_width
+			old_width := width
+			invalidate
+		end
 
 	update is
 			--
@@ -70,12 +81,14 @@ feature -- Basic operations
 				else
 					set_internal_color (default_highlight_color)
 				end
+				width := old_width + Default_highlight_width_delta
 			else
 				if color /= Void then
 					set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
 				else
 					set_internal_color (default_color)
 				end
+				width := old_width
 			end
 			create pp.make (1, item.polypoints.count)
 			from
@@ -106,4 +119,10 @@ feature -- Constants
 			create Result.make_with_8_bit_rgb (0, 0, 255)
 		end
 
+	Default_highlight_width_delta: INTEGER is 5
+			-- Delta to make lines thicker when highlighted
+
+feature {NONE}-- Implementation
+
+	old_width: INTEGER
 end

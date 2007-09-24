@@ -41,7 +41,7 @@ feature -- Basic operations
 			--
 		do
 			a_example.run (console, Current)
-			button.select_actions.extend (agent a_example.explore_on_click)
+			run_button.select_actions.extend (agent a_example.explore_on_click)
 		end
 
 --feature {NONE} -- Menu Implementation
@@ -144,14 +144,12 @@ feature {NONE} -- GUI building
 		require
 			main_container_not_yet_created: main_container = Void
 		local
-			vb: EV_VERTICAL_SPLIT_AREA
 			hb1: EV_HORIZONTAL_BOX
 			fr: EV_FRAME
 			fixed: EV_FIXED
 		do
 			create viewport
 			viewport.set_offset (0, 0)
-			create vb
 			create hb1
 			create fr
 			create canvas.make
@@ -166,9 +164,9 @@ feature {NONE} -- GUI building
 			viewport.resize_actions.force_extend (agent resize_canvas)
 
 			-- Example button
-			create button.make_with_text ("Run example")
-			fixed.extend (button)
-			fixed.set_item_position (button, 5, 2)
+			create run_button.make_with_text ("Run example")
+			fixed.extend (run_button)
+			fixed.set_item_position (run_button, 5, 2)
 
 			create console.default_create
 			console.set_minimum_size (200, 400)
@@ -176,10 +174,8 @@ feature {NONE} -- GUI building
 			fixed.extend (console)
 			fixed.set_item_position (console, 5, 35)
 
-			vb.extend (fixed)
-			vb.disable_item_expand (fixed)
-			hb1.extend (vb)
-			hb1.disable_item_expand (vb)
+			hb1.extend (fixed)
+			hb1.disable_item_expand (fixed)
 			hb1.extend (fr)
 			main_container.extend (hb1)
 			main_container.set_padding (10)
@@ -832,7 +828,7 @@ feature -- Widgets
 
 	console: TRAFFIC_CONSOLE
 
-	button: EV_BUTTON
+	run_button: EV_BUTTON
 			-- Clicking this button will run example
 
 	main_container: EV_VERTICAL_BOX

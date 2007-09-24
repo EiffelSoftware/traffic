@@ -14,43 +14,15 @@
 		<library name="gobo" location="$ISE_EIFFEL\library\gobo\gobo.ecf" readonly="true"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf" readonly="true"/>
-		<cluster name="traffic" location=".\">
+		<cluster name="traffic" location=".\" recursive="true">
 			<option>
-				<assertions precondition="true" postcondition="true" check="true" invariant="true"/>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 			</option>
-			<cluster name="building" location="$|building\"/>
-			<cluster name="factory" location="$|factory\"/>
-			<cluster name="moving" location="$|moving\"/>
-			<cluster name="structure" location="$|structure\">
-				<cluster name="container" location="$|container\"/>
-				<cluster name="graph" location="$|graph\">
-					<cluster name="graph_graph" location="$|graph\">
-						<cluster name="graph_implementation" location="$|implementation\">
-							<cluster name="graph_adjacency_matrix_graph" location="$|adjacency_matrix_graph\"/>
-							<cluster name="graph_linked_graph" location="$|linked_graph\"/>
-						</cluster>
-						<cluster name="graph_structure" location="$|structure\"/>
-						<cluster name="graph_walker" location="$|walker\"/>
-					</cluster>
-					<cluster name="traffic_dispenser" location="$|dispenser\"/>
-					<cluster name="traffic_topological_sort" location="$|topological_sort\"/>
-					<cluster name="traffic_tree" location="$|tree\"/>
-					<cluster name="traffic_union_find" location="$|union_find\"/>
-				</cluster>
-			</cluster>
-			<cluster name="traffic_input" location="$|input\"/>
-			<cluster name="traffic_utility" location="$|utility\">
-				<cluster name="traffic_gl_tools" location="$|gl_tools\"/>
-			</cluster>
-			<cluster name="type" location="$|type\"/>
-			<cluster name="visualization" location="$|visualization\">
-				<cluster name="tr_vision2" location="$|vision2\">
-					<cluster name="tr_time" location="$|time\"/>
-					<cluster name="drawable" location="$|drawable\"/>
-					<cluster name="views" location="$|views\"/>
-					<cluster name="touch" location="$|touch\"/>
-				</cluster>
-			</cluster>
+			<file_rule>
+				<exclude>visualization/em</exclude>
+				<exclude>.svn</exclude>
+				<exclude>EIFGENs</exclude>
+			</file_rule>
 		</cluster>
 	</target>
 </system>

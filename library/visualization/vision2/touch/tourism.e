@@ -52,6 +52,9 @@ feature -- Status report
 
 feature -- Access (Paris)
 
+	Wait_time: INTEGER is 4
+			-- Time to wait in feature `wait'
+
 	Paris: TRAFFIC_MAP is
 			-- Object representing the city of Paris
 		require else
@@ -168,21 +171,18 @@ feature -- Basic operations
 		local
 			env: EV_ENVIRONMENT
 			t1, t2: TIME
-			d: TIME_DURATION
 		do
 			create env
 			create t1.make_now
 			from
 				create t2.make_now
 			until
-				(t2.compact_time - t1.compact_time).abs > 3
+				(t2.compact_time - t1.compact_time).abs > Wait_time
 			loop
-				create t2.make_now
 				if not env.application.is_destroyed then
 					env.application.process_events
-				else
-					create t2.make_by_compact_time (t1.compact_time + 10)
 				end
+				create t2.make_now
 			end
 		end
 

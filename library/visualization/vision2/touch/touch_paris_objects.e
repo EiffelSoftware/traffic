@@ -238,7 +238,6 @@ feature -- Predefined objects (Routes)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			temp_places: LINKED_LIST [TRAFFIC_PLACE]
 			s: TRAFFIC_PATH_SECTION
 		once
 			create Result

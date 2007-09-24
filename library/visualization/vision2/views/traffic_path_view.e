@@ -54,6 +54,7 @@ feature -- Initialization
 			loop
 				c := new_connection_view (conns.item_for_iteration)
 				c.set_color (default_color)
+				connection_width := c.width
 				put_last (c)
 				p := new_place_view (conns.item_for_iteration.origin)
 				p.set_color (default_color)
@@ -82,6 +83,9 @@ feature -- Constants
 		once
 			create Result.make_with_8_bit_rgb (0, 255, 0)
 		end
+
+	Default_highlight_width_delta: INTEGER is 5
+			-- Delta to make lines thicker when highlighted
 
 feature -- Element change
 
@@ -113,6 +117,7 @@ feature -- Basic operations
 					r ?= item_for_iteration
 					if l /= Void then
 						l.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+						l.set_width (connection_width + default_highlight_width_delta)
 					elseif r /= Void then
 						r.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 					end
@@ -128,6 +133,7 @@ feature -- Basic operations
 					r ?= item_for_iteration
 					if l /= Void then
 						l.set_color (default_highlight_color)
+						l.set_width (connection_width + default_highlight_width_delta)
 					elseif r /= Void then
 						r.set_color (default_highlight_color)
 					end
@@ -153,6 +159,7 @@ feature -- Basic operations
 					r ?= item_for_iteration
 					if l /= Void then
 						l.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+						l.set_width (connection_width)
 					elseif r /= Void then
 						r.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
 					end
@@ -168,6 +175,7 @@ feature -- Basic operations
 					r ?= item_for_iteration
 					if l /= Void then
 						l.set_color (default_color)
+						l.set_width (connection_width)
 					elseif r /= Void then
 						r.set_color (default_color)
 					end
@@ -260,6 +268,12 @@ feature -- Basic operations
 				end
 			end
 		end
+
+feature -- Access
+
+	connection_width: INTEGER
+
+
 
 feature {NONE} -- Implementation
 

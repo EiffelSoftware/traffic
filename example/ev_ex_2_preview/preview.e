@@ -24,6 +24,10 @@ feature -- Explore Paris
 			Michela.go
 			wait
 			Louvre.spotlight
+			wait
+			Line8.unhighlight
+			Route1.unilluminate
+			Louvre.unspotlight
 			Console.show (Line8)
 			Console.show (Route1)
 		end

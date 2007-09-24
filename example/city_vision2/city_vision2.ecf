@@ -3,7 +3,7 @@
 	<target name="city_vision2">
 		<root class="APPLICATION" feature="make_and_launch"/>
 		<option trace="false" profile="false" debug="false" warning="true">
-			<assertions/>
+			<assertions precondition="false" postcondition="false" check="false" invariant="false" loop="false" supplier_precondition="false"/>
 			<warning name="export_class_missing" enabled="false"/>
 			<warning name="old_verbatim_strings" enabled="false"/>
 			<warning name="syntax" enabled="false"/>

@@ -35,7 +35,6 @@ feature -- Initialization
 		local
 			figure_world : EV_FIGURE_WORLD
 			e: EV_ENVIRONMENT
-			t: EV_TIMEOUT
 		do
 			create internal_factory
 			create internal_place_representations.make
@@ -164,8 +163,6 @@ feature -- Basic operations
 
 	redraw_now is
 			-- Refresh all items on `Current'.
-		local
-			i: INTEGER
 		do
 			background_color.set_rgb (1.0, 1.0, 1.0)
 			clear
@@ -175,38 +172,6 @@ feature -- Basic operations
 				internal_line_representations.draw (Current)
 				internal_place_representations.draw (Current)
 				internal_building_representations.draw (Current)
---				from
---					i := 1
---				until
---					i > internal_road_representations.count
---				loop
---					draw_item (internal_road_representations.item (i))
---					i := i + 1
---				end
---				from
---					i := 1
---				until
---					i > internal_line_representations.count
---				loop
---					draw_item (internal_line_representations.item (i))
---					i := i + 1
---				end
---				from
---					i := 1
---				until
---					i > internal_place_representations.count
---				loop
---					draw_item (internal_place_representations.item (i))
---					i := i + 1
---				end
---				from
---					i := 1
---				until
---					i > internal_building_representations.count
---				loop
---					draw_item (internal_building_representations.item (i))
---					i := i + 1
---				end
 				create background_image.make_with_size (width, height)
 				background_image.draw_pixmap (0, 0, Current)
 				fast_redraw_now
@@ -217,8 +182,6 @@ feature -- Basic operations
 
 	fast_redraw_now is
 			-- Refresh only the objects in mutable_object_list.
-		local
-			i: INTEGER
 		do
 			clear
 			if not is_map_hidden then
@@ -227,22 +190,6 @@ feature -- Basic operations
 				end
 				internal_path_representations.draw (Current)
 				internal_moving_representations.draw (Current)
---				from
---					i := 1
---				until
---					i > internal_path_representations.count
---				loop
---					draw_item (internal_path_representations.item (i))
---					i := i + 1
---				end
---				from
---					i := 1
---				until
---					i > internal_moving_representations.count
---				loop
---					draw_item (internal_moving_representations.item (i))
---					i := i + 1
---				end
 			end
 			from
 				object_list.start

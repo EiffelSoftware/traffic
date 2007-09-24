@@ -37,8 +37,8 @@ feature -- Initialization
 			pix.set_with_named_file (a_filename)
 			create icon.make (pix, create {REAL_COORDINATE}.make (item.center.x, item.center.y))
 			item.set_size (pix.width, item.height, pix.height)
-			create rectangle.make  (create {REAL_COORDINATE}.make (item.corner_1.x-2, -item.corner_1.y+2),
-							create {REAL_COORDINATE}.make (item.corner_3.x+2, -item.corner_3.y-2))
+			create rectangle.make  (create {REAL_COORDINATE}.make (item.corner_1.x-5, -item.corner_1.y+5),
+							create {REAL_COORDINATE}.make (item.corner_3.x+5, -item.corner_3.y-5))
 			rectangle.set_edge_color (default_color)
 			rectangle.set_color (default_color)
 			icon.set_position (create {REAL_COORDINATE}.make (item.corner_1.x, -item.corner_3.y))
@@ -66,8 +66,8 @@ feature -- Basic operations
 			else
 				unhighlight
 			end
-			rectangle.set_points (    create {REAL_COORDINATE}.make (item.corner_1.x-2, -item.corner_1.y+2),
-							create {REAL_COORDINATE}.make (item.corner_3.x+2, -item.corner_3.y-2))
+			rectangle.set_points (    create {REAL_COORDINATE}.make (item.corner_1.x-5, -item.corner_1.y+5),
+							create {REAL_COORDINATE}.make (item.corner_3.x+5, -item.corner_3.y-5))
 			icon.set_position (create {REAL_COORDINATE}.make (item.corner_1.x, -item.corner_3.y))
 		end
 
