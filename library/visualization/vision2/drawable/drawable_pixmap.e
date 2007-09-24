@@ -100,7 +100,7 @@ feature {EV_CANVAS} -- Display
 				stretched_pixmap.clear
 				stretched_pixmap.set_size ((copy_area_height).max (1), (copy_area_width).max (1))
 				stretched_pixmap.draw_sub_pixmap (0, 0, pixmap,
-												 create {EV_RECTANGLE}.make (lower_left_x, pixmap.height - upper_right_y, copy_area_height, copy_area_width))
+												 create {EV_RECTANGLE}.make (lower_left_x, pixmap.height - upper_right_y, copy_area_height.abs, copy_area_width.abs))
 
 				-- calculate the size to which the copied pixmap should be stretched
 				stretch_size_x:= (canvas.width * integer_to_real_x (copy_area_height) / canvas.visible_area.width).rounded.max (1)

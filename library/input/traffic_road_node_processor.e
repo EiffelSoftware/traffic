@@ -70,6 +70,8 @@ feature -- Basic operations
 						end
 						road.other_way.set_polypoints (p)
 					end
+					-- adjust the positions of the start and end place of this link
+					adjust_position (road.one_way, polypoints)
 				end
 			end
 		end
@@ -121,5 +123,29 @@ feature {NONE} -- Implementation
 			-- Polypoints of this link
 
 
+	zero_vector: TRAFFIC_COORDINATE is
+		once
+			Result := create {TRAFFIC_COORDINATE}.make (0, 0)
+		end
 
+	adjust_position (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [TRAFFIC_COORDINATE]) is
+			-- Adjust positions
+		do
+			if road.origin.position = Void or equal(road.origin.position, zero_vector) then
+				road.origin.set_position
+					(create {TRAFFIC_COORDINATE}.make (a_polypoints.first.x, a_polypoints.first.y))
+			else
+				road.origin.set_position
+					(create {TRAFFIC_COORDINATE}.make (	(road.origin.position.x + a_polypoints.first.x)/ 2.0,
+												(road.origin.position.y + a_polypoints.first.y)/ 2.0))
+			end
+			if road.destination.position = Void or equal(road.destination.position, zero_vector) then
+				road.destination.set_position
+					(create {TRAFFIC_COORDINATE}.make (a_polypoints.last.x, a_polypoints.last.y))
+			else
+				road.destination.set_position
+					(create {TRAFFIC_COORDINATE}.make (	(road.destination.position.x + a_polypoints.last.x)/ 2.0,
+												(road.destination.position.y + a_polypoints.last.y)/ 2.0))
+			end
+		end
 end
