@@ -40,7 +40,7 @@ inherit
 			remove_from_map
 		end
 create
-	make
+	make, make_with_terminal
 
 feature {NONE} -- Initialization
 
@@ -65,6 +65,27 @@ feature {NONE} -- Initialization
 			create element_inserted_event
 			create element_removed_event
 			index := 1
+		ensure
+			name_set: equal (name, a_name)
+			has_type_set: type /=Void -- have to be same object
+			type_set: type=a_type
+			count_line_section_not_void: connection_count >= 0 -- List is initilalized.
+			element_inserted_event_exists: element_inserted_event /= Void
+			element_removed_event_exists: element_removed_event /= Void
+			one_direction_exists: one_direction /= Void
+			other_direction_exists: other_direction /= Void
+		end
+
+	make_with_terminal (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_place: TRAFFIC_PLACE) is
+			-- Create a line with a name `a_name' of type `a_type' and a planned terminal `a_place'.
+		require
+			a_name_exists: a_name /= Void
+			a_name_not_empty: not a_name.is_empty
+			a_type_exists: a_type /= Void
+			a_place_exists: a_place /= Void
+		do
+			make (a_name, a_type)
+			old_terminal_1 := a_place
 		ensure
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
@@ -368,7 +389,7 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
 feature -- Removal
 
 	remove_all_connections, wipe_out is
-			-- Remove all connections (keep `terminal_1').
+			-- Remove all connections (current `terminal_1' is captured in attribute `old_terminal_1').
 		require
 			old_terminal_set: old_terminal_1 /= Void
 		do

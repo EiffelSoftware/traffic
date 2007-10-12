@@ -22,7 +22,9 @@ feature -- Factory methods
 			-- New line view for `a_line'
 		do
 			create Result.make (a_line)
-			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (a_line.color.red, a_line.color.green, a_line.color.blue))
+			if a_line.color /= Void then
+				Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (a_line.color.red, a_line.color.green, a_line.color.blue))
+			end
 		end
 
 	new_road_view (a_road: TRAFFIC_ROAD): TRAFFIC_ROAD_VIEW is
