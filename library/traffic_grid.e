@@ -51,17 +51,15 @@ feature -- Basic operations
 		local
 			c: DS_ARRAYED_LIST_CURSOR [TRAFFIC_COORDINATE]
 			v: TRAFFIC_COORDINATE
+			i: INTEGER
 		do
 			from
-				c := a_list.new_cursor
-				c.start
-				v := c.item
-				c.forth
+				i := 1
 			until
-				c.off
+				i >= a_list.count
 			loop
-				mark_line (v, c.item, a_line_width, a_value)
-				c.forth
+				mark_line (a_list.item (i), a_list.item (i + 1), a_line_width, a_value)
+				i := i + 1
 			end
 		end
 
@@ -178,24 +176,20 @@ feature -- Status report
 			nr_cells_in_y_direction:INTEGER
 			i,j,k,l: INTEGER
 			res: BOOLEAN
-			t: TUPLE [INTEGER, INTEGER]
+			t, s: TUPLE [INTEGER, INTEGER]
 		do
 			res:= False
-			t := grid_coordinate (a_center)
-			nr_cells_in_x_direction := (a_width/(2*radius/boolean_grid.width)).ceiling
-			nr_cells_in_y_direction := (a_breadth/(2*radius/boolean_grid.height)).ceiling
-			if boolean_grid[t.integer_item (1), t.integer_item (2)] then
-				res:= True
-			end
+			t := grid_coordinate (create {TRAFFIC_COORDINATE}.make (a_center.x - a_width/2, a_center.y - a_breadth/2))
+			s := grid_coordinate (create {TRAFFIC_COORDINATE}.make (a_center.x + a_width/2, a_center.y + a_breadth/2))
 			from
-				i := t.integer_item (1) - (nr_cells_in_x_direction/2).floor
-				j := t.integer_item (1) + (nr_cells_in_x_direction/2).floor
+				i := t.integer_item (1)-- - (nr_cells_in_x_direction/2).floor
+				j := s.integer_item (1)-- + (nr_cells_in_x_direction/2).floor
 			until
 				i > j or res
 			loop
 				from
-					k := t.integer_item (2) - (nr_cells_in_y_direction/2).floor
-					l := t.integer_item (2) + (nr_cells_in_y_direction/2).floor
+					k := t.integer_item (2)-- - (nr_cells_in_y_direction/2).floor
+					l := s.integer_item (2)-- + (nr_cells_in_y_direction/2).floor
 				until
 					k > l or res
 				loop
