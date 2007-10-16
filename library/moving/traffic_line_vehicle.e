@@ -41,20 +41,30 @@ feature -- Element change
 		local
 			found: BOOLEAN
 		do
-			from
+			if a_place = line.terminal_2 then
+				line_cursor.set_cursor_direction (False)
 				line_cursor.start
-			until
-				line_cursor.after or found
-			loop
-				if line_cursor.item_for_iteration.origin = a_place then
-					create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
-					poly_cursor.start
+				create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
+				poly_cursor.start
 
-					update_coordinates
-					update_angle
-					found := True
-				else
-					line_cursor.forth
+				update_coordinates
+				update_angle
+			else
+				from
+					line_cursor.start
+				until
+					line_cursor.after or found
+				loop
+					if line_cursor.item_for_iteration.origin = a_place then
+						create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
+						poly_cursor.start
+
+						update_coordinates
+						update_angle
+						found := True
+					else
+						line_cursor.forth
+					end
 				end
 			end
 		end
