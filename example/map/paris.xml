@@ -730,7 +730,7 @@
 </roads>
 
 <lines>
-
+	<line name="Empty_line" type="tram" simple="true"/>
 	<line name="tram 1" type="tram" simple="true">
 		<color red="242" green="201" blue="52"/>
 		<line_section from="place Chateau de Vincennes" to="place Nation" direction="undirected">
