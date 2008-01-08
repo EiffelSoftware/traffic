@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 		do
 			create first_window
 			first_window.set_example (create {CONTROL_1})
-			first_window.set_title ("Path building (chapter 6)")
+			first_window.set_title ("Control Structures (chapter 7)")
 			first_window.show
 		end
 
