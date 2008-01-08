@@ -98,6 +98,7 @@ feature {NONE} -- Creation
 			extend (a_road)
 		end
 
+
 feature -- Access
 
 	type: TRAFFIC_TYPE is

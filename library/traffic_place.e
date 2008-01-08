@@ -364,7 +364,7 @@ feature -- Constants
 
 	Hub_size: INTEGER is 8
 			-- A place is considered a hub if it has more than `Hub_size' outgoing connections (or since lines are bidirection `Hub_size'/2 lines)
-			
+
 feature {NONE} -- Implementation
 
 	is_stop_of_line (a_stop: TRAFFIC_STOP; a_line: TRAFFIC_LINE): BOOLEAN is
