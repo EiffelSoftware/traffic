@@ -53,6 +53,9 @@ feature -- Access (Paris)
 	Wait_time: INTEGER is 4
 			-- Time to wait in feature `wait'
 
+	Short_wait_time: INTEGER is 1
+			-- Intervall time for the blinking action
+
 	Paris: TRAFFIC_MAP is
 			-- Object representing the city of Paris
 		local
@@ -81,6 +84,7 @@ feature -- Access (Paris)
 					is_zurich_loaded := False
 					b := Louvre
 					b := eiffel_tower
+					b := elysee_palace
 					main_window.move_to_center
 					main_window.canvas.redraw_now
 				end
@@ -148,6 +152,26 @@ feature -- Basic operations
 			main_window.canvas.object_list.delete (s)
 		end
 
+	show_blinking_spot (a_location: TRAFFIC_COORDINATE) is
+			--  Show blinking spot
+		local
+			s: DRAWABLE_SPOT
+		do
+		create s.make (create {REAL_COORDINATE}.make (a_location.x, -a_location.y))
+			s.set_color (create {EV_COLOR}.make_with_8_bit_rgb (255, 255, 0))
+			s.enable_filled
+			s.set_diameter (10)
+
+			main_window.canvas.object_list.put_last (s)
+			short_wait
+			main_window.canvas.object_list.delete (s)
+			short_wait
+			main_window.canvas.object_list.put_last (s)
+			short_wait
+			main_window.canvas.object_list.delete (s)
+			wait
+		end
+
 	show_green_spot (a_location: TRAFFIC_COORDINATE) is
 			-- Show a green medium spot at `a_location' for `Wait_time' seconds.
 		local
@@ -174,6 +198,26 @@ feature -- Basic operations
 				create t2.make_now
 			until
 				(t2.compact_time - t1.compact_time).abs > Wait_time
+			loop
+				if not env.application.is_destroyed then
+					env.application.process_events
+				end
+				create t2.make_now
+			end
+		end
+
+	short_wait is
+			-- Wait for `Short_wait_time' seconds.
+		local
+			env: EV_ENVIRONMENT
+			t1, t2: TIME
+		do
+			create env
+			create t1.make_now
+			from
+				create t2.make_now
+			until
+				(t2.compact_time - t1.compact_time).abs > short_wait_time
 			loop
 				if not env.application.is_destroyed then
 					env.application.process_events
