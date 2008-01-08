@@ -281,6 +281,12 @@ feature -- Status report
 			Result := index > count
 		end
 
+	is_before: BOOLEAN is
+			-- Is there no valid position to left of internal cursor?
+		do
+			Result := index = 0
+		end
+
 feature -- Element change
 
 	highlight is
