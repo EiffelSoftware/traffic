@@ -27,6 +27,14 @@ feature -- Status report
 
 feature -- Access (Lines)
 
+	Empty_line: TRAFFIC_LINE is
+			-- Line 1 of the Paris map
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result ?= Paris.lines.item ("Empty_line")
+		end
+
 	Line1: TRAFFIC_LINE is
 			-- Line 1 of the Paris map
 		require
@@ -208,6 +216,17 @@ feature -- Predefined objects (Buildings)
 		once
 			create Result.make (Paris.places.item ("Tour Eiffel").position,
 				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\eiffel.png", Windows_file_system)))
+			Paris.buildings.put_last (Result)
+		end
+
+	Elysee_palace: TRAFFIC_LANDMARK is
+			-- The Elysee_palace building
+		require
+			Paris_exists: is_paris_loaded
+		once
+
+			create Result.make (Paris.places.item ("Champs Elysee - Etoile").position,
+				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\placedesvosges.png", Windows_file_system)))
 			Paris.buildings.put_last (Result)
 		end
 
@@ -527,6 +546,16 @@ feature --Predefined Objects (Roads)
 			Paris_exists: is_paris_loaded
 		once
 			Result := Paris.roads.item (91).other_way
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Road_Champs_Elysee_Etoile_to_place_Charles_de_Gaulle_Etoile: TRAFFIC_ROAD_CONNECTION is
+			-- Road from Champs Elysee-Etoile to the metro station place Charles de Gaulle
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.roads.item (93).other_way
 		ensure
 			Result_exists: Result /= Void
 		end
