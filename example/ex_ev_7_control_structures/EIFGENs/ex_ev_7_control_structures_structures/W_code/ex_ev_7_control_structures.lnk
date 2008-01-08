@@ -1,0 +1,11 @@
+-STACK:5000000 -NODEFAULTLIB:libc -STACK:5000000 -NODEFAULTLIB:libc -SUBSYSTEM:WINDOWS -OUT:ex_ev_7_control_structures.exe 
+e1\emain.obj 
+"C:\Program Files\Eiffel Software\EiffelStudio 6.0 GPL\studio\spec\windows\lib\msc\wkbench.lib" "C:\Program Files\Eiffel Software\EiffelStudio 6.0 GPL\library\vision2\spec\msc\windows\lib\vision2.lib" "C:\Program Files\Eiffel Software\EiffelStudio 6.0 GPL\library\vision2\spec\msc\windows\lib\zlib.lib" "C:\Program Files\Eiffel Software\EiffelStudio 6.0 GPL\library\vision2\spec\msc\windows\lib\libpng.lib" "C:\Program Files\Eiffel Software\EiffelStudio 6.0 GPL\library\wel\spec\msc\windows\lib\wel.lib" 
+USER32.lib WSOCK32.lib ADVAPI32.lib GDI32.lib SHELL32.lib MSIMG32.lib COMDLG32.lib UUID.lib OLE32.lib OLEAUT32.lib COMCTL32.lib MPR.LIB "c:\program files\eiffel software\eiffelstudio 6.0 gpl\precomp\spec\windows\EIFGENs\vision2\W_code\msc\precomp.lib" 
+ex_ev_7_control_structures.res 
+E1\eparents.obj E1\einit.obj E1\ececil.obj E1\evisib.obj E1\eskelet.obj 
+E1\eplug.obj E1\ecall.obj E1\efrozen.obj E1\epattern.obj E1\eoption.obj 
+C17\Cobj17.lib C16\Cobj16.lib C15\Cobj15.lib C14\Cobj14.lib C13\Cobj13.lib 
+C12\Cobj12.lib C11\Cobj11.lib C10\Cobj10.lib C9\Cobj9.lib C8\Cobj8.lib 
+C7\Cobj7.lib C6\Cobj6.lib C5\Cobj5.lib C4\Cobj4.lib C3\Cobj3.lib 
+C2\Cobj2.lib C1\Cobj1.lib 
