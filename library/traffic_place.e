@@ -152,6 +152,29 @@ feature -- Status report
 			is_exchange: Result = (outgoing_line_connections.count > 2)
 		end
 
+	 is_railway_connection: BOOLEAN is
+             -- Is this a railway connection
+        require
+            not_empty: not outgoing_line_connections.is_empty
+        local
+            found: BOOLEAN
+            i: INTEGER
+        do
+
+               from
+                    i:=1
+               until
+                    i = outgoing_line_connections.count + 1
+               loop
+                    if outgoing_line_connections.item(i).type.name.is_equal("rail") then
+                         found:= True
+                    end
+                    i := i+1
+               end
+               result:= found
+
+          end
+
 	is_hub: BOOLEAN is
 			-- Is this an exchange station (where multiple transportation lines stop)
 		do
