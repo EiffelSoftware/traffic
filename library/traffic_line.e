@@ -208,6 +208,15 @@ feature -- Access
 			-- Line color
 			-- Used as color represenation
 
+	sw_end: TRAFFIC_PLACE is
+			-- End station on South or West side
+			do
+				if not is_empty then
+					Result := terminal_1
+				end
+			end
+
+
 	road_points: DS_ARRAYED_LIST[TRAFFIC_COORDINATE] is
 			-- Polypoints from the roads belonging to this line
 		local
