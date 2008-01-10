@@ -1,10 +1,9 @@
 indexing
-	description: "Deferred class for taxi offices"
+	description: "Class for taxi offices"
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
-	TRAFFIC_TAXI_OFFICE
+class TRAFFIC_TAXI_OFFICE
 
 inherit
 
@@ -26,6 +25,9 @@ inherit
 			add_to_map,
 			remove_from_map
 		end
+create
+	default_create, make_with_color
+
 
 feature {NONE} -- Initialization
 
@@ -54,6 +56,7 @@ feature {NONE} -- Initialization
 			create changed_event
 		end
 
+
 feature -- Access
 
 	available_taxis: TRAFFIC_EVENT_LINKED_LIST[TRAFFIC_TAXI]
@@ -65,21 +68,30 @@ feature -- Access
 	color: TRAFFIC_COLOR
 			-- Color of the taxi office
 
+
 feature -- Basic operations
 
 	add_taxi (a_taxi: TRAFFIC_TAXI) is
-			-- Add `a_taxi' to this office.
+			-- Add `a_taxi' to the taxi_list of the office.
 		require
 			a_taxi_valid: a_taxi /= Void
-		deferred
+		do
+			available_taxis.force_last(a_taxi)
+			taxis.force_last (available_taxis.last)
 		end
 
-	remove_taxi (a_taxi: TRAFFIC_TAXI) is
+	remove_taxi (a_taxi:TRAFFIC_TAXI) is
 			-- Remove `a_taxi' from current taxi office.
 		require
 			a_taxi_valid: a_taxi /= Void
-		deferred
+		do
+			available_taxis.delete (a_taxi)
+			taxis.delete (a_taxi)
+			if a_taxi.is_in_map then
+				a_taxi.remove_from_map
+			end
 		end
+
 
 	call (from_location:TRAFFIC_COORDINATE; to_location:TRAFFIC_COORDINATE) is
 			-- Determine nearest taxi to from_location place, pass request on to this taxi.
@@ -129,6 +141,7 @@ feature -- Status report
 			Result := True
 		end
 
+
 feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
 
 	add_to_map (a_map: TRAFFIC_MAP) is
@@ -163,7 +176,7 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
 
 feature {TRAFFIC_TAXI} -- Basic operations for taxis
 
-	enlist(a_taxi: TRAFFIC_TAXI) is
+	enlist(a_taxi:TRAFFIC_TAXI) is
 			-- Put a_taxi into available list.
 		require
 			a_taxi_not_busy: a_taxi.busy = false
@@ -186,16 +199,17 @@ feature {TRAFFIC_TAXI} -- Basic operations for taxis
 		end
 
 	recall(from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
-				-- Recall request.
-				-- E.g. when a taxi reject to take the request because it picked a passenger up on the street.
+			-- Recall the request again because a taxi rejected to take it.
 		require
 			from_location_not_void: from_location /= void
 			to_location_not_void: to_location /= void
-		deferred
+		do
+			call(from_location, to_location)
 		end
 
 invariant
 	taxis_exists: taxis /= Void
 	available_taxis_exists: available_taxis /= Void
 	color_set: color /= Void
+
 end

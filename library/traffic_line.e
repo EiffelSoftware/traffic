@@ -99,6 +99,52 @@ feature {NONE} -- Initialization
 
 feature -- Measurement
 
+	total_time:REAL is
+			-- Estimated travel time for full line, time measured in seconds.
+		do
+			from
+				start
+				Result:=0.0
+			until
+				index+1 > count
+			loop
+				Result:=Result + time_between(item, i_th(index+1))
+				forth
+			end
+		end
+
+	time_between (a_place,a_next_place: TRAFFIC_PLACE): REAL is
+			-- Calculated the time between 'a_place' and 'a_next_place' the next one in line.
+			-- Usind 'dist_to_time' to scale between time and space.
+			-- Time is given in seconds.
+			local
+				dist_to_time: REAL
+			do
+				dist_to_time:=1
+
+				Result:= distance(a_place,a_next_place)*dist_to_time
+			end
+
+	distance(a_start,a_end: TRAFFIC_PLACE):REAL_64 is
+			-- calculates the distance from 2 places from their coordinates
+			local
+				x_dif,y_dif:REAL_64
+				x_dif_sq,y_dif_sq:REAL_64
+				traffic_distance, real_distance: REAL_64
+
+			do
+				x_dif := (a_end.position.x-a_start.position.x)
+				y_dif := (a_end.position.y-a_start.position.y)
+				x_dif_sq :=x_dif^2
+				y_dif_sq :=y_dif^2
+				traffic_distance:= sqrt(x_dif_sq+y_dif_sq)
+				real_distance:= traffic_distance
+				Result:= real_distance
+
+
+			end
+
+
 	connection_count: INTEGER is
 			-- Number of connections per direction in line
 		do
@@ -260,6 +306,10 @@ feature -- Cursor movement
 		end
 
 feature -- Status report
+
+
+
+
 
 	has (v: TRAFFIC_LINE_CONNECTION): BOOLEAN
 			-- Does list include `v'?

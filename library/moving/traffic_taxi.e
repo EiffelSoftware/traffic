@@ -1,9 +1,9 @@
 indexing
-	description: "Deferred class for taxis working for a taxi office"
+	description: "Class for taxis working for a taxi office"
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class
+class
 	TRAFFIC_TAXI
 
 inherit
@@ -12,17 +12,40 @@ inherit
 		export {TRAFFIC_TAXI_OFFICE}
 			add_to_map,
 			remove_from_map
+		redefine
+			move
 		end
+
+
+
+create
+	make_random
 
 feature {NONE} -- Initialization
 
 	make_random (a_taxi_office: TRAFFIC_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]) is
-			-- Taxi with an associated 'a_taxi_office'.
-			-- The taxi drives around the center in a certain radius (makes sure that it doesn't disappear)
+			-- Create a taxi with an associated 'a_taxi_office'.
+			-- Random speed and stops at 'stops' random positions.
+			-- Set seed of random_number to 'a_seed'.
 		require
 			a_taxi_office_not_void: a_taxi_office /= void
 			valid_number_of_stops: a_point_list /= Void and then a_point_list.count >= 2
-		deferred
+		do
+			create polypoints.make_from_linear (a_point_list)
+			create poly_cursor.make (polypoints)
+			poly_cursor.start
+
+			office := a_taxi_office
+			office.enlist(Current)
+
+			set_reiterate (true)
+			update_coordinates
+			update_angle
+
+			speed := 17
+			start
+			create changed_event
+
 		ensure
 			taxi_office_set: office /= Void
 			polypoints_not_empty: polypoints /= Void and then polypoints.count >= a_point_list.count
@@ -30,8 +53,8 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	office: TRAFFIC_TAXI_OFFICE is deferred end
-			-- Taxi office the taxi works for
+	office : TRAFFIC_TAXI_OFFICE
+			-- Taxi office `Current' works for
 
 feature -- Status report
 
@@ -52,13 +75,44 @@ feature -- Status report
 
 feature -- Basic operations
 
-	take(from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
-			-- Pick up somebody at from_location and bring him or her to  to_location.
-		require
-			from_location_not_void: from_location /= void
-			to_location_not_void: to_location /= void
-		deferred
+	take (from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
+			-- Take a request. Pick somebody up at from_location and bring him or her to to_location.
+			-- If busy inform the taxi office to recall it.
+		do
+			if not busy then
+				-- Set taxi busy and take it out of the available_taxi_list of the office.
+				set_request_information (from_location, to_location)
+				busy := True
+				-- Set is_marked to true so that the view will draw the busy taxi marked.
+				is_marked := True
+				office.delist(Current)
+				update_angle
+				changed_event.publish ([])
+			else
+				office.recall(from_location, to_location)
+			end
 		end
+
+	move is
+			-- Take a tour on the map.
+			-- Set new random directions and if 'Current' has done a request and is available again.
+		do
+			Precursor
+			if has_finished and busy then
+					-- Taxi has fullfilled a request.
+					-- Add new random directions.
+					-- Set new destination
+					origin := position
+					destination := polypoints.first
+					has_finished := false
+					set_reiterate (true)
+					-- Taxi is available again.
+					busy := false
+					is_marked := false
+					office.enlist(Current)
+			end
+		end
+
 
 feature{NONE} --Implementation
 
@@ -99,7 +153,5 @@ feature{NONE} --Implementation
 		end
 
 invariant
-
-	office_not_void: office /= void
 
 end
