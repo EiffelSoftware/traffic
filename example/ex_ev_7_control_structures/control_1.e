@@ -1,8 +1,8 @@
 indexing
 	description: "Control Structures (Chapter 7, Touch of Class)"
 	author: "Corinne Mueller"
-	date: "$Date$"
-	revision: "$Revision$"
+	date: "10.01.2008"
+	revision: "1.0.0"
 
 class
 	CONTROL_1
@@ -19,9 +19,9 @@ feature -- Path building
 		do
 			Paris.display
 		--	make_path
-		--	traverse_line(line8)
-		--	show_blinking_spots_on_exchanges (line8)
-		--	show_red_spots_on_railway (line8)
+			traverse_line(line8)
+			show_blinking_spots_on_exchanges (line8)
+			show_red_spots_on_railway (line8)
 		end
 
 
