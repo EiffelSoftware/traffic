@@ -42,9 +42,33 @@ feature {NONE} -- Initialization
 			is_directed: is_directed
 		end
 
+
+feature -- Measure
+
+
+	travel_time(speed: REAL):REAL_64 is
+			-- calculates the travel time between 'origin' and 'destination'
+			-- with a certain speed (km/h).Result is given in Minutes.
+			local
+				real_distance_m: REAL_64
+				real_distance_km:REAL_64
+				real_time: REAL_64
+			do
+				if length > 0 then
+					real_distance_m:= length*(map.scale_factor)
+					real_distance_km:= real_distance_m/1000
+					real_time:=(real_distance_km/speed)*60
+				else
+					real_time:=0.0
+				end
+
+				Result:= real_time
+
+			end
+
 feature -- Element change
 
-	set_state (a_state: TRAFFIC_CONNECTION_STATE ) is
+	set_state (a_state: TRAFFIC_CONNECTION_STATE) is
 			-- Change state to `a_state'.
 		require
 			a_state_exists: a_state /= Void
