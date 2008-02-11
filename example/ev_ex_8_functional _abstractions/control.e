@@ -42,14 +42,14 @@ feature -- Path building
 			station_exists: s /= Void
 
 		do
-			if line8.item.is_exchange then
+			if s.is_exchange then
 				Console.show ("is_exchange")
-				show_blinking_spot(Line8.item.position)
-			elseif line8.item.is_railway_connection	then
+				show_blinking_spot(s.position)
+			elseif s.is_railway_connection	then
 				Console.show ("is_railway")
-				show_big_red_spot(line8.item.position)
+				show_big_red_spot(s.position)
 			else
-				show_spot(line8.item.position)
+				show_spot(s.position)
 			end
 
 		end
