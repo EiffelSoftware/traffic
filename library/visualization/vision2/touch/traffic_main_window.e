@@ -50,7 +50,7 @@ feature -- Basic operations
 			-- Set `a_example' to be run when clicking on the `run_button'.
 		do
 			a_example.run (console, Current)
-			run_button.select_actions.extend (agent a_example.explore_on_click)
+			run_button.select_actions.extend (agent a_example.explore)
 		end
 
 feature {NONE} -- GUI building

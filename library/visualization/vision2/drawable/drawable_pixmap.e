@@ -34,6 +34,7 @@ feature -- Initialization
 				a_pixmap_position.x + pixmap.width,
 				a_pixmap_position.y + pixmap.height)
 			set_color (create {EV_COLOR}.make_with_rgb (0.0,0.0,0.0))
+			has_transparency := True
 			create stretched_pixmap
 			is_shown := True
 		ensure
@@ -47,6 +48,9 @@ feature -- Access
 	bounding_box: REAL_RECTANGLE
 			-- Bounding box of the pixmap
 
+	has_transparency: BOOLEAN
+			-- Is color ignored?
+
 feature -- Element change
 
 	set_position (a_coordinate: REAL_COORDINATE) is
@@ -59,6 +63,22 @@ feature -- Element change
 				a_coordinate.x + pixmap.width,
 				a_coordinate.y + pixmap.height)
 
+		end
+
+	enable_transparency is
+			-- Ignore `color' as background color (to allow transparency).
+		do
+			has_transparency := True
+		ensure
+			has_transparency
+		end
+
+	disable_transparency is
+			-- Use `color' as background color (no transparency).
+		do
+			has_transparency := False
+		ensure
+			not has_transparency
 		end
 
 feature {EV_CANVAS} -- Display

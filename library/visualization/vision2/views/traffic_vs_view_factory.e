@@ -10,6 +10,8 @@ inherit
 
 	TRAFFIC_VIEW_FACTORY
 
+	KL_SHARED_FILE_SYSTEM
+
 feature -- Factory methods
 
 	new_place_view (a_place: TRAFFIC_PLACE): TRAFFIC_PLACE_VIEW is
@@ -59,10 +61,10 @@ feature -- Factory methods
 			create Result.make (a_tram)
 		end
 
-	new_bus_view (a_bus: TRAFFIC_BUS): TRAFFIC_MOVING_VIEW [TRAFFIC_BUS] is
+	new_bus_view (a_bus: TRAFFIC_BUS): TRAFFIC_MOVING_ICON_VIEW [TRAFFIC_BUS] is
 			-- New bus view for `a_bus'
 		do
-			create Result.make (a_bus)
+			create Result.make_with_filename (a_bus, "")
 			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (40, 30, 230))
 		end
 
@@ -73,10 +75,11 @@ feature -- Factory methods
 			Result.set_color (a_taxi.office.color)
 		end
 
-	new_passenger_view (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_MOVING_VIEW [TRAFFIC_PASSENGER] is
+	new_passenger_view (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_MOVING_ICON_VIEW [TRAFFIC_PASSENGER] is
 			-- New passenger view for `a_passenger'
 		do
-			create Result.make (a_passenger)
+		--	create Result.make (a_passenger)
+			create Result.make_with_filename (a_passenger, File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\man.png", Windows_file_system)))
 			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (140, 200, 225))
 		end
 

@@ -12,8 +12,8 @@ inherit
 
 feature -- Explore Paris
 
-	explore_on_click is
-			-- Explore Paris!
+	explore is
+			-- Show city info and route.
 		do
 			Paris.display
 			wait

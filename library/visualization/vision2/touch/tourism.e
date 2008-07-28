@@ -23,17 +23,17 @@ feature -- Access
 		do
 			console := a_console
 			main_window := a_main_window
-			explore
+			explore_at_startup
 		end
 
 feature  -- Example main feature
 
-	explore is
+	explore_at_startup is
 			-- Executed on startup.
 		do
 		end
 
-	explore_on_click is
+	explore is
 			-- Executed when the button is clicked.
 		deferred
 		end

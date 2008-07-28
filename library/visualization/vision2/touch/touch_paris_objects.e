@@ -226,7 +226,7 @@ feature -- Predefined objects (Buildings)
 		once
 
 			create Result.make (Paris.places.item ("Champs Elysee - Etoile").position,
-				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\placedesvosges.png", Windows_file_system)))
+				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\triomphe.png", Windows_file_system)))
 			Paris.buildings.put_last (Result)
 		end
 
@@ -257,11 +257,13 @@ feature -- Predefined objects (Routes)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			s: TRAFFIC_PATH_SECTION
+			s, t: TRAFFIC_PATH_SECTION
 		once
 			create Result
-			create s.make_tram (Place_Nation_Place_Republique)
+			create s.make_tram (tram7_louvre_chatelet)
 			Result.set_first (s)
+			create t.make_rail (rerB_Place_Chatelet_Place_Notre_Dame)
+			s.set_next (t)
 			Paris.paths.put_last (Result)
 		end
 
@@ -280,7 +282,44 @@ feature -- Predefined objects (Routes)
 			Result.first.set_next (s)
 		end
 
+	Route3: TRAFFIC_PATH is
+			-- Route one
+		require
+			Paris_exists: is_paris_loaded
+		local
+			s: TRAFFIC_PATH_SECTION
+		once
+			create Result
+			create s.make_tram (Place_Nation_Place_Republique)
+			Result.set_first (s)
+			Paris.paths.put_last (Result)
+		end
+
 feature --Predefined objects (Line-Sections)
+
+	tram7_Louvre_Chatelet: TRAFFIC_LINE_CONNECTION is
+			-- Line section connecting Louvre to Chatelet
+		require
+			Paris_exists: is_paris_loaded
+		local
+			p1, p2: TRAFFIC_PLACE
+			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+		once
+			p1 := Paris.places.item ("place Palais Royal Musee du Louvre")
+			p2 := Paris.places.item ("place Chatelet")
+			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
+			from
+				line_sections.start
+			until
+				line_sections.off or else (	line_sections.item_for_iteration.destination = p2 and
+											line_sections.item_for_iteration.type.is_equal (create {TRAFFIC_TYPE_TRAM}.make))
+			loop
+				line_sections.forth
+			end
+			Result := line_sections.item_for_iteration
+		ensure
+			Result_exists: Result /= Void
+		end
 
 	Place_Nation_Place_Republique: TRAFFIC_LINE_CONNECTION is
 			-- the line section connecting Place Nation and Place Pere Lachaise
