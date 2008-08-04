@@ -119,7 +119,7 @@ feature -- Traffic place building
 			place_in_map: a_map.places.has (a_name)
 		end
 
-	place: TRAFFIC_PLACE is
+	place: TRAFFIC_STATION is
 			-- Generated traffic place object
 		require
 			place_available: has_place
@@ -148,8 +148,8 @@ feature -- Line section building
 			a_line_exists: a_line /= Void
 		local
 			pps: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
-			origin_place: TRAFFIC_PLACE
-			destination_place: TRAFFIC_PLACE
+			origin_place: TRAFFIC_STATION
+			destination_place: TRAFFIC_STATION
 			origin_stop: TRAFFIC_STOP
 			destination_stop: TRAFFIC_STOP
 			stop_pos: TRAFFIC_COORDINATE
@@ -329,7 +329,7 @@ feature {NONE} -- Implementation
 	traffic_type_factory: TRAFFIC_TYPE_FACTORY
 			-- Traffic type factory
 
-	internal_place: TRAFFIC_PLACE
+	internal_place: TRAFFIC_STATION
 			-- Internal representation of last created traffic place
 
 	internal_one_direction, internal_other_direction: TRAFFIC_LINE_CONNECTION
@@ -357,8 +357,8 @@ feature {NONE} -- Implementation
 			an_id_exists: an_id/=Void
 		local
 			a_road: TRAFFIC_ROAD_CONNECTION
-			origin_place: TRAFFIC_PLACE
-			destination_place: TRAFFIC_PLACE
+			origin_place: TRAFFIC_STATION
+			destination_place: TRAFFIC_STATION
 			type: TRAFFIC_TYPE_ROAD
 			i: INTEGER
 			origin_node: TRAFFIC_NODE

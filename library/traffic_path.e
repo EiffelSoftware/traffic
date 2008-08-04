@@ -34,7 +34,7 @@ feature -- Access
 	first: TRAFFIC_PATH_SECTION
 			-- First path section
 
-	origin: TRAFFIC_PLACE is
+	origin: TRAFFIC_STATION is
 			-- Origin of the path
 		require
 			first_exists: first /= Void
@@ -42,7 +42,7 @@ feature -- Access
 			Result := first.origin
 		end
 
-	destination: TRAFFIC_PLACE is
+	destination: TRAFFIC_STATION is
 			-- Destination of the path
 		require
 			first_exists: first /= Void

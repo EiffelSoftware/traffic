@@ -8,7 +8,7 @@ class
 
 inherit
 
-	TRAFFIC_VS_VIEW [TRAFFIC_PLACE]
+	TRAFFIC_VS_VIEW [TRAFFIC_STATION]
 		redefine
 			set_highlight_color,
 			set_color,
@@ -32,7 +32,7 @@ create
 
 feature -- Initialization
 
-	make (a_item: TRAFFIC_PLACE) is
+	make (a_item: TRAFFIC_STATION) is
 			-- Initialize view for `a_item'.
 		do
 			item := a_item

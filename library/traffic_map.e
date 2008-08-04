@@ -64,7 +64,7 @@ feature -- TODO
 
 feature -- Status report
 
-	place_at_position (a_point: TRAFFIC_COORDINATE): TRAFFIC_PLACE	is
+	place_at_position (a_point: TRAFFIC_COORDINATE): TRAFFIC_STATION	is
 			-- Place that `a_point' is located on
 			-- Returns Void if there is no place at this position
 		require
@@ -191,7 +191,7 @@ feature -- Access
 
 feature -- Access (map objects)
 
-	places: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_PLACE, STRING]
+	places: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_STATION, STRING]
 			-- All places in map
 
 	line_sections: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]

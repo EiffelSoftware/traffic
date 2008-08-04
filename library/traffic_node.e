@@ -31,7 +31,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make_with_place (a_place: TRAFFIC_PLACE; a_position: TRAFFIC_COORDINATE) is
+	make_with_place (a_place: TRAFFIC_STATION; a_position: TRAFFIC_COORDINATE) is
 			-- Initialize `Current'.
 		require
 			place_not_void: a_place /= Void
@@ -59,7 +59,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	place: TRAFFIC_PLACE
+	place: TRAFFIC_STATION
 			-- Place that it belongs to
 
 	position: TRAFFIC_COORDINATE
@@ -101,7 +101,7 @@ feature -- Status report
 			Result := True
 		end
 
-feature {TRAFFIC_PLACE} -- Basic operations (map)
+feature {TRAFFIC_STATION} -- Basic operations (map)
 
 	add_to_map (a_map: TRAFFIC_MAP) is
 			-- Add `Current' and all nodes to `a_map'.

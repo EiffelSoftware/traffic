@@ -77,7 +77,7 @@ feature -- Access (Lines)
 
 feature  -- Predefined objects (Places)
 
-	Place_Balard: TRAFFIC_PLACE is
+	Place_Balard: TRAFFIC_STATION is
 			-- Place Balard
 		require
 			Paris_exists: is_paris_loaded
@@ -87,7 +87,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_Issy: TRAFFIC_PLACE is
+	Place_Issy: TRAFFIC_STATION is
 			-- Place Issy
 		require
 			Paris_exists: is_paris_loaded
@@ -97,7 +97,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_Montrouge: TRAFFIC_PLACE is
+	Place_Montrouge: TRAFFIC_STATION is
 			-- Place Montrouge
 		require
 			Paris_exists: is_paris_loaded
@@ -107,7 +107,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_Gare_de_Lyon: TRAFFIC_PLACE is
+	Place_Gare_de_Lyon: TRAFFIC_STATION is
 			-- PLACE Gare de Lyon
 		require
 			Paris_exists: is_paris_loaded
@@ -117,7 +117,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_Invalides: TRAFFIC_PLACE is
+	Place_Invalides: TRAFFIC_STATION is
 			-- Place Invalides
 		require
 			Paris_exists: is_paris_loaded
@@ -127,7 +127,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_Madeleine: TRAFFIC_PLACE is
+	Place_Madeleine: TRAFFIC_STATION is
 			-- Place Madeleine
 		require
 			Paris_exists: is_paris_loaded
@@ -137,7 +137,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_Bobigny_Pablo_Picasso: TRAFFIC_PLACE is
+	Place_Bobigny_Pablo_Picasso: TRAFFIC_STATION is
 			-- Place Bobigny - Pablo Picasso
 		require
 			Paris_exists: is_paris_loaded
@@ -147,7 +147,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_La_Fourche: TRAFFIC_PLACE is
+	Place_La_Fourche: TRAFFIC_STATION is
 			-- Place La Fourche
 		require
 			Paris_exists: is_paris_loaded
@@ -157,7 +157,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_Bastille: TRAFFIC_PLACE is
+	Place_Bastille: TRAFFIC_STATION is
 			-- Place Bastille
 		require
 			Paris_exists: is_paris_loaded
@@ -167,7 +167,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_Concorde: TRAFFIC_PLACE is
+	Place_Concorde: TRAFFIC_STATION is
 			-- Place Concorde
 		require
 			Paris_exists: is_paris_loaded
@@ -177,7 +177,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_Republique: TRAFFIC_PLACE is
+	Place_Republique: TRAFFIC_STATION is
 			-- Place Republique
 		require
 			Paris_exists: is_paris_loaded
@@ -187,7 +187,7 @@ feature  -- Predefined objects (Places)
 			Result_exists: Result /= Void
 		end
 
-	Place_La_Motte_Picquet_Grenelle: TRAFFIC_PLACE is
+	Place_La_Motte_Picquet_Grenelle: TRAFFIC_STATION is
 			-- Place La Motte - Picquet - Grenelle
 		require
 			Paris_exists: is_paris_loaded
@@ -303,7 +303,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Palais Royal Musee du Louvre")
@@ -327,7 +327,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Nation")
@@ -351,7 +351,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Republique")
@@ -375,7 +375,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Hotel de Ville")
@@ -399,7 +399,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Charles de Gaulle - Etoile")
@@ -423,7 +423,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Trocadero")
@@ -447,7 +447,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Chatelet")
@@ -471,7 +471,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Opera")
@@ -495,7 +495,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Charles de Gaulle - Etoile")
@@ -519,7 +519,7 @@ feature --Predefined objects (Line-Sections)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
 			p1 := Paris.places.item ("place Chatelet")
@@ -544,7 +544,7 @@ feature --Predefined objects (Line-Sections)
 			Paris_exists: is_paris_loaded
 		local
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 		once
 			p1 := Paris.places.item ("place Invalides")
 			p2 := Paris.places.item ("place Champs de Mars, Tour Eiffel, Bir-Hakeim")
@@ -568,7 +568,7 @@ feature --Predefined objects (Line-Sections)
 			Paris_exists: is_paris_loaded
 		local
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 		once
 			p1 := Paris.places.item ("place St Michel - Notre Dame")
 			p2 := Paris.places.item ("place Invalides")

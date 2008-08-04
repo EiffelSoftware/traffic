@@ -8,7 +8,7 @@ deferred class
 
 feature -- Factory methods
 
-	new_place_view (a_place: TRAFFIC_PLACE): TRAFFIC_VIEW [TRAFFIC_PLACE] is
+	new_place_view (a_place: TRAFFIC_STATION): TRAFFIC_VIEW [TRAFFIC_STATION] is
 			-- New place view for `a_place'
 		require
 			a_place_exists: a_place /= Void

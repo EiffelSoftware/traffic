@@ -25,7 +25,7 @@ feature -- Access
 		deferred
 		end
 
-	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VIEW [TRAFFIC_PLACE]]
+	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_STATION, TRAFFIC_VIEW [TRAFFIC_STATION]]
 			-- Container for place views
 		deferred
 		end
@@ -57,7 +57,7 @@ feature -- Element change
 			path_representations_exists: path_representations /= Void
 		local
 			l: TRAFFIC_VIEW [TRAFFIC_LINE]
-			p: TRAFFIC_VIEW [TRAFFIC_PLACE]
+			p: TRAFFIC_VIEW [TRAFFIC_STATION]
 			r: TRAFFIC_VIEW [TRAFFIC_ROAD]
 		do
 			map := a_map
@@ -196,7 +196,7 @@ feature -- Status setting
 
 feature {NONE} -- Implementation (view adding)
 
-	add_place (a_place: TRAFFIC_PLACE) is
+	add_place (a_place: TRAFFIC_STATION) is
 			-- Add place view for `a_place'.
 		require
 			a_place_exists: a_place /= Void
@@ -298,7 +298,7 @@ feature {NONE} -- Implementation (view adding)
 
 feature {NONE} -- Implementation (view removing)
 
-	remove_place (a_place: TRAFFIC_PLACE) is
+	remove_place (a_place: TRAFFIC_STATION) is
 			-- Remove view for `a_place'.
 		require
 			a_place_exists: a_place /= Void

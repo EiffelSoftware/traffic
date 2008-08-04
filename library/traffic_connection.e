@@ -107,13 +107,13 @@ feature -- Access
 	type: TRAFFIC_TYPE
 			-- Type of the line section
 
-	origin: TRAFFIC_PLACE is
+	origin: TRAFFIC_STATION is
 			-- Place of origin.
 		do
 			Result := start_node.place
 		end
 
-	destination: TRAFFIC_PLACE is
+	destination: TRAFFIC_STATION is
 			-- Place of destination.
 		do
 			Result := end_node.place

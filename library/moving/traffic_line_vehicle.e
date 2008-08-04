@@ -33,7 +33,7 @@ feature -- Element change
 			line_set: line = a_line
 		end
 
-	set_to_station (a_place: TRAFFIC_PLACE) is
+	set_to_station (a_place: TRAFFIC_STATION) is
 			-- Set the line vehicle to `a_place'.
 		require
 			a_place_not_void: a_place /= Void
@@ -74,7 +74,7 @@ feature --Access
 	line: TRAFFIC_LINE
 			-- Line on which `Current' moves
 
-	next_station: TRAFFIC_PLACE
+	next_station: TRAFFIC_STATION
 			-- Next station the line vehicle stops at
 
 	schedule: TRAFFIC_LINE_SCHEDULE

@@ -33,12 +33,12 @@ feature -- Access
 	index: INTEGER
 			-- Internal cursor index
 
-	i_th (i: INTEGER): TRAFFIC_PLACE is
+	i_th (i: INTEGER): TRAFFIC_STATION is
 			-- The station of index i on this line		
 		do
 		end
 
-	item: TRAFFIC_PLACE is
+	item: TRAFFIC_STATION is
 			-- Item at internal cursor position of line
 		do
 		end
@@ -54,13 +54,13 @@ feature -- Access
 	type: TRAFFIC_TYPE_LINE
 			-- Type of line
 
-	old_terminal_1: TRAFFIC_PLACE
+	old_terminal_1: TRAFFIC_STATION
 			-- Old terminal (after deletion via `remove_all_connections')
 
-	terminal_1: TRAFFIC_PLACE
+	terminal_1: TRAFFIC_STATION
 			-- Terminal of line in one direction
 
-	terminal_2: TRAFFIC_PLACE
+	terminal_2: TRAFFIC_STATION
 			-- Terminal of line in other direction
 
 	color: TRAFFIC_COLOR
@@ -166,7 +166,7 @@ feature -- Status report
 		do
 		end
 
-	is_terminal (a_terminal: TRAFFIC_PLACE): BOOLEAN is
+	is_terminal (a_terminal: TRAFFIC_STATION): BOOLEAN is
 			-- Is `a_terminal' a terminal of line?
 		do
 		end
@@ -183,12 +183,12 @@ feature -- Basic operations
 		do
 		end
 
-	extend (a_place: TRAFFIC_PLACE) is
+	extend (a_place: TRAFFIC_STATION) is
 			-- Add connection to `a_place' at end.
 		do
 		end
 
-	prepend (a_place: TRAFFIC_PLACE) is
+	prepend (a_place: TRAFFIC_STATION) is
 			-- Add connection from `a_place' to the beginning of the line.
 		do
 		end

@@ -295,7 +295,7 @@ feature {NONE} -- Implementation
 			Result_exists: Result /= Void
 		end
 
-	new_place_view (a_item: TRAFFIC_PLACE): DRAWABLE_ROUNDED_RECTANGLE is
+	new_place_view (a_item: TRAFFIC_STATION): DRAWABLE_ROUNDED_RECTANGLE is
 			-- Generate place view for `a_item'.
 		do
 			create Result.make (create {REAL_COORDINATE}.make ((a_item.position.x-(a_item.width/2).max(5)), (-a_item.position.y-(a_item.breadth/2).max(5))),

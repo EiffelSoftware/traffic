@@ -107,13 +107,13 @@ feature -- Access
 			Result := connections.first.type
 		end
 
-	origin: TRAFFIC_PLACE is
+	origin: TRAFFIC_STATION is
 			-- Origin of the path
 		do
 			Result := connections.first.origin
 		end
 
-	destination: TRAFFIC_PLACE is
+	destination: TRAFFIC_STATION is
 			-- Destination of the path
 		do
 			Result := connections.last.destination

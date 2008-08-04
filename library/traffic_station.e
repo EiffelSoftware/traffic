@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_PLACE
+	TRAFFIC_STATION
 
 inherit
 	HASHABLE
@@ -105,7 +105,7 @@ feature -- Access
 	information: TRAFFIC_PLACE_INFORMATION
 			-- Additional information.
 
-	schedule: LINKED_LIST[TUPLE[TRAFFIC_LINE_VEHICLE, TIME, TRAFFIC_PLACE]]
+	schedule: LINKED_LIST[TUPLE[TRAFFIC_LINE_VEHICLE, TIME, TRAFFIC_STATION]]
 			-- All departure times [tram, time, direction] of trams visiting this place
 
 	nodes: ARRAYED_LIST [TRAFFIC_NODE]
@@ -299,14 +299,14 @@ feature -- Element change
 
 feature -- Basic operations
 
-	register_in_schedule (an_object: TRAFFIC_LINE_VEHICLE; time: TIME; target: TRAFFIC_PLACE) is
+	register_in_schedule (an_object: TRAFFIC_LINE_VEHICLE; time: TIME; target: TRAFFIC_STATION) is
 			-- Register a visiting tram in the schedule.
 		require
 			valid_object: an_object /= Void
 			valid_time: time /= Void
 			valid_target: target /= Void
 		local
-			entry: TUPLE[TRAFFIC_LINE_VEHICLE, TIME, TRAFFIC_PLACE]
+			entry: TUPLE[TRAFFIC_LINE_VEHICLE, TIME, TRAFFIC_STATION]
 		do
 			create entry
 			entry.put (an_object, 1)

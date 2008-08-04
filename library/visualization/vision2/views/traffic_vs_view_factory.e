@@ -14,7 +14,7 @@ inherit
 
 feature -- Factory methods
 
-	new_place_view (a_place: TRAFFIC_PLACE): TRAFFIC_PLACE_VIEW is
+	new_place_view (a_place: TRAFFIC_STATION): TRAFFIC_PLACE_VIEW is
 			-- New place view for `a_place'
 		do
 			create Result.make (a_place)

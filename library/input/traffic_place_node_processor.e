@@ -20,7 +20,7 @@ feature -- Access
 	Name: STRING is "place"
 			-- Name of node to process
 
-	place: TRAFFIC_PLACE
+	place: TRAFFIC_STATION
 			-- Reference to node
 
 	Mandatory_attributes: ARRAY [STRING] is

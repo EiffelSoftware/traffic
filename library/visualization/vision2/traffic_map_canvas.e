@@ -119,7 +119,7 @@ feature -- Access
 			Result := internal_path_representations
 		end
 
-	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PLACE, TRAFFIC_VIEW [TRAFFIC_PLACE]]
+	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_STATION, TRAFFIC_VIEW [TRAFFIC_STATION]]
 			-- Container for place views
 		do
 			Result := internal_place_representations
@@ -192,7 +192,7 @@ feature {NONE} -- Implementation
 	internal_path_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PATH]
 	internal_line_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_LINE]
 	internal_road_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_ROAD]
-	internal_place_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PLACE]
+	internal_place_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_STATION]
 	internal_building_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_BUILDING]
 	background_image: EV_PIXMAP
 

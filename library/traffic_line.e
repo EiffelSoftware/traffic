@@ -76,7 +76,7 @@ feature {NONE} -- Initialization
 			other_direction_exists: other_direction /= Void
 		end
 
-	make_with_terminal (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_place: TRAFFIC_PLACE) is
+	make_with_terminal (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_place: TRAFFIC_STATION) is
 			-- Create a line with a name `a_name' of type `a_type' and a planned terminal `a_place'.
 		require
 			a_name_exists: a_name /= Void
@@ -136,7 +136,7 @@ feature -- Access
 	index: INTEGER
 			-- Internal cursor index
 
-	i_th (i: INTEGER): TRAFFIC_PLACE is
+	i_th (i: INTEGER): TRAFFIC_STATION is
 			-- The station of index i on this line		
 		require
 			not_too_small: i >= 1
@@ -149,7 +149,7 @@ feature -- Access
 			end
 		end
 
-	item: TRAFFIC_PLACE is
+	item: TRAFFIC_STATION is
 			-- Item at internal cursor position of line
 		require
 			not_after: not after
@@ -169,20 +169,20 @@ feature -- Access
 	type: TRAFFIC_TYPE_LINE
 			-- Type of line
 
-	old_terminal_1: TRAFFIC_PLACE
+	old_terminal_1: TRAFFIC_STATION
 			-- Old terminal (after deletion via `remove_all_connections')
 
-	terminal_1: TRAFFIC_PLACE
+	terminal_1: TRAFFIC_STATION
 			-- Terminal of line in one direction
 
-	terminal_2: TRAFFIC_PLACE
+	terminal_2: TRAFFIC_STATION
 			-- Terminal of line in other direction
 
 	color: TRAFFIC_COLOR
 			-- Line color
 			-- Used as color represenation
 
-	sw_end: TRAFFIC_PLACE is
+	sw_end: TRAFFIC_STATION is
 			-- End station on South or West side
 			do
 				if not is_empty then
@@ -557,7 +557,7 @@ feature -- Status report
 			Result := True
 		end
 
-	is_terminal (a_terminal: TRAFFIC_PLACE): BOOLEAN is
+	is_terminal (a_terminal: TRAFFIC_STATION): BOOLEAN is
 			-- Is `a_terminal' a terminal of line?
 		require
 			a_terminal_exists: a_terminal /= Void
@@ -619,7 +619,7 @@ feature -- Basic operations
 			element_inserted_event.publish ([l2])
 		end
 
-	extend (a_place: TRAFFIC_PLACE) is
+	extend (a_place: TRAFFIC_STATION) is
 			-- Add connection to `a_place' at end.
 		require
 			has_terminal_1: old_terminal_1 /= Void
@@ -664,7 +664,7 @@ feature -- Basic operations
 			one_more: count = old count + 1
 		end
 
-	prepend (a_place: TRAFFIC_PLACE) is
+	prepend (a_place: TRAFFIC_STATION) is
 			-- Add connection from `a_place' to the beginning of the line.
 		require
 			has_terminal_1: old_terminal_1 /= Void
