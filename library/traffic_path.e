@@ -172,6 +172,18 @@ feature -- Output
 
 feature -- Basic operations
 
+	animate is
+			-- Create passenger that walks along `Current', add it to map, and make it start walking.
+		require
+			map_has_route: is_in_map
+		local
+			passenger: TRAFFIC_PASSENGER
+		do
+			create passenger.make_with_path (Current, 5.0)
+			map.passengers.put_last (passenger)
+			passenger.go
+		end
+
 	append (a_path: TRAFFIC_PATH) is
 			-- append a TRAFFIC_PATH `a_path' at the end of the actual path
 		require

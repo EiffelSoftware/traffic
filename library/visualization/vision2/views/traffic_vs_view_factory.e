@@ -79,7 +79,7 @@ feature -- Factory methods
 			-- New passenger view for `a_passenger'
 		do
 		--	create Result.make (a_passenger)
-			create Result.make_with_filename (a_passenger, File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\man.png", Windows_file_system)))
+			create Result.make_with_filename (a_passenger, File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\man.png", Windows_file_system)))
 			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (140, 200, 225))
 		end
 

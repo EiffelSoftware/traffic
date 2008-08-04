@@ -12,7 +12,7 @@ inherit
 
 feature -- Commands and Queries
 
-	explore_on_click is
+	explore is
 			-- Try commands and queries.
 		do
 			Paris.display

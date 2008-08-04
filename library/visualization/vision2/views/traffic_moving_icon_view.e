@@ -134,7 +134,6 @@ feature -- Basic operations
 			rectangle.set_points (    create {REAL_COORDINATE}.make (icon.bounding_box.point_a.x -5 -5, icon.bounding_box.point_a.y-5),
 							create {REAL_COORDINATE}.make (icon.bounding_box.point_b.x +5, icon.bounding_box.point_b.x +5))
 			Precursor (a_target)
-			io.put_string ("Moving %N")
 		end
 
 

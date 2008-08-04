@@ -17,17 +17,12 @@ feature -- Explore Paris
 		do
 			Paris.display
 			wait
-			Line8.highlight
-			wait
-			Route1.illuminate
-			wait
-			Michela.go
-			wait
 			Louvre.spotlight
 			wait
-			Line8.unhighlight
-			Route1.unilluminate
-			Louvre.unspotlight
+			Line8.highlight
+			wait
+			Route1.animate
+			wait
 			Console.show (Line8)
 			Console.show (Route1)
 		end

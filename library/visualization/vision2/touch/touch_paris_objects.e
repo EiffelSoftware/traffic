@@ -280,6 +280,7 @@ feature -- Predefined objects (Routes)
 			Result.set_first (s)
 			create s.make_rail (rera_place_chatelet_place_opera)
 			Result.first.set_next (s)
+			Paris.paths.put_last (Result)
 		end
 
 	Route3: TRAFFIC_PATH is
@@ -442,7 +443,7 @@ feature --Predefined objects (Line-Sections)
 		end
 
 	rerA_Place_Chatelet_Place_Opera: TRAFFIC_LINE_CONNECTION is
-			--the line section connecting Place Republique and Place Opera
+			--the line section connecting Place Chatelet and Place Opera
 		require
 			Paris_exists: is_paris_loaded
 		local
@@ -451,6 +452,54 @@ feature --Predefined objects (Line-Sections)
 		once
 			p1 := Paris.places.item ("place Chatelet")
 			p2 := Paris.places.item ("place Opera")
+			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
+			from
+				line_sections.start
+			until
+				line_sections.off or else
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER A"))
+			loop
+				line_sections.forth
+			end
+			Result := line_sections.item_for_iteration
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	rerA_Place_Opera_Place_Etoile: TRAFFIC_LINE_CONNECTION is
+			--the line section connecting Place Opera and Place Etoile
+		require
+			Paris_exists: is_paris_loaded
+		local
+			p1, p2: TRAFFIC_PLACE
+			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+		once
+			p1 := Paris.places.item ("place Opera")
+			p2 := Paris.places.item ("place Charles de Gaulle - Etoile")
+			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
+			from
+				line_sections.start
+			until
+				line_sections.off or else
+				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER A"))
+			loop
+				line_sections.forth
+			end
+			Result := line_sections.item_for_iteration
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	rerA_Place_Etoile_Place_Cergy: TRAFFIC_LINE_CONNECTION is
+			--the line section connecting Place Etoile and Place Cergy
+		require
+			Paris_exists: is_paris_loaded
+		local
+			p1, p2: TRAFFIC_PLACE
+			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+		once
+			p1 := Paris.places.item ("place Charles de Gaulle - Etoile")
+			p2 := Paris.places.item ("place Cergy")
 			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
 			from
 				line_sections.start

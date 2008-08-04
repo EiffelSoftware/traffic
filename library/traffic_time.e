@@ -57,7 +57,7 @@ feature  -- Access
 			end
 		ensure
 			Result_exists: Result /= Void
-			Result_positive: Result.is_positive
+			Result_positive_or_zero: Result.is_positive or Result.is_zero
 		end
 
 feature -- Status report
