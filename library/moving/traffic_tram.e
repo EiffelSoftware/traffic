@@ -54,7 +54,7 @@ feature -- Initialization
 			schedule_offset_minutes := an_offset
 			schedule_index := 1
 
-			-- Register us in all places we visit
+			-- Register us in all stations we visit
 			register_in_place_schedule
 
 			-- Set position to first entry in schedule

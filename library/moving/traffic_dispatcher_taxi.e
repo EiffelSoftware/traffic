@@ -8,9 +8,10 @@ class
 
 inherit
 	TRAFFIC_TAXI
-	
+
 		redefine
-			make_random, move
+			make_random, move,
+			office, take
 		end
 
 create

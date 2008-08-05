@@ -111,7 +111,7 @@ feature -- Basic operations
 		end
 
 	highlight is
-			-- Highlight the place view.
+			-- Highlight the view.
 		do
 			if highlight_color /= Void then
 				from
@@ -136,7 +136,7 @@ feature -- Basic operations
 		end
 
 	unhighlight is
-			-- Unhighlight the place view.
+			-- Unhighlight the view.
 		do
 			if color /= Void then
 				from
@@ -161,7 +161,7 @@ feature -- Basic operations
 		end
 
 	set_color (a_color: TRAFFIC_COLOR) is
-			-- Set the color of the place view to `a_color'.
+			-- Set the color of the view to `a_color'.
 		do
 			color := a_color
 			if not is_highlighted then
@@ -188,7 +188,7 @@ feature -- Basic operations
 		end
 
 	set_highlight_color (a_color: TRAFFIC_COLOR) is
-			-- Set the color of the place view to `a_color'.
+			-- Set the color of the view to `a_color'.
 		do
 			highlight_color := a_color
 			if is_highlighted then

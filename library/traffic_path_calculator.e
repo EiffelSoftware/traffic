@@ -34,7 +34,7 @@ feature -- Access
 
 feature -- Basic operations
 
-	find_shortest_path (a_origin: TRAFFIC_PLACE; a_destination: TRAFFIC_PLACE) is
+	find_shortest_path (a_origin: TRAFFIC_STATION; a_destination: TRAFFIC_STATION) is
 			-- Find shortest path.
 		require
 			a_origin_exists: a_origin /= Void
@@ -57,12 +57,12 @@ feature -- Basic operations
 
 				from temp_path.start until temp_path.after loop
 					if (not (temp_path.item.origin = temp_path.item.destination)) and (path.first = Void) then
-							--don't make path_section for intra-place connections
+							--don't make path_section for intra-station connections
 						create current_ps.make (temp_path.item)
 						path.set_first (current_ps)
 					else
 						if not (temp_path.item.origin = temp_path.item.destination) then
-								--don't make path_section for intra-place connections
+								--don't make path_section for intra-station connections
 							create next_ps.make(temp_path.item)
 							if current_ps.is_insertable (temp_path.item) then
 									--same type of line
@@ -80,28 +80,28 @@ feature -- Basic operations
 			map.graph.set_shortest_path_mode (old_mode)
 		end
 
-	find_shortest_path_of_a_list_of_places(places_to_visit: LINKED_LIST [TRAFFIC_PLACE]) is
-			-- Find shortest path given a list of places `places_to_visit'.
+	find_shortest_path_of_a_list_of_stations(stations_to_visit: LINKED_LIST [TRAFFIC_STATION]) is
+			-- Find shortest path given a list of stations `stations_to_visit'.
 		require
-			places_to_visit_exists: places_to_visit /= Void
-			min_two_places_to_visit: places_to_visit.count > 1
+			stations_to_visit_exists: stations_to_visit /= Void
+			min_two_stations_to_visit: stations_to_visit.count > 1
 		local
 			a_path: TRAFFIC_PATH
-			current_place, next_place: TRAFFIC_PLACE
+			current_s, next_s: TRAFFIC_STATION
 		do
 			create a_path
 			a_path.set_scale_factor (map.scale_factor)
 
 			from
-				places_to_visit.start
+				stations_to_visit.start
 			until
-				places_to_visit.after
+				stations_to_visit.after
 			loop
-				current_place := places_to_visit.item
-				places_to_visit.forth
-				if not places_to_visit.after then
-					next_place := places_to_visit.item
-					find_shortest_path(current_place, next_place)
+				current_s := stations_to_visit.item
+				stations_to_visit.forth
+				if not stations_to_visit.after then
+					next_s := stations_to_visit.item
+					find_shortest_path(current_s, next_s)
 					if is_path_found then
 						a_path.append (path)
 					end

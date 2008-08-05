@@ -1,5 +1,5 @@
 indexing
-	description: "Represents a path from one TRAFFIC_PLACE to another"
+	description: "Represents a path from one TRAFFIC_STATION to another"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -216,7 +216,7 @@ feature -- Basic operations
 			a_path_section_exists: a_path_section /= Void
 		do
 			if not(a_path_section.origin.name.is_equal (a_path_section.destination.name)) then
-					--don't make intra-place sections
+					--don't make intra-station sections
 				first := a_path_section
 			end
 		end

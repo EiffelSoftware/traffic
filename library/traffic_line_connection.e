@@ -1,5 +1,5 @@
 indexing
-	description: "Line section of line from one place to another."
+	description: "Line section of line from one station to another."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -112,7 +112,7 @@ feature -- Status report
 
 	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
 			-- Is `Current' insertable into `a_map'?
-			-- (All places, stops, and the line need to be in the map already)
+			-- (All stations, stops, and the line need to be in the map already)
 		do
 			Result := 	start_node.is_in_map and end_node.is_in_map and
 						origin.is_in_map and destination.is_in_map
@@ -218,8 +218,8 @@ feature {TRAFFIC_LINE} -- Basic operations (map)
 invariant
 
 	line_has_same_type: line /= Void implies equal (line.type, type) -- Only line with same type can be assigned.
-	origin_set: origin /= Void -- Origin place exists.
-	destination_set: origin /= Void -- Destination place exists.
+	origin_set: origin /= Void -- Origin station exists.
+	destination_set: origin /= Void -- Destination station exists.
 	polypoints_valid: polypoints /= Void and then polypoints.count >= 2
 	state_set: state /= Void -- State exists.
 	type_set: type /= Void -- Type exists.

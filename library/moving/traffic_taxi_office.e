@@ -94,7 +94,7 @@ feature -- Basic operations
 
 
 	call (from_location:TRAFFIC_COORDINATE; to_location:TRAFFIC_COORDINATE) is
-			-- Determine nearest taxi to from_location place, pass request on to this taxi.
+			-- Determine nearest taxi to from_location station, pass request on to this taxi.
 		require
 			from_location_not_void: from_location /= void
 			to_location_not_void: to_location /= void

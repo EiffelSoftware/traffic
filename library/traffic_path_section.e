@@ -169,7 +169,7 @@ feature -- Status report
 		end
 
 	is_valid_next (a_path_section: TRAFFIC_PATH_SECTION): BOOLEAN is
-			-- Is the origin of `a_path_section' the same place as the current destination?
+			-- Is the origin of `a_path_section' the same station as the current destination?
 		require
 			a_path_section_exists: a_path_section /= Void
 		do

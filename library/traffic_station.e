@@ -1,5 +1,5 @@
 indexing
-	description: "Place."
+	description: "Stations (or more generally places connected through lines or roads)"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -35,7 +35,7 @@ feature {NONE} -- Initialize
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
-			create dummy_node.make_with_place (Current, create {TRAFFIC_COORDINATE}.make (0.0, 0.0))
+			create dummy_node.make_with_station (Current, create {TRAFFIC_COORDINATE}.make (0.0, 0.0))
 			add_node (dummy_node)
 		ensure
 			name_set: equal (a_name, name)
@@ -50,7 +50,7 @@ feature {NONE} -- Initialize
 		do
 			name := a_name
 			create changed_event
-			create dummy_node.make_with_place (Current, create {TRAFFIC_COORDINATE}.make (a_x, a_y))
+			create dummy_node.make_with_station (Current, create {TRAFFIC_COORDINATE}.make (a_x, a_y))
 			create schedule.make
 			create stops.make (5)
 			create nodes.make (5)
@@ -94,7 +94,7 @@ feature -- Access
 
 
 	name: STRING
-			-- Name of place
+			-- Name of station
 
 	position: TRAFFIC_COORDINATE is
 			-- Position on map
@@ -102,17 +102,17 @@ feature -- Access
 			Result := dummy_node.position
 		end
 
-	information: TRAFFIC_PLACE_INFORMATION
+	information: TRAFFIC_STATION_INFORMATION
 			-- Additional information.
 
 	schedule: LINKED_LIST[TUPLE[TRAFFIC_LINE_VEHICLE, TIME, TRAFFIC_STATION]]
-			-- All departure times [tram, time, direction] of trams visiting this place
+			-- All departure times [tram, time, direction] of trams visiting this station
 
 	nodes: ARRAYED_LIST [TRAFFIC_NODE]
-			-- Nodes that belong to this place
+			-- Nodes that belong to this station
 
 	stops: ARRAYED_LIST[TRAFFIC_STOP]
-			-- All stops of lines stoping at this place
+			-- All stops of lines stoping at this station
 
 	dummy_node: TRAFFIC_NODE
 			-- Node used for shortest path calculation
@@ -129,13 +129,13 @@ feature -- Access
 		end
 
 	width: DOUBLE
-			-- Width of the place (enclosing all stops)
+			-- Width of the station (enclosing all stops)
 
 	breadth: DOUBLE
-			-- Breadth of the place (enclosing all stops)
+			-- Breadth of the station (enclosing all stops)
 
 	hash_code: INTEGER is
-			-- Hash code value.
+			-- Hash code value
 		do
 			Result := name.hash_code
 		end
@@ -187,7 +187,7 @@ feature -- Status report
 		end
 
 	has_stop (a_line: TRAFFIC_LINE): BOOLEAN is
-			-- Does the place have a stop for `a_line'?
+			-- Does the station have a stop for `a_line'?
 		require
 			a_line_exists: a_line /= Void
 		do
@@ -275,7 +275,7 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST}-- Basic operations (map)
 
 feature -- Element change
 
-	set_information (a_information: TRAFFIC_PLACE_INFORMATION) is
+	set_information (a_information: TRAFFIC_STATION_INFORMATION) is
 			-- Set information to `a_information'.
 		require
 			a_information_exists: a_information /= Void
@@ -351,7 +351,7 @@ feature {TRAFFIC_NODE} -- Insertion
 feature -- Output
 
 	out: STRING is
-			-- Textual representation of place.
+			-- Textual representation of station
 		local
 			information_string: STRING
 		do
@@ -380,13 +380,13 @@ feature -- Output
 			else
 				information_string := ""
 			end
-			Result := "Traffic place " + name + " at position " + position.out + information_string
+			Result := "Traffic station " + name + " at position " + position.out + information_string
 		end
 
 feature -- Constants
 
 	Hub_size: INTEGER is 8
-			-- A place is considered a hub if it has more than `Hub_size' outgoing connections (or since lines are bidirection `Hub_size'/2 lines)
+			-- A station is considered a hub if it has more than `Hub_size' outgoing connections (or since lines are bidirection `Hub_size'/2 lines)
 
 feature {NONE} -- Implementation
 
@@ -397,7 +397,7 @@ feature {NONE} -- Implementation
 		end
 
 	update_position is
-			-- Update the position, breadth, and width of the place using the stops positions.
+			-- Update the position, breadth, and width of the station using the stops positions.
 		do
 			if stops.count = 1 then
 				width := 0
@@ -427,6 +427,6 @@ invariant
 	stops_not_void: stops /= Void
 	nodes_not_void: stops /= Void
 	dummy_node_not_void: dummy_node /= Void
-	place_in_map: is_in_map implies map.places.has (name)
+	station_in_map: is_in_map implies map.stations.has (name)
 
 end

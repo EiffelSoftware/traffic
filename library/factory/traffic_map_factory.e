@@ -1,5 +1,5 @@
 indexing
-	description: "Factory for traffic elements like TRAFFIC_PLACE, TRAFFIC_LINE etc."
+	description: "Factory for traffic elements like TRAFFIC_STATION, TRAFFIC_LINE etc."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,7 +25,7 @@ feature {NONE} -- Initialization
 			reset_factory
 		ensure then
 			everything_void: internal_map = Void and
-							 internal_place = Void and
+							 internal_station = Void and
 							 internal_one_direction = Void and
 							 internal_other_direction = Void and
 							 internal_line = Void
@@ -38,13 +38,13 @@ feature -- Initialization
 			-- Reset traffic map factory.
 		do
 			internal_map := Void
-			internal_place := Void
+			internal_station := Void
 			internal_one_direction := Void
 			internal_other_direction := Void
 			internal_line := Void
 		ensure
 			everything_void: internal_map = Void and
-							 internal_place = Void and
+							 internal_station = Void and
 							 internal_one_direction = Void and
 							 internal_other_direction = Void and
 							 internal_line = Void
@@ -82,126 +82,126 @@ feature -- Traffic map building
 			Result := internal_map /= Void
 		end
 
-feature -- Traffic place building
+feature -- Traffic station building
 
-	build_place (a_name: STRING; a_map: TRAFFIC_MAP) is
-			-- Generate new traffic place object with name `a_name' belonging to traffic map `a_map'.
-			-- (Access generated object through feature `place')
+	build_station (a_name: STRING; a_map: TRAFFIC_MAP) is
+			-- Generate new traffic station object with name `a_name' belonging to traffic map `a_map'.
+			-- (Access generated object through feature `station')
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
 			map_exists: has_map
-			unique_name: not a_map.places.has (a_name)
+			unique_name: not a_map.stations.has (a_name)
 		do
-			create internal_place.make (a_name)
-			a_map.places.force (internal_place, internal_place.name)
+			create internal_station.make (a_name)
+			a_map.stations.force (internal_station, internal_station.name)
 		ensure
-			place_created: place /= Void
-			place_has_name: equal (place.name, a_name)
-			place_in_map: a_map.places.has (a_name)
+			created: station /= Void
+			has_name: equal (station.name, a_name)
+			in_map: a_map.stations.has (a_name)
 		end
 
-	build_place_with_position (a_name: STRING; a_x, a_y: INTEGER; a_map: TRAFFIC_MAP) is
-			-- Generate new traffic place object with name `a_name' and
+	build_station_with_position (a_name: STRING; a_x, a_y: INTEGER; a_map: TRAFFIC_MAP) is
+			-- Generate new traffic station object with name `a_name' and
 			-- position (`a_x', `a_y') belonging to traffic map `a_map'.
-			-- (Access generated object through feature `place')
+			-- (Access generated object through feature `station')
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
 			map_exists: has_map
-			unique_name: not a_map.places.has (a_name)
+			unique_name: not a_map.stations.has (a_name)
 		do
-			create internal_place.make_with_position (a_name, a_x, a_y)
-			a_map.places.force (internal_place, internal_place.name)
+			create internal_station.make_with_position (a_name, a_x, a_y)
+			a_map.stations.force (internal_station, internal_station.name)
 		ensure
-			place_created: place /= Void
-			place_has_name: equal (place.name, a_name)
-			place_in_map: a_map.places.has (a_name)
+			created: station /= Void
+			has_name: equal (station.name, a_name)
+			in_map: a_map.stations.has (a_name)
 		end
 
-	place: TRAFFIC_STATION is
-			-- Generated traffic place object
+	station: TRAFFIC_STATION is
+			-- Generated traffic station object
 		require
-			place_available: has_place
+			is_available: has_station
 		do
-			Result := internal_place
+			Result := internal_station
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	has_place: BOOLEAN is
-			-- Is traffic place object available?
+	has_station: BOOLEAN is
+			-- Is traffic station object available?
 		do
-			Result := internal_place /= Void
+			Result := internal_station /= Void
 		end
 
 feature -- Line section building
 
 	build_line_section (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]; a_map: TRAFFIC_MAP; a_line: TRAFFIC_LINE) is
-			-- Generate new traffic line section object going from origin `a_origin' to place named `a_destination'
+			-- Generate new traffic line section object going from origin `a_origin' to `a_destination'
 			-- belonging to line `a_line' in map `a_map'.
 			-- (Access the generated object through feature `line_section')
 		require
 			a_map_exists: a_map /= Void
-			a_origin_exists: a_map.places.has (a_origin)
-			a_destination_exists: a_map.places.has (a_destination)
+			a_origin_exists: a_map.stations.has (a_origin)
+			a_destination_exists: a_map.stations.has (a_destination)
 			a_line_exists: a_line /= Void
 		local
 			pps: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
-			origin_place: TRAFFIC_STATION
-			destination_place: TRAFFIC_STATION
+			origin_s: TRAFFIC_STATION
+			destination_s: TRAFFIC_STATION
 			origin_stop: TRAFFIC_STOP
 			destination_stop: TRAFFIC_STOP
 			stop_pos: TRAFFIC_COORDINATE
 		do
 			if a_polypoints = Void or else a_polypoints.count < 2 then
 				create pps.make (2)
-				pps.force_last (a_map.places.item (a_origin).position)
-				pps.force_last (a_map.places.item (a_destination).position)
+				pps.force_last (a_map.stations.item (a_origin).position)
+				pps.force_last (a_map.stations.item (a_destination).position)
 			else
 				pps := a_polypoints
 			end
-			origin_place := a_map.places.item (a_origin)
-			destination_place := a_map.places.item (a_destination)
+			origin_s := a_map.stations.item (a_origin)
+			destination_s := a_map.stations.item (a_destination)
 
-			if origin_place.has_stop (a_line) then
-				origin_stop := origin_place.stop (a_line)
+			if origin_s.has_stop (a_line) then
+				origin_stop := origin_s.stop (a_line)
 			else
 				create stop_pos.make_from_other (pps.first)
-				create origin_stop.make_stop (origin_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+				create origin_stop.make_stop (origin_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 
-			if destination_place.has_stop (a_line) then
-				destination_stop := destination_place.stop (a_line)
+			if destination_s.has_stop (a_line) then
+				destination_stop := destination_s.stop (a_line)
 			else
 				create stop_pos.make_from_other (pps.last)
-				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+				create destination_stop.make_stop (destination_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 
 			create internal_one_direction.make (origin_stop, destination_stop, a_line.type, pps)
 
 			if a_polypoints = Void or else a_polypoints.count < 2 then
 				create pps.make (2)
-				pps.force_last (a_map.places.item (a_destination).position)
-				pps.force_last (a_map.places.item (a_origin).position)
+				pps.force_last (a_map.stations.item (a_destination).position)
+				pps.force_last (a_map.stations.item (a_origin).position)
 			else
 				pps := a_polypoints
 			end
-			origin_place := a_map.places.item (a_destination)
-			destination_place := a_map.places.item (a_origin)
+			origin_s := a_map.stations.item (a_destination)
+			destination_s := a_map.stations.item (a_origin)
 
-			if origin_place.has_stop (a_line) then
-				origin_stop := origin_place.stop (a_line)
+			if origin_s.has_stop (a_line) then
+				origin_stop := origin_s.stop (a_line)
 			else
 				create stop_pos.make_from_other (pps.first)
-				create origin_stop.make_stop (origin_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+				create origin_stop.make_stop (origin_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 
-			if destination_place.has_stop (a_line) then
-				destination_stop := destination_place.stop (a_line)
+			if destination_s.has_stop (a_line) then
+				destination_stop := destination_s.stop (a_line)
 			else
 				create stop_pos.make_from_other (pps.last)
-				create destination_stop.make_stop (destination_place, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+				create destination_stop.make_stop (destination_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 			create internal_other_direction.make (origin_stop, destination_stop, a_line.type, pps)
 			a_line.put_last (internal_one_direction, internal_other_direction)
@@ -209,8 +209,8 @@ feature -- Line section building
 			line_section_created: connection_one_direction /= Void and connection_other_direction /= Void
 			line_section_has_line: connection_one_direction.line = a_line and connection_other_direction.line = a_line
 			line_section_has_type: equal (connection_one_direction.type, a_line.type) and equal (connection_one_direction.type, a_line.type)
-			line_section_has_origin: connection_one_direction.origin = a_map.places.item (a_origin) and connection_other_direction.destination = a_map.places.item (a_origin)
-			line_section_has_destination: connection_one_direction.destination = a_map.places.item (a_destination) and connection_other_direction.origin = a_map.places.item (a_destination)
+			line_section_has_origin: connection_one_direction.origin = a_map.stations.item (a_origin) and connection_other_direction.destination = a_map.stations.item (a_origin)
+			line_section_has_destination: connection_one_direction.destination = a_map.stations.item (a_destination) and connection_other_direction.origin = a_map.stations.item (a_destination)
 		end
 
 	connection_one_direction: TRAFFIC_LINE_CONNECTION is
@@ -242,13 +242,13 @@ feature -- Line section building
 feature -- Road section building
 
 	build_road (a_origin, a_destination:STRING; a_map: TRAFFIC_MAP; a_type: STRING; an_id:STRING; a_direction:STRING) is
-			-- Generate new traffic road object going from origin `a_origin' to place named `a_destination'
+			-- Generate new traffic road object going from origin `a_origin' to `a_destination'
 			-- belonging to `a_map'.
 			-- (Access the generated object through feature `road')
 		require
 			a_map_exists: a_map /= Void
-			a_origin_exists: a_map.places.has (a_origin)
-			a_destination_exists: a_map.places.has (a_destination)
+			a_origin_exists: a_map.stations.has (a_origin)
+			a_destination_exists: a_map.stations.has (a_destination)
 			an_id_exists: an_id/=Void
 			a_type_exists: a_type/=Void
 			a_direction_exists: a_direction/=Void
@@ -329,8 +329,8 @@ feature {NONE} -- Implementation
 	traffic_type_factory: TRAFFIC_TYPE_FACTORY
 			-- Traffic type factory
 
-	internal_place: TRAFFIC_STATION
-			-- Internal representation of last created traffic place
+	internal_station: TRAFFIC_STATION
+			-- Internal representation of last created traffic station
 
 	internal_one_direction, internal_other_direction: TRAFFIC_LINE_CONNECTION
 			-- Internal representation of last created traffic line section
@@ -349,26 +349,26 @@ feature {NONE} -- Implementation
 		require
 			a_origin_exists: a_origin /= Void
 			a_origin_not_empty: not a_origin.is_empty
-			a_origin_in_map: a_map.places.has (a_origin)
+			a_origin_in_map: a_map.stations.has (a_origin)
 			a_destination_exists: a_destination /= Void
 			a_destination_not_empty: not a_destination.is_empty
-			a_destination_in_map: a_map.places.has (a_destination)
+			a_destination_in_map: a_map.stations.has (a_destination)
 			a_type_exists: a_type/=Void
 			an_id_exists: an_id/=Void
 		local
 			a_road: TRAFFIC_ROAD_CONNECTION
-			origin_place: TRAFFIC_STATION
-			destination_place: TRAFFIC_STATION
+			origin_s: TRAFFIC_STATION
+			destination_s: TRAFFIC_STATION
 			type: TRAFFIC_TYPE_ROAD
 			i: INTEGER
 			origin_node: TRAFFIC_NODE
 			destination_node: TRAFFIC_NODE
 		do
-			origin_place := a_map.places.item (a_origin)
-			destination_place := a_map.places.item (a_destination)
+			origin_s := a_map.stations.item (a_origin)
+			destination_s := a_map.stations.item (a_destination)
 
-			origin_node := origin_place.dummy_node
-			destination_node := destination_place.dummy_node
+			origin_node := origin_s.dummy_node
+			destination_node := destination_s.dummy_node
 
 			create traffic_type_factory.make
 			traffic_type_factory.build(a_type)

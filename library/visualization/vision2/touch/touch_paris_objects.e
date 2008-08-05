@@ -59,6 +59,14 @@ feature -- Access (Lines)
 			Result ?= Paris.lines.item ("tram 3")
 		end
 
+	Line6: TRAFFIC_LINE is
+			-- Line 6 of the Paris map
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result ?= Paris.lines.item ("tram 6")
+		end
+
 	Line7_a: TRAFFIC_LINE is
 			-- Line 7 of the Paris map
 		require
@@ -75,124 +83,304 @@ feature -- Access (Lines)
 			Result ?= Paris.lines.item ("tram 8")
 		end
 
-feature  -- Predefined objects (Places)
+	Line9: TRAFFIC_LINE is
+			-- Line 9 of the Paris map
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result ?= Paris.lines.item ("tram 9")
+		end
 
-	Place_Balard: TRAFFIC_STATION is
+	Line11: TRAFFIC_LINE is
+			-- Line 11 of the Paris map
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result ?= Paris.lines.item ("tram 11")
+		end
+
+	RER_A: TRAFFIC_LINE is
+			-- Line 11 of the Paris map
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result ?= Paris.lines.item ("RER A")
+		end
+
+	RER_B: TRAFFIC_LINE is
+			-- Line 11 of the Paris map
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result ?= Paris.lines.item ("RER B")
+		end
+
+	RER_C_a: TRAFFIC_LINE is
+			-- Line 11 of the Paris map
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result ?= Paris.lines.item ("RER C(a)")
+		end
+
+feature  -- Predefined objects (Stations)
+
+	Station_Balard: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Balard")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+--	Station_Invalides: TRAFFIC_STATION is
+--			-- Station
+--		require
+--			Paris_exists: is_paris_loaded
+--		once
+--			Result := Paris.stations.item ("place Invalides")
+--		ensure
+--			Result_exists: Result /= Void
+--		end
+
+	Station_St_Michel_Notre_Dame: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place St Michel - Notre Dame")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Station_Cergy: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Cergy")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Station_Opera: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Opera")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Station_Champs_de_Mars_Tour_Eiffel_Bir_Hakeim: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Champs de Mars, Tour Eiffel, Bir-Hakeim")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Station_Trocadero: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Trocadero")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Station_Hotel_de_Ville: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Hotel de Ville")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Station_Charles_de_Gaulle_Etoile: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Charles de Gaulle - Etoile")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Station_Chatelet: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Chatelet")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Station_Nation: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Nation")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Station_Palais_Royal_Musee_du_Louvre: TRAFFIC_STATION is
 			-- Place Balard
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Balard")
+			Result := Paris.stations.item ("place Palais Royal Musee du Louvre")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Issy: TRAFFIC_STATION is
+	Station_Mairie_d_Issy: TRAFFIC_STATION is
 			-- Place Issy
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Mairie d'Issy")
+			Result := Paris.stations.item ("place Mairie d'Issy")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Montrouge: TRAFFIC_STATION is
+	Station_Chatillon_Montrouge: TRAFFIC_STATION is
 			-- Place Montrouge
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Chatillon - Montrouge")
+			Result := Paris.stations.item ("place Chatillon - Montrouge")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Gare_de_Lyon: TRAFFIC_STATION is
+	Station_Gare_de_Lyon: TRAFFIC_STATION is
 			-- PLACE Gare de Lyon
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Gare de Lyon")
+			Result := Paris.stations.item ("place Gare de Lyon")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Invalides: TRAFFIC_STATION is
+	Station_Invalides: TRAFFIC_STATION is
 			-- Place Invalides
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Invalides")
+			Result := Paris.stations.item ("place Invalides")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Madeleine: TRAFFIC_STATION is
+	Station_Madeleine: TRAFFIC_STATION is
 			-- Place Madeleine
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Madeleine")
+			Result := Paris.stations.item ("place Madeleine")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Bobigny_Pablo_Picasso: TRAFFIC_STATION is
+	Station_Bobigny_Pablo_Picasso: TRAFFIC_STATION is
 			-- Place Bobigny - Pablo Picasso
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Bobigny - Pablo Picasso")
+			Result := Paris.stations.item ("place Bobigny - Pablo Picasso")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_La_Fourche: TRAFFIC_STATION is
+	Station_La_Fourche: TRAFFIC_STATION is
 			-- Place La Fourche
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place La Fourche")
+			Result := Paris.stations.item ("place La Fourche")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Bastille: TRAFFIC_STATION is
+	Station_Bastille: TRAFFIC_STATION is
 			-- Place Bastille
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Bastille")
+			Result := Paris.stations.item ("place Bastille")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Concorde: TRAFFIC_STATION is
+	Station_Concorde: TRAFFIC_STATION is
 			-- Place Concorde
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Concorde")
+			Result := Paris.stations.item ("place Concorde")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Republique: TRAFFIC_STATION is
+	Station_Republique: TRAFFIC_STATION is
 			-- Place Republique
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place Republique")
+			Result := Paris.stations.item ("place Republique")
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_La_Motte_Picquet_Grenelle: TRAFFIC_STATION is
+	Station_La_Motte_Picquet_Grenelle: TRAFFIC_STATION is
 			-- Place La Motte - Picquet - Grenelle
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.places.item ("place La Motte - Picquet - Grenelle")
+			Result := Paris.stations.item ("place La Motte - Picquet - Grenelle")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Place_Musee_du_Louvre: TRAFFIC_STATION is
+			-- Place
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("Musee du Louvre")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Place_Tour_Eiffel: TRAFFIC_STATION is
+			-- Place
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("Tour Eiffel")
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	Place_Champs_Elysee: TRAFFIC_STATION is
+			-- Place
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("Champs Elysee - Etoile")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -204,7 +392,7 @@ feature -- Predefined objects (Buildings)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			create Result.make (Paris.places.item ("Musee du Louvre").position,
+			create Result.make (Place_Musee_du_Louvre.position,
 				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\louvre.png", Windows_file_system)))
 			Paris.buildings.put_last (Result)
 		end
@@ -214,7 +402,7 @@ feature -- Predefined objects (Buildings)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			create Result.make (Paris.places.item ("Tour Eiffel").position,
+			create Result.make (Place_Tour_Eiffel.position,
 				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\eiffel.png", Windows_file_system)))
 			Paris.buildings.put_last (Result)
 		end
@@ -225,7 +413,7 @@ feature -- Predefined objects (Buildings)
 			Paris_exists: is_paris_loaded
 		once
 
-			create Result.make (Paris.places.item ("Champs Elysee - Etoile").position,
+			create Result.make (Place_Champs_Elysee.position,
 				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\triomphe.png", Windows_file_system)))
 			Paris.buildings.put_last (Result)
 		end
@@ -241,10 +429,10 @@ feature -- Passengers
 			p: TRAFFIC_PATH
 		once
 			create p
-			create s.make_tram (tram11_Place_Republique_Place_Hotel_de_Ville)
-			s.extend (tram11_Place_Hotel_de_Ville_Place_Chatelet)
+			create s.make_tram (Line11_Republique_to_Hotel_de_Ville)
+			s.extend (Line11_Hotel_de_Ville_to_Chatelet)
 			p.set_first (s)
-			create s.make_rail (rera_place_chatelet_place_opera)
+			create s.make_rail (rer_a_chatelet_to_opera)
 			p.first.set_next (s)
 			create Result.make_with_path (p, 10.0)
 			Paris.passengers.put_last (Result)
@@ -260,9 +448,9 @@ feature -- Predefined objects (Routes)
 			s, t: TRAFFIC_PATH_SECTION
 		once
 			create Result
-			create s.make_tram (tram7_louvre_chatelet)
+			create s.make_tram (Line7a_louvre_to_chatelet)
 			Result.set_first (s)
-			create t.make_rail (rerB_Place_Chatelet_Place_Notre_Dame)
+			create t.make_rail (rer_B_Chatelet_to_Notre_Dame)
 			s.set_next (t)
 			Paris.paths.put_last (Result)
 		end
@@ -275,10 +463,10 @@ feature -- Predefined objects (Routes)
 			s: TRAFFIC_PATH_SECTION
 		once
 			create Result
-			create s.make_tram (tram11_Place_Republique_Place_Hotel_de_Ville)
-			s.extend (tram11_Place_Hotel_de_Ville_Place_Chatelet)
+			create s.make_tram (Line11_Republique_to_Hotel_de_Ville)
+			s.extend (Line11_Hotel_de_Ville_to_Chatelet)
 			Result.set_first (s)
-			create s.make_rail (rera_place_chatelet_place_opera)
+			create s.make_rail (rer_a_chatelet_to_opera)
 			Result.first.set_next (s)
 			Paris.paths.put_last (Result)
 		end
@@ -291,297 +479,145 @@ feature -- Predefined objects (Routes)
 			s: TRAFFIC_PATH_SECTION
 		once
 			create Result
-			create s.make_tram (Place_Nation_Place_Republique)
+			create s.make_tram (line9_nation_to_republique)
 			Result.set_first (s)
 			Paris.paths.put_last (Result)
 		end
 
 feature --Predefined objects (Line-Sections)
 
-	tram7_Louvre_Chatelet: TRAFFIC_LINE_CONNECTION is
-			-- Line section connecting Louvre to Chatelet
-		require
-			Paris_exists: is_paris_loaded
+	line_section (a_line: TRAFFIC_LINE; o, d: TRAFFIC_STATION):TRAFFIC_LINE_CONNECTION is
+			-- Find the line section of `a_line' between `o' and `d'.
 		local
-			p1, p2: TRAFFIC_STATION
 			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
-		once
-			p1 := Paris.places.item ("place Palais Royal Musee du Louvre")
-			p2 := Paris.places.item ("place Chatelet")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
+		do
+			line_sections := o.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
 			from
 				line_sections.start
 			until
-				line_sections.off or else (	line_sections.item_for_iteration.destination = p2 and
-											line_sections.item_for_iteration.type.is_equal (create {TRAFFIC_TYPE_TRAM}.make))
+				line_sections.off or else (line_sections.item_for_iteration.destination = d and line_sections.item_for_iteration.line = a_line)
 			loop
 				line_sections.forth
 			end
 			Result := line_sections.item_for_iteration
+		end
+
+	Line7a_Louvre_to_Chatelet: TRAFFIC_LINE_CONNECTION is
+			-- Line section
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := line_section (Line7_a , Station_Palais_Royal_Musee_du_Louvre, Station_Chatelet)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	Place_Nation_Place_Republique: TRAFFIC_LINE_CONNECTION is
-			-- the line section connecting Place Nation and Place Pere Lachaise
+	Line9_Nation_to_Republique: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			p1, p2: TRAFFIC_STATION
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
-			p1 := Paris.places.item ("place Nation")
-			p2 := Paris.places.item ("place Republique")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else (	line_sections.item_for_iteration.destination = p2 and
-											line_sections.item_for_iteration.type.is_equal (create {TRAFFIC_TYPE_TRAM}.make))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (Line9, Station_Nation, Station_Republique)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	tram11_Place_Republique_Place_Hotel_de_Ville: TRAFFIC_LINE_CONNECTION is
-			-- the line section connecting Place Pere Lachaise and Place Republique
+	Line11_Republique_to_Hotel_de_Ville: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			p1, p2: TRAFFIC_STATION
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
-			p1 := Paris.places.item ("place Republique")
-			p2 := Paris.places.item ("place Hotel de Ville")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("tram 11"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (Line11, Station_Republique, Station_Hotel_de_Ville)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	tram11_Place_Hotel_de_Ville_Place_Chatelet: TRAFFIC_LINE_CONNECTION is
-			--the line section connecting Place Republique and Place Opera
+	Line11_Hotel_de_Ville_to_Chatelet: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			p1, p2: TRAFFIC_STATION
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
-			p1 := Paris.places.item ("place Hotel de Ville")
-			p2 := Paris.places.item ("place Chatelet")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("tram 11"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (Line11, station_hotel_de_ville, Station_chatelet)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	tram6_Place_Etoile_Place_Trocadero: TRAFFIC_LINE_CONNECTION is
-			-- the line section connecting Place Pere Lachaise and Place Republique
+	Line6_Etoile_to_Trocadero: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			p1, p2: TRAFFIC_STATION
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
-			p1 := Paris.places.item ("place Charles de Gaulle - Etoile")
-			p2 := Paris.places.item ("place Trocadero")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("tram 6"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (Line6, station_charles_de_gaulle_etoile, Station_Trocadero)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	tram6_Place_Trocadero_Place_Champs_De_Mars: TRAFFIC_LINE_CONNECTION is
-			-- the line section connecting Place Pere Lachaise and Place Republique
+	Line6_Trocadero_to_Champs_De_Mars: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			p1, p2: TRAFFIC_STATION
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
-			p1 := Paris.places.item ("place Trocadero")
-			p2 := Paris.places.item ("place Champs de Mars, Tour Eiffel, Bir-Hakeim")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("tram 6"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (Line6, Station_Trocadero, station_champs_de_mars_tour_eiffel_bir_hakeim)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	rerA_Place_Chatelet_Place_Opera: TRAFFIC_LINE_CONNECTION is
-			--the line section connecting Place Chatelet and Place Opera
+	rer_A_Chatelet_to_Opera: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			p1, p2: TRAFFIC_STATION
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
-			p1 := Paris.places.item ("place Chatelet")
-			p2 := Paris.places.item ("place Opera")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER A"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (RER_A, station_chatelet, Station_Opera)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	rerA_Place_Opera_Place_Etoile: TRAFFIC_LINE_CONNECTION is
-			--the line section connecting Place Opera and Place Etoile
+	rer_A_Opera_to_Etoile: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			p1, p2: TRAFFIC_STATION
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
-			p1 := Paris.places.item ("place Opera")
-			p2 := Paris.places.item ("place Charles de Gaulle - Etoile")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER A"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (RER_A, Station_Opera, station_charles_de_gaulle_etoile)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	rerA_Place_Etoile_Place_Cergy: TRAFFIC_LINE_CONNECTION is
-			--the line section connecting Place Etoile and Place Cergy
+	rer_A_Etoile_to_Cergy: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			p1, p2: TRAFFIC_STATION
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
-			p1 := Paris.places.item ("place Charles de Gaulle - Etoile")
-			p2 := Paris.places.item ("place Cergy")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER A"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (RER_A, station_charles_de_gaulle_etoile, Station_Cergy)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	rerB_Place_Chatelet_Place_Notre_Dame: TRAFFIC_LINE_CONNECTION is
-			--the line section connecting Place Republique and Place Opera
+	rer_B_Chatelet_to_Notre_Dame: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			p1, p2: TRAFFIC_STATION
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		once
-			p1 := Paris.places.item ("place Chatelet")
-			p2 := Paris.places.item ("place St Michel - Notre Dame")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER B"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (RER_B, Station_Chatelet, Station_st_michel_notre_dame)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	rerca_Place_Invalides_Place_Champs_de_Mars: TRAFFIC_LINE_CONNECTION is
-			--the line section connecting Place Invalides and Place Champs de Mars
+	rer_c_a_Invalides_to_Champs_de_Mars: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
-			p1, p2: TRAFFIC_STATION
 		once
-			p1 := Paris.places.item ("place Invalides")
-			p2 := Paris.places.item ("place Champs de Mars, Tour Eiffel, Bir-Hakeim")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER C(a)"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (RER_C_a, Station_Invalides, station_champs_de_mars_tour_eiffel_bir_hakeim)
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	rerca_Place_Notre_Dame_Place_Invalides: TRAFFIC_LINE_CONNECTION is
-			--the line section connecting Place Invalides and Place Champs de Mars
+	rer_c_a_Notre_Dame_to_Invalides: TRAFFIC_LINE_CONNECTION is
+			-- Line section
 		require
 			Paris_exists: is_paris_loaded
-		local
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
-			p1, p2: TRAFFIC_STATION
 		once
-			p1 := Paris.places.item ("place St Michel - Notre Dame")
-			p2 := Paris.places.item ("place Invalides")
-			line_sections := p1.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
-			from
-				line_sections.start
-			until
-				line_sections.off or else
-				(line_sections.item_for_iteration.destination = p2 and line_sections.item_for_iteration.line.name.is_equal ("RER C(a)"))
-			loop
-				line_sections.forth
-			end
-			Result := line_sections.item_for_iteration
+			Result := line_section (RER_C_a, station_st_michel_notre_dame, station_invalides)
 		ensure
 			Result_exists: Result /= Void
 		end

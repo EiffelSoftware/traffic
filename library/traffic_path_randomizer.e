@@ -36,8 +36,8 @@ feature -- Basic operations
 			map_has_line_section: map.line_sections.count >= 1
 		local
 			i: INTEGER
-			pa: ARRAY [TRAFFIC_PLACE]
-			p: TRAFFIC_PLACE
+			pa: ARRAY [TRAFFIC_STATION]
+			p: TRAFFIC_STATION
 			no: TRAFFIC_NODE
 			s,t: TRAFFIC_PATH_SECTION
 			finished: BOOLEAN
@@ -45,8 +45,8 @@ feature -- Basic operations
 		do
 			create last_path
 			random.forth
-			pa := map.places.to_array
-			-- The starting place
+			pa := map.stations.to_array
+			-- The starting station
 			p := pa.item (random.item \\ pa.count + 1)
 			random.forth
 			no := p.nodes.i_th (random.item \\ p.nodes.count + 1)

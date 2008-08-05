@@ -14,10 +14,10 @@ inherit
 
 feature -- Factory methods
 
-	new_place_view (a_place: TRAFFIC_STATION): TRAFFIC_PLACE_VIEW is
-			-- New place view for `a_place'
+	new_station_view (a_station: TRAFFIC_STATION): TRAFFIC_STATION_VIEW is
+			-- New station view for `a_station'
 		do
-			create Result.make (a_place)
+			create Result.make (a_station)
 		end
 
 	new_line_view (a_line: TRAFFIC_LINE): TRAFFIC_LINE_VIEW is

@@ -174,22 +174,22 @@ feature -- Status report
 feature -- Basic operations
 
 	put_first (l1, l2: TRAFFIC_LINE_CONNECTION) is
-			-- Add l1 and l2 at beginning (l2 connects the same two places in reverse order).
+			-- Add l1 and l2 at beginning (l2 connects the same two stations in reverse order).
 		do
 		end
 
 	put_last (l1, l2: TRAFFIC_LINE_CONNECTION) is
-			-- Add l1 and l2 at end (l2 connects the same two places in reverse order).
+			-- Add l1 and l2 at end (l2 connects the same two stations in reverse order).
 		do
 		end
 
-	extend (a_place: TRAFFIC_STATION) is
-			-- Add connection to `a_place' at end.
+	extend (a_station: TRAFFIC_STATION) is
+			-- Add connection to `a_station' at end.
 		do
 		end
 
-	prepend (a_place: TRAFFIC_STATION) is
-			-- Add connection from `a_place' to the beginning of the line.
+	prepend (a_station: TRAFFIC_STATION) is
+			-- Add connection from `a_station' to the beginning of the line.
 		do
 		end
 

@@ -20,7 +20,7 @@ feature -- Access
 	Name: STRING is "place"
 			-- Name of node to process
 
-	place: TRAFFIC_STATION
+	station: TRAFFIC_STATION
 			-- Reference to node
 
 	Mandatory_attributes: ARRAY [STRING] is
@@ -37,11 +37,11 @@ feature -- Basic operations
 		do
 			if not has_attribute ("name") then
 				set_error (Mandatory_attribute_missing, << "name" >>)
-			elseif map_factory.map.places.has (attribute ("name")) then
+			elseif map_factory.map.stations.has (attribute ("name")) then
 				set_error (Duplicate_name, << attribute ("name") >>)
 			else
-				map_factory.build_place (attribute ("name"), map)
-				set_target (map_factory.place)
+				map_factory.build_station (attribute ("name"), map)
+				set_target (map_factory.station)
 			end
 
 			if has_subnodes then
@@ -57,7 +57,7 @@ feature -- Basic operations
 			f: TRAFFIC_FILE_NODE_PROCESSOR
 			files: LINKED_LIST [STRING]
 			description: STRING
-			info: TRAFFIC_PLACE_INFORMATION
+			info: TRAFFIC_STATION_INFORMATION
 		do
 			create files.make
 			from
@@ -102,7 +102,7 @@ feature -- Basic operations
 					info.extend_picture (files.item)
 					files.forth
 				end
-				map_factory.place.set_information (info)
+				map_factory.station.set_information (info)
 			end
 		end
 

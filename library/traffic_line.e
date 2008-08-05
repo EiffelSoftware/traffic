@@ -76,16 +76,16 @@ feature {NONE} -- Initialization
 			other_direction_exists: other_direction /= Void
 		end
 
-	make_with_terminal (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_place: TRAFFIC_STATION) is
-			-- Create a line with a name `a_name' of type `a_type' and a planned terminal `a_place'.
+	make_with_terminal (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_station: TRAFFIC_STATION) is
+			-- Create a line with a name `a_name' of type `a_type' and a planned terminal `a_station'.
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
 			a_type_exists: a_type /= Void
-			a_place_exists: a_place /= Void
+			a_station_exists: a_station /= Void
 		do
 			make (a_name, a_type)
-			old_terminal_1 := a_place
+			old_terminal_1 := a_station
 		ensure
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
@@ -568,7 +568,7 @@ feature -- Status report
 feature -- Basic operations
 
 	put_first (l1, l2: TRAFFIC_LINE_CONNECTION) is
-			-- Add l1 and l2 at beginning (l2 connects the same two places in reverse order).
+			-- Add l1 and l2 at beginning (l2 connects the same two stations in reverse order).
 		require
 			l1_exists: l1 /= Void
 			l2_exists: l2 /= Void
@@ -594,7 +594,7 @@ feature -- Basic operations
 		end
 
 	put_last (l1, l2: TRAFFIC_LINE_CONNECTION) is
-			-- Add l1 and l2 at end (l2 connects the same two places in reverse order).
+			-- Add l1 and l2 at end (l2 connects the same two stations in reverse order).
 		require
 			l1_exists: l1 /= Void
 			l2_exists: l2 /= Void
@@ -619,8 +619,8 @@ feature -- Basic operations
 			element_inserted_event.publish ([l2])
 		end
 
-	extend (a_place: TRAFFIC_STATION) is
-			-- Add connection to `a_place' at end.
+	extend (a_station: TRAFFIC_STATION) is
+			-- Add connection to `a_station' at end.
 		require
 			has_terminal_1: old_terminal_1 /= Void
 		local
@@ -643,10 +643,10 @@ feature -- Basic operations
 					create s1.make_stop (old_terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (old_terminal_1.position))
 				end
 			end
-			if a_place.has_stop (Current) then
-				s2 := a_place.stop (Current)
+			if a_station.has_stop (Current) then
+				s2 := a_station.stop (Current)
 			else
-				create s2.make_stop (a_place, Current, create {TRAFFIC_COORDINATE}.make_from_other (a_place.position))
+				create s2.make_stop (a_station, Current, create {TRAFFIC_COORDINATE}.make_from_other (a_station.position))
 			end
 			create pp.make (2)
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
@@ -659,13 +659,13 @@ feature -- Basic operations
 
 			put_last (l1, l2)
 		ensure
-			new_place_added: i_th (count) = a_place
-			added_at_end: terminal_2 = a_place
+			new_station_added: i_th (count) = a_station
+			added_at_end: terminal_2 = a_station
 			one_more: count = old count + 1
 		end
 
-	prepend (a_place: TRAFFIC_STATION) is
-			-- Add connection from `a_place' to the beginning of the line.
+	prepend (a_station: TRAFFIC_STATION) is
+			-- Add connection from `a_station' to the beginning of the line.
 		require
 			has_terminal_1: old_terminal_1 /= Void
 		local
@@ -673,10 +673,10 @@ feature -- Basic operations
 			s1, s2: TRAFFIC_STOP
 			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
-			if a_place.has_stop (Current) then
-				s1 := a_place.stop (Current)
+			if a_station.has_stop (Current) then
+				s1 := a_station.stop (Current)
 			else
-				create s1.make_stop (a_place, Current, create {TRAFFIC_COORDINATE}.make_from_other (a_place.position))
+				create s1.make_stop (a_station, Current, create {TRAFFIC_COORDINATE}.make_from_other (a_station.position))
 			end
 			if terminal_1 /= Void then
 				if terminal_1.has_stop (Current) then
@@ -702,8 +702,8 @@ feature -- Basic operations
 
 			put_first (l1, l2)
 		ensure
-			new_place_added: i_th (1) = a_place
-			added_at_end: terminal_1 = a_place
+			new_station_added: i_th (1) = a_station
+			added_at_end: terminal_1 = a_station
 			one_more: count = old count + 1
 		end
 

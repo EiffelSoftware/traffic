@@ -83,7 +83,7 @@ feature -- Intialization
 						-- Add entry to our schedule
 						extend (new_entry)
 
-						-- Add 2 minutes waiting time at the place
+						-- Add 2 minutes waiting time at the station
 						act_time.minute_add (2)
 
 						-- Next stop

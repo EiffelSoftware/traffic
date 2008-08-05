@@ -8,6 +8,11 @@ class TRAFFIC_DISPATCHER_TAXI_OFFICE
 inherit
 
 	TRAFFIC_TAXI_OFFICE
+		redefine
+			add_taxi,
+			remove_taxi,
+			recall
+		end
 
 create
 	default_create, make_with_color

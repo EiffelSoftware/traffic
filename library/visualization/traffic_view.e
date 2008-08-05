@@ -25,20 +25,20 @@ feature -- Access
 			-- Item the view represents
 
 	color: TRAFFIC_COLOR
-			-- Color for displaying the place
+			-- Color for displaying
 
 	highlight_color: TRAFFIC_COLOR
-			-- Highlight color for the place
+			-- Highlight color
 
 feature -- Status setting
 
 	set_color (a_color: TRAFFIC_COLOR) is
-			-- Set the color of the place view to `a_color'.
+			-- Set the color of the view to `a_color'.
 		deferred
 		end
 
 	set_highlight_color (a_color: TRAFFIC_COLOR) is
-			-- Set the color of the place view to `a_color'.
+			-- Set the color of the view to `a_color'.
 		deferred
 		end
 
@@ -50,28 +50,28 @@ feature -- Basic operations
 		end
 
 	highlight is
-			-- Highlight the place view.
+			-- Highlight the view.
 		deferred
 		ensure
 			highlighted: is_highlighted
 		end
 
 	unhighlight is
-			-- Unhighlight the place view.
+			-- Unhighlight the view.
 		deferred
 		ensure
 			not_highlighted: not is_highlighted
 		end
 
 	hide is
-			-- Highlight the place view.
+			-- Hide the view.
 		deferred
 		ensure
 			hidden: not is_shown
 		end
 
 	show is
-			-- Unhighlight the place view.
+			-- Show the view.
 		deferred
 		ensure
 			shown: is_shown
@@ -80,12 +80,12 @@ feature -- Basic operations
 feature -- Status report
 
 	is_highlighted: BOOLEAN
-			-- Is the place view highlighted?
+			-- Is the view highlighted?
 		deferred
 		end
 
 	is_shown: BOOLEAN
-			-- Is the place view shown?
+			-- Is the view shown?
 		deferred
 		end
 

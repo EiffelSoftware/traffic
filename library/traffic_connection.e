@@ -108,15 +108,15 @@ feature -- Access
 			-- Type of the line section
 
 	origin: TRAFFIC_STATION is
-			-- Place of origin.
+			-- Station of origin
 		do
-			Result := start_node.place
+			Result := start_node.station
 		end
 
 	destination: TRAFFIC_STATION is
-			-- Place of destination.
+			-- Station of destination
 		do
-			Result := end_node.place
+			Result := end_node.station
 		end
 
 	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]

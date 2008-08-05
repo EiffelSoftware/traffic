@@ -37,7 +37,7 @@ feature -- Initialization
 			e: EV_ENVIRONMENT
 		do
 			create internal_factory
-			create internal_place_representations.make
+			create internal_station_representations.make
 			create internal_line_representations.make
 			create internal_road_representations.make
 			create internal_building_representations.make
@@ -72,7 +72,7 @@ feature -- Element change
 	set_map (a_map: TRAFFIC_MAP) is
 			-- Set map that is displayed to `a_map'.
 		do
-			create internal_place_representations.make
+			create internal_station_representations.make
 			create internal_line_representations.make
 			create internal_road_representations.make
 			create internal_building_representations.make
@@ -119,10 +119,10 @@ feature -- Access
 			Result := internal_path_representations
 		end
 
-	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_STATION, TRAFFIC_VIEW [TRAFFIC_STATION]]
-			-- Container for place views
+	station_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_STATION, TRAFFIC_VIEW [TRAFFIC_STATION]]
+			-- Container for station views
 		do
-			Result := internal_place_representations
+			Result := internal_station_representations
 		end
 
 	building_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_BUILDING, TRAFFIC_VIEW [TRAFFIC_BUILDING]]
@@ -154,7 +154,7 @@ feature -- Basic operations
 				clear
 				internal_road_representations.draw (Current)
 				internal_line_representations.draw (Current)
-				internal_place_representations.draw (Current)
+				internal_station_representations.draw (Current)
 				internal_building_representations.draw (Current)
 				create background_image.make_with_size (width, height)
 				background_image.draw_pixmap (0, 0, Current)
@@ -192,7 +192,7 @@ feature {NONE} -- Implementation
 	internal_path_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PATH]
 	internal_line_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_LINE]
 	internal_road_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_ROAD]
-	internal_place_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_STATION]
+	internal_station_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_STATION]
 	internal_building_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_BUILDING]
 	background_image: EV_PIXMAP
 

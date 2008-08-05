@@ -25,7 +25,7 @@ feature -- Commands
 		end
 
 	hide is
-			-- Highlight the place view.
+			-- Highlight the view.
 		do
 			is_shown := False
 			invalidate
@@ -34,7 +34,7 @@ feature -- Commands
 		end
 
 	show is
-			-- Unhighlight the place view.
+			-- Unhighlight the view.
 		do
 			is_shown := True
 			invalidate
@@ -45,7 +45,7 @@ feature -- Commands
 feature -- Status report
 
 	is_shown: BOOLEAN
-			-- Is the place view shown?
+			-- Is the view shown?
 
 	is_valid: BOOLEAN
 			-- Is there no change to `Current'?

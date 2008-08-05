@@ -36,7 +36,7 @@ feature {NONE} -- Initialization
 			default_size := 100
 			name := a_name
 			create graph.make
-			create places.make (default_size * default_size, Current)
+			create stations.make (default_size * default_size, Current)
 			create lines.make (default_size, Current)
 			create line_sections.make
 			create roads.make (default_size, Current)
@@ -49,7 +49,7 @@ feature {NONE} -- Initialization
 			create free_movings.make (Current)
 		ensure
 			name_set: equal (name, a_name)
-			places_not_void: places /= Void
+			stations_not_void: stations /= Void
 			lines_not_void: lines /= Void
 			line_sections_not_void: line_sections /= Void
 		end
@@ -64,9 +64,9 @@ feature -- TODO
 
 feature -- Status report
 
-	place_at_position (a_point: TRAFFIC_COORDINATE): TRAFFIC_STATION	is
-			-- Place that `a_point' is located on
-			-- Returns Void if there is no place at this position
+	station_at_position (a_point: TRAFFIC_COORDINATE): TRAFFIC_STATION	is
+			-- Station that `a_point' is located on
+			-- Returns Void if there is no station at this position
 		require
 			a_point_exists: a_point /= Void
 		local
@@ -74,15 +74,15 @@ feature -- Status report
 		do
 			tolerance := 2.0
 			from
-				places.start
+				stations.start
 			until
-				places.after or Result /= Void
+				stations.after or Result /= Void
 			loop
-				if a_point.x > places.item_for_iteration.position.x - places.item_for_iteration.width/2 - tolerance and a_point.x < places.item_for_iteration.position.x + places.item_for_iteration.width/2 + tolerance and
-					a_point.y > places.item_for_iteration.position.y - places.item_for_iteration.breadth/2 - tolerance and a_point.y < places.item_for_iteration.position.y + places.item_for_iteration.breadth/2 + tolerance then
-					Result := places.item_for_iteration
+				if a_point.x > stations.item_for_iteration.position.x - stations.item_for_iteration.width/2 - tolerance and a_point.x < stations.item_for_iteration.position.x + stations.item_for_iteration.width/2 + tolerance and
+					a_point.y > stations.item_for_iteration.position.y - stations.item_for_iteration.breadth/2 - tolerance and a_point.y < stations.item_for_iteration.position.y + stations.item_for_iteration.breadth/2 + tolerance then
+					Result := stations.item_for_iteration
 				end
-				places.forth
+				stations.forth
 			end
 		end
 
@@ -191,8 +191,8 @@ feature -- Access
 
 feature -- Access (map objects)
 
-	places: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_STATION, STRING]
-			-- All places in map
+	stations: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_STATION, STRING]
+			-- All stations in map
 
 	line_sections: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 			-- All line sections in map
@@ -229,13 +229,13 @@ feature -- Access
 	line_sections_of_stop (a_name: STRING; a_line: TRAFFIC_LINE): LIST [TRAFFIC_LINE_CONNECTION] is
 			-- Line sections (2 or 1) of the stop specified by `a_name' for the line `a_line'
 		require
-			places.has (a_name) and then places.item (a_name).has_stop (a_line)
+			stations.has (a_name) and then stations.item (a_name).has_stop (a_line)
 		local
 			a_connections: LIST [TRAFFIC_CONNECTION]
 			ls: TRAFFIC_LINE_CONNECTION
 		do
 			Result := create {ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]}.make (2)
-			graph.search (places.item (a_name).stop (a_line))
+			graph.search (stations.item (a_name).stop (a_line))
 			a_connections := graph.incident_edges
 			from a_connections.start until a_connections.after loop
 				ls ?= a_connections.item
@@ -252,7 +252,7 @@ feature -- Output
 			-- Textual representation.
 		do
 			Result := "Traffic map%Nnamed: " + name + "%Ndescription: " + description_out +
-				"%N%Nplaces:%N" + places.out
+				"%N%Nstations:%N" + stations.out
 		end
 
 feature {TRAFFIC_MAP_LOADER}
@@ -288,23 +288,23 @@ feature {TRAFFIC_MAP_LOADER}
 
 feature {NONE}-- Implementation
 
-	place_position (a_name: STRING): INTEGER is
-			-- Position of place `a_name' in places
+	station_position (a_name: STRING): INTEGER is
+			-- Position of station `a_name' in stations
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_exmpa: not a_name.is_empty
-			a_name_in_places: places.has (a_name)
+			a_name_in_stations: stations.has (a_name)
 		local
 			i: INTEGER
 		do
 			from
 				i := 1
-				places.start
+				stations.start
 			until
-				places.item_for_iteration.name.is_equal (a_name)
+				stations.item_for_iteration.name.is_equal (a_name)
 			loop
 				i := i + 1
-				places.forth
+				stations.forth
 			end
 			Result := i
 		end
@@ -337,6 +337,6 @@ invariant
 
 	name_not_void: name /= Void -- Map name exists.
 	name_not_empty: not name.is_empty -- Map name not empty.
-	places_not_void: places /= Void -- Places exist.
+	stations_not_void: stations /= Void -- Stations exist.
 
 end

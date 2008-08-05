@@ -25,8 +25,8 @@ feature -- Access
 		deferred
 		end
 
-	place_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_STATION, TRAFFIC_VIEW [TRAFFIC_STATION]]
-			-- Container for place views
+	station_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_STATION, TRAFFIC_VIEW [TRAFFIC_STATION]]
+			-- Container for station views
 		deferred
 		end
 
@@ -51,7 +51,7 @@ feature -- Element change
 			-- Set map that is displayed to `a_map'.
 		require
 			line_representations_exists: line_representations /= Void
-			place_representations_exists: place_representations /= Void
+			station_representations_exists: station_representations /= Void
 			building_representations_exists: building_representations /= Void
 			moving_representations_exists: moving_representations /= Void
 			path_representations_exists: path_representations /= Void
@@ -80,13 +80,13 @@ feature -- Element change
 				map.lines.forth
 			end
 			from
-				map.places.start
+				map.stations.start
 			until
-				map.places.after
+				map.stations.after
 			loop
-				p := factory.new_place_view (map.places.item_for_iteration)
-				place_representations.put_last (p)
-				map.places.forth
+				p := factory.new_station_view (map.stations.item_for_iteration)
+				station_representations.put_last (p)
+				map.stations.forth
 			end
 			from
 				map.buildings.start
@@ -148,8 +148,8 @@ feature -- Element change
 			map.lines.element_removed_event.subscribe (agent remove_line)
 			map.roads.element_inserted_event.subscribe (agent add_road)
 			map.roads.element_removed_event.subscribe (agent remove_road)
-			map.places.element_inserted_event.subscribe (agent add_place)
-			map.places.element_removed_event.subscribe (agent remove_place)
+			map.stations.element_inserted_event.subscribe (agent add_station)
+			map.stations.element_removed_event.subscribe (agent remove_station)
 			map.buildings.element_inserted_event.subscribe (agent add_building)
 			map.buildings.element_removed_event.subscribe (agent remove_building)
 			map.trams.element_inserted_event.subscribe (agent add_tram)
@@ -196,12 +196,12 @@ feature -- Status setting
 
 feature {NONE} -- Implementation (view adding)
 
-	add_place (a_place: TRAFFIC_STATION) is
-			-- Add place view for `a_place'.
+	add_station (a_station: TRAFFIC_STATION) is
+			-- Add station view for `a_station'.
 		require
-			a_place_exists: a_place /= Void
+			a_station_exists: a_station /= Void
 		do
-			place_representations.put_last (factory.new_place_view (a_place))
+			station_representations.put_last (factory.new_station_view (a_station))
 		end
 
 	add_line (a_line: TRAFFIC_LINE) is
@@ -298,12 +298,12 @@ feature {NONE} -- Implementation (view adding)
 
 feature {NONE} -- Implementation (view removing)
 
-	remove_place (a_place: TRAFFIC_STATION) is
-			-- Remove view for `a_place'.
+	remove_station (a_station: TRAFFIC_STATION) is
+			-- Remove view for `a_station'.
 		require
-			a_place_exists: a_place /= Void
+			a_station_exists: a_station /= Void
 		do
-			place_representations.delete (place_representations.view_for_item (a_place))
+			station_representations.delete (station_representations.view_for_item (a_station))
 		end
 
 	remove_line (a_line: TRAFFIC_LINE) is
@@ -406,7 +406,7 @@ invariant
 	factory_exists: factory /= Void
 	line_representations_exists: line_representations /= Void
 	road_representations_exists: road_representations /= Void
-	place_representations_exists: place_representations /= Void
+	station_representations_exists: station_representations /= Void
 	building_representations_exists: building_representations /= Void
 	moving_representations_exists: moving_representations /= Void
 	path_representations_exists: path_representations /= Void

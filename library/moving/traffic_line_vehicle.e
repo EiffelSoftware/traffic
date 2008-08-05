@@ -33,15 +33,15 @@ feature -- Element change
 			line_set: line = a_line
 		end
 
-	set_to_station (a_place: TRAFFIC_STATION) is
-			-- Set the line vehicle to `a_place'.
+	set_to_station (a_station: TRAFFIC_STATION) is
+			-- Set the line vehicle to `a_station'.
 		require
-			a_place_not_void: a_place /= Void
-			-- todo has_place_in_line: line.has_place (a_place)
+			a_station_not_void: a_station /= Void
+			-- todo has_station_in_line: line.has_station (a_station)
 		local
 			found: BOOLEAN
 		do
-			if a_place = line.terminal_2 then
+			if a_station = line.terminal_2 then
 				line_cursor.set_cursor_direction (False)
 				line_cursor.start
 				create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
@@ -55,7 +55,7 @@ feature -- Element change
 				until
 					line_cursor.after or found
 				loop
-					if line_cursor.item_for_iteration.origin = a_place then
+					if line_cursor.item_for_iteration.origin = a_station then
 						create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
 						poly_cursor.start
 

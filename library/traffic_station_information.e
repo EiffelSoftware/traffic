@@ -1,10 +1,10 @@
 indexing
-	description: "Additional information on a place."
+	description: "Additional information on a station."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_PLACE_INFORMATION
+	TRAFFIC_STATION_INFORMATION
 
 inherit
 	ANY

@@ -379,7 +379,7 @@ feature {NONE} -- Implementation
 
 	average_weight: DOUBLE is
 			-- Average weight of an edge used for "dummy" connections
-			-- between nodes of the same place.
+			-- between nodes of the same station.
 		do
 			Result := total_weight / internal_edges.count
 		end

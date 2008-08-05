@@ -56,10 +56,10 @@ feature -- Initialization
 				c.set_color (default_color)
 				connection_width := c.width
 				put_last (c)
-				p := new_place_view (conns.item_for_iteration.origin)
+				p := new_station_view (conns.item_for_iteration.origin)
 				p.set_color (default_color)
 				put_last (p)
-				p := new_place_view (conns.item_for_iteration.destination)
+				p := new_station_view (conns.item_for_iteration.destination)
 				p.set_color (default_color)
 				put_last (p)
 				conns.forth
@@ -100,7 +100,7 @@ feature -- Basic operations
 		end
 
 	highlight is
-			-- Highlight the place view.
+			-- Highlight the view.
 		local
 			l: DRAWABLE_POLYLINE
 			r: DRAWABLE_ROUNDED_RECTANGLE
@@ -142,7 +142,7 @@ feature -- Basic operations
 		end
 
 	unhighlight is
-			-- Unhighlight the place view.
+			-- Unhighlight the view.
 		local
 			l: DRAWABLE_POLYLINE
 			r: DRAWABLE_ROUNDED_RECTANGLE
@@ -184,7 +184,7 @@ feature -- Basic operations
 		end
 
 	set_color (a_color: TRAFFIC_COLOR) is
-			-- Set the color of the place view to `a_color'.
+			-- Set the color of the view to `a_color'.
 		local
 			l: DRAWABLE_POLYLINE
 			r: DRAWABLE_ROUNDED_RECTANGLE
@@ -226,7 +226,7 @@ feature -- Basic operations
 		end
 
 	set_highlight_color (a_color: TRAFFIC_COLOR) is
-			-- Set the color of the place view to `a_color'.
+			-- Set the color of the view to `a_color'.
 		local
 			l: DRAWABLE_POLYLINE
 			r: DRAWABLE_ROUNDED_RECTANGLE
@@ -295,8 +295,8 @@ feature {NONE} -- Implementation
 			Result_exists: Result /= Void
 		end
 
-	new_place_view (a_item: TRAFFIC_STATION): DRAWABLE_ROUNDED_RECTANGLE is
-			-- Generate place view for `a_item'.
+	new_station_view (a_item: TRAFFIC_STATION): DRAWABLE_ROUNDED_RECTANGLE is
+			-- Generate view for `a_item'.
 		do
 			create Result.make (create {REAL_COORDINATE}.make ((a_item.position.x-(a_item.width/2).max(5)), (-a_item.position.y-(a_item.breadth/2).max(5))),
 								create {REAL_COORDINATE}.make ((a_item.position.x+(a_item.width/2).max(5)), (-a_item.position.y+(a_item.breadth/2).max(5))))

@@ -27,40 +27,40 @@ inherit
 		end
 
 create
-	make_with_place
+	make_with_station
 
 feature {NONE} -- Initialization
 
-	make_with_place (a_place: TRAFFIC_STATION; a_position: TRAFFIC_COORDINATE) is
+	make_with_station (s: TRAFFIC_STATION; a_position: TRAFFIC_COORDINATE) is
 			-- Initialize `Current'.
 		require
-			place_not_void: a_place /= Void
+			not_void: s /= Void
 			position_not_void: a_position /= Void
 		do
 			create connection_list.make
 
 			item := Current
-			place := a_place
+			station := s
 			position := a_position
 			create connection_list.make
 			reset
-			if place.dummy_node /= Void then
-				place.add_node (Current)
+			if station.dummy_node /= Void then
+				station.add_node (Current)
 			end
 			create changed_event
 		ensure
 			no_referrer: (referring_node = Void) and (referring_connection = Void)
 			distance_positive: distance >= 0
 			fresh: not processed
-			place_set: place = a_place
+			station_set: station = s
 			position_set: position = a_position
 			no_neighbors: connection_list.is_empty
 		end
 
 feature -- Access
 
-	place: TRAFFIC_STATION
-			-- Place that it belongs to
+	station: TRAFFIC_STATION
+			-- Station that it belongs to
 
 	position: TRAFFIC_COORDINATE
 			-- Position of the node in the map
@@ -71,7 +71,7 @@ feature -- Access
 	hash_code: INTEGER is
 			-- Hash code value
 		do
-			Result := ([place, position]).hash_code
+			Result := ([station, position]).hash_code
 		end
 
 feature -- Element change
@@ -113,16 +113,16 @@ feature {TRAFFIC_STATION} -- Basic operations (map)
 			is_in_map := True
 			map := a_map
 			-- Connect the stop to the dummy_node
-			if Current /= place.dummy_node then
-				create e.make (Current, place.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
+			if Current /= station.dummy_node then
+				create e.make (Current, station.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
 				create p.make (2)
 				p.put_first (position)
-				p.put_last (place.dummy_node.position)
+				p.put_last (station.dummy_node.position)
 				e.set_polypoints (p)
 				e.add_to_map (a_map)
-				create e.make (place.dummy_node, Current, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
+				create e.make (station.dummy_node, Current, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
 				create p.make (2)
-				p.put_first (place.dummy_node.position)
+				p.put_first (station.dummy_node.position)
 				p.put_last (position)
 				e.set_polypoints (p)
 				e.add_to_map (a_map)
@@ -155,7 +155,7 @@ feature {NONE} -- Implementation
 
 invariant
 
-	place_not_void: place /= Void
+	station_not_void: station /= Void
 	position_not_void: position /= Void
 	item_is_self: item = Current
 	connection_list_exists: connection_list /= Void

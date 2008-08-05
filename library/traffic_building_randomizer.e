@@ -119,7 +119,7 @@ feature {NONE} -- Implementation
 			poly_points: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			poly_point: TRAFFIC_COORDINATE
 			i,j:INTEGER
-			places: TRAFFIC_MAP_ITEM_HASH_TABLE[TRAFFIC_PLACE,STRING_8]
+			s: TRAFFIC_MAP_ITEM_HASH_TABLE[TRAFFIC_STATION,STRING_8]
 		do
 			-- Mark cells for each of the line sections
 			from
@@ -141,17 +141,17 @@ feature {NONE} -- Implementation
 				end
 				i :=i+1
 			end
-			-- Mark cells for each of the places
-			places:=map.places
+			-- Mark cells for each of the stations
+			s:=map.stations
 			from
-				places.start
+				s.start
 			until
-				places.after
+				s.after
 			loop
-				if places.item_for_iteration.width > 0 and places.item_for_iteration.breadth > 0 then
-					grid.mark_rectangle (places.item_for_iteration.position, places.item_for_iteration.width, places.item_for_iteration.breadth, True)
+				if s.item_for_iteration.width > 0 and s.item_for_iteration.breadth > 0 then
+					grid.mark_rectangle (s.item_for_iteration.position, s.item_for_iteration.width, s.item_for_iteration.breadth, True)
 				end
-				places.forth
+				s.forth
 			end
 		end
 

@@ -1,5 +1,5 @@
 indexing
-	description: "Directed road connections that connect two places"
+	description: "Directed road connections that connect two stations"
 	date: "$Date: 2006-03-27 19:42:12 +0200 (Mon, 27 Mar 2006) $"
 	revision: "$Revision: 601 $"
 
@@ -33,8 +33,8 @@ feature {NONE} -- Creation
 			type := a_type
 			is_directed:=true
 			create polypoints.make (0)
-			polypoints.force_last (a_origin.place.position)
-			polypoints.force_last (a_destination.place.position)
+			polypoints.force_last (a_origin.station.position)
+			polypoints.force_last (a_destination.station.position)
 			id := an_id
 		ensure
 			origin_set: start_node = a_origin
