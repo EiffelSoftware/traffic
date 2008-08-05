@@ -1,5 +1,5 @@
 indexing
-	description: "Grid that stores what objects occupy positions on the map"
+	description: "Grid that stores what objects occupy positions on the city"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -253,7 +253,7 @@ feature -- Status report
 feature -- Conversion
 
 	grid_coordinate (a_coord: TRAFFIC_COORDINATE): TUPLE [INTEGER,INTEGER] is
-			-- Grid coordinate for map coordinate `a_coord'
+			-- Grid coordinate for city coordinate `a_coord'
 		local
 			x, y: INTEGER
 		do

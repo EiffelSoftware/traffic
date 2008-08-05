@@ -20,7 +20,7 @@ inherit
 			out, is_equal, start_node, end_node
 		end
 
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 		undefine
 			out, is_equal
 		end
@@ -55,7 +55,7 @@ feature -- Measure
 				real_time: REAL_64
 			do
 				if length > 0 then
-					real_distance_m:= length*(map.scale_factor)
+					real_distance_m:= length*(city.scale_factor)
 					real_distance_km:= real_distance_m/1000
 					real_time:=(real_distance_km/speed)*60
 				else

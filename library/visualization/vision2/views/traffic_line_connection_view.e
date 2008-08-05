@@ -70,7 +70,7 @@ feature -- Basic operations
 		end
 
 	update is
-			-- Update to reflect changes in map item.
+			-- Update to reflect changes in city item.
 		local
 			pp: ARRAY [REAL_COORDINATE]
 			i: INTEGER

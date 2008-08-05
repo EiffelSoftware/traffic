@@ -13,8 +13,8 @@ inherit
 
 feature -- Access
 
-	Paris: TRAFFIC_MAP is
-			-- Map of Paris
+	Paris: TRAFFIC_CITY is
+			-- City of Paris
 		deferred
 		ensure
 			is_paris_loaded
@@ -23,12 +23,12 @@ feature -- Access
 feature -- Status report
 
 	is_paris_loaded: BOOLEAN
-			-- Is the Paris map loaded?
+			-- Is Paris loaded?
 
 feature -- Access (Lines)
 
 	Empty_line: TRAFFIC_LINE is
-			-- Line 1 of the Paris map
+			-- Line 1 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -36,7 +36,7 @@ feature -- Access (Lines)
 		end
 
 	Line1: TRAFFIC_LINE is
-			-- Line 1 of the Paris map
+			-- Line 1 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -44,7 +44,7 @@ feature -- Access (Lines)
 		end
 
 	Line2: TRAFFIC_LINE is
-			-- Line 2 of the Paris map
+			-- Line 2 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -52,7 +52,7 @@ feature -- Access (Lines)
 		end
 
 	Line3: TRAFFIC_LINE is
-			-- Line 3 of the Paris map
+			-- Line 3 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -60,7 +60,7 @@ feature -- Access (Lines)
 		end
 
 	Line6: TRAFFIC_LINE is
-			-- Line 6 of the Paris map
+			-- Line 6 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -68,7 +68,7 @@ feature -- Access (Lines)
 		end
 
 	Line7_a: TRAFFIC_LINE is
-			-- Line 7 of the Paris map
+			-- Line 7 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -76,7 +76,7 @@ feature -- Access (Lines)
 		end
 
 	Line8: TRAFFIC_LINE is
-			-- Line 8 of the Paris map
+			-- Line 8 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -84,7 +84,7 @@ feature -- Access (Lines)
 		end
 
 	Line9: TRAFFIC_LINE is
-			-- Line 9 of the Paris map
+			-- Line 9 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -92,7 +92,7 @@ feature -- Access (Lines)
 		end
 
 	Line11: TRAFFIC_LINE is
-			-- Line 11 of the Paris map
+			-- Line 11 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -100,7 +100,7 @@ feature -- Access (Lines)
 		end
 
 	RER_A: TRAFFIC_LINE is
-			-- Line 11 of the Paris map
+			-- Line 11 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -108,7 +108,7 @@ feature -- Access (Lines)
 		end
 
 	RER_B: TRAFFIC_LINE is
-			-- Line 11 of the Paris map
+			-- Line 11 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -116,7 +116,7 @@ feature -- Access (Lines)
 		end
 
 	RER_C_a: TRAFFIC_LINE is
-			-- Line 11 of the Paris map
+			-- Line 11 of Paris
 		require
 			Paris_exists: is_paris_loaded
 		once
@@ -134,16 +134,6 @@ feature  -- Predefined objects (Stations)
 		ensure
 			Result_exists: Result /= Void
 		end
-
---	Station_Invalides: TRAFFIC_STATION is
---			-- Station
---		require
---			Paris_exists: is_paris_loaded
---		once
---			Result := Paris.stations.item ("place Invalides")
---		ensure
---			Result_exists: Result /= Void
---		end
 
 	Station_St_Michel_Notre_Dame: TRAFFIC_STATION is
 			-- Station

@@ -46,12 +46,12 @@ feature -- Basic operations
 				set_error (Mandatory_attribute_missing, <<"direction">>)
 			elseif not has_attribute ("type") then
 				set_error (Mandatory_attribute_missing, <<"type">>)
-			elseif not map.stations.has (attribute ("from")) then
+			elseif not city.stations.has (attribute ("from")) then
 				set_error (Unknown_source, <<attribute ("from")>>)
-			elseif not map.stations.has (attribute ("to")) then
+			elseif not city.stations.has (attribute ("to")) then
 				set_error (Unknown_destination, << attribute ("to")>> )
 			else
-				map_factory.build_road (( attribute ("from")), ( attribute ("to")), map, ( attribute ("type")), ( attribute ("id")),( attribute ("direction")))
+				map_factory.build_road (( attribute ("from")), ( attribute ("to")), city, ( attribute ("type")), ( attribute ("id")),( attribute ("direction")))
 				road := map_factory.road
 				if not has_error and has_subnodes then
 					process_subnodes

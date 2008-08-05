@@ -11,29 +11,29 @@ inherit
 	DOUBLE_MATH
 
 create
-	set_map
+	set_city
 
 feature -- Element change
 
-	set_map (a_map: TRAFFIC_MAP) is
-			-- Initialize with `a_map'.
+	set_city (a_city: TRAFFIC_CITY) is
+			-- Initialize with `a_city'.
 		require
-			a_map_exists: a_map /= Void
+			a_city_exists: a_city /= Void
 		local
 			t: TIME
 		do
 			create t.make_now
 			create random.set_seed (t.compact_time)
 			random.start
-			map := a_map
+			city := a_city
 			create templates.make (1, 3)
 			templates.force (create {TRAFFIC_VILLA}.make_default (create {TRAFFIC_COORDINATE}.make (0, 0)), 1)
 			templates.force (create {TRAFFIC_APARTMENT_BUILDING}.make_default (create {TRAFFIC_COORDINATE}.make (0, 0)), 2)
 			templates.force (create {TRAFFIC_SKYSCRAPER}.make_default (create {TRAFFIC_COORDINATE}.make (0, 0)), 3)
-			create grid.make ((map.radius/templates.item (1).width).ceiling*8, map.center, map.radius)
+			create grid.make ((city.radius/templates.item (1).width).ceiling*8, city.center, city.radius)
 			mark_occupied
 		ensure
-			map_set: map = a_map
+			city_set: city = a_city
 			grid_exists: grid /= Void
 		end
 
@@ -57,9 +57,9 @@ feature -- Basic operations
 			nr_buildings_placed := 0
 			w := templates.item (a_template).width -- buildings_representation.width_of_template (a_template)
 			b := templates.item (a_template).depth --buildings_representation.breadth_of_template (a_template)
-			create point_randomizer.make (map.center, a_radius)
+			create point_randomizer.make (city.center, a_radius)
 
-			-- iterate to get different random values of positions on map
+			-- iterate to get different random values of positions on city
 			from
 				j := 1
 			until
@@ -89,8 +89,8 @@ feature -- Access
 			Result := templates.count
 		end
 
-	map: TRAFFIC_MAP
-			-- Map used for placing buildings
+	city: TRAFFIC_CITY
+			-- City used for placing buildings
 
 	grid: TRAFFIC_GRID
 			-- Grid used for marking occupied spaces
@@ -114,21 +114,21 @@ feature {NONE} -- Implementation
 			-- Building templates
 
 	mark_occupied is
-			-- Mark all cells of the grid that are already occupied by a map item.
+			-- Mark all cells of the grid that are already occupied by a city item.
 		local
 			poly_points: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 			poly_point: TRAFFIC_COORDINATE
 			i,j:INTEGER
-			s: TRAFFIC_MAP_ITEM_HASH_TABLE[TRAFFIC_STATION,STRING_8]
+			s: TRAFFIC_ITEM_HASH_TABLE[TRAFFIC_STATION,STRING_8]
 		do
 			-- Mark cells for each of the line sections
 			from
 				i:=1
 			until
-				i > map.line_sections.count
+				i > city.line_sections.count
 			loop
 				-- traverse each poly point of a line section
-				poly_points := map.line_sections.item (i).polypoints
+				poly_points := city.line_sections.item (i).polypoints
 				from
 					j:=2
 					poly_point := poly_points.item (1)
@@ -142,7 +142,7 @@ feature {NONE} -- Implementation
 				i :=i+1
 			end
 			-- Mark cells for each of the stations
-			s:=map.stations
+			s:=city.stations
 			from
 				s.start
 			until
@@ -157,7 +157,7 @@ feature {NONE} -- Implementation
 
 invariant
 
-	map_exists: map /= Void
+	city_exists: city /= Void
 	random_exists: random /= Void
 
 end

@@ -41,10 +41,10 @@ feature -- Basic operations
 				set_error (Mandatory_attribute_missing, << "type" >>)
 			else
 				if has_attribute ("simple") and then equal (attribute ("simple"), "true") then
-					map_factory.build_line (attribute ("name"), attribute ("type"), map)
+					map_factory.build_line (attribute ("name"), attribute ("type"), city)
 					set_target (map_factory.line)
 				else
-					map_factory.build_line (attribute ("name"), attribute ("type"), map)
+					map_factory.build_line (attribute ("name"), attribute ("type"), city)
 					set_target (map_factory.line)
 				end
 			end

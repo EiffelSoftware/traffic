@@ -49,7 +49,7 @@ feature -- Initialization
 feature -- Basic operations
 
 	update is
-			-- Update to reflect changes in map item.
+			-- Update to reflect changes in city item.
 		do
 			if item.is_highlighted then
 				highlight

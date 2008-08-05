@@ -1,5 +1,5 @@
 indexing
-	description: "Randomizer that allows to produce lists of random positions that are on the map "
+	description: "Randomizer that allows to produce lists of random positions that are on the city "
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -55,7 +55,7 @@ feature -- Element change
 feature -- Basic operations
 
 	generate_point_array (n: INTEGER) is
-			-- Generate a new array with `n' random points on `map'.
+			-- Generate a new array with `n' random points on `city'.
 			-- Result is accessable via `last_array'.
 		require
 			n_valid: n > 0

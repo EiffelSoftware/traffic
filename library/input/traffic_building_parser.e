@@ -14,15 +14,15 @@ inherit
 	TRAFFIC_NODE_PROCESSOR_REGISTRY
 
 create
-	make_with_map
+	make_with_city
 
 feature -- Initialization
 
-	make_with_map (a_map:TRAFFIC_MAP)  is
+	make_with_city (a_city:TRAFFIC_CITY)  is
 			-- Create parser.
 
 		require
-			map_valid: a_map /= void
+			city_valid: a_city /= void
 		do
 			make
 			from
@@ -30,7 +30,7 @@ feature -- Initialization
 			until
 				Processor_registry.off
 			loop
---				Processor_registry.item_for_iteration.set_map(a_map)
+--				Processor_registry.item_for_iteration.set_city(a_city)
 				Processor_registry.forth
 			end
 		end

@@ -1,5 +1,5 @@
 indexing
-	description: "Container for vision2 map item views"
+	description: "Container for vision2 city item views"
 	date: "$Date$"
 	revision: "$Revision$"
 

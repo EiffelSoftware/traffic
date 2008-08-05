@@ -1,5 +1,5 @@
 indexing
-	description: "Container for map item views of a certain type"
+	description: "Container for city item views of a certain type"
 	date: "$Date$"
 	revision: "$Revision$"
 

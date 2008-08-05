@@ -19,11 +19,11 @@ inherit
 			put_connection
 		end
 
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 		undefine
 			is_equal,
-			add_to_map,
-			remove_from_map
+			add_to_city,
+			remove_from_city
 		end
 
 create
@@ -63,7 +63,7 @@ feature -- Access
 			-- Station that it belongs to
 
 	position: TRAFFIC_COORDINATE
-			-- Position of the node in the map
+			-- Position of the node
 
 	connection_list: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
 			-- List of all connections that this node is an startpoint of
@@ -89,54 +89,54 @@ feature -- Element change
 
 feature -- Status report
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
 		do
 			Result := connection_list.is_empty
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 		do
 			Result := True
 		end
 
-feature {TRAFFIC_STATION} -- Basic operations (map)
+feature {TRAFFIC_STATION} -- Basic operations
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all nodes to `a_map'.
+	add_to_city (a_city: TRAFFIC_CITY) is
+			-- Add `Current' and all nodes to `a_city'.
 		local
 			e: TRAFFIC_EXCHANGE_CONNECTION
 			p: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
-			a_map.graph.put_node (Current)
-			is_in_map := True
-			map := a_map
+			a_city.graph.put_node (Current)
+			is_in_city := True
+			city := a_city
 			-- Connect the stop to the dummy_node
 			if Current /= station.dummy_node then
-				create e.make (Current, station.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
+				create e.make (Current, station.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_city.graph.id_manager.next_free_index)
 				create p.make (2)
 				p.put_first (position)
 				p.put_last (station.dummy_node.position)
 				e.set_polypoints (p)
-				e.add_to_map (a_map)
-				create e.make (station.dummy_node, Current, create {TRAFFIC_TYPE_STREET}.make, a_map.graph.id_manager.next_free_index)
+				e.add_to_city (a_city)
+				create e.make (station.dummy_node, Current, create {TRAFFIC_TYPE_STREET}.make, a_city.graph.id_manager.next_free_index)
 				create p.make (2)
 				p.put_first (station.dummy_node.position)
 				p.put_last (position)
 				e.set_polypoints (p)
-				e.add_to_map (a_map)
+				e.add_to_city (a_city)
 			end
 		ensure then
-			graph_has: a_map.graph.has_node (Current)
+			graph_has: a_city.graph.has_node (Current)
 		end
 
-	remove_from_map is
-			-- Remove all nodes from `a_map'.
+	remove_from_city is
+			-- Remove all nodes from `city'.
 		do
-			map.graph.prune_node (Current)
-			is_in_map := False
-			map := Void
+			city.graph.prune_node (Current)
+			is_in_city := False
+			city := Void
 		end
 
 feature {TRAFFIC_GRAPH} -- Element change

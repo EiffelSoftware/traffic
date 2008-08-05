@@ -1,10 +1,10 @@
 indexing
-	description: "Hash table that contains map items, calls add_to_map and remove_from_map on insertion and deletion, and throws events when a new item is added/removed"
+	description: "Hash table that contains city items, calls add_to_city and remove_from_city on insertion and deletion, and throws events when a new item is added/removed"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_MAP_ITEM_HASH_TABLE [G->TRAFFIC_MAP_ITEM, H->HASHABLE]
+	TRAFFIC_ITEM_HASH_TABLE [G->TRAFFIC_CITY_ITEM, H->HASHABLE]
 
 inherit
 
@@ -15,16 +15,16 @@ create
 
 feature {NONE} -- Initialization
 
-	make (n: INTEGER_32; a_map: TRAFFIC_MAP)
+	make (n: INTEGER_32; a_city: TRAFFIC_CITY)
 			-- Create an empty table and allocate
 			-- memory space for at least `n' items.
 			-- Use `=' as comparison criterion for items.
 			-- Use equal as comparison criterion for keys.
 		require
 			positive_n: n >= 0
-			a_map_exists: a_map /= Void
+			a_city_exists: a_city /= Void
 		do
-			map := a_map
+			city := a_city
 			create internal_table.make (n)
 			create element_inserted_event
 			create element_removed_event
@@ -33,13 +33,13 @@ feature {NONE} -- Initialization
 			internal_table_exists: internal_table /= Void
 			element_inserted_event_exists: element_inserted_event /= Void
 			element_removed_event_exists: element_removed_event /= Void
-			map_set: map = a_map
+			city_set: city = a_city
 		end
 
 feature -- Access
 
-	map: TRAFFIC_MAP
-			-- Map for current container
+	city: TRAFFIC_CITY
+			-- City for current container
 
 	first: G
 			-- First item in container
@@ -132,7 +132,7 @@ feature -- Insertion
 		do
 			internal_table.force (v, k)
 			element_inserted_event.publish ([v])
-			v.add_to_map (map)
+			v.add_to_city (city)
 		ensure
 			inserted: has (k) and then item (k) = v
 			same_count: (old has (k)) implies (count = old count)
@@ -147,10 +147,10 @@ feature -- Insertion
 			is_removable: item (k).is_removable
 		do
 			element_removed_event.publish ([internal_table.item (k)])
-			internal_table.item (k).remove_from_map
+			internal_table.item (k).remove_from_city
 			internal_table.replace (v, k)
 			element_inserted_event.publish ([v])
-			v.add_to_map (map)
+			v.add_to_city (city)
 		ensure -- from DS_TABLE
 			replaced: item (k) = v
 			same_count: count = old count
@@ -166,7 +166,7 @@ feature -- Removal
 		do
 			if has (k) then
 				element_removed_event.publish ([internal_table.item (k)])
-				internal_table.item (k).remove_from_map
+				internal_table.item (k).remove_from_city
 				internal_table.remove (k)
 			end
 		ensure -- from DS_TABLE
@@ -187,7 +187,7 @@ feature -- Removal
 				after
 			loop
 				element_removed_event.publish ([item_for_iteration])
-				item_for_iteration.remove_from_map
+				item_for_iteration.remove_from_city
 				forth
 			end
 			internal_table.wipe_out
@@ -214,6 +214,6 @@ feature {NONE} -- Implementation
 invariant
 
 	internal_table_exists: internal_table /= Void
-	map_exists: map /= Void
+	city_exists: city /= Void
 
 end

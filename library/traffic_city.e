@@ -1,10 +1,10 @@
 indexing
-	description: "Map representing a traffic system of a region."
+	description: "City with a traffic system of a region."
 	date: "$Date: 2006/01/09 12:23:40 $"
 	revision: "$Revision: 1.5 $"
 
 class
-	TRAFFIC_MAP
+	TRAFFIC_CITY
 
 inherit
 	STORABLE
@@ -26,7 +26,7 @@ create
 feature {NONE} -- Initialization
 
 	make (a_name: STRING) is
-			-- Create an empty map with name `a_name'.
+			-- Create an empty city with name `a_name'.
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
@@ -109,7 +109,7 @@ feature -- Element change
 		end
 
 	set_description (a_description: STRING) is
-			-- Set map description.
+			-- Set city description.
 		do
 			description := a_description
 		ensure
@@ -128,7 +128,7 @@ feature -- Element change
 
 feature -- Insertion
 
-	add_tram_per_line_with_schedule (a_map: TRAFFIC_MAP; number: INTEGER) is
+	add_tram_per_line_with_schedule (a_map: TRAFFIC_CITY; number: INTEGER) is
 			-- Add `number' of trams per line with an automatically generated schedule.
 		require
 			a_map_exists: a_map /= Void
@@ -180,48 +180,48 @@ feature -- Access
 			-- Graph used for calculating shortest paths
 
 	name: STRING
-			-- Name of region this map represents
+			-- Name of region this city represents
 
 	description: STRING
-			-- Textual description of the map
+			-- Textual description of the city
 
 	scale_factor: DOUBLE
 			-- Scale factor to reach real world distances
 			-- Multiply with this to receive real-world distances
 
-feature -- Access (map objects)
+feature -- Access (city objects)
 
-	stations: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_STATION, STRING]
-			-- All stations in map
+	stations: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_STATION, STRING]
+			-- All stations in city
 
 	line_sections: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
-			-- All line sections in map
+			-- All line sections in city
 
-	lines: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_LINE, STRING]
-			-- All lines in map
+	lines: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_LINE, STRING]
+			-- All lines in city
 
-	roads: TRAFFIC_MAP_ITEM_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
-			-- All roads in map
+	roads: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+			-- All roads in city
 
-	paths: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_PATH]
-			-- Paths of the map
+	paths: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_PATH]
+			-- Paths of the city
 
-	buildings: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_BUILDING]
-			-- Buildings of the map
+	buildings: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_BUILDING]
+			-- Buildings of the city
 
-	taxi_offices: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_TAXI_OFFICE]
-			-- All taxi offices associated with this map
+	taxi_offices: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_TAXI_OFFICE]
+			-- All taxi offices associated with this city
 
-	passengers: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_PASSENGER]
+	passengers: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_PASSENGER]
 			-- All passengers moving around the city
 
-	trams: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_TRAM]
+	trams: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_TRAM]
 			-- All trams in the city
 
-	busses: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_BUS]
+	busses: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_BUS]
 			-- All busses in the city
 
-	free_movings: TRAFFIC_MAP_ITEM_LINKED_LIST [TRAFFIC_FREE_MOVING]
+	free_movings: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_FREE_MOVING]
 			-- All free moving objects in the city
 
 feature -- Access
@@ -251,7 +251,7 @@ feature -- Output
 	out: STRING is
 			-- Textual representation.
 		do
-			Result := "Traffic map%Nnamed: " + name + "%Ndescription: " + description_out +
+			Result := "Traffic city%Nnamed: " + name + "%Ndescription: " + description_out +
 				"%N%Nstations:%N" + stations.out
 		end
 
@@ -335,8 +335,8 @@ feature {NONE}-- Implementation
 
 invariant
 
-	name_not_void: name /= Void -- Map name exists.
-	name_not_empty: not name.is_empty -- Map name not empty.
-	stations_not_void: stations /= Void -- Stations exist.
+	name_not_void: name /= Void
+	name_not_empty: not name.is_empty
+	stations_not_void: stations /= Void
 
 end

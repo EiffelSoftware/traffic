@@ -94,7 +94,7 @@ feature -- Basic operations
 --				create building.make (p1,p2,p3,p4, height, building_name)
 
 				building.set_angle (angle)
-				map.buildings.put_last (building)
+				city.buildings.put_last (building)
 			end
 		end
 end

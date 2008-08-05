@@ -8,10 +8,10 @@ class
 
 inherit
 
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 		redefine
-			add_to_map,
-			remove_from_map
+			add_to_city,
+			remove_from_city
 		end
 
 create
@@ -76,47 +76,47 @@ feature -- Access
 	id: INTEGER
 			-- Id of the road
 
-feature {TRAFFIC_MAP_ITEM_CONTAINER}-- Basic operations
+feature {TRAFFIC_EVENT_CONTAINER}-- Basic operations
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all nodes to `a_map'.
+	add_to_city (a_city: TRAFFIC_CITY) is
+			-- Add `Current' and all nodes to `a_city'.
 		do
-			one_way.add_to_map (a_map)
+			one_way.add_to_city (a_city)
 			if not is_one_way then
-				other_way.add_to_map (a_map)
+				other_way.add_to_city (a_city)
 			end
-			is_in_map := True
-			map := a_map
+			is_in_city := True
+			city := a_city
 		end
 
-	remove_from_map is
-			-- Remove all nodes from `a_map'.
+	remove_from_city is
+			-- Remove all nodes from `city'.
 		do
-			one_way.remove_from_map
+			one_way.remove_from_city
 			if not is_one_way then
-				other_way.remove_from_map
+				other_way.remove_from_city
 			end
-			is_in_map := False
-			map := Void
+			is_in_city := False
+			city := Void
 		end
 
 feature -- Status report
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
-			-- E.g. are all needed elements already inserted in the map?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
+			-- E.g. are all needed elements already inserted in the city?
 		do
-			Result := 	one_way.start_node.is_in_map and one_way.end_node.is_in_map and
-						one_way.origin.is_in_map and one_way.destination.is_in_map
+			Result := 	one_way.start_node.is_in_city and one_way.end_node.is_in_city and
+						one_way.origin.is_in_city and one_way.destination.is_in_city
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 		local
 			l: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
 		do
 			Result := True
-			if is_in_map then
+			if is_in_city then
 				l := one_way.origin.outgoing_line_connections
 				from
 					l.start

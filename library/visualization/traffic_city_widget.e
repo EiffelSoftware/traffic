@@ -1,14 +1,14 @@
 indexing
-	description: "Widgets that display a map"
+	description: "Widgets that display a city"
 	date: "$Date$"
 	revision: "$Revision$"
 
-deferred class TRAFFIC_MAP_WIDGET
+deferred class TRAFFIC_CITY_WIDGET
 
 feature -- Access
 
-	map: TRAFFIC_MAP
-			-- Map that is displayed
+	city: TRAFFIC_CITY
+			-- City that is displayed
 
 	factory: TRAFFIC_VIEW_FACTORY
 			-- Factory for creating views
@@ -47,8 +47,8 @@ feature -- Access
 
 feature -- Element change
 
-	set_map (a_map: TRAFFIC_MAP) is
-			-- Set map that is displayed to `a_map'.
+	set_city (a_city: TRAFFIC_CITY) is
+			-- Set city that is displayed to `a_city'.
 		require
 			line_representations_exists: line_representations /= Void
 			station_representations_exists: station_representations /= Void
@@ -60,138 +60,138 @@ feature -- Element change
 			p: TRAFFIC_VIEW [TRAFFIC_STATION]
 			r: TRAFFIC_VIEW [TRAFFIC_ROAD]
 		do
-			map := a_map
+			city := a_city
 			from
-				map.roads.start
+				city.roads.start
 			until
-				map.roads.after
+				city.roads.after
 			loop
-				r := factory.new_road_view (map.roads.item_for_iteration)
+				r := factory.new_road_view (city.roads.item_for_iteration)
 				road_representations.put_last (r)
-				map.roads.forth
+				city.roads.forth
 			end
 			from
-				map.lines.start
+				city.lines.start
 			until
-				map.lines.after
+				city.lines.after
 			loop
-				l := factory.new_line_view (map.lines.item_for_iteration)
+				l := factory.new_line_view (city.lines.item_for_iteration)
 				line_representations.put_last (l)
-				map.lines.forth
+				city.lines.forth
 			end
 			from
-				map.stations.start
+				city.stations.start
 			until
-				map.stations.after
+				city.stations.after
 			loop
-				p := factory.new_station_view (map.stations.item_for_iteration)
+				p := factory.new_station_view (city.stations.item_for_iteration)
 				station_representations.put_last (p)
-				map.stations.forth
+				city.stations.forth
 			end
 			from
-				map.buildings.start
+				city.buildings.start
 			until
-				map.buildings.after
+				city.buildings.after
 			loop
-				add_building (map.buildings.item_for_iteration)
-				map.buildings.forth
+				add_building (city.buildings.item_for_iteration)
+				city.buildings.forth
 			end
 			from
-				map.trams.start
+				city.trams.start
 			until
-				map.trams.after
+				city.trams.after
 			loop
-				add_tram (map.trams.item_for_iteration)
-				map.trams.forth
+				add_tram (city.trams.item_for_iteration)
+				city.trams.forth
 			end
 			from
-				map.busses.start
+				city.busses.start
 			until
-				map.busses.after
+				city.busses.after
 			loop
-				add_bus (map.busses.item_for_iteration)
-				map.busses.forth
+				add_bus (city.busses.item_for_iteration)
+				city.busses.forth
 			end
 			from
-				map.free_movings.start
+				city.free_movings.start
 			until
-				map.free_movings.after
+				city.free_movings.after
 			loop
-				add_free_moving (map.free_movings.item_for_iteration)
-				map.free_movings.forth
+				add_free_moving (city.free_movings.item_for_iteration)
+				city.free_movings.forth
 			end
 			from
-				map.passengers.start
+				city.passengers.start
 			until
-				map.passengers.after
+				city.passengers.after
 			loop
-				add_passenger (map.passengers.item_for_iteration)
-				map.passengers.forth
+				add_passenger (city.passengers.item_for_iteration)
+				city.passengers.forth
 			end
 			from
-				map.paths.start
+				city.paths.start
 			until
-				map.paths.after
+				city.paths.after
 			loop
-				add_path (map.paths.item_for_iteration)
-				map.paths.forth
+				add_path (city.paths.item_for_iteration)
+				city.paths.forth
 			end
 			from
-				map.taxi_offices.start
+				city.taxi_offices.start
 			until
-				map.taxi_offices.after
+				city.taxi_offices.after
 			loop
-				add_taxi_office (map.taxi_offices.item_for_iteration)
-				map.taxi_offices.forth
+				add_taxi_office (city.taxi_offices.item_for_iteration)
+				city.taxi_offices.forth
 			end
-			map.lines.element_inserted_event.subscribe (agent add_line)
-			map.lines.element_removed_event.subscribe (agent remove_line)
-			map.roads.element_inserted_event.subscribe (agent add_road)
-			map.roads.element_removed_event.subscribe (agent remove_road)
-			map.stations.element_inserted_event.subscribe (agent add_station)
-			map.stations.element_removed_event.subscribe (agent remove_station)
-			map.buildings.element_inserted_event.subscribe (agent add_building)
-			map.buildings.element_removed_event.subscribe (agent remove_building)
-			map.trams.element_inserted_event.subscribe (agent add_tram)
-			map.trams.element_removed_event.subscribe (agent remove_tram)
-			map.busses.element_inserted_event.subscribe (agent add_bus)
-			map.busses.element_removed_event.subscribe (agent remove_bus)
-			map.free_movings.element_inserted_event.subscribe (agent add_free_moving)
-			map.free_movings.element_removed_event.subscribe (agent remove_free_moving)
-			map.passengers.element_inserted_event.subscribe (agent add_passenger)
-			map.passengers.element_removed_event.subscribe (agent remove_passenger)
-			map.paths.element_inserted_event.subscribe (agent add_path)
-			map.paths.element_removed_event.subscribe (agent remove_path)
-			map.taxi_offices.element_inserted_event.subscribe (agent add_taxi_office)
-			map.taxi_offices.element_removed_event.subscribe (agent remove_taxi_office)
+			city.lines.element_inserted_event.subscribe (agent add_line)
+			city.lines.element_removed_event.subscribe (agent remove_line)
+			city.roads.element_inserted_event.subscribe (agent add_road)
+			city.roads.element_removed_event.subscribe (agent remove_road)
+			city.stations.element_inserted_event.subscribe (agent add_station)
+			city.stations.element_removed_event.subscribe (agent remove_station)
+			city.buildings.element_inserted_event.subscribe (agent add_building)
+			city.buildings.element_removed_event.subscribe (agent remove_building)
+			city.trams.element_inserted_event.subscribe (agent add_tram)
+			city.trams.element_removed_event.subscribe (agent remove_tram)
+			city.busses.element_inserted_event.subscribe (agent add_bus)
+			city.busses.element_removed_event.subscribe (agent remove_bus)
+			city.free_movings.element_inserted_event.subscribe (agent add_free_moving)
+			city.free_movings.element_removed_event.subscribe (agent remove_free_moving)
+			city.passengers.element_inserted_event.subscribe (agent add_passenger)
+			city.passengers.element_removed_event.subscribe (agent remove_passenger)
+			city.paths.element_inserted_event.subscribe (agent add_path)
+			city.paths.element_removed_event.subscribe (agent remove_path)
+			city.taxi_offices.element_inserted_event.subscribe (agent add_taxi_office)
+			city.taxi_offices.element_removed_event.subscribe (agent remove_taxi_office)
 		ensure
-			map_set: map = a_map
+			city_set: city = a_city
 		end
 
 feature -- Status report
 
-	is_map_hidden: BOOLEAN
-			-- Is the map hidden?
+	is_city_hidden: BOOLEAN
+			-- Is the city hidden?
 
 	are_buildings_hidden: BOOLEAN
 			-- Are the buildings displayed?
 
 feature -- Status setting
 
-	enable_map_hidden is
-			-- Set `is_map_hidden' to `True'.
+	enable_city_hidden is
+			-- Set `is_city_hidden' to `True'.
 		do
-			is_map_hidden := True
+			is_city_hidden := True
 		ensure
-			map_hidden: is_map_hidden
+			city_hidden: is_city_hidden
 		end
 
-	disable_map_hidden is
-			-- Set `is_map_hidden' to `False'.
+	disable_city_hidden is
+			-- Set `is_city_hidden' to `False'.
 		do
-			is_map_hidden := False
+			is_city_hidden := False
 		ensure
-			map_not_hidden: not is_map_hidden
+			city_not_hidden: not is_city_hidden
 		end
 
 feature {NONE} -- Implementation (view adding)

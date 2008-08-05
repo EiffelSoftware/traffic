@@ -16,7 +16,7 @@ inherit
 	MATH_CONST
 		export {NONE} all end
 
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 		rename
 			highlight as spotlight,
 			unhighlight as unspotlight,
@@ -55,15 +55,15 @@ feature -- Status report
 	is_landmark: BOOLEAN
 			-- Is the building a landmark?
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
 			-- (All nodes need to be insertable. See `TRAFFIC_NODE is_insertable' for requirements.)
 		do
 			Result := True
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 		do
 			Result := True
 		end

@@ -46,7 +46,7 @@ feature -- Access
 feature -- Status report
 
 	is_zurich_loaded: BOOLEAN
-			-- Is the Zurich map loaded?
+			-- Is Zurich loaded?
 
 feature -- Access (Paris)
 
@@ -56,7 +56,7 @@ feature -- Access (Paris)
 	Short_wait_time: INTEGER is 1
 			-- Intervall time for the blinking action
 
-	Paris: TRAFFIC_MAP is
+	Paris: TRAFFIC_CITY is
 			-- Object representing the city of Paris
 		local
 			loader: TRAFFIC_MAP_LOADER
@@ -72,8 +72,8 @@ feature -- Access (Paris)
 				loader.enable_dump_loading
 				loader.load_map
 				if not loader.has_error then
-					Result := loader.map
-					main_window.canvas.set_map (loader.map)
+					Result := loader.city
+					main_window.canvas.set_city (loader.city)
 					if Result /= Void and then Result.time.is_time_running then
 						Result.time.reset
 					end
@@ -91,7 +91,7 @@ feature -- Access (Paris)
 			end
 		end
 
-	Zurich: TRAFFIC_MAP is
+	Zurich: TRAFFIC_CITY is
 			-- Object representing the city of Zurich
 		local
 			loader: TRAFFIC_MAP_LOADER
@@ -106,8 +106,8 @@ feature -- Access (Paris)
 				loader.enable_dump_loading
 				loader.load_map
 				if not loader.has_error then
-					Result := loader.map
-					main_window.canvas.set_map (loader.map)
+					Result := loader.city
+					main_window.canvas.set_city (loader.city)
 					if Result /= Void and then Result.time.is_time_running then
 						Result.time.reset
 					end

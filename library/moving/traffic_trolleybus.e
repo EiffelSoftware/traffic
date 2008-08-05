@@ -1,5 +1,5 @@
 indexing
-	description: "Trolleybusses (not yet included in the map)"
+	description: "Trolleybusses (not yet included in the city)"
 	date: "$Date$"
 	revision: "$Revision$"
 

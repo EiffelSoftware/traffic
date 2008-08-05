@@ -66,7 +66,7 @@ feature -- Basic operations
 		end
 
 	move is
-			-- Take a tour on the map.
+			-- Take a tour in the city.
 			-- Set new random directions and if 'Current' has done a request and is available again.
 		do
 			Precursor

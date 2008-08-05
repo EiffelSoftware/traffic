@@ -28,7 +28,7 @@ inherit
 				out as math_out
 		end
 
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 		undefine
 			is_equal,
 			copy,
@@ -36,8 +36,8 @@ inherit
 		redefine
 			highlight,
 			unhighlight,
-			add_to_map,
-			remove_from_map
+			add_to_city,
+			remove_from_city
 		end
 create
 	make, make_with_terminal
@@ -387,15 +387,15 @@ feature -- Element change
 			color_set: color = a_color
 		end
 
-feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
+feature {TRAFFIC_ITEM_LINKED_LIST} -- Basic operations
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all nodes to `a_map'.
+	add_to_city (a_city: TRAFFIC_CITY) is
+			-- Add `Current' and all nodes to `a_city'.
 		local
 			lc: TRAFFIC_LINE_CURSOR
 		do
-			is_in_map := True
-			map := a_map
+			is_in_city := True
+			city := a_city
 			from
 				create lc.make (Current)
 				lc.start
@@ -403,7 +403,7 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
 			until
 				lc.after
 			loop
-				lc.item_for_iteration.add_to_map (map)
+				lc.item_for_iteration.add_to_city (city)
 				lc.forth
 			end
 			from
@@ -412,17 +412,17 @@ feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
 			until
 				lc.after
 			loop
-				lc.item_for_iteration.add_to_map (map)
+				lc.item_for_iteration.add_to_city (city)
 				lc.forth
 			end
 		end
 
-	remove_from_map is
-			-- Remove all nodes from `a_map'.
+	remove_from_city is
+			-- Remove all nodes from `city'.
 		do
 			wipe_out
-			is_in_map := False
-			map := Void
+			is_in_city := False
+			city := Void
 		end
 
 feature -- Removal
@@ -438,7 +438,7 @@ feature -- Removal
 				one_direction.off
 			loop
 				element_removed_event.publish ([one_direction.item_for_iteration])
-				one_direction.item_for_iteration.remove_from_map
+				one_direction.item_for_iteration.remove_from_city
 				one_direction.forth
 			end
 			one_direction.wipe_out
@@ -447,7 +447,7 @@ feature -- Removal
 			until
 				other_direction.off
 			loop
-				other_direction.item_for_iteration.remove_from_map
+				other_direction.item_for_iteration.remove_from_city
 				element_removed_event.publish ([other_direction.item_for_iteration])
 				other_direction.forth
 			end
@@ -476,13 +476,13 @@ feature -- Removal
 			count_valid: connection_count >= 1
 		do
 			element_removed_event.publish ([one_direction.last])
-			if one_direction.last.is_in_map then
-				one_direction.last.remove_from_map
+			if one_direction.last.is_in_city then
+				one_direction.last.remove_from_city
 			end
 			one_direction.remove_last
 			element_removed_event.publish ([other_direction.first])
-			if other_direction.first.is_in_map then
-				other_direction.first.remove_from_map
+			if other_direction.first.is_in_city then
+				other_direction.first.remove_from_city
 			end
 			other_direction.remove_first
 			if connection_count >= 1 then
@@ -504,11 +504,11 @@ feature -- Removal
 		do
 			element_removed_event.publish ([one_direction.first])
 			element_removed_event.publish ([other_direction.last])
-			if one_direction.first.is_in_map then
-				one_direction.first.remove_from_map
+			if one_direction.first.is_in_city then
+				one_direction.first.remove_from_city
 			end
-			if other_direction.last.is_in_map then
-				other_direction.last.remove_from_map
+			if other_direction.last.is_in_city then
+				other_direction.last.remove_from_city
 			end
 			one_direction.remove_first
 			other_direction.remove_last
@@ -528,9 +528,9 @@ feature -- Removal
 feature -- Status report
 
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
-			-- E.g. are all needed elements already inserted in the map?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
+			-- E.g. are all needed elements already inserted in the city?
 		local
 			lc: TRAFFIC_LINE_CURSOR
 		do
@@ -541,8 +541,8 @@ feature -- Status report
 			until
 				lc.after or not Result
 			loop
-				if lc.item_for_iteration.start_node.is_in_map and lc.item_for_iteration.end_node.is_in_map and
-						lc.item_for_iteration.origin.is_in_map and lc.item_for_iteration.destination.is_in_map then
+				if lc.item_for_iteration.start_node.is_in_city and lc.item_for_iteration.end_node.is_in_city and
+						lc.item_for_iteration.origin.is_in_city and lc.item_for_iteration.destination.is_in_city then
 					Result := True
 				else
 					Result := False
@@ -552,7 +552,7 @@ feature -- Status report
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 		do
 			Result := True
 		end
@@ -585,9 +585,9 @@ feature -- Basic operations
 			end
 			l1.set_line (Current)
 			l2.set_line (Current)
-			if is_in_map then
-				l1.add_to_map (map)
-				l2.add_to_map (map)
+			if is_in_city then
+				l1.add_to_city (city)
+				l2.add_to_city (city)
 			end
 			element_inserted_event.publish ([l1])
 			element_inserted_event.publish ([l2])
@@ -611,9 +611,9 @@ feature -- Basic operations
 			terminal_2 := l1.destination
 			l1.set_line (Current)
 			l2.set_line (Current)
-			if is_in_map then
-				l1.add_to_map (map)
-				l2.add_to_map (map)
+			if is_in_city then
+				l1.add_to_city (city)
+				l2.add_to_city (city)
 			end
 			element_inserted_event.publish ([l1])
 			element_inserted_event.publish ([l2])

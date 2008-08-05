@@ -14,8 +14,8 @@ inherit
 			start_node,
 			end_node,
 			type,
-			add_to_map,
-			remove_from_map
+			add_to_city,
+			remove_from_city
 		end
 
 
@@ -110,21 +110,21 @@ feature -- Basic operations
 
 feature -- Status report
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
-			-- (All stations, stops, and the line need to be in the map already)
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
+			-- (All stations, stops, and the line need to be in the city already)
 		do
-			Result := 	start_node.is_in_map and end_node.is_in_map and
-						origin.is_in_map and destination.is_in_map
+			Result := 	start_node.is_in_city and end_node.is_in_city and
+						origin.is_in_city and destination.is_in_city
 
 			if line /= Void then
-				Result := Result and line.is_in_map
+				Result := Result and line.is_in_city
 			end
 
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 			-- In general yes. The line needs to make sure that there is no problem...
 		do
 			Result := True
@@ -193,26 +193,26 @@ feature {TRAFFIC_LINE} -- Status setting
 			line_void: line = Void
 		end
 
-feature {TRAFFIC_LINE} -- Basic operations (map)
+feature {TRAFFIC_LINE} -- Basic operations
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all nodes to `a_map'.
+	add_to_city (a_city: TRAFFIC_CITY) is
+			-- Add `Current' and all nodes to `a_city'.
 		do
-			a_map.graph.put_line_section (Current)
-			a_map.line_sections.put_last (Current)
-			is_in_map := True
-			map := a_map
+			a_city.graph.put_line_section (Current)
+			a_city.line_sections.put_last (Current)
+			is_in_city := True
+			city := a_city
 		ensure then
-			graph_has: a_map.graph.has_edge (Current)
+			graph_has: a_city.graph.has_edge (Current)
 		end
 
-	remove_from_map is
-			-- Remove all nodes from `a_map'.
+	remove_from_city is
+			-- Remove all nodes from `city'.
 		do
-			map.graph.prune_edge (Current)
-			map.line_sections.delete (Current)
-			is_in_map := False
-			map := Void
+			city.graph.prune_edge (Current)
+			city.line_sections.delete (Current)
+			is_in_city := False
+			city := Void
 		end
 
 invariant

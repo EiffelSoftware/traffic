@@ -82,7 +82,7 @@ feature -- Status setting
 feature -- Basic operations
 
 	update is
-			-- Update to reflect changes in map item.
+			-- Update to reflect changes in item.
 		do
 			if item.is_highlighted then
 				if highlight_color /= Void then

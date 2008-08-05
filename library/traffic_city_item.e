@@ -1,43 +1,43 @@
 indexing
-	description: "Elements that belong to the map"
+	description: "Elements that belong to the city"
 	date: "$Date$"
 	revision: "$Revision$"
 
 deferred class
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 
 feature -- Status report
 
-	is_in_map: BOOLEAN
-		-- Is `Current' a member of the map?
+	is_in_city: BOOLEAN
+		-- Is `Current' a member of the city?
 
-feature {TRAFFIC_EVENT_CONTAINER} -- Basic operations (map)
+feature {TRAFFIC_EVENT_CONTAINER} -- Basic operations
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' to `a_map'.
+	add_to_city (a_city: TRAFFIC_CITY) is
+			-- Add `Current' to `a_city'.
 		require
-			a_map_exists: a_map /= Void
-			not_in_map: not is_in_map
-			insertable: is_insertable (a_map)
+			a_city_exists: a_city /= Void
+			not_in_city: not is_in_city
+			insertable: is_insertable (a_city)
 		do
-			is_in_map := True
-			map := a_map
+			is_in_city := True
+			city := a_city
 		ensure
-			is_in_map: is_in_map
-			map_set: map = a_map
+			is_in_city: is_in_city
+			city_set: city = a_city
 		end
 
-	remove_from_map is
-			-- Remove `Current' from `map'.
+	remove_from_city is
+			-- Remove `Current' from `city'.
 		require
-			is_in_map: is_in_map
+			is_in_city: is_in_city
 			is_removable: is_removable
 		do
-			is_in_map := False
-			map := Void
+			is_in_city := False
+			city := Void
 		ensure
-			not_in_map: not is_in_map
-			map_unset: map = Void
+			not_in_city: not is_in_city
+			city_unset: city = Void
 		end
 
 feature -- Status setting
@@ -62,22 +62,22 @@ feature -- Status setting
 
 feature -- Access
 
-	map: TRAFFIC_MAP
-			-- Map to which the item belongs (may be void)
+	city: TRAFFIC_CITY
+			-- City to which the item belongs (may be void)
 
 	changed_event: TRAFFIC_EVENT_CHANNEL [TUPLE []]
 			-- Event to publish when `Current' is changed
 
 feature -- Status report
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
-			-- E.g. are all needed elements already inserted in the map?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
+			-- E.g. are all needed elements already inserted in the city?
 		deferred
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 			-- E.g. no other elements need it any more?
 		deferred
 		end

@@ -18,12 +18,12 @@ inherit
 			default_create
 		end
 
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 		undefine
 			default_create
 		redefine
-			add_to_map,
-			remove_from_map
+			add_to_city,
+			remove_from_city
 		end
 create
 	default_create, make_with_color
@@ -87,8 +87,8 @@ feature -- Basic operations
 		do
 			available_taxis.delete (a_taxi)
 			taxis.delete (a_taxi)
-			if a_taxi.is_in_map then
-				a_taxi.remove_from_map
+			if a_taxi.is_in_city then
+				a_taxi.remove_from_city
 			end
 		end
 
@@ -129,49 +129,49 @@ feature -- Basic operations
 
 feature -- Status report
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
 		do
 			Result := True
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `a_city'?
 		do
 			Result := True
 		end
 
 
-feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
+feature {TRAFFIC_ITEM_LINKED_LIST} -- Basic operations
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all taxis to `a_map'.
+	add_to_city (a_city: TRAFFIC_CITY) is
+			-- Add `Current' and all taxis to `a_city'.
 		do
-			is_in_map := True
-			map := a_map
+			is_in_city := True
+			city := a_city
 			from
 				taxis.start
 			until
 				taxis.after
 			loop
-				taxis.item_for_iteration.add_to_map (map)
+				taxis.item_for_iteration.add_to_city (city)
 				taxis.forth
 			end
 		end
 
-	remove_from_map is
-			-- Remove all nodes from `a_map'.
+	remove_from_city is
+			-- Remove all nodes from `city'.
 		do
 			from
 				taxis.start
 			until
 				taxis.off
 			loop
-				taxis.item_for_iteration.remove_from_map
+				taxis.item_for_iteration.remove_from_city
 				taxis.forth
 			end
-			is_in_map := False
-			map := Void
+			is_in_city := False
+			city := Void
 		end
 
 feature {TRAFFIC_TAXI} -- Basic operations for taxis

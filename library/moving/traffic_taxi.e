@@ -10,8 +10,8 @@ inherit
 
 	TRAFFIC_VEHICLE
 		export {TRAFFIC_TAXI_OFFICE}
-			add_to_map,
-			remove_from_map
+			add_to_city,
+			remove_from_city
 		redefine
 			move
 		end
@@ -58,14 +58,14 @@ feature -- Access
 
 feature -- Status report
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
 		do
 			Result := True
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 		do
 			Result := True
 		end
@@ -94,7 +94,7 @@ feature -- Basic operations
 		end
 
 	move is
-			-- Take a tour on the map.
+			-- Take a tour in the city.
 			-- Set new random directions and if 'Current' has done a request and is available again.
 		do
 			Precursor

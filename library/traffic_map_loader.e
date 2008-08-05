@@ -1,5 +1,5 @@
 indexing
-	description: "Loader that handles the map loading from xml and dump files"
+	description: "Loader that handles the city loading from xml and dump files"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -99,8 +99,8 @@ feature -- Status setting
 
 feature -- Access
 
-	map: TRAFFIC_MAP
-			-- Map retrieved from loading
+	city: TRAFFIC_CITY
+			-- City retrieved from loading
 
 feature {NONE} -- Implementation
 
@@ -137,8 +137,8 @@ feature {NONE} -- Implementation
 				has_error := True
 				raise ("Error while parsing " + xml_filename + ": " + map_parser.error_description)
 			else
-				map := factory.map
-				map.recalculate_weights_and_connect_stops
+				city := factory.city
+				city.recalculate_weights_and_connect_stops
 				has_error := False
 				create_dump
 			end
@@ -153,10 +153,10 @@ feature {NONE} -- Implementation
 		do
 			create directory.make_open_read (directory_name)
 			if directory.has_entry (file_system.basename (dump_filename)) then
-				map ?= (create {TRAFFIC_MAP}.make("temp")).retrieve_by_name (dump_filename)
+				city ?= (create {TRAFFIC_CITY}.make("temp")).retrieve_by_name (dump_filename)
 				has_error := False
 			else
-				map := void
+				city := void
 				has_error := True
 			end
 		rescue
@@ -207,7 +207,7 @@ feature {NONE} -- Implementation
 			log_file: RAW_FILE
 			xml_file: RAW_FILE
 		do
-			map.store_by_name (dump_filename)
+			city.store_by_name (dump_filename)
 			create log_file.make_open_append (log_filename)
 			create xml_file.make(xml_filename)
 			log_file.finish

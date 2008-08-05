@@ -45,8 +45,8 @@ feature -- Initialization
 feature -- Basic operations
 
 	load_schedule is
-			-- Load map  from xml file.
-			-- If map loading was unsuccessful, has_error will be set to `True'.
+			-- Load schedule from xml file.
+			-- If schedule loading was unsuccessful, has_error will be set to `True'.
 		local
 			directory: DIRECTORY
 			log_file: RAW_FILE
@@ -64,7 +64,7 @@ feature -- Basic operations
 feature -- Status report
 
 	has_error: BOOLEAN
-			-- Did the map loading succeed?
+			-- Did the schedule loading succeed?
 
 feature -- Access
 
@@ -77,7 +77,7 @@ feature {NONE} -- Implementation
 			-- Log filename
 
 	directory_name: STRING
-			-- Directory of all the map files
+			-- Directory of all the schedule files
 
 	xml_filename: STRING
 			-- Location of the xml-File

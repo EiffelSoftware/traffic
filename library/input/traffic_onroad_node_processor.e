@@ -29,17 +29,17 @@ feature -- Basic operations
 	process is
 			-- Process node.
 		local
-			a_map:TRAFFIC_MAP
+			a_city:TRAFFIC_CITY
 		do
 			if not has_attribute ("id") then
 				set_error (Mandatory_attribute_missing, << "id" >>)
 			else
-				a_map:=map_factory.map
+				a_city:=map_factory.city
 				-- retrieve the corresponding instance of TRAFFIC_ROAD
-				if (a_map.roads.has (attribute("id").to_integer)) and attribute ("back").is_equal ("false") then
-					parent.send_data (a_map.roads.item (attribute("id").to_integer).one_way)
-				elseif (a_map.roads.has (attribute("id").to_integer)) and attribute ("back").is_equal ("true") then
-					parent.send_data (a_map.roads.item (attribute("id").to_integer).other_way)
+				if (a_city.roads.has (attribute("id").to_integer)) and attribute ("back").is_equal ("false") then
+					parent.send_data (a_city.roads.item (attribute("id").to_integer).one_way)
+				elseif (a_city.roads.has (attribute("id").to_integer)) and attribute ("back").is_equal ("true") then
+					parent.send_data (a_city.roads.item (attribute("id").to_integer).other_way)
 				else
 					set_error(No_road_with_given_id_exists,<<"id">>)
 					parent.send_data(Void)

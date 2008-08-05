@@ -1,5 +1,5 @@
 indexing
-	description: "Vision2 Main window for touch examples, containing a console and a button plus a map canvas"
+	description: "Vision2 Main window for touch examples, containing a console and a button plus a city canvas"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -174,8 +174,8 @@ feature {NONE} -- Implementation
 	update_status_label is
 			--
 		do
-			if canvas.map /= Void and then canvas.map.time.is_time_running then
-				standard_status_label.set_text (canvas.map.time.out)
+			if canvas.city /= Void and then canvas.city.time.is_time_running then
+				standard_status_label.set_text (canvas.city.time.out)
 			end
 		end
 
@@ -202,7 +202,7 @@ feature -- Widgets
 	main_container: EV_VERTICAL_BOX
 			-- Main container (contains all widgets displayed in this window)
 
-	canvas: TRAFFIC_MAP_CANVAS
+	canvas: TRAFFIC_CITY_CANVAS
 			-- Canvas widget
 
 	viewport: EV_VIEWPORT
@@ -224,14 +224,14 @@ feature -- Basic operations
 		end
 
 	move_to_center is
-			-- Center map on screen.
+			-- Center city on screen.
 		local
 			xdiff, ydiff: DOUBLE
 			canvas_center: REAL_COORDINATE
 		do
-			canvas_center := client_to_map_coordinates ((canvas.width/2).floor, (canvas.height/2).floor)
-			xdiff := canvas.map.center.x - canvas_center.x
-			ydiff := (-1)*canvas.map.center.y - canvas_center.y
+			canvas_center := client_to_city_coordinates ((canvas.width/2).floor, (canvas.height/2).floor)
+			xdiff := canvas.city.center.x - canvas_center.x
+			ydiff := (-1)*canvas.city.center.y - canvas_center.y
 			if xdiff /= 0 or ydiff /= 0 then
 				canvas.go_down (ydiff)
 				canvas.go_left (xdiff)
@@ -253,8 +253,8 @@ feature -- Basic operations
 
 feature -- Conversion
 
-	client_to_map_coordinates (x, y: INTEGER): REAL_COORDINATE is
-			-- Map position corresponding to client coordinates (`x', `y')
+	client_to_city_coordinates (x, y: INTEGER): REAL_COORDINATE is
+			-- City position that corresponds to client coordinates (`x', `y')
 		local
 			lx: DOUBLE
 			ly: DOUBLE

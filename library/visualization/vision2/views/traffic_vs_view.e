@@ -1,6 +1,6 @@
 
 indexing
-	description: "Deferred class for all vision2 map item views"
+	description: "Deferred class for all vision2 city item views"
 	date: "$Date$"
 	revision: "$Revision$"
 

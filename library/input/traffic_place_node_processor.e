@@ -37,10 +37,10 @@ feature -- Basic operations
 		do
 			if not has_attribute ("name") then
 				set_error (Mandatory_attribute_missing, << "name" >>)
-			elseif map_factory.map.stations.has (attribute ("name")) then
+			elseif map_factory.city.stations.has (attribute ("name")) then
 				set_error (Duplicate_name, << attribute ("name") >>)
 			else
-				map_factory.build_station (attribute ("name"), map)
+				map_factory.build_station (attribute ("name"), city)
 				set_target (map_factory.station)
 			end
 

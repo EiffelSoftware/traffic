@@ -1,10 +1,10 @@
 indexing
-	description: "Linked list that contains map items, calls add_to_map and remove_from_map on insertion and deletion, and throws events when a new item is added/removed"
+	description: "Linked list that contains city items, calls add_to_city and remove_from_city on insertion and deletion, and throws events when a new item is added/removed"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_MAP_ITEM_LINKED_LIST [G->TRAFFIC_MAP_ITEM]
+	TRAFFIC_ITEM_LINKED_LIST [G->TRAFFIC_CITY_ITEM]
 
 inherit
 
@@ -15,10 +15,10 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_map: TRAFFIC_MAP) is
+	make (a_city: TRAFFIC_CITY) is
 			-- Initialize.
 		do
-			map := a_map
+			city := a_city
 			create internal_list.make
 			create element_inserted_event
 			create element_removed_event
@@ -26,13 +26,13 @@ feature {NONE} -- Initialization
 			internal_list_exists: internal_list /= Void
 			inserted_initialized: element_inserted_event /= Void
 			removed_initialized: element_removed_event /= Void
-			map_set: map = a_map
+			city_set: city = a_city
 		end
 
 feature -- Access
 
-	map: TRAFFIC_MAP
-			-- Container contains elements of this map
+	city: TRAFFIC_CITY
+			-- Container contains elements of this city
 
 	count: INTEGER is
 			-- Number of items in list
@@ -135,7 +135,7 @@ feature -- Insertion
 				c.off
 			loop
 				element_inserted_event.publish ([c.item])
-				c.item.add_to_map (map)
+				c.item.add_to_city (city)
 				c.forth
 			end
 		ensure
@@ -147,12 +147,12 @@ feature -- Insertion
 			-- Add `v' to end of list.
 			-- Do not move cursors.
 		require
-			is_insertable: v.is_insertable (map)
-			not_in_map: not v.is_in_map
+			is_insertable: v.is_insertable (city)
+			not_in_city: not v.is_in_city
 		do
 			internal_list.force_last (v)
 			element_inserted_event.publish ([v])
-			v.add_to_map (map)
+			v.add_to_city (city)
 		ensure
 			is_in_list: internal_list.has (v)
 		end
@@ -161,12 +161,12 @@ feature -- Insertion
 			-- Add `v' to beginning of list.
 			-- Do not move cursors.
 		require
-			is_insertable: v.is_insertable (map)
-			not_in_map: not v.is_in_map
+			is_insertable: v.is_insertable (city)
+			not_in_city: not v.is_in_city
 		do
 			internal_list.force_first (v)
 			element_inserted_event.publish ([v])
-			v.add_to_map (map)
+			v.add_to_city (city)
 		ensure
 			is_in_list: internal_list.has (v)
 		end
@@ -175,16 +175,16 @@ feature -- Insertion
 			-- Replace item at index `i' by `v'.
 			-- Do not move cursors.
 		require
-			is_insertable: v.is_insertable (map)
-			not_in_map: not v.is_in_map
+			is_insertable: v.is_insertable (city)
+			not_in_city: not v.is_in_city
 			is_removable: item (i).is_removable
 			valid_index: 1 <= i and i <= count
 		do
 			element_removed_event.publish ([internal_list.item (i)])
-			internal_list.item (i).remove_from_map
+			internal_list.item (i).remove_from_city
 			internal_list.replace (v, i)
 			element_inserted_event.publish ([v])
-			v.add_to_map (map)
+			v.add_to_city (city)
 		ensure
 			same_count: count = old count
 			replaced: item (i) = v
@@ -194,12 +194,12 @@ feature -- Insertion
 			-- Add `v' at `i'-th position.
 			-- Do not move cursors.
 		require
-			is_insertable: v.is_insertable (map)
+			is_insertable: v.is_insertable (city)
 			valid_index: 1 <= i and i <= (count + 1)
-			not_in_map: not v.is_in_map
+			not_in_city: not v.is_in_city
 		do
 			internal_list.put (v, i)
-			v.add_to_map (map)
+			v.add_to_city (city)
 		ensure
 			one_more: count = old count + 1
 			inserted: item (i) = v
@@ -215,7 +215,7 @@ feature -- Removal
 			is_removable: item (1).is_removable
 		do
 			element_removed_event.publish ([internal_list.first])
-			internal_list.first.remove_from_map
+			internal_list.first.remove_from_city
 			internal_list.remove_first
 		ensure
 			one_less: count = old count - 1
@@ -229,7 +229,7 @@ feature -- Removal
 			is_removable: item (count).is_removable
 		do
 			element_removed_event.publish ([internal_list.last])
-			internal_list.last.remove_from_map
+			internal_list.last.remove_from_city
 			internal_list.remove_last
 		ensure
 			one_less: count = old count - 1
@@ -244,7 +244,7 @@ feature -- Removal
 			is_removable: item (i).is_removable
 		do
 			element_removed_event.publish ([internal_list.item (i)])
-			internal_list.item (i).remove_from_map
+			internal_list.item (i).remove_from_city
 			internal_list.remove (i)
 		ensure
 			one_less: count = old count - 1
@@ -268,7 +268,7 @@ feature -- Removal
 				c.after
 			loop
 				element_removed_event.publish ([c.item])
-				c.item.remove_from_map
+				c.item.remove_from_city
 				c.forth
 			end
 			internal_list.prune_last (n)
@@ -288,7 +288,7 @@ feature -- Removal
 				after
 			loop
 				element_removed_event.publish ([item_for_iteration])
-				item_for_iteration.remove_from_map
+				item_for_iteration.remove_from_city
 				forth
 			end
 			internal_list.wipe_out
@@ -303,7 +303,7 @@ feature -- Removal
 			is_removable: v.is_removable
 		do
 			internal_list.delete (v)
-			v.remove_from_map
+			v.remove_from_city
 			element_removed_event.publish ([v])
 		ensure
 			deleted: not internal_list.has (v)
@@ -317,6 +317,6 @@ feature {NONE} -- Implementation
 invariant
 
 	list_not_void: internal_list /= Void
-	map_set: map /= Void
+	city_set: city /= Void
 
 end

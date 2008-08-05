@@ -31,8 +31,8 @@ feature -- Basic operations
 		do
 			available_taxis.delete (a_taxi)
 			taxis.delete (a_taxi)
-			if a_taxi.is_in_map then
-				a_taxi.remove_from_map
+			if a_taxi.is_in_city then
+				a_taxi.remove_from_city
 			end
 		end
 

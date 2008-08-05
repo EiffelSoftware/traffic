@@ -9,6 +9,6 @@ class
 feature -- Constants
 
 	Line_width: DOUBLE is 7.0
-			-- Width of the line representation on the map.
+			-- Width of the line representation on the city
 
 end

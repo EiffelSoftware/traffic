@@ -7,15 +7,15 @@ class
 	TRAFFIC_PATH_CALCULATOR
 
 create
-	set_map
+	set_city
 
 feature -- Access
 
 	path: TRAFFIC_PATH
 			-- Calculated shortest path
 
-	map: TRAFFIC_MAP
-			-- Map on which the path is calculated
+	city: TRAFFIC_CITY
+			-- City on which the path is calculated
 
 	shortest_path_mode: INTEGER
 			-- Mode used for shortest path calculation (either normal or minimal switches)
@@ -23,13 +23,13 @@ feature -- Access
 	shortest_path_mode_normal_distance: INTEGER is
 			-- Number representing path calculation mode based on regular distance
 		do
-			Result := map.graph.normal_distance
+			Result := city.graph.normal_distance
 		end
 
 	shortest_path_mode_minimal_switches: INTEGER is
 			-- Number representing path calculation mode based on regular distance
 		do
-			Result := map.graph.minimal_switches
+			Result := city.graph.minimal_switches
 		end
 
 feature -- Basic operations
@@ -45,15 +45,15 @@ feature -- Basic operations
 			current_ps, next_ps: TRAFFIC_PATH_SECTION
 			old_mode: INTEGER
 		do
-			old_mode := map.graph.shortest_path_mode
-			map.graph.set_shortest_path_mode (shortest_path_mode)
-			map.graph.find_shortest_path (a_origin.dummy_node, a_destination.dummy_node)
+			old_mode := city.graph.shortest_path_mode
+			city.graph.set_shortest_path_mode (shortest_path_mode)
+			city.graph.find_shortest_path (a_origin.dummy_node, a_destination.dummy_node)
 
-			if map.graph.path_found then
+			if city.graph.path_found then
 				is_path_found := True
-				temp_path := map.graph.shortest_path
+				temp_path := city.graph.shortest_path
 				create path
-				path.set_scale_factor (map.scale_factor)
+				path.set_scale_factor (city.scale_factor)
 
 				from temp_path.start until temp_path.after loop
 					if (not (temp_path.item.origin = temp_path.item.destination)) and (path.first = Void) then
@@ -77,7 +77,7 @@ feature -- Basic operations
 					temp_path.forth
 				end
 			end
-			map.graph.set_shortest_path_mode (old_mode)
+			city.graph.set_shortest_path_mode (old_mode)
 		end
 
 	find_shortest_path_of_a_list_of_stations(stations_to_visit: LINKED_LIST [TRAFFIC_STATION]) is
@@ -90,7 +90,7 @@ feature -- Basic operations
 			current_s, next_s: TRAFFIC_STATION
 		do
 			create a_path
-			a_path.set_scale_factor (map.scale_factor)
+			a_path.set_scale_factor (city.scale_factor)
 
 			from
 				stations_to_visit.start
@@ -112,14 +112,14 @@ feature -- Basic operations
 
 feature -- Element change
 
-	set_map (a_map: TRAFFIC_MAP) is
-			-- Set `map' to `a_map'.
+	set_city (a_city: TRAFFIC_CITY) is
+			-- Set `city' to `a_city'.
 		require
-			a_map_exists: a_map /= Void
+			a_city_exists: a_city /= Void
 		do
-			map := a_map
+			city := a_city
 		ensure
-			map_set: map = a_map
+			city_set: city = a_city
 		end
 
 	set_shortest_path_mode (a_mode: INTEGER) is
@@ -146,6 +146,6 @@ feature -- Status report
 
 invariant
 
-	map_exists: map /= Void
+	city_exists: city /= Void
 
 end

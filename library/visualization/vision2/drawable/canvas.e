@@ -87,7 +87,7 @@ feature -- Display
 		end
 
 	redraw is
-			-- Redraw the map as soon as possible.
+			-- Redraw the canvas as soon as possible.
 		do
 			if not has_pending_redraw then
 				(create {EV_ENVIRONMENT}).application.add_idle_action (redraw_agent)
@@ -123,7 +123,7 @@ feature {NONE} -- Implementation
 			-- Is there any pending redraw?
 
 	redraw_agent: PROCEDURE [ANY, TUPLE]
-			-- Redraw agent to redraw the map when idle
+			-- Redraw agent to redraw the canvas when idle
 
 invariant
 

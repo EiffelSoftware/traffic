@@ -13,8 +13,8 @@ inherit
 	TRAFFIC_CONNECTION
 		redefine
 			type,
-			add_to_map,
-			remove_from_map
+			add_to_city,
+			remove_from_city
 		end
 
 create
@@ -69,36 +69,36 @@ feature -- Access
 
 feature {TRAFFIC_NODE} -- Basic operations
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all nodes to `a_map'.
+	add_to_city (a_city: TRAFFIC_CITY) is
+			-- Add `Current' and all nodes to `a_city'.
 		do
-			a_map.graph.put_connection (Current)
-			is_in_map := True
-			map := a_map
+			a_city.graph.put_connection (Current)
+			is_in_city := True
+			city := a_city
 		ensure then
-			graph_has: a_map.graph.has_edge (Current)
+			graph_has: a_city.graph.has_edge (Current)
 		end
 
-	remove_from_map is
-			-- Remove all nodes from `a_map'.
+	remove_from_city is
+			-- Remove all nodes from `city'.
 		do
-			map.graph.prune_edge (Current)
-			is_in_map := False
-			map := Void
+			city.graph.prune_edge (Current)
+			is_in_city := False
+			city := Void
 		end
 
 feature -- Status report
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
-			-- E.g. are all needed elements already inserted in the map?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
+			-- E.g. are all needed elements already inserted in the city?
 		do
-			Result := 	start_node.is_in_map and end_node.is_in_map and
-						origin.is_in_map and destination.is_in_map
+			Result := 	start_node.is_in_city and end_node.is_in_city and
+						origin.is_in_city and destination.is_in_city
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 		do
 			Result := True
 		end

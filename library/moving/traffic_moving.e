@@ -1,5 +1,5 @@
 indexing
-	description: "Deferred class for moving items on the map"
+	description: "Deferred class for moving items in the city"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -13,18 +13,18 @@ inherit
 
 	TRAFFIC_SHARED_TIME
 
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 
 feature -- Access
 
 	position: TRAFFIC_COORDINATE
-			-- Current position on map
+			-- Current position
 
 	origin: TRAFFIC_COORDINATE
-			-- Origin position on map
+			-- Origin position
 
 	destination: TRAFFIC_COORDINATE
-			-- Destination position on map
+			-- Destination position 
 
 	speed: DOUBLE
 			-- Speed in m/s

@@ -18,7 +18,7 @@ create
 feature -- Initialization
 
 	make_with_factory (a_traffic_schedule_factory: TRAFFIC_SCHEDULE_FACTORY) is
-			-- Create parser with `a_traffic_map_factory'.
+			-- Create parser with `a_traffic_schedule_factory'.
 		require
 			a_traffic_schedule_factory_exists: a_traffic_schedule_factory /= Void
 		do

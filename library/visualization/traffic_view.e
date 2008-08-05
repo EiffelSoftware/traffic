@@ -1,5 +1,5 @@
 indexing
-	description: "View for a map item"
+	description: "View for a city item"
 	date: "$Date$"
 	revision: "$Revision$"
 

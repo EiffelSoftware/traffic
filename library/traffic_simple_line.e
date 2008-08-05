@@ -118,15 +118,15 @@ feature -- Element change
 		do
 		end
 
-feature {TRAFFIC_MAP_ITEM_LINKED_LIST} -- Basic operations (map)
+feature {TRAFFIC_ITEM_LINKED_LIST} -- Basic operations
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all nodes to `a_map'.
+	add_to_city (a_city: TRAFFIC_CITY) is
+			-- Add `Current' and all nodes to `a_city'.
 		do
 		end
 
-	remove_from_map is
-			-- Remove all nodes from `a_map'.
+	remove_from_city is
+			-- Remove all nodes from `a_city'.
 		do
 		end
 
@@ -155,14 +155,14 @@ feature -- Removal
 feature -- Status report
 
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
-			-- E.g. are all needed elements already inserted in the map?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
+			-- E.g. are all needed elements already inserted in the city?
 		do
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 		do
 		end
 

@@ -98,7 +98,7 @@ feature -- Constants
 feature -- Basic operations
 
 	update is
-			-- Update the view to represent changes in the map item.
+			-- Update the view to represent changes in the city item.
 		do
 			from
 				start

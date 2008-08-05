@@ -1,10 +1,10 @@
 indexing
-	description: "Map widget for vision2"
+	description: "City widget for vision2"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_MAP_CANVAS
+	TRAFFIC_CITY_CANVAS
 
 inherit
 
@@ -14,15 +14,15 @@ inherit
 			redraw_now
 		end
 
-	TRAFFIC_MAP_WIDGET
+	TRAFFIC_CITY_WIDGET
 		undefine
 			copy,
 			default_create,
 			is_equal
 		redefine
-			set_map,
-			enable_map_hidden,
-			disable_map_hidden
+			set_city,
+			enable_city_hidden,
+			disable_city_hidden
 		end
 
 create
@@ -69,8 +69,8 @@ feature -- Initialization
 
 feature -- Element change
 
-	set_map (a_map: TRAFFIC_MAP) is
-			-- Set map that is displayed to `a_map'.
+	set_city (a_city: TRAFFIC_CITY) is
+			-- Set city that is displayed to `a_city'.
 		do
 			create internal_station_representations.make
 			create internal_line_representations.make
@@ -79,23 +79,23 @@ feature -- Element change
 			create internal_moving_representations.make
 			create internal_path_representations.make
 			object_list.wipe_out
-			Precursor (a_map)
+			Precursor (a_city)
 			redraw
 		end
 
 feature -- Status setting
 
-	enable_map_hidden is
-			-- Set `is_map_hidden' to `True'.
+	enable_city_hidden is
+			-- Set `is_city_hidden' to `True'.
 		do
-			is_map_hidden := True
+			is_city_hidden := True
 			redraw
 		end
 
-	disable_map_hidden is
-			-- Set `is_map_hidden' to `False'.
+	disable_city_hidden is
+			-- Set `is_city_hidden' to `False'.
 		do
-			is_map_hidden := False
+			is_city_hidden := False
 			redraw
 		end
 
@@ -150,7 +150,7 @@ feature -- Basic operations
 		do
 			background_color.set_rgb (1.0, 1.0, 1.0)
 			clear
-			if not is_map_hidden and map /= Void then
+			if not is_city_hidden and city /= Void then
 				clear
 				internal_road_representations.draw (Current)
 				internal_line_representations.draw (Current)
@@ -168,7 +168,7 @@ feature -- Basic operations
 			-- Refresh only the objects in mutable_object_list.
 		do
 			clear
-			if not is_map_hidden then
+			if not is_city_hidden then
 				if background_image /= Void then
 					draw_pixmap (0, 0, background_image)
 				end

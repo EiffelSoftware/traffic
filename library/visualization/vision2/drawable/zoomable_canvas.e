@@ -94,28 +94,28 @@ feature -- Canvas elements
 		end
 
 	go_right (pan_distance: REAL) is
-			-- Move the map right.
+			-- Move right.
 		do
 			visible_area.left_by (pan_distance)
 			redraw
 		end
 
 	go_left (pan_distance: REAL) is
-			-- Move the map left.	
+			-- Move left.	
 		do
 			visible_area.right_by (pan_distance)
 			redraw
 		end
 
 	go_up (pan_distance: REAL) is
-			-- Move the map up.	
+			-- Move up.	
 		do
 			visible_area.down_by (pan_distance)
 			redraw
 		end
 
 	go_down (pan_distance: REAL) is
-			-- Move the map down.	
+			-- Move down.	
 		do
 			visible_area.up_by (pan_distance)
 			redraw

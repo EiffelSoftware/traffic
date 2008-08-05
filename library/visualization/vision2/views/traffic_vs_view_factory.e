@@ -1,5 +1,5 @@
 indexing
-	description: "Factory for vision2 map item views"
+	description: "Factory for vision2 city item views"
 	date: "$Date$"
 	revision: "$Revision$"
 

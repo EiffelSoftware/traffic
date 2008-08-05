@@ -7,33 +7,33 @@ class
 	TRAFFIC_PATH_RANDOMIZER
 
 create
-	set_map
+	set_city
 
 feature -- Element change
 
-	set_map (a_map: TRAFFIC_MAP) is
-			-- Initialize with `a_map'.
+	set_city (a_city: TRAFFIC_CITY) is
+			-- Initialize with `a_city'.
 		require
-			a_map_exists: a_map /= Void
+			a_city_exists: a_city /= Void
 		local
 			t: TIME
 		do
 			create t.make_now
 			create random.set_seed (t.compact_time)
 			random.start
-			map := a_map
+			city := a_city
 		ensure
-			map_set: map = a_map
+			city_set: city = a_city
 		end
 
 feature -- Basic operations
 
 	generate_path (n: INTEGER) is
-			-- Generate a new path with at most `n' random connections to be taken on `map'.
+			-- Generate a new path with at most `n' random connections to be taken on `city'.
 			-- Result is accessable via `last_path'.
 		require
 			n_valid: n >= 1
-			map_has_line_section: map.line_sections.count >= 1
+			city_has_line_section: city.line_sections.count >= 1
 		local
 			i: INTEGER
 			pa: ARRAY [TRAFFIC_STATION]
@@ -45,7 +45,7 @@ feature -- Basic operations
 		do
 			create last_path
 			random.forth
-			pa := map.stations.to_array
+			pa := city.stations.to_array
 			-- The starting station
 			p := pa.item (random.item \\ pa.count + 1)
 			random.forth
@@ -85,7 +85,7 @@ feature -- Basic operations
 			-- Backup algorithm if the above did not find a path with at least one connection that is visible
 			if last_path.first = Void then
 				random.forth
-				create t.make (map.line_sections.item (random.item \\ map.line_sections.count + 1))
+				create t.make (city.line_sections.item (random.item \\ city.line_sections.count + 1))
 				last_path.set_first (t)
 			end
 		ensure
@@ -94,8 +94,8 @@ feature -- Basic operations
 
 feature -- Access
 
-	map: TRAFFIC_MAP
-			-- Map used for finding paths
+	city: TRAFFIC_CITY
+			-- City used for finding paths
 
 	last_path: TRAFFIC_PATH
 			-- Last path that was generated
@@ -107,7 +107,7 @@ feature {NONE} -- Implementation
 
 invariant
 
-	map_exists: map /= Void
+	city_exists: city /= Void
 	random_exists: random /= Void
 
 end

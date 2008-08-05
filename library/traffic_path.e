@@ -8,7 +8,7 @@ class
 
 inherit
 
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 		rename
 			is_highlighted as is_illuminated,
 			highlight as illuminate,
@@ -77,14 +77,14 @@ feature -- Access
 
 feature -- Status report
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
 		do
 			Result := True
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `a_city'?
 		do
 			Result := True
 		end
@@ -173,14 +173,14 @@ feature -- Output
 feature -- Basic operations
 
 	animate is
-			-- Create passenger that walks along `Current', add it to map, and make it start walking.
+			-- Create passenger that walks along `Current', add it to city, and make it start walking.
 		require
-			map_has_route: is_in_map
+			city_has_route: is_in_city
 		local
 			passenger: TRAFFIC_PASSENGER
 		do
 			create passenger.make_with_path (Current, 5.0)
-			map.passengers.put_last (passenger)
+			city.passengers.put_last (passenger)
 			passenger.go
 		end
 

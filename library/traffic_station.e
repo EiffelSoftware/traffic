@@ -12,11 +12,11 @@ inherit
 			out
 		end
 
-	TRAFFIC_MAP_ITEM
+	TRAFFIC_CITY_ITEM
 		undefine
 			out,
-			add_to_map,
-			remove_from_map
+			add_to_city,
+			remove_from_city
 		end
 
 create
@@ -97,7 +97,7 @@ feature -- Access
 			-- Name of station
 
 	position: TRAFFIC_COORDINATE is
-			-- Position on map
+			-- Position on city
 		do
 			Result := dummy_node.position
 		end
@@ -194,8 +194,8 @@ feature -- Status report
 			Result := stops.there_exists (agent is_stop_of_line (?, a_line))
 		end
 
-	is_insertable (a_map: TRAFFIC_MAP): BOOLEAN is
-			-- Is `Current' insertable into `a_map'?
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
 			-- (All nodes need to be insertable. See `TRAFFIC_NODE is_insertable' for requirements.)
 		do
 			Result := True
@@ -204,7 +204,7 @@ feature -- Status report
 			until
 				nodes.off or not Result
 			loop
-				if not nodes.item.is_insertable (a_map) then
+				if not nodes.item.is_insertable (a_city) then
 					Result := False
 				end
 				nodes.forth
@@ -212,7 +212,7 @@ feature -- Status report
 		end
 
 	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_map'?
+			-- Is `Current' removable from `city'?
 			-- Only internal exchange connections are allowed...
 		local
 			l: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
@@ -241,36 +241,36 @@ feature -- Status report
 			end
 		end
 
-feature {TRAFFIC_MAP_ITEM_LINKED_LIST}-- Basic operations (map)
+feature {TRAFFIC_ITEM_LINKED_LIST}-- Basic operations
 
-	add_to_map (a_map: TRAFFIC_MAP) is
-			-- Add `Current' and all nodes to `a_map'.
+	add_to_city (a_city: TRAFFIC_CITY) is
+			-- Add `Current' and all nodes to `a_city'.
 		do
-			is_in_map := True
-			map := a_map
+			is_in_city := True
+			city := a_city
 			from
 				nodes.start
 			until
 				nodes.after
 			loop
-				nodes.item.add_to_map (a_map)
+				nodes.item.add_to_city (a_city)
 				nodes.forth
 			end
 		end
 
-	remove_from_map is
-			-- Remove all nodes from `a_map'.
+	remove_from_city is
+			-- Remove all nodes from `city'.
 		do
 			from
 				nodes.start
 			until
 				nodes.after
 			loop
-				nodes.item.remove_from_map
+				nodes.item.remove_from_city
 				nodes.forth
 			end
-			is_in_map := False
-			map := Void
+			is_in_city := False
+			city := Void
 		end
 
 feature -- Element change
@@ -320,13 +320,13 @@ feature {TRAFFIC_NODE} -- Insertion
 	add_stop (a_stop: TRAFFIC_STOP) is
 			-- add a traffic stop
 		require
-			is_insertable: a_stop.is_insertable (map)
+			is_insertable: a_stop.is_insertable (city)
 		do
 			stops.extend (a_stop)
 			nodes.extend (a_stop)
 			update_position
-			if is_in_map then
-				a_stop.add_to_map (map)
+			if is_in_city then
+				a_stop.add_to_city (city)
 			end
 			changed_event.publish ([])
 		end
@@ -341,8 +341,8 @@ feature {TRAFFIC_NODE} -- Insertion
 				add_stop (s)
 			else
 				nodes.extend (a_node)
-				if is_in_map then
-					a_node.add_to_map (map)
+				if is_in_city then
+					a_node.add_to_city (city)
 				end
 			end
 			changed_event.publish ([])
@@ -427,6 +427,6 @@ invariant
 	stops_not_void: stops /= Void
 	nodes_not_void: stops /= Void
 	dummy_node_not_void: dummy_node /= Void
-	station_in_map: is_in_map implies map.stations.has (name)
+	station_in_city: is_in_city implies city.stations.has (name)
 
 end

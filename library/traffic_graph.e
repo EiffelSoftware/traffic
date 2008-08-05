@@ -44,7 +44,7 @@ feature {NONE} -- Initialization
 			create id_manager
 		end
 
-feature {TRAFFIC_MAP_ITEM} -- Insertion
+feature {TRAFFIC_CITY_ITEM} -- Insertion
 
 	connect_nodes (a_start_node, a_end_node: like item; a_label: REAL; a_weight: REAL) is
 			-- Redefined to record weight.

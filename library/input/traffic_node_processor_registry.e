@@ -26,10 +26,10 @@ feature -- Access
 	map_factory: TRAFFIC_MAP_FACTORY
 			-- Traffic map factory
 
-	map: TRAFFIC_MAP is
-			-- Map that is built
+	city: TRAFFIC_CITY is
+			-- City that is built
 		do
-			Result := map_factory.map
+			Result := map_factory.city
 		end
 
 feature -- Status setting
