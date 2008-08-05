@@ -1,21 +1,21 @@
 indexing
-	description: "A path calculator facility"
+	description: "A route calculator facility"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_PATH_CALCULATOR
+	TRAFFIC_ROUTE_CALCULATOR
 
 create
 	set_city
 
 feature -- Access
 
-	path: TRAFFIC_PATH
-			-- Calculated shortest path
+	route: TRAFFIC_ROUTE
+			-- Calculated shortest route
 
 	city: TRAFFIC_CITY
-			-- City on which the path is calculated
+			-- City on which the route is calculated
 
 	shortest_path_mode: INTEGER
 			-- Mode used for shortest path calculation (either normal or minimal switches)
@@ -35,14 +35,14 @@ feature -- Access
 feature -- Basic operations
 
 	find_shortest_path (a_origin: TRAFFIC_STATION; a_destination: TRAFFIC_STATION) is
-			-- Find shortest path.
+			-- Find shortest route.
 		require
 			a_origin_exists: a_origin /= Void
 			a_destination_exists: a_destination /= Void
 			not_same: a_destination /= a_origin
 		local
 			temp_path: LIST [TRAFFIC_CONNECTION]
-			current_ps, next_ps: TRAFFIC_PATH_SECTION
+			current_ps, next_ps: TRAFFIC_ROUTE_SECTION
 			old_mode: INTEGER
 		do
 			old_mode := city.graph.shortest_path_mode
@@ -50,16 +50,16 @@ feature -- Basic operations
 			city.graph.find_shortest_path (a_origin.dummy_node, a_destination.dummy_node)
 
 			if city.graph.path_found then
-				is_path_found := True
+				is_route_found := True
 				temp_path := city.graph.shortest_path
-				create path
-				path.set_scale_factor (city.scale_factor)
+				create route
+				route.set_scale_factor (city.scale_factor)
 
 				from temp_path.start until temp_path.after loop
-					if (not (temp_path.item.origin = temp_path.item.destination)) and (path.first = Void) then
+					if (not (temp_path.item.origin = temp_path.item.destination)) and (route.first = Void) then
 							--don't make path_section for intra-station connections
 						create current_ps.make (temp_path.item)
-						path.set_first (current_ps)
+						route.set_first (current_ps)
 					else
 						if not (temp_path.item.origin = temp_path.item.destination) then
 								--don't make path_section for intra-station connections
@@ -86,7 +86,7 @@ feature -- Basic operations
 			stations_to_visit_exists: stations_to_visit /= Void
 			min_two_stations_to_visit: stations_to_visit.count > 1
 		local
-			a_path: TRAFFIC_PATH
+			a_path: TRAFFIC_ROUTE
 			current_s, next_s: TRAFFIC_STATION
 		do
 			create a_path
@@ -102,12 +102,12 @@ feature -- Basic operations
 				if not stations_to_visit.after then
 					next_s := stations_to_visit.item
 					find_shortest_path(current_s, next_s)
-					if is_path_found then
-						a_path.append (path)
+					if is_route_found then
+						a_path.append (route)
 					end
 				end
 			end
-			path := a_path
+			route := a_path
 		end
 
 feature -- Element change
@@ -141,7 +141,7 @@ feature -- Status report
 					  a_mode = shortest_path_mode_normal_distance
 		end
 
-	is_path_found: BOOLEAN
+	is_route_found: BOOLEAN
 			-- Was a shortest path found on graph?
 
 invariant

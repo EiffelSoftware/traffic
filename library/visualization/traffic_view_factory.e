@@ -17,10 +17,10 @@ feature -- Factory methods
 			Result_exists: Result /= Void
 		end
 
-	new_path_view (a_path: TRAFFIC_PATH): TRAFFIC_VIEW [TRAFFIC_PATH] is
-			-- New path view for `a_path'
+	new_route_view (a_route: TRAFFIC_ROUTE): TRAFFIC_VIEW [TRAFFIC_ROUTE] is
+			-- New route view for `a_route'
 		require
-			a_path_exists: a_path /= Void
+			a_route_exists: a_route /= Void
 		deferred
 		ensure
 			Result_exists: Result /= Void

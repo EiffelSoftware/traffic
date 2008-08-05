@@ -13,29 +13,29 @@ inherit
 			end
 
 create
-	make_with_path
+	make_with_route
 
 feature -- Initialization
 
-	make_with_path (a_path: TRAFFIC_PATH; a_speed: DOUBLE) is
-			-- Set passenger's path to be `a_path' and `speed' to `a_speed' (in m/s).
+	make_with_route (a_route: TRAFFIC_ROUTE; a_speed: DOUBLE) is
+			-- Set passenger's route to be `a_route' and `speed' to `a_speed' (in m/s).
 		require
-			a_path_not_void: a_path /= Void
+			a_route_not_void: a_route /= Void
 		local
 			list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
-			path_conns: DS_LINKED_LIST [TRAFFIC_CONNECTION]
+			conns: DS_LINKED_LIST [TRAFFIC_CONNECTION]
 		do
-			path := a_path
-			position := a_path.origin.position
-			path_conns := a_path.connections
-			create list.make (path_conns.count + 1)
+			route := a_route
+			position := a_route.origin.position
+			conns := a_route.connections
+			create list.make (conns.count + 1)
 			from
-				path_conns.start
+				conns.start
 			until
-				path_conns.off
+				conns.off
 			loop
-				list.append_last (path_conns.item_for_iteration.polypoints)
-				path_conns.forth
+				list.append_last (conns.item_for_iteration.polypoints)
+				conns.forth
 			end
 			create poly_cursor.make (list)
 			poly_cursor.start
@@ -47,8 +47,8 @@ feature -- Initialization
 
 feature -- Access
 
-	path: TRAFFIC_PATH
-			-- Path to take
+	route: TRAFFIC_ROUTE
+			-- Route to take
 
 	intended_line: TRAFFIC_LINE
 			-- Line to use next

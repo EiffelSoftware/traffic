@@ -42,7 +42,7 @@ feature -- Initialization
 			create internal_road_representations.make
 			create internal_building_representations.make
 			create internal_moving_representations.make
-			create internal_path_representations.make
+			create internal_route_representations.make
 			default_create
 			create visible_area.make (
 				create {REAL_COORDINATE}.make(0.0,0.0),
@@ -77,7 +77,7 @@ feature -- Element change
 			create internal_road_representations.make
 			create internal_building_representations.make
 			create internal_moving_representations.make
-			create internal_path_representations.make
+			create internal_route_representations.make
 			object_list.wipe_out
 			Precursor (a_city)
 			redraw
@@ -113,10 +113,10 @@ feature -- Access
 			Result := internal_road_representations
 		end
 
-	path_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VIEW [TRAFFIC_PATH]] is
-			-- Container for path views
+	route_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROUTE, TRAFFIC_VIEW [TRAFFIC_ROUTE]] is
+			-- Container for route views
 		do
-			Result := internal_path_representations
+			Result := internal_route_representations
 		end
 
 	station_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_STATION, TRAFFIC_VIEW [TRAFFIC_STATION]]
@@ -172,7 +172,7 @@ feature -- Basic operations
 				if background_image /= Void then
 					draw_pixmap (0, 0, background_image)
 				end
-				internal_path_representations.draw (Current)
+				internal_route_representations.draw (Current)
 				internal_moving_representations.draw (Current)
 			end
 			from
@@ -189,7 +189,7 @@ feature {NONE} -- Implementation
 
 	internal_factory: TRAFFIC_VS_VIEW_FACTORY
 	internal_moving_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_MOVING]
-	internal_path_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_PATH]
+	internal_route_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_ROUTE]
 	internal_line_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_LINE]
 	internal_road_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_ROAD]
 	internal_station_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_STATION]

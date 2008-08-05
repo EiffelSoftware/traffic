@@ -44,7 +44,7 @@ feature {NONE} -- Initialization
 			create trams.make (Current)
 			create busses.make (Current)
 			create taxi_offices.make (Current)
-			create paths.make (Current)
+			create routes.make (Current)
 			create buildings.make (Current)
 			create free_movings.make (Current)
 		ensure
@@ -177,7 +177,7 @@ feature -- Access
 			-- Radius of the city
 
 	graph: TRAFFIC_GRAPH
-			-- Graph used for calculating shortest paths
+			-- Graph used for calculating shortest routes
 
 	name: STRING
 			-- Name of region this city represents
@@ -203,8 +203,8 @@ feature -- Access (city objects)
 	roads: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
 			-- All roads in city
 
-	paths: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_PATH]
-			-- Paths of the city
+	routes: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_ROUTE]
+			-- All routes in the city
 
 	buildings: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_BUILDING]
 			-- Buildings of the city

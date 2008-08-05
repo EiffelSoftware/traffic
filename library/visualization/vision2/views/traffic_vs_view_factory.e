@@ -36,10 +36,10 @@ feature -- Factory methods
 			Result.set_width (10)
 		end
 
-	new_path_view (a_path: TRAFFIC_PATH): TRAFFIC_PATH_VIEW is
-			-- New line connection view for `a_connection'
+	new_route_view (a_route: TRAFFIC_ROUTE): TRAFFIC_ROUTE_VIEW is
+			-- New route view for `a_route'
 		do
-			create Result.make (a_path)
+			create Result.make (a_route)
 		end
 
 	new_building_view (a_building: TRAFFIC_BUILDING): TRAFFIC_BUILDING_VIEW is

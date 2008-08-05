@@ -40,8 +40,8 @@ feature -- Access
 		deferred
 		end
 
-	path_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_PATH, TRAFFIC_VIEW [TRAFFIC_PATH]]
-			-- Container for path views
+	route_representations: TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROUTE, TRAFFIC_VIEW [TRAFFIC_ROUTE]]
+			-- Container for route views
 		deferred
 		end
 
@@ -54,7 +54,7 @@ feature -- Element change
 			station_representations_exists: station_representations /= Void
 			building_representations_exists: building_representations /= Void
 			moving_representations_exists: moving_representations /= Void
-			path_representations_exists: path_representations /= Void
+			route_representations_exists: route_representations /= Void
 		local
 			l: TRAFFIC_VIEW [TRAFFIC_LINE]
 			p: TRAFFIC_VIEW [TRAFFIC_STATION]
@@ -129,12 +129,12 @@ feature -- Element change
 				city.passengers.forth
 			end
 			from
-				city.paths.start
+				city.routes.start
 			until
-				city.paths.after
+				city.routes.after
 			loop
-				add_path (city.paths.item_for_iteration)
-				city.paths.forth
+				add_route (city.routes.item_for_iteration)
+				city.routes.forth
 			end
 			from
 				city.taxi_offices.start
@@ -160,8 +160,8 @@ feature -- Element change
 			city.free_movings.element_removed_event.subscribe (agent remove_free_moving)
 			city.passengers.element_inserted_event.subscribe (agent add_passenger)
 			city.passengers.element_removed_event.subscribe (agent remove_passenger)
-			city.paths.element_inserted_event.subscribe (agent add_path)
-			city.paths.element_removed_event.subscribe (agent remove_path)
+			city.routes.element_inserted_event.subscribe (agent add_route)
+			city.routes.element_removed_event.subscribe (agent remove_route)
 			city.taxi_offices.element_inserted_event.subscribe (agent add_taxi_office)
 			city.taxi_offices.element_removed_event.subscribe (agent remove_taxi_office)
 		ensure
@@ -220,12 +220,12 @@ feature {NONE} -- Implementation (view adding)
 			road_representations.put_last (factory.new_road_view (a_road))
 		end
 
-	add_path (a_path: TRAFFIC_PATH) is
-			-- Add path view for `a_path'.
+	add_route (a_route: TRAFFIC_ROUTE) is
+			-- Add route view for `a_route'.
 		require
-			a_path_exists: a_path /= Void
+			a_route_exists: a_route /= Void
 		do
-			path_representations.put_last (factory.new_path_view (a_path))
+			route_representations.put_last (factory.new_route_view (a_route))
 		end
 
 	add_building (a_building: TRAFFIC_BUILDING) is
@@ -322,12 +322,12 @@ feature {NONE} -- Implementation (view removing)
 			road_representations.delete (road_representations.view_for_item (a_road))
 		end
 
-	remove_path (a_path: TRAFFIC_PATH) is
-			-- Remove view for `a_path'.
+	remove_route (a_route: TRAFFIC_ROUTE) is
+			-- Remove view for `a_route'.
 		require
-			a_path_exists: a_path /= Void
+			a_route_exists: a_route /= Void
 		do
-			path_representations.delete (path_representations.view_for_item (a_path))
+			route_representations.delete (route_representations.view_for_item (a_route))
 		end
 
 	remove_free_moving (a_free_moving: TRAFFIC_FREE_MOVING) is
@@ -409,7 +409,7 @@ invariant
 	station_representations_exists: station_representations /= Void
 	building_representations_exists: building_representations /= Void
 	moving_representations_exists: moving_representations /= Void
-	path_representations_exists: path_representations /= Void
+	route_representations_exists: route_representations /= Void
 	add_taxi_agent_exists: add_taxi_agent /= Void
 	remove_taxi_agent_exists: remove_taxi_agent /= Void
 

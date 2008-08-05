@@ -1,10 +1,10 @@
 indexing
-	description: "Represents a path from one TRAFFIC_STATION to another"
+	description: "Represents a route from one TRAFFIC_STATION to another"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_PATH
+	TRAFFIC_ROUTE
 
 inherit
 
@@ -31,11 +31,11 @@ feature -- Initialization
 
 feature -- Access
 
-	first: TRAFFIC_PATH_SECTION
-			-- First path section
+	first: TRAFFIC_ROUTE_SECTION
+			-- First route section
 
 	origin: TRAFFIC_STATION is
-			-- Origin of the path
+			-- Origin of the route
 		require
 			first_exists: first /= Void
 		do
@@ -43,7 +43,7 @@ feature -- Access
 		end
 
 	destination: TRAFFIC_STATION is
-			-- Destination of the path
+			-- Destination of the route
 		require
 			first_exists: first /= Void
 		do
@@ -51,11 +51,11 @@ feature -- Access
 		end
 
 	connections: DS_LINKED_LIST [TRAFFIC_CONNECTION] is
-			-- All connections traveled by the path
+			-- All connections traveled by the route
 		require
 			first_exists: first /= Void
 		local
-			ps: TRAFFIC_PATH_SECTION
+			ps: TRAFFIC_ROUTE_SECTION
 		do
 			from
 				ps := first
@@ -94,7 +94,7 @@ feature -- Status report
 		require
 			connection_exists: a_connection /= Void
 		local
-			l: TRAFFIC_PATH_SECTION
+			l: TRAFFIC_ROUTE_SECTION
 		do
 			if first = Void then
 				Result := True
@@ -113,9 +113,9 @@ feature -- Status report
 feature -- Output
 
 	out: STRING is
-			-- Description providing information about the path
+			-- Description providing information about the route
 		local
-			section: TRAFFIC_PATH_SECTION
+			section: TRAFFIC_ROUTE_SECTION
 			walking_length: DOUBLE
 			tram_length: DOUBLE
 			bus_length: DOUBLE
@@ -179,21 +179,21 @@ feature -- Basic operations
 		local
 			passenger: TRAFFIC_PASSENGER
 		do
-			create passenger.make_with_path (Current, 5.0)
+			create passenger.make_with_route (Current, 5.0)
 			city.passengers.put_last (passenger)
 			passenger.go
 		end
 
-	append (a_path: TRAFFIC_PATH) is
-			-- append a TRAFFIC_PATH `a_path' at the end of the actual path
+	append (a_route: TRAFFIC_ROUTE) is
+			-- Append a TRAFFIC_ROUTE `a_route' at the end of the actual route
 		require
-			path_exists: a_path /= VOID
-			path_valid_for_insertion: is_valid_for_insertion(a_path.first.connections.first)
+			route_exists: a_route /= VOID
+			route_valid_for_insertion: is_valid_for_insertion(a_route.first.connections.first)
 		local
-			l: TRAFFIC_PATH_SECTION
+			l: TRAFFIC_ROUTE_SECTION
 		do
 			if first = Void then
-				set_first (a_path.first)
+				set_first (a_route.first)
 			else
 				from
 					l := first
@@ -202,22 +202,22 @@ feature -- Basic operations
 				loop
 					l := l.next
 				end
-				if l.is_joinable (a_path.first) then
-					l.join (a_path.first)
+				if l.is_joinable (a_route.first) then
+					l.join (a_route.first)
 				else
-					l.set_next (a_path.first)
+					l.set_next (a_route.first)
 				end
 			end
 		end
 
-	set_first(a_path_section: TRAFFIC_PATH_SECTION) is
-			-- sets pointer 'first' to the 'a_path_section'
+	set_first(a_section: TRAFFIC_ROUTE_SECTION) is
+			-- sets pointer 'first' to the 'a_section'
 		require
-			a_path_section_exists: a_path_section /= Void
+			a_section_exists: a_section /= Void
 		do
-			if not(a_path_section.origin.name.is_equal (a_path_section.destination.name)) then
+			if not(a_section.origin.name.is_equal (a_section.destination.name)) then
 					--don't make intra-station sections
-				first := a_path_section
+				first := a_section
 			end
 		end
 

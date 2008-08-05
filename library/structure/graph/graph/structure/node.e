@@ -1,7 +1,7 @@
 indexing
 	description: "[
 		Annotated graph nodes that can be used for graph algorithms
-		such as finding the shortest path between two nodes.
+		such as finding the shortest routes between two nodes.
 		]"
 	author: "Olivier Jeger"
 	license: "Eiffel Forum License v2 (see forum.txt)"
@@ -61,7 +61,7 @@ feature {GRAPH} -- Access
 feature {GRAPH, NODE} -- Access
 
 	distance: REAL
-			-- Length of the shortest path to `item' until now
+			-- Length of the shortest route to `item' until now
 
 feature {GRAPH, NODE} -- Status report
 
@@ -112,7 +112,7 @@ feature {GRAPH} -- Element change
 feature -- Basic operations
 
 	infix "<" (other: like Current): BOOLEAN is
-			-- Is current path shorter than the one of `other'?
+			-- Is current route shorter than the one of `other'?
 		do
 			Result := distance < other.distance
 		end

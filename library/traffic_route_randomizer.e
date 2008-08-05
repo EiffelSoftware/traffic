@@ -1,10 +1,10 @@
 indexing
-	description: "Random path generator (used for providing passengers with their paths)"
+	description: "Random route generator (used for providing passengers with their routes)"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_PATH_RANDOMIZER
+	TRAFFIC_ROUTE_RANDOMIZER
 
 create
 	set_city
@@ -28,9 +28,9 @@ feature -- Element change
 
 feature -- Basic operations
 
-	generate_path (n: INTEGER) is
-			-- Generate a new path with at most `n' random connections to be taken on `city'.
-			-- Result is accessable via `last_path'.
+	generate_route (n: INTEGER) is
+			-- Generate a new route with at most `n' random connections to be taken on `city'.
+			-- Result is accessable via `last_route'.
 		require
 			n_valid: n >= 1
 			city_has_line_section: city.line_sections.count >= 1
@@ -39,11 +39,11 @@ feature -- Basic operations
 			pa: ARRAY [TRAFFIC_STATION]
 			p: TRAFFIC_STATION
 			no: TRAFFIC_NODE
-			s,t: TRAFFIC_PATH_SECTION
+			s,t: TRAFFIC_ROUTE_SECTION
 			finished: BOOLEAN
 			c: TRAFFIC_CONNECTION
 		do
-			create last_path
+			create last_route
 			random.forth
 			pa := city.stations.to_array
 			-- The starting station
@@ -66,7 +66,7 @@ feature -- Basic operations
 					elseif s /= Void then
 						s.set_next (t)
 					else
-						last_path.set_first (t)
+						last_route.set_first (t)
 					end
 					if not c.is_directed then
 						-- Find correct no
@@ -82,23 +82,23 @@ feature -- Basic operations
 				s := t
 				i := i + 1
 			end
-			-- Backup algorithm if the above did not find a path with at least one connection that is visible
-			if last_path.first = Void then
+			-- Backup algorithm if the above did not find a route with at least one connection that is visible
+			if last_route.first = Void then
 				random.forth
 				create t.make (city.line_sections.item (random.item \\ city.line_sections.count + 1))
-				last_path.set_first (t)
+				last_route.set_first (t)
 			end
 		ensure
-			last_path_exists: last_path /= Void
+			last_route_exists: last_route /= Void
 		end
 
 feature -- Access
 
 	city: TRAFFIC_CITY
-			-- City used for finding paths
+			-- City used for finding routes
 
-	last_path: TRAFFIC_PATH
-			-- Last path that was generated
+	last_route: TRAFFIC_ROUTE
+			-- Last route that was generated
 
 feature {NONE} -- Implementation
 

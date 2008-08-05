@@ -415,8 +415,8 @@ feature -- Passengers
 		require
 			Paris_exists: is_paris_loaded
 		local
-			s: TRAFFIC_PATH_SECTION
-			p: TRAFFIC_PATH
+			s: TRAFFIC_ROUTE_SECTION
+			p: TRAFFIC_ROUTE
 		once
 			create p
 			create s.make_tram (Line11_Republique_to_Hotel_de_Ville)
@@ -424,33 +424,33 @@ feature -- Passengers
 			p.set_first (s)
 			create s.make_rail (rer_a_chatelet_to_opera)
 			p.first.set_next (s)
-			create Result.make_with_path (p, 10.0)
+			create Result.make_with_route (p, 10.0)
 			Paris.passengers.put_last (Result)
 		end
 
 feature -- Predefined objects (Routes)
 
-	Route1: TRAFFIC_PATH is
+	Route1: TRAFFIC_ROUTE is
 			-- Route one
 		require
 			Paris_exists: is_paris_loaded
 		local
-			s, t: TRAFFIC_PATH_SECTION
+			s, t: TRAFFIC_ROUTE_SECTION
 		once
 			create Result
 			create s.make_tram (Line7a_louvre_to_chatelet)
 			Result.set_first (s)
 			create t.make_rail (rer_B_Chatelet_to_Notre_Dame)
 			s.set_next (t)
-			Paris.paths.put_last (Result)
+			Paris.routes.put_last (Result)
 		end
 
-	Route2: TRAFFIC_PATH is
+	Route2: TRAFFIC_ROUTE is
 			-- Route 2
 		require
 			Paris_exists: is_paris_loaded
 		local
-			s: TRAFFIC_PATH_SECTION
+			s: TRAFFIC_ROUTE_SECTION
 		once
 			create Result
 			create s.make_tram (Line11_Republique_to_Hotel_de_Ville)
@@ -458,20 +458,20 @@ feature -- Predefined objects (Routes)
 			Result.set_first (s)
 			create s.make_rail (rer_a_chatelet_to_opera)
 			Result.first.set_next (s)
-			Paris.paths.put_last (Result)
+			Paris.routes.put_last (Result)
 		end
 
-	Route3: TRAFFIC_PATH is
+	Route3: TRAFFIC_ROUTE is
 			-- Route one
 		require
 			Paris_exists: is_paris_loaded
 		local
-			s: TRAFFIC_PATH_SECTION
+			s: TRAFFIC_ROUTE_SECTION
 		once
 			create Result
 			create s.make_tram (line9_nation_to_republique)
 			Result.set_first (s)
-			Paris.paths.put_last (Result)
+			Paris.routes.put_last (Result)
 		end
 
 feature --Predefined objects (Line-Sections)

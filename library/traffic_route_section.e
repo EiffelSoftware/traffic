@@ -1,11 +1,11 @@
 indexing
-	description: "Part of a TRAFFIC_PATH,%
+	description: "Part of a TRAFFIC_ROUTE,%
 		% goes from `origin' to `destination' using a SINGLE line or walking"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_PATH_SECTION
+	TRAFFIC_ROUTE_SECTION
 
 inherit
 
@@ -102,19 +102,19 @@ feature {NONE} -- Creation
 feature -- Access
 
 	type: TRAFFIC_TYPE is
-			-- Type of the path section
+			-- Type of the route section
 		do
 			Result := connections.first.type
 		end
 
 	origin: TRAFFIC_STATION is
-			-- Origin of the path
+			-- Origin of the route
 		do
 			Result := connections.first.origin
 		end
 
 	destination: TRAFFIC_STATION is
-			-- Destination of the path
+			-- Destination of the route
 		do
 			Result := connections.last.destination
 		end
@@ -126,21 +126,21 @@ feature -- Access
 			-- Length of section
 
 	connections: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_CONNECTION]
-			-- Connections that are used by the path section
+			-- Connections that are used by the route section
 
-	next: TRAFFIC_PATH_SECTION
-			-- Next path section
+	next: TRAFFIC_ROUTE_SECTION
+			-- Next route section
 
 feature -- Status report
 
 	has_line: BOOLEAN is
-			-- Does this path section use a line?
+			-- Does this route section use a line?
 		do
 			Result := line /= Void
 		end
 
 	is_insertable (a_connection: TRAFFIC_CONNECTION): BOOLEAN is
-			-- Can `a_path_section' be inserted?
+			-- Can `a_connection' be inserted?
 		require
 			a_connection_exists: a_connection /= Void
 		local
@@ -160,20 +160,20 @@ feature -- Status report
 			end
 		end
 
-	is_joinable (a_section: TRAFFIC_PATH_SECTION): BOOLEAN is
-			-- Can `a_path_section' be inserted?
+	is_joinable (a_section: TRAFFIC_ROUTE_SECTION): BOOLEAN is
+			-- Can `a_section' be inserted?
 		require
 			a_section_exists: a_section /= Void
 		do
 			Result := a_section.connections = Void or else is_insertable (a_section.connections.first)
 		end
 
-	is_valid_next (a_path_section: TRAFFIC_PATH_SECTION): BOOLEAN is
-			-- Is the origin of `a_path_section' the same station as the current destination?
+	is_valid_next (a_section: TRAFFIC_ROUTE_SECTION): BOOLEAN is
+			-- Is the origin of `a_section' the same station as the current destination?
 		require
-			a_path_section_exists: a_path_section /= Void
+			a_section_exists: a_section /= Void
 		do
-			Result := connections = Void or else destination = a_path_section.origin
+			Result := connections = Void or else destination = a_section.origin
 
 		end
 
@@ -215,28 +215,28 @@ feature -- Status report
 
 feature -- Basic operations
 
-	join (a_path_section: TRAFFIC_PATH_SECTION) is
-			-- Extend with `a_path_section'.
+	join (a_section: TRAFFIC_ROUTE_SECTION) is
+			-- Extend with `a_section'.
 		require
-			path_section_exists: a_path_section /= Void
-			path_section_is_intertable: is_joinable (a_path_section)
+			section_exists: a_section /= Void
+			section_is_intertable: is_joinable (a_section)
 		do
 			if not has_line then
-				line := a_path_section.line
+				line := a_section.line
 			end
-			length := length + a_path_section.length
+			length := length + a_section.length
 			from
-				a_path_section.connections.start
+				a_section.connections.start
 			until
-				a_path_section.connections.after
+				a_section.connections.after
 			loop
-				connections.force_last (a_path_section.connections.item_for_iteration)
-				a_path_section.connections.forth
+				connections.force_last (a_section.connections.item_for_iteration)
+				a_section.connections.forth
 			end
 		end
 
 	extend (a_connection: TRAFFIC_CONNECTION) is
-			-- Add `a_connection' to the end of the path section.
+			-- Add `a_connection' to the end of the route section.
 		require
 			a_connection_exists: a_connection /= Void
 			a_connection_fits: is_insertable (a_connection)
@@ -253,16 +253,16 @@ feature -- Basic operations
 			one_more: connections.count = old connections.count + 1
 		end
 
-	set_next (a_path_section: TRAFFIC_PATH_SECTION) is
-			-- Set pointer to next path section `a_path_section'.
+	set_next (a_section: TRAFFIC_ROUTE_SECTION) is
+			-- Set pointer to next route section `a_section'.
 		require
-			a_path_section_exists: a_path_section /= Void
-			is_realy_next: is_valid_next (a_path_section)
-			is_different_type_of_line: not is_joinable (a_path_section)
+			a_section_exists: a_section /= Void
+			is_realy_next: is_valid_next (a_section)
+			is_different_type_of_line: not is_joinable (a_section)
 		do
-			next := a_path_section
+			next := a_section
 		ensure
-			next_set: next = a_path_section
+			next_set: next = a_section
 		end
 
 end

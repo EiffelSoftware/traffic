@@ -1,14 +1,14 @@
 indexing
-	description: "View for paths"
+	description: "View for routes"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_PATH_VIEW
+	TRAFFIC_ROUTE_VIEW
 
 inherit
 
-	TRAFFIC_VS_VIEW [TRAFFIC_PATH]
+	TRAFFIC_VS_VIEW [TRAFFIC_ROUTE]
 		undefine
 			copy,
 			is_equal,

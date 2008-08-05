@@ -115,7 +115,7 @@ feature -- Access
 			-- All stops of lines stoping at this station
 
 	dummy_node: TRAFFIC_NODE
-			-- Node used for shortest path calculation
+			-- Node used for shortest route calculation
 
 	stop (a_line: TRAFFIC_LINE): TRAFFIC_STOP is
 			-- Stop belonging to `a_line'
