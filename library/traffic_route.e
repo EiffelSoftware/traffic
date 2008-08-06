@@ -31,6 +31,21 @@ feature -- Initialization
 
 feature -- Access
 
+	count: INTEGER is
+			-- Number of legs (route_sections)
+		local
+			l: TRAFFIC_ROUTE_SECTION
+		do
+			from
+				l := first
+			until
+				l = Void
+			loop
+				l := l.next
+				Result := Result + 1
+			end
+		end
+
 	first: TRAFFIC_ROUTE_SECTION
 			-- First route section
 

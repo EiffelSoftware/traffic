@@ -137,12 +137,14 @@ feature -- Access
 			-- Internal cursor index
 
 	i_th (i: INTEGER): TRAFFIC_STATION is
-			-- The station of index i on this line		
+			-- The i-th station on this line		
 		require
 			not_too_small: i >= 1
 			not_too_big: i <= count
 		do
-			if i = connection_count + 1 then
+			if is_empty then
+				Result := old_terminal_1
+			elseif i = connection_count + 1 then
 				Result := terminal_2
 			else
 				Result := one_direction.item (i).origin
@@ -187,9 +189,20 @@ feature -- Access
 			do
 				if not is_empty then
 					Result := terminal_1
+				else
+					Result := old_terminal_1
 				end
 			end
 
+	ne_end: TRAFFIC_STATION is
+			-- End station on North or East side
+			do
+				if not is_empty then
+					Result := terminal_2
+				else
+					Result := old_terminal_1
+				end
+			end
 
 	road_points: DS_ARRAYED_LIST[TRAFFIC_COORDINATE] is
 			-- Polypoints from the roads belonging to this line
@@ -455,9 +468,8 @@ feature -- Removal
 			terminal_1 := Void
 			terminal_2 := Void
 		ensure
-			count: connection_count = 0
-			terminals_void: terminal_1 = Void and terminal_2 = Void
 			only_one_left: count = 1
+			both_ends_same: sw_end = ne_end
 		end
 
 
@@ -619,7 +631,7 @@ feature -- Basic operations
 			element_inserted_event.publish ([l2])
 		end
 
-	extend (a_station: TRAFFIC_STATION) is
+	extend (s: TRAFFIC_STATION) is
 			-- Add connection to `a_station' at end.
 		require
 			has_terminal_1: old_terminal_1 /= Void
@@ -643,10 +655,10 @@ feature -- Basic operations
 					create s1.make_stop (old_terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (old_terminal_1.position))
 				end
 			end
-			if a_station.has_stop (Current) then
-				s2 := a_station.stop (Current)
+			if s.has_stop (Current) then
+				s2 := s.stop (Current)
 			else
-				create s2.make_stop (a_station, Current, create {TRAFFIC_COORDINATE}.make_from_other (a_station.position))
+				create s2.make_stop (s, Current, create {TRAFFIC_COORDINATE}.make_from_other (s.position))
 			end
 			create pp.make (2)
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
@@ -659,8 +671,8 @@ feature -- Basic operations
 
 			put_last (l1, l2)
 		ensure
-			new_station_added: i_th (count) = a_station
-			added_at_end: terminal_2 = a_station
+			new_station_added: i_th (count) = s
+			added_at_NE: ne_end = s
 			one_more: count = old count + 1
 		end
 
@@ -803,12 +815,12 @@ feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
 invariant
 
+	southwest_is_first: sw_end = i_th (1)
+	northeast_is_last: ne_end = i_th (count)
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
 	connections_not_void: one_direction /= Void and other_direction /= Void
 	type_exists: type /= Void -- Line has type.
 	counts_are_equal: one_direction.count = other_direction.count
-	terminal_1_is_first: terminal_1 = i_th (1)
-	terminal_2_is_last: terminal_2 = i_th (count)
 	after: after = (index = count + 1)
 end

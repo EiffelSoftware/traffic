@@ -1,19 +1,10 @@
-indexing
-	description: "Queries class (Chapter 4, Touch of Class)"
-	date: "$Date$"
-	revision: "$Revision$"
-
-class
-	QUERIES_COMMANDS
-
-inherit
-
+class QUERIES_COMMANDS inherit
 	TOURISM
 
 feature -- Commands and Queries
 
 	explore is
-			-- Try commands and queries.
+			-- Try out queries and commands on lines.
 		do
 			Paris.display
 			Console.show (Line8.count)
@@ -21,8 +12,8 @@ feature -- Commands and Queries
 			Console.show (Line8. i_th (2))
 			wait
 			Line8.remove_all_connections
-			Line8.extend (place_la_motte_picquet_grenelle)
-			Line8.extend (place_invalides)
+			Line8.extend (Station_la_motte_picquet_grenelle)
+			Line8.extend (Station_invalides)
 			Console.show (Line8.count)
 			Console.show (Line8.terminal_2.name)
 		end
