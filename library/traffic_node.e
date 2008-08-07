@@ -43,10 +43,10 @@ feature {NONE} -- Initialization
 			station := s
 			position := a_position
 			create connection_list.make
-			reset
-			if station.dummy_node /= Void then
-				station.add_node (Current)
-			end
+--			reset
+--			if station.dummy_node /= Void then
+--				station.add_node (Current)
+--			end
 			create changed_event
 		ensure
 			no_referrer: (referring_node = Void) and (referring_connection = Void)

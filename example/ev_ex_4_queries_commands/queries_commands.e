@@ -15,7 +15,7 @@ feature -- Commands and Queries
 			Line8.extend (Station_la_motte_picquet_grenelle)
 			Line8.extend (Station_invalides)
 			Console.show (Line8.count)
-			Console.show (Line8.terminal_2.name)
+			Console.show (Line8.ne_end.name)
 		end
 
 end

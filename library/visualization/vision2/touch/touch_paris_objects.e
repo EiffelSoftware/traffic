@@ -135,6 +135,16 @@ feature  -- Predefined objects (Stations)
 			Result_exists: Result /= Void
 		end
 
+	Station_Issy: TRAFFIC_STATION is
+			-- Station
+		require
+			Paris_exists: is_paris_loaded
+		once
+			Result := Paris.stations.item ("place Mairie d'Issy")
+		ensure
+			Result_exists: Result /= Void
+		end
+
 	Station_St_Michel_Notre_Dame: TRAFFIC_STATION is
 			-- Station
 		require

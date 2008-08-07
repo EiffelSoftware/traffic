@@ -645,20 +645,20 @@ feature -- Basic operations
 				if terminal_2.has_stop (Current) then
 					s1 := terminal_2.stop (Current)
 				else
-					create s1.make_stop (terminal_2, Current, create {TRAFFIC_COORDINATE}.make_from_other (terminal_2.position))
+					create s1.make_with_position (terminal_2, Current, create {TRAFFIC_COORDINATE}.make_from_other (terminal_2.position))
 				end
 			else
 				-- Only old_terminal_1 is given, the line is empty
 				if old_terminal_1.has_stop (Current) then
 					s1 := old_terminal_1.stop (Current)
 				else
-					create s1.make_stop (old_terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (old_terminal_1.position))
+					create s1.make_with_position (old_terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (old_terminal_1.position))
 				end
 			end
 			if s.has_stop (Current) then
 				s2 := s.stop (Current)
 			else
-				create s2.make_stop (s, Current, create {TRAFFIC_COORDINATE}.make_from_other (s.position))
+				create s2.make_with_position (s, Current, create {TRAFFIC_COORDINATE}.make_from_other (s.position))
 			end
 			create pp.make (2)
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
@@ -688,19 +688,19 @@ feature -- Basic operations
 			if a_station.has_stop (Current) then
 				s1 := a_station.stop (Current)
 			else
-				create s1.make_stop (a_station, Current, create {TRAFFIC_COORDINATE}.make_from_other (a_station.position))
+				create s1.make_with_position (a_station, Current, create {TRAFFIC_COORDINATE}.make_from_other (a_station.position))
 			end
 			if terminal_1 /= Void then
 				if terminal_1.has_stop (Current) then
 					s2 := terminal_1.stop (Current)
 				else
-					create s2.make_stop (terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (terminal_1.position))
+					create s2.make_with_position (terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (terminal_1.position))
 				end
 			else
 				if old_terminal_1.has_stop (Current) then
 					s2 := old_terminal_1.stop (Current)
 				else
-					create s2.make_stop (old_terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (old_terminal_1.position))
+					create s2.make_with_position (old_terminal_1, Current, create {TRAFFIC_COORDINATE}.make_from_other (old_terminal_1.position))
 				end
 			end
 			create pp.make (2)

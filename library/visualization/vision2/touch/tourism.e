@@ -69,7 +69,7 @@ feature -- Access (Paris)
 			s := fs.pathname (s, "paris.xml")
 			create loader.make (s)
 			if not loader.has_error then
-				loader.enable_dump_loading
+				loader.disable_dump_loading
 				loader.load_map
 				if not loader.has_error then
 					Result := loader.city

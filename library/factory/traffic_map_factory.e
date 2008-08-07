@@ -168,14 +168,14 @@ feature -- Line section building
 				origin_stop := origin_s.stop (a_line)
 			else
 				create stop_pos.make_from_other (pps.first)
-				create origin_stop.make_stop (origin_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+				create origin_stop.make_with_position (origin_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 
 			if destination_s.has_stop (a_line) then
 				destination_stop := destination_s.stop (a_line)
 			else
 				create stop_pos.make_from_other (pps.last)
-				create destination_stop.make_stop (destination_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+				create destination_stop.make_with_position (destination_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 
 			create internal_one_direction.make (origin_stop, destination_stop, a_line.type, pps)
@@ -194,14 +194,14 @@ feature -- Line section building
 				origin_stop := origin_s.stop (a_line)
 			else
 				create stop_pos.make_from_other (pps.first)
-				create origin_stop.make_stop (origin_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+				create origin_stop.make_with_position (origin_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 
 			if destination_s.has_stop (a_line) then
 				destination_stop := destination_s.stop (a_line)
 			else
 				create stop_pos.make_from_other (pps.last)
-				create destination_stop.make_stop (destination_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
+				create destination_stop.make_with_position (destination_s, a_line, stop_pos) --, a_polypoints.first.x, a_polypoints.first.y)
 			end
 			create internal_other_direction.make (origin_stop, destination_stop, a_line.type, pps)
 			a_line.put_last (internal_one_direction, internal_other_direction)

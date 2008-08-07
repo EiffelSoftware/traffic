@@ -397,7 +397,10 @@ feature {NONE} -- Implementation
 		end
 
 	update_position is
-			-- Update the position, breadth, and width of the station using the stops positions.
+			-- Update the position, breadth, and width of the station using the stop's line-sections positions.
+			-- This strange hack with the line_sections is needed because of Touch of class.
+		local
+			p: TRAFFIC_COORDINATE
 		do
 			if stops.count = 1 then
 				width := 0
