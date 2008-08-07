@@ -9,6 +9,12 @@ class
 inherit
 
 	TRAFFIC_VS_VIEW [TRAFFIC_STATION]
+		undefine
+			copy,
+			is_equal,
+			show,
+			hide,
+			draw
 		redefine
 			set_highlight_color,
 			set_color,
@@ -16,15 +22,14 @@ inherit
 			highlight
 		end
 
-	DRAWABLE_ROUNDED_RECTANGLE
+	DRAWABLE_OBJECT_CONTAINER [DRAWABLE_OBJECT]
 		rename
 			color as internal_color,
 			set_color as set_internal_color,
-			make as make_rectangle
+			make as make_container,
+			item as container_item
 		export {NONE}
-			internal_color,
-			set_internal_color,
-			make_rectangle
+			make_container
 		end
 
 create
@@ -35,11 +40,15 @@ feature -- Initialization
 	make (a_item: TRAFFIC_STATION) is
 			-- Initialize view for `a_item'.
 		do
+			make_container
 			item := a_item
-			make_rectangle (create {REAL_COORDINATE}.make ((a_item.position.x-(a_item.width/2).max(5)), (-a_item.position.y-(a_item.breadth/2).max(5))),
-							create {REAL_COORDINATE}.make ((a_item.position.x+(a_item.width/2).max(5)), (-a_item.position.y+(a_item.breadth/2).max(5))))
-			set_internal_color (default_color)
-			set_edge_color (default_color)
+			create rectangle.make (create {REAL_COORDINATE}.make ((a_item.position.x-(a_item.width/2).max(5)), (-a_item.position.y-(a_item.breadth/2).max(5))),
+									create {REAL_COORDINATE}.make ((a_item.position.x+(a_item.width/2).max(5)), (-a_item.position.y+(a_item.breadth/2).max(5))))
+			rectangle.set_color (default_color)
+			rectangle.set_edge_color (default_color)
+			create text.make (item.name, create {REAL_COORDINATE}.make (a_item.position.x+a_item.width + 5, -a_item.position.y+a_item.breadth+ 5))
+			put_last (rectangle)
+			put_last (text)
 			is_shown := True
 			is_highlighted := False
 			item.changed_event.subscribe (agent update)
@@ -55,11 +64,11 @@ feature -- Status setting
 			color := a_color
 			if not is_highlighted then
 				if color /= Void then
-					set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
-					set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+					rectangle.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+					rectangle.set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
 				else
-					set_internal_color (default_color)
-					set_edge_color (default_color)
+					rectangle.set_color (default_color)
+					rectangle.set_edge_color (default_color)
 				end
 			end
 		end
@@ -70,11 +79,11 @@ feature -- Status setting
 			highlight_color := a_color
 			if is_highlighted then
 				if highlight_color /= Void then
-					set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
-					set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+					rectangle.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+					rectangle.set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 				else
-					set_internal_color (default_highlight_color)
-					set_edge_color (default_highlight_color)
+					rectangle.set_color (default_highlight_color)
+					rectangle.set_edge_color (default_highlight_color)
 				end
 			end
 		end
@@ -86,22 +95,22 @@ feature -- Basic operations
 		do
 			if item.is_highlighted then
 				if highlight_color /= Void then
-					set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
-					set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+					rectangle.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+					rectangle.set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 				else
-					set_internal_color (default_highlight_color)
-					set_edge_color (default_highlight_color)
+					rectangle.set_color (default_highlight_color)
+					rectangle.set_edge_color (default_highlight_color)
 				end
 			else
 				if color /= Void then
-					set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
-					set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+					rectangle.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+					rectangle.set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
 				else
-					set_internal_color (default_color)
-					set_edge_color (default_color)
+					rectangle.set_color (default_color)
+					rectangle.set_edge_color (default_color)
 				end
 			end
-			set_points (    create {REAL_COORDINATE}.make ((item.position.x-(item.width/2).max(5)), (-item.position.y-(item.breadth/2).max(5))),
+			rectangle.set_points (    create {REAL_COORDINATE}.make ((item.position.x-(item.width/2).max(5)), (-item.position.y-(item.breadth/2).max(5))),
 							create {REAL_COORDINATE}.make ((item.position.x+(item.width/2).max(5)), (-item.position.y+(item.breadth/2).max(5))))
 		end
 
@@ -109,11 +118,11 @@ feature -- Basic operations
 			-- Highlight the view.
 		do
 			if highlight_color /= Void then
-				set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
-				set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+				rectangle.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
+				rectangle.set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 			else
-				set_internal_color (default_highlight_color)
-				set_edge_color (default_highlight_color)
+				rectangle.set_color (default_highlight_color)
+				rectangle.set_edge_color (default_highlight_color)
 			end
 			is_highlighted := True
 		end
@@ -122,11 +131,11 @@ feature -- Basic operations
 			-- Unhighlight the view.
 		do
 			if color /= Void then
-				set_internal_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
-				set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+				rectangle.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
+				rectangle.set_edge_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
 			else
-				set_internal_color (default_color)
-				set_edge_color (default_color)
+				rectangle.set_color (default_color)
+				rectangle.set_edge_color (default_color)
 			end
 			is_highlighted := False
 		end
@@ -144,5 +153,11 @@ feature -- Constants
 		once
 			create Result.make_with_8_bit_rgb (255, 62, 150)
 		end
+
+feature -- Internals
+
+	rectangle: DRAWABLE_ROUNDED_RECTANGLE
+
+	text: DRAWABLE_TEXT
 
 end

@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_center: TRAFFIC_COORDINATE; a_filename: STRING) is
+	make (a_center: TRAFFIC_COORDINATE; a_name: STRING; a_filename: STRING) is
 			-- Initialize with default size.
 		require
 			center_valid: a_center /= Void
@@ -24,6 +24,7 @@ feature {NONE} -- Initialization
 			filename := a_filename
 			make_new (default_width, default_depth, default_height, a_center)
 			is_landmark := True
+			name := a_name
 		ensure
 			is_landmark: is_landmark and not is_apartment_building and not is_skyscraper and not is_villa
 			size_set: width = default_width and height = default_height and depth = default_depth
@@ -35,6 +36,9 @@ feature -- Access
 
 	filename: STRING
 			-- Filename for special display object
+
+	name: STRING
+			-- Name of the landmark
 
 feature -- Constants
 

@@ -105,6 +105,7 @@ feature {NONE} -- Implementation
 			Result.put (create {TRAFFIC_MAP_NODE_PROCESSOR}.make, "map")
 			Result.put (create {TRAFFIC_PLACES_NODE_PROCESSOR}.make, "places")
 			Result.put (create {TRAFFIC_PLACE_NODE_PROCESSOR}.make, "place")
+			Result.put (create {TRAFFIC_LANDMARK_NODE_PROCESSOR}.make, "landmark")
 			Result.put (create {TRAFFIC_LINES_NODE_PROCESSOR}.make, "lines")
 			Result.put (create {TRAFFIC_LINE_NODE_PROCESSOR}.make, "line")
 			Result.put (create {TRAFFIC_POINT_NODE_PROCESSOR}.make, "point")
@@ -141,13 +142,13 @@ feature {NONE} -- Implementation
 			a.compare_objects
 			Result.put (a, "map")
 --			places
-			a := << "place" >>
+			a := << "place" , "landmark">>
 			a.compare_objects
 			Result.put (a, "places")
---			place
 			a := << "file", "description" >>
 			a.compare_objects
 			Result.put (a, "place")
+			Result.put (a, "landmark")
 --			point
 			a := <<  >>
 			a.compare_objects

@@ -97,6 +97,14 @@ feature -- Element change
 				city.buildings.forth
 			end
 			from
+				city.landmarks.start
+			until
+				city.landmarks.after
+			loop
+				add_building (city.landmarks.item_for_iteration)
+				city.landmarks.forth
+			end
+			from
 				city.trams.start
 			until
 				city.trams.after
@@ -152,6 +160,8 @@ feature -- Element change
 			city.stations.element_removed_event.subscribe (agent remove_station)
 			city.buildings.element_inserted_event.subscribe (agent add_building)
 			city.buildings.element_removed_event.subscribe (agent remove_building)
+			city.landmarks.element_inserted_event.subscribe (agent add_landmark)
+			city.landmarks.element_removed_event.subscribe (agent remove_landmark)
 			city.trams.element_inserted_event.subscribe (agent add_tram)
 			city.trams.element_removed_event.subscribe (agent remove_tram)
 			city.busses.element_inserted_event.subscribe (agent add_bus)
@@ -229,6 +239,14 @@ feature {NONE} -- Implementation (view adding)
 		end
 
 	add_building (a_building: TRAFFIC_BUILDING) is
+			-- Add building view for `a_building'.
+		require
+			a_building_exists: a_building /= Void
+		do
+			building_representations.put_last (factory.new_building_view (a_building))
+		end
+
+	add_landmark (a_building: TRAFFIC_LANDMARK) is
 			-- Add building view for `a_building'.
 		require
 			a_building_exists: a_building /= Void
@@ -363,6 +381,14 @@ feature {NONE} -- Implementation (view removing)
 		end
 
 	remove_building (a_building: TRAFFIC_BUILDING) is
+			-- Remove view for `a_building'.
+		require
+			a_building_exists: a_building /= Void
+		do
+			building_representations.delete (building_representations.view_for_item (a_building))
+		end
+
+	remove_landmark (a_building: TRAFFIC_LANDMARK) is
 			-- Remove view for `a_building'.
 		require
 			a_building_exists: a_building /= Void

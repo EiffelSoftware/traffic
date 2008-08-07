@@ -130,7 +130,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Balard")
+			Result := Paris.stations.item ("Balard")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -140,7 +140,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Mairie d'Issy")
+			Result := Paris.stations.item ("Mairie d'Issy")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -150,7 +150,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place St Michel - Notre Dame")
+			Result := Paris.stations.item ("St Michel - Notre Dame")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -160,7 +160,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Cergy")
+			Result := Paris.stations.item ("Cergy")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -170,7 +170,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Opera")
+			Result := Paris.stations.item ("Opera")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -180,7 +180,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Champs de Mars, Tour Eiffel, Bir-Hakeim")
+			Result := Paris.stations.item ("Champs de Mars, Tour Eiffel, Bir-Hakeim")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -190,7 +190,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Trocadero")
+			Result := Paris.stations.item ("Trocadero")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -200,7 +200,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Hotel de Ville")
+			Result := Paris.stations.item ("Hotel de Ville")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -210,7 +210,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Charles de Gaulle - Etoile")
+			Result := Paris.stations.item ("Charles de Gaulle - Etoile")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -220,7 +220,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Chatelet")
+			Result := Paris.stations.item ("Chatelet")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -230,7 +230,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Nation")
+			Result := Paris.stations.item ("Nation")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -240,7 +240,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Palais Royal Musee du Louvre")
+			Result := Paris.stations.item ("Palais Royal Musee du Louvre")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -250,7 +250,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Mairie d'Issy")
+			Result := Paris.stations.item ("Mairie d'Issy")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -260,7 +260,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Chatillon - Montrouge")
+			Result := Paris.stations.item ("Chatillon - Montrouge")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -270,7 +270,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Gare de Lyon")
+			Result := Paris.stations.item ("Gare de Lyon")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -280,7 +280,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Invalides")
+			Result := Paris.stations.item ("Invalides")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -290,7 +290,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Madeleine")
+			Result := Paris.stations.item ("Madeleine")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -300,7 +300,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Bobigny - Pablo Picasso")
+			Result := Paris.stations.item ("Bobigny - Pablo Picasso")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -310,7 +310,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place La Fourche")
+			Result := Paris.stations.item ("La Fourche")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -320,7 +320,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Bastille")
+			Result := Paris.stations.item ("Bastille")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -330,7 +330,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Concorde")
+			Result := Paris.stations.item ("Concorde")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -340,7 +340,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place Republique")
+			Result := Paris.stations.item ("Republique")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -350,7 +350,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("place La Motte - Picquet - Grenelle")
+			Result := Paris.stations.item ("La Motte - Picquet - Grenelle")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -360,7 +360,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("Musee du Louvre")
+			Result := Paris.stations.item ("landmark Musee du Louvre")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -370,7 +370,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("Tour Eiffel")
+			Result := Paris.stations.item ("landmark Tour Eiffel")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -380,7 +380,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("Champs Elysee - Etoile")
+			Result := Paris.stations.item ("landmark Champs Elysee - Etoile")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -392,9 +392,7 @@ feature -- Predefined objects (Buildings)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			create Result.make (Place_Musee_du_Louvre.position,
-				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\louvre.png", Windows_file_system)))
-			Paris.buildings.put_last (Result)
+			Result := Paris.landmarks.item ("landmark Musee du Louvre")
 		end
 
 	Eiffel_tower: TRAFFIC_LANDMARK is
@@ -402,9 +400,7 @@ feature -- Predefined objects (Buildings)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			create Result.make (Place_Tour_Eiffel.position,
-				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\eiffel.png", Windows_file_system)))
-			Paris.buildings.put_last (Result)
+			Result := Paris.landmarks.item ("landmark Tour Eiffel")
 		end
 
 	Elysee_palace: TRAFFIC_LANDMARK is
@@ -412,10 +408,7 @@ feature -- Predefined objects (Buildings)
 		require
 			Paris_exists: is_paris_loaded
 		once
-
-			create Result.make (Place_Champs_Elysee.position,
-				File_system.absolute_pathname (File_system.pathname_from_file_system ("..\map\paris\triomphe.png", Windows_file_system)))
-			Paris.buildings.put_last (Result)
+			Result := Paris.landmarks.item ("landmark Champs Elysee - Etoile")
 		end
 
 feature -- Passengers

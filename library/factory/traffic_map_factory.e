@@ -135,6 +135,44 @@ feature -- Traffic station building
 			Result := internal_station /= Void
 		end
 
+feature -- Traffic station building
+
+	build_landmark (x, y: INTEGER; a_name: STRING; a_city: TRAFFIC_CITY; a_filename: STRING) is
+			-- Generate new traffic landmark object with name `a_name' belonging to traffic map `a_city'.
+			-- (Access generated object through feature `landmark')
+		require
+			a_name_exists: a_name /= Void
+			a_name_not_empty: not a_name.is_empty
+			city_exists: has_city
+			unique_name: not a_city.landmarks.has (a_name)
+		local
+			pos: TRAFFIC_COORDINATE
+		do
+			create pos.make (x, y)
+			create internal_landmark.make (pos, a_name, a_filename)
+			a_city.landmarks.force (internal_landmark, internal_landmark.name)
+		ensure
+			created: landmark /= Void
+			has_name: equal (landmark.name, a_name)
+			in_city: a_city.landmarks.has (a_name)
+		end
+
+	landmark: TRAFFIC_LANDMARK is
+			-- Generated traffic landmark object
+		require
+			is_available: has_landmark
+		do
+			Result := internal_landmark
+		ensure
+			Result_exists: Result /= Void
+		end
+
+	has_landmark: BOOLEAN is
+			-- Is traffic landmark object available?
+		do
+			Result := internal_landmark /= Void
+		end
+
 feature -- Line section building
 
 	build_line_section (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]; a_city: TRAFFIC_CITY; a_line: TRAFFIC_LINE) is
@@ -331,6 +369,9 @@ feature {NONE} -- Implementation
 
 	internal_station: TRAFFIC_STATION
 			-- Internal representation of last created traffic station
+
+	internal_landmark: TRAFFIC_LANDMARK
+			-- Internal representation of last created traffic landmark
 
 	internal_one_direction, internal_other_direction: TRAFFIC_LINE_CONNECTION
 			-- Internal representation of last created traffic line section

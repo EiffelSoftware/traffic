@@ -47,6 +47,7 @@ feature {NONE} -- Initialization
 			create routes.make (Current)
 			create buildings.make (Current)
 			create free_movings.make (Current)
+			create landmarks.make (default_size, Current)
 		ensure
 			name_set: equal (name, a_name)
 			stations_not_void: stations /= Void
@@ -208,6 +209,9 @@ feature -- Access (city objects)
 
 	buildings: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_BUILDING]
 			-- Buildings of the city
+
+	landmarks: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_LANDMARK, STRING]
+			-- Landmarks of the city
 
 	taxi_offices: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_TAXI_OFFICE]
 			-- All taxi offices associated with this city
