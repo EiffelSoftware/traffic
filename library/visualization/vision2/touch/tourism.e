@@ -20,8 +20,11 @@ feature -- Access
 			a_console_exists: a_console /= Void
 		local
 			l: TRAFFIC_SIMPLE_LINE -- (Added to ensure compilation of TRAFFIC_SIMPLE_LINE)
+			t: TIMER
 		do
 			console := a_console
+			create t
+			Timer := t
 			main_window := a_main_window
 			explore_at_startup
 		end
@@ -40,8 +43,11 @@ feature  -- Example main feature
 
 feature -- Access
 
-	console: TRAFFIC_CONSOLE
+	Console: TRAFFIC_CONSOLE
 			-- Console for output
+
+	Timer: TIMER
+			-- Timer for waiting
 
 feature -- Status report
 
@@ -134,7 +140,7 @@ feature -- Basic operations
 			s.enable_filled
 			s.set_diameter (10)
 			main_window.canvas.object_list.put_last (s)
-			wait
+			Timer.wait
 			main_window.canvas.object_list.delete (s)
 		end
 
@@ -148,7 +154,7 @@ feature -- Basic operations
 			s.enable_filled
 			s.set_diameter (20)
 			main_window.canvas.object_list.put_last (s)
-			wait
+			timer.wait
 			main_window.canvas.object_list.delete (s)
 		end
 
@@ -163,13 +169,13 @@ feature -- Basic operations
 			s.set_diameter (10)
 
 			main_window.canvas.object_list.put_last (s)
-			short_wait
+			timer.short_wait
 			main_window.canvas.object_list.delete (s)
-			short_wait
+			timer.short_wait
 			main_window.canvas.object_list.put_last (s)
-			short_wait
+			timer.short_wait
 			main_window.canvas.object_list.delete (s)
-			wait
+			timer.wait
 		end
 
 	show_green_spot (a_location: TRAFFIC_COORDINATE) is
@@ -182,49 +188,10 @@ feature -- Basic operations
 			s.enable_filled
 			s.set_diameter (15)
 			main_window.canvas.object_list.put_last (s)
-			wait
+			timer.wait
 			main_window.canvas.object_list.delete (s)
 		end
 
-	wait is
-			-- Wait for `Wait_time' seconds.
-		local
-			env: EV_ENVIRONMENT
-			t1, t2: TIME
-		do
-			create env
-			create t1.make_now
-			from
-				create t2.make_now
-			until
-				(t2.compact_time - t1.compact_time).abs > Wait_time
-			loop
-				if not env.application.is_destroyed then
-					env.application.process_events
-				end
-				create t2.make_now
-			end
-		end
-
-	short_wait is
-			-- Wait for `Short_wait_time' seconds.
-		local
-			env: EV_ENVIRONMENT
-			t1, t2: TIME
-		do
-			create env
-			create t1.make_now
-			from
-				create t2.make_now
-			until
-				(t2.compact_time - t1.compact_time).abs > short_wait_time
-			loop
-				if not env.application.is_destroyed then
-					env.application.process_events
-				end
-				create t2.make_now
-			end
-		end
 
 feature {NONE} -- Implementation
 
