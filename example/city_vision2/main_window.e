@@ -67,7 +67,7 @@ feature {NONE} -- Widgets
 	main_container: EV_VERTICAL_BOX
 			-- Main container (contains all widgets displayed in this window)
 
-	canvas: TRAFFIC_MAP_CANVAS
+	canvas: TRAFFIC_CITY_CANVAS
 			-- The Canvas Widget
 
 	viewport: EV_VIEWPORT
@@ -253,7 +253,7 @@ feature {NONE} -- GUI building
 
 			-- Test creation
 			create hb
-			create button.make_with_text ("+place")
+			create button.make_with_text ("+station")
 			button.select_actions.extend (agent add_place)
 			hb.extend (button)
 
@@ -272,7 +272,7 @@ feature {NONE} -- GUI building
 
 			-- Test deletion
 			create hb
-			create button.make_with_text ("-place")
+			create button.make_with_text ("-station")
 			button.select_actions.extend (agent remove_place)
 			hb.extend (button)
 
@@ -342,16 +342,16 @@ feature {NONE} -- Implementation
 			loader.disable_dump_loading
 			loader.load_map
 			if not loader.has_error then
-				if canvas.map /= Void and then canvas.map.time.is_time_running then
-					canvas.map.time.reset
+				if canvas.city /= Void and then canvas.city.time.is_time_running then
+					canvas.city.time.reset
 				end
-				canvas.set_map (loader.map)
-				create point_randomizer.make (loader.map.center, loader.map.radius)
-				create path_randomizer.set_map (loader.map)
+				canvas.set_city (loader.city)
+				create point_randomizer.make (loader.city.center, loader.city.radius)
+				create path_randomizer.set_city (loader.city)
 				resize_canvas
 				add_buildings
-				canvas.map.time.set_speedup (50)
-				canvas.map.time.start
+				canvas.city.time.set_speedup (50)
+				canvas.city.time.start
 				move_to_center
 				vb.enable_sensitive
 			else
@@ -365,32 +365,32 @@ feature {NONE} -- Implementation
 		local
 			r: TRAFFIC_BUILDING_RANDOMIZER
 		do
-			create r.set_map (canvas.map)
-			r.generate_random_buildings (10, canvas.map.radius/3, 3)
+			create r.set_city (canvas.city)
+			r.generate_random_buildings (10, canvas.city.radius/3, 3)
 			from
 				r.last_buildings.start
 			until
 				r.last_buildings.off
 			loop
-				canvas.map.buildings.put_last (r.last_buildings.item_for_iteration)
+				canvas.city.buildings.put_last (r.last_buildings.item_for_iteration)
 				r.last_buildings.forth
 			end
-			r.generate_random_buildings (15, canvas.map.radius*2/3, 2)
+			r.generate_random_buildings (15, canvas.city.radius*2/3, 2)
 			from
 				r.last_buildings.start
 			until
 				r.last_buildings.off
 			loop
-				canvas.map.buildings.put_last (r.last_buildings.item_for_iteration)
+				canvas.city.buildings.put_last (r.last_buildings.item_for_iteration)
 				r.last_buildings.forth
 			end
-			r.generate_random_buildings (100, canvas.map.radius, 1)
+			r.generate_random_buildings (100, canvas.city.radius, 1)
 			from
 				r.last_buildings.start
 			until
 				r.last_buildings.off
 			loop
-				canvas.map.buildings.put_last (r.last_buildings.item_for_iteration)
+				canvas.city.buildings.put_last (r.last_buildings.item_for_iteration)
 				r.last_buildings.forth
 			end
 		end
@@ -402,35 +402,36 @@ feature {NONE} -- Implementation
 			bus: TRAFFIC_BUS
 			i: INTEGER
 		do
-			if canvas.map /= Void then
-				canvas.map.trams.wipe_out
-				canvas.map.busses.wipe_out
+			if canvas.city /= Void then
+				canvas.city.trams.wipe_out
+				canvas.city.busses.wipe_out
 				if a_value > 0 then
 					from
-						canvas.map.lines.start
+						canvas.city.lines.start
 					until
-						canvas.map.lines.after
+						canvas.city.lines.after
 					loop
 						from
 							i := 1
 						until
-							i > a_value or else i > canvas.map.lines.item_for_iteration.connection_count
+							i > a_value or else i > canvas.city.lines.item_for_iteration.connection_count
 						loop
-							if canvas.map.lines.item_for_iteration.type.name.is_equal ("tram") then
-								create tram.make_with_line (canvas.map.lines.item_for_iteration)
-								tram.set_to_station (canvas.map.lines.item_for_iteration.i_th (i))
-								canvas.map.trams.put_last (tram)
+							if canvas.city.lines.item_for_iteration.type.name.is_equal ("tram") then
+								create tram.make_with_line (canvas.city.lines.item_for_iteration)
+								tram.set_to_station (canvas.city.lines.item_for_iteration.i_th (i))
+								canvas.city.trams.put_last (tram)
 								tram.start
-							elseif canvas.map.lines.item_for_iteration.type.name.is_equal ("bus") then
-								create bus.make_with_line (canvas.map.lines.item_for_iteration)
-								bus.set_to_station (canvas.map.lines.item_for_iteration.i_th (i))
+							elseif canvas.city.lines.item_for_iteration.type.name.is_equal ("bus") then
+								create bus.make_with_line (canvas.city.lines.item_for_iteration)
+								bus.set_to_station (canvas.city.lines.item_for_iteration.i_th (i))
 								bus.set_speed (5)
-								canvas.map.busses.put_last (bus)
+								bus.set_reiterate (True)
+								canvas.city.busses.put_last (bus)
 								bus.start
 							end
 							i := i + 1
 						end
-						canvas.map.lines.forth
+						canvas.city.lines.forth
 					end
 				end
 			end
@@ -441,22 +442,22 @@ feature {NONE} -- Implementation
 		local
 			moving: TRAFFIC_FREE_MOVING
 		do
-			if canvas.map /= Void then
-				if a_value > canvas.map.free_movings.count then
+			if canvas.city /= Void then
+				if a_value > canvas.city.free_movings.count then
 					-- Add more
 					from
 					until
-						canvas.map.free_movings.count >= a_value
+						canvas.city.free_movings.count >= a_value
 					loop
 						point_randomizer.generate_point_array (7)
 						create moving.make_with_points (point_randomizer.last_array, 1.5)
-						canvas.map.free_movings.put_last (moving)
+						canvas.city.free_movings.put_last (moving)
 						moving.set_reiterate (True)
 						moving.start
 					end
-				elseif a_value < canvas.map.free_movings.count then
+				elseif a_value < canvas.city.free_movings.count then
 					-- Remove
-					canvas.map.free_movings.prune_last (canvas.map.free_movings.count - a_value)
+					canvas.city.free_movings.prune_last (canvas.city.free_movings.count - a_value)
 				end
 			end
 		end
@@ -467,25 +468,25 @@ feature {NONE} -- Implementation
 			passenger: TRAFFIC_PASSENGER
 			i: INTEGER
 		do
-			if a_value > canvas.map.passengers.count then
+			if a_value > canvas.city.passengers.count then
 				-- Add more
 				from
 				until
-					canvas.map.passengers.count >= a_value
+					canvas.city.passengers.count >= a_value
 				loop
-					path_randomizer.generate_path (6)
+					path_randomizer.generate_route (6)
 					random.forth
-					if path_randomizer.last_path.first /= Void then
-						create passenger.make_with_path (path_randomizer.last_path, random.double_item*3 + 0.1)
-						canvas.map.passengers.put_last (passenger)
+					if path_randomizer.last_route.first /= Void then
+						create passenger.make_with_route (path_randomizer.last_route, random.double_item*3 + 0.1)
+						canvas.city.passengers.put_last (passenger)
 						passenger.set_reiterate (True)
 						passenger.go
 					end
 					i := i + 1
 				end
-			elseif a_value < canvas.map.passengers.count then
+			elseif a_value < canvas.city.passengers.count then
 				-- Remove
-				canvas.map.passengers.prune_last (canvas.map.passengers.count - a_value)
+				canvas.city.passengers.prune_last (canvas.city.passengers.count - a_value)
 			end
 		end
 
@@ -493,17 +494,17 @@ feature {NONE} -- Implementation
 			-- Add `a_value' number of paths to the city (or remove if needed).
 		local
 			g, b: INTEGER
-			p: ARRAY [TRAFFIC_PLACE]
-			p1, p2: TRAFFIC_PLACE
-			c: TRAFFIC_PATH_CALCULATOR
+			p: ARRAY [TRAFFIC_STATION]
+			p1, p2: TRAFFIC_STATION
+			c: TRAFFIC_ROUTE_CALCULATOR
 		do
-			if a_value > canvas.map.paths.count then
+			if a_value > canvas.city.routes.count then
 				-- Add more
-				p := canvas.map.places.to_array
-				create c.set_map (canvas.map)
+				p := canvas.city.stations.to_array
+				create c.set_city (canvas.city)
 				from
 				until
-					canvas.map.paths.count >= a_value
+					canvas.city.routes.count >= a_value
 				loop
 					random.forth
 					p1 := p.item (random.item \\ p.count + 1)
@@ -511,36 +512,36 @@ feature {NONE} -- Implementation
 					p2 := p.item (random.item \\ p.count + 1)
 					if p1 /= p2 then
 						c.find_shortest_path (p1, p2)
-						if c.path /= Void then
+						if c.route /= Void then
 							random.forth
 							g := random.item \\ 256
 							random.forth
 							b := random.item \\ 256
-							canvas.map.paths.put_last (c.path)
+							canvas.city.routes.put_last (c.route)
 						end
 					end
 				end
-			elseif a_value < canvas.map.paths.count then
+			elseif a_value < canvas.city.routes.count then
 				-- Remove
-				canvas.map.paths.prune_last (canvas.map.paths.count - a_value)
+				canvas.city.routes.prune_last (canvas.city.routes.count - a_value)
 			end
 		end
 
 	add_place is
 			-- Add place.
 		local
-			p: TRAFFIC_PLACE
+			p: TRAFFIC_STATION
 			x, y: INTEGER
 		do
 			-- Create new place
 			random.forth
-			create p.make ("New place" + random.item.out)
+			create p.make ("New station" + random.item.out)
 			random.forth
-			x := random.item \\ (2*canvas.map.radius.floor)
+			x := random.item \\ (2*canvas.city.radius.floor)
 			random.forth
-			y := random.item \\ (2*canvas.map.radius.floor)
-			p.set_position (create {TRAFFIC_COORDINATE}.make (canvas.map.center.x + x - canvas.map.radius, canvas.map.center.y + y - canvas.map.radius))
-			canvas.map.places.force (p, p.name)
+			y := random.item \\ (2*canvas.city.radius.floor)
+			p.set_position (create {TRAFFIC_COORDINATE}.make (canvas.city.center.x + x - canvas.city.radius, canvas.city.center.y + y - canvas.city.radius))
+			canvas.city.stations.force (p, p.name)
 --			canvas.redraw
 		end
 
@@ -550,9 +551,9 @@ feature {NONE} -- Implementation
 			l: TRAFFIC_LINE
 			lc1, lc2: TRAFFIC_LINE_CONNECTION
 			r, g, b: INTEGER
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			s1, s2: TRAFFIC_STOP
-			p: ARRAY [TRAFFIC_PLACE]
+			p: ARRAY [TRAFFIC_STATION]
 			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
 			random.forth
@@ -563,19 +564,19 @@ feature {NONE} -- Implementation
 			b := random.item \\ 256
 			create l.make ("Line" + random.item.out, create {TRAFFIC_TYPE_TRAM}.make)
 			l.set_color (create {TRAFFIC_COLOR}.make_with_rgb (r, g, b))
-			p := canvas.map.places.to_array
+			p := canvas.city.stations.to_array
 			p1 := p.item (random.item \\ p.count + 1)
 			random.forth
 			p2 := p.item (random.item \\ p.count + 1)
 			if p1.has_stop (l) then
 				s1 := p1.stop (l)
 			else
-				create s1.make_stop (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
+				create s1.make_with_position (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
 			end
 			if p2.has_stop (l) then
 				s2 := p2.stop (l)
 			else
-				create s2.make_stop (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
+				create s2.make_with_position (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
 			end
 			create pp.make (2)
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
@@ -586,7 +587,7 @@ feature {NONE} -- Implementation
 			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
 			create lc2.make (s2, s1, l.type, pp)
 			l.put_last (lc1, lc2)
-			canvas.map.lines.force (l, l.name)
+			canvas.city.lines.force (l, l.name)
 		end
 
 	add_line_connection is
@@ -594,21 +595,21 @@ feature {NONE} -- Implementation
 		local
 			l: TRAFFIC_LINE
 			lc1, lc2: TRAFFIC_LINE_CONNECTION
-			p1, p2: TRAFFIC_PLACE
+			p1, p2: TRAFFIC_STATION
 			s1, s2: TRAFFIC_STOP
-			pt: ARRAY [TRAFFIC_PLACE]
+			pt: ARRAY [TRAFFIC_STATION]
 			lt: ARRAY [TRAFFIC_LINE]
 			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
 		do
-			lt := canvas.map.lines.to_array
+			lt := canvas.city.lines.to_array
 			if lt.count > 0 then
 				l := lt.item ((random.item \\ lt.count) + 1)
-				pt := canvas.map.places.to_array
+				pt := canvas.city.stations.to_array
 				if l.terminal_2 /= Void then
 					if l.terminal_2.has_stop (l) then
 						s1 := l.terminal_2.stop (l)
 					else
-						create s1.make_stop (l.terminal_2, l, create {TRAFFIC_COORDINATE}.make_from_other (l.terminal_2.position))
+						create s1.make_with_position (l.terminal_2, l, create {TRAFFIC_COORDINATE}.make_from_other (l.terminal_2.position))
 					end
 				else
 					random.forth
@@ -616,7 +617,7 @@ feature {NONE} -- Implementation
 					if p1 /= Void and then p1.has_stop (l) then
 						s1 := p1.stop (l)
 					else
-						create s1.make_stop (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
+						create s1.make_with_position (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
 					end
 				end
 				random.forth
@@ -624,7 +625,7 @@ feature {NONE} -- Implementation
 				if p2.has_stop (l) then
 					s2 := p2.stop (l)
 				else
-					create s2.make_stop (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
+					create s2.make_with_position (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
 				end
 				create pp.make (2)
 				pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
@@ -644,18 +645,18 @@ feature {NONE} -- Implementation
 			r: TRAFFIC_ROAD
 			rc1, rc2: TRAFFIC_ROAD_CONNECTION
 			n1, n2: TRAFFIC_NODE
-			pt: ARRAY [TRAFFIC_PLACE]
+			pt: ARRAY [TRAFFIC_STATION]
 		do
-			pt := canvas.map.places.to_array
+			pt := canvas.city.stations.to_array
 			random.forth
 			n1 := pt.item ((random.item \\ pt.count) + 1).dummy_node
 			random.forth
 			n2 := pt.item ((random.item \\ pt.count) + 1).dummy_node
 
-			create rc1.make (n1, n2, create {TRAFFIC_TYPE_STREET}.make, canvas.map.graph.id_manager.next_free_index)
-			create rc2.make (n2, n1, create {TRAFFIC_TYPE_STREET}.make, canvas.map.graph.id_manager.next_free_index)
+			create rc1.make (n1, n2, create {TRAFFIC_TYPE_STREET}.make, canvas.city.graph.id_manager.next_free_index)
+			create rc2.make (n2, n1, create {TRAFFIC_TYPE_STREET}.make, canvas.city.graph.id_manager.next_free_index)
 			create r.make (rc1, rc2)
-			canvas.map.roads.force (r, r.id)
+			canvas.city.roads.force (r, r.id)
 --			canvas.redraw
 		end
 
@@ -663,10 +664,10 @@ feature {NONE} -- Implementation
 			-- Add taxi office.
 		local
 			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
-			et: TRAFFIC_EVENT_TAXI_OFFICE
+			et: TRAFFIC_TAXI_OFFICE
 			r, g, b: INTEGER
 			td: TRAFFIC_DISPATCHER_TAXI
-			te: TRAFFIC_EVENT_TAXI
+			te: TRAFFIC_TAXI
 		do
 			random.forth
 			r := random.item \\ 256
@@ -675,13 +676,13 @@ feature {NONE} -- Implementation
 			random.forth
 			b := random.item \\ 256
 			random.forth
-			if not canvas.map.taxi_offices.is_empty then
-				if canvas.map.taxi_offices.last.generating_type.is_equal ("TRAFFIC_EVENT_TAXI_OFFICE") then
+			if not canvas.city.taxi_offices.is_empty then
+				if canvas.city.taxi_offices.last.generating_type.is_equal ("TRAFFIC_TAXI_OFFICE") then
 					create dt.make_with_color (r, g, b)
 					point_randomizer.generate_point_array (5)
 					create td.make_random (dt, point_randomizer.last_array)
 					dt.add_taxi (td)
-					canvas.map.taxi_offices.put_last (dt)
+					canvas.city.taxi_offices.put_last (dt)
 					point_randomizer.generate_point_array (5)
 					create td.make_random (dt, point_randomizer.last_array)
 					dt.add_taxi (td)
@@ -690,7 +691,7 @@ feature {NONE} -- Implementation
 					point_randomizer.generate_point_array (5)
 					create te.make_random (et, point_randomizer.last_array)
 					et.add_taxi (te)
-					canvas.map.taxi_offices.put_last (et)
+					canvas.city.taxi_offices.put_last (et)
 					point_randomizer.generate_point_array (5)
 					create te.make_random (et, point_randomizer.last_array)
 					et.add_taxi (te)
@@ -700,7 +701,7 @@ feature {NONE} -- Implementation
 				point_randomizer.generate_point_array (5)
 				create te.make_random (et, point_randomizer.last_array)
 				et.add_taxi (te)
-				canvas.map.taxi_offices.put_last (et)
+				canvas.city.taxi_offices.put_last (et)
 				point_randomizer.generate_point_array (5)
 				create te.make_random (et, point_randomizer.last_array)
 				et.add_taxi (te)
@@ -711,13 +712,13 @@ feature {NONE} -- Implementation
 			-- Add taxi.
 		local
 			td: TRAFFIC_DISPATCHER_TAXI
-			te: TRAFFIC_EVENT_TAXI
+			te: TRAFFIC_TAXI
 			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
-			et: TRAFFIC_EVENT_TAXI_OFFICE
+			et: TRAFFIC_TAXI_OFFICE
 		do
-			if not canvas.map.taxi_offices.is_empty then
-				dt ?= canvas.map.taxi_offices.last
-				et ?= canvas.map.taxi_offices.last
+			if not canvas.city.taxi_offices.is_empty then
+				dt ?= canvas.city.taxi_offices.last
+				et ?= canvas.city.taxi_offices.last
 				if et /= Void then
 					if et.taxis.count <= a_value then
 						from
@@ -759,41 +760,41 @@ feature {NONE} -- Implementation
 		end
 
 	remove_place is
-			-- Remove random map items.
+			-- Remove random city items.
 		local
-			p: TRAFFIC_PLACE
-			pt: ARRAY [TRAFFIC_PLACE]
+			p: TRAFFIC_STATION
+			pt: ARRAY [TRAFFIC_STATION]
 		do
-			pt := canvas.map.places.to_array
+			pt := canvas.city.stations.to_array
 			if pt.count > 0 then
 				p := pt.item ((random.item \\ pt.count) + 1)
 				if p.is_removable then
-					canvas.map.places.remove (p.name)
+					canvas.city.stations.remove (p.name)
 				end
 			end
 --			canvas.redraw
 		end
 
 	remove_line is
-			-- Add random map items
+			-- Add random city items
 		local
 			l: TRAFFIC_LINE
 			lt: ARRAY [TRAFFIC_LINE]
 		do
-			lt := canvas.map.lines.to_array
+			lt := canvas.city.lines.to_array
 			if lt.count > 0 then
 				l := lt.item ((random.item \\ lt.count) + 1)
-				canvas.map.lines.remove (l.name)
+				canvas.city.lines.remove (l.name)
 			end
 		end
 
 	remove_line_connection is
-			-- Add random map items
+			-- Add random city items
 		local
 			l: TRAFFIC_LINE
 			lt: ARRAY [TRAFFIC_LINE]
 		do
-			lt := canvas.map.lines.to_array
+			lt := canvas.city.lines.to_array
 			if lt.count > 0 then
 				l := lt.item ((random.item \\ lt.count) + 1)
 				l.remove_all_connections
@@ -811,17 +812,17 @@ feature {NONE} -- Implementation
 		end
 
 	remove_road is
-			-- Add random map items
+			-- Add random city items
 		local
 			r: TRAFFIC_ROAD
 			rt: ARRAY [TRAFFIC_ROAD]
 		do
-			rt := canvas.map.roads.to_array
+			rt := canvas.city.roads.to_array
 			random.forth
 			if rt.count > 0 then
 				r := rt.item ((random.item \\ rt.count) + 1)
 				if r.is_removable then
-					canvas.map.roads.remove (r.id)
+					canvas.city.roads.remove (r.id)
 				end
 			end
 		end
@@ -830,9 +831,9 @@ feature {NONE} -- Implementation
 			--
 		do
 			if a_check_box.is_selected then
-				canvas.disable_map_hidden
+				canvas.disable_city_hidden
 			else
-				canvas.enable_map_hidden
+				canvas.enable_city_hidden
 			end
 		end
 
@@ -860,17 +861,17 @@ feature {NONE} -- Implementation
 			--
 		do
 			if a_toggle.is_selected then
-				canvas.map.places.first.highlight
-				canvas.map.lines.first.highlight
-				canvas.map.line_sections.last.highlight
-				canvas.map.roads.first.highlight
-				canvas.map.buildings.first.spotlight
+				canvas.city.stations.first.highlight
+				canvas.city.lines.first.highlight
+				canvas.city.line_sections.last.highlight
+				canvas.city.roads.first.highlight
+				canvas.city.buildings.first.spotlight
 			else
-				canvas.map.places.first.unhighlight
-				canvas.map.lines.first.unhighlight
-				canvas.map.line_sections.last.unhighlight
-				canvas.map.roads.first.unhighlight
-				canvas.map.buildings.first.unspotlight
+				canvas.city.stations.first.unhighlight
+				canvas.city.lines.first.unhighlight
+				canvas.city.line_sections.last.unhighlight
+				canvas.city.roads.first.unhighlight
+				canvas.city.buildings.first.unspotlight
 			end
 		end
 
@@ -878,8 +879,8 @@ feature {NONE} -- Implementation
 	update_status_label is
 			--
 		do
-			if canvas.map /= Void and then canvas.map.time.is_time_running then
-				standard_status_label.set_text (canvas.map.time.out)
+			if canvas.city /= Void and then canvas.city.time.is_time_running then
+				standard_status_label.set_text (canvas.city.time.out)
 			end
 		end
 
@@ -903,8 +904,8 @@ feature {NONE} -- Implementation
 			canvas_center: REAL_COORDINATE
 		do
 			canvas_center := client_to_map_coordinates ((canvas.width/2).floor, (canvas.height/2).floor)
-			xdiff := canvas.map.center.x - canvas_center.x
-			ydiff := (-1)*canvas.map.center.y - canvas_center.y
+			xdiff := canvas.city.center.x - canvas_center.x
+			ydiff := (-1)*canvas.city.center.y - canvas_center.y
 			if xdiff /= 0 or ydiff /= 0 then
 				canvas.go_down (ydiff)
 				canvas.go_left (xdiff)
@@ -929,7 +930,7 @@ feature {NONE} -- Implementation
 	point_randomizer: TRAFFIC_POINT_RANDOMIZER
 			-- Generator for list of random points
 
-	path_randomizer: TRAFFIC_PATH_RANDOMIZER
+	path_randomizer: TRAFFIC_ROUTE_RANDOMIZER
 			-- Generator for random paths
 
 	random: RANDOM

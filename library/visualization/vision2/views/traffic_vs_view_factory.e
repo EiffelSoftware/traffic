@@ -64,7 +64,7 @@ feature -- Factory methods
 	new_bus_view (a_bus: TRAFFIC_BUS): TRAFFIC_MOVING_ICON_VIEW [TRAFFIC_BUS] is
 			-- New bus view for `a_bus'
 		do
-			create Result.make_with_filename (a_bus, "")
+			create Result.make_with_filename (a_bus, File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\bus.png", Windows_file_system)))
 			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (40, 30, 230))
 		end
 
