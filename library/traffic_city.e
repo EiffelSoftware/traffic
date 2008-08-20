@@ -32,6 +32,7 @@ feature {NONE} -- Initialization
 			a_name_not_empty: not a_name.is_empty
 		local
 			default_size: INTEGER
+			poly: ARRAY[REAL_COORDINATE]
 		do
 			default_size := 100
 			name := a_name
@@ -48,6 +49,7 @@ feature {NONE} -- Initialization
 			create buildings.make (Current)
 			create free_movings.make (Current)
 			create landmarks.make (default_size, Current)
+			create background_polygons.make
 		ensure
 			name_set: equal (name, a_name)
 			stations_not_void: stations /= Void
@@ -189,6 +191,9 @@ feature -- Access
 	scale_factor: DOUBLE
 			-- Scale factor to reach real world distances
 			-- Multiply with this to receive real-world distances
+
+	background_polygons: LINKED_LIST[TRAFFIC_POLYGON]
+			-- Polygons displaying the background of the city
 
 feature -- Access (city objects)
 

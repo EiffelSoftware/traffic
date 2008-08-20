@@ -1,7 +1,7 @@
 indexing
 	description: "Is used to wait"
-	date: "2008/08/18"
-	revision: "1.0"
+	date: "$2008/08/18$"
+	revision: "$1.0$"
 
 class
 	TIMER

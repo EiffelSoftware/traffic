@@ -43,17 +43,8 @@ feature -- Basic operations
 			else
 				x := attribute_integer ("x")
 				y := attribute_integer ("y")
-				if x >= 0 and y >= 0 then
-					create p.make(x, y)
-					parent.send_data (p)
-				else
-					if x < 0 then
-						s := "x = " + x.out
-					else
-						s := "y = " + y.out
-					end
-					set_error (Invalid_attribute_value, << s >>)
-				end
+				create p.make(x, y)
+				parent.send_data (p)
 			end
 		end
 

@@ -124,6 +124,8 @@ feature {NONE} -- Implementation
 			Result.put (create {TRAFFIC_SCHEDULER_LINE_NODE_PROCESSOR}.make, "sline")
 			Result.put (create {TRAFFIC_SCHEDULER_NODE_PROCESSOR}.make, "entry")
 
+			Result.put (create {TRAFFIC_POLYGON_NODE_PROCESSOR}.make, "polygon")
+
 		ensure
 			Result_exists: Result /= Void
 			Result_not_empty: not Result.is_empty
@@ -138,7 +140,7 @@ feature {NONE} -- Implementation
 		once
 			create Result.make (Default_registry_capacity)
 --			map
-			a := << "description", "places","roads", "lines" >>
+			a := << "description", "places","roads", "lines", "polygon" >>
 			a.compare_objects
 			Result.put (a, "map")
 --			places
@@ -206,6 +208,11 @@ feature {NONE} -- Implementation
 			a := << >>
 			a.compare_objects
 			Result.put (a, "building")
+
+--			polygon
+			a := << "color", "point" >>
+			a.compare_objects
+			Result.put (a, "polygon")
 
 
 		end

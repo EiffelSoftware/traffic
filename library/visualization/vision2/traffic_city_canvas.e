@@ -25,6 +25,13 @@ inherit
 			disable_city_hidden
 		end
 
+	KL_SHARED_FILE_SYSTEM
+		undefine
+			default_create,
+			is_equal,
+			copy
+		end
+
 create
 	make
 
@@ -43,6 +50,7 @@ feature -- Initialization
 			create internal_building_representations.make
 			create internal_moving_representations.make
 			create internal_route_representations.make
+			create background_polygons.make
 			default_create
 			create visible_area.make (
 				create {REAL_COORDINATE}.make(0.0,0.0),
@@ -65,12 +73,17 @@ feature -- Initialization
 
 			create e
 			e.application.add_idle_action (agent fast_redraw_now)
+
 		end
 
 feature -- Element change
 
 	set_city (a_city: TRAFFIC_CITY) is
 			-- Set city that is displayed to `a_city'.
+		local
+			p: DRAWABLE_POLYGON
+			c: EV_COLOR
+			ct: TRAFFIC_COLOR
 		do
 			create internal_station_representations.make
 			create internal_line_representations.make
@@ -78,6 +91,7 @@ feature -- Element change
 			create internal_building_representations.make
 			create internal_moving_representations.make
 			create internal_route_representations.make
+			add_background_polygons (a_city.background_polygons)
 			object_list.wipe_out
 			Precursor (a_city)
 			redraw
@@ -152,12 +166,20 @@ feature -- Basic operations
 			clear
 			if not is_city_hidden and city /= Void then
 				clear
+				from
+					background_polygons.start
+				until
+					background_polygons.after
+				loop
+					background_polygons.item.draw (Current)
+					background_polygons.forth
+				end
 				internal_road_representations.draw (Current)
 				internal_line_representations.draw (Current)
 				internal_station_representations.draw (Current)
 				internal_building_representations.draw (Current)
-				create background_image.make_with_size (width, height)
-				background_image.draw_pixmap (0, 0, Current)
+				create map_image.make_with_size (width, height)
+				map_image.draw_pixmap (0, 0, Current)
 				fast_redraw_now
 				has_pending_redraw := false
 				(create {EV_ENVIRONMENT}).application.remove_idle_action (redraw_agent)
@@ -169,8 +191,8 @@ feature -- Basic operations
 		do
 			clear
 			if not is_city_hidden then
-				if background_image /= Void then
-					draw_pixmap (0, 0, background_image)
+				if map_image /= Void then
+					draw_pixmap (0, 0, map_image)
 				end
 				internal_route_representations.draw (Current)
 				internal_moving_representations.draw (Current)
@@ -185,6 +207,7 @@ feature -- Basic operations
 			end
 		end
 
+
 feature {NONE} -- Implementation
 
 	internal_factory: TRAFFIC_VS_VIEW_FACTORY
@@ -194,6 +217,29 @@ feature {NONE} -- Implementation
 	internal_road_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_ROAD]
 	internal_station_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_STATION]
 	internal_building_representations: TRAFFIC_VS_VIEW_CONTAINER [TRAFFIC_BUILDING]
-	background_image: EV_PIXMAP
+	map_image: EV_PIXMAP
+	background_polygons: LINKED_LIST[DRAWABLE_POLYGON]
+
+	add_background_polygons(polygons: LINKED_LIST[TRAFFIC_POLYGON]) is
+		-- adds `polygons' to `background_polygons'  (converted to DRAWABLE_POLYGON)
+	local
+		c: EV_COLOR
+		ct: TRAFFIC_COLOR
+		p: DRAWABLE_POLYGON
+	do
+		from
+			polygons.start
+		until
+			polygons.after
+		loop
+			create p.make (polygons.item.points_with_y_inverted)
+			ct := polygons.item.color
+			create c.make_with_8_bit_rgb (ct.red, ct.green, ct.blue)
+			p.set_color (c)
+			background_polygons.extend(p)
+			polygons.forth
+		end
+
+	end
 
 end
