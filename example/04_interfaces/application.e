@@ -27,7 +27,7 @@ feature {NONE} -- Initialization
 			-- Prepare the first window to be displayed.
 		do
 			create first_window
-			first_window.set_example (create {QUERIES_COMMANDS})
+			first_window.set_example (create {QUERIES_AND_COMMANDS})
 			first_window.set_title ("Queries - Commands (chapter 4)")
 			first_window.show
 		end

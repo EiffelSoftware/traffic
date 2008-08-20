@@ -1,4 +1,4 @@
-class QUERIES_COMMANDS inherit
+class QUERIES_AND_COMMANDS inherit
 	TOURISM
 
 feature -- Commands and Queries
