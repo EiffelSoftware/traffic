@@ -107,8 +107,8 @@ feature -- Element change
 			set_blue (blue_value)
 		ensure
 			red_set: red = red_value
-			green_set: green = red_value
-			blue_set: blue = red_value
+			green_set: green = green_value
+			blue_set: blue = blue_value
 		end
 
 invariant
