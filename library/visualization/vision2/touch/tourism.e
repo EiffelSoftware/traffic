@@ -22,7 +22,6 @@ feature -- Access
 			l: TRAFFIC_SIMPLE_LINE -- (Added to ensure compilation of TRAFFIC_SIMPLE_LINE)
 		do
 			console := a_console
-			create Timer
 			main_window := a_main_window
 			explore_at_startup
 		end
@@ -44,21 +43,12 @@ feature -- Access
 	Console: TRAFFIC_CONSOLE
 			-- Console for output
 
-	Timer: TIMER
-			-- Timer for waiting
-
 feature -- Status report
 
 	is_zurich_loaded: BOOLEAN
 			-- Is Zurich loaded?
 
 feature -- Access (Paris)
-
-	Wait_time: INTEGER is 4
-			-- Time to wait in feature `wait'
-
-	Short_wait_time: INTEGER is 1
-			-- Intervall time for the blinking action
 
 	Paris: TRAFFIC_CITY is
 			-- Object representing the city of Paris
@@ -138,7 +128,7 @@ feature -- Basic operations
 			s.enable_filled
 			s.set_diameter (10)
 			main_window.canvas.object_list.put_last (s)
-			Timer.wait
+			wait
 			main_window.canvas.object_list.delete (s)
 		end
 
@@ -152,7 +142,7 @@ feature -- Basic operations
 			s.enable_filled
 			s.set_diameter (20)
 			main_window.canvas.object_list.put_last (s)
-			timer.wait
+			wait
 			main_window.canvas.object_list.delete (s)
 		end
 
@@ -167,13 +157,13 @@ feature -- Basic operations
 			s.set_diameter (10)
 
 			main_window.canvas.object_list.put_last (s)
-			timer.short_wait
+			short_wait
 			main_window.canvas.object_list.delete (s)
-			timer.short_wait
+			short_wait
 			main_window.canvas.object_list.put_last (s)
-			timer.short_wait
+			short_wait
 			main_window.canvas.object_list.delete (s)
-			timer.wait
+			wait
 		end
 
 	show_green_spot (a_location: TRAFFIC_COORDINATE) is
@@ -186,7 +176,7 @@ feature -- Basic operations
 			s.enable_filled
 			s.set_diameter (15)
 			main_window.canvas.object_list.put_last (s)
-			timer.wait
+			wait
 			main_window.canvas.object_list.delete (s)
 		end
 

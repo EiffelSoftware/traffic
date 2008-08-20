@@ -7,13 +7,13 @@ feature -- Explore Paris
 			-- Show city info and a route.
 		do
 			Paris.display
-			Timer.wait
+			wait
 			Louvre.spotlight
-			Timer.wait
+			wait
 			Line8.highlight
-			Timer.wait
+			wait
 			Route1.animate
-			Timer.wait
+			wait
 --			Console.show (Line8)
 			Console.show (Route1.origin)
 		end
