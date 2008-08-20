@@ -14,6 +14,7 @@ feature -- Commands and Queries
 			Line8.remove_all_connections
 			Line8.extend (Station_la_motte_picquet_grenelle)
 			Line8.extend (Station_invalides)
+			Line8.extend (Station_concorde)
 			Console.show (Line8.count)
 			Console.show (Line8.ne_end.name)
 		end
