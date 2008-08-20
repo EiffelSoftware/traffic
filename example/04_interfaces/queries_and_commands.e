@@ -12,9 +12,9 @@ feature -- Commands and Queries
 			Console.show (Line8. i_th (2))
 			wait
 			Line8.remove_all_connections
-			Line8.extend (Station_la_motte_picquet_grenelle)
-			Line8.extend (Station_invalides)
-			Line8.extend (Station_concorde)
+			Line8.extend (Station_La_Motte_Picquet_Grenelle)
+			Line8.extend (Station_Invalides)
+			Line8.extend (Station_Concorde)
 			Console.show (Line8.count)
 			Console.show (Line8.ne_end.name)
 		end
