@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-2-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-2-0 http://www.eiffel.com/developers/xml/configuration-1-2-0.xsd" name="ex_ev_2_preview" uuid="76421287-5CF2-4E9B-9FB4-3CE4145B84F1">
-	<target name="ex_ev_2_preview">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-2-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-2-0 http://www.eiffel.com/developers/xml/configuration-1-2-0.xsd" name="02_ojects" uuid="76421287-5CF2-4E9B-9FB4-3CE4145B84F1">
+	<target name="02_objects">
 		<root class="APPLICATION" feature="make_and_launch"/>
 		<option trace="false" profile="false" debug="false" warning="true">
 			<assertions precondition="false" postcondition="false" check="false" invariant="false" loop="false" supplier_precondition="false"/>
