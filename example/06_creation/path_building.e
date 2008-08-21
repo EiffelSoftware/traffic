@@ -10,7 +10,7 @@ class PATH_BUILDING inherit
 feature -- Path building
 
 	explore is
-			-- Build a new path.
+			-- Build an imaginary line and highlight it on the map.
 		do
 			Paris.display
 
