@@ -13,7 +13,7 @@ inherit
 
 feature -- Path building
 
-	explore_on_click is
+	explore is
 			-- Build a new path.
 
 		do
