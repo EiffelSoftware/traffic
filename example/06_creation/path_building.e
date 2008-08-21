@@ -15,10 +15,10 @@ feature -- Path building
 			Paris.display
 
 			wait
-			create fancy_line.make_with_terminal ("Fancy line", create {TRAFFIC_TYPE_TRAM}.make, Station_Chatillon_Montrouge)
+			create fancy_line.make_with_terminal ("Fancy line", create {TRAFFIC_TYPE_TRAM}.make, Station_Montrouge)
 			Paris.lines.force (fancy_line, fancy_line.name)
 
-			create stop1.set_station (Station_Chatillon_Montrouge, fancy_line)
+			create stop1.set_station (Station_Montrouge, fancy_line)
 			create stop2.set_station (Station_Issy, fancy_line)
 			create stop3.set_station (station_balard, fancy_line)
 

@@ -255,7 +255,7 @@ feature  -- Predefined objects (Stations)
 			Result_exists: Result /= Void
 		end
 
-	Station_Chatillon_Montrouge: TRAFFIC_STATION is
+	Station_Montrouge: TRAFFIC_STATION is
 			-- Place Montrouge
 		require
 			Paris_exists: is_paris_loaded
