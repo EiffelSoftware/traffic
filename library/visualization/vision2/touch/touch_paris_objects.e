@@ -345,7 +345,7 @@ feature  -- Predefined objects (Stations)
 			Result_exists: Result /= Void
 		end
 
-	Station_La_Motte_Picquet: TRAFFIC_STATION is
+	Station_La_Motte: TRAFFIC_STATION is
 			-- Place La Motte - Picquet - Grenelle
 		require
 			Paris_exists: is_paris_loaded
