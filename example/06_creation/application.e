@@ -27,7 +27,7 @@ feature {NONE} -- Initialization
 			-- Prepare the first window to be displayed.
 		do
 			create first_window
-			first_window.set_example (create {PATH_BUILDING})
+			first_window.set_example (create {LINE_BUILDING})
 			first_window.set_title ("Path building (chapter 6)")
 			first_window.show
 		end

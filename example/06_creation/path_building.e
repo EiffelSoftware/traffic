@@ -1,13 +1,13 @@
 indexing
-	description: "Path building class (Chapter 6, Touch of Class)"
+	description: "Line building class (Chapter 6, Touch of Class)"
 	date: "$Date$"
 	revision: "$Revision$"
 
-class PATH_BUILDING inherit
+class LINE_BUILDING inherit
 
 	TOURISM
 
-feature -- Path building
+feature -- Line building
 
 	explore is
 			-- Build an imaginary line and highlight it on the map.
