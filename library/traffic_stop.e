@@ -67,7 +67,7 @@ feature -- Access
 			Result := ([station.name, line.name]).hash_code
 		end
 
-	next: TRAFFIC_STOP
+	right: TRAFFIC_STOP
 			-- Next stop on same line
 
 feature -- Basic operations
@@ -81,7 +81,7 @@ feature -- Basic operations
 			changed_event.publish ([])
 			c ?= a_connection
 			if c /= Void then
-				next := c.end_node
+				right := c.end_node
 			end
 		end
 
@@ -102,9 +102,9 @@ feature -- Basic operations
 			pp.put_last (position.twin)
 			create l2.make (s, Current, line.type, pp)
 			line.put_last (l1, l2)
-			next := s
+			right := s
 		ensure
-			next_set: next = s
+			right_set: right = s
 		end
 
 
