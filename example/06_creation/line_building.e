@@ -14,7 +14,6 @@ feature -- Line building
 		do
 			Paris.display
 
-			wait
 			create fancy_line.make_with_terminal ("Fancy line", create {TRAFFIC_TYPE_TRAM}.make, Station_Montrouge)
 			Paris.lines.force (fancy_line, fancy_line.name)
 

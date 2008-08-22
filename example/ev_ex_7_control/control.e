@@ -17,7 +17,6 @@ feature -- Path building
 		do
 			Paris.display
 
-			wait
 			-- Path
 			create walking_1.make_walk (road_place_etoile)
 			create metro_1.make_tram (Line6_Etoile_to_Trocadero)

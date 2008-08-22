@@ -20,6 +20,7 @@ feature -- Access
 			a_console_exists: a_console /= Void
 		local
 			l: TRAFFIC_SIMPLE_LINE -- (Added to ensure compilation of TRAFFIC_SIMPLE_LINE)
+			s: TRAFFIC_SIMPLE_STOP  -- (Added to ensure compilation of TRAFFIC_SIMPLE_STOP)
 		do
 			console := a_console
 			main_window := a_main_window
