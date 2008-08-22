@@ -74,6 +74,7 @@ feature -- Initialization
 			create e
 			e.application.add_idle_action (agent fast_redraw_now)
 
+			zoom_out (zoom_maximum)
 		end
 
 feature -- Element change
