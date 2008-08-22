@@ -35,7 +35,7 @@ feature -- Path building
 			variant
 				Line8.count - Line8.index + 1
 			until
-				Line8.after
+				Line8.is_after
 			loop
 				if Line8.item.is_hub then
 					show_big_red_spot (Line8.item.position)

@@ -154,7 +154,7 @@ feature -- Access
 	item: TRAFFIC_STATION is
 			-- Item at internal cursor position of line
 		require
-			not_after: not after
+			not_after: not is_after
 		do
 			Result := i_th (index)
 		end
@@ -288,13 +288,13 @@ feature -- Cursor movement
 			index := 1
 		ensure
 			at_first: (not is_empty) implies (index = 1)
-			empty_convention: (is_empty) implies (after)
+			empty_convention: (is_empty) implies (is_after)
 		end
 
 	forth is
 			-- Move internal cursor to next position.
 		require
-			not_after: not after
+			not_after: not is_after
 		do
 			index := index + 1
 		ensure
@@ -321,7 +321,7 @@ feature -- Status report
 			Result := one_direction.is_empty
 		end
 
-	after: BOOLEAN is
+	is_after: BOOLEAN is
 			-- Is there no valid position to right of internal cursor?
 		do
 			Result := index > count
@@ -822,5 +822,5 @@ invariant
 	connections_not_void: one_direction /= Void and other_direction /= Void
 	type_exists: type /= Void -- Line has type.
 	counts_are_equal: one_direction.count = other_direction.count
-	after: after = (index = count + 1)
+	after: is_after = (index = count + 1)
 end
