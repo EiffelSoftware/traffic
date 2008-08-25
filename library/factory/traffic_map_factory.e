@@ -94,7 +94,7 @@ feature -- Traffic station building
 			unique_name: not a_city.stations.has (a_name)
 		do
 			create internal_station.make (a_name)
-			a_city.stations.force (internal_station, internal_station.name)
+			a_city.stations.put (internal_station, internal_station.name)
 		ensure
 			created: station /= Void
 			has_name: equal (station.name, a_name)
@@ -112,7 +112,7 @@ feature -- Traffic station building
 			unique_name: not a_city.stations.has (a_name)
 		do
 			create internal_station.make_with_position (a_name, a_x, a_y)
-			a_city.stations.force (internal_station, internal_station.name)
+			a_city.stations.put (internal_station, internal_station.name)
 		ensure
 			created: station /= Void
 			has_name: equal (station.name, a_name)
@@ -150,7 +150,7 @@ feature -- Traffic station building
 		do
 			create pos.make (x, y)
 			create internal_landmark.make (pos, a_name, a_filename)
-			a_city.landmarks.force (internal_landmark, internal_landmark.name)
+			a_city.landmarks.put (internal_landmark, internal_landmark.name)
 		ensure
 			created: landmark /= Void
 			has_name: equal (landmark.name, a_name)
@@ -300,7 +300,7 @@ feature -- Road section building
 			else
 				create internal_road.make_one_way (way1)
 			end
-			a_city.roads.force (internal_road, internal_road.id)
+			a_city.roads.put (internal_road, internal_road.id)
 		ensure
 			road_created: road /= Void
 		end
@@ -338,7 +338,7 @@ feature -- Traffic line building
 			build_traffic_type (a_type_name)
 			actual_traffic_type ?= internal_traffic_type
 			create internal_line.make (a_name, actual_traffic_type)
-			a_city.lines.force (internal_line, internal_line.name)
+			a_city.lines.put (internal_line, internal_line.name)
 		ensure
 			line_created: line /= Void
 			line_has_name: equal (line.name, a_name)

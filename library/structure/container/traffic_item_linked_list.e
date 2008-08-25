@@ -143,7 +143,7 @@ feature -- Insertion
 			same_order: (not other.is_empty) implies (item (i) = other.first)
 		end
 
-	put_last (v: like item_for_iteration) is
+	put, put_last (v: like item_for_iteration) is
 			-- Add `v' to end of list.
 			-- Do not move cursors.
 		require
@@ -190,7 +190,7 @@ feature -- Insertion
 			replaced: item (i) = v
 		end
 
-	put (v: G; i: INTEGER) is
+	put_i_th (v: G; i: INTEGER) is
 			-- Add `v' at `i'-th position.
 			-- Do not move cursors.
 		require

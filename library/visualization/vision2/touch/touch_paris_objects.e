@@ -40,6 +40,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
+			wait
 			Result ?= Paris.lines.item ("tram 1")
 		end
 
@@ -392,6 +393,7 @@ feature -- Predefined objects (Buildings)
 		require
 			Paris_exists: is_paris_loaded
 		once
+			wait
 			Result := Paris.landmarks.item ("landmark Musee du Louvre")
 		end
 
@@ -440,6 +442,7 @@ feature -- Predefined objects (Routes)
 		local
 			s, t: TRAFFIC_ROUTE_SECTION
 		once
+			wait
 			create Result
 			create s.make_tram (Line7a_louvre_to_chatelet)
 			Result.set_first (s)

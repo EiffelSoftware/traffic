@@ -125,7 +125,7 @@ feature -- Cursor movement
 
 feature -- Insertion
 
-	force (v: G; k: H)
+	put (v: G; k: H)
 			-- Associate `v' with key `k'.
 			-- Resize table if necessary.
 			-- Do not move cursors.
