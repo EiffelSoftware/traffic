@@ -14,12 +14,12 @@ feature -- Line building
 		do
 			Paris.display
 
-			create fancy_line.make_with_terminal ("Fancy line", create {TRAFFIC_TYPE_TRAM}.make, Station_Montrouge)
+			create fancy_line.make_metro("FANCY")
 			Paris.lines.force (fancy_line, fancy_line.name)
 
-			create stop1.set_station (Station_Montrouge, fancy_line)
-			create stop2.set_station (Station_Issy, fancy_line)
-			create stop3.set_station (station_balard, fancy_line)
+			create stop1.set_station_and_line (Station_Montrouge, fancy_line)
+			create stop2.set_station_and_line (Station_Issy, fancy_line)
+			create stop3.set_station_and_line (station_balard, fancy_line)
 
 			stop1.link (stop2)
 			stop2.link (stop3)

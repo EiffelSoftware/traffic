@@ -15,11 +15,11 @@ inherit
 		end
 
 create
-	set_station, make_with_position
+	set_station_and_line, make_with_position
 
 feature {NONE} -- Creation
 
-	set_station (s: TRAFFIC_STATION; l: TRAFFIC_LINE) is
+	set_station_and_line (s: TRAFFIC_STATION; l: TRAFFIC_LINE) is
 			-- Associate this stop with station `s' and line `l'.
 		require
 			station_exists: s /= Void

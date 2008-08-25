@@ -40,7 +40,7 @@ inherit
 			remove_from_city
 		end
 create
-	make, make_with_terminal
+	make, make_with_terminal, make_metro
 
 feature {NONE} -- Initialization
 
@@ -75,6 +75,32 @@ feature {NONE} -- Initialization
 			one_direction_exists: one_direction /= Void
 			other_direction_exists: other_direction /= Void
 		end
+
+	make_metro (a_name: STRING) is
+			-- Create a line with name `a_name' of type TRAFFIC_TYPE_TRAM.
+		require
+			a_name_exists: a_name /= Void
+			a_name_not_empty: not a_name.is_empty
+		do
+			name := a_name
+			type:= create {TRAFFIC_TYPE_TRAM}.make
+			create one_direction.make
+			create other_direction.make
+
+			create changed_event
+			create element_inserted_event
+			create element_removed_event
+			index := 1
+		ensure
+			name_set: equal (name, a_name)
+			has_type_set: type /=Void
+			count_line_section_not_void: connection_count >= 0 -- List is initilalized.
+			element_inserted_event_exists: element_inserted_event /= Void
+			element_removed_event_exists: element_removed_event /= Void
+			one_direction_exists: one_direction /= Void
+			other_direction_exists: other_direction /= Void
+		end
+
 
 	make_with_terminal (a_name: STRING; a_type: TRAFFIC_TYPE_LINE; a_station: TRAFFIC_STATION) is
 			-- Create a line with a name `a_name' of type `a_type' and a planned terminal `a_station'.
