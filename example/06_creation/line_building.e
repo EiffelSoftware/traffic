@@ -9,7 +9,7 @@ class LINE_BUILDING inherit
 
 feature -- Line building
 
-	explore is
+	build_a_line is
 			-- Build an imaginary line and highlight it on the map.
 		do
 			Paris.display

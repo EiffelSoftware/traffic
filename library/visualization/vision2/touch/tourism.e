@@ -34,11 +34,6 @@ feature  -- Example main feature
 		do
 		end
 
-	explore is
-			-- Executed when the button is clicked.
-		deferred
-		end
-
 feature -- Access
 
 	Console: TRAFFIC_CONSOLE

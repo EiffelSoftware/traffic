@@ -25,9 +25,12 @@ feature {NONE} -- Initialization
 
 	prepare is
 			-- Prepare the first window to be displayed.
+		local
+			q_and_c: QUERIES_AND_COMMANDS
 		do
 			create first_window
-			first_window.set_example (create {QUERIES_AND_COMMANDS})
+			create q_and_c
+			first_window.set_example (q_and_c, agent q_and_c.tryout)
 			first_window.set_title ("Queries - Commands (chapter 4)")
 			first_window.show
 		end

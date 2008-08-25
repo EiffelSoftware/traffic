@@ -25,9 +25,12 @@ feature {NONE} -- Initialization
 
 	prepare is
 			-- Prepare the first window to be displayed.
+		local
+			lb: LINE_BUILDING
 		do
 			create first_window
-			first_window.set_example (create {LINE_BUILDING})
+			create lb
+			first_window.set_example (lb, agent lb.build_a_line)
 			first_window.set_title ("Path building (chapter 6)")
 			first_window.show
 		end

@@ -3,7 +3,7 @@ class QUERIES_AND_COMMANDS inherit
 
 feature -- Commands and Queries
 
-	explore is
+	tryout is
 			-- Try out queries and commands on lines.
 		do
 			Paris.display

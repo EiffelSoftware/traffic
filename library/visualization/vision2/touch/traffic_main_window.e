@@ -46,11 +46,11 @@ feature {NONE} -- Initialization
 
 feature -- Basic operations
 
-	set_example (a_example: TOURISM) is
+	set_example (a_example: TOURISM; an_action: PROCEDURE [ANY, TUPLE]) is
 			-- Set `a_example' to be run when clicking on the `run_button'.
 		do
 			a_example.run (console, Current)
-			run_button.select_actions.extend (agent a_example.explore)
+			run_button.select_actions.extend (an_action)
 		end
 
 feature {NONE} -- GUI building

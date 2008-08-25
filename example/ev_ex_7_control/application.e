@@ -25,9 +25,12 @@ feature {NONE} -- Initialization
 
 	prepare is
 			-- Prepare the first window to be displayed.
+		local
+			cont: CONTROL
 		do
 			create first_window
-			first_window.set_example (create {CONTROL})
+			create cont
+			first_window.set_example (cont, agent cont.traverse)
 			first_window.set_title ("Control (chapter 7)")
 			first_window.show
 		end

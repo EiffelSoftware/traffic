@@ -12,7 +12,7 @@ inherit
 
 feature -- Path building
 
-	explore is
+	traverse is
 			-- Build a new path.
 		do
 			Paris.display

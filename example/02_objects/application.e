@@ -25,9 +25,12 @@ feature {NONE} -- Initialization
 
 	prepare is
 			-- Prepare the first window to be displayed.
+		local
+			prev: PREVIEW
 		do
 			create first_window
-			first_window.set_example (create {PREVIEW})
+			create prev
+			first_window.set_example (prev, agent prev.explore)
 			first_window.set_title ("Preview (chapter 2)")
 			first_window.show
 		end
