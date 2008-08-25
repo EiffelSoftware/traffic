@@ -38,11 +38,11 @@ feature -- Path building
 				Line8.is_after
 			loop
 				if Line8.item.is_hub then
-					show_big_red_spot (Line8.item.position)
+					show_big_red_spot (Line8.item.location)
 				elseif Line8.item.is_exchange then
-					show_green_spot (Line8.item.position)
+					show_green_spot (Line8.item.location)
 				else
-					show_spot (line8.item.position)
+					show_spot (line8.item.location)
 				end
 				Line8.forth
 			end
