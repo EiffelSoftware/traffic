@@ -32,7 +32,6 @@ feature {NONE} -- Initialization
 			a_name_not_empty: not a_name.is_empty
 		local
 			default_size: INTEGER
-			poly: ARRAY[REAL_COORDINATE]
 		do
 			default_size := 100
 			name := a_name
@@ -67,9 +66,9 @@ feature -- TODO
 
 feature -- Status report
 
-	station_at_position (a_point: TRAFFIC_POINT): TRAFFIC_STATION	is
+	station_at_location (a_point: TRAFFIC_POINT): TRAFFIC_STATION	is
 			-- Station that `a_point' is located on
-			-- Returns Void if there is no station at this position
+			-- Returns Void if there is no station at this location
 		require
 			a_point_exists: a_point /= Void
 		local
@@ -174,7 +173,7 @@ feature -- Insertion
 feature -- Access
 
 	center: TRAFFIC_POINT
-			-- Position of the city center
+			-- Location of the city center
 
 	radius: DOUBLE
 			-- Radius of the city
@@ -297,8 +296,8 @@ feature {TRAFFIC_MAP_LOADER}
 
 feature {NONE}-- Implementation
 
-	station_position (a_name: STRING): INTEGER is
-			-- Position of station `a_name' in stations
+	station_location (a_name: STRING): INTEGER is
+			-- Location of station `a_name' in stations
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_exmpa: not a_name.is_empty
@@ -331,8 +330,8 @@ feature {NONE}-- Implementation
 			Result_exists: Result /= Void
 		end
 
-	position_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): TRAFFIC_POINT is
-			-- Position of `a_node'
+	location_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): TRAFFIC_POINT is
+			-- Location of `a_node'
 		do
 
 			if a_connections.first.start_node = a_node then

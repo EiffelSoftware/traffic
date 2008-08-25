@@ -1,5 +1,5 @@
 indexing
-	description: "Coordinate objects for visualization independent traffic representations"
+	description: "Point (coordinate) objects for visualization independent traffic representations"
 	date: "$Date$"
 	revision: "$Revision$"
 

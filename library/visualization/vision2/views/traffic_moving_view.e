@@ -36,7 +36,7 @@ feature -- Initialization
 			-- Initialize view for `a_item'.
 		do
 			item := a_item
-			make_circle (create {REAL_COORDINATE}.make (a_item.position.x, -a_item.position.y))
+			make_circle (create {REAL_COORDINATE}.make (a_item.location.x, -a_item.location.y))
 			set_diameter (10)
 			set_internal_color (default_color)
 			enable_filled
@@ -77,7 +77,7 @@ feature {NONE} -- Implementation
 	draw_object is
 			-- Draw the circle.
 		do
-			set_center (create {REAL_COORDINATE}.make (item.position.x, -item.position.y))
+			set_center (create {REAL_COORDINATE}.make (item.location.x, -item.location.y))
 			Precursor
 		end
 

@@ -178,16 +178,16 @@ feature -- Basic operations
 					seconds_passed := (time.actual_time.hour * 3600 + time.actual_time.minute * 60 + time.actual_time.second - last_update)
 					travel_distance := (schedule_speed * seconds_passed)
 
-					if ((position.x - destination.x).abs < travel_distance) and ((position.y - destination.y).abs < travel_distance) then
+					if ((location.x - destination.x).abs < travel_distance) and ((location.y - destination.y).abs < travel_distance) then
 						origin := poly_cursor.item
-						position := poly_cursor.item
+						location := poly_cursor.item
 						poly_cursor.forth
 						if not poly_cursor.after then
 							destination := poly_cursor.item
 							update_angle
 						end
 					else
-						position := position + (direction / direction.length) * travel_distance
+						location := location + (direction / direction.length) * travel_distance
 					end
 				end
 
@@ -202,7 +202,7 @@ feature{NONE} --Implementation
 			-- Set the positions to the corresponding ones of the line section.
 		do
 			origin :=  poly_cursor.item
-			position := poly_cursor.item
+			location := poly_cursor.item
 
 			-- Do not distinguish between traveling_back and traveling_forward
 			poly_cursor.forth

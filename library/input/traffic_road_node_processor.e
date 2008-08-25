@@ -71,7 +71,7 @@ feature -- Basic operations
 						road.other_way.set_polypoints (p)
 					end
 					-- adjust the positions of the start and end station of this link
-					adjust_position (road.one_way, polypoints)
+					adjust_location (road.one_way, polypoints)
 				end
 			end
 		end
@@ -81,7 +81,7 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			position: TRAFFIC_POINT
+			location: TRAFFIC_POINT
 		do
 			create polypoints.make (0)
 			from
@@ -89,7 +89,7 @@ feature -- Basic operations
 			until
 				has_error or subnodes.after
 			loop
-				position := Void
+				location := Void
 				n := subnodes.item
 				if has_processor (n.name) then
 					p := processor (n.name)
@@ -105,9 +105,9 @@ feature -- Basic operations
 					if not p.has_error then
 						p.process
 						-- Has a point been generated?
-						position ?= data
-						if position /= Void then
-							polypoints.force_last (position)
+						location ?= data
+						if location /= Void then
+							polypoints.force_last (location)
 						end
 					else
 						set_error (p.error_code, p.slots)
@@ -128,22 +128,22 @@ feature {NONE} -- Implementation
 			Result := create {TRAFFIC_POINT}.make (0, 0)
 		end
 
-	adjust_position (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [TRAFFIC_POINT]) is
+	adjust_location (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [TRAFFIC_POINT]) is
 			-- Adjust positions
 		do
 			if road.origin.location = Void or equal(road.origin.location, zero_vector) then
-				road.origin.set_position
+				road.origin.set_location
 					(create {TRAFFIC_POINT}.make (a_polypoints.first.x, a_polypoints.first.y))
 			else
-				road.origin.set_position
+				road.origin.set_location
 					(create {TRAFFIC_POINT}.make (	(road.origin.location.x + a_polypoints.first.x)/ 2.0,
 												(road.origin.location.y + a_polypoints.first.y)/ 2.0))
 			end
 			if road.destination.location = Void or equal(road.destination.location, zero_vector) then
-				road.destination.set_position
+				road.destination.set_location
 					(create {TRAFFIC_POINT}.make (a_polypoints.last.x, a_polypoints.last.y))
 			else
-				road.destination.set_position
+				road.destination.set_location
 					(create {TRAFFIC_POINT}.make (	(road.destination.location.x + a_polypoints.last.x)/ 2.0,
 												(road.destination.location.y + a_polypoints.last.y)/ 2.0))
 			end

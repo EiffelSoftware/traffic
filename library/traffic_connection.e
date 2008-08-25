@@ -120,7 +120,7 @@ feature -- Access
 		end
 
 	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
-			-- Position representation of the connection.
+			-- Location representation of the connection.
 
 	length: DOUBLE is
 			-- Length from start of polypoints to end.

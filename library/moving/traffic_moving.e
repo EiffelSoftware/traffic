@@ -17,14 +17,14 @@ inherit
 
 feature -- Access
 
-	position: TRAFFIC_POINT
-			-- Current position
+	location: TRAFFIC_POINT
+			-- Current location
 
 	origin: TRAFFIC_POINT
-			-- Origin position
+			-- Origin location
 
 	destination: TRAFFIC_POINT
-			-- Destination position
+			-- Destination location
 
 	speed: DOUBLE
 			-- Speed in m/s
@@ -88,11 +88,11 @@ feature {NONE} -- Implementation
 				current_move_time.make_by_fine_seconds (time.actual_time.fine_seconds)
 				if not current_move_time.is_equal (last_move_time) then
 					diff := (time.duration (last_move_time, current_move_time).fine_seconds_count)*speed/time.default_scale_factor
-					if ((position.x - destination.x).abs < diff) and ((position.y - destination.y).abs < diff) or direction.length <= 0 then
+					if ((location.x - destination.x).abs < diff) and ((location.y - destination.y).abs < diff) or direction.length <= 0 then
 						update_coordinates
 						update_angle
 					else
-						position := position + (direction / direction.length) * diff
+						location := location + (direction / direction.length) * diff
 					end
 
 
@@ -105,13 +105,13 @@ feature {NONE} -- Implementation
 		end
 
 	update_coordinates is
-			-- Set the positions to the corresponding ones of the line section.
+			-- Set the locations to the corresponding ones of the line section.
 		require
 			poly_cursor_valid: not poly_cursor.after and not poly_cursor.before
 			not_finished: not has_finished
 		do
 			origin :=  poly_cursor.item
-			position := poly_cursor.item
+			location := poly_cursor.item
 			if is_traveling_back then
 				poly_cursor.back
 				if poly_cursor.before then
@@ -140,7 +140,7 @@ feature {NONE} -- Implementation
 			end
 		ensure
 			origin /= Void
-			position /= Void
+			location /= Void
 			destination /= Void
 		end
 
@@ -194,7 +194,7 @@ feature {NONE} -- Implementation
 invariant
 	origin_exists: origin /= Void
 	destination_exists: destination /= Void
-	position_exists: position /= Void
+	location_exists: location /= Void
 	speed_valid: speed >= 0
 	poly_cursor_exists: poly_cursor /= Void
 	poly_cursor.container.count >= 2

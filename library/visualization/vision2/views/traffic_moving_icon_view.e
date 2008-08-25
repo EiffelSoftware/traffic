@@ -36,8 +36,8 @@ feature -- Initialization
 			make_container
 			create pix
 			pix.set_with_named_file (a_filename)
-			create icon.make (pix, create {REAL_COORDINATE}.make (item.position.x, item.position.y))
-			icon.set_position (create {REAL_COORDINATE}.make (item.position.x - icon.bounding_box.width/2, -item.position.y-icon.bounding_box.height/2))
+			create icon.make (pix, create {REAL_COORDINATE}.make (item.location.x, item.location.y))
+			icon.set_position (create {REAL_COORDINATE}.make (item.location.x - icon.bounding_box.width/2, -item.location.y-icon.bounding_box.height/2))
 			create rectangle.make  (create {REAL_COORDINATE}.make (icon.bounding_box.point_a.x -5 -5, icon.bounding_box.point_a.y-5),
 							create {REAL_COORDINATE}.make (icon.bounding_box.point_b.x +5, icon.bounding_box.point_b.x +5))
 			rectangle.set_edge_color (default_color)
@@ -66,7 +66,7 @@ feature -- Basic operations
 			else
 				unhighlight
 			end
-			icon.set_position (create {REAL_COORDINATE}.make (item.position.x - icon.bounding_box.width/2, -item.position.y-icon.bounding_box.height/2))
+			icon.set_position (create {REAL_COORDINATE}.make (item.location.x - icon.bounding_box.width/2, -item.location.y-icon.bounding_box.height/2))
 			rectangle.set_points (    create {REAL_COORDINATE}.make (icon.bounding_box.point_a.x -5 -5, icon.bounding_box.point_a.y-5),
 							create {REAL_COORDINATE}.make (icon.bounding_box.point_b.x +5, icon.bounding_box.point_b.x +5))
 		end
@@ -130,7 +130,7 @@ feature -- Basic operations
 	draw (a_target: CANVAS) is
 			--
 		do
-			icon.set_position (create {REAL_COORDINATE}.make (item.position.x - icon.bounding_box.width/2, -item.position.y-icon.bounding_box.height/2))
+			icon.set_position (create {REAL_COORDINATE}.make (item.location.x - icon.bounding_box.width/2, -item.location.y-icon.bounding_box.height/2))
 			rectangle.set_points (    create {REAL_COORDINATE}.make (icon.bounding_box.point_a.x -5 -5, icon.bounding_box.point_a.y-5),
 							create {REAL_COORDINATE}.make (icon.bounding_box.point_b.x +5, icon.bounding_box.point_b.x +5))
 			Precursor (a_target)

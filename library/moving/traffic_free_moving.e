@@ -24,7 +24,7 @@ feature -- Initialization
 		do
 			create poly_cursor.make (a_list)
 			poly_cursor.start
-			position := poly_cursor.item
+			location := poly_cursor.item
 			update_coordinates
 			update_angle
 			speed := a_speed

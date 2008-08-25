@@ -26,7 +26,7 @@ feature -- Initialization
 			conns: DS_LINKED_LIST [TRAFFIC_CONNECTION]
 		do
 			route := a_route
-			position := a_route.origin.location
+			location := a_route.origin.location
 			conns := a_route.connections
 			create list.make (conns.count + 1)
 			from

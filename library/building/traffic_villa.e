@@ -19,7 +19,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make_default (a_center: TRAFFIC_COORDINATE) is
+	make_default (a_center: TRAFFIC_POINT) is
 			-- Initialize with default size.
 		require
 			center_valid: a_center /= Void
@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			center_set: center = a_center
 		end
 
-	make_new (a_width, a_depth, a_height: DOUBLE; a_center: TRAFFIC_COORDINATE) is
+	make_new (a_width, a_depth, a_height: DOUBLE; a_center: TRAFFIC_POINT) is
 			-- Initialize with size.
 		do
 			Precursor (a_width, a_depth, a_height, a_center)

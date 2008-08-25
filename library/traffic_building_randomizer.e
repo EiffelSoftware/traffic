@@ -27,9 +27,9 @@ feature -- Element change
 			random.start
 			city := a_city
 			create templates.make (1, 3)
-			templates.force (create {TRAFFIC_VILLA}.make_default (create {TRAFFIC_COORDINATE}.make (0, 0)), 1)
-			templates.force (create {TRAFFIC_APARTMENT_BUILDING}.make_default (create {TRAFFIC_COORDINATE}.make (0, 0)), 2)
-			templates.force (create {TRAFFIC_SKYSCRAPER}.make_default (create {TRAFFIC_COORDINATE}.make (0, 0)), 3)
+			templates.force (create {TRAFFIC_VILLA}.make_default (create {TRAFFIC_POINT}.make (0, 0)), 1)
+			templates.force (create {TRAFFIC_APARTMENT_BUILDING}.make_default (create {TRAFFIC_POINT}.make (0, 0)), 2)
+			templates.force (create {TRAFFIC_SKYSCRAPER}.make_default (create {TRAFFIC_POINT}.make (0, 0)), 3)
 			create grid.make ((city.radius/templates.item (1).width).ceiling*8, city.center, city.radius)
 			mark_occupied
 		ensure
@@ -49,7 +49,7 @@ feature -- Basic operations
 			nr_buildings_placed, j: INTEGER
 			w, b: DOUBLE
 			point_randomizer: TRAFFIC_POINT_RANDOMIZER
-			center: TRAFFIC_COORDINATE
+			center: TRAFFIC_POINT
 			building: TRAFFIC_BUILDING
 		do
 			create last_buildings.make (a_number)
@@ -59,7 +59,7 @@ feature -- Basic operations
 			b := templates.item (a_template).depth --buildings_representation.breadth_of_template (a_template)
 			create point_randomizer.make (city.center, a_radius)
 
-			-- iterate to get different random values of positions on city
+			-- iterate to get different random values of locations on city
 			from
 				j := 1
 			until
@@ -116,8 +116,8 @@ feature {NONE} -- Implementation
 	mark_occupied is
 			-- Mark all cells of the grid that are already occupied by a city item.
 		local
-			poly_points: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
-			poly_point: TRAFFIC_COORDINATE
+			poly_points: DS_ARRAYED_LIST [TRAFFIC_POINT]
+			poly_point: TRAFFIC_POINT
 			i,j:INTEGER
 			s: TRAFFIC_ITEM_HASH_TABLE[TRAFFIC_STATION,STRING_8]
 		do
@@ -149,7 +149,7 @@ feature {NONE} -- Implementation
 				s.after
 			loop
 				if s.item_for_iteration.width > 0 and s.item_for_iteration.breadth > 0 then
-					grid.mark_rectangle (s.item_for_iteration.position, s.item_for_iteration.width, s.item_for_iteration.breadth, True)
+					grid.mark_rectangle (s.item_for_iteration.location, s.item_for_iteration.width, s.item_for_iteration.breadth, True)
 				end
 				s.forth
 			end

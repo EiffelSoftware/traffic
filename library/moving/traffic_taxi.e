@@ -102,7 +102,7 @@ feature -- Basic operations
 					-- Taxi has fullfilled a request.
 					-- Add new random directions.
 					-- Set new destination
-					origin := position
+					origin := location
 					destination := polypoints.first
 					has_finished := false
 					set_reiterate (true)
@@ -147,7 +147,7 @@ feature{NONE} --Implementation
 			polypoints := new_polypoints
 			polypoints.start
 			-- Set the new origin and destination.
-			origin := position
+			origin := location
 			destination := from_location
 			set_reiterate (false)
 		end

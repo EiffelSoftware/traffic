@@ -44,19 +44,19 @@ feature -- Status report
 			-- where all small errors are catched
 		local
 			total_distance: DOUBLE
-			last_position: TRAFFIC_POINT
+			last_location: TRAFFIC_POINT
 			seconds: INTEGER
 		do
 			-- Get the total distance we have by adding the distances of all polypoints
 			from
 				line_section.polypoints.start
-				last_position := line_section.polypoints.first
+				last_location := line_section.polypoints.first
 				total_distance := 0
 			until
 				line_section.polypoints.after
 			loop
-				total_distance := total_distance + last_position.distance (line_section.polypoints.item_for_iteration).abs
-				last_position := line_section.polypoints.item_for_iteration
+				total_distance := total_distance + last_location.distance (line_section.polypoints.item_for_iteration).abs
+				last_location := line_section.polypoints.item_for_iteration
 
 				line_section.polypoints.forth
 			end

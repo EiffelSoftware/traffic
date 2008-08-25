@@ -540,8 +540,8 @@ feature {NONE} -- Implementation
 			x := random.item \\ (2*canvas.city.radius.floor)
 			random.forth
 			y := random.item \\ (2*canvas.city.radius.floor)
-			p.set_position (create {TRAFFIC_COORDINATE}.make (canvas.city.center.x + x - canvas.city.radius, canvas.city.center.y + y - canvas.city.radius))
-			canvas.city.stations.force (p, p.name)
+			p.set_position (create {TRAFFIC_POINT}.make (canvas.city.center.x + x - canvas.city.radius, canvas.city.center.y + y - canvas.city.radius))
+			canvas.city.stations.put (p, p.name)
 --			canvas.redraw
 		end
 
@@ -554,7 +554,7 @@ feature {NONE} -- Implementation
 			p1, p2: TRAFFIC_STATION
 			s1, s2: TRAFFIC_STOP
 			p: ARRAY [TRAFFIC_STATION]
-			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			pp: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
 			random.forth
 			r := random.item \\ 256
@@ -571,23 +571,23 @@ feature {NONE} -- Implementation
 			if p1.has_stop (l) then
 				s1 := p1.stop (l)
 			else
-				create s1.make_with_position (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
+				create s1.make_with_position (p1, l, create {TRAFFIC_POINT}.make_from_other (p1.location))
 			end
 			if p2.has_stop (l) then
 				s2 := p2.stop (l)
 			else
-				create s2.make_with_position (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
+				create s2.make_with_position (p2, l, create {TRAFFIC_POINT}.make_from_other (p2.location))
 			end
 			create pp.make (2)
-			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
-			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+			pp.force_last (create {TRAFFIC_POINT}.make_from_other (s1.location))
+			pp.force_last (create {TRAFFIC_POINT}.make_from_other (s2.location))
 			create lc1.make (s1, s2, l.type, pp)
 			create pp.make (2)
-			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
-			pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+			pp.force_last (create {TRAFFIC_POINT}.make_from_other (s2.location))
+			pp.force_last (create {TRAFFIC_POINT}.make_from_other (s1.location))
 			create lc2.make (s2, s1, l.type, pp)
 			l.put_last (lc1, lc2)
-			canvas.city.lines.force (l, l.name)
+			canvas.city.lines.put (l, l.name)
 		end
 
 	add_line_connection is
@@ -599,7 +599,7 @@ feature {NONE} -- Implementation
 			s1, s2: TRAFFIC_STOP
 			pt: ARRAY [TRAFFIC_STATION]
 			lt: ARRAY [TRAFFIC_LINE]
-			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			pp: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
 			lt := canvas.city.lines.to_array
 			if lt.count > 0 then
@@ -609,7 +609,7 @@ feature {NONE} -- Implementation
 					if l.terminal_2.has_stop (l) then
 						s1 := l.terminal_2.stop (l)
 					else
-						create s1.make_with_position (l.terminal_2, l, create {TRAFFIC_COORDINATE}.make_from_other (l.terminal_2.position))
+						create s1.make_with_position (l.terminal_2, l, create {TRAFFIC_POINT}.make_from_other (l.terminal_2.location))
 					end
 				else
 					random.forth
@@ -617,7 +617,7 @@ feature {NONE} -- Implementation
 					if p1 /= Void and then p1.has_stop (l) then
 						s1 := p1.stop (l)
 					else
-						create s1.make_with_position (p1, l, create {TRAFFIC_COORDINATE}.make_from_other (p1.position))
+						create s1.make_with_position (p1, l, create {TRAFFIC_POINT}.make_from_other (p1.location))
 					end
 				end
 				random.forth
@@ -625,15 +625,15 @@ feature {NONE} -- Implementation
 				if p2.has_stop (l) then
 					s2 := p2.stop (l)
 				else
-					create s2.make_with_position (p2, l, create {TRAFFIC_COORDINATE}.make_from_other (p2.position))
+					create s2.make_with_position (p2, l, create {TRAFFIC_POINT}.make_from_other (p2.location))
 				end
 				create pp.make (2)
-				pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
-				pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
+				pp.force_last (create {TRAFFIC_POINT}.make_from_other (s1.location))
+				pp.force_last (create {TRAFFIC_POINT}.make_from_other (s2.location))
 				create lc1.make (s1, s2, l.type, pp)
 				create pp.make (2)
-				pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s2.position))
-				pp.force_last (create {TRAFFIC_COORDINATE}.make_from_other (s1.position))
+				pp.force_last (create {TRAFFIC_POINT}.make_from_other (s2.location))
+				pp.force_last (create {TRAFFIC_POINT}.make_from_other (s1.location))
 				create lc2.make (s2, s1, l.type, pp)
 				l.put_last (lc1, lc2)
 			end
@@ -656,7 +656,7 @@ feature {NONE} -- Implementation
 			create rc1.make (n1, n2, create {TRAFFIC_TYPE_STREET}.make, canvas.city.graph.id_manager.next_free_index)
 			create rc2.make (n2, n1, create {TRAFFIC_TYPE_STREET}.make, canvas.city.graph.id_manager.next_free_index)
 			create r.make (rc1, rc2)
-			canvas.city.roads.force (r, r.id)
+			canvas.city.roads.put (r, r.id)
 --			canvas.redraw
 		end
 

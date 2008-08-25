@@ -31,17 +31,17 @@ create
 
 feature {NONE} -- Initialization
 
-	make_with_station (s: TRAFFIC_STATION; a_position: TRAFFIC_POINT) is
+	make_with_station (s: TRAFFIC_STATION; a_location: TRAFFIC_POINT) is
 			-- Initialize `Current'.
 		require
 			not_void: s /= Void
-			position_not_void: a_position /= Void
+			location_not_void: a_location /= Void
 		do
 			create connection_list.make
 
 			item := Current
 			station := s
-			location := a_position
+			location := a_location
 			create connection_list.make
 --			reset
 --			if station.dummy_node /= Void then
@@ -53,7 +53,7 @@ feature {NONE} -- Initialization
 			distance_positive: distance >= 0
 			fresh: not processed
 			station_set: station = s
-			position_set: location = a_position
+			location_set: location = a_location
 			no_neighbors: connection_list.is_empty
 		end
 
@@ -63,7 +63,7 @@ feature -- Access
 			-- Station that it belongs to
 
 	location: TRAFFIC_POINT
-			-- Position of the node
+			-- Location of the node
 
 	connection_list: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
 			-- List of all connections that this node is an startpoint of
@@ -76,15 +76,15 @@ feature -- Access
 
 feature -- Element change
 
-	set_position (a_position: TRAFFIC_POINT) is
-			-- Set position to `a_position'.
+	set_location (a_location: TRAFFIC_POINT) is
+			-- Set location to `a_location'.
 		require
-			position_exists: a_position /= Void
+			location_exists: a_location /= Void
 		do
-			location := a_position
+			location := a_location
 			changed_event.publish ([])
 		ensure
-			position_set: location = a_position
+			position_set: location = a_location
 		end
 
 feature -- Status report
@@ -156,7 +156,7 @@ feature {NONE} -- Implementation
 invariant
 
 	station_not_void: station /= Void
-	position_not_void: location /= Void
+	location_not_void: location /= Void
 	item_is_self: item = Current
 	connection_list_exists: connection_list /= Void
 

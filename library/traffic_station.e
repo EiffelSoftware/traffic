@@ -20,7 +20,7 @@ inherit
 		end
 
 create
-	make, make_with_position
+	make, make_with_location
 
 feature {NONE} -- Initialize
 
@@ -39,11 +39,11 @@ feature {NONE} -- Initialize
 			add_node (dummy_node)
 		ensure
 			name_set: equal (a_name, name)
-			position_exists: location /= Void
+			location_exists: location /= Void
 		end
 
-	make_with_position (a_name: STRING; a_x, a_y: INTEGER) is
-			-- Initialize `Current' with name `a_name' and position `a_x', `a_y'.
+	make_with_location (a_name: STRING; a_x, a_y: INTEGER) is
+			-- Initialize `Current' with name `a_name' and location `a_x', `a_y'.
 		require
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
@@ -57,8 +57,8 @@ feature {NONE} -- Initialize
 			add_node (dummy_node)
 		ensure
 			name_set: equal (a_name, name)
-			position_exists: location /= Void
-			position_set: location.x = a_x and location.y = a_y
+			location_exists: location /= Void
+			location_set: location.x = a_x and location.y = a_y
 		end
 
 feature -- Access
@@ -286,15 +286,15 @@ feature -- Element change
 			information_set: information = a_information
 		end
 
-	set_position (a_position: TRAFFIC_POINT) is
-			-- Set position to `a_position'.
+	set_location (a_location: TRAFFIC_POINT) is
+			-- Set location to `a_location'.
 		require
-			a_position_exists: a_position /= Void
+			a_location_exists: a_location /= Void
 		do
-			dummy_node.set_position (a_position)
+			dummy_node.set_location (a_location)
 			changed_event.publish ([])
 		ensure
-			position_set: location = a_position
+			location_set: location = a_location
 		end
 
 feature -- Basic operations
@@ -324,7 +324,7 @@ feature {TRAFFIC_NODE} -- Insertion
 		do
 			stops.extend (a_stop)
 			nodes.extend (a_stop)
-			update_position
+			update_location
 			if is_in_city then
 				a_stop.add_to_city (city)
 			end
@@ -380,7 +380,7 @@ feature -- Output
 			else
 				information_string := ""
 			end
-			Result := "Traffic station " + name + " at position " + location.out + information_string
+			Result := "Traffic station " + name + " at location " + location.out + information_string
 		end
 
 feature -- Constants
@@ -396,8 +396,8 @@ feature {NONE} -- Implementation
 			Result := a_stop.line.name.is_equal (a_line.name)
 		end
 
-	update_position is
-			-- Update the position, breadth, and width of the station using the stop's line-sections positions.
+	update_location is
+			-- Update the location, breadth, and width of the station using the stop's line-sections locations.
 			-- This strange hack with the line_sections is needed because of Touch of class.
 		local
 			p: TRAFFIC_POINT
@@ -405,20 +405,20 @@ feature {NONE} -- Implementation
 			if stops.count = 1 then
 				width := 0
 				breadth := 0
-				set_position (stops.first.location)
+				set_location (stops.first.location)
 			else
 				if stops.last.location.x > location.x + width/2 then
-					set_position (create {TRAFFIC_POINT}.make ((stops.last.location.x + location.x - width/2)/2, location.y))
+					set_location (create {TRAFFIC_POINT}.make ((stops.last.location.x + location.x - width/2)/2, location.y))
 					width := (stops.last.location.x - location.x)*2
 				elseif stops.last.location.x < location.x - width/2 then
-					set_position (create {TRAFFIC_POINT}.make ((stops.last.location.x + location.x + width/2)/2, location.y))
+					set_location (create {TRAFFIC_POINT}.make ((stops.last.location.x + location.x + width/2)/2, location.y))
 					width := (location.x - stops.last.location.x)*2
 				end
 				if stops.last.location.y > location.y + breadth/2 then
-					set_position (create {TRAFFIC_POINT}.make (location.x, (stops.last.location.y + location.y - breadth/2)/2))
+					set_location (create {TRAFFIC_POINT}.make (location.x, (stops.last.location.y + location.y - breadth/2)/2))
 					breadth := (stops.last.location.y - location.y)*2
 				elseif stops.last.location.y < location.y - breadth/2 then
-					set_position (create {TRAFFIC_POINT}.make (location.x, (stops.last.location.y + location.y + breadth/2)/2))
+					set_location (create {TRAFFIC_POINT}.make (location.x, (stops.last.location.y + location.y + breadth/2)/2))
 					breadth := (location.y - stops.last.location.y)*2
 				end
 			end
@@ -426,7 +426,7 @@ feature {NONE} -- Implementation
 
 invariant
 	name_valid: name /= Void and then not name.is_empty
-	position_not_void: location /= Void
+	location_not_void: location /= Void
 	stops_not_void: stops /= Void
 	nodes_not_void: stops /= Void
 	dummy_node_not_void: dummy_node /= Void

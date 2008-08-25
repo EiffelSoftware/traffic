@@ -15,7 +15,7 @@ inherit
 		end
 
 create
-	set_station_and_line, make_with_position
+	set_station_and_line, make_with_location
 
 feature {NONE} -- Creation
 
@@ -32,14 +32,14 @@ feature {NONE} -- Creation
 			station_set: station = s
 		end
 
-	make_with_position (a_station: TRAFFIC_STATION; a_line: TRAFFIC_LINE; a_position: TRAFFIC_POINT) is
+	make_with_location (a_station: TRAFFIC_STATION; a_line: TRAFFIC_LINE; a_location: TRAFFIC_POINT) is
 			-- Initialize `Current'.
 		require
 			station_not_void: a_station /= Void
 			line_not_void: a_line /= Void
-			position_not_void: a_position /= Void
+			location_not_void: a_location /= Void
 		do
-			make_with_station (a_station, a_position)
+			make_with_station (a_station, a_location)
 			line := a_line
 			station.add_stop (Current)
 		ensure
