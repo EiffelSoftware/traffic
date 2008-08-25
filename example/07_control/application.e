@@ -26,7 +26,7 @@ feature {NONE} -- Initialization
 	prepare is
 			-- Prepare the first window to be displayed.
 		local
-			cont: CONTROL
+			cont: ROUTES
 		do
 			create first_window
 			create cont
