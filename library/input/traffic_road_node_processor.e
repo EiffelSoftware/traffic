@@ -34,7 +34,7 @@ feature -- Basic operations
 			-- Process node.
 		local
 			road: TRAFFIC_ROAD
-			p: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			p: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
 			if not has_attribute ("id") then
 				set_error (Mandatory_attribute_missing, <<"id">>)
@@ -65,7 +65,7 @@ feature -- Basic operations
 						until
 							polypoints.off
 						loop
-							p.put_first (create{ TRAFFIC_COORDINATE}.make_from_other (polypoints.item_for_iteration))
+							p.put_first (create{ TRAFFIC_POINT}.make_from_other (polypoints.item_for_iteration))
 							polypoints.forth
 						end
 						road.other_way.set_polypoints (p)
@@ -81,7 +81,7 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			position: TRAFFIC_COORDINATE
+			position: TRAFFIC_POINT
 		do
 			create polypoints.make (0)
 			from
@@ -119,33 +119,33 @@ feature -- Basic operations
 
 feature {NONE} -- Implementation
 
-	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
 			-- Polypoints of this link
 
 
-	zero_vector: TRAFFIC_COORDINATE is
+	zero_vector: TRAFFIC_POINT is
 		once
-			Result := create {TRAFFIC_COORDINATE}.make (0, 0)
+			Result := create {TRAFFIC_POINT}.make (0, 0)
 		end
 
-	adjust_position (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [TRAFFIC_COORDINATE]) is
+	adjust_position (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [TRAFFIC_POINT]) is
 			-- Adjust positions
 		do
-			if road.origin.position = Void or equal(road.origin.position, zero_vector) then
+			if road.origin.location = Void or equal(road.origin.location, zero_vector) then
 				road.origin.set_position
-					(create {TRAFFIC_COORDINATE}.make (a_polypoints.first.x, a_polypoints.first.y))
+					(create {TRAFFIC_POINT}.make (a_polypoints.first.x, a_polypoints.first.y))
 			else
 				road.origin.set_position
-					(create {TRAFFIC_COORDINATE}.make (	(road.origin.position.x + a_polypoints.first.x)/ 2.0,
-												(road.origin.position.y + a_polypoints.first.y)/ 2.0))
+					(create {TRAFFIC_POINT}.make (	(road.origin.location.x + a_polypoints.first.x)/ 2.0,
+												(road.origin.location.y + a_polypoints.first.y)/ 2.0))
 			end
-			if road.destination.position = Void or equal(road.destination.position, zero_vector) then
+			if road.destination.location = Void or equal(road.destination.location, zero_vector) then
 				road.destination.set_position
-					(create {TRAFFIC_COORDINATE}.make (a_polypoints.last.x, a_polypoints.last.y))
+					(create {TRAFFIC_POINT}.make (a_polypoints.last.x, a_polypoints.last.y))
 			else
 				road.destination.set_position
-					(create {TRAFFIC_COORDINATE}.make (	(road.destination.position.x + a_polypoints.last.x)/ 2.0,
-												(road.destination.position.y + a_polypoints.last.y)/ 2.0))
+					(create {TRAFFIC_POINT}.make (	(road.destination.location.x + a_polypoints.last.x)/ 2.0,
+												(road.destination.location.y + a_polypoints.last.y)/ 2.0))
 			end
 		end
 end

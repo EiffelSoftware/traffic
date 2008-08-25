@@ -67,7 +67,7 @@ feature -- Access
 			-- Line color
 			-- Used as color represenation
 
-	road_points: DS_ARRAYED_LIST[TRAFFIC_COORDINATE] is
+	road_points: DS_ARRAYED_LIST[TRAFFIC_POINT] is
 			-- Polypoints from the roads belonging to this line
 		do
 		end
@@ -197,7 +197,7 @@ feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
 	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
 
-	angle(st,dest: TRAFFIC_COORDINATE):DOUBLE is
+	angle(st,dest: TRAFFIC_POINT):DOUBLE is
 			-- Set the angles to the x- and y-axis respectively.
 		do
 		end

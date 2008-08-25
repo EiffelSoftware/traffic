@@ -23,7 +23,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make_random (a_taxi_office: TRAFFIC_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]) is
+	make_random (a_taxi_office: TRAFFIC_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [TRAFFIC_POINT]) is
 			-- Create a taxi with an associated 'a_taxi_office'.
 			-- Random speed and stops at 'stops' random positions.
 			-- Set seed of random_number to 'a_seed'.
@@ -75,7 +75,7 @@ feature -- Status report
 
 feature -- Basic operations
 
-	take (from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
+	take (from_location: TRAFFIC_POINT; to_location: TRAFFIC_POINT) is
 			-- Take a request. Pick somebody up at from_location and bring him or her to to_location.
 			-- If busy inform the taxi office to recall it.
 		do
@@ -116,15 +116,15 @@ feature -- Basic operations
 
 feature{NONE} --Implementation
 
-	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
 
-	set_request_information (from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
+	set_request_information (from_location: TRAFFIC_POINT; to_location: TRAFFIC_POINT) is
 			-- Set new origin and destination, new points to drive from from_location to to_location.
 		require
 			valid_from_location: from_location /= void
 			valid_to_locaton: to_location /= void
 		local
-			new_polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			new_polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
 			-- New polypoint to travel through.
 			create new_polypoints.make(0)

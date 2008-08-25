@@ -42,11 +42,11 @@ feature -- Initialization
 		do
 			make_container
 			item := a_item
-			create rectangle.make (create {REAL_COORDINATE}.make ((a_item.position.x-(a_item.width/2).max(5)), (-a_item.position.y-(a_item.breadth/2).max(5))),
-									create {REAL_COORDINATE}.make ((a_item.position.x+(a_item.width/2).max(5)), (-a_item.position.y+(a_item.breadth/2).max(5))))
+			create rectangle.make (create {REAL_COORDINATE}.make ((a_item.location.x-(a_item.width/2).max(5)), (-a_item.location.y-(a_item.breadth/2).max(5))),
+									create {REAL_COORDINATE}.make ((a_item.location.x+(a_item.width/2).max(5)), (-a_item.location.y+(a_item.breadth/2).max(5))))
 			rectangle.set_color (default_color)
 			rectangle.set_edge_color (default_color)
-			create text.make (item.name, create {REAL_COORDINATE}.make (a_item.position.x+a_item.width + 5, -a_item.position.y+a_item.breadth+ 5))
+			create text.make (item.name, create {REAL_COORDINATE}.make (a_item.location.x+a_item.width + 5, -a_item.location.y+a_item.breadth+ 5))
 			put_last (rectangle)
 			put_last (text)
 			is_shown := True
@@ -110,8 +110,8 @@ feature -- Basic operations
 					rectangle.set_edge_color (default_color)
 				end
 			end
-			rectangle.set_points (    create {REAL_COORDINATE}.make ((item.position.x-(item.width/2).max(5)), (-item.position.y-(item.breadth/2).max(5))),
-							create {REAL_COORDINATE}.make ((item.position.x+(item.width/2).max(5)), (-item.position.y+(item.breadth/2).max(5))))
+			rectangle.set_points (    create {REAL_COORDINATE}.make ((item.location.x-(item.width/2).max(5)), (-item.location.y-(item.breadth/2).max(5))),
+							create {REAL_COORDINATE}.make ((item.location.x+(item.width/2).max(5)), (-item.location.y+(item.breadth/2).max(5))))
 		end
 
 	highlight is

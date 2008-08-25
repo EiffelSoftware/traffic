@@ -33,8 +33,8 @@ feature {NONE} -- Creation
 			type := a_type
 			is_directed:=true
 			create polypoints.make (0)
-			polypoints.force_last (a_origin.station.position)
-			polypoints.force_last (a_destination.station.position)
+			polypoints.force_last (a_origin.station.location)
+			polypoints.force_last (a_destination.station.location)
 			id := an_id
 		ensure
 			origin_set: start_node = a_origin

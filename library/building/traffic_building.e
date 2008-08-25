@@ -25,7 +25,7 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make_new (a_width, a_depth, a_height: DOUBLE; a_center: TRAFFIC_COORDINATE) is
+	make_new (a_width, a_depth, a_height: DOUBLE; a_center: TRAFFIC_POINT) is
 			-- Initialize `Current' with size and `a_center'.
 		require
 			size_valid: a_width > 0.0 and a_height > 0.0 and a_depth > 0.0
@@ -70,7 +70,7 @@ feature -- Status report
 
 feature -- Access
 
-	center: TRAFFIC_COORDINATE
+	center: TRAFFIC_POINT
 			-- Center of the building
 
 	angle: DOUBLE
@@ -88,7 +88,7 @@ feature -- Access
 	description: STRING
 			-- Description
 
-	corner_1: TRAFFIC_COORDINATE is
+	corner_1: TRAFFIC_POINT is
 			-- Lower left corner of the building
 		do
 			create Result.make (center.x - width/2, center.y - depth/2)
@@ -97,7 +97,7 @@ feature -- Access
 			Result_exists: Result /= Void
 		end
 
-	corner_2: TRAFFIC_COORDINATE is
+	corner_2: TRAFFIC_POINT is
 			-- Lower right corner of the building
 		do
 			create Result.make (center.x + width/2, center.y - depth/2)
@@ -106,7 +106,7 @@ feature -- Access
 			Result_exists: Result /= Void
 		end
 
-	corner_3: TRAFFIC_COORDINATE is
+	corner_3: TRAFFIC_POINT is
 			-- Upper right corner of the building
 		do
 			create Result.make (center.x + width/2, center.y + depth/2)
@@ -115,7 +115,7 @@ feature -- Access
 			Result_exists: Result /= Void
 		end
 
-	corner_4: TRAFFIC_COORDINATE is
+	corner_4: TRAFFIC_POINT is
 			-- Upper left corner of the building
 		do
 			create Result.make (center.x - width/2, center.y + depth/2)
@@ -187,7 +187,7 @@ feature -- Element change
 			angle_set: angle = an_angle
 		end
 
-	 set_center (a_center: TRAFFIC_COORDINATE) is
+	 set_center (a_center: TRAFFIC_POINT) is
 	 		-- Set `center' to `a_center'.
 	 	require
 	 		a_center_valid: a_center /= Void

@@ -74,7 +74,7 @@ feature -- Intialization
 						new_entry.set_start_time(act_time.twin)
 
 						-- Add time for traveling
-						distance := lc.item_for_iteration.origin.position.distance (lc.item_for_iteration.destination.position).abs
+						distance := lc.item_for_iteration.origin.location.distance (lc.item_for_iteration.destination.location).abs
 						act_time.minute_add (((distance.rounded) // 80).max(1))
 
 						-- Set end time in schedule entry

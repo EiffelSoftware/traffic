@@ -114,7 +114,7 @@ feature -- Access (Paris)
 
 feature -- Basic operations
 
-	show_spot (a_location: TRAFFIC_COORDINATE) is
+	show_spot (a_location: TRAFFIC_POINT) is
 			-- Show a yellow small spot at `a_location' for `Wait_time' seconds.
 		local
 			s: DRAWABLE_SPOT
@@ -128,7 +128,7 @@ feature -- Basic operations
 			main_window.canvas.object_list.delete (s)
 		end
 
-	show_big_red_spot (a_location: TRAFFIC_COORDINATE) is
+	show_big_red_spot (a_location: TRAFFIC_POINT) is
 			--  Show a red big spot at `a_location' for `Wait_time' seconds.
 		local
 			s: DRAWABLE_SPOT
@@ -142,7 +142,7 @@ feature -- Basic operations
 			main_window.canvas.object_list.delete (s)
 		end
 
-	show_blinking_spot (a_location: TRAFFIC_COORDINATE) is
+	show_blinking_spot (a_location: TRAFFIC_POINT) is
 			--  Show blinking spot
 		local
 			s: DRAWABLE_SPOT
@@ -162,7 +162,7 @@ feature -- Basic operations
 			wait
 		end
 
-	show_green_spot (a_location: TRAFFIC_COORDINATE) is
+	show_green_spot (a_location: TRAFFIC_POINT) is
 			-- Show a green medium spot at `a_location' for `Wait_time' seconds.
 		local
 			s: DRAWABLE_SPOT

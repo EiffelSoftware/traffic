@@ -22,11 +22,11 @@ feature -- Initialization
 		require
 			a_route_not_void: a_route /= Void
 		local
-			list: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			list: DS_ARRAYED_LIST [TRAFFIC_POINT]
 			conns: DS_LINKED_LIST [TRAFFIC_CONNECTION]
 		do
 			route := a_route
-			position := a_route.origin.position
+			position := a_route.origin.location
 			conns := a_route.connections
 			create list.make (conns.count + 1)
 			from

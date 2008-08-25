@@ -42,8 +42,8 @@ feature -- Basic operations
 			height: DOUBLE
 			angle: DOUBLE
 			building_name: STRING
-			p1,p2,p3,p4: TRAFFIC_COORDINATE
-			center: TRAFFIC_COORDINATE
+			p1,p2,p3,p4: TRAFFIC_POINT
+			center: TRAFFIC_POINT
 		do
 			-- Check whether aributes exist and have proper type
 			if not has_attribute ("name") then

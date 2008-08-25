@@ -146,7 +146,7 @@ feature -- Traffic station building
 			city_exists: has_city
 			unique_name: not a_city.landmarks.has (a_name)
 		local
-			pos: TRAFFIC_COORDINATE
+			pos: TRAFFIC_POINT
 		do
 			create pos.make (x, y)
 			create internal_landmark.make (pos, a_name, a_filename)
@@ -175,7 +175,7 @@ feature -- Traffic station building
 
 feature -- Line section building
 
-	build_line_section (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]; a_city: TRAFFIC_CITY; a_line: TRAFFIC_LINE) is
+	build_line_section (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]; a_city: TRAFFIC_CITY; a_line: TRAFFIC_LINE) is
 			-- Generate new traffic line section object going from origin `a_origin' to `a_destination'
 			-- belonging to line `a_line' in map `a_city'.
 			-- (Access the generated object through feature `line_section')
@@ -185,17 +185,17 @@ feature -- Line section building
 			a_destination_exists: a_city.stations.has (a_destination)
 			a_line_exists: a_line /= Void
 		local
-			pps: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			pps: DS_ARRAYED_LIST [TRAFFIC_POINT]
 			origin_s: TRAFFIC_STATION
 			destination_s: TRAFFIC_STATION
 			origin_stop: TRAFFIC_STOP
 			destination_stop: TRAFFIC_STOP
-			stop_pos: TRAFFIC_COORDINATE
+			stop_pos: TRAFFIC_POINT
 		do
 			if a_polypoints = Void or else a_polypoints.count < 2 then
 				create pps.make (2)
-				pps.force_last (a_city.stations.item (a_origin).position)
-				pps.force_last (a_city.stations.item (a_destination).position)
+				pps.force_last (a_city.stations.item (a_origin).location)
+				pps.force_last (a_city.stations.item (a_destination).location)
 			else
 				pps := a_polypoints
 			end
@@ -220,8 +220,8 @@ feature -- Line section building
 
 			if a_polypoints = Void or else a_polypoints.count < 2 then
 				create pps.make (2)
-				pps.force_last (a_city.stations.item (a_destination).position)
-				pps.force_last (a_city.stations.item (a_origin).position)
+				pps.force_last (a_city.stations.item (a_destination).location)
+				pps.force_last (a_city.stations.item (a_origin).location)
 			else
 				pps := a_polypoints
 			end

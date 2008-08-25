@@ -15,7 +15,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_center: TRAFFIC_COORDINATE; a_name: STRING; a_filename: STRING) is
+	make (a_center: TRAFFIC_POINT; a_name: STRING; a_filename: STRING) is
 			-- Initialize with default size.
 		require
 			center_valid: a_center /= Void

@@ -25,14 +25,14 @@ feature {NONE} -- Creation
 			station_exists: s /= Void
 			line_exists: l /= Void
 		do
-			make_with_station (s, s.position.twin)
+			make_with_station (s, s.location.twin)
 			line := l
 			station.add_stop (Current)
 		ensure
 			station_set: station = s
 		end
 
-	make_with_position (a_station: TRAFFIC_STATION; a_line: TRAFFIC_LINE; a_position: TRAFFIC_COORDINATE) is
+	make_with_position (a_station: TRAFFIC_STATION; a_line: TRAFFIC_LINE; a_position: TRAFFIC_POINT) is
 			-- Initialize `Current'.
 		require
 			station_not_void: a_station /= Void
@@ -91,15 +91,15 @@ feature -- Basic operations
 			s_exists: s /= Void
 		local
 			l1, l2: TRAFFIC_LINE_CONNECTION
-			pp: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			pp: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
 			create pp.make (2)
-			pp.put_last (position.twin)
-			pp.put_last (s.position.twin)
+			pp.put_last (location.twin)
+			pp.put_last (s.location.twin)
 			create l1.make (Current, s, line.type, pp)
 			create pp.make (2)
-			pp.put_last (s.position.twin)
-			pp.put_last (position.twin)
+			pp.put_last (s.location.twin)
+			pp.put_last (location.twin)
 			create l2.make (s, Current, line.type, pp)
 			line.put_last (l1, l2)
 			right := s

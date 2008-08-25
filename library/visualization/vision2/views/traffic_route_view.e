@@ -298,8 +298,8 @@ feature {NONE} -- Implementation
 	new_station_view (a_item: TRAFFIC_STATION): DRAWABLE_ROUNDED_RECTANGLE is
 			-- Generate view for `a_item'.
 		do
-			create Result.make (create {REAL_COORDINATE}.make ((a_item.position.x-(a_item.width/2).max(5)), (-a_item.position.y-(a_item.breadth/2).max(5))),
-								create {REAL_COORDINATE}.make ((a_item.position.x+(a_item.width/2).max(5)), (-a_item.position.y+(a_item.breadth/2).max(5))))
+			create Result.make (create {REAL_COORDINATE}.make ((a_item.location.x-(a_item.width/2).max(5)), (-a_item.location.y-(a_item.breadth/2).max(5))),
+								create {REAL_COORDINATE}.make ((a_item.location.x+(a_item.width/2).max(5)), (-a_item.location.y+(a_item.breadth/2).max(5))))
 
 		ensure
 			Result_exists: Result /= Void

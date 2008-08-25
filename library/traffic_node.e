@@ -31,7 +31,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make_with_station (s: TRAFFIC_STATION; a_position: TRAFFIC_COORDINATE) is
+	make_with_station (s: TRAFFIC_STATION; a_position: TRAFFIC_POINT) is
 			-- Initialize `Current'.
 		require
 			not_void: s /= Void
@@ -41,7 +41,7 @@ feature {NONE} -- Initialization
 
 			item := Current
 			station := s
-			position := a_position
+			location := a_position
 			create connection_list.make
 --			reset
 --			if station.dummy_node /= Void then
@@ -53,7 +53,7 @@ feature {NONE} -- Initialization
 			distance_positive: distance >= 0
 			fresh: not processed
 			station_set: station = s
-			position_set: position = a_position
+			position_set: location = a_position
 			no_neighbors: connection_list.is_empty
 		end
 
@@ -62,7 +62,7 @@ feature -- Access
 	station: TRAFFIC_STATION
 			-- Station that it belongs to
 
-	position: TRAFFIC_COORDINATE
+	location: TRAFFIC_POINT
 			-- Position of the node
 
 	connection_list: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
@@ -71,20 +71,20 @@ feature -- Access
 	hash_code: INTEGER is
 			-- Hash code value
 		do
-			Result := ([station, position]).hash_code
+			Result := ([station, location]).hash_code
 		end
 
 feature -- Element change
 
-	set_position (a_position: TRAFFIC_COORDINATE) is
+	set_position (a_position: TRAFFIC_POINT) is
 			-- Set position to `a_position'.
 		require
 			position_exists: a_position /= Void
 		do
-			position := a_position
+			location := a_position
 			changed_event.publish ([])
 		ensure
-			position_set: position = a_position
+			position_set: location = a_position
 		end
 
 feature -- Status report
@@ -107,7 +107,7 @@ feature {TRAFFIC_STATION} -- Basic operations
 			-- Add `Current' and all nodes to `a_city'.
 		local
 			e: TRAFFIC_EXCHANGE_CONNECTION
-			p: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			p: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
 			a_city.graph.put_node (Current)
 			is_in_city := True
@@ -116,14 +116,14 @@ feature {TRAFFIC_STATION} -- Basic operations
 			if Current /= station.dummy_node then
 				create e.make (Current, station.dummy_node, create {TRAFFIC_TYPE_STREET}.make, a_city.graph.id_manager.next_free_index)
 				create p.make (2)
-				p.put_first (position)
-				p.put_last (station.dummy_node.position)
+				p.put_first (location)
+				p.put_last (station.dummy_node.location)
 				e.set_polypoints (p)
 				e.add_to_city (a_city)
 				create e.make (station.dummy_node, Current, create {TRAFFIC_TYPE_STREET}.make, a_city.graph.id_manager.next_free_index)
 				create p.make (2)
-				p.put_first (station.dummy_node.position)
-				p.put_last (position)
+				p.put_first (station.dummy_node.location)
+				p.put_last (location)
 				e.set_polypoints (p)
 				e.add_to_city (a_city)
 			end
@@ -156,7 +156,7 @@ feature {NONE} -- Implementation
 invariant
 
 	station_not_void: station /= Void
-	position_not_void: position /= Void
+	position_not_void: location /= Void
 	item_is_self: item = Current
 	connection_list_exists: connection_list /= Void
 

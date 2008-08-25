@@ -67,7 +67,7 @@ feature -- TODO
 
 feature -- Status report
 
-	station_at_position (a_point: TRAFFIC_COORDINATE): TRAFFIC_STATION	is
+	station_at_position (a_point: TRAFFIC_POINT): TRAFFIC_STATION	is
 			-- Station that `a_point' is located on
 			-- Returns Void if there is no station at this position
 		require
@@ -81,8 +81,8 @@ feature -- Status report
 			until
 				stations.after or Result /= Void
 			loop
-				if a_point.x > stations.item_for_iteration.position.x - stations.item_for_iteration.width/2 - tolerance and a_point.x < stations.item_for_iteration.position.x + stations.item_for_iteration.width/2 + tolerance and
-					a_point.y > stations.item_for_iteration.position.y - stations.item_for_iteration.breadth/2 - tolerance and a_point.y < stations.item_for_iteration.position.y + stations.item_for_iteration.breadth/2 + tolerance then
+				if a_point.x > stations.item_for_iteration.location.x - stations.item_for_iteration.width/2 - tolerance and a_point.x < stations.item_for_iteration.location.x + stations.item_for_iteration.width/2 + tolerance and
+					a_point.y > stations.item_for_iteration.location.y - stations.item_for_iteration.breadth/2 - tolerance and a_point.y < stations.item_for_iteration.location.y + stations.item_for_iteration.breadth/2 + tolerance then
 					Result := stations.item_for_iteration
 				end
 				stations.forth
@@ -91,7 +91,7 @@ feature -- Status report
 
 feature -- Element change
 
-	set_center (a_center: TRAFFIC_COORDINATE) is
+	set_center (a_center: TRAFFIC_POINT) is
 			-- Set city center to `a_center'.
 		require
 			a_center_exists: a_center /= Void
@@ -173,7 +173,7 @@ feature -- Insertion
 
 feature -- Access
 
-	center: TRAFFIC_COORDINATE
+	center: TRAFFIC_POINT
 			-- Position of the city center
 
 	radius: DOUBLE
@@ -331,7 +331,7 @@ feature {NONE}-- Implementation
 			Result_exists: Result /= Void
 		end
 
-	position_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): TRAFFIC_COORDINATE is
+	position_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): TRAFFIC_POINT is
 			-- Position of `a_node'
 		do
 

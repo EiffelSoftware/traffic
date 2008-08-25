@@ -61,7 +61,7 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			a_position: TRAFFIC_COORDINATE
+			a_position: TRAFFIC_POINT
 			position: REAL_COORDINATE
 			a_color: TRAFFIC_COLOR
 			i: INTEGER

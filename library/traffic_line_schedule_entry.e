@@ -44,7 +44,7 @@ feature -- Status report
 			-- where all small errors are catched
 		local
 			total_distance: DOUBLE
-			last_position: TRAFFIC_COORDINATE
+			last_position: TRAFFIC_POINT
 			seconds: INTEGER
 		do
 			-- Get the total distance we have by adding the distances of all polypoints

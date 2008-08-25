@@ -79,7 +79,7 @@ feature -- Element change
 			state_set: state = a_state
 		end
 
-	set_polypoints (a_polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]) is
+	set_polypoints (a_polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]) is
 			-- Set polypoints to `a_polypoints'.
 		require
 			a_polypoints_exist: a_polypoints /= Void
@@ -119,7 +119,7 @@ feature -- Access
 			Result := end_node.station
 		end
 
-	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
 			-- Position representation of the connection.
 
 	length: DOUBLE is
@@ -129,7 +129,7 @@ feature -- Access
 			i: INTEGER
 		do
 			if polypoints = Void or polypoints.count < 1 then
-				Result := origin.position.distance (destination.position)
+				Result := origin.location.distance (destination.location)
 			else
 				Result := 0.0
 				from

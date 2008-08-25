@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_COORDINATE
+	TRAFFIC_POINT
 
 inherit
 

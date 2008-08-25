@@ -53,7 +53,7 @@ feature -- Basic operations
 					set_error (wrong_attribute_type, << "radius" >>)
 				end
 				if not has_error then
-					city.set_center (create {TRAFFIC_COORDINATE}.make (attribute_double ("center_x"), attribute_double ("center_y")))
+					city.set_center (create {TRAFFIC_POINT}.make (attribute_double ("center_x"), attribute_double ("center_y")))
 					city.set_radius (attribute_double ("radius"))
 				end
 

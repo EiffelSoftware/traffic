@@ -33,7 +33,7 @@ feature -- Basic operations
 			-- Process node.
 		local
 			line: TRAFFIC_LINE
-			polypoints_other_direction: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+			polypoints_other_direction: DS_ARRAYED_LIST [TRAFFIC_POINT]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_CONNECTION
 		do
 			if not has_error then
@@ -94,7 +94,7 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			position: TRAFFIC_COORDINATE
+			position: TRAFFIC_POINT
 			road: TRAFFIC_ROAD_CONNECTION
 		do
 			create polypoints.make (0)
@@ -139,7 +139,7 @@ feature -- Basic operations
 
 feature {NONE} -- Implementation
 
-	polypoints: DS_ARRAYED_LIST [TRAFFIC_COORDINATE]
+	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
 			-- Polypoints of this link
 
 	roads: ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]

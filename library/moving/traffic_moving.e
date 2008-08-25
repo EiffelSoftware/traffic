@@ -17,14 +17,14 @@ inherit
 
 feature -- Access
 
-	position: TRAFFIC_COORDINATE
+	position: TRAFFIC_POINT
 			-- Current position
 
-	origin: TRAFFIC_COORDINATE
+	origin: TRAFFIC_POINT
 			-- Origin position
 
-	destination: TRAFFIC_COORDINATE
-			-- Destination position 
+	destination: TRAFFIC_POINT
+			-- Destination position
 
 	speed: DOUBLE
 			-- Speed in m/s
@@ -79,7 +79,7 @@ feature {NONE} -- Implementation
 	move is
 			-- Move from origin to destination.
 		local
-			direction: TRAFFIC_COORDINATE
+			direction: TRAFFIC_POINT
 			diff: DOUBLE
 		do
 			direction := destination - origin
@@ -182,7 +182,7 @@ feature {NONE} -- Implementation
 
 feature {NONE} -- Implementation
 
-	poly_cursor: DS_ARRAYED_LIST_CURSOR [TRAFFIC_COORDINATE]
+	poly_cursor: DS_ARRAYED_LIST_CURSOR [TRAFFIC_POINT]
 			-- Cursor that guides the moving object
 
 	last_move_time: TIME

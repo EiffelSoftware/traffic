@@ -93,7 +93,7 @@ feature -- Basic operations
 		end
 
 
-	call (from_location:TRAFFIC_COORDINATE; to_location:TRAFFIC_COORDINATE) is
+	call (from_location:TRAFFIC_POINT; to_location:TRAFFIC_POINT) is
 			-- Determine nearest taxi to from_location station, pass request on to this taxi.
 		require
 			from_location_not_void: from_location /= void
@@ -102,7 +102,7 @@ feature -- Basic operations
 			nearest_taxi: TRAFFIC_TAXI
 			minimum_distance: REAL
 			temp_distance: REAL
-			position: TRAFFIC_COORDINATE
+			position: TRAFFIC_POINT
 		do
 			if available_taxis.count > 0 then
 				nearest_taxi := available_taxis.first
@@ -198,7 +198,7 @@ feature {TRAFFIC_TAXI} -- Basic operations for taxis
 				end
 		end
 
-	recall(from_location: TRAFFIC_COORDINATE; to_location: TRAFFIC_COORDINATE) is
+	recall(from_location: TRAFFIC_POINT; to_location: TRAFFIC_POINT) is
 			-- Recall the request again because a taxi rejected to take it.
 		require
 			from_location_not_void: from_location /= void
