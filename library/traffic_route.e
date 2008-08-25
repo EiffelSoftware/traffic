@@ -12,15 +12,16 @@ inherit
 		rename
 			is_highlighted as is_illuminated,
 			highlight as illuminate,
-			unhighlight as unilluminate
+			unhighlight as unilluminate,
+			default_create as make_empty
 		redefine
 			out,
-			default_create
+			make_empty
 		end
 
 feature -- Initialization
 
-	default_create is
+	make_empty is
 			-- Initialize `scale_factor'.
 		do
 			scale_factor := 1
