@@ -22,7 +22,7 @@ inherit
 			set_highlight_color
 		end
 
-	DRAWABLE_OBJECT_CONTAINER [TRAFFIC_LINE_CONNECTION_VIEW]
+	DRAWABLE_OBJECT_CONTAINER [TRAFFIC_LINE_SEGMENT_VIEW]
 		rename
 			color as internal_color,
 			set_color as set_internal_color,
@@ -40,7 +40,7 @@ feature -- Initialization
 	make (a_item: like item) is
 			-- Initialize view for `a_item'.
 		local
-			c: TRAFFIC_LINE_CONNECTION_VIEW
+			c: TRAFFIC_LINE_SEGMENT_VIEW
 			lc: TRAFFIC_LINE_CURSOR
 		do
 			make_container
@@ -219,7 +219,7 @@ feature {NONE} -- Implementation
 	add_connection_view (a_item: TRAFFIC_LINE_SEGMENT) is
 			-- Add new view for inserted item.
 		local
-			c: TRAFFIC_LINE_CONNECTION_VIEW
+			c: TRAFFIC_LINE_SEGMENT_VIEW
 		do
 			create c.make (a_item)
 			put_last (c)
