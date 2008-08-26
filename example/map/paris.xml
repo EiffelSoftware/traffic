@@ -65,6 +65,8 @@
 	<place name="St Michel - Notre Dame"/>
 	<place name="Hotel de Ville"/>
 	<place name="Pere Lachaise"/>
+	<place name="Tour Eiffel"/>
+	<place name="Champs Elysee - Etoile"/>
 	<landmark name="landmark Tour Eiffel" x="270" y="792" filename="..\map\paris\eiffel.png">
 	  <description text="The tower was built by Gustave Eiffel in 1899 for the world exposition, being at that time the tallest construction in the world. It dominates the 'Champs de Mars', a garden that has been used frequently for popular gatherings. At the top of the tower there are the Hertzian Television emitter for Paris and a revolving spotlight that can be seen everywhere in the city."/>
 	</landmark>
@@ -636,7 +638,15 @@
 	</road>
 	
 	<!-- streets -->
+	<road id="91" from="Tour Eiffel" to="Champs de Mars, Tour Eiffel, Bir-Hakeim" direction="undirected" type="street">
+		<point x="270" y="792"/>
+		<point x="256" y="741"/>
+	</road>	
 
+	<road id="93" from="Champs Elysee - Etoile" to="Charles de Gaulle - Etoile" direction="undirected" type="street">
+		<point x="360" y="477"/>
+		<point x="294" y="495"/>
+	</road>	
 </roads>
 
 <lines>

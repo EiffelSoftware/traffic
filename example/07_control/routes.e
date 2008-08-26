@@ -49,6 +49,6 @@ feature -- Path building
 		end
 
 	full: TRAFFIC_ROUTE
-	walking_1, walking_2, metro_1: TRAFFIC_ROUTE_SECTION
+	walking_1, walking_2, metro_1: TRAFFIC_LEG
 
 end
