@@ -140,6 +140,23 @@ feature -- Access
 			Result := name.hash_code
 		end
 
+	lines: LINKED_SET[TRAFFIC_LINE] is
+			-- Returns all the lines used by stops of `current'
+		do
+			create result.make
+			from
+				stops.start
+			until
+				stops.after
+			loop
+				if not result.has(stops.item.line) then
+					result.extend(stops.item.line)
+				end
+				stops.forth
+			end
+		end
+
+
 feature -- Status report
 
 	is_exchange: BOOLEAN is

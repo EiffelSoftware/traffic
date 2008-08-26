@@ -19,8 +19,9 @@ feature -- Path building
 
 			-- Path
 			create walking_1.make_walk (road_place_etoile)
-			create metro_1.make_tram (Line6_Etoile_to_Trocadero)
-			metro_1.extend (Line6_Trocadero_to_Champs_De_Mars)
+--			create metro_1.make_tram (Line6_Etoile_to_Trocadero)
+--			metro_1.extend (Line6_Trocadero_to_Champs_De_Mars)
+			create metro_1.make_metro (Station_Charles_de_Gaulle_Etoile, Station_Champs_de_Mars_Tour_Eiffel_Bir_Hakeim)
 			create walking_2.make_walk (road_station_champs_de_mars_to_tour_eiffel)
 			walking_1.set_next (metro_1)
 			metro_1.set_next (walking_2)

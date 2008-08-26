@@ -306,6 +306,71 @@ feature -- Access
 			end
 		end
 
+	is_forward(a_start,a_destination: TRAFFIC_STATION): BOOLEAN is
+			-- do you have to move forward to get from a to b?
+		require
+			on_this_line: a_start.lines.has (current) and a_destination.lines.has (current)
+		local
+			one_dir: DS_LINKED_LIST [TRAFFIC_LINE_SEGMENT]
+			found: BOOLEAN
+		do
+			from
+				found := false
+				one_dir := one_direction.twin -- don't change the internal cursor position
+				one_dir.start
+			until
+				found
+			loop
+				if one_dir.item_for_iteration.origin = a_start then
+					found := true
+					result := true
+				elseif one_dir.item_for_iteration.origin = a_destination then
+					found := true
+					result := false
+				end
+				one_dir.forth
+			end
+		end
+
+	get_segments(a_origin, a_destination: TRAFFIC_STATION): LINKED_LIST[TRAFFIC_LINE_SEGMENT] is
+			-- Line segments connection `a_origin' and `a_destination'
+		require
+			on_this_line: a_origin.lines.has (current) and a_destination.lines.has (current)
+			not_same: a_origin /= a_destination
+		local
+			segments: DS_LINKED_LIST [TRAFFIC_LINE_SEGMENT]
+			start_found, done: BOOLEAN
+		do
+			create Result.make
+
+			if is_forward(a_origin, a_destination) then
+				segments := one_direction
+			else
+				segments := other_direction
+			end
+
+			from
+				segments.start
+				start_found := false
+			until
+				done
+			loop
+				if start_found then
+					Result.extend(segments.item_for_iteration)
+				end
+				if segments.item_for_iteration.origin = a_origin then
+					Result.extend(segments.item_for_iteration)
+					start_found := true
+				end
+				if segments.item_for_iteration.destination = a_destination then
+					done := true
+				end
+				segments.forth
+			end
+		end
+
+
+
 feature -- Cursor movement
 
 	start is

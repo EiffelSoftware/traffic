@@ -15,7 +15,7 @@ inherit
 		end
 
 create
-	default_create, make, make_tram, make_bus, make_rail, make_walk
+	default_create, make, make_tram, make_bus, make_rail, make_walk, make_metro
 
 feature {NONE} -- Creation
 
@@ -56,6 +56,34 @@ feature {NONE} -- Creation
 			end
 			extend (a_line_section)
 		end
+
+	make_metro (a_origin, a_destination: TRAFFIC_STATION) is
+			-- Make `Current' from `a_origin' to `a_destination' of type tram.
+		require
+			at_least_one_common_line: not a_origin.lines.disjoint (a_destination.lines)
+		local
+			lines: LINKED_SET[TRAFFIC_LINE]
+			segments: LINKED_LIST[TRAFFIC_LINE_SEGMENT]
+		do
+			lines := a_origin.lines.twin
+			lines.intersect (a_destination.lines)
+			line := lines.first
+			if connections = Void then
+				default_create
+			end
+
+			segments := line.get_segments (a_origin, a_destination)
+			from
+				segments.start
+			until
+				segments.after
+			loop
+				extend(segments.item)
+				segments.forth
+			end
+
+		end
+
 
 	make_bus (a_line_section: TRAFFIC_LINE_SEGMENT) is
 			-- Initialize `Current' of type bus.

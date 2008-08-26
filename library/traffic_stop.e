@@ -70,6 +70,27 @@ feature -- Access
 	right: TRAFFIC_STOP
 			-- Next stop on same line
 
+	segment_to_right: TRAFFIC_LINE_SEGMENT
+			-- The segment leading to `right'
+		require
+			right_exists: right /= void
+		local
+			i: INTEGER
+		do
+			from
+				connection_list.start
+				i := 1
+			until
+				i > connection_list.count
+			loop
+				if connection_list.item.destination.stop (line) = right then
+					Result ?= connection_list.item
+				end
+				connection_list.forth
+				i := i+1
+			end
+		end
+
 feature -- Basic operations
 
 	put_connection (a_connection: TRAFFIC_CONNECTION) is
