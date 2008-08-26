@@ -170,6 +170,17 @@ feature -- Insertion
 			end
 		end
 
+	put_line(a_line: TRAFFIC_LINE) is
+			-- adds `a_line' to `lines'
+		require
+			a_line_exists: a_line /= void
+		do
+			lines.put (a_line, a_line.name)
+		ensure
+			line_added: lines.has (a_line.name)
+		end
+
+
 feature -- Access
 
 	center: TRAFFIC_POINT

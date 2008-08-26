@@ -15,7 +15,7 @@ feature -- Line building
 			Paris.display
 
 			create fancy_line.make_metro("FANCY")
-			Paris.lines.put (fancy_line, fancy_line.name)
+			Paris.put_line (fancy_line)
 
 			create stop1.set_station_and_line (Station_Montrouge, fancy_line)
 			create stop2.set_station_and_line (Station_Issy, fancy_line)
