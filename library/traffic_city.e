@@ -171,7 +171,7 @@ feature -- Insertion
 		end
 
 	put_line(a_line: TRAFFIC_LINE) is
-			-- adds `a_line' to `lines'
+			-- adds `a_line' to `lines'.
 		require
 			a_line_exists: a_line /= void
 		do
