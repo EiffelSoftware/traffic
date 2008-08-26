@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_LINE_CONNECTION
+	TRAFFIC_LINE_SEGMENT
 
 inherit
 

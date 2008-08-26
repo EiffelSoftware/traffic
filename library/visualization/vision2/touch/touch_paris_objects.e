@@ -482,10 +482,10 @@ feature -- Predefined objects (Routes)
 
 feature --Predefined objects (Line-Sections)
 
-	line_section (a_line: TRAFFIC_LINE; o, d: TRAFFIC_STATION):TRAFFIC_LINE_CONNECTION is
+	line_section (a_line: TRAFFIC_LINE; o, d: TRAFFIC_STATION):TRAFFIC_LINE_SEGMENT is
 			-- Find the line section of `a_line' between `o' and `d'.
 		local
-			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+			line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_SEGMENT]
 		do
 			line_sections := o.outgoing_line_connections --Paris.line_sections.items_between (p1, p2)
 			from
@@ -498,7 +498,7 @@ feature --Predefined objects (Line-Sections)
 			Result := line_sections.item_for_iteration
 		end
 
-	Line7a_Louvre_to_Chatelet: TRAFFIC_LINE_CONNECTION is
+	Line7a_Louvre_to_Chatelet: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -508,7 +508,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	Line9_Nation_to_Republique: TRAFFIC_LINE_CONNECTION is
+	Line9_Nation_to_Republique: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -518,7 +518,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	Line11_Republique_to_Hotel_de_Ville: TRAFFIC_LINE_CONNECTION is
+	Line11_Republique_to_Hotel_de_Ville: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -528,7 +528,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	Line11_Hotel_de_Ville_to_Chatelet: TRAFFIC_LINE_CONNECTION is
+	Line11_Hotel_de_Ville_to_Chatelet: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -538,7 +538,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	Line6_Etoile_to_Trocadero: TRAFFIC_LINE_CONNECTION is
+	Line6_Etoile_to_Trocadero: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -548,7 +548,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	Line6_Trocadero_to_Champs_De_Mars: TRAFFIC_LINE_CONNECTION is
+	Line6_Trocadero_to_Champs_De_Mars: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -558,7 +558,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	rer_A_Chatelet_to_Opera: TRAFFIC_LINE_CONNECTION is
+	rer_A_Chatelet_to_Opera: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -568,7 +568,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	rer_A_Opera_to_Etoile: TRAFFIC_LINE_CONNECTION is
+	rer_A_Opera_to_Etoile: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -578,7 +578,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	rer_A_Etoile_to_Cergy: TRAFFIC_LINE_CONNECTION is
+	rer_A_Etoile_to_Cergy: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -588,7 +588,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	rer_B_Chatelet_to_Notre_Dame: TRAFFIC_LINE_CONNECTION is
+	rer_B_Chatelet_to_Notre_Dame: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -598,7 +598,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	rer_c_a_Invalides_to_Champs_de_Mars: TRAFFIC_LINE_CONNECTION is
+	rer_c_a_Invalides_to_Champs_de_Mars: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded
@@ -608,7 +608,7 @@ feature --Predefined objects (Line-Sections)
 			Result_exists: Result /= Void
 		end
 
-	rer_c_a_Notre_Dame_to_Invalides: TRAFFIC_LINE_CONNECTION is
+	rer_c_a_Notre_Dame_to_Invalides: TRAFFIC_LINE_SEGMENT is
 			-- Line section
 		require
 			Paris_exists: is_paris_loaded

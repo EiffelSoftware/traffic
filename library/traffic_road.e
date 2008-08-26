@@ -113,7 +113,7 @@ feature -- Status report
 	is_removable: BOOLEAN is
 			-- Is `Current' removable from `city'?
 		local
-			l: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
+			l: DS_ARRAYED_LIST [TRAFFIC_LINE_SEGMENT]
 		do
 			Result := True
 			if is_in_city then

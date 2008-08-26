@@ -8,7 +8,7 @@ class
 
 inherit
 
-	TRAFFIC_VS_VIEW [TRAFFIC_LINE_CONNECTION]
+	TRAFFIC_VS_VIEW [TRAFFIC_LINE_SEGMENT]
 		undefine
 			copy,
 			is_equal,

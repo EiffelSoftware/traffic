@@ -30,7 +30,7 @@ feature {NONE} -- Creation
 		require
 			connections_exists: a_connection /= Void
 		local
-			ls: TRAFFIC_LINE_CONNECTION
+			ls: TRAFFIC_LINE_SEGMENT
 		do
 			ls ?= a_connection
 			if ls /= Void then
@@ -43,7 +43,7 @@ feature {NONE} -- Creation
 			extend (a_connection)
 		end
 
-	make_tram (a_line_section: TRAFFIC_LINE_CONNECTION) is
+	make_tram (a_line_section: TRAFFIC_LINE_SEGMENT) is
 			-- Initialize `Current' of type tram.
 		require
 			line_section_exists: a_line_section /= Void
@@ -57,7 +57,7 @@ feature {NONE} -- Creation
 			extend (a_line_section)
 		end
 
-	make_bus (a_line_section: TRAFFIC_LINE_CONNECTION) is
+	make_bus (a_line_section: TRAFFIC_LINE_SEGMENT) is
 			-- Initialize `Current' of type bus.
 		require
 			line_sectin_exists: a_line_section /= Void
@@ -71,7 +71,7 @@ feature {NONE} -- Creation
 			extend (a_line_section)
 		end
 
-	make_rail (a_line_section: TRAFFIC_LINE_CONNECTION) is
+	make_rail (a_line_section: TRAFFIC_LINE_SEGMENT) is
 			-- Initialize `Current' ob type rail.
 		require
 			line_section_exists: a_line_section /= Void
@@ -144,7 +144,7 @@ feature -- Status report
 		require
 			a_connection_exists: a_connection /= Void
 		local
-			l: TRAFFIC_LINE_CONNECTION
+			l: TRAFFIC_LINE_SEGMENT
 		do
 			Result := True
 			if not connections.is_empty then
@@ -177,7 +177,7 @@ feature -- Status report
 
 		end
 
-	is_tram (a_line_section: TRAFFIC_LINE_CONNECTION): BOOLEAN is
+	is_tram (a_line_section: TRAFFIC_LINE_SEGMENT): BOOLEAN is
 			-- is `a_line_section' of type tram?
 		require
 			a_line_section_exists: a_line_section /= Void
@@ -189,7 +189,7 @@ feature -- Status report
 			Result := a_line_section.line.type.name.is_equal (tram_type)
 		end
 
-	is_bus (a_line_section: TRAFFIC_LINE_CONNECTION): BOOLEAN is
+	is_bus (a_line_section: TRAFFIC_LINE_SEGMENT): BOOLEAN is
 			-- is `a_line_section' of type tram?
 		require
 			a_line_section_exists: a_line_section /= Void
@@ -201,7 +201,7 @@ feature -- Status report
 			Result := a_line_section.line.type.name.is_equal (bus_type)
 		end
 
-	is_rail (a_line_section: TRAFFIC_LINE_CONNECTION): BOOLEAN is
+	is_rail (a_line_section: TRAFFIC_LINE_SEGMENT): BOOLEAN is
 			-- is `a_line_section' of type tram?
 		require
 			a_line_section_exists: a_line_section /= Void
@@ -241,7 +241,7 @@ feature -- Basic operations
 			a_connection_exists: a_connection /= Void
 			a_connection_fits: is_insertable (a_connection)
 		local
-			l: TRAFFIC_LINE_CONNECTION
+			l: TRAFFIC_LINE_SEGMENT
 		do
 			l ?= a_connection
 			if (l /= Void and connections.is_empty) and then l.line /= Void then

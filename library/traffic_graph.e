@@ -73,7 +73,7 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 			end
 		end
 
-	put_line_section (a_section: TRAFFIC_LINE_CONNECTION) is
+	put_line_section (a_section: TRAFFIC_LINE_SEGMENT) is
 			-- Insert `a_section' into the graph.
 		require
 			a_section_exists: a_section /= Void
@@ -94,7 +94,7 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 			nodes_exist: has_node (a_connection.start_node) and has_node (a_connection.end_node)
 		local
 			r: TRAFFIC_ROAD_CONNECTION
-			l: TRAFFIC_LINE_CONNECTION
+			l: TRAFFIC_LINE_SEGMENT
 		do
 			r ?= a_connection
 			l ?= a_connection

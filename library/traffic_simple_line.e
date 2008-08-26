@@ -86,7 +86,7 @@ feature -- Cursor movement
 
 feature -- Status report
 
-	has (v: TRAFFIC_LINE_CONNECTION): BOOLEAN
+	has (v: TRAFFIC_LINE_SEGMENT): BOOLEAN
 			-- Does list include `v'?
 		do
 		end
@@ -173,12 +173,12 @@ feature -- Status report
 
 feature -- Basic operations
 
-	put_first (l1, l2: TRAFFIC_LINE_CONNECTION) is
+	put_first (l1, l2: TRAFFIC_LINE_SEGMENT) is
 			-- Add l1 and l2 at beginning (l2 connects the same two stations in reverse order).
 		do
 		end
 
-	put_last (l1, l2: TRAFFIC_LINE_CONNECTION) is
+	put_last (l1, l2: TRAFFIC_LINE_SEGMENT) is
 			-- Add l1 and l2 at end (l2 connects the same two stations in reverse order).
 		do
 		end
@@ -195,7 +195,7 @@ feature -- Basic operations
 
 feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
-	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
+	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_SEGMENT]
 
 	angle(st,dest: TRAFFIC_POINT):DOUBLE is
 			-- Set the angles to the x- and y-axis respectively.

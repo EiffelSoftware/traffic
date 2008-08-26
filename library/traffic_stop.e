@@ -75,7 +75,7 @@ feature -- Basic operations
 	put_connection (a_connection: TRAFFIC_CONNECTION) is
 			-- Insert `a_connection'.
 		local
-			c: TRAFFIC_LINE_CONNECTION
+			c: TRAFFIC_LINE_SEGMENT
 		do
 			connection_list.extend (a_connection)
 			changed_event.publish ([])
@@ -90,7 +90,7 @@ feature -- Basic operations
 		require
 			s_exists: s /= Void
 		local
-			l1, l2: TRAFFIC_LINE_CONNECTION
+			l1, l2: TRAFFIC_LINE_SEGMENT
 			pp: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
 			create pp.make (2)

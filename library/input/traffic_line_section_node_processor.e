@@ -34,7 +34,7 @@ feature -- Basic operations
 		local
 			line: TRAFFIC_LINE
 			polypoints_other_direction: DS_ARRAYED_LIST [TRAFFIC_POINT]
-			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_CONNECTION
+			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_SEGMENT
 		do
 			if not has_error then
 				line ?= parent.target

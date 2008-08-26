@@ -216,7 +216,7 @@ feature -- Basic operations
 
 feature {NONE} -- Implementation
 
-	add_connection_view (a_item: TRAFFIC_LINE_CONNECTION) is
+	add_connection_view (a_item: TRAFFIC_LINE_SEGMENT) is
 			-- Add new view for inserted item.
 		local
 			c: TRAFFIC_LINE_CONNECTION_VIEW
@@ -230,7 +230,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	remove_connection_view (a_item: TRAFFIC_LINE_CONNECTION) is
+	remove_connection_view (a_item: TRAFFIC_LINE_SEGMENT) is
 			-- Add new view for inserted item.
 		local
 			found: BOOLEAN

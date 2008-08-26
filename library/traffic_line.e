@@ -17,7 +17,7 @@ inherit
 			is_equal
 		end
 
-	TRAFFIC_EVENT_CONTAINER [TRAFFIC_LINE_CONNECTION]
+	TRAFFIC_EVENT_CONTAINER [TRAFFIC_LINE_SEGMENT]
 		undefine
 			out
 		end
@@ -333,7 +333,7 @@ feature -- Status report
 
 
 
-	has (v: TRAFFIC_LINE_CONNECTION): BOOLEAN
+	has (v: TRAFFIC_LINE_SEGMENT): BOOLEAN
 			-- Does list include `v'?
 		do
 			Result := one_direction.has (v) or other_direction.has (v)
@@ -605,7 +605,7 @@ feature -- Status report
 
 feature -- Basic operations
 
-	put_first (l1, l2: TRAFFIC_LINE_CONNECTION) is
+	put_first (l1, l2: TRAFFIC_LINE_SEGMENT) is
 			-- Add l1 and l2 at beginning (l2 connects the same two stations in reverse order).
 		require
 			l1_exists: l1 /= Void
@@ -631,7 +631,7 @@ feature -- Basic operations
 			element_inserted_event.publish ([l2])
 		end
 
-	put_last (l1, l2: TRAFFIC_LINE_CONNECTION) is
+	put_last (l1, l2: TRAFFIC_LINE_SEGMENT) is
 			-- Add l1 and l2 at end (l2 connects the same two stations in reverse order).
 		require
 			l1_exists: l1 /= Void
@@ -662,7 +662,7 @@ feature -- Basic operations
 		require
 			has_terminal_1: old_terminal_1 /= Void
 		local
-			l1, l2: TRAFFIC_LINE_CONNECTION
+			l1, l2: TRAFFIC_LINE_SEGMENT
 			s1, s2: TRAFFIC_STOP
 			pp: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
@@ -707,7 +707,7 @@ feature -- Basic operations
 		require
 			has_terminal_1: old_terminal_1 /= Void
 		local
-			l1, l2: TRAFFIC_LINE_CONNECTION
+			l1, l2: TRAFFIC_LINE_SEGMENT
 			s1, s2: TRAFFIC_STOP
 			pp: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
@@ -784,7 +784,7 @@ feature -- Output
 
 feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
-	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
+	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_SEGMENT]
 
 	angle(st,dest: TRAFFIC_POINT):DOUBLE is
 			-- Set the angles to the x- and y-axis respectively.

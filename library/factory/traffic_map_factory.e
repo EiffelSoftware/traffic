@@ -251,7 +251,7 @@ feature -- Line section building
 			line_section_has_destination: connection_one_direction.destination = a_city.stations.item (a_destination) and connection_other_direction.origin = a_city.stations.item (a_destination)
 		end
 
-	connection_one_direction: TRAFFIC_LINE_CONNECTION is
+	connection_one_direction: TRAFFIC_LINE_SEGMENT is
 			-- Generated traffic line section object
 		require
 			line_section_available: has_line_section
@@ -261,7 +261,7 @@ feature -- Line section building
 			Result_exists: Result /= Void
 		end
 
-	connection_other_direction: TRAFFIC_LINE_CONNECTION is
+	connection_other_direction: TRAFFIC_LINE_SEGMENT is
 			-- Generated traffic line section object
 		require
 			line_section_available: has_line_section
@@ -373,7 +373,7 @@ feature {NONE} -- Implementation
 	internal_landmark: TRAFFIC_LANDMARK
 			-- Internal representation of last created traffic landmark
 
-	internal_one_direction, internal_other_direction: TRAFFIC_LINE_CONNECTION
+	internal_one_direction, internal_other_direction: TRAFFIC_LINE_SEGMENT
 			-- Internal representation of last created traffic line section
 
 	internal_line: TRAFFIC_LINE

@@ -63,11 +63,11 @@ feature {NONE} -- Initialize
 
 feature -- Access
 
-	outgoing_line_connections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION] is
+	outgoing_line_connections: DS_ARRAYED_LIST [TRAFFIC_LINE_SEGMENT] is
 			-- All outgoing line connections
 		local
 			l: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
-			c: TRAFFIC_LINE_CONNECTION
+			c: TRAFFIC_LINE_SEGMENT
 			i: INTEGER
 		do
 			create Result.make (5)

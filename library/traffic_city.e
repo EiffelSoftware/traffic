@@ -199,7 +199,7 @@ feature -- Access (city objects)
 	stations: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_STATION, STRING]
 			-- All stations in city
 
-	line_sections: DS_LINKED_LIST [TRAFFIC_LINE_CONNECTION]
+	line_sections: DS_LINKED_LIST [TRAFFIC_LINE_SEGMENT]
 			-- All line sections in city
 
 	lines: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_LINE, STRING]
@@ -234,15 +234,15 @@ feature -- Access (city objects)
 
 feature -- Access
 
-	line_sections_of_stop (a_name: STRING; a_line: TRAFFIC_LINE): LIST [TRAFFIC_LINE_CONNECTION] is
+	line_sections_of_stop (a_name: STRING; a_line: TRAFFIC_LINE): LIST [TRAFFIC_LINE_SEGMENT] is
 			-- Line sections (2 or 1) of the stop specified by `a_name' for the line `a_line'
 		require
 			stations.has (a_name) and then stations.item (a_name).has_stop (a_line)
 		local
 			a_connections: LIST [TRAFFIC_CONNECTION]
-			ls: TRAFFIC_LINE_CONNECTION
+			ls: TRAFFIC_LINE_SEGMENT
 		do
-			Result := create {ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]}.make (2)
+			Result := create {ARRAYED_LIST [TRAFFIC_LINE_SEGMENT]}.make (2)
 			graph.search (stations.item (a_name).stop (a_line))
 			a_connections := graph.incident_edges
 			from a_connections.start until a_connections.after loop

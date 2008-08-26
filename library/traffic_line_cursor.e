@@ -25,7 +25,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	item_for_iteration: TRAFFIC_LINE_CONNECTION is
+	item_for_iteration: TRAFFIC_LINE_SEGMENT is
 			-- Item at internal cursor position of line
 		require
 			not_after: not after
@@ -82,7 +82,7 @@ feature -- Status report
 
 feature {NONE} -- Implementation
 
-	internal_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_CONNECTION]
+	internal_cursor: DS_LINKED_LIST_CURSOR [TRAFFIC_LINE_SEGMENT]
 			-- Internal cursor used for traversal
 
 end
