@@ -64,7 +64,7 @@ feature {NONE} -- Initialization
 			removed_initialized: element_removed_event /= Void
 		end
 
-feature {TRAFFIC_CITY_ITEM, TRAFFIC_ROUTE_SECTION} -- Element change
+feature {TRAFFIC_CITY_ITEM, TRAFFIC_LEG} -- Element change
 
 	append (other: DS_LINEAR [G]; i: INTEGER_32)
 			-- Add items of `other' at `i'-th position.

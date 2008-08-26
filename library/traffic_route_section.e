@@ -5,7 +5,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	TRAFFIC_ROUTE_SECTION
+	TRAFFIC_LEG
 
 inherit
 
@@ -128,7 +128,7 @@ feature -- Access
 	connections: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_CONNECTION]
 			-- Connections that are used by the route section
 
-	next: TRAFFIC_ROUTE_SECTION
+	next: TRAFFIC_LEG
 			-- Next route section
 
 feature -- Status report
@@ -160,7 +160,7 @@ feature -- Status report
 			end
 		end
 
-	is_joinable (a_section: TRAFFIC_ROUTE_SECTION): BOOLEAN is
+	is_joinable (a_section: TRAFFIC_LEG): BOOLEAN is
 			-- Can `a_section' be inserted?
 		require
 			a_section_exists: a_section /= Void
@@ -168,7 +168,7 @@ feature -- Status report
 			Result := a_section.connections = Void or else is_insertable (a_section.connections.first)
 		end
 
-	is_valid_next (a_section: TRAFFIC_ROUTE_SECTION): BOOLEAN is
+	is_valid_next (a_section: TRAFFIC_LEG): BOOLEAN is
 			-- Is the origin of `a_section' the same station as the current destination?
 		require
 			a_section_exists: a_section /= Void
@@ -215,7 +215,7 @@ feature -- Status report
 
 feature -- Basic operations
 
-	join (a_section: TRAFFIC_ROUTE_SECTION) is
+	join (a_section: TRAFFIC_LEG) is
 			-- Extend with `a_section'.
 		require
 			section_exists: a_section /= Void
@@ -253,7 +253,7 @@ feature -- Basic operations
 			one_more: connections.count = old connections.count + 1
 		end
 
-	set_next (a_section: TRAFFIC_ROUTE_SECTION) is
+	set_next (a_section: TRAFFIC_LEG) is
 			-- Set pointer to next route section `a_section'.
 		require
 			a_section_exists: a_section /= Void

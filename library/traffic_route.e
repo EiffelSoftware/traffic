@@ -35,7 +35,7 @@ feature -- Access
 	count: INTEGER is
 			-- Number of legs (route_sections)
 		local
-			l: TRAFFIC_ROUTE_SECTION
+			l: TRAFFIC_LEG
 		do
 			from
 				l := first
@@ -47,7 +47,7 @@ feature -- Access
 			end
 		end
 
-	first: TRAFFIC_ROUTE_SECTION
+	first: TRAFFIC_LEG
 			-- First route section
 
 	origin: TRAFFIC_STATION is
@@ -71,7 +71,7 @@ feature -- Access
 		require
 			first_exists: first /= Void
 		local
-			ps: TRAFFIC_ROUTE_SECTION
+			ps: TRAFFIC_LEG
 		do
 			from
 				ps := first
@@ -110,7 +110,7 @@ feature -- Status report
 		require
 			connection_exists: a_connection /= Void
 		local
-			l: TRAFFIC_ROUTE_SECTION
+			l: TRAFFIC_LEG
 		do
 			if first = Void then
 				Result := True
@@ -131,7 +131,7 @@ feature -- Output
 	out: STRING is
 			-- Description providing information about the route
 		local
-			section: TRAFFIC_ROUTE_SECTION
+			section: TRAFFIC_LEG
 			walking_length: DOUBLE
 			tram_length: DOUBLE
 			bus_length: DOUBLE
@@ -206,7 +206,7 @@ feature -- Basic operations
 			route_exists: a_route /= VOID
 			route_valid_for_insertion: is_valid_for_insertion(a_route.first.connections.first)
 		local
-			l: TRAFFIC_ROUTE_SECTION
+			l: TRAFFIC_LEG
 		do
 			if first = Void then
 				set_first (a_route.first)
@@ -226,7 +226,7 @@ feature -- Basic operations
 			end
 		end
 
-	set_first(a_section: TRAFFIC_ROUTE_SECTION) is
+	set_first(a_section: TRAFFIC_LEG) is
 			-- sets pointer 'first' to the 'a_section'
 		require
 			a_section_exists: a_section /= Void

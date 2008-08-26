@@ -420,7 +420,7 @@ feature -- Passengers
 		require
 			Paris_exists: is_paris_loaded
 		local
-			s: TRAFFIC_ROUTE_SECTION
+			s: TRAFFIC_LEG
 			p: TRAFFIC_ROUTE
 		once
 			create p
@@ -440,7 +440,7 @@ feature -- Predefined objects (Routes)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			s, t: TRAFFIC_ROUTE_SECTION
+			s, t: TRAFFIC_LEG
 		once
 --			wait
 			create Result
@@ -456,7 +456,7 @@ feature -- Predefined objects (Routes)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			s: TRAFFIC_ROUTE_SECTION
+			s: TRAFFIC_LEG
 		once
 			create Result
 			create s.make_tram (Line11_Republique_to_Hotel_de_Ville)
@@ -472,7 +472,7 @@ feature -- Predefined objects (Routes)
 		require
 			Paris_exists: is_paris_loaded
 		local
-			s: TRAFFIC_ROUTE_SECTION
+			s: TRAFFIC_LEG
 		once
 			create Result
 			create s.make_tram (line9_nation_to_republique)
