@@ -50,6 +50,9 @@ feature -- Access
 	first: TRAFFIC_LEG
 			-- First route section
 
+	last: TRAFFIC_LEG
+			-- Last route section
+
 	origin: TRAFFIC_STATION is
 			-- Origin of the route
 		require
@@ -200,28 +203,42 @@ feature -- Basic operations
 			passenger.go
 		end
 
+
+	extend(a_leg: TRAFFIC_LEG) is
+			-- Extends current with `a_leg' at the end
+		require
+			leg_exists: a_leg /= void
+			insertable: is_valid_for_insertion(a_leg.connections.first)
+			not_joinable: (last = void) or else  (not last.is_joinable (a_leg))
+		do
+			if first = void then
+				set_first(a_leg)
+			else
+				last.set_next (a_leg)
+			end
+			last := a_leg
+		ensure
+			one_more: count = old count +1
+		end
+
+
 	append (a_route: TRAFFIC_ROUTE) is
 			-- Append a TRAFFIC_ROUTE `a_route' at the end of the actual route
 		require
 			route_exists: a_route /= VOID
 			route_valid_for_insertion: is_valid_for_insertion(a_route.first.connections.first)
-		local
-			l: TRAFFIC_LEG
 		do
 			if first = Void then
 				set_first (a_route.first)
 			else
-				from
-					l := first
-				until
-					l.next = Void
-				loop
-					l := l.next
-				end
-				if l.is_joinable (a_route.first) then
-					l.join (a_route.first)
+				if last.is_joinable (a_route.first) then
+					last.join (a_route.first)
+					if last.next /= void then
+						last := a_route.last
+					end
 				else
-					l.set_next (a_route.first)
+					last.set_next (a_route.first)
+					last := a_route.last
 				end
 			end
 		end

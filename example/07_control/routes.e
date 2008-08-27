@@ -21,10 +21,10 @@ feature -- Path building
 			create walking_1.make_walk (Place_Champs_Elysee, Station_Charles_de_Gaulle_Etoile)
 			create metro_1.make_metro (Station_Charles_de_Gaulle_Etoile, Station_Champs_de_Mars_Tour_Eiffel_Bir_Hakeim)
 			create walking_2.make_walk (Station_Champs_de_Mars_Tour_Eiffel_Bir_Hakeim, Place_Tour_Eiffel)
-			walking_1.set_next (metro_1)
-			metro_1.set_next (walking_2)
-			create full
-			full.set_first (walking_1)
+			create full.make_empty
+			full.extend (walking_1)
+			full.extend (metro_1)
+			full.extend (walking_2)
 			Paris.routes.put_last (full)
 			full.illuminate
 
