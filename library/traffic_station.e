@@ -258,6 +258,47 @@ feature -- Status report
 			end
 		end
 
+	is_road_connected(a_station: TRAFFIC_STATION): BOOLEAN is
+			-- Is `a_station' reachable through one road in the city?
+		local
+			roads: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+		do
+			roads := city.roads
+			from
+				roads.start
+			until
+				roads.after or result
+			loop
+				if roads.item_for_iteration.connects (current, a_station) then
+					result := true
+				end
+				roads.forth
+			end
+		end
+
+	connecting_road(a_station: TRAFFIC_STATION): TRAFFIC_ROAD is
+			-- A (arbitrary) road connection `current' and `a_station'
+		require
+			connected: is_road_connected(a_station)
+		local
+			roads: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+		do
+			roads := city.roads
+			from
+				roads.start
+			until
+				roads.after or (result /= void)
+			loop
+				if roads.item_for_iteration.connects (current, a_station) then
+					result := roads.item_for_iteration
+				end
+				roads.forth
+			end
+
+		end
+
+
+
 feature {TRAFFIC_ITEM_LINKED_LIST}-- Basic operations
 
 	add_to_city (a_city: TRAFFIC_CITY) is

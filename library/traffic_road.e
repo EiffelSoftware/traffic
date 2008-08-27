@@ -76,6 +76,21 @@ feature -- Access
 	id: INTEGER
 			-- Id of the road
 
+	get_connection(a_origin, a_destination: TRAFFIC_STATION): TRAFFIC_ROAD_CONNECTION is
+			-- returns the road segment connection `a_origin' and `a_destination'
+		require
+			connected: connects(a_origin, a_destination)
+		do
+			if one_way.origin = a_origin then
+				result:= one_way
+			else
+				result := other_way
+			end
+		ensure
+			result.origin = a_origin and result.destination = a_destination
+		end
+
+
 feature {TRAFFIC_EVENT_CONTAINER}-- Basic operations
 
 	add_to_city (a_city: TRAFFIC_CITY) is
@@ -99,6 +114,8 @@ feature {TRAFFIC_EVENT_CONTAINER}-- Basic operations
 			is_in_city := False
 			city := Void
 		end
+
+
 
 feature -- Status report
 
@@ -146,6 +163,21 @@ feature -- Status report
 
 	is_one_way: BOOLEAN
 			-- Is this a one way road?
+
+
+	connects(a_origin, a_destination: TRAFFIC_STATION): BOOLEAN is
+			-- does this road connect `a_origin' and `a_destination?
+		require
+			a_origin_exists: a_origin /= void
+			a_destination_exists: a_destination /= void
+		do
+			if one_way.origin = a_origin and one_way.destination = a_destination then
+					result := true
+			elseif other_way.origin = a_origin and other_way.destination = a_destination then
+					result := true
+			end
+		end
+
 
 invariant
 

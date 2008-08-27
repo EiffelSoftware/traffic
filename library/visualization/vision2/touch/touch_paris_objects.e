@@ -371,7 +371,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("landmark Tour Eiffel")
+			Result := Paris.stations.item ("Tour Eiffel")
 		ensure
 			Result_exists: Result /= Void
 		end
@@ -381,7 +381,7 @@ feature  -- Predefined objects (Stations)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.stations.item ("landmark Champs Elysee - Etoile")
+			Result := Paris.stations.item ("Champs Elysee - Etoile")
 		ensure
 			Result_exists: Result /= Void
 		end

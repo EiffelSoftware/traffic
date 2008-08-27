@@ -15,7 +15,7 @@ inherit
 		end
 
 create
-	default_create, make, make_tram, make_bus, make_rail, make_walk, make_metro
+	default_create, make, make_tram, make_bus, make_rail, make_walk_with_road, make_metro, make_walk
 
 feature {NONE} -- Creation
 
@@ -67,7 +67,7 @@ feature {NONE} -- Creation
 		do
 			lines := a_origin.lines.twin
 			lines.intersect (a_destination.lines)
-			line := lines.first
+			line := lines.first -- take an arbritary line
 			if connections = Void then
 				default_create
 			end
@@ -113,7 +113,7 @@ feature {NONE} -- Creation
 			extend (a_line_section)
 		end
 
-	make_walk (a_road: TRAFFIC_ROAD_CONNECTION) is
+	make_walk_with_road (a_road: TRAFFIC_ROAD_CONNECTION) is
 			-- Initialize `Current' of type walk.
 		require
 			road_exists: a_road /= Void
@@ -125,6 +125,25 @@ feature {NONE} -- Creation
 			end
 			extend (a_road)
 		end
+
+	make_walk (a_origin, a_destination: TRAFFIC_STATION) is
+			-- Initialize `Current' of type walk.
+		require
+			directly_connected_by_one_road: a_origin.is_road_connected (a_destination)
+		local
+			roads: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
+			found: BOOLEAN
+			segment: TRAFFIC_ROAD_CONNECTION
+			road: TRAFFIC_ROAD
+		do
+			road := a_origin.connecting_road (a_destination)
+			segment := road.get_connection (a_origin, a_destination)
+			if connections = Void then
+				default_create
+			end
+			extend (segment)
+		end
+
 
 
 feature -- Access
