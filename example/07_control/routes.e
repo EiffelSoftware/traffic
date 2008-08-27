@@ -13,7 +13,7 @@ inherit
 feature -- Routes
 
 	traverse is
-			-- Build a route and traverse Line8 it.
+			-- Build a route and traverse Line8.
 		do
 			Paris.display
 
