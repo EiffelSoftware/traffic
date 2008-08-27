@@ -36,10 +36,10 @@ feature -- Path building
 			until
 				Line8.is_after
 			loop
-				if Line8.item.is_hub then
+				if Line8.item.is_railway_connection then
 					show_big_red_spot (Line8.item.location)
 				elseif Line8.item.is_exchange then
-					show_green_spot (Line8.item.location)
+					show_blinking_spot (Line8.item.location)
 				else
 					show_spot (line8.item.location)
 				end
