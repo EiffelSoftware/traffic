@@ -72,7 +72,6 @@ feature -- Access (Paris)
 					Result.time.start
 					is_paris_loaded := True
 					is_zurich_loaded := False
-					b := Louvre
 					main_window.move_to_center
 					main_window.canvas.redraw_now
 				end

@@ -393,6 +393,7 @@ feature -- Predefined objects (Buildings)
 		require
 			Paris_exists: is_paris_loaded
 		once
+			wait
 			Result := Paris.landmarks.item ("landmark Musee du Louvre")
 		end
 
