@@ -69,7 +69,7 @@ feature -- Basic operations
 						polypoints_other_direction := Void
 					end
 					if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
-							map_factory.build_line_section (( attribute ("from")), ( attribute ("to")), polypoints, city, line)
+							map_factory.build_line_segment (( attribute ("from")), ( attribute ("to")), polypoints, city, line)
 							line_section_one_direction := map_factory.connection_one_direction
 							line_section_other_direction := map_factory.connection_other_direction
 							map_factory.connection_other_direction.set_polypoints (polypoints_other_direction)
@@ -95,7 +95,7 @@ feature -- Basic operations
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
 			location: TRAFFIC_POINT
-			road: TRAFFIC_ROAD_CONNECTION
+			road: TRAFFIC_ROAD_SEGMENT
 		do
 			create polypoints.make (0)
 			create roads.make(0)
@@ -142,7 +142,7 @@ feature {NONE} -- Implementation
 	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
 			-- Polypoints of this link
 
-	roads: ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]
+	roads: ARRAYED_LIST[TRAFFIC_ROAD_SEGMENT]
 			-- Roads of this line_section
 
 end

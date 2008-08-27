@@ -19,7 +19,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_conn1, a_conn2: TRAFFIC_ROAD_CONNECTION) is
+	make (a_conn1, a_conn2: TRAFFIC_ROAD_SEGMENT) is
 			-- Initialize a two way road with `a_conn1' and `a_conn2'.
 		require
 			a_conn1_exists: a_conn1 /= Void
@@ -41,7 +41,7 @@ feature {NONE} -- Initialization
 			id_set: id = one_way.id
 		end
 
-	make_one_way (a_conn: TRAFFIC_ROAD_CONNECTION) is
+	make_one_way (a_conn: TRAFFIC_ROAD_SEGMENT) is
 			-- Initialize a one way road with `a_conn'.
 		require
 			a_conn_exists: a_conn /= Void
@@ -67,16 +67,16 @@ feature -- Access
 			Result_set: Result = one_way.type
 		end
 
-	one_way: TRAFFIC_ROAD_CONNECTION
+	one_way: TRAFFIC_ROAD_SEGMENT
 			-- Road connection into one direction
 
-	other_way: TRAFFIC_ROAD_CONNECTION
+	other_way: TRAFFIC_ROAD_SEGMENT
 			-- Road connection into other direction (may be Void if the way is a one way)
 
 	id: INTEGER
 			-- Id of the road
 
-	get_connection(a_origin, a_destination: TRAFFIC_STATION): TRAFFIC_ROAD_CONNECTION is
+	get_connection(a_origin, a_destination: TRAFFIC_STATION): TRAFFIC_ROAD_SEGMENT is
 			-- returns the road segment connection `a_origin' and `a_destination'
 		require
 			connected: connects(a_origin, a_destination)

@@ -1,10 +1,10 @@
 indexing
-	description: "State of line section."
+	description: "State of line segment."
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_CONNECTION_STATE
+	TRAFFIC_SEGMENT_STATE
 
 inherit
 

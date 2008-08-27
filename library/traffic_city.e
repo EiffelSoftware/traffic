@@ -250,18 +250,18 @@ feature -- Access
 		require
 			stations.has (a_name) and then stations.item (a_name).has_stop (a_line)
 		local
-			a_connections: LIST [TRAFFIC_CONNECTION]
+			a_segments: LIST [TRAFFIC_SEGMENT]
 			ls: TRAFFIC_LINE_SEGMENT
 		do
 			Result := create {ARRAYED_LIST [TRAFFIC_LINE_SEGMENT]}.make (2)
 			graph.search (stations.item (a_name).stop (a_line))
-			a_connections := graph.incident_edges
-			from a_connections.start until a_connections.after loop
-				ls ?= a_connections.item
+			a_segments := graph.incident_edges
+			from a_segments.start until a_segments.after loop
+				ls ?= a_segments.item
 				if ls /= Void then
 					Result.extend (ls)
 				end
-				a_connections.forth
+				a_segments.forth
 			end
 		end
 
@@ -280,7 +280,7 @@ feature {TRAFFIC_MAP_LOADER}
 			-- Due to an error in processing the weights need to be recalculated.
 			-- In addition, the stops of different lines are connected at nodes.
 		local
-			the_edges: LIST[TRAFFIC_CONNECTION]
+			the_edges: LIST[TRAFFIC_SEGMENT]
 			total_weight: DOUBLE
 			average_weight: DOUBLE
 			w: DOUBLE
@@ -341,14 +341,14 @@ feature {NONE}-- Implementation
 			Result_exists: Result /= Void
 		end
 
-	location_from_connections (a_connections: LIST [TRAFFIC_CONNECTION]; a_node: TRAFFIC_NODE): TRAFFIC_POINT is
+	location_from_connections (a_segments: LIST [TRAFFIC_SEGMENT]; a_node: TRAFFIC_NODE): TRAFFIC_POINT is
 			-- Location of `a_node'
 		do
 
-			if a_connections.first.start_node = a_node then
-				Result := a_connections.first.polypoints.first
+			if a_segments.first.start_node = a_node then
+				Result := a_segments.first.polypoints.first
 			else
-				Result := a_connections.first.polypoints.last
+				Result := a_segments.first.polypoints.last
 			end
 		end
 

@@ -249,7 +249,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	new_connection_view (a_item: TRAFFIC_CONNECTION): DRAWABLE_POLYLINE is
+	new_connection_view (a_item: TRAFFIC_SEGMENT): DRAWABLE_POLYLINE is
 			-- Generate connection view for `a_item'.
 		local
 			pp: ARRAY [REAL_COORDINATE]

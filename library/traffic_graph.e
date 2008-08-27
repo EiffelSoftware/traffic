@@ -49,7 +49,7 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 	connect_nodes (a_start_node, a_end_node: like item; a_label: REAL; a_weight: REAL) is
 			-- Redefined to record weight.
 		local
-			r: TRAFFIC_ROAD_CONNECTION
+			r: TRAFFIC_ROAD_SEGMENT
 		do
 			create r.make (a_start_node, a_end_node, create {TRAFFIC_TYPE_STREET}.make, id_manager.next_free_index)
 			a_start_node.put_connection (r)
@@ -58,7 +58,7 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 			total_weight := total_weight + r.length
 		end
 
-	put_road (a_road: TRAFFIC_ROAD_CONNECTION) is
+	put_road (a_road: TRAFFIC_ROAD_SEGMENT) is
 			-- Insert `a_road' into the graph.
 		require
 			a_road_exists: a_road /= Void
@@ -87,13 +87,13 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 			end
 		end
 
-	put_connection (a_connection: TRAFFIC_CONNECTION) is
+	put_connection (a_connection: TRAFFIC_SEGMENT) is
 			-- Insert `a_connection' into the graph.
 		require
 			a_connection_exists: a_connection /= Void
 			nodes_exist: has_node (a_connection.start_node) and has_node (a_connection.end_node)
 		local
-			r: TRAFFIC_ROAD_CONNECTION
+			r: TRAFFIC_ROAD_SEGMENT
 			l: TRAFFIC_LINE_SEGMENT
 		do
 			r ?= a_connection
@@ -229,7 +229,7 @@ feature -- Access
 	current_node: TRAFFIC_NODE
 			-- Value of the currently focused node
 
-	edge_item: TRAFFIC_CONNECTION is
+	edge_item: TRAFFIC_SEGMENT is
 			-- Current edge
 		do
 			if not current_node.connection_list.off then
@@ -341,7 +341,7 @@ feature {NONE} -- Implementation
 			-- Nodes which are part of the border set in the path finding algorithm
 			-- (from GRAPH)
 
-	weight_function: FUNCTION [ANY, TUPLE [TRAFFIC_CONNECTION], REAL]
+	weight_function: FUNCTION [ANY, TUPLE [TRAFFIC_SEGMENT], REAL]
 			-- Weight function for edges, if Void, no weight function is used.
 
 	prune_edge_impl (a_edge: like edge_item) is
@@ -351,11 +351,11 @@ feature {NONE} -- Implementation
 			Precursor (a_edge)
 		end
 
-	calculate_weight (a_edge: TRAFFIC_CONNECTION): REAL is
+	calculate_weight (a_edge: TRAFFIC_SEGMENT): REAL is
 			-- Calculate the edge based on the current status.
 			-- This is only used for "dummy" connections.
 		local
-			e: TRAFFIC_EXCHANGE_CONNECTION
+			e: TRAFFIC_EXCHANGE_SEGMENT
 		do
 			inspect shortest_path_mode
 			when normal_distance then
@@ -373,7 +373,7 @@ feature {NONE} -- Implementation
 		end
 
 	total_weight: DOUBLE
-		-- Total length of all TRAFFIC_CONNECTIONs added.
+		-- Total length of all TRAFFIC_SEGMENTSs added.
 		-- Usually less then the total weight of the edges because
 		-- the "dummy" connections have a higher weight than their length.
 

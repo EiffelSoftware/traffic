@@ -1,10 +1,10 @@
 indexing
-	description: "Deferred connections for the graph"
+	description: "Deferred segments for the graph"
 	date: "$Date: 2006-03-27 19:42:12 +0200 (Mon, 27 Mar 2006) $"
 	revision: "$Revision: 601 $"
 
 deferred class
-	TRAFFIC_CONNECTION
+	TRAFFIC_SEGMENT
 
 inherit
 	LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, REAL]
@@ -68,7 +68,7 @@ feature -- Measure
 
 feature -- Element change
 
-	set_state (a_state: TRAFFIC_CONNECTION_STATE) is
+	set_state (a_state: TRAFFIC_SEGMENT_STATE) is
 			-- Change state to `a_state'.
 		require
 			a_state_exists: a_state /= Void
@@ -101,7 +101,7 @@ feature -- Element change
 
 feature -- Access
 
-	state: TRAFFIC_CONNECTION_STATE
+	state: TRAFFIC_SEGMENT_STATE
 			-- State of connection
 
 	type: TRAFFIC_TYPE

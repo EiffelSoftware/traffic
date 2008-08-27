@@ -173,12 +173,12 @@ feature -- Traffic station building
 			Result := internal_landmark /= Void
 		end
 
-feature -- Line section building
+feature -- Line segment building
 
-	build_line_section (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]; a_city: TRAFFIC_CITY; a_line: TRAFFIC_LINE) is
-			-- Generate new traffic line section object going from origin `a_origin' to `a_destination'
+	build_line_segment (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]; a_city: TRAFFIC_CITY; a_line: TRAFFIC_LINE) is
+			-- Generate new traffic line segment object going from origin `a_origin' to `a_destination'
 			-- belonging to line `a_line' in map `a_city'.
-			-- (Access the generated object through feature `line_section')
+			-- (Access the generated object through feature `line_segment')
 		require
 			a_city_exists: a_city /= Void
 			a_origin_exists: a_city.stations.has (a_origin)
@@ -244,17 +244,17 @@ feature -- Line section building
 			create internal_other_direction.make (origin_stop, destination_stop, a_line.type, pps)
 			a_line.put_last (internal_one_direction, internal_other_direction)
 		ensure
-			line_section_created: connection_one_direction /= Void and connection_other_direction /= Void
-			line_section_has_line: connection_one_direction.line = a_line and connection_other_direction.line = a_line
-			line_section_has_type: equal (connection_one_direction.type, a_line.type) and equal (connection_one_direction.type, a_line.type)
-			line_section_has_origin: connection_one_direction.origin = a_city.stations.item (a_origin) and connection_other_direction.destination = a_city.stations.item (a_origin)
-			line_section_has_destination: connection_one_direction.destination = a_city.stations.item (a_destination) and connection_other_direction.origin = a_city.stations.item (a_destination)
+			line_segment_created: connection_one_direction /= Void and connection_other_direction /= Void
+			line_segment_has_line: connection_one_direction.line = a_line and connection_other_direction.line = a_line
+			line_segment_has_type: equal (connection_one_direction.type, a_line.type) and equal (connection_one_direction.type, a_line.type)
+			line_segment_has_origin: connection_one_direction.origin = a_city.stations.item (a_origin) and connection_other_direction.destination = a_city.stations.item (a_origin)
+			line_segment_has_destination: connection_one_direction.destination = a_city.stations.item (a_destination) and connection_other_direction.origin = a_city.stations.item (a_destination)
 		end
 
 	connection_one_direction: TRAFFIC_LINE_SEGMENT is
-			-- Generated traffic line section object
+			-- Generated traffic line segment object
 		require
-			line_section_available: has_line_section
+			line_segment_available: has_line_segment
 		do
 			Result := internal_one_direction
 		ensure
@@ -262,17 +262,17 @@ feature -- Line section building
 		end
 
 	connection_other_direction: TRAFFIC_LINE_SEGMENT is
-			-- Generated traffic line section object
+			-- Generated traffic line segment object
 		require
-			line_section_available: has_line_section
+			line_segment_available: has_line_segment
 		do
 			Result := internal_other_direction
 		ensure
 			Result_exists: Result /= Void
 		end
 
-	has_line_section: BOOLEAN is
-			-- Is there a line section object available?
+	has_line_segment: BOOLEAN is
+			-- Is there a line segment object available?
 		do
 			Result := internal_one_direction /= Void and internal_other_direction /= Void
 		end
@@ -291,7 +291,7 @@ feature -- Road section building
 			a_type_exists: a_type/=Void
 			a_direction_exists: a_direction/=Void
 		local
-			way1, way2: TRAFFIC_ROAD_CONNECTION
+			way1, way2: TRAFFIC_ROAD_SEGMENT
 		do
 			way1 := create_road_connection (a_origin, a_destination, a_city, a_type, an_id)
 			if a_direction.is_equal ("undirected") then
@@ -385,7 +385,7 @@ feature {NONE} -- Implementation
 	internal_map: TRAFFIC_CITY
 			-- Internal representation of last created traffic map
 
-	create_road_connection (a_origin, a_destination: STRING; a_city: TRAFFIC_CITY; a_type:STRING;an_id:STRING): TRAFFIC_ROAD_CONNECTION is
+	create_road_connection (a_origin, a_destination: STRING; a_city: TRAFFIC_CITY; a_type:STRING;an_id:STRING): TRAFFIC_ROAD_SEGMENT is
 			-- Create road with type `a_type', origin `a_origin', destination `a_destination' belonging to line `a_city'.
 		require
 			a_origin_exists: a_origin /= Void
@@ -397,7 +397,7 @@ feature {NONE} -- Implementation
 			a_type_exists: a_type/=Void
 			an_id_exists: an_id/=Void
 		local
-			a_road: TRAFFIC_ROAD_CONNECTION
+			a_road: TRAFFIC_ROAD_SEGMENT
 			origin_s: TRAFFIC_STATION
 			destination_s: TRAFFIC_STATION
 			type: TRAFFIC_TYPE_ROAD

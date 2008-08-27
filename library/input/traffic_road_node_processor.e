@@ -128,7 +128,7 @@ feature {NONE} -- Implementation
 			Result := create {TRAFFIC_POINT}.make (0, 0)
 		end
 
-	adjust_location (road: TRAFFIC_ROAD_CONNECTION; a_polypoints: DS_LIST [TRAFFIC_POINT]) is
+	adjust_location (road: TRAFFIC_ROAD_SEGMENT; a_polypoints: DS_LIST [TRAFFIC_POINT]) is
 			-- Adjust positions
 		do
 			if road.origin.location = Void or equal(road.origin.location, zero_vector) then

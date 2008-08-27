@@ -23,7 +23,7 @@ feature -- Initialization
 			a_route_not_void: a_route /= Void
 		local
 			list: DS_ARRAYED_LIST [TRAFFIC_POINT]
-			conns: DS_LINKED_LIST [TRAFFIC_CONNECTION]
+			conns: DS_LINKED_LIST [TRAFFIC_SEGMENT]
 		do
 			route := a_route
 			location := a_route.origin.location

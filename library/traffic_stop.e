@@ -93,7 +93,7 @@ feature -- Access
 
 feature -- Basic operations
 
-	put_connection (a_connection: TRAFFIC_CONNECTION) is
+	put_connection (a_connection: TRAFFIC_SEGMENT) is
 			-- Insert `a_connection'.
 		local
 			c: TRAFFIC_LINE_SEGMENT

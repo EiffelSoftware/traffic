@@ -1,16 +1,16 @@
 indexing
 	description: "[
-		Connections that represent the changing from one means of transportation to the other. 
+		Segment that represent the changing from one means of transportation to the other. 
 		Will most probably be invisible.
 		]"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_EXCHANGE_CONNECTION
+	TRAFFIC_EXCHANGE_SEGMENT
 
 inherit
-	TRAFFIC_CONNECTION
+	TRAFFIC_SEGMENT
 		redefine
 			type,
 			add_to_city,

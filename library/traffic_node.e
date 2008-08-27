@@ -65,8 +65,8 @@ feature -- Access
 	location: TRAFFIC_POINT
 			-- Location of the node
 
-	connection_list: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
-			-- List of all connections that this node is an startpoint of
+	connection_list: TWO_WAY_CIRCULAR [TRAFFIC_SEGMENT]
+			-- List of all segments that this node is an startpoint of
 
 	hash_code: INTEGER is
 			-- Hash code value
@@ -106,7 +106,7 @@ feature {TRAFFIC_STATION} -- Basic operations
 	add_to_city (a_city: TRAFFIC_CITY) is
 			-- Add `Current' and all nodes to `a_city'.
 		local
-			e: TRAFFIC_EXCHANGE_CONNECTION
+			e: TRAFFIC_EXCHANGE_SEGMENT
 			p: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
 			a_city.graph.put_node (Current)
@@ -150,7 +150,7 @@ feature {TRAFFIC_GRAPH} -- Element change
 
 feature {NONE} -- Implementation
 
-	referring_connection: TRAFFIC_CONNECTION
+	referring_connection: TRAFFIC_SEGMENT
 			-- Edge where we came from
 
 invariant

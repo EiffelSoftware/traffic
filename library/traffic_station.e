@@ -66,7 +66,7 @@ feature -- Access
 	outgoing_line_connections: DS_ARRAYED_LIST [TRAFFIC_LINE_SEGMENT] is
 			-- All outgoing line connections
 		local
-			l: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
+			l: TWO_WAY_CIRCULAR [TRAFFIC_SEGMENT]
 			c: TRAFFIC_LINE_SEGMENT
 			i: INTEGER
 		do
@@ -232,8 +232,8 @@ feature -- Status report
 			-- Is `Current' removable from `city'?
 			-- Only internal exchange connections are allowed...
 		local
-			l: TWO_WAY_CIRCULAR [TRAFFIC_CONNECTION]
-			ex: TRAFFIC_EXCHANGE_CONNECTION
+			l: TWO_WAY_CIRCULAR [TRAFFIC_SEGMENT]
+			ex: TRAFFIC_EXCHANGE_SEGMENT
 			i: INTEGER
 		do
 			Result := True

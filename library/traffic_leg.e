@@ -25,7 +25,7 @@ feature {NONE} -- Creation
 			create connections.make
 		end
 
-	make (a_connection: TRAFFIC_CONNECTION) is
+	make (a_connection: TRAFFIC_SEGMENT) is
 			-- Initialize `current', used if line-type is unknown.
 		require
 			connections_exists: a_connection /= Void
@@ -113,7 +113,7 @@ feature {NONE} -- Creation
 			extend (a_line_section)
 		end
 
-	make_walk_with_road (a_road: TRAFFIC_ROAD_CONNECTION) is
+	make_walk_with_road (a_road: TRAFFIC_ROAD_SEGMENT) is
 			-- Initialize `Current' of type walk.
 		require
 			road_exists: a_road /= Void
@@ -131,7 +131,7 @@ feature {NONE} -- Creation
 		require
 			directly_connected_by_one_road: a_origin.is_road_connected (a_destination)
 		local
-			segment: TRAFFIC_ROAD_CONNECTION
+			segment: TRAFFIC_ROAD_SEGMENT
 			road: TRAFFIC_ROAD
 		do
 			road := a_origin.connecting_road (a_destination)
@@ -170,7 +170,7 @@ feature -- Access
 	length: DOUBLE
 			-- Length of section
 
-	connections: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_CONNECTION]
+	connections: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_SEGMENT]
 			-- Connections that are used by the route section
 
 	next: TRAFFIC_LEG
@@ -184,7 +184,7 @@ feature -- Status report
 			Result := line /= Void
 		end
 
-	is_insertable (a_connection: TRAFFIC_CONNECTION): BOOLEAN is
+	is_insertable (a_connection: TRAFFIC_SEGMENT): BOOLEAN is
 			-- Can `a_connection' be inserted?
 		require
 			a_connection_exists: a_connection /= Void
@@ -280,7 +280,7 @@ feature -- Basic operations
 			end
 		end
 
-	extend (a_connection: TRAFFIC_CONNECTION) is
+	extend (a_connection: TRAFFIC_SEGMENT) is
 			-- Add `a_connection' to the end of the route section.
 		require
 			a_connection_exists: a_connection /= Void

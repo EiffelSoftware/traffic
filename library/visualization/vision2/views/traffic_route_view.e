@@ -40,7 +40,7 @@ feature -- Initialization
 	make (a_item: like item) is
 			-- Initialize view for `a_item'.
 		local
-			conns: DS_LINKED_LIST [TRAFFIC_CONNECTION]
+			conns: DS_LINKED_LIST [TRAFFIC_SEGMENT]
 			c: DRAWABLE_POLYLINE
 			p: DRAWABLE_ROUNDED_RECTANGLE
 		do
@@ -275,7 +275,7 @@ feature -- Access
 
 feature {NONE} -- Implementation
 
-	new_connection_view (a_item: TRAFFIC_CONNECTION): DRAWABLE_POLYLINE is
+	new_connection_view (a_item: TRAFFIC_SEGMENT): DRAWABLE_POLYLINE is
 			-- Generate connection view for `a_item'.
 		local
 			pp: ARRAY [REAL_COORDINATE]

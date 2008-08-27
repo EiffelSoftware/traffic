@@ -8,7 +8,7 @@ class
 
 inherit
 
-	TRAFFIC_CONNECTION
+	TRAFFIC_SEGMENT
 		redefine
 			out,
 			start_node,
@@ -66,7 +66,7 @@ feature -- Access
 	line: TRAFFIC_LINE
 			-- Line this line section belongs to
 
-	roads: ARRAYED_LIST [TRAFFIC_ROAD_CONNECTION]
+	roads: ARRAYED_LIST [TRAFFIC_ROAD_SEGMENT]
 			-- Roads on which the line section lies
 
 	hash_code: INTEGER is
@@ -84,7 +84,7 @@ feature -- Access
 
 feature -- Element change
 
-	set_roads (a_roads: ARRAYED_LIST [TRAFFIC_ROAD_CONNECTION]) is
+	set_roads (a_roads: ARRAYED_LIST [TRAFFIC_ROAD_SEGMENT]) is
 			-- Set roads to `a_roads'.
 		require
 			a_roads_exist: a_roads /= Void

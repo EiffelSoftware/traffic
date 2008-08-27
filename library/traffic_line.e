@@ -233,7 +233,7 @@ feature -- Access
 	road_points: DS_ARRAYED_LIST[TRAFFIC_POINT] is
 			-- Polypoints from the roads belonging to this line
 		local
-			roads:ARRAYED_LIST[TRAFFIC_ROAD_CONNECTION]
+			roads:ARRAYED_LIST[TRAFFIC_ROAD_SEGMENT]
 			pp: DS_ARRAYED_LIST[TRAFFIC_POINT]
 			invert, is_station: BOOLEAN
 			v: TRAFFIC_POINT

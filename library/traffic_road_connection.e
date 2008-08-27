@@ -4,11 +4,11 @@ indexing
 	revision: "$Revision: 601 $"
 
 class
-	TRAFFIC_ROAD_CONNECTION
+	TRAFFIC_ROAD_SEGMENT
 
 inherit
 
-	TRAFFIC_CONNECTION
+	TRAFFIC_SEGMENT
 		redefine
 			type,
 			add_to_city,

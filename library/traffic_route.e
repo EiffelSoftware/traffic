@@ -69,7 +69,7 @@ feature -- Access
 			Result := connections.last.destination
 		end
 
-	connections: DS_LINKED_LIST [TRAFFIC_CONNECTION] is
+	connections: DS_LINKED_LIST [TRAFFIC_SEGMENT] is
 			-- All connections traveled by the route
 		require
 			first_exists: first /= Void
@@ -108,7 +108,7 @@ feature -- Status report
 			Result := True
 		end
 
-	is_valid_for_insertion (a_connection: TRAFFIC_CONNECTION): BOOLEAN is
+	is_valid_for_insertion (a_connection: TRAFFIC_SEGMENT): BOOLEAN is
 			-- Is `a_connection' valid for insertion?
 		require
 			connection_exists: a_connection /= Void

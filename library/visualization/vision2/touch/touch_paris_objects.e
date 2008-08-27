@@ -620,7 +620,7 @@ feature --Predefined objects (Line-Sections)
 
 feature --Predefined Objects (Roads)
 
-	Road_Place_Etoile: TRAFFIC_ROAD_CONNECTION is
+	Road_Place_Etoile: TRAFFIC_ROAD_SEGMENT is
 			-- the road from Etoile to place Etoile
 		require
 			Paris_exists: is_paris_loaded
@@ -630,7 +630,7 @@ feature --Predefined Objects (Roads)
 			Result_exists: Result /= Void
 		end
 
-	Road_Place_de_la_Nation: TRAFFIC_ROAD_CONNECTION is
+	Road_Place_de_la_Nation: TRAFFIC_ROAD_SEGMENT is
 			-- the road from Place de la Opera to place Opera
 		require
 			Paris_exists: is_paris_loaded
@@ -640,7 +640,7 @@ feature --Predefined Objects (Roads)
 			Result_exists: Result /= Void
 		end
 
-	Road_pere_la_chaise_to_station_pere_la_chaise: TRAFFIC_ROAD_CONNECTION is
+	Road_pere_la_chaise_to_station_pere_la_chaise: TRAFFIC_ROAD_SEGMENT is
 			-- Road from Pere La Chaise to the metro station Pere La Chaise
 		require
 			Paris_exists: is_paris_loaded
@@ -650,7 +650,7 @@ feature --Predefined Objects (Roads)
 			Result_exists: Result /= Void
 		end
 
-	Road_Hotel_de_Ville_to_station_Hotel_de_Ville: TRAFFIC_ROAD_CONNECTION is
+	Road_Hotel_de_Ville_to_station_Hotel_de_Ville: TRAFFIC_ROAD_SEGMENT is
 			-- Road from Hotel de Ville to the metro station Hotel de Ville
 		require
 			Paris_exists: is_paris_loaded
@@ -660,7 +660,7 @@ feature --Predefined Objects (Roads)
 			Result_exists: Result /= Void
 		end
 
-	Road_station_Champs_de_Mars_to_Tour_Eiffel: TRAFFIC_ROAD_CONNECTION is
+	Road_station_Champs_de_Mars_to_Tour_Eiffel: TRAFFIC_ROAD_SEGMENT is
 			-- Road from Tour Eiffel to the metro station Champs de Mars
 		require
 			Paris_exists: is_paris_loaded
@@ -670,7 +670,7 @@ feature --Predefined Objects (Roads)
 			Result_exists: Result /= Void
 		end
 
-	Road_Champs_Elysee_Etoile_to_place_Charles_de_Gaulle_Etoile: TRAFFIC_ROAD_CONNECTION is
+	Road_Champs_Elysee_Etoile_to_place_Charles_de_Gaulle_Etoile: TRAFFIC_ROAD_SEGMENT is
 			-- Road from Champs Elysee-Etoile to the metro station place Charles de Gaulle
 		require
 			Paris_exists: is_paris_loaded
@@ -680,7 +680,7 @@ feature --Predefined Objects (Roads)
 			Result_exists: Result /= Void
 		end
 
-	Road_Invalides_to_station_Invalides: TRAFFIC_ROAD_CONNECTION is
+	Road_Invalides_to_station_Invalides: TRAFFIC_ROAD_SEGMENT is
 			-- Road from Invalides to the metro station Invalides
 		require
 			Paris_exists: is_paris_loaded
