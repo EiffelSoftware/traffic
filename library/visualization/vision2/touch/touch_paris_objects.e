@@ -366,7 +366,7 @@ feature  -- Predefined objects (Stations)
 			Result_exists: Result /= Void
 		end
 
-	Place_Tour_Eiffel: TRAFFIC_STATION is
+	Eiffel_tower: TRAFFIC_STATION is
 			-- Place
 		require
 			Paris_exists: is_paris_loaded
@@ -376,7 +376,7 @@ feature  -- Predefined objects (Stations)
 			Result_exists: Result /= Void
 		end
 
-	Place_Champs_Elysee: TRAFFIC_STATION is
+	Elysee_palace: TRAFFIC_STATION is
 			-- Place
 		require
 			Paris_exists: is_paris_loaded
@@ -397,21 +397,21 @@ feature -- Predefined objects (Buildings)
 			Result := Paris.landmarks.item ("landmark Musee du Louvre")
 		end
 
-	Eiffel_tower: TRAFFIC_LANDMARK is
-			-- The Eiffel tower building
-		require
-			Paris_exists: is_paris_loaded
-		once
-			Result := Paris.landmarks.item ("landmark Tour Eiffel")
-		end
+--	Eiffel_tower: TRAFFIC_LANDMARK is
+--			-- The Eiffel tower building
+--		require
+--			Paris_exists: is_paris_loaded
+--		once
+--			Result := Paris.landmarks.item ("landmark Tour Eiffel")
+--		end
 
-	Elysee_palace: TRAFFIC_LANDMARK is
-			-- The Elysee_palace building
-		require
-			Paris_exists: is_paris_loaded
-		once
-			Result := Paris.landmarks.item ("landmark Champs Elysee - Etoile")
-		end
+--	Elysee_palace: TRAFFIC_LANDMARK is
+--			-- The Elysee_palace building
+--		require
+--			Paris_exists: is_paris_loaded
+--		once
+--			Result := Paris.landmarks.item ("landmark Champs Elysee - Etoile")
+--		end
 
 feature -- Passengers
 

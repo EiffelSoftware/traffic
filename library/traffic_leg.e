@@ -131,8 +131,6 @@ feature {NONE} -- Creation
 		require
 			directly_connected_by_one_road: a_origin.is_road_connected (a_destination)
 		local
-			roads: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_ROAD, INTEGER]
-			found: BOOLEAN
 			segment: TRAFFIC_ROAD_CONNECTION
 			road: TRAFFIC_ROAD
 		do

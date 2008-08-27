@@ -73,8 +73,6 @@ feature -- Access (Paris)
 					is_paris_loaded := True
 					is_zurich_loaded := False
 					b := Louvre
-					b := eiffel_tower
-					b := elysee_palace
 					main_window.move_to_center
 					main_window.canvas.redraw_now
 				end

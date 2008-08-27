@@ -18,9 +18,9 @@ feature -- Path building
 			Paris.display
 
 			-- Path
-			create walking_1.make_walk (Place_Champs_Elysee, Station_Charles_de_Gaulle_Etoile)
+			create walking_1.make_walk (Elysee_palace, Station_Charles_de_Gaulle_Etoile)
 			create metro_1.make_metro (Station_Charles_de_Gaulle_Etoile, Station_Champs_de_Mars_Tour_Eiffel_Bir_Hakeim)
-			create walking_2.make_walk (Station_Champs_de_Mars_Tour_Eiffel_Bir_Hakeim, Place_Tour_Eiffel)
+			create walking_2.make_walk (Station_Champs_de_Mars_Tour_Eiffel_Bir_Hakeim, Eiffel_Tower)
 			create full.make_empty
 			full.extend (walking_1)
 			full.extend (metro_1)

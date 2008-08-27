@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			create first_window
 			create lb
 			first_window.set_example (lb, agent lb.build_a_line)
-			first_window.set_title ("Path building (chapter 6)")
+			first_window.set_title ("Line building (chapter 6)")
 			first_window.show
 		end
 
