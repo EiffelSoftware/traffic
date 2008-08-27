@@ -10,10 +10,10 @@ inherit
 
 	TOURISM
 
-feature -- Path building
+feature -- Routes
 
 	traverse is
-			-- Build a new path.
+			-- Build a route and traverse Line8 it.
 		do
 			Paris.display
 
