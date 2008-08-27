@@ -69,7 +69,7 @@ feature {NONE} -- Initialization
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
 			type_set: type=a_type
-			count_line_segment_not_void: connection_count >= 0 -- List is initilalized.
+			count_line_segment_not_void: segment_count >= 0 -- List is initilalized.
 			element_inserted_event_exists: element_inserted_event /= Void
 			element_removed_event_exists: element_removed_event /= Void
 			one_direction_exists: one_direction /= Void
@@ -94,7 +94,7 @@ feature {NONE} -- Initialization
 		ensure
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void
-			count_line_segment_not_void: connection_count >= 0 -- List is initilalized.
+			count_line_segment_not_void: segment_count >= 0 -- List is initilalized.
 			element_inserted_event_exists: element_inserted_event /= Void
 			element_removed_event_exists: element_removed_event /= Void
 			one_direction_exists: one_direction /= Void
@@ -116,7 +116,7 @@ feature {NONE} -- Initialization
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
 			type_set: type=a_type
-			count_line_segment_not_void: connection_count >= 0 -- List is initilalized.
+			count_line_segment_not_void: segment_count >= 0 -- List is initilalized.
 			element_inserted_event_exists: element_inserted_event /= Void
 			element_removed_event_exists: element_removed_event /= Void
 			one_direction_exists: one_direction /= Void
@@ -145,8 +145,8 @@ feature -- Measurement
 		end
 
 
-	connection_count: INTEGER is
-			-- Number of connections per direction in line
+	segment_count: INTEGER is
+			-- Number of segments per direction in line
 		do
 			Result := one_direction.count
 		end
@@ -154,7 +154,7 @@ feature -- Measurement
 	count: INTEGER is
 			-- Number of stations in this line
 		do
-			Result := connection_count + 1
+			Result := segment_count + 1
 		end
 
 feature -- Access
@@ -170,7 +170,7 @@ feature -- Access
 		do
 			if is_empty then
 				Result := old_terminal_1
-			elseif i = connection_count + 1 then
+			elseif i = segment_count + 1 then
 				Result := terminal_2
 			else
 				Result := one_direction.item (i).origin
@@ -198,7 +198,7 @@ feature -- Access
 			-- Type of line
 
 	old_terminal_1: TRAFFIC_STATION
-			-- Old terminal (after deletion via `remove_all_connections')
+			-- Old terminal (after deletion via `remove_all_segments')
 
 	terminal_1: TRAFFIC_STATION
 			-- Terminal of line in one direction
@@ -333,7 +333,7 @@ feature -- Access
 		end
 
 	get_segments(a_origin, a_destination: TRAFFIC_STATION): LINKED_LIST[TRAFFIC_LINE_SEGMENT] is
-			-- Line segments connection `a_origin' and `a_destination'
+			-- Line segments connecting `a_origin' and `a_destination'
 		require
 			on_this_line: a_origin.lines.has (current) and a_destination.lines.has (current)
 			not_same: a_origin /= a_destination
@@ -531,8 +531,8 @@ feature {TRAFFIC_ITEM_LINKED_LIST} -- Basic operations
 
 feature -- Removal
 
-	remove_all_connections, wipe_out is
-			-- Remove all connections (current `terminal_1' is captured in attribute `old_terminal_1').
+	remove_all_segments, wipe_out is
+			-- Remove all segments (current `terminal_1' is captured in attribute `old_terminal_1').
 		require
 			old_terminal_set: old_terminal_1 /= Void
 		do
@@ -576,7 +576,7 @@ feature -- Removal
 	remove_last is
 			-- Remove end of the line.
 		require
-			count_valid: connection_count >= 1
+			count_valid: segment_count >= 1
 		do
 			element_removed_event.publish ([one_direction.last])
 			if one_direction.last.is_in_city then
@@ -588,22 +588,22 @@ feature -- Removal
 				other_direction.first.remove_from_city
 			end
 			other_direction.remove_first
-			if connection_count >= 1 then
+			if segment_count >= 1 then
 				terminal_2 := one_direction.last.destination
-			elseif connection_count = 0 then
+			elseif segment_count = 0 then
 				terminal_2 := Void
 				terminal_1 := Void
 			end
 		ensure
-			count_smaller: connection_count = old connection_count - 1
-			terminals_set: connection_count /= 0 implies (terminal_1 = old terminal_1 and terminal_2 /= Void and old_terminal_1 = old terminal_1)
-			terminals_set: connection_count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
+			count_smaller: segment_count = old segment_count - 1
+			terminals_set: segment_count /= 0 implies (terminal_1 = old terminal_1 and terminal_2 /= Void and old_terminal_1 = old terminal_1)
+			terminals_set: segment_count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
 		end
 
 	remove_first is
 			-- Remove start of the line.
 		require
-			count_valid: connection_count >= 1
+			count_valid: segment_count >= 1
 		do
 			element_removed_event.publish ([one_direction.first])
 			element_removed_event.publish ([other_direction.last])
@@ -615,17 +615,17 @@ feature -- Removal
 			end
 			one_direction.remove_first
 			other_direction.remove_last
-			if connection_count >= 1 then
+			if segment_count >= 1 then
 				terminal_1 := one_direction.first.origin
 				old_terminal_1 := terminal_1
-			elseif connection_count = 0 then
+			elseif segment_count = 0 then
 				terminal_2 := Void
 				terminal_1 := Void
 			end
 		ensure
-			count_smaller: connection_count = old connection_count - 1
-			terminals_set: connection_count /= 0 implies (terminal_2 = old terminal_2 and terminal_1 /= Void and old_terminal_1 = terminal_1)
-			terminals_set: connection_count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
+			count_smaller: segment_count = old segment_count - 1
+			terminals_set: segment_count /= 0 implies (terminal_2 = old terminal_2 and terminal_1 /= Void and old_terminal_1 = terminal_1)
+			terminals_set: segment_count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
 		end
 
 feature -- Status report
@@ -723,7 +723,7 @@ feature -- Basic operations
 		end
 
 	extend (s: TRAFFIC_STATION) is
-			-- Add connection to `a_station' at end.
+			-- Add connection (segment) to `a_station' at end.
 		require
 			has_terminal_1: old_terminal_1 /= Void
 		local
@@ -732,7 +732,7 @@ feature -- Basic operations
 			pp: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
 			if terminal_2 /= Void then
-				-- We already have line connections, use terminal_2 to extend
+				-- We already have line segments, use terminal_2 to extend
 				if terminal_2.has_stop (Current) then
 					s1 := terminal_2.stop (Current)
 				else
@@ -768,7 +768,7 @@ feature -- Basic operations
 		end
 
 	prepend (a_station: TRAFFIC_STATION) is
-			-- Add connection from `a_station' to the beginning of the line.
+			-- Add connection (segment) from `a_station' to the beginning of the line.
 		require
 			has_terminal_1: old_terminal_1 /= Void
 		local
@@ -910,7 +910,7 @@ invariant
 	northeast_is_last: ne_end = i_th (count)
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
-	connections_not_void: one_direction /= Void and other_direction /= Void
+	segments_not_void: one_direction /= Void and other_direction /= Void
 	type_exists: type /= Void -- Line has type.
 	counts_are_equal: one_direction.count = other_direction.count
 	after: is_after = (index = count + 1)

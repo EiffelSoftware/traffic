@@ -18,8 +18,8 @@ feature {NONE} -- Initialization
 
 feature -- Measurement
 
-	connection_count: INTEGER is
-			-- Number of connections per direction in line
+	segment_count: INTEGER is
+			-- Number of segment per direction in line
 		do
 		end
 
@@ -55,7 +55,7 @@ feature -- Access
 			-- Type of line
 
 	old_terminal_1: TRAFFIC_STATION
-			-- Old terminal (after deletion via `remove_all_connections')
+			-- Old terminal (after deletion via `remove_all_segments')
 
 	terminal_1: TRAFFIC_STATION
 			-- Terminal of line in one direction
@@ -132,8 +132,8 @@ feature {TRAFFIC_ITEM_LINKED_LIST} -- Basic operations
 
 feature -- Removal
 
-	remove_all_connections, wipe_out is
-			-- Remove all connections (keep `terminal_1').
+	remove_all_segments, wipe_out is
+			-- Remove all segments (keep `terminal_1').
 		do
 		end
 
@@ -184,12 +184,12 @@ feature -- Basic operations
 		end
 
 	extend (a_station: TRAFFIC_STATION) is
-			-- Add connection to `a_station' at end.
+			-- Add connection (segment) to `a_station' at end.
 		do
 		end
 
 	prepend (a_station: TRAFFIC_STATION) is
-			-- Add connection from `a_station' to the beginning of the line.
+			-- Add connection (segment) from `a_station' to the beginning of the line.
 		do
 		end
 

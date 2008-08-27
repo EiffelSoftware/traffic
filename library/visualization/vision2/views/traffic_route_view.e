@@ -47,7 +47,7 @@ feature -- Initialization
 			make_container
 			item := a_item
 			from
-				conns := item.connections
+				conns := item.segments
 				conns.start
 			until
 				conns.after

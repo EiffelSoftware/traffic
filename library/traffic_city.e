@@ -341,7 +341,7 @@ feature {NONE}-- Implementation
 			Result_exists: Result /= Void
 		end
 
-	location_from_connections (a_segments: LIST [TRAFFIC_SEGMENT]; a_node: TRAFFIC_NODE): TRAFFIC_POINT is
+	location_from_segmentss (a_segments: LIST [TRAFFIC_SEGMENT]; a_node: TRAFFIC_NODE): TRAFFIC_POINT is
 			-- Location of `a_node'
 		do
 

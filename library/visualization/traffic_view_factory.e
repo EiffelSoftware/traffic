@@ -27,7 +27,7 @@ feature -- Factory methods
 		end
 
 	new_line_view (a_line: TRAFFIC_LINE): TRAFFIC_VIEW [TRAFFIC_LINE] is
-			-- New line connection view for `a_connection'
+			-- New line segment view for `a_segment'
 		require
 			a_line_exists: a_line /= Void
 		deferred

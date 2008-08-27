@@ -1,5 +1,5 @@
 indexing
-	description: "View for line connections"
+	description: "View for line segments"
 	date: "$Date$"
 	revision: "$Revision$"
 

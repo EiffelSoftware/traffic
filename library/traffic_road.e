@@ -1,5 +1,5 @@
 indexing
-	description: "Roads in the city (e.g. streets, lightrailroads, railroads"
+	description: "Roads in the city (e.g. streets, lightrailroads, railroads)"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -68,16 +68,16 @@ feature -- Access
 		end
 
 	one_way: TRAFFIC_ROAD_SEGMENT
-			-- Road connection into one direction
+			-- Road segment into one direction
 
 	other_way: TRAFFIC_ROAD_SEGMENT
-			-- Road connection into other direction (may be Void if the way is a one way)
+			-- Road segment into other direction (may be Void if the way is a one way)
 
 	id: INTEGER
 			-- Id of the road
 
-	get_connection(a_origin, a_destination: TRAFFIC_STATION): TRAFFIC_ROAD_SEGMENT is
-			-- returns the road segment connection `a_origin' and `a_destination'
+	get_connecting_segment(a_origin, a_destination: TRAFFIC_STATION): TRAFFIC_ROAD_SEGMENT is
+			-- returns the road segment connecting `a_origin' and `a_destination'
 		require
 			connected: connects(a_origin, a_destination)
 		do
@@ -181,8 +181,8 @@ feature -- Status report
 
 invariant
 
-	has_connections: is_one_way implies one_way /= Void and other_way = Void
-	has_connections: not is_one_way implies one_way /= Void and other_way /= Void
+	has_segments: is_one_way implies one_way /= Void and other_way = Void
+	has_segments: not is_one_way implies one_way /= Void and other_way /= Void
 	id_set: id > 0 and id = one_way.id
 
 end

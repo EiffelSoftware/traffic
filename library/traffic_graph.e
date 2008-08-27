@@ -87,27 +87,27 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 			end
 		end
 
-	put_connection (a_connection: TRAFFIC_SEGMENT) is
-			-- Insert `a_connection' into the graph.
+	put_segment (a_segment: TRAFFIC_SEGMENT) is
+			-- Insert `a_segment' into the graph.
 		require
-			a_connection_exists: a_connection /= Void
-			nodes_exist: has_node (a_connection.start_node) and has_node (a_connection.end_node)
+			a_segment_exists: a_segment /= Void
+			nodes_exist: has_node (a_segment.start_node) and has_node (a_segment.end_node)
 		local
 			r: TRAFFIC_ROAD_SEGMENT
 			l: TRAFFIC_LINE_SEGMENT
 		do
-			r ?= a_connection
-			l ?= a_connection
+			r ?= a_segment
+			l ?= a_segment
 			if r /= Void then
 				put_road (r)
 			elseif l /= Void then
 				put_line_segment (l)
 			else
-				a_connection.start_node.put_connection (a_connection)
-				internal_edges.extend (a_connection)
-				total_weight := total_weight + a_connection.length
-				if not a_connection.is_directed then
-					a_connection.end_node.put_connection (a_connection)
+				a_segment.start_node.put_connection (a_segment)
+				internal_edges.extend (a_segment)
+				total_weight := total_weight + a_segment.length
+				if not a_segment.is_directed then
+					a_segment.end_node.put_connection (a_segment)
 				end
 			end
 		end
@@ -345,7 +345,7 @@ feature {NONE} -- Implementation
 			-- Weight function for edges, if Void, no weight function is used.
 
 	prune_edge_impl (a_edge: like edge_item) is
-			-- Redefined to subtract the length of the connection from the total.
+			-- Redefined to subtract the length of the segment from the total.
 		do
 			total_weight := total_weight - a_edge.length
 			Precursor (a_edge)
@@ -353,7 +353,7 @@ feature {NONE} -- Implementation
 
 	calculate_weight (a_edge: TRAFFIC_SEGMENT): REAL is
 			-- Calculate the edge based on the current status.
-			-- This is only used for "dummy" connections.
+			-- This is only used for "dummy" segments.
 		local
 			e: TRAFFIC_EXCHANGE_SEGMENT
 		do
@@ -375,10 +375,10 @@ feature {NONE} -- Implementation
 	total_weight: DOUBLE
 		-- Total length of all TRAFFIC_SEGMENTSs added.
 		-- Usually less then the total weight of the edges because
-		-- the "dummy" connections have a higher weight than their length.
+		-- the "dummy" segments have a higher weight than their length.
 
 	average_weight: DOUBLE is
-			-- Average weight of an edge used for "dummy" connections
+			-- Average weight of an edge used for "dummy" segments
 			-- between nodes of the same station.
 		do
 			Result := total_weight / internal_edges.count

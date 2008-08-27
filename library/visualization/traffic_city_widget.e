@@ -16,12 +16,12 @@ feature -- Access
 		end
 
 	line_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_LINE, TRAFFIC_VIEW [TRAFFIC_LINE]] is
-			-- Container for line connection views
+			-- Container for line segment views
 		deferred
 		end
 
 	road_representations:  TRAFFIC_VIEW_CONTAINER [TRAFFIC_ROAD, TRAFFIC_VIEW [TRAFFIC_ROAD]] is
-			-- Container for road connection views
+			-- Container for road segment views
 		deferred
 		end
 

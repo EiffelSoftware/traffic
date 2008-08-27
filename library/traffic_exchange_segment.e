@@ -50,7 +50,7 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	weight_factor: DOUBLE is
-			-- Factor with which the length of the connection is multiplied
+			-- Factor with which the length of the segment is multiplied
 		do
 			Result := 12
 		end
@@ -72,7 +72,7 @@ feature {TRAFFIC_NODE} -- Basic operations
 	add_to_city (a_city: TRAFFIC_CITY) is
 			-- Add `Current' and all nodes to `a_city'.
 		do
-			a_city.graph.put_connection (Current)
+			a_city.graph.put_segment (Current)
 			is_in_city := True
 			city := a_city
 		ensure then

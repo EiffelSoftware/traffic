@@ -102,7 +102,7 @@ feature -- Element change
 feature -- Access
 
 	state: TRAFFIC_SEGMENT_STATE
-			-- State of connection
+			-- State of segment
 
 	type: TRAFFIC_TYPE
 			-- Type of the line segment
@@ -120,7 +120,7 @@ feature -- Access
 		end
 
 	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
-			-- Location representation of the connection.
+			-- Location representation of the segment.
 
 	length: DOUBLE is
 			-- Length from start of polypoints to end.
@@ -146,7 +146,7 @@ feature -- Access
 feature -- Access
 
 	weight_factor: DOUBLE is
-			-- Factor with which the length of the connection is multiplied
+			-- Factor with which the length of the segment is multiplied
 		deferred
 		ensure
 			weight_factor_valid: Result > 0

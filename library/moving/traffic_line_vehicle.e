@@ -212,7 +212,7 @@ feature{NONE} --Implementation
 					line_cursor.forth
 				end
 				if line_cursor.after then
-					if is_reiterating and line_cursor.line.connection_count >= 1 then
+					if is_reiterating and line_cursor.line.segment_count >= 1 then
 						line_cursor.set_cursor_direction (not line_cursor.is_cursor_one_direction)
 						line_cursor.start
 						create poly_cursor.make (line_cursor.item_for_iteration.polypoints)

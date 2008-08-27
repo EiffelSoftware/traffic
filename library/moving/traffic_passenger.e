@@ -27,7 +27,7 @@ feature -- Initialization
 		do
 			route := a_route
 			location := a_route.origin.location
-			conns := a_route.connections
+			conns := a_route.segments
 			create list.make (conns.count + 1)
 			from
 				conns.start
@@ -90,8 +90,8 @@ feature {NONE} -- Implementation
 			-- Set where 'Current' intends to board and to get off.
 		require
 			line_not_empty: a_line /= Void
-			valid_stop: a_boarding_stop > 0 and a_boarding_stop <= a_line.connection_count
-			valid_stop: a_deboarding_stop > 0 and a_deboarding_stop <= a_line.connection_count
+			valid_stop: a_boarding_stop > 0 and a_boarding_stop <= a_line.segment_count
+			valid_stop: a_deboarding_stop > 0 and a_deboarding_stop <= a_line.segment_count
 		do
 			intended_line := a_line
 			boarding_stop := a_boarding_stop

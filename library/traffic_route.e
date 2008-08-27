@@ -78,11 +78,11 @@ feature -- Access
 		require
 			first_exists: first /= Void
 		do
-			Result := connections.last.destination
+			Result := segments.last.destination
 		end
 
-	connections: DS_LINKED_LIST [TRAFFIC_SEGMENT] is
-			-- All connections traveled by the route
+	segments: DS_LINKED_LIST [TRAFFIC_SEGMENT] is
+			-- All segments traveled by the route
 		require
 			first_exists: first /= Void
 		local
@@ -95,12 +95,12 @@ feature -- Access
 				ps = Void
 			loop
 				from
-					ps.connections.start
+					ps.segments.start
 				until
-					ps.connections.after
+					ps.segments.after
 				loop
-					Result.force_last (ps.connections.item_for_iteration)
-					ps.connections.forth
+					Result.force_last (ps.segments.item_for_iteration)
+					ps.segments.forth
 				end
 				ps := ps.next
 			end
@@ -220,7 +220,7 @@ feature -- Basic operations
 			-- Extends current with `a_leg' at the end
 		require
 			leg_exists: a_leg /= void
-			insertable: is_valid_for_insertion(a_leg.connections.first)
+			insertable: is_valid_for_insertion(a_leg.segments.first)
 			not_joinable: (last = void) or else  (not last.is_joinable (a_leg))
 		do
 			if first = void then
@@ -237,7 +237,7 @@ feature -- Basic operations
 			-- Append a TRAFFIC_ROUTE `a_route' at the end of the actual route
 		require
 			route_exists: a_route /= VOID
-			route_valid_for_insertion: is_valid_for_insertion(a_route.first.connections.first)
+			route_valid_for_insertion: is_valid_for_insertion(a_route.first.segments.first)
 		local
 			leg: TRAFFIC_LEG
 		do
