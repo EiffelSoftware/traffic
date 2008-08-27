@@ -14,12 +14,6 @@ feature -- Path building
 
 	traverse is
 			-- Build a new path.
-		local
-			b: TRAFFIC_BUILDING_RANDOMIZER
-			g: TRAFFIC_GRID
-			p: TRAFFIC_POINT_RANDOMIZER
-			r: TRAFFIC_ROUTE_CALCULATOR
-			rr: TRAFFIC_ROUTE_RANDOMIZER
 		do
 			Paris.display
 
