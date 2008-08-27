@@ -455,8 +455,8 @@ feature {NONE} -- Implementation
 		end
 
 	update_location is
-			-- Update the location, breadth, and width of the station using the stop's line-sections locations.
-			-- This strange hack with the line_sections is needed because of Touch of class.
+			-- Update the location, breadth, and width of the station using the stop's line-segments locations.
+			-- This strange hack with the line_segments is needed because of Touch of class.
 		local
 			p: TRAFFIC_POINT
 		do

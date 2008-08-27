@@ -33,15 +33,15 @@ feature -- Basic operations
 			-- Result is accessable via `last_route'.
 		require
 			n_valid: n >= 1
-			city_has_line_section: city.line_sections.count >= 1
+			city_has_line_segment: city.line_segments.count >= 1
 		local
 			i: INTEGER
 			pa: ARRAY [TRAFFIC_STATION]
 			p: TRAFFIC_STATION
 			no: TRAFFIC_NODE
-			s,t: TRAFFIC_ROUTE_SECTION
+			s,t: TRAFFIC_LEG
 			finished: BOOLEAN
-			c: TRAFFIC_CONNECTION
+			c: TRAFFIC_SEGMENT
 		do
 			create last_route
 			random.forth
@@ -85,7 +85,7 @@ feature -- Basic operations
 			-- Backup algorithm if the above did not find a route with at least one connection that is visible
 			if last_route.first = Void then
 				random.forth
-				create t.make (city.line_sections.item (random.item \\ city.line_sections.count + 1))
+				create t.make (city.line_segments.item (random.item \\ city.line_segments.count + 1))
 				last_route.set_first (t)
 			end
 		ensure

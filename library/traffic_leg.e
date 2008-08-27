@@ -43,18 +43,18 @@ feature {NONE} -- Creation
 			extend (a_connection)
 		end
 
-	make_tram (a_line_section: TRAFFIC_LINE_SEGMENT) is
+	make_tram (a_line_segment: TRAFFIC_LINE_SEGMENT) is
 			-- Initialize `Current' of type tram.
 		require
-			line_section_exists: a_line_section /= Void
-			line_section_is_tram: is_tram (a_line_section)
+			line_segment_exists: a_line_segment /= Void
+			line_segment_is_tram: is_tram (a_line_segment)
 		do
-			line := a_line_section.line
-			length := a_line_section.length
+			line := a_line_segment.line
+			length := a_line_segment.length
 			if connections = Void then
 				default_create
 			end
-			extend (a_line_section)
+			extend (a_line_segment)
 		end
 
 	make_metro (a_origin, a_destination: TRAFFIC_STATION) is
@@ -85,32 +85,32 @@ feature {NONE} -- Creation
 		end
 
 
-	make_bus (a_line_section: TRAFFIC_LINE_SEGMENT) is
+	make_bus (a_line_segment: TRAFFIC_LINE_SEGMENT) is
 			-- Initialize `Current' of type bus.
 		require
-			line_sectin_exists: a_line_section /= Void
-			line_section_is_bus: is_bus (a_line_section)
+			line_sectin_exists: a_line_segment /= Void
+			line_segment_is_bus: is_bus (a_line_segment)
 		do
-			line := a_line_section.line
-			length := a_line_section.length
+			line := a_line_segment.line
+			length := a_line_segment.length
 			if connections = Void then
 				default_create
 			end
-			extend (a_line_section)
+			extend (a_line_segment)
 		end
 
-	make_rail (a_line_section: TRAFFIC_LINE_SEGMENT) is
+	make_rail (a_line_segment: TRAFFIC_LINE_SEGMENT) is
 			-- Initialize `Current' ob type rail.
 		require
-			line_section_exists: a_line_section /= Void
-			line_section_is_rail: is_rail (a_line_section)
+			line_segment_exists: a_line_segment /= Void
+			line_segment_is_rail: is_rail (a_line_segment)
 		do
-			line := a_line_section.line
-			length := a_line_section.length
+			line := a_line_segment.line
+			length := a_line_segment.length
 			if connections = Void then
 				default_create
 			end
-			extend (a_line_section)
+			extend (a_line_segment)
 		end
 
 	make_walk_with_road (a_road: TRAFFIC_ROAD_SEGMENT) is
@@ -147,7 +147,7 @@ feature {NONE} -- Creation
 feature -- Access
 
 	type: TRAFFIC_TYPE is
-			-- Type of the route section
+			-- Type of the route segment
 		do
 			Result := connections.first.type
 		end
@@ -168,18 +168,18 @@ feature -- Access
 			-- Line used
 
 	length: DOUBLE
-			-- Length of section
+			-- Length of segment
 
 	connections: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_SEGMENT]
-			-- Connections that are used by the route section
+			-- Connections that are used by the route segment
 
 	next: TRAFFIC_LEG
-			-- Next route section
+			-- Next route segment
 
 feature -- Status report
 
 	has_line: BOOLEAN is
-			-- Does this route section use a line?
+			-- Does this route segment use a line?
 		do
 			Result := line /= Void
 		end
@@ -205,83 +205,83 @@ feature -- Status report
 			end
 		end
 
-	is_joinable (a_section: TRAFFIC_LEG): BOOLEAN is
-			-- Can `a_section' be inserted?
+	is_joinable (a_segment: TRAFFIC_LEG): BOOLEAN is
+			-- Can `a_segment' be inserted?
 		require
-			a_section_exists: a_section /= Void
+			a_segment_exists: a_segment /= Void
 		do
-			Result := a_section.connections = Void or else is_insertable (a_section.connections.first)
+			Result := a_segment.connections = Void or else is_insertable (a_segment.connections.first)
 		end
 
-	is_valid_next (a_section: TRAFFIC_LEG): BOOLEAN is
-			-- Is the origin of `a_section' the same station as the current destination?
+	is_valid_next (a_segment: TRAFFIC_LEG): BOOLEAN is
+			-- Is the origin of `a_segment' the same station as the current destination?
 		require
-			a_section_exists: a_section /= Void
+			a_segment_exists: a_segment /= Void
 		do
-			Result := connections = Void or else destination = a_section.origin
+			Result := connections = Void or else destination = a_segment.origin
 
 		end
 
-	is_tram (a_line_section: TRAFFIC_LINE_SEGMENT): BOOLEAN is
-			-- is `a_line_section' of type tram?
+	is_tram (a_line_segment: TRAFFIC_LINE_SEGMENT): BOOLEAN is
+			-- is `a_line_segment' of type tram?
 		require
-			a_line_section_exists: a_line_section /= Void
+			a_line_segment_exists: a_line_segment /= Void
 		local
 			tram_type: STRING
 		do
 			tram_type := (create {TRAFFIC_TYPE_TRAM}.make).name
 			-- is ls.line realy of type traffic_type_tram
-			Result := a_line_section.line.type.name.is_equal (tram_type)
+			Result := a_line_segment.line.type.name.is_equal (tram_type)
 		end
 
-	is_bus (a_line_section: TRAFFIC_LINE_SEGMENT): BOOLEAN is
-			-- is `a_line_section' of type tram?
+	is_bus (a_line_segment: TRAFFIC_LINE_SEGMENT): BOOLEAN is
+			-- is `a_line_segment' of type tram?
 		require
-			a_line_section_exists: a_line_section /= Void
+			a_line_segment_exists: a_line_segment /= Void
 		local
 			bus_type: STRING
 		do
 			bus_type := (create {TRAFFIC_TYPE_BUS}.make).name
 			-- is ls.line realy of type traffic_type_bus
-			Result := a_line_section.line.type.name.is_equal (bus_type)
+			Result := a_line_segment.line.type.name.is_equal (bus_type)
 		end
 
-	is_rail (a_line_section: TRAFFIC_LINE_SEGMENT): BOOLEAN is
-			-- is `a_line_section' of type tram?
+	is_rail (a_line_segment: TRAFFIC_LINE_SEGMENT): BOOLEAN is
+			-- is `a_line_segment' of type tram?
 		require
-			a_line_section_exists: a_line_section /= Void
+			a_line_segment_exists: a_line_segment /= Void
 		local
 			train_type: STRING
 		do
 			train_type := (create {TRAFFIC_TYPE_RAIL}.make).name
 			-- is ls.line realy of type traffic_type_train
-			Result := a_line_section.line.type.name.is_equal (train_type)
+			Result := a_line_segment.line.type.name.is_equal (train_type)
 		end
 
 feature -- Basic operations
 
-	join (a_section: TRAFFIC_LEG) is
-			-- Extend with `a_section'.
+	join (a_leg: TRAFFIC_LEG) is
+			-- Extend with `a_leg'.
 		require
-			section_exists: a_section /= Void
-			section_is_intertable: is_joinable (a_section)
+			leg_exists: a_leg /= Void
+			leg_is_intertable: is_joinable (a_leg)
 		do
 			if not has_line then
-				line := a_section.line
+				line := a_leg.line
 			end
-			length := length + a_section.length
+			length := length + a_leg.length
 			from
-				a_section.connections.start
+				a_leg.connections.start
 			until
-				a_section.connections.after
+				a_leg.connections.after
 			loop
-				connections.force_last (a_section.connections.item_for_iteration)
-				a_section.connections.forth
+				connections.force_last (a_leg.connections.item_for_iteration)
+				a_leg.connections.forth
 			end
 		end
 
 	extend (a_connection: TRAFFIC_SEGMENT) is
-			-- Add `a_connection' to the end of the route section.
+			-- Add `a_connection' to the end of the route leg.
 		require
 			a_connection_exists: a_connection /= Void
 			a_connection_fits: is_insertable (a_connection)
@@ -298,16 +298,16 @@ feature -- Basic operations
 			one_more: connections.count = old connections.count + 1
 		end
 
-	set_next (a_section: TRAFFIC_LEG) is
-			-- Set pointer to next route section `a_section'.
+	set_next (a_leg: TRAFFIC_LEG) is
+			-- Set pointer to next route leg `a_leg'.
 		require
-			a_section_exists: a_section /= Void
-			is_realy_next: is_valid_next (a_section)
-			is_different_type_of_line: not is_joinable (a_section)
+			a_leg_exists: a_leg /= Void
+			is_realy_next: is_valid_next (a_leg)
+			is_different_type_of_line: not is_joinable (a_leg)
 		do
-			next := a_section
+			next := a_leg
 		ensure
-			next_set: next = a_section
+			next_set: next = a_leg
 		end
 
 end

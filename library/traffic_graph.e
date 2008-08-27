@@ -73,17 +73,17 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 			end
 		end
 
-	put_line_section (a_section: TRAFFIC_LINE_SEGMENT) is
-			-- Insert `a_section' into the graph.
+	put_line_segment (a_segment: TRAFFIC_LINE_SEGMENT) is
+			-- Insert `a_segment' into the graph.
 		require
-			a_section_exists: a_section /= Void
-			nodes_exist: has_node (a_section.start_node) and has_node (a_section.end_node)
+			a_segment_exists: a_segment /= Void
+			nodes_exist: has_node (a_segment.start_node) and has_node (a_segment.end_node)
 		do
-			a_section.start_node.put_connection (a_section)
-			internal_edges.extend (a_section)
-			total_weight := total_weight + a_section.length
-			if not a_section.is_directed then
-				a_section.end_node.put_connection (a_section)
+			a_segment.start_node.put_connection (a_segment)
+			internal_edges.extend (a_segment)
+			total_weight := total_weight + a_segment.length
+			if not a_segment.is_directed then
+				a_segment.end_node.put_connection (a_segment)
 			end
 		end
 
@@ -101,7 +101,7 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 			if r /= Void then
 				put_road (r)
 			elseif l /= Void then
-				put_line_section (l)
+				put_line_segment (l)
 			else
 				a_connection.start_node.put_connection (a_connection)
 				internal_edges.extend (a_connection)

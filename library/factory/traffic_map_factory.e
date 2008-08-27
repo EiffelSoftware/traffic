@@ -178,7 +178,7 @@ feature -- Line segment building
 	build_line_segment (a_origin, a_destination:STRING; a_polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]; a_city: TRAFFIC_CITY; a_line: TRAFFIC_LINE) is
 			-- Generate new traffic line segment object going from origin `a_origin' to `a_destination'
 			-- belonging to line `a_line' in map `a_city'.
-			-- (Access the generated object through feature `line_segment')
+			-- (Access the generated object through feature `line_segments')
 		require
 			a_city_exists: a_city /= Void
 			a_origin_exists: a_city.stations.has (a_origin)
@@ -277,7 +277,7 @@ feature -- Line segment building
 			Result := internal_one_direction /= Void and internal_other_direction /= Void
 		end
 
-feature -- Road section building
+feature -- Road segment building
 
 	build_road (a_origin, a_destination:STRING; a_city: TRAFFIC_CITY; a_type: STRING; an_id:STRING; a_direction:STRING) is
 			-- Generate new traffic road object going from origin `a_origin' to `a_destination'
@@ -316,7 +316,7 @@ feature -- Road section building
 		end
 
 	has_road: BOOLEAN is
-			-- Is there a line section object available?
+			-- Is there a road object available?
 		do
 			Result := internal_road /= Void
 		end
@@ -374,8 +374,8 @@ feature {NONE} -- Implementation
 			-- Internal representation of last created traffic landmark
 
 	internal_one_direction, internal_other_direction: TRAFFIC_LINE_SEGMENT
-			-- Internal representation of last created traffic line section
-
+			-- Internal representation of last created traffic line segment
+			
 	internal_line: TRAFFIC_LINE
 			-- Internal representation of last created traffic line
 

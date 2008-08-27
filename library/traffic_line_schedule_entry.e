@@ -10,18 +10,18 @@ inherit
 	TRAFFIC_CONSTANTS
 
 create
-	make_with_line_section
+	make_with_line_segment
 
 feature -- Initialisation
 
-	make_with_line_section(a_line_section: TRAFFIC_LINE_SEGMENT) is
-			-- Create the object for a given line section
+	make_with_line_segment(a_line_segment: TRAFFIC_LINE_SEGMENT) is
+			-- Create the object for a given line segment
 		require
-			valid_line_section: a_line_section /= Void
+			valid_line_segment: a_line_segment /= Void
 		do
-			line_section := a_line_section
+			line_segment := a_line_segment
 		ensure
-			line_section_set: line_section /= Void and then line_section = a_line_section
+			line_segment_set: line_segment /= Void and then line_segment = a_line_segment
 		end
 
 
@@ -33,13 +33,13 @@ feature -- Access
 	end_time: TIME
 			-- Time the object has to arrive at the target
 
-	line_section: TRAFFIC_LINE_SEGMENT
-			-- Line section which the object will travel on¨
+	line_segment: TRAFFIC_LINE_SEGMENT
+			-- Line segment which the object will travel on¨
 
 feature -- Status report
 
 	speed: DOUBLE is
-			-- Speed needed to travel the line section
+			-- Speed needed to travel the line segment
 			-- Note: We cannot have total exact values, but we have a waiting time at the station
 			-- where all small errors are catched
 		local
@@ -49,16 +49,16 @@ feature -- Status report
 		do
 			-- Get the total distance we have by adding the distances of all polypoints
 			from
-				line_section.polypoints.start
-				last_location := line_section.polypoints.first
+				line_segment.polypoints.start
+				last_location := line_segment.polypoints.first
 				total_distance := 0
 			until
-				line_section.polypoints.after
+				line_segment.polypoints.after
 			loop
-				total_distance := total_distance + last_location.distance (line_section.polypoints.item_for_iteration).abs
-				last_location := line_section.polypoints.item_for_iteration
+				total_distance := total_distance + last_location.distance (line_segment.polypoints.item_for_iteration).abs
+				last_location := line_segment.polypoints.item_for_iteration
 
-				line_section.polypoints.forth
+				line_segment.polypoints.forth
 			end
 
 			-- How many minutes do we have?

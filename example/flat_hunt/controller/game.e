@@ -335,10 +335,10 @@ feature {NONE} -- Implementation
 			a_player_exists: a_player /= Void
 			traffic_map_exists: traffic_map /= Void
 		local
-			tmp_line_section: TRAFFIC_LINE_CONNECTION
-			tmp_two_station_line_sections: LINKED_LIST [TRAFFIC_LINE_CONNECTION]
-			outgoing_line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_CONNECTION]
-			possible_moves: LINKED_LIST [TRAFFIC_LINE_CONNECTION]
+			tmp_line_section: TRAFFIC_LINE_SEGMENT
+			tmp_two_station_line_sections: LINKED_LIST [TRAFFIC_LINE_SEGMENT]
+			outgoing_line_sections: DS_ARRAYED_LIST [TRAFFIC_LINE_SEGMENT]
+			possible_moves: LINKED_LIST [TRAFFIC_LINE_SEGMENT]
 		do
 			create possible_moves.make
 			outgoing_line_sections := a_player.location.outgoing_line_connections --traffic_map.line_sections.items_of_place (a_player.location)

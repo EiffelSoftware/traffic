@@ -69,7 +69,7 @@ feature {NONE} -- Initialization
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
 			type_set: type=a_type
-			count_line_section_not_void: connection_count >= 0 -- List is initilalized.
+			count_line_segment_not_void: connection_count >= 0 -- List is initilalized.
 			element_inserted_event_exists: element_inserted_event /= Void
 			element_removed_event_exists: element_removed_event /= Void
 			one_direction_exists: one_direction /= Void
@@ -94,7 +94,7 @@ feature {NONE} -- Initialization
 		ensure
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void
-			count_line_section_not_void: connection_count >= 0 -- List is initilalized.
+			count_line_segment_not_void: connection_count >= 0 -- List is initilalized.
 			element_inserted_event_exists: element_inserted_event /= Void
 			element_removed_event_exists: element_removed_event /= Void
 			one_direction_exists: one_direction /= Void
@@ -116,7 +116,7 @@ feature {NONE} -- Initialization
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
 			type_set: type=a_type
-			count_line_section_not_void: connection_count >= 0 -- List is initilalized.
+			count_line_segment_not_void: connection_count >= 0 -- List is initilalized.
 			element_inserted_event_exists: element_inserted_event /= Void
 			element_removed_event_exists: element_removed_event /= Void
 			one_direction_exists: one_direction /= Void
@@ -240,7 +240,7 @@ feature -- Access
 			lc: TRAFFIC_LINE_CURSOR
 		do
 			create Result.make(1)
-			-- loop on all the line sections
+			-- loop on all the line segments
 			from
 				create lc.make (Current)
 				lc.start
@@ -257,8 +257,8 @@ feature -- Access
 
 					invert:=true
 				else
-					io.putstring ("Invalid roads for given line section%N")
-					io.putstring("Line section origin: "+lc.item_for_iteration.origin.name+" - Line section destination:"+lc.item_for_iteration.destination.name+"%N")
+					io.putstring ("Invalid roads for given line segment%N")
+					io.putstring("Line segment origin: "+lc.item_for_iteration.origin.name+" - Line segment destination:"+lc.item_for_iteration.destination.name+"%N")
 				end
 				if invert then
 					from
@@ -427,7 +427,7 @@ feature -- Status report
 feature -- Element change
 
 	highlight is
-			-- Highlight all line sections
+			-- Highlight all line segments
 		local
 			lc: TRAFFIC_LINE_CURSOR
 		do
@@ -454,7 +454,7 @@ feature -- Element change
 		end
 
 	unhighlight is
-			-- Highlight all line sections
+			-- Unhighlight all line segments
 		local
 			lc: TRAFFIC_LINE_CURSOR
 		do

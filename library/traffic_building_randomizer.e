@@ -105,7 +105,7 @@ feature {NONE} -- Implementation
 			-- Maximal number of iterations to ensure termination of the algorithm
 
 	Line_width: INTEGER is 10
-			-- Line width used for marking line sections as occupied
+			-- Line width used for marking line segments as occupied
 
 	random: RANDOM
 			-- Random number generator
@@ -121,14 +121,14 @@ feature {NONE} -- Implementation
 			i,j:INTEGER
 			s: TRAFFIC_ITEM_HASH_TABLE[TRAFFIC_STATION,STRING_8]
 		do
-			-- Mark cells for each of the line sections
+			-- Mark cells for each of the line segments
 			from
 				i:=1
 			until
-				i > city.line_sections.count
+				i > city.line_segments.count
 			loop
-				-- traverse each poly point of a line section
-				poly_points := city.line_sections.item (i).polypoints
+				-- traverse each poly point of a line segment
+				poly_points := city.line_segments.item (i).polypoints
 				from
 					j:=2
 					poly_point := poly_points.item (1)

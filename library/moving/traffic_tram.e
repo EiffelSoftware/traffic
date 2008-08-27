@@ -58,7 +58,7 @@ feature -- Initialization
 			register_in_place_schedule
 
 			-- Set position to first entry in schedule
-			set_to_station (schedule.first.line_section.origin)
+			set_to_station (schedule.first.line_segment.origin)
 
 			-- Never reiterate
 			set_reiterate (False)
@@ -88,7 +88,7 @@ feature -- Initialization
 				time_with_offset.minute_add (schedule_offset_minutes)
 
 				-- Register the departure time at the origin place
-				schedule.item.line_section.origin.register_in_schedule (Current, time_with_offset, schedule.item.line_section.destination)
+				schedule.item.line_segment.origin.register_in_schedule (Current, time_with_offset, schedule.item.line_segment.destination)
 
 				schedule.forth
 			end

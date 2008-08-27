@@ -105,7 +105,7 @@ feature {NONE} -- Implementation
 		end
 
 	update_coordinates is
-			-- Set the locations to the corresponding ones of the line section.
+			-- Set the locations to the corresponding ones of the line segment.
 		require
 			poly_cursor_valid: not poly_cursor.after and not poly_cursor.before
 			not_finished: not has_finished

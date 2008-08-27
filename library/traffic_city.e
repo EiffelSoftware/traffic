@@ -38,7 +38,7 @@ feature {NONE} -- Initialization
 			create graph.make
 			create stations.make (default_size * default_size, Current)
 			create lines.make (default_size, Current)
-			create line_sections.make
+			create line_segments.make
 			create roads.make (default_size, Current)
 			create passengers.make (Current)
 			create trams.make (Current)
@@ -53,7 +53,7 @@ feature {NONE} -- Initialization
 			name_set: equal (name, a_name)
 			stations_not_void: stations /= Void
 			lines_not_void: lines /= Void
-			line_sections_not_void: line_sections /= Void
+			line_segments_not_void: line_segments /= Void
 		end
 
 feature -- TODO
@@ -210,8 +210,8 @@ feature -- Access (city objects)
 	stations: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_STATION, STRING]
 			-- All stations in city
 
-	line_sections: DS_LINKED_LIST [TRAFFIC_LINE_SEGMENT]
-			-- All line sections in city
+	line_segments: DS_LINKED_LIST [TRAFFIC_LINE_SEGMENT]
+			-- All line segments in city
 
 	lines: TRAFFIC_ITEM_HASH_TABLE [TRAFFIC_LINE, STRING]
 			-- All lines in city
@@ -245,8 +245,8 @@ feature -- Access (city objects)
 
 feature -- Access
 
-	line_sections_of_stop (a_name: STRING; a_line: TRAFFIC_LINE): LIST [TRAFFIC_LINE_SEGMENT] is
-			-- Line sections (2 or 1) of the stop specified by `a_name' for the line `a_line'
+	line_segments_of_stop (a_name: STRING; a_line: TRAFFIC_LINE): LIST [TRAFFIC_LINE_SEGMENT] is
+			-- Line segments (2 or 1) of the stop specified by `a_name' for the line `a_line'
 		require
 			stations.has (a_name) and then stations.item (a_name).has_stop (a_line)
 		local

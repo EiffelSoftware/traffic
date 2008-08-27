@@ -1,5 +1,5 @@
 indexing
-	description: "Line section of line from one station to another."
+	description: "Line segment of line from one station to another."
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -61,13 +61,13 @@ feature {NONE} -- Initialization
 feature -- Access
 
 	type: TRAFFIC_TYPE_LINE
-			-- Type of the line section
+			-- Type of the line segment
 
 	line: TRAFFIC_LINE
-			-- Line this line section belongs to
+			-- Line this line segment belongs to
 
 	roads: ARRAYED_LIST [TRAFFIC_ROAD_SEGMENT]
-			-- Roads on which the line section lies
+			-- Roads on which the line segment lies
 
 	hash_code: INTEGER is
 			-- Hash code value
@@ -162,7 +162,7 @@ feature -- Output
 			else
 				line_name := ""
 			end
-			Result := "Traffic " + type.out + " line section, " +
+			Result := "Traffic " + type.out + " line segment, " +
 				state.out +
 				", from " + origin.name + " to " + destination.name +
 				line_name
@@ -171,7 +171,7 @@ feature -- Output
 feature {TRAFFIC_LINE} -- Status setting
 
 	set_line (a_line: TRAFFIC_LINE) is
-			-- Set line this line section belongs to.
+			-- Set line this line segment belongs to.
 		require
 			a_line_exists: a_line /= Void
 			line_not_set: line = Void
@@ -183,7 +183,7 @@ feature {TRAFFIC_LINE} -- Status setting
 		end
 
 	remove_line is
-			-- Remove line section from line.
+			-- Remove line segment from line.
 		require
 			line_set: line /= Void
 		do
@@ -198,8 +198,8 @@ feature {TRAFFIC_LINE} -- Basic operations
 	add_to_city (a_city: TRAFFIC_CITY) is
 			-- Add `Current' and all nodes to `a_city'.
 		do
-			a_city.graph.put_line_section (Current)
-			a_city.line_sections.put_last (Current)
+			a_city.graph.put_line_segment (Current)
+			a_city.line_segments.put_last (Current)
 			is_in_city := True
 			city := a_city
 		ensure then
@@ -210,7 +210,7 @@ feature {TRAFFIC_LINE} -- Basic operations
 			-- Remove all nodes from `city'.
 		do
 			city.graph.prune_edge (Current)
-			city.line_sections.delete (Current)
+			city.line_segments.delete (Current)
 			is_in_city := False
 			city := Void
 		end

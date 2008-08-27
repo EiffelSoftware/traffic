@@ -105,7 +105,7 @@ feature -- Access
 			-- State of connection
 
 	type: TRAFFIC_TYPE
-			-- Type of the line section
+			-- Type of the line segment
 
 	origin: TRAFFIC_STATION is
 			-- Station of origin

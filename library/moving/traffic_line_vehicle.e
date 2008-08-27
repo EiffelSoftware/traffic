@@ -148,7 +148,7 @@ feature -- Basic operations
 						entry := schedule.i_th (schedule_index - 1)
 
 						-- Use the polypoints of the schedule entry
-						create poly_cursor.make (entry.line_section.polypoints)
+						create poly_cursor.make (entry.line_segment.polypoints)
 						poly_cursor.start
 
 						-- Set correct speed and initial position
@@ -199,7 +199,7 @@ feature -- Basic operations
 feature{NONE} --Implementation		
 
 	update_coordinates is
-			-- Set the positions to the corresponding ones of the line section.
+			-- Set the positions to the corresponding ones of the line segments.
 		do
 			origin :=  poly_cursor.item
 			location := poly_cursor.item
@@ -233,7 +233,7 @@ feature{NONE} --Implementation
 		end
 
 	line_cursor: TRAFFIC_LINE_CURSOR
-			-- Line section on which the line vehicle is moving currently
+			-- Line segment on which the line vehicle is moving currently
 
 invariant
 

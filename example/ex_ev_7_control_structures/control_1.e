@@ -28,10 +28,10 @@ feature -- Path building
 --	make_path is
 --			-- will create a route from a traffic_node to another traffic_node and animate the route
 --			local
---				connection_1, connection_2: TRAFFIC_CONNECTION
---				tram_line: TRAFFIC_LINE_CONNECTION
---				walking_path_1, walking_path_2 : TRAFFIC_ROAD_CONNECTION
---				section_1, section_2, section_3: TRAFFIC_PATH_SECTION
+--				connection_1, connection_2: TRAFFIC_SEGMENT
+--				tram_line: TRAFFIC_LINE_SEGMENT
+--				walking_path_1, walking_path_2 : TRAFFIC_ROAD_SEGMENT
+--				section_1, section_2, section_3: TRAFFIC_LEG
 --			do
 --		  	   create walking_path_2.make (mb, b: TRAFFIC_NODE, a_type: TRAFFIC_TYPE_ROAD, an_id: INTEGER_32)
 --               create section_1.make_walk (walking_path_1)

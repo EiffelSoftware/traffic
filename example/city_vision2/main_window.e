@@ -863,13 +863,13 @@ feature {NONE} -- Implementation
 			if a_toggle.is_selected then
 				canvas.city.stations.first.highlight
 				canvas.city.lines.first.highlight
-				canvas.city.line_sections.last.highlight
+				canvas.city.line_segments.last.highlight
 				canvas.city.roads.first.highlight
 				canvas.city.buildings.first.spotlight
 			else
 				canvas.city.stations.first.unhighlight
 				canvas.city.lines.first.unhighlight
-				canvas.city.line_sections.last.unhighlight
+				canvas.city.line_segments.last.unhighlight
 				canvas.city.roads.first.unhighlight
 				canvas.city.buildings.first.unspotlight
 			end

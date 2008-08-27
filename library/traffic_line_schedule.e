@@ -70,7 +70,7 @@ feature -- Intialization
 						lc.after
 					loop
 						-- Create schedule entry
-						create new_entry.make_with_line_section(lc.item_for_iteration)
+						create new_entry.make_with_line_segment(lc.item_for_iteration)
 						new_entry.set_start_time(act_time.twin)
 
 						-- Add time for traveling

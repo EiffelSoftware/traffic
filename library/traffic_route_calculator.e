@@ -41,8 +41,8 @@ feature -- Basic operations
 			a_destination_exists: a_destination /= Void
 			not_same: a_destination /= a_origin
 		local
-			temp_path: LIST [TRAFFIC_CONNECTION]
-			current_ps, next_ps: TRAFFIC_ROUTE_SECTION
+			temp_path: LIST [TRAFFIC_SEGMENT]
+			current_ps, next_ps: TRAFFIC_LEG
 			old_mode: INTEGER
 		do
 			old_mode := city.graph.shortest_path_mode
@@ -57,12 +57,12 @@ feature -- Basic operations
 
 				from temp_path.start until temp_path.after loop
 					if (not (temp_path.item.origin = temp_path.item.destination)) and (route.first = Void) then
-							--don't make path_section for intra-station connections
+							--don't make segment for intra-station connections
 						create current_ps.make (temp_path.item)
 						route.set_first (current_ps)
 					else
 						if not (temp_path.item.origin = temp_path.item.destination) then
-								--don't make path_section for intra-station connections
+								--don't make segment for intra-station connections
 							create next_ps.make(temp_path.item)
 							if current_ps.is_insertable (temp_path.item) then
 									--same type of line

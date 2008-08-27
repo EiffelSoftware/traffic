@@ -104,12 +104,12 @@ feature -- Status report
 feature -- Element change
 
 	highlight is
-			-- Highlight all line sections
+			-- Highlight all line segments
 		do
 		end
 
 	unhighlight is
-			-- Highlight all line sections
+			-- Highlight all line segments
 		do
 		end
 

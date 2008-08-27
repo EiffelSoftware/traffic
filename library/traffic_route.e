@@ -48,10 +48,22 @@ feature -- Access
 		end
 
 	first: TRAFFIC_LEG
-			-- First route section
+			-- First leg
 
-	last: TRAFFIC_LEG
-			-- Last route section
+	last: TRAFFIC_LEG is
+			-- Last route leg
+		do
+			if first /= void then
+				from
+					result := first
+				until
+					result.next = void
+				loop
+					result := result.next
+				end
+			end
+		end
+
 
 	origin: TRAFFIC_STATION is
 			-- Origin of the route
@@ -134,7 +146,7 @@ feature -- Output
 	out: STRING is
 			-- Description providing information about the route
 		local
-			section: TRAFFIC_LEG
+			leg: TRAFFIC_LEG
 			walking_length: DOUBLE
 			tram_length: DOUBLE
 			bus_length: DOUBLE
@@ -152,26 +164,26 @@ feature -- Output
 			bus_type := (create {TRAFFIC_TYPE_BUS}.make).name
 
 			from
-				section := first
+				leg := first
 			 until
-			 	section = Void
+			 	leg = Void
 			 loop
-				if section.has_line then
-					Result.append ("Take " + section.line.type.name + " no. " + section.line.name + " to " + section.destination.name + "%N")
+				if leg.has_line then
+					Result.append ("Take " + leg.line.type.name + " no. " + leg.line.name + " to " + leg.destination.name + "%N")
 
-					if section.line.type.name.is_equal (tram_type) then
-						tram_length := tram_length + section.length
-					elseif section.line.type.name.is_equal (train_type) then
-						train_length := train_length + section.length
-					elseif section.line.type.name.is_equal (bus_type) then
-						bus_length := bus_length + section.length
+					if leg.line.type.name.is_equal (tram_type) then
+						tram_length := tram_length + leg.length
+					elseif leg.line.type.name.is_equal (train_type) then
+						train_length := train_length + leg.length
+					elseif leg.line.type.name.is_equal (bus_type) then
+						bus_length := bus_length + leg.length
 					end
 				else
-					Result.append ("Walk to " + section.destination.name + "%N")
-					walking_length := walking_length + section.length
+					Result.append ("Walk to " + leg.destination.name + "%N")
+					walking_length := walking_length + leg.length
 				end
 
-				section := section.next
+				leg := leg.next
 			end
 
 			Result.append ("Arriving at: " + destination.name + "%NTotal:")
@@ -216,7 +228,6 @@ feature -- Basic operations
 			else
 				last.set_next (a_leg)
 			end
-			last := a_leg
 		ensure
 			one_more: count = old count +1
 		end
@@ -227,30 +238,29 @@ feature -- Basic operations
 		require
 			route_exists: a_route /= VOID
 			route_valid_for_insertion: is_valid_for_insertion(a_route.first.connections.first)
+		local
+			leg: TRAFFIC_LEG
 		do
+			leg := last
 			if first = Void then
 				set_first (a_route.first)
 			else
-				if last.is_joinable (a_route.first) then
-					last.join (a_route.first)
-					if last.next /= void then
-						last := a_route.last
-					end
+				if leg.is_joinable (a_route.first) then
+					leg.join (a_route.first)
 				else
-					last.set_next (a_route.first)
-					last := a_route.last
+					leg.set_next (a_route.first)
 				end
 			end
 		end
 
-	set_first(a_section: TRAFFIC_LEG) is
-			-- sets pointer 'first' to the 'a_section'
+	set_first(a_leg: TRAFFIC_LEG) is
+			-- sets pointer 'first' to the 'a_leg'
 		require
-			a_section_exists: a_section /= Void
+			a_leg_exists: a_leg /= Void
 		do
-			if not(a_section.origin.name.is_equal (a_section.destination.name)) then
-					--don't make intra-station sections
-				first := a_section
+			if not(a_leg.origin.name.is_equal (a_leg.destination.name)) then
+					--don't make intra-station leg
+				first := a_leg
 			end
 		end
 
