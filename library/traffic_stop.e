@@ -30,6 +30,7 @@ feature {NONE} -- Creation
 			station.add_stop (Current)
 		ensure
 			station_set: station = s
+			line_set: line = l
 		end
 
 	make_with_location (a_station: TRAFFIC_STATION; a_line: TRAFFIC_LINE; a_location: TRAFFIC_POINT) is
