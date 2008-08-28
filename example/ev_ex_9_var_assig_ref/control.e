@@ -17,7 +17,7 @@ feature -- Path building
 
 		do
 			paris.display
-			console.show (highest_name (line8))
+			console.show (highest_name (Line8))
 		end
 
 

@@ -10,48 +10,36 @@ inherit
 
 	TOURISM
 
-feature -- Path building
+feature -- Traversing
 
-	explore_on_click is
-			-- Build a new path.
+	traverse is
+			--  Traverse Line8.
 		do
 			Paris.display
-
-			wait
-			console.show ("Chapter 8")
 
 			from
 				line8.start
 			until
-				line8.after
+				line8.is_after
 			loop
-				Console.show (line8.item.name)
 				show_station(line8.item)
 				line8.forth
 			end
 
-
-			console.show ("Chapter 8 End")
-
-
 		end
 
-	show_station(s:TRAFFIC_PLACE) is
-			-- Highlist s in a form adapted to its satus
+	show_station(s:TRAFFIC_STATION) is
+			-- Highlights s in a form adapted to its status
 		require
 			station_exists: s /= Void
-
 		do
-			if s.is_exchange then
-				Console.show ("is_exchange")
-				show_blinking_spot(s.position)
-			elseif s.is_railway_connection	then
-				Console.show ("is_railway")
-				show_big_red_spot(s.position)
+			if Line8.item.is_railway_connection then
+				show_big_red_spot (Line8.item.location)
+			elseif Line8.item.is_exchange then
+				show_blinking_spot (Line8.item.location)
 			else
-				show_spot(s.position)
+				show_spot (line8.item.location)
 			end
-
 		end
 
 

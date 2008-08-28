@@ -60,6 +60,7 @@ feature {NONE} -- Initialization
 			end
 			create one_direction.make
 			create other_direction.make
+			create stops.make
 
 			create changed_event
 			create element_inserted_event
@@ -86,6 +87,7 @@ feature {NONE} -- Initialization
 			type:= create {TRAFFIC_TYPE_TRAM}.make
 			create one_direction.make
 			create other_direction.make
+			create stops.make
 
 			create changed_event
 			create element_inserted_event
@@ -109,9 +111,15 @@ feature {NONE} -- Initialization
 			a_name_not_empty: not a_name.is_empty
 			a_type_exists: a_type /= Void
 			a_station_exists: a_station /= Void
+		local
+			s: TRAFFIC_STOP
 		do
 			make (a_name, a_type)
-			old_terminal_1 := a_station
+			if a_station.has_stop (current) then
+				stops.extend (a_station.stop (current))
+			else
+				create s.make_with_location (a_station, Current, create {TRAFFIC_POINT}.make_from_other (a_station.location))
+			end
 		ensure
 			name_set: equal (name, a_name)
 			has_type_set: type /=Void -- have to be same object
@@ -154,7 +162,7 @@ feature -- Measurement
 	count: INTEGER is
 			-- Number of stations in this line
 		do
-			Result := segment_count + 1
+			Result := stops.count
 		end
 
 feature -- Access
@@ -168,12 +176,8 @@ feature -- Access
 			not_too_small: i >= 1
 			not_too_big: i <= count
 		do
-			if is_empty then
-				Result := old_terminal_1
-			elseif i = segment_count + 1 then
-				Result := terminal_2
-			else
-				Result := one_direction.item (i).origin
+			if not is_empty then
+				Result := stops.i_th (i).station
 			end
 		end
 
@@ -197,14 +201,21 @@ feature -- Access
 	type: TRAFFIC_TYPE_LINE
 			-- Type of line
 
-	old_terminal_1: TRAFFIC_STATION
-			-- Old terminal (after deletion via `remove_all_segments')
-
-	terminal_1: TRAFFIC_STATION
+	terminal_1: TRAFFIC_STATION is
 			-- Terminal of line in one direction
+		do
+			if not is_empty then
+				result := stops.first.station
+			end
+		end
 
-	terminal_2: TRAFFIC_STATION
+	terminal_2: TRAFFIC_STATION is
 			-- Terminal of line in other direction
+		do
+			if not is_empty then
+				result := stops.last.station
+			end
+		end
 
 	color: TRAFFIC_COLOR
 			-- Line color
@@ -214,9 +225,7 @@ feature -- Access
 			-- End station on South or West side
 			do
 				if not is_empty then
-					Result := terminal_1
-				else
-					Result := old_terminal_1
+					Result := stops.first.station
 				end
 			end
 
@@ -224,11 +233,13 @@ feature -- Access
 			-- End station on North or East side
 			do
 				if not is_empty then
-					Result := terminal_2
-				else
-					Result := old_terminal_1
+					Result := stops.last.station
 				end
 			end
+
+	stops: LINKED_LIST[TRAFFIC_STOP]
+			-- A list of all stops of this line
+
 
 	road_points: DS_ARRAYED_LIST[TRAFFIC_POINT] is
 			-- Polypoints from the roads belonging to this line
@@ -374,12 +385,11 @@ feature -- Access
 feature -- Cursor movement
 
 	start is
-			-- Move internal cursor to first position.
+			-- Bring station cursor to frist element.
 		do
 			index := 1
 		ensure
-			at_first: (not is_empty) implies (index = 1)
-			empty_convention: (is_empty) implies (is_after)
+			on_first: index = 1
 		end
 
 	forth is
@@ -407,9 +417,9 @@ feature -- Status report
 		end
 
 	is_empty: BOOLEAN is
-			-- Is container empty?
+			-- Does `current' have any stops?
 		do
-			Result := one_direction.is_empty
+			Result := stops.is_empty
 		end
 
 	is_after: BOOLEAN is
@@ -532,9 +542,9 @@ feature {TRAFFIC_ITEM_LINKED_LIST} -- Basic operations
 feature -- Removal
 
 	remove_all_segments, wipe_out is
-			-- Remove all segments (current `terminal_1' is captured in attribute `old_terminal_1').
-		require
-			old_terminal_set: old_terminal_1 /= Void
+			-- Remove all segments.
+		local
+			first_stop: TRAFFIC_STOP
 		do
 			from
 				one_direction.start
@@ -556,8 +566,13 @@ feature -- Removal
 				other_direction.forth
 			end
 			other_direction.wipe_out
-			terminal_1 := Void
-			terminal_2 := Void
+
+			-- keep first stop
+			if not is_empty then
+				first_stop := stops.first
+				stops.wipe_out
+				stops.extend (first_stop)
+			end
 		ensure
 			only_one_left: count = 1
 			both_ends_same: sw_end = ne_end
@@ -588,16 +603,11 @@ feature -- Removal
 				other_direction.first.remove_from_city
 			end
 			other_direction.remove_first
-			if segment_count >= 1 then
-				terminal_2 := one_direction.last.destination
-			elseif segment_count = 0 then
-				terminal_2 := Void
-				terminal_1 := Void
-			end
+			-- remove last stop
+			stops.go_i_th (stops.count)
+			stops.remove
 		ensure
 			count_smaller: segment_count = old segment_count - 1
-			terminals_set: segment_count /= 0 implies (terminal_1 = old terminal_1 and terminal_2 /= Void and old_terminal_1 = old terminal_1)
-			terminals_set: segment_count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
 		end
 
 	remove_first is
@@ -615,17 +625,11 @@ feature -- Removal
 			end
 			one_direction.remove_first
 			other_direction.remove_last
-			if segment_count >= 1 then
-				terminal_1 := one_direction.first.origin
-				old_terminal_1 := terminal_1
-			elseif segment_count = 0 then
-				terminal_2 := Void
-				terminal_1 := Void
-			end
+			-- remove first stop
+			stops.start
+			stops.remove
 		ensure
 			count_smaller: segment_count = old segment_count - 1
-			terminals_set: segment_count /= 0 implies (terminal_2 = old terminal_2 and terminal_1 /= Void and old_terminal_1 = terminal_1)
-			terminals_set: segment_count = 0 implies (terminal_1 = Void and terminal_2 = Void and old_terminal_1 = old terminal_1)
 		end
 
 feature -- Status report
@@ -681,11 +685,11 @@ feature -- Basic operations
 		do
 			one_direction.put_first (l1)
 			other_direction.put_last (l2)
-			terminal_1 := l1.origin
-			old_terminal_1 := terminal_1
-			if terminal_2 = Void then
-				terminal_2 := l1.destination
+			-- add stops at beginning of list
+			if is_empty then
+				stops.extend (l1.end_node)
 			end
+			stops.put_front(l1.start_node)
 			l1.set_line (Current)
 			l2.set_line (Current)
 			if is_in_city then
@@ -707,11 +711,12 @@ feature -- Basic operations
 		do
 			one_direction.put_last (l1)
 			other_direction.put_first (l2)
-			if terminal_1 = Void then
-				terminal_1 := l1.origin
-				old_terminal_1 := terminal_1
+
+			--add stops at end of list
+			if is_empty then
+				stops.extend (l1.start_node)
 			end
-			terminal_2 := l1.destination
+			stops.extend (l1.end_node)
 			l1.set_line (Current)
 			l2.set_line (Current)
 			if is_in_city then
@@ -725,27 +730,13 @@ feature -- Basic operations
 	extend (s: TRAFFIC_STATION) is
 			-- Add connection (segment) to `a_station' at end.
 		require
-			has_terminal_1: old_terminal_1 /= Void
+			not_empty: not is_empty
 		local
 			l1, l2: TRAFFIC_LINE_SEGMENT
 			s1, s2: TRAFFIC_STOP
 			pp: DS_ARRAYED_LIST [TRAFFIC_POINT]
 		do
-			if terminal_2 /= Void then
-				-- We already have line segments, use terminal_2 to extend
-				if terminal_2.has_stop (Current) then
-					s1 := terminal_2.stop (Current)
-				else
-					create s1.make_with_location (terminal_2, Current, create {TRAFFIC_POINT}.make_from_other (terminal_2.location))
-				end
-			else
-				-- Only old_terminal_1 is given, the line is empty
-				if old_terminal_1.has_stop (Current) then
-					s1 := old_terminal_1.stop (Current)
-				else
-					create s1.make_with_location (old_terminal_1, Current, create {TRAFFIC_POINT}.make_from_other (old_terminal_1.location))
-				end
-			end
+			s1 := terminal_2.stop (current)
 			if s.has_stop (Current) then
 				s2 := s.stop (Current)
 			else
@@ -770,7 +761,8 @@ feature -- Basic operations
 	prepend (a_station: TRAFFIC_STATION) is
 			-- Add connection (segment) from `a_station' to the beginning of the line.
 		require
-			has_terminal_1: old_terminal_1 /= Void
+			has_terminal_1: terminal_1 /= void
+			not_emtpy: not is_empty
 		local
 			l1, l2: TRAFFIC_LINE_SEGMENT
 			s1, s2: TRAFFIC_STOP
@@ -781,19 +773,7 @@ feature -- Basic operations
 			else
 				create s1.make_with_location (a_station, Current, create {TRAFFIC_POINT}.make_from_other (a_station.location))
 			end
-			if terminal_1 /= Void then
-				if terminal_1.has_stop (Current) then
-					s2 := terminal_1.stop (Current)
-				else
-					create s2.make_with_location (terminal_1, Current, create {TRAFFIC_POINT}.make_from_other (terminal_1.location))
-				end
-			else
-				if old_terminal_1.has_stop (Current) then
-					s2 := old_terminal_1.stop (Current)
-				else
-					create s2.make_with_location (old_terminal_1, Current, create {TRAFFIC_POINT}.make_from_other (old_terminal_1.location))
-				end
-			end
+			s2  := stops.first
 			create pp.make (2)
 			pp.force_last (create {TRAFFIC_POINT}.make_from_other (s1.location))
 			pp.force_last (create {TRAFFIC_POINT}.make_from_other (s2.location))
@@ -911,6 +891,8 @@ invariant
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
 	segments_not_void: one_direction /= Void and other_direction /= Void
+	stops_not_void: stops /= void
+	one_more_stop: (count = 0 and segment_count = 0) or (count = segment_count +1)
 	type_exists: type /= Void -- Line has type.
 	counts_are_equal: one_direction.count = other_direction.count
 	after: is_after = (index = count + 1)
