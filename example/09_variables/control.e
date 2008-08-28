@@ -5,7 +5,7 @@ indexing
 	revision: "1.0.0"
 
 class
-	CONTROL
+	ASSIGNMENTS
 
 inherit
 

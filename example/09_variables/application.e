@@ -26,11 +26,11 @@ feature {NONE} -- Initialization
 	prepare is
 			-- Prepare the first window to be displayed.
 		local
-			control: CONTROL
+			assi: ASSIGNMENTS
 		do
 			create first_window
-			create control
-			first_window.set_example (control, agent control.explore_on_click)
+			create assi
+			first_window.set_example (assi, agent assi.explore_on_click)
 			first_window.set_title ("Variables, Assignment and References (Chapter 9, Touch of Class)")
 			first_window.show
 		end
