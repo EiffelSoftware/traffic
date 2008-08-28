@@ -1,5 +1,5 @@
 indexing
-	description: "Control class (Chapter 7, Touch of Class)"
+	description: "Routes class (Chapter 8, Touch of Class)"
 	date: "$Date$"
 	revision: "$Revision$"
 
