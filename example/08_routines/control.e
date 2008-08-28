@@ -4,7 +4,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	CONTROL
+	ROUTES
 
 inherit
 
