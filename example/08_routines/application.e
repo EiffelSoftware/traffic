@@ -26,12 +26,12 @@ feature {NONE} -- Initialization
 	prepare is
 			-- Prepare the first window to be displayed.
 		local
-			control: ROUTES
+			routes: ROUTES
 		do
 			create first_window
-			create control
-			first_window.set_example (control, agent control.traverse)
-			first_window.set_title ("Control (chapter 7)")
+			create routes
+			first_window.set_example (routes, agent routes.traverse)
+			first_window.set_title ("Routines (chapter 7)")
 			first_window.show
 		end
 
