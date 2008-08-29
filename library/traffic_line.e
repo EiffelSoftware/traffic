@@ -222,16 +222,16 @@ feature -- Access
 			-- Line color
 			-- Used as color represenation
 
-	sw_end: TRAFFIC_STATION is
-			-- End station on South or West side
+	south_end: TRAFFIC_STATION is
+			-- End station on South side
 			do
 				if not is_empty then
 					Result := stops.first.station
 				end
 			end
 
-	ne_end: TRAFFIC_STATION is
-			-- End station on North or East side
+	north_end: TRAFFIC_STATION is
+			-- End station on North side
 			do
 				if not is_empty then
 					Result := stops.last.station
@@ -576,7 +576,7 @@ feature -- Removal
 			end
 		ensure
 			only_one_left: count = 1
-			both_ends_same: sw_end = ne_end
+			both_ends_same: south_end = north_end
 		end
 
 
@@ -755,7 +755,7 @@ feature -- Basic operations
 			put_last (l1, l2)
 		ensure
 			new_station_added: i_th (count) = s
-			added_at_NE: ne_end = s
+			added_at_NE: north_end = s
 			one_more: count = old count + 1
 		end
 
@@ -887,8 +887,8 @@ feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
 invariant
 
-	southwest_is_first: sw_end = i_th (1)
-	northeast_is_last: ne_end = i_th (count)
+	southwest_is_first: south_end = i_th (1)
+	northeast_is_last: north_end = i_th (count)
 	name_not_void: name /= Void -- Line has name.
 	name_not_empty: not name.is_empty -- Line has not empty name.
 	segments_not_void: one_direction /= Void and other_direction /= Void
