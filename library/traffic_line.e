@@ -403,6 +403,19 @@ feature -- Cursor movement
 			moved_forth: index = old index + 1
 		end
 
+	go_i_th (i: INTEGER) is
+			-- Move station cursor to item at position i
+		require
+			not_over_left:  i >= 0
+			not_over_right: i <= count+1
+		do
+			index := i
+		ensure
+			set: index = i
+		end
+
+
+
 feature -- Status report
 
 
