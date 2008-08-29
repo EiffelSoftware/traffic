@@ -20,7 +20,7 @@ feature -- Traversing
 			from
 				line8.start
 			until
-				line8.is_after
+				line8.after
 			loop
 				show_station(line8.item)
 				line8.forth
