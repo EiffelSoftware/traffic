@@ -50,7 +50,7 @@ feature -- Path building
 			new: STRING
 		do
 			from
-				Result := line.sw_end.name
+				Result := line.south_end.name
 				i := 1
 			invariant
 				-- The value of `Result' is the the alphabetically last station name
