@@ -16,7 +16,7 @@ inherit
 		end
 
 create
-	make_with_line, make_with_schedule
+	make_with_line
 
 feature -- Initialization
 
@@ -38,61 +38,6 @@ feature -- Initialization
 
 		end
 
-	make_with_schedule (a_line: TRAFFIC_LINE; a_schedule: TRAFFIC_LINE_SCHEDULE; an_offset: INTEGER) is
-			-- Create a line bound vehicle with a schedule.
-		require
-			line_exists: a_line /= Void
-			schedule_exists: a_schedule /= Void
-			valid_offset: an_offset >= 0 and an_offset < 60
-			valid_line_type: a_line.type.name.is_equal ("tram") or a_line.type.name.is_equal ("rail") or a_line.type.name.is_equal ("bus")
-		do
-			-- Use the default creation
-			make_with_line (a_line)
-
-			-- Add the schedule.
-			schedule := a_schedule
-			schedule_offset_minutes := an_offset
-			schedule_index := 1
-
-			-- Register us in all stations we visit
-			register_in_place_schedule
-
-			-- Set position to first entry in schedule
-			set_to_station (schedule.first.line_segment.origin)
-
-			-- Never reiterate
-			set_reiterate (False)
-			create changed_event
-		ensure
-			schedule_set: schedule = a_schedule
-			schedule_offset_set: schedule_offset_minutes = an_offset
-		end
-
-	register_in_place_schedule is
-			-- Register the tram in the schedule of every place it visits
-		require
-			schedule_exists: schedule /= Void
-			valid_offset: schedule_offset_minutes >= 0 and schedule_offset_minutes < 60
-		local
-			time_with_offset: TIME
-		do
-			from
-				schedule.start
-			until
-				schedule.after
-			loop
-				-- Use the time from the schedule...
-				time_with_offset := schedule.item.start_time.twin
-
-				-- ...and add our offset
-				time_with_offset.minute_add (schedule_offset_minutes)
-
-				-- Register the departure time at the origin place
-				schedule.item.line_segment.origin.register_in_schedule (Current, time_with_offset, schedule.item.line_segment.destination)
-
-				schedule.forth
-			end
-		end
 
 feature -- Access
 

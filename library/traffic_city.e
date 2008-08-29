@@ -130,45 +130,6 @@ feature -- Element change
 
 feature -- Insertion
 
-	add_tram_per_line_with_schedule (a_map: TRAFFIC_CITY; number: INTEGER) is
-			-- Add `number' of trams per line with an automatically generated schedule.
-		require
-			a_map_exists: a_map /= Void
-			number_valid: number > 0
-		local
-			a_tram: TRAFFIC_TRAM
-			i: INTEGER
-			schedule: TRAFFIC_LINE_SCHEDULE
-			offset_step: INTEGER
-			scheduler: TRAFFIC_SCHEDULE_LOADER
-		do
-			-- every tram has an offset which describes how many minutes it travels behind the schedule
-			offset_step := (60 / number).rounded
-			create scheduler.make ("timetable_tram.xml")
-			scheduler.load_schedule
-			from
-				lines.start
-			until
-				lines.after
-			loop
-				if lines.item_for_iteration.type.name.is_equal ("tram") or lines.item_for_iteration.type.name.is_equal ("rail") or lines.item_for_iteration.type.name.is_equal ("bus") then
-					-- create a schedule for the line
-					create schedule.make_for_line (lines.item_for_iteration, scheduler)
-
-					-- create the number of trams
-					from
-						i := 1
-					until
-						i > number
-					loop
-						create a_tram.make_with_schedule (lines.item_for_iteration, schedule, offset_step * (i - 1))
-						trams.put_last (a_tram)
-						i := i + 1
-					end
-				end
-				lines.forth
-			end
-		end
 
 	put_line(a_line: TRAFFIC_LINE) is
 			-- adds `a_line' to `lines'.

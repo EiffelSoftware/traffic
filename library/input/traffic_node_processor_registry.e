@@ -120,10 +120,6 @@ feature {NONE} -- Implementation
 			Result.put (create {TRAFFIC_ROAD_NODE_PROCESSOR}.make, "road")
 			Result.put (create {TRAFFIC_ONROAD_NODE_PROCESSOR}.make, "onroad")
 
-			Result.put (create {TRAFFIC_SCHEDULER_LINES_NODE_PROCESSOR}.make, "slines")
-			Result.put (create {TRAFFIC_SCHEDULER_LINE_NODE_PROCESSOR}.make, "sline")
-			Result.put (create {TRAFFIC_SCHEDULER_NODE_PROCESSOR}.make, "entry")
-
 			Result.put (create {TRAFFIC_POLYGON_NODE_PROCESSOR}.make, "polygon")
 
 		ensure

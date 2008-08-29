@@ -10,8 +10,7 @@ inherit
 
 	TRAFFIC_VEHICLE
 		redefine
-			update_coordinates,
-			move
+			update_coordinates
 		end
 
 feature -- Element change
@@ -77,34 +76,10 @@ feature --Access
 	next_station: TRAFFIC_STATION
 			-- Next station the line vehicle stops at
 
-	schedule: TRAFFIC_LINE_SCHEDULE
-			-- Schedule to pursue
-
-	schedule_offset_minutes: INTEGER
-			-- Number of minutes the object will travel behind the schedule
-
-	schedule_index: INTEGER
-			-- Index of the schedule where we are at
-
-	schedule_day: INTEGER
-			-- Day on which the schedule is used
-
-	schedule_speed: DOUBLE
-			-- Speed to fullfill the schedule
-
 	last_update: INTEGER
 			-- Last second the position was updated
 
 feature -- Status report
-
-	is_schedule_active: BOOLEAN
-			-- Is the schedule active or is the status in waiting?
-
-	is_after (entry: TRAFFIC_LINE_SCHEDULE_ENTRY): BOOLEAN is
-			-- Is it past the start time?
-		do
-			Result := (time.actual_time.hour > entry.start_time.hour) or else ((entry.start_time.hour = time.actual_time.hour) and (time.actual_time.minute >= entry.start_time.minute))
-		end
 
 	is_valid_line (a_line: TRAFFIC_LINE): BOOLEAN is
 			-- Is `a_line' a valid line for `Current'?
@@ -115,85 +90,6 @@ feature -- Status report
 
 
 feature -- Basic operations
-
-	move is
-			-- Take a tour using no schedule.
-			-- If there is a schedule, use an other movement code for the schedule.
-		local
-			entry: TRAFFIC_LINE_SCHEDULE_ENTRY
-			direction: TRAFFIC_POINT
-			seconds_passed: INTEGER
-			travel_distance: DOUBLE
-		do
-			-- If we don't have a schedule, fall back to the normal movement code
-			if schedule = Void then
-				Precursor
-			else
-				if is_schedule_active = True then
-					-- The tram is traveling on schedule
-					entry := schedule.i_th (schedule_index)
-
-					if is_after (entry) then
-						-- The start time of the actual schedule entry is in the past
-
-						-- Iterate on the schedule until we find the index of the first entry which starts in the future
-						from
-						until
-							schedule_index > schedule.count or else not is_after (schedule.i_th (schedule_index))
-						loop
-							schedule_index := schedule_index + 1
-						end
-
-						-- Active entry is the entry before the first entry in the future
-						entry := schedule.i_th (schedule_index - 1)
-
-						-- Use the polypoints of the schedule entry
-						create poly_cursor.make (entry.line_segment.polypoints)
-						poly_cursor.start
-
-						-- Set correct speed and initial position
-						schedule_speed := entry.speed
-						set_speed (schedule_speed.rounded)
-						update_coordinates
-						update_angle
-
-						-- If we arrived at the end, go to the beginning and wait for the next day							
-						if schedule_index > schedule.count then
-							schedule_day := schedule_day + 1
-							is_schedule_active := False
-							schedule_index := 1
-						end
-					end
-				else
-					-- The tram is waiting until it's schedule is active again
-					entry := schedule.first
-					if (schedule_day <= time.actual_day) and is_after(entry) then
-						schedule_day := time.actual_day
-						is_schedule_active := True
-					end
-				end
-
-				if not poly_cursor.after then
-					direction := destination - origin
-					seconds_passed := (time.actual_time.hour * 3600 + time.actual_time.minute * 60 + time.actual_time.second - last_update)
-					travel_distance := (schedule_speed * seconds_passed)
-
-					if ((location.x - destination.x).abs < travel_distance) and ((location.y - destination.y).abs < travel_distance) then
-						origin := poly_cursor.item
-						location := poly_cursor.item
-						poly_cursor.forth
-						if not poly_cursor.after then
-							destination := poly_cursor.item
-							update_angle
-						end
-					else
-						location := location + (direction / direction.length) * travel_distance
-					end
-				end
-
-				last_update := time.actual_time.hour * 3600 + time.actual_time.minute * 60 + time.actual_time.second
-			end
-		end
 
 
 feature{NONE} --Implementation		
