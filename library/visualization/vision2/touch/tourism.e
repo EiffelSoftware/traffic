@@ -140,12 +140,12 @@ feature -- Basic operations
 		end
 
 	show_blinking_spot (a_location: TRAFFIC_POINT) is
-			--  Show blinking spot
+			--  Show blinking green spot
 		local
 			s: DRAWABLE_SPOT
 		do
 		create s.make (create {REAL_COORDINATE}.make (a_location.x, -a_location.y))
-			s.set_color (create {EV_COLOR}.make_with_8_bit_rgb (255, 255, 0))
+			s.set_color (create {EV_COLOR}.make_with_8_bit_rgb (0, 255, 0))
 			s.enable_filled
 			s.set_diameter (10)
 
