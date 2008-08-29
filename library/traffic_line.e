@@ -133,23 +133,24 @@ feature {NONE} -- Initialization
 
 feature -- Measurement
 
-	total_time(speed:REAL_64):REAL is
+	total_time: REAL is
 			-- Estimated travel time for full line, time measured in Minutes.
-			-- By Speed of
+			-- By Speed which depends on the type of the line
 		do
 			from
-				one_direction.start
+				stops.start
 				Result:=0.0
+			invariant
+				-- The value of Result is the time to travel from first station
+				-- to station at cursor position
+			variant
+				stops.count-stops.index
 			until
-				one_direction.index+1 > one_direction.count
-
+				stops.islast
 			loop
-				Result:=Result + one_direction.item_for_iteration.travel_time (speed)
-				one_direction.forth
-
+				Result := Result + stops.item.time_to_next
+				stops.forth
 			end
-
-
 		end
 
 
@@ -184,7 +185,7 @@ feature -- Access
 	item: TRAFFIC_STATION is
 			-- Item at internal cursor position of line
 		require
-			not_after: not is_after
+			not_after: not after
 		do
 			Result := i_th (index)
 		end
@@ -395,7 +396,7 @@ feature -- Cursor movement
 	forth is
 			-- Move internal cursor to next position.
 		require
-			not_after: not is_after
+			not_after: not after
 		do
 			index := index + 1
 		ensure
@@ -422,7 +423,7 @@ feature -- Status report
 			Result := stops.is_empty
 		end
 
-	is_after: BOOLEAN is
+	after: BOOLEAN is
 			-- Is there no valid position to right of internal cursor?
 		do
 			Result := index > count
@@ -895,5 +896,5 @@ invariant
 	one_more_stop: (count = 0 and segment_count = 0) or (count = segment_count +1)
 	type_exists: type /= Void -- Line has type.
 	counts_are_equal: one_direction.count = other_direction.count
-	after: is_after = (index = count + 1)
+	after: after = (index = count + 1)
 end

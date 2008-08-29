@@ -30,7 +30,7 @@ feature {NONE} -- Initialization
 		do
 			create first_window
 			create assi
-			first_window.set_example (assi, agent assi.explore_on_click)
+			first_window.set_example (assi, agent assi.startup)
 			first_window.set_title ("Variables, Assignment and References (Chapter 9, Touch of Class)")
 			first_window.show
 		end

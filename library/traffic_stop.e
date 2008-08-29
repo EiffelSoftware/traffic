@@ -92,6 +92,16 @@ feature -- Access
 			end
 		end
 
+	time_to_next: REAL
+		-- Estimated travel time to next stop (departure to departure,
+		-- except for next-to-last stop: departure to arrival).
+		require
+			has_next: right /= Void
+		do
+			Result := segment_to_right.travel_time (line.type.speed)
+		end
+
+
 feature -- Basic operations
 
 	put_connection (a_connection: TRAFFIC_SEGMENT) is

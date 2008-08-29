@@ -18,6 +18,9 @@ feature -- Access
 	name: STRING
 			-- String representation
 
+	speed: REAL is 10.0
+			-- Default speed 
+
 feature -- Output
 
 	out: STRING is
