@@ -10,7 +10,6 @@ feature -- Explore Paris
 			Louvre.spotlight
 			Line8.highlight
 			Route1.animate
-			
 			Console.show (Route1.origin)
 		end
 

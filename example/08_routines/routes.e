@@ -19,6 +19,11 @@ feature -- Traversing
 
 			from
 				line8.start
+			invariant
+				not_before_unless_empty: (not Line8.is_empty) implies (not Line8.is_before)
+				-- "For all stations before cursor position, a spot has been displayed"
+			variant
+				Line8.count - Line8.index + 1
 			until
 				line8.after
 			loop

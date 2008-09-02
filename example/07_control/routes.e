@@ -31,10 +31,13 @@ feature -- Routes
 			-- Loop
 			from
 				Line8.start
+			invariant
+				not_before_unless_empty: (not Line8.is_empty) implies (not Line8.is_before)
+				-- "For all stations before cursor position, a spot has been displayed"
 			variant
 				Line8.count - Line8.index + 1
 			until
-				Line8.is_after
+				Line8.after
 			loop
 				if Line8.item.is_railway_connection then
 					show_big_red_spot (Line8.item.location)
@@ -46,6 +49,7 @@ feature -- Routes
 				Line8.forth
 			end
 		end
+
 
 	full: TRAFFIC_ROUTE
 	walking_1, walking_2, metro_1: TRAFFIC_LEG

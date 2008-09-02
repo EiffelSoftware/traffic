@@ -26,18 +26,18 @@ feature -- Path building
 			-- Return the travel time on the Metro Line 8
 		do
 			from
-				line8.stops.start
+				Line8.stops.start
 				Result:=0.0
 			invariant
 				-- The value of Result is the time to travel from first station
 				-- to station at cursor position
 			variant
-				line8.stops.count-line8.stops.index
+				Line8.stops.count-Line8.stops.index
 			until
-				line8.stops.index = line8.stops.count
+				Line8.stops.index = Line8.stops.count
 			loop
-				Result := Result + line8.stops.item.time_to_next
-				line8.stops.forth
+				Result := Result + Line8.stops.item.time_to_next
+				Line8.stops.forth
 			end
 		end
 

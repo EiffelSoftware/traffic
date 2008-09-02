@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			create first_window
 			create routes
 			first_window.set_example (routes, agent routes.traverse)
-			first_window.set_title ("Routines (chapter 7)")
+			first_window.set_title ("Routines (chapter 8)")
 			first_window.show
 		end
 
