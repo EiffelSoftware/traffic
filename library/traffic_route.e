@@ -203,6 +203,7 @@ feature -- Output
 
 feature -- Basic operations
 
+
 	animate is
 			-- Create passenger that walks along `Current', add it to city, and make it start walking.
 		require
@@ -270,6 +271,30 @@ feature -- Basic operations
 			a_scale_factor_exists: a_scale_factor /= Void
 		do
 			scale_factor := a_scale_factor
+		end
+
+	do_at_every_stop (action : PROCEDURE[ANY,TUPLE[TRAFFIC_STATION]])
+			-- Apply `action' to every stop in this route
+		local
+			leg: TRAFFIC_LEG
+			station_iterator: TRAFFIC_STATION
+		do
+			from
+				leg := first
+			 until
+			 	leg = Void
+			 loop
+			 	from
+			 		leg.segments.start
+			 	until
+			 		leg.segments.after
+			 	loop
+					action.call([leg.segments.item_for_iteration.origin])
+			 		leg.segments.forth
+			 	end
+				leg := leg.next
+			end
+			action.call([last.segments.last.destination])
 		end
 
 feature {NONE} -- Implementation

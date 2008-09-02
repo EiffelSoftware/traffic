@@ -457,8 +457,6 @@ feature {NONE} -- Implementation
 	update_location is
 			-- Update the location, breadth, and width of the station using the stop's line-segments locations.
 			-- This strange hack with the line_segments is needed because of Touch of class.
-		local
-			p: TRAFFIC_POINT
 		do
 			if stops.count = 1 then
 				width := 0

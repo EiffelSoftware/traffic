@@ -10,7 +10,7 @@ inherit
 
 feature --Access
 
-	current_load: INTEGER
+	count: INTEGER
 			-- Current amount of load
 
 	capacity:INTEGER is
@@ -25,22 +25,22 @@ feature -- Basic operations
 			-- Load cargo or a passenger.
 		require
 			a_quantity_non_negative: a_quantity >= 0
-			valid_quantity: capacity >= current_load + a_quantity
+			valid_quantity: capacity >= count + a_quantity
     	do
-			current_load := current_load + a_quantity
+			count := count + a_quantity
     	ensure
-    		loaded: current_load = old current_load + a_quantity
+    		loaded: count = old count + a_quantity
     	end
 
 	unload(a_quantity: INTEGER) is
 			-- Unload cargo or a passenger.
 		require
 			  a_quantity_non_negative: a_quantity >= 0
-			  valid_quantity: current_load >= a_quantity
+			  valid_quantity: count >= a_quantity
 		do
-			  current_load := current_load - a_quantity
+			  count := count - a_quantity
 		ensure
-			  unloaded: current_load = old current_load - a_quantity
+			  unloaded: count = old count - a_quantity
     	end
 
 feature{NONE} -- Implementation			
@@ -49,6 +49,7 @@ feature{NONE} -- Implementation
 			-- Maximum load this vehicle unit can carry
 
 invariant
+	not_too_small: count >= 0
+	not_too_large: count <= capacity
 	unit_capacity_non_negative: unit_capacity >= 0
-	load_smaller_or_equal_than_capacity: current_load <= capacity
 end
