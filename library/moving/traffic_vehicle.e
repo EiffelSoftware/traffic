@@ -12,6 +12,8 @@ feature --Access
 
 	count: INTEGER
 			-- Current amount of load
+		deferred
+		end
 
 	capacity:INTEGER is
 			-- Maximum possible load
@@ -26,8 +28,7 @@ feature -- Basic operations
 		require
 			a_quantity_non_negative: a_quantity >= 0
 			valid_quantity: capacity >= count + a_quantity
-    	do
-			count := count + a_quantity
+    	deferred
     	ensure
     		loaded: count = old count + a_quantity
     	end
@@ -37,8 +38,7 @@ feature -- Basic operations
 		require
 			  a_quantity_non_negative: a_quantity >= 0
 			  valid_quantity: count >= a_quantity
-		do
-			  count := count - a_quantity
+		deferred
 		ensure
 			  unloaded: count = old count - a_quantity
     	end

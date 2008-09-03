@@ -8,14 +8,24 @@ class
 
 inherit
 
+	LINEAR[TRAFFIC_LEG]
+		redefine
+		 	out
+		end
+
 	TRAFFIC_CITY_ITEM
 		rename
 			is_highlighted as is_illuminated,
 			highlight as illuminate,
 			unhighlight as unilluminate,
 			default_create as make_empty
+		undefine
+			is_equal,
+			copy,
+			out
 		redefine
-			out,
+			make_empty
+		select
 			make_empty
 		end
 
@@ -26,6 +36,7 @@ feature -- Initialization
 		do
 			scale_factor := 1
 			create changed_event
+			after := True
 		ensure then
 			scale_factor_set: scale_factor = 1
 		end
@@ -106,6 +117,30 @@ feature -- Access
 			end
 		end
 
+	index: INTEGER
+			-- Index of current position
+		local
+			l_active, l_active_iterator: TRAFFIC_LEG
+		do
+			if after then
+				Result := count + 1
+			elseif not is_empty then
+				from
+					Result := 1
+					l_active := item
+					l_active_iterator := first
+				until
+					l_active_iterator = l_active or else l_active_iterator = Void
+				loop
+					l_active_iterator := l_active_iterator.next
+					Result := Result + 1
+				end
+			end
+		end
+
+	item: TRAFFIC_LEG
+			-- Item at current position
+
 feature -- Status report
 
 	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
@@ -140,6 +175,15 @@ feature -- Status report
 				Result := l.destination = a_connection.origin
 			end
 		end
+
+	is_empty: BOOLEAN
+			-- Is there no element?
+		do
+			Result := count = 0
+		end
+
+	after: BOOLEAN
+			-- Is there no valid position to the right of current one?
 
 feature -- Output
 
@@ -229,6 +273,9 @@ feature -- Basic operations
 			else
 				last.set_next (a_leg)
 			end
+			if after then
+				item := a_leg
+			end
 		ensure
 			one_more: count = old count +1
 		end
@@ -277,7 +324,6 @@ feature -- Basic operations
 			-- Apply `action' to every stop in this route
 		local
 			leg: TRAFFIC_LEG
-			station_iterator: TRAFFIC_STATION
 		do
 			from
 				leg := first
@@ -295,6 +341,38 @@ feature -- Basic operations
 				leg := leg.next
 			end
 			action.call([last.segments.last.destination])
+		end
+
+feature -- Cursor movement
+
+	start is
+			-- Move to first position if any.
+		do
+			if first /= Void then
+				item := first
+				after := False
+			else
+				after := True
+			end
+		end
+
+	forth is
+			-- Move to next position; if no next position,
+			-- ensure that `exhausted' will be true.
+		do
+			if item /= Void and then item.next /= Void then
+				item := item.next
+			else
+				after := True
+			end
+		end
+
+	finish is
+			-- Move cursor to last position.
+			-- (Go before if empty)
+		do
+			item := last
+			after := False
 		end
 
 feature {NONE} -- Implementation

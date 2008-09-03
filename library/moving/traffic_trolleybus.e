@@ -12,7 +12,10 @@ inherit
 		undefine
 			is_valid_line,
 			is_insertable,
-			is_removable
+			is_removable,
+			count,
+			load,
+			unload
 		select
 			capacity,
 			engine_capacity

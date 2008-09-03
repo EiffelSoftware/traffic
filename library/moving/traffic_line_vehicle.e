@@ -9,9 +9,6 @@ deferred class
 inherit
 
 	TRAFFIC_VEHICLE
-		redefine
-			update_coordinates
-		end
 
 feature -- Element change
 
@@ -26,7 +23,7 @@ feature -- Element change
 			line_cursor.start
 			create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
 			poly_cursor.start
-			update_coordinates
+			move_next
 			update_angle
 		ensure
 			line_set: line = a_line
@@ -46,7 +43,7 @@ feature -- Element change
 				create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
 				poly_cursor.start
 
-				update_coordinates
+				move_next
 				update_angle
 			else
 				from
@@ -58,7 +55,7 @@ feature -- Element change
 						create poly_cursor.make (line_cursor.item_for_iteration.polypoints)
 						poly_cursor.start
 
-						update_coordinates
+						move_next
 						update_angle
 						found := True
 					else
@@ -94,7 +91,7 @@ feature -- Basic operations
 
 feature{NONE} --Implementation		
 
-	update_coordinates is
+	move_next is
 			-- Set the positions to the corresponding ones of the line segments.
 		do
 			origin :=  poly_cursor.item

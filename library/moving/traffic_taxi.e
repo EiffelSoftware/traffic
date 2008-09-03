@@ -13,7 +13,7 @@ inherit
 			add_to_city,
 			remove_from_city
 		redefine
-			move
+			advance
 		end
 
 
@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 			office.enlist(Current)
 
 			set_reiterate (true)
-			update_coordinates
+			move_next
 			update_angle
 
 			speed := 17
@@ -52,6 +52,9 @@ feature {NONE} -- Initialization
 		end
 
 feature -- Access
+
+	count: INTEGER
+			-- Current amount of load
 
 	office : TRAFFIC_TAXI_OFFICE
 			-- Taxi office `Current' works for
@@ -93,7 +96,19 @@ feature -- Basic operations
 			end
 		end
 
-	move is
+	load(a_quantity: INTEGER) is
+			-- Load cargo or a passenger.
+    	do
+			count := count + a_quantity
+    	end
+
+    unload(a_quantity: INTEGER) is
+			-- Load cargo or a passenger.
+    	do
+			count := count - a_quantity
+    	end
+
+	advance is
 			-- Take a tour in the city.
 			-- Set new random directions and if 'Current' has done a request and is available again.
 		do
@@ -110,6 +125,41 @@ feature -- Basic operations
 					busy := false
 					is_marked := false
 					office.enlist(Current)
+			end
+		end
+
+
+	move_next is
+			--  Move to following position
+		do
+			-- Set the locations to the corresponding ones of the line segment.
+			origin :=  poly_cursor.item
+			location := poly_cursor.item
+			if is_traveling_back then
+				poly_cursor.back
+				if poly_cursor.before then
+					is_traveling_back := False
+					poly_cursor.forth
+					move_next
+				else
+					destination := poly_cursor.item
+				end
+			elseif is_reiterating then
+				poly_cursor.forth
+				if poly_cursor.after then
+					is_traveling_back := True
+					poly_cursor.back
+					move_next
+				else
+					destination := poly_cursor.item
+				end
+			else
+				poly_cursor.forth
+				if poly_cursor.after then
+					has_finished := True
+				else
+					destination := poly_cursor.item
+				end
 			end
 		end
 

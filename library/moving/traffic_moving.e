@@ -51,7 +51,7 @@ feature -- Basic operations
 	start is
 			-- Start taking a tour.
 		do
-			time.add_callback_tour (agent move)
+			time.add_callback_tour (agent advance)
 		end
 
 feature -- Element change
@@ -74,9 +74,9 @@ feature -- Element change
 			reiterating_set: is_reiterating = a_boolean
 		end
 
-feature {NONE} -- Implementation
+feature -- Implementation
 
-	move is
+	advance is
 			-- Move from origin to destination.
 		local
 			direction: TRAFFIC_POINT
@@ -89,7 +89,7 @@ feature {NONE} -- Implementation
 				if not current_move_time.is_equal (last_move_time) then
 					diff := (time.duration (last_move_time, current_move_time).fine_seconds_count)*speed/time.default_scale_factor
 					if ((location.x - destination.x).abs < diff) and ((location.y - destination.y).abs < diff) or direction.length <= 0 then
-						update_coordinates
+						move_next
 						update_angle
 					else
 						location := location + (direction / direction.length) * diff
@@ -104,40 +104,12 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	update_coordinates is
-			-- Set the locations to the corresponding ones of the line segment.
+	move_next is
+			--  Move to following position
 		require
 			poly_cursor_valid: not poly_cursor.after and not poly_cursor.before
 			not_finished: not has_finished
-		do
-			origin :=  poly_cursor.item
-			location := poly_cursor.item
-			if is_traveling_back then
-				poly_cursor.back
-				if poly_cursor.before then
-					is_traveling_back := False
-					poly_cursor.forth
-					update_coordinates
-				else
-					destination := poly_cursor.item
-				end
-			elseif is_reiterating then
-				poly_cursor.forth
-				if poly_cursor.after then
-					is_traveling_back := True
-					poly_cursor.back
-					update_coordinates
-				else
-					destination := poly_cursor.item
-				end
-			else
-				poly_cursor.forth
-				if poly_cursor.after then
-					has_finished := True
-				else
-					destination := poly_cursor.item
-				end
-			end
+		deferred
 		ensure
 			origin /= Void
 			location /= Void
@@ -180,10 +152,12 @@ feature {NONE} -- Implementation
 			end
 		end
 
-feature {NONE} -- Implementation
-
 	poly_cursor: DS_ARRAYED_LIST_CURSOR [TRAFFIC_POINT]
 			-- Cursor that guides the moving object
+
+feature {NONE} -- Implementation
+
+
 
 	last_move_time: TIME
 			-- Time of the last move

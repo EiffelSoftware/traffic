@@ -27,6 +27,11 @@ feature -- Initialization
 			create changed_event
 		end
 
+feature -- Access
+
+	count: INTEGER
+			-- Current amount of load
+
 feature -- Basic operations
 
 	replace (a_line: TRAFFIC_LINE) is
@@ -40,13 +45,28 @@ feature -- Basic operations
 			new_line_set:  line = a_line
 		end
 
+	load(a_quantity: INTEGER) is
+			-- Load cargo or a passenger.
+    	do
+			count := count + a_quantity
+    	end
+    	
+    unload(a_quantity: INTEGER) is
+			-- Load cargo or a passenger.
+    	do
+			count := count - a_quantity
+    	end
+
 feature-- Constants
 
 	Default_capacity: INTEGER is 180
 		-- Default capacity of a bus
 
-	Default_virtual_speed: REAL is 8.0
+	Default_virtual_speed: REAL
 		-- Default speed of a bus
+		do
+			Result := line.type.speed
+		end
 
 feature -- Status report
 

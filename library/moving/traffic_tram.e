@@ -49,28 +49,38 @@ feature -- Access
 
 	capacity: INTEGER is
 			-- Capacity as the sum of wagons' capacities plus engine_capacity
-		local
-			cap: INTEGER
 		do
-			cap := engine_capacity
+			Result := engine_capacity
 			from
 				wagons.start
 			until
 				wagons.after
 			loop
-				cap := cap + wagons.item.capacity
+				Result := Result + wagons.item.capacity
 				wagons.forth
 			end
-			wagons.start
-			Result := cap
 		end
+
+	 count: INTEGER
+	 		-- Current amount of load
+	 	do
+			Result := engine_count
+			from
+				wagons.start
+			until
+				wagons.after
+			loop
+				Result := Result + wagons.item.count
+				wagons.forth
+			end
+	 	end
 
 feature -- Basic operations
 
 	add_wagon is
 			-- Attach new wagon.
 		require
-			wagons_not_full: wagon_limitation >= wagons.count + 1
+			not_too_many_wagons: wagon_limitation >= wagons.count + 1
 		local
 			wagon: TRAFFIC_WAGON
 		do
@@ -83,7 +93,8 @@ feature -- Basic operations
 	remove_wagon(i: INTEGER) is
 			-- Remove wagon at position i.
 		require
-			wagons_not_empty: wagons.count > 0
+			there_are_wagons: wagons.count > 0
+			wagon_is_empty: wagons.i_th (i).count = 0
 		do
 			wagons.start
 			wagons.go_i_th (i)
@@ -91,6 +102,72 @@ feature -- Basic operations
 		ensure
 			wagon_removed: wagons.count = old wagons.count -1
 		end
+
+
+	load(a_quantity: INTEGER)
+			-- Load tram with `a_quantity'
+		local
+			l_quantity,
+			l_free_places: INTEGER
+    	do
+    		l_quantity := a_quantity
+			if engine_capacity - engine_count > l_quantity then
+				engine_count :=  engine_count + l_quantity
+			else
+				l_free_places := engine_capacity - engine_count
+				if l_free_places > 0  then
+					l_quantity := l_quantity - l_free_places
+					engine_count := engine_capacity
+				end
+				from
+					wagons.start
+				until
+					l_quantity = 0
+				loop
+					l_free_places := wagons.item.capacity - wagons.item.count
+					if l_quantity >= l_free_places and l_free_places > 0  then
+						l_quantity := l_quantity - l_free_places
+						wagons.item.load (l_free_places)
+					elseif l_quantity < l_free_places and l_free_places > 0 then
+						wagons.item.load (l_quantity)
+						l_quantity := 0
+					end
+					wagons.forth
+				end
+			end
+    	end
+
+	unload(a_quantity: INTEGER)
+			-- Unoad tram with `a_quantity'
+		local
+			l_quantity,
+			l_free_places: INTEGER
+    	do
+    		l_quantity := a_quantity
+			if engine_count - l_quantity >= 0 then
+				engine_count :=  engine_count - l_quantity
+			else
+				if engine_count - l_quantity < 0  then
+					l_quantity := l_quantity - engine_count
+					engine_count := 0
+				end
+				from
+					wagons.start
+				until
+					l_quantity = 0
+				loop
+					l_free_places := wagons.item.capacity - wagons.item.count
+
+					if wagons.item.count - l_quantity <= 0 then
+						l_quantity := l_quantity - wagons.item.count
+						wagons.item.unload (wagons.item.count)
+					elseif wagons.item.count > 0 then
+						wagons.item.unload (l_quantity)
+						l_quantity := 0
+					end
+				end
+			end
+    	end
 
 feature -- Constants
 
@@ -100,8 +177,11 @@ feature -- Constants
 	Default_wagon_limitation: INTEGER is 2
 			-- Default number of wagons attached
 
-	Default_virtual_speed: REAL is 11.0
+	Default_virtual_speed: REAL
 			-- Default speed
+		do
+			Result := line.type.speed
+		end
 
 feature -- Status report
 
@@ -124,6 +204,11 @@ feature -- Status report
 				Result := True
 			end
 		end
+
+feature -- Implementation
+
+	engine_count: INTEGER
+			-- Current amount of load in "engine wagon"
 
 invariant
 	wagons_not_void: wagons /= void
