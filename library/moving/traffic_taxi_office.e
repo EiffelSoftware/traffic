@@ -59,10 +59,10 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	available_taxis: TRAFFIC_EVENT_LINKED_LIST[TRAFFIC_TAXI]
+	available_taxis: TRAFFIC_EVENT_LINKED_LIST[TRAFFIC_DISPATCH_TAXI]
 			-- Available taxis (not busy)
 
-	taxis: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_TAXI]
+	taxis: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_DISPATCH_TAXI]
 			-- All taxis that work for this office
 
 	color: TRAFFIC_COLOR
@@ -71,7 +71,7 @@ feature -- Access
 
 feature -- Basic operations
 
-	add_taxi (a_taxi: TRAFFIC_TAXI) is
+	add_taxi (a_taxi: TRAFFIC_DISPATCH_TAXI) is
 			-- Add `a_taxi' to the taxi_list of the office.
 		require
 			a_taxi_valid: a_taxi /= Void
@@ -80,7 +80,7 @@ feature -- Basic operations
 			taxis.force_last (available_taxis.last)
 		end
 
-	remove_taxi (a_taxi:TRAFFIC_TAXI) is
+	remove_taxi (a_taxi:TRAFFIC_DISPATCH_TAXI) is
 			-- Remove `a_taxi' from current taxi office.
 		require
 			a_taxi_valid: a_taxi /= Void
@@ -154,7 +154,9 @@ feature {TRAFFIC_ITEM_LINKED_LIST} -- Basic operations
 			until
 				taxis.after
 			loop
-				taxis.item_for_iteration.add_to_city (city)
+				if not city.taxis.has (taxis.item_for_iteration) then
+					city.taxis.put (taxis.item_for_iteration)
+				end
 				taxis.forth
 			end
 		end
@@ -174,9 +176,9 @@ feature {TRAFFIC_ITEM_LINKED_LIST} -- Basic operations
 			city := Void
 		end
 
-feature {TRAFFIC_TAXI} -- Basic operations for taxis
+feature {TRAFFIC_DISPATCH_TAXI} -- Basic operations for taxis
 
-	enlist(a_taxi:TRAFFIC_TAXI) is
+	enlist(a_taxi:TRAFFIC_DISPATCH_TAXI) is
 			-- Put a_taxi into available list.
 		require
 			a_taxi_not_busy: a_taxi.busy = false
@@ -187,7 +189,7 @@ feature {TRAFFIC_TAXI} -- Basic operations for taxis
 			a_taxi_added: available_taxis.count = old available_taxis.count + 1
 		end
 
-	delist(a_taxi: TRAFFIC_TAXI) is
+	delist(a_taxi: TRAFFIC_DISPATCH_TAXI) is
 			-- Take a_taxi out of available_taxi_list.
 		require
 			a_taxi_not_available: a_taxi.busy = true

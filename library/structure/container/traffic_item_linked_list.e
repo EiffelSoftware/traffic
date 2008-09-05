@@ -1,5 +1,9 @@
 indexing
-	description: "Linked list that contains city items, calls add_to_city and remove_from_city on insertion and deletion, and throws events when a new item is added/removed"
+	description: "[
+		Linked list that contains city items, 
+		calls add_to_city and remove_from_city on insertion and deletion,
+		and throws events when a new item is added/removed
+		]"
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -74,7 +74,7 @@ feature -- Element change
 			reiterating_set: is_reiterating = a_boolean
 		end
 
-feature -- Implementation
+feature {NONE} -- Implementation
 
 	advance is
 			-- Move from origin to destination.
@@ -152,12 +152,11 @@ feature -- Implementation
 			end
 		end
 
-	poly_cursor: DS_ARRAYED_LIST_CURSOR [TRAFFIC_POINT]
-			-- Cursor that guides the moving object
 
 feature {NONE} -- Implementation
 
-
+	poly_cursor: DS_ARRAYED_LIST_CURSOR [TRAFFIC_POINT]
+			-- Cursor that guides the moving object
 
 	last_move_time: TIME
 			-- Time of the last move

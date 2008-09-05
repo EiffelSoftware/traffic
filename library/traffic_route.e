@@ -9,6 +9,8 @@ class
 inherit
 
 	LINEAR[TRAFFIC_LEG]
+		rename
+		 	do_all as do_at_every_leg
 		redefine
 		 	out
 		end
@@ -318,29 +320,6 @@ feature -- Basic operations
 			a_scale_factor_exists: a_scale_factor /= Void
 		do
 			scale_factor := a_scale_factor
-		end
-
-	do_at_every_stop (action : PROCEDURE[ANY,TUPLE[TRAFFIC_STATION]])
-			-- Apply `action' to every stop in this route
-		local
-			leg: TRAFFIC_LEG
-		do
-			from
-				leg := first
-			 until
-			 	leg = Void
-			 loop
-			 	from
-			 		leg.segments.start
-			 	until
-			 		leg.segments.after
-			 	loop
-					action.call([leg.segments.item_for_iteration.origin])
-			 		leg.segments.forth
-			 	end
-				leg := leg.next
-			end
-			action.call([last.segments.last.destination])
 		end
 
 feature -- Cursor movement

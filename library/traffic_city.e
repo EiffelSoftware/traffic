@@ -7,6 +7,7 @@ class
 	TRAFFIC_CITY
 
 inherit
+
 	STORABLE
 		export
 			{TRAFFIC_MAP_LOADER} all
@@ -44,6 +45,7 @@ feature {NONE} -- Initialization
 			create trams.make (Current)
 			create busses.make (Current)
 			create taxi_offices.make (Current)
+			create taxis.make (Current)
 			create routes.make (Current)
 			create buildings.make (Current)
 			create free_movings.make (Current)
@@ -86,6 +88,33 @@ feature -- Status report
 				end
 				stations.forth
 			end
+		end
+
+	closest_station (a_point: TRAFFIC_POINT): TRAFFIC_STATION
+			-- Station cloasest to `a_point'
+			-- Returns Void if there is no station
+		require
+			a_point_exists: a_point /= Void
+		local
+			l_dist, min_dist : REAL
+		do
+			from
+				stations.start
+				min_dist := stations.item_for_iteration.location.distance (a_point)
+				Result := stations.item_for_iteration
+				stations.forth
+			until
+				stations.after
+			loop
+				l_dist := stations.item_for_iteration.location.distance (a_point)
+				if l_dist < min_dist then
+					min_dist := l_dist
+					Result := stations.item_for_iteration
+				end
+				stations.forth
+			end
+		ensure
+			exists_if_stations_non_empty: (not stations.is_empty) implies (Result /= Void)
 		end
 
 feature -- Element change
@@ -132,7 +161,7 @@ feature -- Insertion
 
 
 	put_line(a_line: TRAFFIC_LINE) is
-			-- adds `a_line' to `lines'.
+			-- Add `a_line' to `lines'.
 		require
 			a_line_exists: a_line /= void
 		do
@@ -191,6 +220,9 @@ feature -- Access (city objects)
 
 	taxi_offices: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_TAXI_OFFICE]
 			-- All taxi offices associated with this city
+
+	taxis: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_TAXI]
+			-- All taxis associated with this city
 
 	passengers: TRAFFIC_ITEM_LINKED_LIST [TRAFFIC_PASSENGER]
 			-- All passengers moving around the city

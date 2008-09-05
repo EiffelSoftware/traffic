@@ -145,12 +145,12 @@ feature -- Element change
 				city.routes.forth
 			end
 			from
-				city.taxi_offices.start
+				city.taxis.start
 			until
-				city.taxi_offices.after
+				city.taxis.after
 			loop
-				add_taxi_office (city.taxi_offices.item_for_iteration)
-				city.taxi_offices.forth
+				add_taxi (city.taxis.item_for_iteration)
+				city.taxis.forth
 			end
 			city.lines.element_inserted_event.subscribe (agent add_line)
 			city.lines.element_removed_event.subscribe (agent remove_line)
@@ -172,8 +172,8 @@ feature -- Element change
 			city.passengers.element_removed_event.subscribe (agent remove_passenger)
 			city.routes.element_inserted_event.subscribe (agent add_route)
 			city.routes.element_removed_event.subscribe (agent remove_route)
-			city.taxi_offices.element_inserted_event.subscribe (agent add_taxi_office)
-			city.taxi_offices.element_removed_event.subscribe (agent remove_taxi_office)
+			city.taxis.element_inserted_event.subscribe (agent add_taxi)
+			city.taxis.element_removed_event.subscribe (agent remove_taxi)
 		ensure
 			city_set: city = a_city
 		end
@@ -286,25 +286,25 @@ feature {NONE} -- Implementation (view adding)
 			moving_representations.put_last (factory.new_passenger_view (a_passenger))
 		end
 
-	add_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE) is
-			-- Add `a_taxi_office' to the list of items where a view is added for each new taxi.
-		require
-			a_taxi_office_exists: a_taxi_office /= Void
-		do
-			a_taxi_office.taxis.element_inserted_event.subscribe (add_taxi_agent)
-			a_taxi_office.taxis.element_removed_event.subscribe (remove_taxi_agent)
-			-- In case the taxi office has already some taxis...
-			if not a_taxi_office.taxis.is_empty then
-				from
-					a_taxi_office.taxis.start
-				until
-					a_taxi_office.taxis.off
-				loop
-					add_taxi (a_taxi_office.taxis.item_for_iteration)
-					a_taxi_office.taxis.forth
-				end
-			end
-		end
+--	add_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE) is
+--			-- Add `a_taxi_office' to the list of items where a view is added for each new taxi.
+--		require
+--			a_taxi_office_exists: a_taxi_office /= Void
+--		do
+--			a_taxi_office.taxis.element_inserted_event.subscribe (add_taxi_agent)
+--			a_taxi_office.taxis.element_removed_event.subscribe (remove_taxi_agent)
+--			-- In case the taxi office has already some taxis...
+--			if not a_taxi_office.taxis.is_empty then
+--				from
+--					a_taxi_office.taxis.start
+--				until
+--					a_taxi_office.taxis.off
+--				loop
+--					add_taxi (a_taxi_office.taxis.item_for_iteration)
+--					a_taxi_office.taxis.forth
+--				end
+--			end
+--		end
 
 	add_taxi (a_taxi: TRAFFIC_TAXI) is
 			-- Add taxi view for `a_taxi'.
@@ -396,22 +396,22 @@ feature {NONE} -- Implementation (view removing)
 			building_representations.delete (building_representations.view_for_item (a_building))
 		end
 
-	remove_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE) is
-			-- Remove `a_taxi_office' and all its taxi views.
-		require
-			a_taxi_office_exists: a_taxi_office /= Void
-		do
-			a_taxi_office.taxis.element_inserted_event.unsubscribe (add_taxi_agent)
-			a_taxi_office.taxis.element_removed_event.unsubscribe (remove_taxi_agent)
-			from
-				a_taxi_office.taxis.start
-			until
-				a_taxi_office.taxis.off
-			loop
-				remove_taxi (a_taxi_office.taxis.item_for_iteration)
-				a_taxi_office.taxis.forth
-			end
-		end
+--	remove_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE) is
+--			-- Remove `a_taxi_office' and all its taxi views.
+--		require
+--			a_taxi_office_exists: a_taxi_office /= Void
+--		do
+--			a_taxi_office.taxis.element_inserted_event.unsubscribe (add_taxi_agent)
+--			a_taxi_office.taxis.element_removed_event.unsubscribe (remove_taxi_agent)
+--			from
+--				a_taxi_office.taxis.start
+--			until
+--				a_taxi_office.taxis.off
+--			loop
+--				remove_taxi (a_taxi_office.taxis.item_for_iteration)
+--				a_taxi_office.taxis.forth
+--			end
+--		end
 
 	remove_taxi (a_taxi: TRAFFIC_TAXI) is
 			-- Remove view for `a_taxi'.

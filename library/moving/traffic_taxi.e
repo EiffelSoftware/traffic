@@ -9,9 +9,6 @@ class
 inherit
 
 	TRAFFIC_VEHICLE
-		export {TRAFFIC_TAXI_OFFICE}
-			add_to_city,
-			remove_from_city
 		redefine
 			advance
 		end
@@ -23,20 +20,16 @@ create
 
 feature {NONE} -- Initialization
 
-	make_random (a_taxi_office: TRAFFIC_TAXI_OFFICE; a_point_list: DS_ARRAYED_LIST [TRAFFIC_POINT]) is
+	make_random (a_point_list: DS_ARRAYED_LIST [TRAFFIC_POINT]) is
 			-- Create a taxi with an associated 'a_taxi_office'.
 			-- Random speed and stops at 'stops' random positions.
 			-- Set seed of random_number to 'a_seed'.
 		require
-			a_taxi_office_not_void: a_taxi_office /= void
 			valid_number_of_stops: a_point_list /= Void and then a_point_list.count >= 2
 		do
 			create polypoints.make_from_linear (a_point_list)
 			create poly_cursor.make (polypoints)
 			poly_cursor.start
-
-			office := a_taxi_office
-			office.enlist(Current)
 
 			set_reiterate (true)
 			move_next
@@ -47,7 +40,6 @@ feature {NONE} -- Initialization
 			create changed_event
 
 		ensure
-			taxi_office_set: office /= Void
 			polypoints_not_empty: polypoints /= Void and then polypoints.count >= a_point_list.count
 		end
 
@@ -56,8 +48,11 @@ feature -- Access
 	count: INTEGER
 			-- Current amount of load
 
-	office : TRAFFIC_TAXI_OFFICE
-			-- Taxi office `Current' works for
+	color: TRAFFIC_COLOR
+			-- Color of the taxi office
+		once
+			create Result.make_with_rgb (255, 255, 255)
+		end
 
 feature -- Status report
 
@@ -78,24 +73,6 @@ feature -- Status report
 
 feature -- Basic operations
 
-	take (from_location: TRAFFIC_POINT; to_location: TRAFFIC_POINT) is
-			-- Take a request. Pick somebody up at from_location and bring him or her to to_location.
-			-- If busy inform the taxi office to recall it.
-		do
-			if not busy then
-				-- Set taxi busy and take it out of the available_taxi_list of the office.
-				set_request_information (from_location, to_location)
-				busy := True
-				-- Set is_marked to true so that the view will draw the busy taxi marked.
-				is_marked := True
-				office.delist(Current)
-				update_angle
-				changed_event.publish ([])
-			else
-				office.recall(from_location, to_location)
-			end
-		end
-
 	load(a_quantity: INTEGER) is
 			-- Load cargo or a passenger.
     	do
@@ -108,26 +85,25 @@ feature -- Basic operations
 			count := count - a_quantity
     	end
 
-	advance is
-			-- Take a tour in the city.
-			-- Set new random directions and if 'Current' has done a request and is available again.
+	take (from_location: TRAFFIC_POINT; to_location: TRAFFIC_POINT)
+			-- If not `busy', take a request. Pick somebody up at from_location and bring him or her to to_location.
+		require
+			locations_exist: from_location /= Void and to_location /= Void
+			not_close_to_railway_station: from_location.distance (city.closest_station (from_location).location) <= 100.0
 		do
-			Precursor
-			if has_finished and busy then
-					-- Taxi has fullfilled a request.
-					-- Add new random directions.
-					-- Set new destination
-					origin := location
-					destination := polypoints.first
-					has_finished := false
-					set_reiterate (true)
-					-- Taxi is available again.
-					busy := false
-					is_marked := false
-					office.enlist(Current)
+			if not busy then
+				-- Set taxi busy and take it out of the available_taxi_list of the office.
+				set_request_information (from_location, to_location)
+				busy := True
+				-- Set is_marked to true so that the view will draw the busy taxi marked.
+				is_marked := True
+				update_angle
+				changed_event.publish ([])
 			end
 		end
 
+
+feature{NONE} --Implementation
 
 	move_next is
 			--  Move to following position
@@ -161,10 +137,27 @@ feature -- Basic operations
 					destination := poly_cursor.item
 				end
 			end
+			--TODO if at the end, continue with random points
 		end
 
-
-feature{NONE} --Implementation
+	advance is
+			-- Take a tour in the city.
+			-- Set new random directions and if 'Current' has done a request and is available again.
+		do
+			Precursor
+			if has_finished and busy then
+					-- Taxi has fullfilled a request.
+					-- Add new random directions.
+					-- Set new destination
+					origin := location
+					destination := polypoints.first
+					has_finished := false
+					set_reiterate (true)
+					-- Taxi is available again.
+					busy := false
+					is_marked := false
+			end
+		end
 
 	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
 

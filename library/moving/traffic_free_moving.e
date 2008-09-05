@@ -31,7 +31,22 @@ feature -- Initialization
 			create changed_event
 		end
 
-feature -- Basic operations
+
+feature -- Status report
+
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
+		do
+			Result := True
+		end
+
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_city'?
+		do
+			Result := True
+		end
+
+feature {NONE} --Implementation
 
 	move_next is
 			--  Move to following position
@@ -67,20 +82,5 @@ feature -- Basic operations
 			end
 		end
 
-
-
-feature -- Status report
-
-	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
-			-- Is `Current' insertable into `a_city'?
-		do
-			Result := True
-		end
-
-	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_city'?
-		do
-			Result := True
-		end
 
 end

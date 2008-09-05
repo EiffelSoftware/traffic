@@ -65,7 +65,26 @@ feature -- Access
 			-- Stop where passenger intends to get off
 			-- Number of stops from line start until where to get off
 
-feature -- Basic operations
+feature -- Status report
+
+	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
+			-- Is `Current' insertable into `a_city'?
+		do
+			Result := True
+		end
+
+	is_removable: BOOLEAN is
+			-- Is `Current' removable from `a_city'?
+		do
+			Result := True
+		end
+
+	direction_line_back: BOOLEAN
+			-- In which direction to travel?
+			-- If the deboarding_stop is less than the boarding_stop the passenger has to use
+			-- a vehicle that travels back on its line.
+
+feature {NONE} -- Implementation
 
 	move_next is
 			--  Move to following position
@@ -100,27 +119,6 @@ feature -- Basic operations
 				end
 			end
 		end
-
-feature -- Status report
-
-	is_insertable (a_city: TRAFFIC_CITY): BOOLEAN is
-			-- Is `Current' insertable into `a_city'?
-		do
-			Result := True
-		end
-
-	is_removable: BOOLEAN is
-			-- Is `Current' removable from `a_city'?
-		do
-			Result := True
-		end
-
-	direction_line_back: BOOLEAN
-			-- In which direction to travel?
-			-- If the deboarding_stop is less than the boarding_stop the passenger has to use
-			-- a vehicle that travels back on its line.
-
-feature {NONE} -- Implementation
 
 	set_intended_line_info (a_line: TRAFFIC_LINE; a_boarding_stop: INTEGER; a_deboarding_stop: INTEGER) is
 			-- Set where 'Current' intends to board and to get off.

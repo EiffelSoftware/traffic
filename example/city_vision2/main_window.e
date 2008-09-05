@@ -414,7 +414,7 @@ feature {NONE} -- Implementation
 						from
 							i := 1
 						until
-							i > a_value or else i > canvas.city.lines.item_for_iteration.connection_count
+							i > a_value or else i > canvas.city.lines.item_for_iteration.segment_count
 						loop
 							if canvas.city.lines.item_for_iteration.type.name.is_equal ("tram") then
 								create tram.make_with_line (canvas.city.lines.item_for_iteration)
@@ -540,7 +540,7 @@ feature {NONE} -- Implementation
 			x := random.item \\ (2*canvas.city.radius.floor)
 			random.forth
 			y := random.item \\ (2*canvas.city.radius.floor)
-			p.set_position (create {TRAFFIC_POINT}.make (canvas.city.center.x + x - canvas.city.radius, canvas.city.center.y + y - canvas.city.radius))
+			p.set_location (create {TRAFFIC_POINT}.make (canvas.city.center.x + x - canvas.city.radius, canvas.city.center.y + y - canvas.city.radius))
 			canvas.city.stations.put (p, p.name)
 --			canvas.redraw
 		end
@@ -549,7 +549,7 @@ feature {NONE} -- Implementation
 			-- Add line.
 		local
 			l: TRAFFIC_LINE
-			lc1, lc2: TRAFFIC_LINE_CONNECTION
+			lc1, lc2: TRAFFIC_LINE_SEGMENT
 			r, g, b: INTEGER
 			p1, p2: TRAFFIC_STATION
 			s1, s2: TRAFFIC_STOP
@@ -571,12 +571,12 @@ feature {NONE} -- Implementation
 			if p1.has_stop (l) then
 				s1 := p1.stop (l)
 			else
-				create s1.make_with_position (p1, l, create {TRAFFIC_POINT}.make_from_other (p1.location))
+				create s1.make_with_location (p1, l, create {TRAFFIC_POINT}.make_from_other (p1.location))
 			end
 			if p2.has_stop (l) then
 				s2 := p2.stop (l)
 			else
-				create s2.make_with_position (p2, l, create {TRAFFIC_POINT}.make_from_other (p2.location))
+				create s2.make_with_location (p2, l, create {TRAFFIC_POINT}.make_from_other (p2.location))
 			end
 			create pp.make (2)
 			pp.force_last (create {TRAFFIC_POINT}.make_from_other (s1.location))
@@ -594,7 +594,7 @@ feature {NONE} -- Implementation
 			-- Add line connection.
 		local
 			l: TRAFFIC_LINE
-			lc1, lc2: TRAFFIC_LINE_CONNECTION
+			lc1, lc2: TRAFFIC_LINE_SEGMENT
 			p1, p2: TRAFFIC_STATION
 			s1, s2: TRAFFIC_STOP
 			pt: ARRAY [TRAFFIC_STATION]
@@ -609,7 +609,7 @@ feature {NONE} -- Implementation
 					if l.terminal_2.has_stop (l) then
 						s1 := l.terminal_2.stop (l)
 					else
-						create s1.make_with_position (l.terminal_2, l, create {TRAFFIC_POINT}.make_from_other (l.terminal_2.location))
+						create s1.make_with_location (l.terminal_2, l, create {TRAFFIC_POINT}.make_from_other (l.terminal_2.location))
 					end
 				else
 					random.forth
@@ -617,7 +617,7 @@ feature {NONE} -- Implementation
 					if p1 /= Void and then p1.has_stop (l) then
 						s1 := p1.stop (l)
 					else
-						create s1.make_with_position (p1, l, create {TRAFFIC_POINT}.make_from_other (p1.location))
+						create s1.make_with_location (p1, l, create {TRAFFIC_POINT}.make_from_other (p1.location))
 					end
 				end
 				random.forth
@@ -625,7 +625,7 @@ feature {NONE} -- Implementation
 				if p2.has_stop (l) then
 					s2 := p2.stop (l)
 				else
-					create s2.make_with_position (p2, l, create {TRAFFIC_POINT}.make_from_other (p2.location))
+					create s2.make_with_location (p2, l, create {TRAFFIC_POINT}.make_from_other (p2.location))
 				end
 				create pp.make (2)
 				pp.force_last (create {TRAFFIC_POINT}.make_from_other (s1.location))
@@ -643,7 +643,7 @@ feature {NONE} -- Implementation
 			-- Add road.
 		local
 			r: TRAFFIC_ROAD
-			rc1, rc2: TRAFFIC_ROAD_CONNECTION
+			rc1, rc2: TRAFFIC_ROAD_SEGMENT
 			n1, n2: TRAFFIC_NODE
 			pt: ARRAY [TRAFFIC_STATION]
 		do
@@ -663,12 +663,11 @@ feature {NONE} -- Implementation
 	add_taxi_office is
 			-- Add taxi office.
 		local
-			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
-			et: TRAFFIC_TAXI_OFFICE
 			r, g, b: INTEGER
-			td: TRAFFIC_DISPATCHER_TAXI
-			te: TRAFFIC_TAXI
+			l_taxi: TRAFFIC_DISPATCH_TAXI
+			l_office: TRAFFIC_TAXI_OFFICE
 		do
+			-- create random color for the office
 			random.forth
 			r := random.item \\ 256
 			random.forth
@@ -676,84 +675,43 @@ feature {NONE} -- Implementation
 			random.forth
 			b := random.item \\ 256
 			random.forth
-			if not canvas.city.taxi_offices.is_empty then
-				if canvas.city.taxi_offices.last.generating_type.is_equal ("TRAFFIC_TAXI_OFFICE") then
-					create dt.make_with_color (r, g, b)
-					point_randomizer.generate_point_array (5)
-					create td.make_random (dt, point_randomizer.last_array)
-					dt.add_taxi (td)
-					canvas.city.taxi_offices.put_last (dt)
-					point_randomizer.generate_point_array (5)
-					create td.make_random (dt, point_randomizer.last_array)
-					dt.add_taxi (td)
-				else
-					create et.make_with_color (r, g, b)
-					point_randomizer.generate_point_array (5)
-					create te.make_random (et, point_randomizer.last_array)
-					et.add_taxi (te)
-					canvas.city.taxi_offices.put_last (et)
-					point_randomizer.generate_point_array (5)
-					create te.make_random (et, point_randomizer.last_array)
-					et.add_taxi (te)
-				end
-			else
-				create et.make_with_color (r, g, b)
-				point_randomizer.generate_point_array (5)
-				create te.make_random (et, point_randomizer.last_array)
-				et.add_taxi (te)
-				canvas.city.taxi_offices.put_last (et)
-				point_randomizer.generate_point_array (5)
-				create te.make_random (et, point_randomizer.last_array)
-				et.add_taxi (te)
-			end
+
+			create l_office.make_with_color (r, g, b)
+			point_randomizer.generate_point_array (5)
+			create l_taxi.make_with_office (l_office, point_randomizer.last_array)
+			l_office.add_taxi (l_taxi)
+			canvas.city.taxi_offices.put_last (l_office)
+			point_randomizer.generate_point_array (5)
+			create l_taxi.make_with_office (l_office, point_randomizer.last_array)
+			l_office.add_taxi (l_taxi)
 		end
 
 	add_taxi (a_value: INTEGER) is
-			-- Add taxi.
+			-- Add dispatch_taxi
 		local
-			td: TRAFFIC_DISPATCHER_TAXI
-			te: TRAFFIC_TAXI
-			dt: TRAFFIC_DISPATCHER_TAXI_OFFICE
-			et: TRAFFIC_TAXI_OFFICE
+			l_taxi: TRAFFIC_DISPATCH_TAXI
+			l_office: TRAFFIC_TAXI_OFFICE
 		do
 			if not canvas.city.taxi_offices.is_empty then
-				dt ?= canvas.city.taxi_offices.last
-				et ?= canvas.city.taxi_offices.last
-				if et /= Void then
-					if et.taxis.count <= a_value then
-						from
-						until
-							et.taxis.count >= a_value
-						loop
-							point_randomizer.generate_point_array (5)
-							create te.make_random (et, point_randomizer.last_array)
-							et.add_taxi (te)
-						end
-					else
-						from
-						until
-							et.taxis.count <= a_value
-						loop
-							et.remove_taxi (et.taxis.last)
-						end
+				l_office := canvas.city.taxi_offices.last
+				if l_office.taxis.count <= a_value then
+					-- ad taxis until there are at least `a_value' taxis
+					from
+					until
+						l_office.taxis.count >= a_value
+					loop
+						point_randomizer.generate_point_array (5)
+						create l_taxi.make_with_office (l_office, point_randomizer.last_array)
+						l_office.add_taxi (l_taxi)
 					end
-				elseif dt /= Void then
-					if dt.taxis.count <= a_value then
-						from
-						until
-							dt.taxis.count >= a_value
-						loop
-							point_randomizer.generate_point_array (5)
-							create td.make_random (dt, point_randomizer.last_array)
-							dt.add_taxi (td)
-						end
-					else
-						from
-						until
-							dt.taxis.count <= a_value
-						loop
-							dt.remove_taxi (dt.taxis.last)
-						end
+
+				else
+					-- remove taxis until there are at most `a_value' taxis
+					from
+					until
+						l_office.taxis.count <= a_value
+					loop
+						l_office.remove_taxi (l_office.taxis.last)
 					end
 				end
 			end
@@ -797,15 +755,15 @@ feature {NONE} -- Implementation
 			lt := canvas.city.lines.to_array
 			if lt.count > 0 then
 				l := lt.item ((random.item \\ lt.count) + 1)
-				l.remove_all_connections
+				l.remove_all_segments
 				random.forth
 				l := lt.item ((random.item \\ lt.count) + 1)
-				if l.connection_count >= 1 then
+				if l.segment_count >= 1 then
 					l.remove_first
 				end
 				random.forth
 				l := lt.item ((random.item \\ lt.count) + 1)
-				if l.connection_count >= 1 then
+				if l.segment_count >= 1 then
 					l.remove_last
 				end
 			end

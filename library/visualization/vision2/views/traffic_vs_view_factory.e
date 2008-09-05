@@ -72,7 +72,7 @@ feature -- Factory methods
 			-- New taxi view for `a_taxi'
 		do
 			create Result.make (a_taxi)
-			Result.set_color (a_taxi.office.color)
+			Result.set_color (a_taxi.color)
 		end
 
 	new_passenger_view (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_MOVING_ICON_VIEW [TRAFFIC_PASSENGER] is

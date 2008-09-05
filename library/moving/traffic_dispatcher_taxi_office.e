@@ -19,14 +19,15 @@ create
 
 feature -- Basic operations
 
-	add_taxi (a_taxi: TRAFFIC_DISPATCHER_TAXI) is
+	add_taxi (a_taxi: TRAFFIC_DISPATCH_TAXI) is
 			-- Add `a_taxi' to the taxi_list of the office.
 		do
 			available_taxis.force_last(a_taxi)
 			taxis.force_last (available_taxis.last)
 		end
 
-	remove_taxi (a_taxi: TRAFFIC_TAXI) is
+
+	remove_taxi (a_taxi: TRAFFIC_DISPATCH_TAXI) is
 			-- Remove `a_taxi' from current taxi office.
 		do
 			available_taxis.delete (a_taxi)
@@ -45,3 +46,24 @@ feature {TRAFFIC_TAXI} -- Communication from the taxis to their office
 		end
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
