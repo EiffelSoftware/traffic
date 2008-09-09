@@ -66,7 +66,7 @@ feature -- Access
 	last: TRAFFIC_LEG is
 			-- Last route leg
 		do
-			if first /= void then
+			if first /= Void then
 				from
 					result := first
 				until
@@ -126,7 +126,7 @@ feature -- Access
 		do
 			if after then
 				Result := count + 1
-			elseif not is_empty then
+			elseif not is_empty and item /= Void then
 				from
 					Result := 1
 					l_active := item

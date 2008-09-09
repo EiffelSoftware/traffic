@@ -15,6 +15,7 @@ feature -- Commands and Queries
 			Line8.extend (Station_La_Motte)
 			Line8.extend (Station_Concorde)
 			Line8.extend (Station_Invalides)
+			Line8.highlight
 			Console.show (Line8.count)
 			Console.show (Line8.north_end.name)
 		end

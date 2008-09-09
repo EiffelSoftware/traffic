@@ -18,7 +18,7 @@ feature -- Path building
 		do
 			paris.display
 			console.show (highest_name (Line8))
-			console.show ("Total travel time on Metro Line 8: "+total_time8.out+" min")
+			console.show (total_time8)
 		end
 
 
