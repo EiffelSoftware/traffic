@@ -31,7 +31,6 @@ feature -- Basic operations
 		local
 			x: INTEGER
 			y: INTEGER
-			s: STRING
 			p: TRAFFIC_POINT
 		do
 			if not has_attribute ("x") and has_attribute ("y") then

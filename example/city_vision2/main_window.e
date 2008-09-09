@@ -211,19 +211,31 @@ feature {NONE} -- GUI building
 			hb.extend (r)
 			vb.extend (hb)
 
-			-- Taxis
+			-- Dispatch Taxis
 			create button.make_with_text ("+office")
 			button.select_actions.extend (agent add_taxi_office)
 			create l.make_with_text ("taxis (0..10):")
 			create r.make_with_value_range (create {INTEGER_INTERVAL}.make (0, 10))
 			r.set_value (0)
 			r.set_minimum_width (100)
-			r.change_actions.extend (agent add_taxi)
+			r.change_actions.extend (agent add_dispatch_taxi)
 			create hb
 			hb.extend (button)
 			hb.extend (l)
 			hb.extend (r)
 			vb.extend (hb)
+
+			-- taxi
+			create hb
+			create button.make_with_text ("+taxi")
+			button.select_actions.extend (agent add_taxi)
+			hb.extend (button)
+			create button.make_with_text ("-taxi")
+			button.select_actions.extend (agent remove_taxi)
+			hb.extend (button)
+			vb.extend (hb)
+
+
 
 
 			-- Hide/show map
@@ -372,7 +384,7 @@ feature {NONE} -- Implementation
 			until
 				r.last_buildings.off
 			loop
-				canvas.city.buildings.put_last (r.last_buildings.item_for_iteration)
+				canvas.city.put_building (r.last_buildings.item_for_iteration)
 				r.last_buildings.forth
 			end
 			r.generate_random_buildings (15, canvas.city.radius*2/3, 2)
@@ -381,7 +393,7 @@ feature {NONE} -- Implementation
 			until
 				r.last_buildings.off
 			loop
-				canvas.city.buildings.put_last (r.last_buildings.item_for_iteration)
+				canvas.city.put_building (r.last_buildings.item_for_iteration)
 				r.last_buildings.forth
 			end
 			r.generate_random_buildings (100, canvas.city.radius, 1)
@@ -390,7 +402,7 @@ feature {NONE} -- Implementation
 			until
 				r.last_buildings.off
 			loop
-				canvas.city.buildings.put_last (r.last_buildings.item_for_iteration)
+				canvas.city.put_building (r.last_buildings.item_for_iteration)
 				r.last_buildings.forth
 			end
 		end
@@ -419,14 +431,14 @@ feature {NONE} -- Implementation
 							if canvas.city.lines.item_for_iteration.type.name.is_equal ("tram") then
 								create tram.make_with_line (canvas.city.lines.item_for_iteration)
 								tram.set_to_station (canvas.city.lines.item_for_iteration.i_th (i))
-								canvas.city.trams.put_last (tram)
+								canvas.city.put_tram (tram)
 								tram.start
 							elseif canvas.city.lines.item_for_iteration.type.name.is_equal ("bus") then
 								create bus.make_with_line (canvas.city.lines.item_for_iteration)
 								bus.set_to_station (canvas.city.lines.item_for_iteration.i_th (i))
 								bus.set_speed (5)
 								bus.set_reiterate (True)
-								canvas.city.busses.put_last (bus)
+								canvas.city.put_bus (bus)
 								bus.start
 							end
 							i := i + 1
@@ -451,7 +463,7 @@ feature {NONE} -- Implementation
 					loop
 						point_randomizer.generate_point_array (7)
 						create moving.make_with_points (point_randomizer.last_array, 1.5)
-						canvas.city.free_movings.put_last (moving)
+						canvas.city.put_free_moving (moving)
 						moving.set_reiterate (True)
 						moving.start
 					end
@@ -478,7 +490,7 @@ feature {NONE} -- Implementation
 					random.forth
 					if path_randomizer.last_route.first /= Void then
 						create passenger.make_with_route (path_randomizer.last_route, random.double_item*3 + 0.1)
-						canvas.city.passengers.put_last (passenger)
+						canvas.city.put_passenger (passenger)
 						passenger.set_reiterate (True)
 						passenger.go
 					end
@@ -517,7 +529,7 @@ feature {NONE} -- Implementation
 							g := random.item \\ 256
 							random.forth
 							b := random.item \\ 256
-							canvas.city.routes.put_last (c.route)
+							canvas.city.put_route (c.route)
 						end
 					end
 				end
@@ -541,7 +553,7 @@ feature {NONE} -- Implementation
 			random.forth
 			y := random.item \\ (2*canvas.city.radius.floor)
 			p.set_location (create {TRAFFIC_POINT}.make (canvas.city.center.x + x - canvas.city.radius, canvas.city.center.y + y - canvas.city.radius))
-			canvas.city.stations.put (p, p.name)
+			canvas.city.put_station (p)
 --			canvas.redraw
 		end
 
@@ -587,7 +599,7 @@ feature {NONE} -- Implementation
 			pp.force_last (create {TRAFFIC_POINT}.make_from_other (s1.location))
 			create lc2.make (s2, s1, l.type, pp)
 			l.put_last (lc1, lc2)
-			canvas.city.lines.put (l, l.name)
+			canvas.city.put_line (l)
 		end
 
 	add_line_connection is
@@ -656,7 +668,7 @@ feature {NONE} -- Implementation
 			create rc1.make (n1, n2, create {TRAFFIC_TYPE_STREET}.make, canvas.city.graph.id_manager.next_free_index)
 			create rc2.make (n2, n1, create {TRAFFIC_TYPE_STREET}.make, canvas.city.graph.id_manager.next_free_index)
 			create r.make (rc1, rc2)
-			canvas.city.roads.put (r, r.id)
+			canvas.city.put_road (r)
 --			canvas.redraw
 		end
 
@@ -680,13 +692,13 @@ feature {NONE} -- Implementation
 			point_randomizer.generate_point_array (5)
 			create l_taxi.make_with_office (l_office, point_randomizer.last_array)
 			l_office.add_taxi (l_taxi)
-			canvas.city.taxi_offices.put_last (l_office)
+			canvas.city.put_taxi_office (l_office)
 			point_randomizer.generate_point_array (5)
 			create l_taxi.make_with_office (l_office, point_randomizer.last_array)
 			l_office.add_taxi (l_taxi)
 		end
 
-	add_taxi (a_value: INTEGER) is
+	add_dispatch_taxi (a_value: INTEGER) is
 			-- Add dispatch_taxi
 		local
 			l_taxi: TRAFFIC_DISPATCH_TAXI
@@ -713,6 +725,37 @@ feature {NONE} -- Implementation
 					loop
 						l_office.remove_taxi (l_office.taxis.last)
 					end
+				end
+			end
+		end
+
+	add_taxi is
+			-- Add taxi
+		local
+			l_taxi: TRAFFIC_TAXI
+		do
+			point_randomizer.generate_point_array (5)
+			create l_taxi.make_random (point_randomizer.last_array)
+			canvas.city.put_taxi (l_taxi)
+		end
+
+	remove_taxi
+			-- Remove taxi
+		local
+			l_taxi:  TRAFFIC_DISPATCH_TAXI
+			removed: BOOLEAN
+		do
+			from
+				canvas.city.taxis.start
+			until
+				canvas.city.taxis.after or removed
+			loop
+				l_taxi ?= canvas.city.taxis.item_for_iteration
+				if l_taxi = Void then
+					canvas.city.taxis.delete (canvas.city.taxis.item_for_iteration)
+					removed := True
+				else
+					canvas.city.taxis.forth
 				end
 			end
 		end

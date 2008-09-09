@@ -52,7 +52,6 @@ feature -- Access (Paris)
 			loader: TRAFFIC_MAP_LOADER
 			s: STRING
 			fs: KL_FILE_SYSTEM
-			b: TRAFFIC_BUILDING
 		once
 			fs := (create {KL_SHARED_FILE_SYSTEM}).file_system
 			s := fs.pathname ("..", "map")

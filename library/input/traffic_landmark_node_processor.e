@@ -35,9 +35,6 @@ feature -- Basic operations
 
 	process is
 			-- Process node.
-		local
-			b: BOOLEAN
-			f: STRING
 		do
 			if not has_attribute ("name") then
 				set_error (Mandatory_attribute_missing, << "name" >>)

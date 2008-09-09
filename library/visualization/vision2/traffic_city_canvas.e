@@ -81,10 +81,6 @@ feature -- Element change
 
 	set_city (a_city: TRAFFIC_CITY) is
 			-- Set city that is displayed to `a_city'.
-		local
-			p: DRAWABLE_POLYGON
-			c: EV_COLOR
-			ct: TRAFFIC_COLOR
 		do
 			create internal_station_representations.make
 			create internal_line_representations.make

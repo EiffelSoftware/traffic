@@ -78,6 +78,9 @@ feature -- Basic operations
 		do
 			available_taxis.force_last(a_taxi)
 			taxis.force_last (available_taxis.last)
+			if is_in_city and then not city.taxis.has (a_taxi) then
+				city.put_taxi (a_taxi)
+			end
 		end
 
 	remove_taxi (a_taxi:TRAFFIC_DISPATCH_TAXI) is
@@ -88,7 +91,7 @@ feature -- Basic operations
 			available_taxis.delete (a_taxi)
 			taxis.delete (a_taxi)
 			if a_taxi.is_in_city then
-				a_taxi.remove_from_city
+				city.taxis.delete (a_taxi)
 			end
 		end
 

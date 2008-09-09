@@ -159,6 +159,15 @@ feature -- Element change
 
 feature -- Insertion
 
+	put_station (a_station: TRAFFIC_STATION)
+			-- Add `a_station' to `stations'
+		require
+			a_station_exists: a_station /= Void
+		do
+			stations.put (a_station, a_station.name)
+		ensure
+			station_added: stations.has (a_station.name)
+		end
 
 	put_line(a_line: TRAFFIC_LINE) is
 			-- Add `a_line' to `lines'.
@@ -170,6 +179,105 @@ feature -- Insertion
 			line_added: lines.has (a_line.name)
 		end
 
+	put_road (a_road: TRAFFIC_ROAD)
+			-- Add `a_road' to `roads'
+		require
+			a_road_exists: a_road /= Void
+		do
+			roads.put (a_road, a_road.id)
+		ensure
+			road_added: roads.has (a_road.id)
+		end
+
+	put_route (a_route: TRAFFIC_ROUTE)
+			-- Add `a_route' to `routes'
+		require
+			a_route_exists: a_route /= Void
+		do
+			routes.put (a_route)
+		ensure
+			route_added:  routes.has(a_route)
+		end
+
+	put_building (a_building: TRAFFIC_BUILDING)
+			-- Add `a_building' to `buildings'
+		require
+			a_building_exists: a_building  /= Void
+		do
+			buildings.put (a_building)
+		ensure
+			building_added:  buildings.has(a_building)
+		end
+
+	put_landmark (a_landmark: TRAFFIC_LANDMARK)
+			-- Add `a_landmark' to `landmarks'
+		require
+			a_landmark_exists: a_landmark  /= Void
+		do
+			landmarks.put (a_landmark, a_landmark.name)
+		ensure
+			landmark_added:  landmarks.has(a_landmark.name)
+		end
+
+	put_taxi_office (a_taxi_office: TRAFFIC_TAXI_OFFICE)
+			-- Add `a_taxi_office' to `taxi_offices'
+		require
+			a_taxi_office_exists: a_taxi_office  /= Void
+		do
+			taxi_offices.put (a_taxi_office)
+		ensure
+			taxi_office_added:  taxi_offices.has(a_taxi_office)
+		end
+
+	put_taxi (a_taxi: TRAFFIC_TAXI)
+			-- Add `a_taxi' to `taxis'
+		require
+			a_taxi_exists: a_taxi  /= Void
+		do
+			taxis.put (a_taxi)
+		ensure
+			taxi_added:  taxis.has(a_taxi)
+		end
+
+	put_passenger (a_passenger: TRAFFIC_PASSENGER)
+			-- Add `a_passenger' to `passengers'
+		require
+			a_passenger_exists: a_passenger  /= Void
+		do
+			passengers.put (a_passenger)
+		ensure
+			passenger_added:  passengers.has(a_passenger)
+		end
+
+	put_tram (a_tram: TRAFFIC_TRAM)
+			-- Add `a_tram' to `trams'
+		require
+			a_tram_exists: a_tram  /= Void
+		do
+			trams.put (a_tram)
+		ensure
+			tram_added:  trams.has(a_tram)
+		end
+
+	put_bus (a_bus: TRAFFIC_BUS)
+			-- Add `a_busse' to `busses'
+		require
+			a_bus_exists: a_bus  /= Void
+		do
+			busses.put (a_bus)
+		ensure
+			bus_added:  busses.has(a_bus)
+		end
+
+	put_free_moving (a_free_moving: TRAFFIC_FREE_MOVING)
+			-- Add `a_free_moving' to `free_movings'
+		require
+			a_free_moving_exists: a_free_moving  /= Void
+		do
+			free_movings.put (a_free_moving)
+		ensure
+			free_moving_added:  free_movings.has(a_free_moving)
+		end
 
 feature -- Access
 
@@ -257,6 +365,8 @@ feature -- Access
 				a_segments.forth
 			end
 		end
+
+	Map_title: STRING = "Plan of the transport network"
 
 feature -- Output
 

@@ -35,6 +35,7 @@ feature {NONE} -- Initialization
 			move_next
 			update_angle
 
+			unit_capacity := 4
 			speed := 17
 			start
 			create changed_event
@@ -51,7 +52,7 @@ feature -- Access
 	color: TRAFFIC_COLOR
 			-- Color of the taxi office
 		once
-			create Result.make_with_rgb (255, 255, 255)
+			create Result.make_with_rgb (255, 0, 0)
 		end
 
 feature -- Status report
@@ -137,7 +138,6 @@ feature{NONE} --Implementation
 					destination := poly_cursor.item
 				end
 			end
-			--TODO if at the end, continue with random points
 		end
 
 	advance is
@@ -196,5 +196,5 @@ feature{NONE} --Implementation
 		end
 
 invariant
-
+	legal_limit: capacity = 4
 end

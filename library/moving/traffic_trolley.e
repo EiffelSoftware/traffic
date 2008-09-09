@@ -1,10 +1,10 @@
 indexing
-	description: "Trolleybusses (not yet included in the city)"
+	description: "Trolleys (not yet included in the city)"
 	date: "$Date$"
 	revision: "$Revision$"
 
 class
-	TRAFFIC_TROLLEYBUS
+	TRAFFIC_TROLLEY
 
 inherit
 
