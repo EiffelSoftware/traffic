@@ -31,8 +31,8 @@
 		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf" readonly="true"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
 		<library name="traffic" location="..\..\library\traffic_vision2.ecf" readonly="false">
-			<option profile="false">
-				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+			<option profile="false" warning="false">
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
 			</option>
 		</library>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf"/>

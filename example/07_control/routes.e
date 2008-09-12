@@ -44,7 +44,7 @@ feature -- Routes
 				elseif Line8.item.is_exchange then
 					show_blinking_spot (Line8.item.location)
 				else
-					show_spot (line8.item.location)
+					show_spot (Line8.item.location)
 				end
 				Line8.forth
 			end
