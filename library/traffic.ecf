@@ -8,6 +8,7 @@
 			<warning name="syntax" enabled="false"/>
 			<warning name="vjrv" enabled="false"/>
 			<warning name="vweq" enabled="false"/>
+			<warning name="once_in_generic" enabled="false"/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
 		<library name="em" location="$EM\library\em.ecf" readonly="true"/>

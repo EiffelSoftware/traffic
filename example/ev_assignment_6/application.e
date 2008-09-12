@@ -25,9 +25,12 @@ feature {NONE} -- Initialization
 
 	prepare is
 			-- Prepare the first window to be displayed.
+		local
+			alien: ALIEN_TEST
 		do
 			create first_window
-			first_window.set_example (create {ALIEN_TEST})
+			create alien
+			first_window.set_example (alien, agent alien.explore_on_click)
 			first_window.set_title ("Assignment 6 (aliens)")
 			first_window.show
 		end

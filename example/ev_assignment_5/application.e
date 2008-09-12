@@ -25,9 +25,12 @@ feature {NONE} -- Initialization
 
 	prepare is
 			-- Prepare the first window to be displayed.
+		local
+			loopings: LOOPINGS
 		do
 			create first_window
-			first_window.set_example (create {LOOPINGS})
+			create loopings
+			first_window.set_example (loopings, agent loopings.explore_on_click)
 			first_window.set_title ("Assignment 5 (trams and buildings)")
 			first_window.show
 		end
