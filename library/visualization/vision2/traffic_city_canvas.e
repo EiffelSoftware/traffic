@@ -88,6 +88,7 @@ feature -- Element change
 			create internal_building_representations.make
 			create internal_moving_representations.make
 			create internal_route_representations.make
+			create background_polygons.make
 			add_background_polygons (a_city.background_polygons)
 			object_list.wipe_out
 			Precursor (a_city)

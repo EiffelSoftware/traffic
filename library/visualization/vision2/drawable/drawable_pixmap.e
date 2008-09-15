@@ -16,6 +16,8 @@ class DRAWABLE_PIXMAP inherit
 			copy
 		end
 
+	EV_SHARED_SCALE_FACTORY
+
 create
 
 	make
@@ -28,18 +30,19 @@ feature {NONE} -- Initialization
 			a_pixmap_position_not_void: a_pixmap_position /= Void
 			a_sub_pixmap_not_void: a_sub_pixmap /= Void
 		do
-			pixmap:= a_sub_pixmap
+			id_pixmap := pixmap_factory.registered_pixmap (a_sub_pixmap)
+			pixmap_factory.register_pixmap (id_pixmap)
+			scaled_pixmap := pixmap
 			create bounding_box.make_from_reals
 				(a_pixmap_position.x, a_pixmap_position.y,
 				a_pixmap_position.x + pixmap.width,
 				a_pixmap_position.y + pixmap.height)
 			set_color (create {EV_COLOR}.make_with_rgb (0.0,0.0,0.0))
 			has_transparency := True
-			create stretched_pixmap
 			is_shown := True
 		ensure
 			bounding_box_exists: bounding_box /= Void
-			pixmap_set: pixmap = a_sub_pixmap
+			pixmap_set: id_pixmap /= Void
 			shown: is_shown
 		end
 
@@ -120,19 +123,20 @@ feature {EV_CANVAS} -- Display
 				stretch_size_x:= (canvas.width * integer_to_real_x (copy_area_height) / canvas.visible_area.width).rounded.max (1)
 				stretch_size_y:= (canvas.height * integer_to_real_y (copy_area_width) / canvas.visible_area.height).rounded.max (1)
 
-				if stretch_size_x /= stretched_pixmap.width or stretch_size_y /= stretched_pixmap.height then
+				if stretch_size_x /= scaled_pixmap.width or stretch_size_y /= scaled_pixmap.height then
+					scaled_pixmap := pixmap_factory.scaled_pixmap (id_pixmap, (stretch_size_x).max (1), (stretch_size_y).max (1))
 					-- copy a part from the pixmap
-					stretched_pixmap.clear
-					stretched_pixmap.set_size ((copy_area_height).max (1), (copy_area_width).max (1))
-					stretched_pixmap.draw_pixmap (0,0,pixmap)
+--					scaled_pixmap.clear
+--					scaled_pixmap.set_size ((copy_area_height).max (1), (copy_area_width).max (1))
+--					scaled_pixmap.draw_pixmap (0,0,pixmap)
 
 					-- calculate the size to which the copied pixmap should be stretched
-					stretched_pixmap.stretch (stretch_size_x, stretch_size_y)
+--					scaled_pixmap.stretch (stretch_size_x, stretch_size_y)
 				end
 
 				-- draw the copied and stretched pixmap on the canvas
 				copied_pixmap_coordinate:= real_to_integer_coordinate (canvas_pixmap_coordinate)
-				canvas.draw_sub_pixmap (copied_pixmap_coordinate.x, copied_pixmap_coordinate.y, stretched_pixmap,
+				canvas.draw_sub_pixmap (copied_pixmap_coordinate.x, copied_pixmap_coordinate.y, scaled_pixmap,
 										create {EV_RECTANGLE}.make (0, 0, stretch_size_x,stretch_size_y))
 			end
 		end
@@ -189,17 +193,22 @@ feature {NONE} -- Implementation/Calculations
 
 feature {NONE} -- Implementation
 
-	pixmap: EV_PIXMAP
-			-- The pixmap
+	pixmap: EV_PIXMAP is
+			-- Pixmap that is displayed.
+		do
+			Result := id_pixmap.pixmap
+		end
 
-	stretched_pixmap: EV_PIXMAP
+	scaled_pixmap: EV_PIXMAP
 			-- The stretched pixmap
 
+	id_pixmap: EV_IDENTIFIED_PIXMAP
+			-- Identified pixmap (to optimize scaling)
 
 invariant
 
 	pixmap_not_void: pixmap /= Void
-	stretched_pixmap_not_void: stretched_pixmap /= Void
+	stretched_pixmap_not_void: scaled_pixmap /= Void
 	bounding_box_not_void: bounding_box /= Void
 
 end

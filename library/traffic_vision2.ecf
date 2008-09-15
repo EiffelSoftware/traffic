@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-2-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-2-0 http://www.eiffel.com/developers/xml/configuration-1-2-0.xsd" name="traffic" uuid="9FAB6FC9-CD89-4C61-82ED-081CA0AA1410" library_target="traffic">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-3-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-3-0 http://www.eiffel.com/developers/xml/configuration-1-3-0.xsd" name="traffic" uuid="9FAB6FC9-CD89-4C61-82ED-081CA0AA1410" library_target="traffic">
 	<target name="traffic">
 		<root all_classes="true"/>
 		<option warning="true">
 			<warning name="export_class_missing" enabled="false"/>
 			<warning name="old_verbatim_strings" enabled="false"/>
+			<warning name="once_in_generic" enabled="false"/>
 			<warning name="syntax" enabled="false"/>
 			<warning name="vjrv" enabled="false"/>
 			<warning name="vweq" enabled="false"/>
 		</option>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
-		<!--library name="em" location="$EM\library\em.ecf" readonly="true"/-->
 		<library name="gobo" location="$ISE_EIFFEL\library\gobo\gobo.ecf" readonly="true"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf" readonly="true"/>

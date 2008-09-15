@@ -20,23 +20,18 @@ inherit
 	KL_SHARED_FILE_SYSTEM
 
 create
-	make_with_filename
+	make_with_pix
 
 feature -- Initialization
 
-	make_with_filename (a_item: like item; a_filename: STRING) is
+	make_with_pix (a_item: like item; a_pix: EV_PIXMAP) is
 			-- Initialize view for `a_item'.
 		require
-			a_filename_valid: a_filename /= Void and then not a_filename.is_empty
-			a_fileexists: file_system.is_file_readable (a_filename)
-		local
-			pix: EV_PIXMAP
+			a_pix_valid: a_pix /= Void
 		do
 			item := a_item
 			make_container
-			create pix
-			pix.set_with_named_file (a_filename)
-			create icon.make (pix, create {REAL_COORDINATE}.make (item.location.x, item.location.y))
+			create icon.make (a_pix, create {REAL_COORDINATE}.make (item.location.x, item.location.y))
 			icon.set_position (create {REAL_COORDINATE}.make (item.location.x - icon.bounding_box.width/2, -item.location.y-icon.bounding_box.height/2))
 			create rectangle.make  (create {REAL_COORDINATE}.make (icon.bounding_box.point_a.x -5 -5, icon.bounding_box.point_a.y-5),
 							create {REAL_COORDINATE}.make (icon.bounding_box.point_b.x +5, icon.bounding_box.point_b.x +5))

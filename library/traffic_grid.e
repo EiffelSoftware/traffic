@@ -49,8 +49,6 @@ feature -- Basic operations
 			a_line_width_valid: a_line_width > 0
 			a_list_valid: a_list /= Void and then a_list.count >= 2
 		local
-			c: DS_ARRAYED_LIST_CURSOR [TRAFFIC_POINT]
-			v: TRAFFIC_POINT
 			i: INTEGER
 		do
 			from
@@ -172,8 +170,6 @@ feature -- Status report
 			a_width_valid: a_width > 0.0
 			a_breadth_valid: a_breadth > 0.0
 		local
-			nr_cells_in_x_direction:INTEGER
-			nr_cells_in_y_direction:INTEGER
 			i,j,k,l: INTEGER
 			res: BOOLEAN
 			t, s: TUPLE [INTEGER, INTEGER]

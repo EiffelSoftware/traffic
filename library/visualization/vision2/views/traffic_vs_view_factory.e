@@ -55,39 +55,76 @@ feature -- Factory methods
 			end
 		end
 
-	new_tram_view (a_tram: TRAFFIC_TRAM): TRAFFIC_MOVING_VIEW [TRAFFIC_TRAM] is
+	new_tram_view (a_tram: TRAFFIC_TRAM): TRAFFIC_MOVING_ICON_VIEW [TRAFFIC_TRAM] is
 			-- New tram view for `a_tram'
 		do
-			create Result.make (a_tram)
+			create Result.make_with_pix (a_tram, tram_pix)
+			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (40, 30, 230))
 		end
 
 	new_bus_view (a_bus: TRAFFIC_BUS): TRAFFIC_MOVING_ICON_VIEW [TRAFFIC_BUS] is
 			-- New bus view for `a_bus'
 		do
-			create Result.make_with_filename (a_bus, File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\bus.png", Windows_file_system)))
+			create Result.make_with_pix (a_bus, bus_pix)
 			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (40, 30, 230))
 		end
 
-	new_taxi_view (a_taxi: TRAFFIC_TAXI): TRAFFIC_MOVING_VIEW [TRAFFIC_TAXI] is
+	new_taxi_view (a_taxi: TRAFFIC_TAXI): TRAFFIC_MOVING_ICON_VIEW [TRAFFIC_TAXI] is
 			-- New taxi view for `a_taxi'
 		do
-			create Result.make (a_taxi)
-			Result.set_color (a_taxi.color)
+			create Result.make_with_pix (a_taxi, taxi_pix)
+			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (40, 30, 230))
 		end
 
 	new_passenger_view (a_passenger: TRAFFIC_PASSENGER): TRAFFIC_MOVING_ICON_VIEW [TRAFFIC_PASSENGER] is
 			-- New passenger view for `a_passenger'
 		do
-		--	create Result.make (a_passenger)
-			create Result.make_with_filename (a_passenger, File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\man.png", Windows_file_system)))
+			create Result.make_with_pix (a_passenger, passenger_pix)
 			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (140, 200, 225))
 		end
 
-	new_free_moving_view (a_free_moving: TRAFFIC_FREE_MOVING): TRAFFIC_MOVING_VIEW [TRAFFIC_FREE_MOVING] is
+	new_free_moving_view (a_free_moving: TRAFFIC_FREE_MOVING): TRAFFIC_MOVING_ICON_VIEW [TRAFFIC_FREE_MOVING] is
 			-- New free_moving view for `free_moving'
 		do
-			create Result.make (a_free_moving)
-			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (220, 200, 30))
+			create Result.make_with_pix (a_free_moving, free_moving_pix)
+			Result.set_color (create {TRAFFIC_COLOR}.make_with_rgb (40, 30, 230))
+		end
+
+feature {NONE} -- Implementation
+
+	free_moving_pix: EV_PIXMAP is
+			-- Shared pixmap
+		once
+			create Result
+			Result.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\free_moving.png", Windows_file_system)))
+		end
+
+	passenger_pix: EV_PIXMAP is
+			-- Shared pixmap
+		once
+			create Result
+			Result.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\man.png", Windows_file_system)))
+		end
+
+	taxi_pix: EV_PIXMAP is
+			-- Shared pixmap
+		once
+			create Result
+			Result.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\taxi.png", Windows_file_system)))
+		end
+
+	bus_pix: EV_PIXMAP is
+			-- Shared pixmap
+		once
+			create Result
+			Result.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\bus.png", Windows_file_system)))
+		end
+
+	tram_pix: EV_PIXMAP is
+			-- Shared pixmap
+		once
+			create Result
+			Result.set_with_named_file (File_system.absolute_pathname (File_system.pathname_from_file_system ("..\image\tram.png", Windows_file_system)))
 		end
 
 end
