@@ -108,10 +108,12 @@
 
 	<target name="do_all_ev">
 		<geant target="do_one" arguments="city_vision2"/>
-		<geant target="do_one" arguments="ev_ex_2_preview"/>
-		<geant target="do_one" arguments="ev_ex_4_queries_commands"/>
-		<geant target="do_one" arguments="ev_ex_6_path_building"/>
-		<geant target="do_one" arguments="ev_ex_7_control"/>
+		<geant target="do_one" arguments="02_objects"/>
+		<geant target="do_one" arguments="04_interfaces"/>
+		<geant target="do_one" arguments="06_creation"/>
+		<geant target="do_one" arguments="07_control"/>
+		<geant target="do_one" arguments="08_routines"/>
+		<geant target="do_one" arguments="09_variables"/>
 	</target>
 
 	<target name="do_all">
