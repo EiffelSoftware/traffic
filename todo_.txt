@@ -1,30 +1,18 @@
 all:
-- add "traffic_" to all file and classnames using search and replace in eclipse
-- are the classes in $TRAFFIC/library/*.e in the right place?
-- check that all classes use gobo data structures
+- Update eiffelmedia examples to work again
 
 Travelers:
-- First person view walks
 - Real itineraries and delays for trams
 - Tram depots where all the trams start until they are on their route.
-- Change default for TRAFFIC_LINE_TRAVELERS from TRAFFIC_TYPE tram 
 - Drawing of deboard and board of TRAFFIC_PASSENGERs
 
 Buildings:
-- randomize buildings along lines more
-- randomize look and feel of buildings
-- Fix surface normals of buildings (for lighting)
 - Make building generation along lines faster
 
 Shortest path:
-- improve drawing of shortest_path (city 3d)
 - make shortest path calculation faster
 
 Map_widgets:
-- 3d_widget: publish mouse events
-- 3d_widget, representation, and factory classes: check contracts
-- check whether all constants are constants
-- Remove plane_size to be a constant and adapt map_to_gl_coords accordingly
 - Use separate threads for handling mouse events (see Alan Fehr's report 5.3)
 - Use logarithmic search for finding clicked places (see Alan Fehr's report 5.3)
 
@@ -32,14 +20,5 @@ Map loading:
 - improve error handling and messages
 - use SAX parsing
 
-Roads:
-- Add more roads to xml
-
-Touch examples:
-- Add example for "redefinition for efficiency" and "redefinition for correctness" (see Sarah Hauser's report 4.1.1)
-- Add example for weakening and strengthening pre and postconditions (see Sarah Hauser's report 4.1.3)
-
-Exercises:
-- Event exercise: see Sarah Hauser's report 4.1.2
 
 last change $Date$

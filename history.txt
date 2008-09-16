@@ -1,4 +1,9 @@
-Version 3.2     (svn xxx)       24.9.2007
+Version 3.3     (svn )       17.9.2008
+	* Traffic synchronized with the textbook "A touch of Class" (although many changes discussed still need to be integrated in the book)
+	* All examples are implemented
+	* Movings are displayed as images
+
+Version 3.2     (svn 935)       26.9.2007
 	* Vision2 widget support (no eiffelmedia installation needed any more for running traffic)
 	* More examples are implemented
 	* Improved overall design and structure

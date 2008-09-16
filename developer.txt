@@ -1,5 +1,5 @@
                             Traffic
-                            Version 3.2
+                            Version 3.3
                             http://traffic.origo.ethz.ch
 
 1. Requirements
@@ -12,8 +12,7 @@ ____________________________________________________________
 
 1.1 Traffic relies on
 
-EiffelStudio 6.0. The vision2 examples do not rely on any additional libraries. The eiffelmedia part relies on EiffelMedia 1.0 that in turn needs GOBO, EWG and SDL. See http://eiffelmedia.origo.ethz.ch 
-for further instructions.
+EiffelStudio 6.2. The vision2 examples do not rely on any additional libraries. 
 
 2. Build environment
 ____________________________________________________________

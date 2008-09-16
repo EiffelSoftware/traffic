@@ -1,5 +1,5 @@
                             TRAFFIC - City modeling library and applications
-                            Version 3.2
+                            Version 3.3
                             http://traffic.origo.ethz.ch
 
 1. General
@@ -14,14 +14,14 @@ ____________________________________________________________
 
 Traffic is a library that comes with many example applications. To use the Traffic 
 library in your own projects, just include the library directory in your ecf file. 
-The current version of Traffic uses either Vision2 or EiffelMedia for visualization.
+The current version of Traffic uses Vision2 for visualization.
 
 2. Requirements
 ____________________________________________________________
 
 General:
-	- EiffelStudio 6.0 for Linux and Windows
-	- Vision2 (provided with ES 6.0) or EiffelMedia 1.0
+	- EiffelStudio 6.2 for Linux and Windows
+	- Vision2 (provided with ES 6.2)
 
 3. Building an example
 ____________________________________________________________
@@ -41,8 +41,9 @@ ____________________________________________________________
 	Ursina Caluori, Roger Kueng, Valentin Wuestholz, Stefan David, Florian 
 	Geldmacher, Fabian Wueest, Susanne Kasper, Michele Croci, Sarah Hauser, Alan 
 	Fehr, Matthias Buehlmann, Adrian Helfenstein, Nicola Bizirianis, Michael Käser, 
-	Hans-Hermann Jonas, Lars Krapf, Till Bay, Michela Pedroni, the team of the Chair 
-	of Software Engineering and the CS students of ETH Zurich
+	Hans-Hermann Jonas, Lars Krapf, Etienne Reichenbach, Maria Husmann, Till Bay, 
+	Michela Pedroni, the team of the Chair of Software Engineering and the CS students 
+	of ETH Zurich
 
 6. Contact
 ____________________________________________________________
