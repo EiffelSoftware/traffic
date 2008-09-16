@@ -90,7 +90,7 @@ feature -- Basic operations
 			-- If not `busy', take a request. Pick somebody up at from_location and bring him or her to to_location.
 		require
 			locations_exist: from_location /= Void and to_location /= Void
-			not_close_to_railway_station: from_location.distance (city.closest_station (from_location).location) <= 100.0
+			close_to_taxi: from_location.distance (location) <= 100.0
 		do
 			if not busy then
 				-- Set taxi busy and take it out of the available_taxi_list of the office.

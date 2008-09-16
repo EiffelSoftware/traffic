@@ -96,7 +96,8 @@ feature {TRAFFIC_TAXI_OFFICE} -- Basic operations
 			-- Take a request. Pick somebody up at from_location and bring him or her to to_location.
 			-- If busy inform the taxi office to recall it.
 		require else
-			within_city_radius: from_location.distance (city.center) <= city.radius
+			locations_exist: from_location /= Void and to_location /= Void
+			within_city_bounds: from_location.distance (city.center) <= city.radius
 		do
 			Precursor (from_location, to_location)
 			if not busy then
