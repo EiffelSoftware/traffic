@@ -119,6 +119,7 @@ feature {NONE} -- Initialization
 				stops.extend (a_station.stop (current))
 			else
 				create s.make_with_location (a_station, Current, create {TRAFFIC_POINT}.make_from_other (a_station.location))
+				stops.extend (s)
 			end
 		ensure
 			name_set: equal (name, a_name)
