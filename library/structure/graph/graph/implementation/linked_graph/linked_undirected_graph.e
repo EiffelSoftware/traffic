@@ -9,7 +9,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	LINKED_UNDIRECTED_GRAPH [G -> HASHABLE, L]
+	LINKED_UNDIRECTED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	LINKED_GRAPH [G, L]
@@ -79,10 +79,10 @@ feature -- Status report
 		do
 			start_node := linked_node_from_item (a_start_node)
 			el := start_node.edge_list
-			
+
 			-- Make backup of cursor.
 			index := el.index
-			
+
 			from
 				el.start
 			until
@@ -93,7 +93,7 @@ feature -- Status report
 				end
 				el.forth
 			end
-			
+
 			-- Restore cursor.
 			if el.valid_index (index) then
 				el.go_i_th (index)
@@ -134,7 +134,7 @@ feature -- Removal
 			index: INTEGER
 		do
 			linked_edge ?= a_edge
-			
+
 			-- Find both start and end node in the node list.
 			if linked_edge /= Void then
 				start_node := linked_edge.internal_start_node
@@ -144,17 +144,17 @@ feature -- Removal
 				end_node := linked_node_from_item (a_edge.end_node)
 				create linked_edge.make_directed (start_node, end_node, a_edge.label)
 			end
-			
+
 			-- Turn cursor if `edge_item' is removed.
 			if (not off) and then linked_edge.is_equal (edge_item) then
 				right
 			end
-			
+
 			-- Backup current cursor if necessary.
 			if not off then
 				c := cursor
 			end
-			
+
 			-- Remove edge from linked graph representation.
 			-- Note: End node must be processed first.
 			-- Otherwise, `turn_to_edge' produces contract violation.
@@ -165,7 +165,7 @@ feature -- Removal
 			if current_node.edge_list.valid_index (index) then
 				current_node.edge_list.go_i_th (index)
 			end
-			
+
 			current_node := start_node
 			index := current_node.edge_list.index
 			turn_to_edge (a_edge)
@@ -173,10 +173,10 @@ feature -- Removal
 			if current_node.edge_list.valid_index (index)  then
 				current_node.edge_list.go_i_th (index)
 			end
-			
+
 			internal_edges.start
 			internal_edges.prune (linked_edge)
-			
+
 			-- Restore cursor.
 			if c /= Void then
 				go_to (c)
@@ -214,10 +214,10 @@ feature -- Output
 		do
 			Result := "graph linked_undirected_graph%N"
 			Result.append ("{%N")
-			
+
 			edges_todo := edges.twin
 			edges_todo.compare_objects
-			
+
 			from
 				i := 1
 			until
@@ -271,9 +271,5 @@ feature {NONE} -- Implementation
 				create Result.make_multi_graph
 			end
 		end
-
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class LINKED_UNDIRECTED_GRAPH

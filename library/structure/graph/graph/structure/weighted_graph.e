@@ -10,7 +10,7 @@ indexing
 	revision: "$Revision$"
 
 deferred class
-	WEIGHTED_GRAPH [G -> HASHABLE, L]
+	WEIGHTED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	GRAPH [G, L]
@@ -39,7 +39,7 @@ feature -- Access
 			-- The cursor is not moved.
 		deferred
 		end
-	
+
 	shortest_path: like path is
 			-- Shortest path, that has been found with `find_shortest_path'
 		require
@@ -186,7 +186,7 @@ feature -- Basic operations
 		do
 			find_path (a_start_node, a_end_node)
 		end
-	
+
 feature -- Obsolete
 
 feature {NONE} -- Inapplicable
@@ -220,8 +220,5 @@ feature {NONE} -- Implementation
 		do
 			put_edge (a_edge.start_node, a_edge.end_node, a_edge.label, a_edge.weight)
 		end
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class WEIGHTED_GRAPH

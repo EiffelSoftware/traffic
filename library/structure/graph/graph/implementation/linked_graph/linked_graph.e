@@ -10,7 +10,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	LINKED_GRAPH [G -> HASHABLE, L]
+	LINKED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	GRAPH [G, L]

@@ -46,19 +46,19 @@ feature -- Basic operations
 				set_error (Mandatory_attribute_missing, <<"direction">>)
 			elseif not has_attribute ("type") then
 				set_error (Mandatory_attribute_missing, <<"type">>)
-			elseif not city.stations.has (attribute ("from")) then
-				set_error (Unknown_source, <<attribute ("from")>>)
-			elseif not city.stations.has (attribute ("to")) then
-				set_error (Unknown_destination, << attribute ("to")>> )
+			elseif not city.stations.has (xml_attribute ("from")) then
+				set_error (Unknown_source, <<xml_attribute ("from")>>)
+			elseif not city.stations.has (xml_attribute ("to")) then
+				set_error (Unknown_destination, << xml_attribute ("to")>> )
 			else
-				map_factory.build_road (( attribute ("from")), ( attribute ("to")), city, ( attribute ("type")), ( attribute ("id")),( attribute ("direction")))
+				map_factory.build_road (( xml_attribute ("from")), ( xml_attribute ("to")), city, ( xml_attribute ("type")), ( xml_attribute ("id")),( xml_attribute ("direction")))
 				road := map_factory.road
 				if not has_error and has_subnodes then
 					process_subnodes
 				end
 				if not has_error and polypoints.count >= 2 then
 					road.one_way.set_polypoints (polypoints)
-					if attribute ("direction").is_equal ("undirected") then
+					if xml_attribute ("direction").is_equal ("undirected") then
 						create p.make (polypoints.count)
 						from
 							polypoints.start

@@ -14,7 +14,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	DFS_WALKER [G -> HASHABLE, L]
+	DFS_WALKER [G -> HASHABLE, reference L]
 
 inherit
 	ABSTRACT_FS_WALKER [G, L]

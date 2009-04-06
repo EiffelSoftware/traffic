@@ -202,7 +202,4 @@ feature {NONE} -- Implementation
 	weight_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [G, L]], REAL]
 			-- User-defined function to compute `weight'.
 
-invariant
-	invariant_clause: True -- Your invariant here
-
 end -- class WEIGHTED_EDGE

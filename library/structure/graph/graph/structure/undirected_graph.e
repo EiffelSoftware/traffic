@@ -9,7 +9,7 @@ indexing
 	revision: "$Revision$"
 
 deferred class
-	UNDIRECTED_GRAPH [G -> HASHABLE, L]
+	UNDIRECTED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	GRAPH [G, L]
@@ -65,7 +65,7 @@ feature -- Status report
 			-- A connected simple graph without cycles is a tree.
 			Result := is_connected and not has_cycles
 		end
-	
+
 	is_eulerian: BOOLEAN is
 			-- Can the whole graph be drawn with a single closed line without lifting the pencil?
 		local
@@ -76,7 +76,7 @@ feature -- Status report
 			if not off then
 				c := cursor
 			end
-			
+
 			-- Definition: A graph is Eularian iff it is connected and all nodes have even degree.
 			Result := is_connected
 			node_list := linear_representation
@@ -98,7 +98,7 @@ feature -- Status report
 ----- DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG -----
 				node_list.forth
 			end
-			
+
 			-- Restore cursor.
 			if c /= Void then
 				go_to (c)
@@ -167,8 +167,5 @@ feature {NONE} -- Implementation
 		do
 			Result := a_edge.opposite_node (a_node)
 		end
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class UNDIRECTED_GRAPH

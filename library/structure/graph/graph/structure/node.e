@@ -111,7 +111,7 @@ feature {GRAPH} -- Element change
 
 feature -- Basic operations
 
-	infix "<" (other: like Current): BOOLEAN is
+	is_less alias "<" (other: like Current): BOOLEAN is
 			-- Is current route shorter than the one of `other'?
 		do
 			Result := distance < other.distance

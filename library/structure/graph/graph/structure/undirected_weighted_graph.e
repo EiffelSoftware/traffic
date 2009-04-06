@@ -10,7 +10,7 @@ indexing
 	revision: "$Revision$"
 
 deferred class
-	UNDIRECTED_WEIGHTED_GRAPH [G -> HASHABLE, L]
+	UNDIRECTED_WEIGHTED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	UNDIRECTED_GRAPH [G, L]
@@ -27,7 +27,7 @@ inherit
 			adopt_edge,
 			degree
 		end
-	
+
 	WEIGHTED_GRAPH [G, L]
 		rename
 			in_degree as degree,
@@ -133,7 +133,7 @@ feature -- Transformation
 				mst.put_node (node_list.item)
 				node_list.forth
 			end
-			
+
 			-- Put edges into sorted array (priority queue with lowest priority first).
 			create edge_list.make (0)
 			from
@@ -145,7 +145,7 @@ feature -- Transformation
 				sorted_put (lin_rep.item, edge_list)
 				lin_rep.forth
 			end
-			
+
 			-- Traverse edges in increasing order and keep only the MST edges.
 			from
 			until
@@ -167,7 +167,7 @@ feature -- Transformation
 				end
 				edge_list.remove
 			end
-			
+
 			Result := mst
 		ensure
 			graph_not_changed: (node_count = old node_count) and (edge_count = old edge_count)
@@ -212,7 +212,7 @@ feature {NONE} -- Implementation
 			l, r, p: INTEGER
 		do
 			-- Note: This routine is necessary because `WEIGHTED_EDGE' cannot
-			-- inherit from `COMPARABLE' (failure of `is_equal' because of 
+			-- inherit from `COMPARABLE' (failure of `is_equal' because of
 			-- trichotomy postcondition). Hence no sortable data structure can be used.
 			if edge_list.is_empty then
 				edge_list.extend (a_edge)
@@ -233,7 +233,7 @@ feature {NONE} -- Implementation
 						r := p
 					end
 				end
-				
+
 				-- Decide whether to insert the new item at the left or right.
 				edge_list.go_i_th (l)
 				if edge_list.item.weight < a_edge.weight then
@@ -243,8 +243,5 @@ feature {NONE} -- Implementation
 				end
 			end
 		end
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class UNDIRECTED_WEIGHTED_GRAPH

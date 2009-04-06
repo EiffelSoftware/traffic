@@ -10,7 +10,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	ADJACENCY_MATRIX_GRAPH [G -> HASHABLE, L]
+	ADJACENCY_MATRIX_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	GRAPH [G, L]
@@ -105,7 +105,7 @@ feature -- Access
 				Result := Void
 			end
 		end
-			
+
 	incident_edges: LIST [like edge_item] is
 			-- All incident edges of `item'
 		local
@@ -138,7 +138,7 @@ feature -- Access
 				end
 			end
 		end
-	
+
 	incident_edge_labels: LIST [L] is
 			-- Labels of all incident edges of `item'
 		local
@@ -161,7 +161,7 @@ feature -- Access
 				end
 			end
 		end
-	
+
 	edge_from_values (a_start_node, a_end_node: like item; a_label: L): like edge_item is
 			-- Edge that matches `a_start_node', `a_end_node' and `a_label'.
 			-- Result is Void if there is no match.
@@ -183,7 +183,7 @@ feature -- Access
 				Result := Void
 			end
 		end
-	
+
 	node_identity: HASHABLE is
 			-- Object that identifies the current item
 		do
@@ -321,7 +321,7 @@ feature -- Status report
 				Result := Precursor
 			end
 		end
-	
+
 	off: BOOLEAN is
 			-- Does `cursor' currently denote a valid graph position?
 		do
@@ -345,14 +345,14 @@ feature -- Status report
 
 	exhausted: BOOLEAN
 			-- Has `left' or `right' turned to the first link?
-		
+
 	has_links: BOOLEAN is
 			-- Does the current node have outgoing edges (links)?
 		do
 			Result := current_target_node_index /= -1
 		end
 
-	path_found: BOOLEAN 
+	path_found: BOOLEAN
 			-- Has a path been found in `find_path'?
 
 	is_simple_graph: BOOLEAN
@@ -492,11 +492,11 @@ feature -- Element change
 					item_index := node_array.count + 1
 					adjacency_matrix.resize (item_index, item_index)
 				end
-				
+
 				-- Put node into array and hash table.
 				node_array.force (a_item, item_index)
 				index_of_element.extend (item_index, a_item)
-				
+
 				-- Empty the adjacency matrix cells.
 				from
 					i := 1
@@ -562,7 +562,7 @@ feature -- Removal
 						exhausted := True
 					end
 				end
-	
+
 				if item_index = node_array.count then
 					-- Shrink the adjacency matrix if possible.
 					node_array.conservative_resize (1, item_index - 1)
@@ -578,7 +578,7 @@ feature -- Removal
 						adjacency_matrix.put (Void, i, item_index)
 						adjacency_matrix.put (Void, item_index, i)
 					end
-				end			
+				end
 			end
 		end
 
@@ -619,7 +619,7 @@ feature -- Removal
 				internal_edges.prune (adjacency_matrix.item (end_index, start_index))
 				adjacency_matrix.put (Void, end_index, start_index)
 			end
-			
+
 			-- Adjust node indices if necessary.
 			if end_index = first_edge_index then
 				find_first_edge_index
@@ -741,24 +741,24 @@ feature {NONE} -- Implementation
 
 	node_array: ARRAY [like item]
 			-- All nodes of the graph
-	
+
 	inactive_nodes: ARRAYED_SET [INTEGER]
 			-- Array indices for nodes that are not present in the graph anymore
-	
+
 	internal_edges: LIST [like edge_item]
 			-- All edges of the graph
 
 	current_node_index: INTEGER
 			-- Current cursor position
 			-- Has value -1 when undefined.
-	
+
 	current_target_node_index: INTEGER
 			-- Current "edge" represented by target node
 			-- Has value -1 when undefined.
-	
+
 	first_edge_index: INTEGER
 			-- Index of the first edge
-	
+
 	last_edge_index: INTEGER
 			-- Index of the last edge
 
@@ -865,7 +865,7 @@ feature {NONE} -- Implementation
 invariant
 
 	square_matrix: adjacency_matrix.width = adjacency_matrix.height
-	
+
 	node_array_not_void: node_array /= Void
 
 	same_node_amount: (node_array.count > 0) implies

@@ -81,7 +81,7 @@ feature -- Basic operations
 					io.putstring ("Angle has to be in range -70 to 70 degrees")
 					angle := 0
 				end
-				building_name := attribute ("name")
+				building_name := xml_attribute ("name")
 				create p1.make(x1,y1)
 				create p2.make(x1,y2)
 				create p3.make(x2,y2)

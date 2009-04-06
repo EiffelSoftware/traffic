@@ -8,7 +8,7 @@ class
 
 inherit
 
-	LINKED_WEIGHTED_GRAPH [TRAFFIC_NODE, REAL]
+	LINKED_WEIGHTED_GRAPH [TRAFFIC_NODE, REAL_REF]
 		rename
 			put_edge as connect_nodes
 		redefine

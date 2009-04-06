@@ -6,7 +6,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	B_TREE [G -> COMPARABLE]
+	B_TREE [reference G -> COMPARABLE]
 
 inherit
 	BALANCED_SEARCH_TREE [G]

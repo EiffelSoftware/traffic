@@ -42,10 +42,10 @@ feature -- Basic operations
 					set_error (Mandatory_attribute_missing, <<"from">>)
 				elseif not has_attribute ("to") then
 					set_error (Mandatory_attribute_missing, <<"to">>)
-				elseif not city.stations.has (attribute ("from")) then
-					set_error (Unknown_source, <<attribute ("from")>>)
-				elseif not city.stations.has (attribute ("to")) then
-					set_error (Unknown_destination, << attribute ("to")>> )
+				elseif not city.stations.has (xml_attribute ("from")) then
+					set_error (Unknown_source, <<xml_attribute ("from")>>)
+				elseif not city.stations.has (xml_attribute ("to")) then
+					set_error (Unknown_destination, << xml_attribute ("to")>> )
 				elseif line = Void then
 					set_error (Missing_line, << >> )
 				elseif not city.lines.has (line.name) then
@@ -68,13 +68,13 @@ feature -- Basic operations
 						polypoints := Void
 						polypoints_other_direction := Void
 					end
-					if has_attribute ("direction") and then attribute ("direction").is_equal ("undirected") then
-							map_factory.build_line_segment (( attribute ("from")), ( attribute ("to")), polypoints, city, line)
+					if has_attribute ("direction") and then xml_attribute ("direction").is_equal ("undirected") then
+							map_factory.build_line_segment (( xml_attribute ("from")), ( xml_attribute ("to")), polypoints, city, line)
 							line_section_one_direction := map_factory.connection_one_direction
 							line_section_other_direction := map_factory.connection_other_direction
 							map_factory.connection_other_direction.set_polypoints (polypoints_other_direction)
 					else -- directed
-						set_error (Invalid_line_section, << line.name, attribute ("from"), attribute ("to") >>)
+						set_error (Invalid_line_section, << line.name, xml_attribute ("from"), xml_attribute ("to") >>)
 					end
 					set_target (line_section_one_direction)
 				end

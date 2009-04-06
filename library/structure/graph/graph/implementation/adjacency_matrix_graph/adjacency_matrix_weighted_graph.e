@@ -10,7 +10,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	ADJACENCY_MATRIX_WEIGHTED_GRAPH [G -> HASHABLE, L]
+	ADJACENCY_MATRIX_WEIGHTED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	ADJACENCY_MATRIX_GRAPH [G, L]
@@ -27,12 +27,10 @@ inherit
 			edge_length,
 			put_unweighted_edge
 		redefine
-			make_simple_graph,
-			make_symmetric_graph,
 			edge_item,
 			out
 		end
-	
+
 	WEIGHTED_GRAPH [G, L]
 		rename
 			make_empty_graph as make_empty_adjacency_matrix_graph
@@ -197,10 +195,5 @@ feature -- Output
 			end
 			Result.append ("}%N")
 		end
-
-feature {NONE} -- Implementation
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class ADJACENCY_MATRIX_WEIGHTED_GRAPH

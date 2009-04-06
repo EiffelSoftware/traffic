@@ -10,7 +10,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	LINKED_UNDIRECTED_WEIGHTED_GRAPH [G -> HASHABLE, L]
+	LINKED_UNDIRECTED_WEIGHTED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	LINKED_UNDIRECTED_GRAPH [G, L]
@@ -56,7 +56,6 @@ inherit
 			is_eulerian,
 			out
 		redefine
-			edges,
 			put_edge,
 			put_unlabeled_edge
 		end
@@ -81,7 +80,6 @@ inherit
 			forth,
 			out
 		redefine
-			border_nodes,
 			edges
 		end
 
@@ -148,10 +146,10 @@ feature -- Output
 		do
 			Result := "graph linked_undirected_graph%N"
 			Result.append ("{%N")
-			
+
 			edges_todo := internal_edges.twin
 			edges_todo.compare_objects
-			
+
 			from
 				i := 1
 			until
@@ -194,10 +192,5 @@ feature -- Output
 			end
 			Result.append ("}%N")
 		end
-
-feature {NONE} -- Implementation
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class LINKED_UNDIRECTED_WEIGHTED_GRAPH

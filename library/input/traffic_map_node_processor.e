@@ -32,24 +32,24 @@ feature -- Basic operations
 			description: STRING
 		do
 			if has_attribute ("name") then
-				map_factory.build_city (attribute ("name"))
+				map_factory.build_city (xml_attribute ("name"))
 			end
 
 			if has_attribute ("scale_factor") then
-				if not attribute ("scale_factor").is_double then
+				if not xml_attribute ("scale_factor").is_double then
 					set_error (wrong_attribute_type, << "scale_factor" >>)
 				end
-				city.set_scale_factor (attribute ("scale_factor").to_double)
+				city.set_scale_factor (xml_attribute ("scale_factor").to_double)
 			end
 
 			if has_attribute ("center_x") and has_attribute ("center_y") and has_attribute ("radius") then
-				if not attribute ("center_x").is_double then
+				if not xml_attribute ("center_x").is_double then
 					set_error (wrong_attribute_type, << "center_x" >>)
 				end
-				if not attribute ("center_y").is_double then
+				if not xml_attribute ("center_y").is_double then
 					set_error (wrong_attribute_type, << "center_y" >>)
 				end
-				if not attribute ("radius").is_double then
+				if not xml_attribute ("radius").is_double then
 					set_error (wrong_attribute_type, << "radius" >>)
 				end
 				if not has_error then

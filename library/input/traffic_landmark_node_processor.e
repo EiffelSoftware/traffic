@@ -38,8 +38,8 @@ feature -- Basic operations
 		do
 			if not has_attribute ("name") then
 				set_error (Mandatory_attribute_missing, << "name" >>)
-			elseif map_factory.city.landmarks.has (attribute ("name")) then
-				set_error (Duplicate_name, << attribute ("name") >>)
+			elseif map_factory.city.landmarks.has (xml_attribute ("name")) then
+				set_error (Duplicate_name, << xml_attribute ("name") >>)
 			elseif not has_attribute ("x") or not has_attribute ("y") then
 				set_error (mandatory_attribute_missing, << "x or y" >>)
 			elseif not has_attribute ("filename") then
@@ -47,7 +47,7 @@ feature -- Basic operations
 			elseif not is_attribute_integer ("x") or not is_attribute_integer ("y") then
 				set_error (invalid_attribute_value, <<"x or y">>)
 			else
-				map_factory.build_landmark (attribute_integer ("x"), attribute_integer ("y"), attribute ("name"), city, File_system.pathname_from_file_system (attribute ("filename"), Windows_file_system))
+				map_factory.build_landmark (attribute_integer ("x"), attribute_integer ("y"), xml_attribute ("name"), city, File_system.pathname_from_file_system (xml_attribute ("filename"), Windows_file_system))
 				set_target (map_factory.landmark)
 			end
 

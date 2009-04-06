@@ -33,7 +33,7 @@ feature -- Basic operations
 			-- Process node.
 		do
 			if has_attribute ("name") then
-				create file.make_from_string (attribute ("name"))
+				create file.make_from_string (xml_attribute ("name"))
 --				parent.send_data (file)
 			else
 				set_error (Mandatory_attribute_missing, << "name" >>)

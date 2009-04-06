@@ -49,7 +49,7 @@ feature -- Access
 	data: ANY
 			-- Data from subnodes for parent
 
-	attribute (a_name: STRING): STRING is
+	xml_attribute (a_name: STRING): STRING is
 			-- Attribute named `a_name'
 		require
 			has_source: has_source
@@ -71,7 +71,7 @@ feature -- Access
 			has_attribute: has_attribute (a_name)
 			is_integer: is_attribute_integer (a_name)
 		do
-			Result := attribute (a_name).to_integer
+			Result := xml_attribute (a_name).to_integer
 		end
 
 	attribute_double (a_name: STRING): DOUBLE is
@@ -85,7 +85,7 @@ feature -- Access
 		local
 			attr: STRING
 		do
-			attr := (attribute (a_name)).twin
+			attr := (xml_attribute (a_name)).twin
 			if attr.is_integer then
 				attr.append (".0")
 			end
@@ -101,7 +101,7 @@ feature -- Access
 			has_attribute: has_attribute (a_name)
 			is_boolean: is_attribute_boolean (a_name)
 		do
-			Result  := attribute (a_name).to_boolean
+			Result  := xml_attribute (a_name).to_boolean
 		end
 
 	text: STRING is
@@ -209,7 +209,7 @@ feature -- Status report
 			name_not_empty: not a_name.is_empty
 			has_attribute: has_attribute (a_name)
 		do
-			Result  := attribute (a_name).is_integer
+			Result  := xml_attribute (a_name).is_integer
 		end
 
 	is_attribute_double (a_name: STRING): BOOLEAN is
@@ -220,7 +220,7 @@ feature -- Status report
 			name_not_empty: not a_name.is_empty
 			has_attribute: has_attribute (a_name)
 		do
-			Result  := is_attribute_integer (a_name) or else attribute (a_name).is_double
+			Result  := is_attribute_integer (a_name) or else xml_attribute (a_name).is_double
 		end
 
 	is_attribute_boolean (a_name: STRING): BOOLEAN is
@@ -231,7 +231,7 @@ feature -- Status report
 			name_not_empty: not a_name.is_empty
 			has_attribute: has_attribute (a_name)
 		do
-			Result  := attribute (a_name).is_boolean
+			Result  := xml_attribute (a_name).is_boolean
 		end
 
 	valid_source (an_element: XM_ELEMENT): BOOLEAN is
@@ -410,7 +410,7 @@ feature {NONE} -- Implementation
 			loop
 				attr := Mandatory_attributes @ i
 				if not has_attribute (attr) or else
-					attribute (attr).is_empty then
+					xml_attribute (attr).is_empty then
 					set_error (Mandatory_attribute_missing, << attr >>)
 				end
 				i := i + 1

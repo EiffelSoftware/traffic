@@ -10,7 +10,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	ADJACENCY_MATRIX_UNDIRECTED_WEIGHTED_GRAPH [G -> HASHABLE, L]
+	ADJACENCY_MATRIX_UNDIRECTED_WEIGHTED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	ADJACENCY_MATRIX_UNDIRECTED_GRAPH [G, L]
@@ -79,8 +79,6 @@ inherit
 			put_unweighted_edge,
 			forth,
 			out
-		redefine
-			border_nodes
 		end
 
 create
@@ -189,10 +187,5 @@ feature -- Output
 			end
 			Result.append ("}%N")
 		end
-
-feature {NONE} -- Implementation
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class ADJACENCY_MATRIX_UNDIRECTED_WEIGHTED_GRAPH

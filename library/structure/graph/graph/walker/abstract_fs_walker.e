@@ -11,7 +11,7 @@ indexing
 	revision: "$Revision$"
 
 deferred class
-	ABSTRACT_FS_WALKER [G -> HASHABLE, L]
+	ABSTRACT_FS_WALKER [G -> HASHABLE, reference L]
 
 inherit
 	LINEAR [G]
@@ -53,10 +53,10 @@ feature -- Access
 feature -- Measurement
 
 feature -- Status report
-	
+
 	after: BOOLEAN
 
-	is_empty: BOOLEAN is False		
+	is_empty: BOOLEAN is False
 
 feature -- Cursor movement
 
@@ -71,7 +71,7 @@ feature -- Cursor movement
 			add_targets_to_dispenser
 			after := False
 		end
-		
+
 	forth is
 			-- Move the cursor to the next item
 		do
@@ -110,7 +110,7 @@ feature -- Cursor movement
 				end
 			end
 		end
-		
+
 	finish is
 			-- Move the cursor to the last item
 		do
@@ -127,20 +127,20 @@ feature {NONE} -- Implementation
 
 	first_node: GRAPH_CURSOR [G, L]
 			-- Node to start the walk on
-	
+
 	dispenser: DISPENSER [GRAPH_CURSOR [G, L]]
 			-- Storage of items that need to be processed
-	
-	visited_nodes: HASH_TABLE [BOOLEAN, HASHABLE] 
+
+	visited_nodes: HASH_TABLE [BOOLEAN, HASHABLE]
 			-- Provides fast lookup for already processed nodes
-	
+
 	create_dispenser is
 			-- Create the dispenser
 		deferred
 		ensure
 			dispenser_created: dispenser /= Void
 		end
-		
+
 	add_targets_to_dispenser is
 			-- Add all targets of the current node to the dispenser
 		require
@@ -180,5 +180,5 @@ feature {NONE} -- Implementation
 			end
 			graph.go_to (oldpos)
 		end
-	
+
 end -- class ABSTRACT_FS_WALKER

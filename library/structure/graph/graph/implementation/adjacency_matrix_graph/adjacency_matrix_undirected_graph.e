@@ -10,7 +10,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	ADJACENCY_MATRIX_UNDIRECTED_GRAPH [G -> HASHABLE, L]
+	ADJACENCY_MATRIX_UNDIRECTED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	ADJACENCY_MATRIX_GRAPH [G, L]
@@ -180,7 +180,7 @@ feature -- Removal
 					exhausted := True
 				end
 			end
-			
+
 			-- Remove edge from edge list.
 			internal_edges.prune (adjacency_matrix.item (start_index, end_index))
 
@@ -275,9 +275,5 @@ feature {NONE} -- Implementation
 		do
 			create Result.make_simple_graph
 		end
-
-
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class ADJACENCY_MATRIX_UNDIRECTED_GRAPH

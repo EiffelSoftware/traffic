@@ -36,10 +36,10 @@ feature -- Basic operations
 			else
 				a_city:=map_factory.city
 				-- retrieve the corresponding instance of TRAFFIC_ROAD
-				if (a_city.roads.has (attribute("id").to_integer)) and attribute ("back").is_equal ("false") then
-					parent.send_data (a_city.roads.item (attribute("id").to_integer).one_way)
-				elseif (a_city.roads.has (attribute("id").to_integer)) and attribute ("back").is_equal ("true") then
-					parent.send_data (a_city.roads.item (attribute("id").to_integer).other_way)
+				if (a_city.roads.has (xml_attribute("id").to_integer)) and xml_attribute ("back").is_equal ("false") then
+					parent.send_data (a_city.roads.item (xml_attribute("id").to_integer).one_way)
+				elseif (a_city.roads.has (xml_attribute("id").to_integer)) and xml_attribute ("back").is_equal ("true") then
+					parent.send_data (a_city.roads.item (xml_attribute("id").to_integer).other_way)
 				else
 					set_error(No_road_with_given_id_exists,<<"id">>)
 					parent.send_data(Void)

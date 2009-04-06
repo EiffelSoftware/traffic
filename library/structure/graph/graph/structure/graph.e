@@ -11,7 +11,7 @@ indexing
 
 
 deferred class
-	GRAPH [G -> HASHABLE, L]
+	GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	FINITE [G]
@@ -94,7 +94,7 @@ feature {NONE} -- Initialization
 			is_symmetric_graph: is_symmetric_graph
 			empty_graph: (node_count = 0) and (edge_count = 0)
 		end
-	
+
 	make_multi_graph is
 			-- Make a multigraph.
 		do
@@ -107,7 +107,7 @@ feature {NONE} -- Initialization
 			not_symmetric_graph: not is_symmetric_graph
 			empty_graph: (node_count = 0) and (edge_count = 0)
 		end
-	
+
 	make_symmetric_multi_graph is
 			-- Make a symmetric multigraph.
 		do
@@ -120,7 +120,7 @@ feature {NONE} -- Initialization
 			is_symmetric_graph: is_symmetric_graph
 			empty_graph: (node_count = 0) and (edge_count = 0)
 		end
-	
+
 feature -- Access
 
 	last_inserted_edge: EDGE [G, L]
@@ -164,7 +164,7 @@ feature -- Access
 		ensure
 			result_not_void: Result /= Void
 		end
-	
+
 	edges: LIST [like edge_item] is
 			-- All edges of the graph
 		deferred
@@ -178,7 +178,7 @@ feature -- Access
 			not_off: not off
 		deferred
 		end
-	
+
 	incident_edges: LIST [like edge_item] is
 			-- All incident edges of `item'
 		require
@@ -188,7 +188,7 @@ feature -- Access
 			result_not_void: Result /= Void
 			degree_match: Result.count = out_degree
 		end
-	
+
 	incident_edge_labels: LIST [L] is
 			-- Labels of all incident edges of `item'
 		require
@@ -198,7 +198,7 @@ feature -- Access
 			result_not_void: Result /= Void
 			degree_match: Result.count = out_degree
 		end
-	
+
 	neighbors: SET [like item] is
 			-- All neighbor nodes of `item'
 		require
@@ -208,7 +208,7 @@ feature -- Access
 		do
 			-- Backup cursor
 			c := cursor
-			
+
 			create {LINKED_SET [like item]}Result.make
 			from
 				start
@@ -218,7 +218,7 @@ feature -- Access
 				Result.put (target)
 				left
 			end
-			
+
 			-- Restore cursor.
 			go_to (c)
 		ensure
@@ -235,7 +235,7 @@ feature -- Access
 		ensure
 			cursor_not_moved: equal (cursor, old cursor)
 		end
-		
+
 	path: LIST [like edge_item] is
 			-- Path that has been found with `find_path'
 		require
@@ -246,7 +246,7 @@ feature -- Access
 			path_not_void: Result /= Void
 		end
 
-	
+
 	linear_representation: LINEAR [like item] is
 			-- Linear representation of the node set
 		do
@@ -301,7 +301,7 @@ feature -- Measurement
 		do
 			-- Make backup of `target'.
 			edge := edge_item
-			
+
 			-- Count all incident edges of `item'
 			from
 				start
@@ -312,7 +312,7 @@ feature -- Measurement
 				Result := Result + 1
 				left
 			end
-			
+
 			-- Restore `target'.
 			turn_to_edge (edge)
 		ensure then
@@ -331,7 +331,7 @@ feature -- Measurement
 		do
 			node_list := linear_representation
 			edge_list := edges.linear_representation
-			
+
 			-- Initialize union-find data structure.
 			create uf.make (node_count)
 			from
@@ -342,7 +342,7 @@ feature -- Measurement
 				uf.put (node_list.item)
 				node_list.forth
 			end
-			
+
 			-- Run the union-find algorithm over all edges of the graph.
 			from
 				edge_list.start
@@ -370,7 +370,7 @@ feature -- Status report
 
 	has_multi_graph_support: BOOLEAN is
 			-- Are multigraphs supported by the current implementation?
-		deferred			
+		deferred
 		end
 
 	has_node (a_item: like item): BOOLEAN is
@@ -435,7 +435,7 @@ feature -- Status report
 			if not off then
 				c := cursor
 			end
-			
+
 			search (a_edge.start_node)
 			if off then
 				-- Edge is not part of the graph.
@@ -453,7 +453,7 @@ feature -- Status report
 					left
 				end
 			end
-			
+
 			-- Restore cursor.
 			if c /= Void then
 				go_to (c)
@@ -475,13 +475,13 @@ feature -- Status report
 		ensure
 			cursor_not_moved: equal (cursor, old cursor)
 		end
-	
+
 	is_connected: BOOLEAN is
 			-- Is the graph (weakly) connected?
 		do
 			Result := components = 1
 		end
-	
+
 	path_found: BOOLEAN is
 			-- Has a path been found in `find_path'?
 		deferred
@@ -507,7 +507,7 @@ feature -- Status report
 				el.forth
 			end
 			topo_sorter.process
-			
+
 			Result := topo_sorter.cycle_found
 		end
 
@@ -517,7 +517,7 @@ feature -- Status report
 			-- DAG definition: connected graph without any cycles.
 			Result := is_connected and not has_cycles
 		end
-	
+
 	is_eulerian: BOOLEAN is
 			-- Can the whole graph be drawn with a single closed line without lifting the pencil?
 		local
@@ -526,7 +526,7 @@ feature -- Status report
 		do
 			-- Definition: A directed graph is Eularian iff
 			-- it is connected and the in-degree and out-degree is equal for each node.
-			
+
 			if is_symmetric_graph then
 				-- For symmetric graphs, the in- and out-degree is equal by definition.
 				Result := is_connected
@@ -536,7 +536,7 @@ feature -- Status report
 					c := cursor
 				end
 				Result := is_connected
-				
+
 				-- Check degrees for non-symmetric graphs.
 				node_list := linear_representation
 				from
@@ -548,7 +548,7 @@ feature -- Status report
 					Result := Result and (in_degree = out_degree)
 					node_list.forth
 				end
-				
+
 				-- Restore cursor.
 				if c /= Void then
 					go_to (c)
@@ -599,7 +599,7 @@ feature -- Status report
 			if not off then
 				c := cursor
 			end
-			
+
 			-- The graph is a simple graph if the number of incident edges
 			-- and the number of neighbor nodes are equal for each node.
 			from
@@ -625,7 +625,7 @@ feature -- Status report
 				Result := Result and (neighbrs.count = out_deg)
 				lin.forth
 			end
-			
+
 			-- Restore cursor.
 			if c /= Void then
 				go_to (c)
@@ -671,11 +671,11 @@ feature -- Status report
 					Result := has_node (edge.end_node) and then has_edge (edge)
 				else
 					cur := cursor
-					
+
 					-- A void edge is only allowed when there are no outgoing edges.
 					search (graph_cursor.current_node)
 					Result := not has_links
-					
+
 					-- Restore previous cursor position (if any).
 					if cur /= Void then
 						go_to (cur)
@@ -857,7 +857,7 @@ feature -- Removal
 			symmetric_edge_removed: is_symmetric_graph implies edge_count = old edge_count - 2
 			exhausted_after_last_edge: not off and then (equal (a_edge, edge_item) and out_degree = 0) implies exhausted
 		end
-	
+
 	remove_node is
 			-- Remove the current node and all its incident edges from the graph.
 			-- `off' will be set.
@@ -947,12 +947,12 @@ feature -- Basic operations
 		do
 			-- Shortest path algorithm used for both weighted and unweighted graphs.
 			-- In unweighted graphs, we look for the path with the minimum amount of edges.
-			
+
 			-- Make backup of old cursor position if necessary.
 			if not off then
 				c := cursor
 			end
-			
+
 			-- Initialize data structure to keep track of half- or fully processed nodes.
 			prepare_path_finding
 			target_node := node_from_item (a_end_node)
@@ -994,9 +994,9 @@ feature -- Basic operations
 					el.forth
 				end
 			end
-			
+
 			set_path_found (target_node.processed)
-			
+
 			if path_found then
 				-- We have found a path connecting `a_start_node' and `a_end_node'.
 				-- Follow the referrer edges to build up the path
@@ -1009,7 +1009,7 @@ feature -- Basic operations
 					node.referring_edge = Void
 				loop
 					e := node.referring_edge
-					
+
 					-- Flip edges if necessary to make the output meaningful.
 					if not it.is_equal (e.end_node) then
 						-- This can only happen in case of undirected edges.
@@ -1021,7 +1021,7 @@ feature -- Basic operations
 					it := e.start_node
 				end
 			end
-			
+
 			-- Free memory used for annotated nodes.
 			annotated_nodes := Void
 
@@ -1059,24 +1059,24 @@ feature -- Basic operations
 		do
 			-- Assume merge operation will succeed.
 			set_merge_succeeded (True)
-			
+
 			-- Put all nodes of `other' into current graph.
 			merge_nodes (other)
-			
+
 			-- Convert current graph to a multigraph if necessary
 			-- to avoid errors with the "put_edge" command.
 			if is_simple_graph and has_multi_graph_support then
 				was_simple_graph := True
 				convert_to_multi_graph
 			end
-			
+
 			-- Put all edges of `other' into current graph.
 			if is_multi_graph then
 				merge_edges (other)
 			else
 				simple_merge_edges (other)
 			end
-			
+
 			-- Convert the graph back to a simple graph if possible.
 			if was_simple_graph and is_multi_graph and reducible_multigraph then
 				convert_to_simple_graph
@@ -1126,7 +1126,7 @@ feature {NONE} -- Implementation
 
 	empty_graph: like Current is
 			-- Empty graph with the same actual type than `Current'
-		deferred			
+		deferred
 		end
 
 	conflicting_edges_impl: LINKED_LIST [like edge_item]
@@ -1146,16 +1146,16 @@ feature {NONE} -- Implementation
 	history_stack: ARRAYED_STACK [like cursor]
 			-- History of the visited nodes
 
-	
+
 	-- Implementation for path finding algorithm
 
 	annotated_nodes: ARRAY [NODE [like item, L]]
 			-- All graph nodes annotated with additional information
 			-- for the path finding algorithm
-	
+
 	border_nodes: INVERSE_HEAP_PRIORITY_QUEUE [NODE [like item, L]]
 			-- Nodes which are part of the border set in the path finding algorithm
-	
+
 	node_from_item (a_item: like item): NODE [like item, L] is
 			-- Node object from item value
 		require
@@ -1192,7 +1192,7 @@ feature {NONE} -- Implementation
 				annotated_nodes.force (node, index)
 				lin_rep.forth
 			end
-			
+
 			-- Make empty border set.
 			create border_nodes.make (node_count)
 		end
@@ -1345,12 +1345,12 @@ feature {NONE} -- Status setting
 		end
 
 invariant
-	
+
 	valid_in_degree: not off implies in_degree >= 0
 	valid_out_degree: not off implies out_degree >= 0
-	
+
 	edge_in_focus: not off and has_links implies edge_item /= Void
-	
+
 	history_stack_item_not_void: not history_stack.is_empty implies history_stack.item /= Void
 	item_index_not_void: index_of_element /= Void
 

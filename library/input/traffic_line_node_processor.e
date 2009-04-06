@@ -40,11 +40,11 @@ feature -- Basic operations
 			elseif not has_attribute ("type") then
 				set_error (Mandatory_attribute_missing, << "type" >>)
 			else
-				if has_attribute ("simple") and then equal (attribute ("simple"), "true") then
-					map_factory.build_line (attribute ("name"), attribute ("type"), city)
+				if has_attribute ("simple") and then equal (xml_attribute ("simple"), "true") then
+					map_factory.build_line (xml_attribute ("name"), xml_attribute ("type"), city)
 					set_target (map_factory.line)
 				else
-					map_factory.build_line (attribute ("name"), attribute ("type"), city)
+					map_factory.build_line (xml_attribute ("name"), xml_attribute ("type"), city)
 					set_target (map_factory.line)
 				end
 			end
@@ -52,7 +52,7 @@ feature -- Basic operations
 				process_subnodes
 			end
 			if not has_error and color /= Void then
-				if has_attribute ("simple") and then equal (attribute ("simple"), "true") then
+				if has_attribute ("simple") and then equal (xml_attribute ("simple"), "true") then
 					map_factory.line.set_color (color)
 				else
 					map_factory.line.set_color (color)

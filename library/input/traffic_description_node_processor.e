@@ -37,7 +37,7 @@ feature -- Basic operations
 			description: STRING
 		do
 			if has_attribute ("text") then
-				create description.make_from_string (attribute ("text"))
+				create description.make_from_string (xml_attribute ("text"))
 				parent.send_data (description)
 			else
 				set_error (Mandatory_attribute_missing, << "text" >>)

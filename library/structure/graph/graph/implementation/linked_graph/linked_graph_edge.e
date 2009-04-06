@@ -86,33 +86,4 @@ feature {LINKED_GRAPH, LINKED_GRAPH_NODE} -- Access
 			end
 		end
 
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
-invariant
-	invariant_clause: True -- Your invariant here
-
 end -- class LINKED_GRAPH_EDGE

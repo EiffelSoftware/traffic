@@ -11,7 +11,7 @@ indexing
 	revision: "$Revision$"
 
 class
-	LINKED_WEIGHTED_GRAPH [G -> HASHABLE, L]
+	LINKED_WEIGHTED_GRAPH [G -> HASHABLE, reference L]
 
 inherit
 	LINKED_GRAPH [G, L]
@@ -85,7 +85,7 @@ feature -- Access
 				start_node := linked_node_from_item (a_start_node)
 				end_node := linked_node_from_item (a_end_node)
 				create edge.make_directed (start_node, end_node, a_label, a_weight)
-				
+
 				if has_edge (edge) then
 					Result := edge
 				else
@@ -193,10 +193,5 @@ feature -- Output
 			end
 			Result.append ("}%N")
 		end
-
-feature {NONE} -- Implementation
-	
-invariant
-	invariant_clause: True -- Your invariant here
 
 end -- class LINKED_WEIGHTED_GRAPH
