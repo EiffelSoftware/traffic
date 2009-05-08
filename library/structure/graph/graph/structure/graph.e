@@ -126,7 +126,7 @@ feature -- Access
 	last_inserted_edge: EDGE [G, L]
 			-- Edge that was created with the last put_..._edge command
 
-	cursor: GRAPH_CURSOR [G, L] is
+	cursor: ?GRAPH_CURSOR [G, L] is
 			-- Current cursor position
 		do
 			if not off then
@@ -657,14 +657,11 @@ feature -- Status report
 	valid_cursor (c: CURSOR): BOOLEAN is
 			-- Can the cursor be moved to position `c'?
 		local
-			cur, graph_cursor: like cursor
+			cur: like cursor
 			edge: like edge_item
 		do
-			graph_cursor ?= c
-			-- The focused node must be part of the graph in order to be valid.
-			if (graph_cursor = Void) or else (not has_node (graph_cursor.current_node)) then
-				Result := False
-			else
+				-- The focused node must be part of the graph in order to be valid.
+			if {graph_cursor: like cursor} c and then has_node (graph_cursor.current_node) then
 				edge := graph_cursor.edge_item
 				if edge /= Void then
 					-- The focused edge must also be part of the graph.
@@ -1149,7 +1146,7 @@ feature {NONE} -- Implementation
 
 	-- Implementation for path finding algorithm
 
-	annotated_nodes: ARRAY [NODE [like item, L]]
+	annotated_nodes: ?ARRAY [NODE [like item, L]]
 			-- All graph nodes annotated with additional information
 			-- for the path finding algorithm
 
@@ -1197,7 +1194,7 @@ feature {NONE} -- Implementation
 			create border_nodes.make (node_count)
 		end
 
-	path_impl: TWO_WAY_LIST [like edge_item]
+	path_impl: ?TWO_WAY_LIST [like edge_item]
 			-- Path found by `find_path'
 			-- (Feature was introduced because attributes
 			-- cannot have a precondition right now)

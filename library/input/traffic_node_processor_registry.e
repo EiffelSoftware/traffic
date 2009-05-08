@@ -95,7 +95,7 @@ feature {NONE} -- Constants
 
 feature {NONE} -- Implementation
 
-	Processor_registry: DS_HASH_TABLE [TRAFFIC_NODE_PROCESSOR, STRING] is
+	Processor_registry: DS_HASH_TABLE [TRAFFIC_NODE_PROCESSOR, !STRING] is
 			-- System-wide registry for known map node processors
 			-- Use `register_processor' for new node types and
 			-- `register_allowed_subnode' for registering their subnode types.
@@ -127,7 +127,7 @@ feature {NONE} -- Implementation
 			Result_not_empty: not Result.is_empty
 		end
 
-	Allowed_subnode_registry: DS_HASH_TABLE [ARRAY [STRING], STRING] is
+	Allowed_subnode_registry: DS_HASH_TABLE [ARRAY [STRING], !STRING] is
 			-- System-wide registry for known map node processors
 			-- Use `register_processor' for new node types and
 			-- `register_allowed_subnode' for registering their subnode types.

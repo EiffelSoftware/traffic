@@ -203,7 +203,7 @@ feature -- Status report
 
 feature -- Output
 
-	out: STRING is
+	out: !STRING is
 			-- Return readable string.
 		do
 			Result := "(X1: " + point_a.x.out + ", Y1: " + point_a.y.out +

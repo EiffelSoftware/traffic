@@ -352,14 +352,12 @@ feature -- Access
 			stations.has (a_name) and then stations.item (a_name).has_stop (a_line)
 		local
 			a_segments: LIST [TRAFFIC_SEGMENT]
-			ls: TRAFFIC_LINE_SEGMENT
 		do
 			Result := create {ARRAYED_LIST [TRAFFIC_LINE_SEGMENT]}.make (2)
 			graph.search (stations.item (a_name).stop (a_line))
 			a_segments := graph.incident_edges
 			from a_segments.start until a_segments.after loop
-				ls ?= a_segments.item
-				if ls /= Void then
+				if {ls: TRAFFIC_LINE_SEGMENT} a_segments.item then
 					Result.extend (ls)
 				end
 				a_segments.forth

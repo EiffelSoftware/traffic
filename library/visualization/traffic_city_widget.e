@@ -386,9 +386,9 @@ feature {NONE} -- Implementation (view removing)
 
 feature {NONE} -- Implementation (Agent references)
 
-	add_taxi_agent: PROCEDURE [ANY, TUPLE [TRAFFIC_TAXI]]
+	add_taxi_agent: PROCEDURE [ANY, !TUPLE [TRAFFIC_TAXI]]
 
-	remove_taxi_agent: PROCEDURE [ANY, TUPLE [TRAFFIC_TAXI]]
+	remove_taxi_agent: PROCEDURE [ANY, !TUPLE [TRAFFIC_TAXI]]
 
 invariant
 

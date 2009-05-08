@@ -7,7 +7,7 @@ deferred class
 	TRAFFIC_SEGMENT
 
 inherit
-	LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, REAL]
+	LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, REAL_REF]
 		rename
 			make_directed as make_directed_old,
 			make_undirected as make_undirected_old,

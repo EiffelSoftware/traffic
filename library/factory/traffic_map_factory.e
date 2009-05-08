@@ -332,12 +332,13 @@ feature -- Traffic line building
 			a_name_not_empty: not a_name.is_empty
 			a_city_exists: a_city /= Void
 			type_name_is_valid: valid_name (a_type_name)
-		local
-			actual_traffic_type: TRAFFIC_TYPE_LINE
+--		local
+--			actual_traffic_type: TRAFFIC_TYPE_LINE
 		do
 			build_traffic_type (a_type_name)
-			actual_traffic_type ?= internal_traffic_type
-			create internal_line.make (a_name, actual_traffic_type)
+			if {actual_traffic_type: TRAFFIC_TYPE_LINE} internal_traffic_type then
+				create internal_line.make (a_name, actual_traffic_type)
+			else check False end end
 			a_city.lines.put (internal_line, internal_line.name)
 		ensure
 			line_created: line /= Void
@@ -367,22 +368,22 @@ feature {NONE} -- Implementation
 	traffic_type_factory: TRAFFIC_TYPE_FACTORY
 			-- Traffic type factory
 
-	internal_station: TRAFFIC_STATION
+	internal_station: ?TRAFFIC_STATION
 			-- Internal representation of last created traffic station
 
 	internal_landmark: TRAFFIC_LANDMARK
 			-- Internal representation of last created traffic landmark
 
-	internal_one_direction, internal_other_direction: TRAFFIC_LINE_SEGMENT
+	internal_one_direction, internal_other_direction: ?TRAFFIC_LINE_SEGMENT
 			-- Internal representation of last created traffic line segment
-			
-	internal_line: TRAFFIC_LINE
+
+	internal_line: ?TRAFFIC_LINE
 			-- Internal representation of last created traffic line
 
 	internal_road: TRAFFIC_ROAD
 			-- Internal representation of last created traffic road
 
-	internal_map: TRAFFIC_CITY
+	internal_map: ?TRAFFIC_CITY
 			-- Internal representation of last created traffic map
 
 	create_road_connection (a_origin, a_destination: STRING; a_city: TRAFFIC_CITY; a_type:STRING;an_id:STRING): TRAFFIC_ROAD_SEGMENT is
@@ -400,7 +401,6 @@ feature {NONE} -- Implementation
 			a_road: TRAFFIC_ROAD_SEGMENT
 			origin_s: TRAFFIC_STATION
 			destination_s: TRAFFIC_STATION
-			type: TRAFFIC_TYPE_ROAD
 			i: INTEGER
 			origin_node: TRAFFIC_NODE
 			destination_node: TRAFFIC_NODE
@@ -413,10 +413,12 @@ feature {NONE} -- Implementation
 
 			create traffic_type_factory.make
 			traffic_type_factory.build(a_type)
-			type?= traffic_type_factory.traffic_type
-			i:=an_id.to_integer
-			create a_road.make (origin_node, destination_node, type, i)
-			Result := a_road
+			if {type: TRAFFIC_TYPE_ROAD} traffic_type_factory.traffic_type then
+				i := an_id.to_integer
+				create Result.make (origin_node, destination_node, type, i)
+			else
+				check False end
+			end
 		ensure
 			result_exists: Result /= Void
 		end

@@ -226,7 +226,7 @@ feature -- Access
 	id_manager: TRAFFIC_ID_MANAGER
 			-- Manager for road ids
 
-	current_node: TRAFFIC_NODE
+	current_node: ?TRAFFIC_NODE
 			-- Value of the currently focused node
 
 	edge_item: TRAFFIC_SEGMENT is
@@ -354,15 +354,12 @@ feature {NONE} -- Implementation
 	calculate_weight (a_edge: TRAFFIC_SEGMENT): REAL is
 			-- Calculate the edge based on the current status.
 			-- This is only used for "dummy" segments.
-		local
-			e: TRAFFIC_EXCHANGE_SEGMENT
 		do
 			inspect shortest_path_mode
 			when normal_distance then
 				Result := a_edge.length * a_edge.weight_factor
 			when minimal_switches then
-				e ?= a_edge
-				if e /= Void then
+				if {e: TRAFFIC_EXCHANGE_SEGMENT} a_edge then
 					Result := average_weight
 				else
 					Result := a_edge.length * a_edge.weight_factor

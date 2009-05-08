@@ -21,7 +21,6 @@ feature -- Creation
 			-- `A_scaling_reference' is used to calulate the width of the polyline
 		require
 			a_point_array_not_void: a_point_array /= Void
-			no_void_element: not a_point_array.has(Void)
 		do
 			set_points (a_point_array)
 			set_width (default_width)

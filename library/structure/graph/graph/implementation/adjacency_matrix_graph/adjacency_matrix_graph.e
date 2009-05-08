@@ -96,7 +96,7 @@ feature -- Access
 			Result := node_array.item (current_target_node_index)
 		end
 
-	edge_item: EDGE [like item, L] is
+	edge_item: ?EDGE [like item, L] is
 			-- Current edge
 		do
 			if current_target_node_index /= -1 then
@@ -162,7 +162,7 @@ feature -- Access
 			end
 		end
 
-	edge_from_values (a_start_node, a_end_node: like item; a_label: L): like edge_item is
+	edge_from_values (a_start_node, a_end_node: like item; a_label: L): ?like edge_item is
 			-- Edge that matches `a_start_node', `a_end_node' and `a_label'.
 			-- Result is Void if there is no match.
 			-- The cursor is not moved.
@@ -736,7 +736,7 @@ feature -- Inapplicable
 
 feature {NONE} -- Implementation
 
-	adjacency_matrix: ARRAY2 [like edge_item]
+	adjacency_matrix: ARRAY2 [?like edge_item]
 			-- Adjacency matrix
 
 	node_array: ARRAY [like item]

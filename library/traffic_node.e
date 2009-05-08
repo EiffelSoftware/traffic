@@ -7,7 +7,7 @@ class
 	TRAFFIC_NODE
 
 inherit
-	LINKED_GRAPH_NODE [TRAFFIC_NODE, REAL]
+	LINKED_GRAPH_NODE [TRAFFIC_NODE, REAL_REF]
 		rename
 			referring_edge as referring_connection,
 			put_edge as put_connection,

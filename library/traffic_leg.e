@@ -29,11 +29,8 @@ feature {NONE} -- Creation
 			-- Initialize `current', used if line-type is unknown.
 		require
 			a_segment_exists: a_segment /= Void
-		local
-			ls: TRAFFIC_LINE_SEGMENT
 		do
-			ls ?= a_segment
-			if ls /= Void then
+			if {ls: TRAFFIC_LINE_SEGMENT} a_segment then
 				line := ls.line
 			end
 			length := a_segment.length
@@ -188,14 +185,11 @@ feature -- Status report
 			-- Can `a_segment' be inserted?
 		require
 			a_segment_exists: a_segment /= Void
-		local
-			l: TRAFFIC_LINE_SEGMENT
 		do
 			Result := True
 			if not segments.is_empty then
 				if has_line then
-					l ?= a_segment
-					if l /= Void then
+					if {l: TRAFFIC_LINE_SEGMENT} a_segment then
 						Result := (l.line = line)
 					else
 						Result := False
@@ -285,11 +279,8 @@ feature -- Basic operations
 		require
 			a_segment_exists: a_segment /= Void
 			a_segment_fits: is_insertable (a_segment)
-		local
-			l: TRAFFIC_LINE_SEGMENT
 		do
-			l ?= a_segment
-			if (l /= Void and segments.is_empty) and then l.line /= Void then
+			if {l: TRAFFIC_LINE_SEGMENT} a_segment and then segments.is_empty and then l.line /= Void then
 				line := l.line
 			end
 			segments.force_last (a_segment)

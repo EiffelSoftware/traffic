@@ -84,7 +84,7 @@ feature -- Basic operation
 
 feature -- Basic operation
 
-	out: STRING is
+	out: !STRING is
 			-- Textual representation
 		do
 			Result := "state: " + to_string (value)

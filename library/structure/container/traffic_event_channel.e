@@ -24,7 +24,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	subscriptions: DS_LINEAR [PROCEDURE [ANY, EVENT_DATA]] is
+	subscriptions: DS_LINEAR [PROCEDURE [ANY, !EVENT_DATA]] is
 			-- List of subscriptions
 		do
 			Result := subscriptions_impl
@@ -32,7 +32,7 @@ feature -- Access
 			result_exist: Result /= Void
 		end
 
-	once_subscriptions: DS_LINEAR [PROCEDURE [ANY, EVENT_DATA]] is
+	once_subscriptions: DS_LINEAR [PROCEDURE [ANY, !EVENT_DATA]] is
 			-- List of once subscriptions
 		do
 			Result := once_subscriptions_impl
@@ -42,7 +42,7 @@ feature -- Access
 
 feature -- Element change
 
-	subscribe (an_action: PROCEDURE [ANY, EVENT_DATA]) is
+	subscribe (an_action: PROCEDURE [ANY, !EVENT_DATA]) is
 			-- Add `an_action' to the subscription list.
 		require
 			an_action_not_void: an_action /= Void
@@ -54,7 +54,7 @@ feature -- Element change
 			count_incremented: subscriptions.count = old subscriptions.count + 1
 		end
 
-	subscribe_kamikaze (an_action: PROCEDURE [ANY, EVENT_DATA]) is
+	subscribe_kamikaze (an_action: PROCEDURE [ANY, !EVENT_DATA]) is
 			-- Add `an_action' to the once subscription list.
 			-- `an_action' will be called next time the event occurs and will be removed afterwards.
 		require
@@ -67,7 +67,7 @@ feature -- Element change
 			count_incremented: once_subscriptions.count = old once_subscriptions.count + 1
 		end
 
-	unsubscribe (an_action: PROCEDURE [ANY, EVENT_DATA]) is
+	unsubscribe (an_action: PROCEDURE [ANY, !EVENT_DATA]) is
 			-- Remove `an_action' from the subscription list.
 		require
 			an_action_not_void: an_action /= Void
@@ -78,7 +78,7 @@ feature -- Element change
 			count_decremenetd: old has (an_action) implies subscriptions.count = old subscriptions.count - 1
 		end
 
-	unsubscribe_kamikaze (an_action: PROCEDURE [ANY, EVENT_DATA]) is
+	unsubscribe_kamikaze (an_action: PROCEDURE [ANY, !EVENT_DATA]) is
 			-- Remove `an_action' from the once subscription list.
 		require
 			an_action_not_void: an_action /= Void
@@ -135,13 +135,13 @@ feature -- Status report
 			-- Is the publication of all actions from the subscription list suspended?
 			-- (Answer: no by default.)
 
-	has (an_action: PROCEDURE [ANY, EVENT_DATA]): BOOLEAN is
+	has (an_action: PROCEDURE [ANY, !EVENT_DATA]): BOOLEAN is
 			-- Is `an_action' subscribed?
 		do
 			Result := subscriptions_impl.has (an_action)
 		end
 
-	has_once (an_action: PROCEDURE [ANY, EVENT_DATA]): BOOLEAN is
+	has_once (an_action: PROCEDURE [ANY, !EVENT_DATA]): BOOLEAN is
 			-- Is `an_action' subscribed in the once list?
 		require
 			an_action_not_void: an_action /= Void
@@ -171,10 +171,10 @@ feature -- Status settings
 
 feature {NONE} -- Implementation
 
-	subscriptions_impl: DS_LINKED_LIST [PROCEDURE [ANY, EVENT_DATA]]
+	subscriptions_impl: DS_LINKED_LIST [PROCEDURE [ANY, !EVENT_DATA]]
 			-- List of subscriptions
 
-	once_subscriptions_impl: DS_LINKED_LIST [PROCEDURE [ANY, EVENT_DATA]]
+	once_subscriptions_impl: DS_LINKED_LIST [PROCEDURE [ANY, !EVENT_DATA]]
 			-- List of once subscriptions
 
 end

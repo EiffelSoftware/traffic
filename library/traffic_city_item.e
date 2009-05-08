@@ -62,7 +62,7 @@ feature -- Status setting
 
 feature -- Access
 
-	city: TRAFFIC_CITY
+	city: ?TRAFFIC_CITY
 			-- City to which the item belongs (may be void)
 
 	changed_event: TRAFFIC_EVENT_CHANNEL [TUPLE []]
