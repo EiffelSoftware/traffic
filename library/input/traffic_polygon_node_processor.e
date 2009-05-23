@@ -61,9 +61,7 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			a_location: TRAFFIC_POINT
 			location: REAL_COORDINATE
-			a_color: TRAFFIC_COLOR
 			i: INTEGER
 			a_polypoints: ARRAY [REAL_COORDINATE]
 		do
@@ -74,8 +72,6 @@ feature -- Basic operations
 			until
 				has_error or subnodes.after or i > 100
 			loop
-				a_location := Void
-				a_color := Void
 				n := subnodes.item
 				if has_processor (n.name) then
 					p := processor (n.name)
@@ -91,13 +87,11 @@ feature -- Basic operations
 					if not p.has_error then
 						p.process
 						-- Either a point or a color has been generated
-						a_location ?= data
-						a_color ?= data
-						if a_location /= Void then
+						if {a_location: TRAFFIC_POINT} data then
 							create location.make (a_location.x, a_location.y)
 							a_polypoints.put (location, i)
 							i := i + 1
-						elseif a_color /= Void then
+						elseif {a_color: TRAFFIC_COLOR} data then
 							color := a_color
 						end
 					else

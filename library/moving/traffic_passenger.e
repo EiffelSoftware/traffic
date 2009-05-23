@@ -53,7 +53,7 @@ feature -- Access
 	intended_line: TRAFFIC_LINE
 			-- Line to use next
 
-	current_vehicle: TRAFFIC_VEHICLE
+	current_vehicle: ?TRAFFIC_VEHICLE
 			-- Vehicle passenger is traveling by
 			-- Void if passenger uses no means of transportation
 

@@ -204,7 +204,9 @@ feature {NONE} -- Inapplicable
 			-- The cursor is not moved.
 		do
 			-- Workaround for catcalls: Get unweighted edge instead.
-			Result ?= edge_from_values (a_start_node, a_end_node, a_label, 0)
+			if {r: EDGE [like item, L]} edge_from_values (a_start_node, a_end_node, a_label, 0) then
+				Result := r
+			end
 		end
 
 feature {NONE} -- Implementation

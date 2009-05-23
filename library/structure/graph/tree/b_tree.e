@@ -677,7 +677,7 @@ feature {B_TREE} -- Implementation
 			node_set: matching_node = a_node
 		end
 
-	put_impl (v: G; c: detachable like Current) is
+	put_impl (v: G; c: ? like Current) is
 			-- Put `v' at proper position into `item_list' of current node.
 			-- if `c' is not void, it points to child node immediately greater than `v'.
 			-- Tree is rebalanced as necessary.
@@ -691,8 +691,8 @@ feature {B_TREE} -- Implementation
 			put_into_fixed (item_list, v, pos)
 
 			-- Put child node at following position (if non-void).
-			if attached c then
-				put_into_fixed (children_list, c, pos+1)
+			if {a_c: like Current} c then
+				put_into_fixed (children_list, a_c, pos+1)
 			end
 
 			-- Rebalance tree if necessary.

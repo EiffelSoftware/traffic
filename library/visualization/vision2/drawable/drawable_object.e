@@ -52,7 +52,7 @@ feature -- Status report
 
 feature -- Access
 
-	canvas : CANVAS
+	canvas : ?CANVAS
 			-- Reference to the canvas
 
 	color: EV_COLOR

@@ -27,7 +27,7 @@ feature -- Access
 			Result.compare_objects
 		end
 
-	color: TRAFFIC_COLOR
+	color: ?TRAFFIC_COLOR
 			-- Color of line
 
 feature -- Basic operations
@@ -65,7 +65,6 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			c: TRAFFIC_COLOR
 		do
 			from
 				subnodes.start
@@ -87,8 +86,7 @@ feature -- Basic operations
 					if not p.has_error then
 						p.process
 						-- Has a color been generated?
-						c ?= data
-						if c /= Void then
+						if {c: TRAFFIC_COLOR} data then
 							create color.make_with_rgb (c.red, c.green, c.blue)
 						end
 					else

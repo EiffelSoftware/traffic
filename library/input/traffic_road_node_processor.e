@@ -81,7 +81,6 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			location: TRAFFIC_POINT
 		do
 			create polypoints.make (0)
 			from
@@ -89,7 +88,6 @@ feature -- Basic operations
 			until
 				has_error or subnodes.after
 			loop
-				location := Void
 				n := subnodes.item
 				if has_processor (n.name) then
 					p := processor (n.name)
@@ -105,8 +103,7 @@ feature -- Basic operations
 					if not p.has_error then
 						p.process
 						-- Has a point been generated?
-						location ?= data
-						if location /= Void then
+						if {location: TRAFFIC_POINT} data then
 							polypoints.force_last (location)
 						end
 					else

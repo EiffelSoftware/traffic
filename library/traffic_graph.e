@@ -92,15 +92,10 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 		require
 			a_segment_exists: a_segment /= Void
 			nodes_exist: has_node (a_segment.start_node) and has_node (a_segment.end_node)
-		local
-			r: TRAFFIC_ROAD_SEGMENT
-			l: TRAFFIC_LINE_SEGMENT
 		do
-			r ?= a_segment
-			l ?= a_segment
-			if r /= Void then
+			if {r: TRAFFIC_ROAD_SEGMENT} a_segment then
 				put_road (r)
-			elseif l /= Void then
+			elseif {l: TRAFFIC_LINE_SEGMENT} a_segment then
 				put_line_segment (l)
 			else
 				a_segment.start_node.put_connection (a_segment)
@@ -144,13 +139,11 @@ feature -- Removal
 			-- Remove `a_edge' from the graph.
 			-- (from LINKED_GRAPH)
 		local
-			linked_edge: like edge_item
 			start_node, end_node: like current_node
 		do
 			prune_edge_impl (a_edge)
 			if is_symmetric_graph then
-				linked_edge ?= a_edge
-				if linked_edge /= Void then
+				if {linked_edge: like edge_item} a_edge then
 					start_node := linked_edge.start_node
 					end_node := linked_edge.end_node
 				else
@@ -229,13 +222,14 @@ feature -- Access
 	current_node: ?TRAFFIC_NODE
 			-- Value of the currently focused node
 
-	edge_item: TRAFFIC_SEGMENT is
+	edge_item: ?TRAFFIC_SEGMENT is
 			-- Current edge
 		do
-			if not current_node.connection_list.off then
-				Result ?= current_node.connection_list.item
-			else
-				Result := Void
+			if
+				not current_node.connection_list.off
+				and then {r: TRAFFIC_SEGMENT} current_node.connection_list.item
+			then
+				Result := r
 			end
 		end
 
@@ -303,12 +297,10 @@ feature -- Status Report
 	has_edge (a_edge: like edge_item): BOOLEAN
 			-- Is `a_edge' part of the graph?
 		local
-			linked_graph_edge: like edge_item
 			node: like current_node
 			index: INTEGER_32
 		do
-			linked_graph_edge ?= a_edge
-			if linked_graph_edge /= Void then
+			if {linked_graph_edge: like edge_item} a_edge then
 				node := linked_graph_edge.start_node
 			else
 				node := linked_node_from_item (a_edge.start_node)

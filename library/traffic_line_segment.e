@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 			a_origin_exists: a_origin /= Void
 			a_destination_exists: a_destination /= Void
 			a_type_exists: a_type /= Void
-			a_list_exists: a_list /= Void and then a_list.count >= 2 and then not a_list.has (Void)
+			a_list_exists: a_list /= Void and then a_list.count >= 2
 		do
 			make_directed (a_origin, a_destination)
 			create state.make
@@ -63,7 +63,7 @@ feature -- Access
 	type: TRAFFIC_TYPE_LINE
 			-- Type of the line segment
 
-	line: TRAFFIC_LINE
+	line: ?TRAFFIC_LINE
 			-- Line this line segment belongs to
 
 	roads: ARRAYED_LIST [TRAFFIC_ROAD_SEGMENT]

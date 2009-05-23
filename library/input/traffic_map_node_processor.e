@@ -28,8 +28,6 @@ feature -- Basic operations
 
 	process is
 			-- Process node.
-		local
-			description: STRING
 		do
 			if has_attribute ("name") then
 				map_factory.build_city (xml_attribute ("name"))
@@ -62,8 +60,7 @@ feature -- Basic operations
 			if has_subnodes then
 				process_subnodes
 			end
-			description ?= data
-			if not has_error and description /= Void then
+			if not has_error and {description: STRING} data then
 				map_factory.city.set_description (description)
 			end
 		end

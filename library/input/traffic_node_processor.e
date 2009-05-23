@@ -37,16 +37,16 @@ feature -- Access
 			name_not_empty: not Result.is_empty
 		end
 
-	source: XM_ELEMENT
+	source: ?XM_ELEMENT
 			-- Source to process
 
-	target: ANY--CITY_ELEMENT
+	target: ?ANY--CITY_ELEMENT
 			-- Target to build
 
-	parent: TRAFFIC_NODE_PROCESSOR
+	parent: ?TRAFFIC_NODE_PROCESSOR
 			-- Parent processor
 
-	data: ANY
+	data: ?ANY
 			-- Data from subnodes for parent
 
 	xml_attribute (a_name: STRING): STRING is
@@ -332,7 +332,7 @@ feature {TRAFFIC_NODE_PROCESSOR} -- Status report
 
 feature -- Basic operations
 
-	send_data (a_data: ANY) is
+	send_data (a_data: ?ANY) is
 			-- Store `a_data'.
 		do
 			data := a_data

@@ -32,12 +32,10 @@ feature -- Basic operations
 	process is
 			-- Process node.
 		local
-			line: TRAFFIC_LINE
-			polypoints_other_direction: DS_ARRAYED_LIST [TRAFFIC_POINT]
+			polypoints_other_direction: ?DS_ARRAYED_LIST [TRAFFIC_POINT]
 			line_section_one_direction, line_section_other_direction: TRAFFIC_LINE_SEGMENT
 		do
 			if not has_error then
-				line ?= parent.target
 				if not has_attribute ("from") then
 					set_error (Mandatory_attribute_missing, <<"from">>)
 				elseif not has_attribute ("to") then
@@ -46,7 +44,7 @@ feature -- Basic operations
 					set_error (Unknown_source, <<xml_attribute ("from")>>)
 				elseif not city.stations.has (xml_attribute ("to")) then
 					set_error (Unknown_destination, << xml_attribute ("to")>> )
-				elseif line = Void then
+				elseif not {line: TRAFFIC_LINE} parent.target then
 					set_error (Missing_line, << >> )
 				elseif not city.lines.has (line.name) then
 					set_error (Unknown_line, << line.name >>)
@@ -94,8 +92,6 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
-			location: TRAFFIC_POINT
-			road: TRAFFIC_ROAD_SEGMENT
 		do
 			create polypoints.make (0)
 			create roads.make(0)
@@ -104,7 +100,6 @@ feature -- Basic operations
 			until
 				has_error or subnodes.after
 			loop
-				location := Void
 				n := subnodes.item
 				if has_processor (n.name) then
 					p := processor (n.name)
@@ -120,13 +115,11 @@ feature -- Basic operations
 					if not p.has_error then
 						p.process
 						-- Has a point been generated?
-						location ?= data
-						if location /= Void then
+						if {location: TRAFFIC_POINT} data then
 							polypoints.force_last (location)
 						end
 						-- Has a road been generated?
-						road ?= data
-						if road /= Void then
+						if {road: TRAFFIC_ROAD_SEGMENT} data then
 							roads.extend (road)
 						end
 					else
@@ -139,7 +132,7 @@ feature -- Basic operations
 
 feature {NONE} -- Implementation
 
-	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
+	polypoints: ?DS_ARRAYED_LIST [TRAFFIC_POINT]
 			-- Polypoints of this link
 
 	roads: ARRAYED_LIST[TRAFFIC_ROAD_SEGMENT]
