@@ -30,7 +30,7 @@ feature -- Access
 	pictures: LINKED_LIST [STRING]
 		-- Path to picture
 
-	description: ?STRING
+	description: STRING
 		-- Description
 
 feature -- Element change
@@ -77,7 +77,7 @@ feature -- Removal
 
 feature -- Output
 
-	out: !STRING is
+	out: STRING is
 			-- Textual representation.
 		do
 			Result := ""

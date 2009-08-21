@@ -92,10 +92,15 @@ feature {TRAFFIC_CITY_ITEM} -- Insertion
 		require
 			a_segment_exists: a_segment /= Void
 			nodes_exist: has_node (a_segment.start_node) and has_node (a_segment.end_node)
+		local
+			r: TRAFFIC_ROAD_SEGMENT
+			l: TRAFFIC_LINE_SEGMENT
 		do
-			if {r: TRAFFIC_ROAD_SEGMENT} a_segment then
+			r ?= a_segment
+			l ?= a_segment
+			if r /= Void then
 				put_road (r)
-			elseif {l: TRAFFIC_LINE_SEGMENT} a_segment then
+			elseif l /= Void then
 				put_line_segment (l)
 			else
 				a_segment.start_node.put_connection (a_segment)
@@ -139,11 +144,13 @@ feature -- Removal
 			-- Remove `a_edge' from the graph.
 			-- (from LINKED_GRAPH)
 		local
+			linked_edge: like edge_item
 			start_node, end_node: like current_node
 		do
 			prune_edge_impl (a_edge)
 			if is_symmetric_graph then
-				if {linked_edge: like edge_item} a_edge then
+				linked_edge ?= a_edge
+				if linked_edge /= Void then
 					start_node := linked_edge.start_node
 					end_node := linked_edge.end_node
 				else
@@ -219,17 +226,16 @@ feature -- Access
 	id_manager: TRAFFIC_ID_MANAGER
 			-- Manager for road ids
 
-	current_node: ?TRAFFIC_NODE
+	current_node: TRAFFIC_NODE
 			-- Value of the currently focused node
 
-	edge_item: ?TRAFFIC_SEGMENT is
+	edge_item: TRAFFIC_SEGMENT is
 			-- Current edge
 		do
-			if
-				not current_node.connection_list.off
-				and then {r: TRAFFIC_SEGMENT} current_node.connection_list.item
-			then
-				Result := r
+			if not current_node.connection_list.off then
+				Result ?= current_node.connection_list.item
+			else
+				Result := Void
 			end
 		end
 
@@ -297,10 +303,12 @@ feature -- Status Report
 	has_edge (a_edge: like edge_item): BOOLEAN
 			-- Is `a_edge' part of the graph?
 		local
+			linked_graph_edge: like edge_item
 			node: like current_node
 			index: INTEGER_32
 		do
-			if {linked_graph_edge: like edge_item} a_edge then
+			linked_graph_edge ?= a_edge
+			if linked_graph_edge /= Void then
 				node := linked_graph_edge.start_node
 			else
 				node := linked_node_from_item (a_edge.start_node)
@@ -346,12 +354,15 @@ feature {NONE} -- Implementation
 	calculate_weight (a_edge: TRAFFIC_SEGMENT): REAL is
 			-- Calculate the edge based on the current status.
 			-- This is only used for "dummy" segments.
+		local
+			e: TRAFFIC_EXCHANGE_SEGMENT
 		do
 			inspect shortest_path_mode
 			when normal_distance then
 				Result := a_edge.length * a_edge.weight_factor
 			when minimal_switches then
-				if {e: TRAFFIC_EXCHANGE_SEGMENT} a_edge then
+				e ?= a_edge
+				if e /= Void then
 					Result := average_weight
 				else
 					Result := a_edge.length * a_edge.weight_factor

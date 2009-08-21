@@ -67,6 +67,7 @@ feature -- Access
 			-- All outgoing line connections
 		local
 			l: TWO_WAY_CIRCULAR [TRAFFIC_SEGMENT]
+			c: TRAFFIC_LINE_SEGMENT
 			i: INTEGER
 		do
 			create Result.make (5)
@@ -81,7 +82,8 @@ feature -- Access
 				until
 					i > l.count
 				loop
-					if {c: TRAFFIC_LINE_SEGMENT} l.i_th (i) and then c.destination /= c.origin then
+					c ?= l.i_th (i)
+					if c /= Void and then c.destination /= c.origin then
 						Result.force_last (c)
 					end
 					i := i + 1
@@ -231,6 +233,7 @@ feature -- Status report
 			-- Only internal exchange connections are allowed...
 		local
 			l: TWO_WAY_CIRCULAR [TRAFFIC_SEGMENT]
+			ex: TRAFFIC_EXCHANGE_SEGMENT
 			i: INTEGER
 		do
 			Result := True
@@ -245,7 +248,8 @@ feature -- Status report
 				until
 					i > l.count
 				loop
-					if {ex: TRAFFIC_EXCHANGE_SEGMENT} l.i_th (i) then
+					ex ?= l.i_th (i)
+					if ex = Void then
 						Result := False
 					end
 					i := i + 1
@@ -387,8 +391,11 @@ feature {TRAFFIC_NODE} -- Insertion
 
 	add_node (a_node: TRAFFIC_NODE) is
 			-- Add `a_node' to `Current'.
+		local
+			s: TRAFFIC_STOP
 		do
-			if {s: TRAFFIC_STOP} a_node then
+			s ?= a_node
+			if s /= Void then
 				add_stop (s)
 			else
 				nodes.extend (a_node)

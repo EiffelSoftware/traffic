@@ -99,7 +99,7 @@ feature -- Status setting
 
 feature -- Access
 
-	city: ?TRAFFIC_CITY
+	city: TRAFFIC_CITY
 			-- City retrieved from loading
 
 feature {NONE} -- Implementation

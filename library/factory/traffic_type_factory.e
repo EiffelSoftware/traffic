@@ -70,7 +70,7 @@ feature -- Status report
 
 feature {NONE} -- Implementation
 
-	internal_traffic_type: ?TRAFFIC_TYPE
+	internal_traffic_type: TRAFFIC_TYPE
 			-- Traffic type last created
 
 	bus_type: TRAFFIC_TYPE_BUS is
@@ -115,7 +115,7 @@ feature {NONE} -- Implementation
 			create Result.make
 		end
 
-	type_table: HASH_TABLE [TRAFFIC_TYPE, !STRING] is
+	type_table: HASH_TABLE [TRAFFIC_TYPE, STRING] is
 			-- Table with all types
 		once
 			create Result.make (9)

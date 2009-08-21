@@ -87,7 +87,7 @@ feature -- Access
 			Result := current_node.item
 		end
 
-	edge_item: ?LINKED_GRAPH_EDGE [like item, L] is
+	edge_item: LINKED_GRAPH_EDGE [like item, L] is
 			-- Current edge
 		do
 			if not current_node.edge_list.off then
@@ -151,7 +151,7 @@ feature -- Access
 			end
 		end
 
-	edge_from_values (a_start_node, a_end_node: like item; a_label: L): ?like edge_item is
+	edge_from_values (a_start_node, a_end_node: like item; a_label: L): like edge_item is
 			-- Edge that matches `a_start_node', `a_end_node' and `a_label'.
 			-- Result is Void if there is no match.
 			-- The cursor is not moved.
@@ -496,13 +496,14 @@ feature -- Removal
 	prune_edge (a_edge: EDGE [like item, L]) is
 			-- Remove `a_edge' from the graph.
 		local
-			symmetric_edge: like edge_item
+			linked_edge, symmetric_edge: like edge_item
 			start_node, end_node: like current_node
 		do
 			prune_edge_impl (a_edge)
 			if is_symmetric_graph then
 				-- Find both start and end node in the node list.
-				if {linked_edge: like edge_item} a_edge then
+				linked_edge ?= a_edge
+				if linked_edge /= Void then
 					start_node := linked_edge.internal_start_node
 					end_node := linked_edge.internal_end_node
 				else
@@ -612,13 +613,13 @@ feature -- Output
 
 feature {NONE} -- Implementation
 
-	node_list: ARRAY [?like current_node]
+	node_list: ARRAY [like current_node]
 			-- Node list
 
 	inactive_nodes: ARRAYED_SET [INTEGER]
 			-- Indices which are currently not in use.
 
-	current_node: ?LINKED_GRAPH_NODE [like item, L]
+	current_node: LINKED_GRAPH_NODE [like item, L]
 			-- Current node in the list
 
 	internal_edges: ARRAYED_LIST [like edge_item]
@@ -673,9 +674,10 @@ feature {NONE} -- Implementation
 			start_node, end_node: like current_node
 			c: like cursor
 		do
+			linked_edge ?= a_edge
+
 			-- Find both start and end node in the node list.
-			if {le: like edge_item} a_edge then
-				linked_edge := le
+			if linked_edge /= Void then
 				start_node := linked_edge.internal_start_node
 				end_node := linked_edge.internal_end_node
 			else

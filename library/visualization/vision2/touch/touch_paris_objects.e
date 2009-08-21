@@ -32,7 +32,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("Empty_line")
+			Result ?= Paris.lines.item ("Empty_line")
 		end
 
 	Line1: TRAFFIC_LINE is
@@ -40,7 +40,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("tram 1")
+			Result ?= Paris.lines.item ("tram 1")
 		end
 
 	Line2: TRAFFIC_LINE is
@@ -48,7 +48,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("tram 2")
+			Result ?= Paris.lines.item ("tram 2")
 		end
 
 	Line3: TRAFFIC_LINE is
@@ -56,7 +56,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("tram 3")
+			Result ?= Paris.lines.item ("tram 3")
 		end
 
 	Line6: TRAFFIC_LINE is
@@ -64,7 +64,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("tram 6")
+			Result ?= Paris.lines.item ("tram 6")
 		end
 
 	Line7_a: TRAFFIC_LINE is
@@ -72,7 +72,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("tram 7(a)")
+			Result ?= Paris.lines.item ("tram 7(a)")
 		end
 
 	Line8: TRAFFIC_LINE is
@@ -81,7 +81,7 @@ feature -- Access (Lines)
 			Paris_exists: is_paris_loaded
 		once
 			wait
-			Result := Paris.lines.item ("tram 8")
+			Result ?= Paris.lines.item ("tram 8")
 		end
 
 	Line9: TRAFFIC_LINE is
@@ -89,7 +89,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("tram 9")
+			Result ?= Paris.lines.item ("tram 9")
 		end
 
 	Line11: TRAFFIC_LINE is
@@ -97,7 +97,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("tram 11")
+			Result ?= Paris.lines.item ("tram 11")
 		end
 
 	RER_A: TRAFFIC_LINE is
@@ -105,7 +105,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("RER A")
+			Result ?= Paris.lines.item ("RER A")
 		end
 
 	RER_B: TRAFFIC_LINE is
@@ -113,7 +113,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("RER B")
+			Result ?= Paris.lines.item ("RER B")
 		end
 
 	RER_C_a: TRAFFIC_LINE is
@@ -121,7 +121,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			Result := Paris.lines.item ("RER C(a)")
+			Result ?= Paris.lines.item ("RER C(a)")
 		end
 
 feature  -- Predefined objects (Stations)

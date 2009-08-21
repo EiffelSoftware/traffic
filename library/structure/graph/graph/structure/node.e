@@ -52,10 +52,10 @@ feature {GRAPH} -- Access
 --- ??? --- ??? --- ??? --- ??? --- ??? --- ??? --- ??? ---
 --	referring_edge: WEIGHTED_EDGE [like item, L]
 --- ??? --- ??? --- ??? --- ??? --- ??? --- ??? --- ??? ---
-	referring_edge: ?EDGE [like item, L]
+	referring_edge: EDGE [like item, L]
 			-- Edge where we came from
 
-	referring_node: ?like Current
+	referring_node: like Current
 			-- Node where we came from
 
 feature {GRAPH, NODE} -- Access
@@ -93,7 +93,7 @@ feature -- Status setting
 
 feature {GRAPH} -- Element change
 
-	set_referrer (a_node: like referring_node; a_edge: like referring_edge; a_distance: like distance) is
+	set_referrer (a_node: like Current; a_edge: like referring_edge; a_distance: like distance) is
 			-- Set the referring edge to `a_edge' and the referring node to `a_node'.
 		require
 			positive_distance: a_distance >= 0

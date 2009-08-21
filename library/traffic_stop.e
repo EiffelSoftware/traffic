@@ -71,7 +71,7 @@ feature -- Access
 	right: TRAFFIC_STOP
 			-- Next stop on same line
 
-	segment_to_right: ?TRAFFIC_LINE_SEGMENT
+	segment_to_right: TRAFFIC_LINE_SEGMENT
 			-- The segment leading to `right'
 		require
 			right_exists: right /= void
@@ -85,10 +85,7 @@ feature -- Access
 				i > connection_list.count
 			loop
 				if connection_list.item.destination.stop (line) = right then
-					Result := Void
-					if {r: TRAFFIC_LINE_SEGMENT} connection_list.item then
-						Result := r
-					end
+					Result ?= connection_list.item
 				end
 				connection_list.forth
 				i := i+1
@@ -109,10 +106,13 @@ feature -- Basic operations
 
 	put_connection (a_connection: TRAFFIC_SEGMENT) is
 			-- Insert `a_connection'.
+		local
+			c: TRAFFIC_LINE_SEGMENT
 		do
 			connection_list.extend (a_connection)
 			changed_event.publish ([])
-			if {c: TRAFFIC_LINE_SEGMENT} a_connection then
+			c ?= a_connection
+			if c /= Void then
 				right := c.end_node
 			end
 		end

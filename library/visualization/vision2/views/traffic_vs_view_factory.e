@@ -45,14 +45,13 @@ feature -- Factory methods
 	new_building_view (a_building: TRAFFIC_BUILDING): TRAFFIC_BUILDING_VIEW is
 			-- New building view for `a_building'
 		local
-
+			l: TRAFFIC_LANDMARK
 		do
 			if not a_building.is_landmark then
 				create {TRAFFIC_BUILDING_SIMPLE_VIEW} Result.make (a_building)
-			elseif {l: TRAFFIC_LANDMARK} a_building then
-				create {TRAFFIC_BUILDING_ICON_VIEW} Result.make_with_filename (a_building, l.filename)
 			else
-				check False end
+				l ?= a_building
+				create {TRAFFIC_BUILDING_ICON_VIEW} Result.make_with_filename (a_building, l.filename)
 			end
 		end
 

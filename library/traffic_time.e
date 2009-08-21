@@ -137,7 +137,7 @@ feature -- Constants
 
 feature -- Output
 
-	out: !STRING is
+	out: STRING is
 			-- Output
 		do
 			Result := actual_time.hour.out + ":" + actual_time.minute.out + ":" + actual_time.second.out
@@ -145,10 +145,10 @@ feature -- Output
 
 feature{NONE} -- Implementation		
 
-	all_procedures: LINKED_LIST[PROCEDURE[ANY, !TUPLE]]
+	all_procedures: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
 			-- Container for all procedures except tours.	
 
-	all_tours: LINKED_LIST[PROCEDURE[ANY, !TUPLE]]
+	all_tours: LINKED_LIST[PROCEDURE[ANY, TUPLE]]
 			-- Container for all tours.
 
 	real_ms_start: INTEGER
@@ -157,7 +157,7 @@ feature{NONE} -- Implementation
 	simulated_ms_start: INTEGER
 			-- Start counting with this value
 
-	update_agent: PROCEDURE [ANY, !TUPLE]
+	update_agent: PROCEDURE [ANY, TUPLE]
 			-- Agent used for updating current simulated time
 
 	update_time is
@@ -171,7 +171,7 @@ feature{NONE} -- Implementation
 
 feature -- Procedures
 
-	add_callback_procedure (a_procedure: PROCEDURE [ANY, !TUPLE]) is
+	add_callback_procedure (a_procedure: PROCEDURE[ANY, TUPLE]) is
 			-- Add a procedure.
 		require
 			a_procedure_exists: a_procedure /= Void
@@ -179,7 +179,7 @@ feature -- Procedures
 			all_procedures.force (a_procedure)
 		end
 
-	add_callback_tour (a_tour_procedure: PROCEDURE [ANY, !TUPLE]) is
+	add_callback_tour (a_tour_procedure: PROCEDURE[ANY, TUPLE]) is
 			-- Add the tour algorithms here.
 		require
 			a_procedure_exists: a_tour_procedure /= Void

@@ -50,9 +50,12 @@ feature {NONE} -- Initialization
 			a_name_exists: a_name /= Void
 			a_name_not_empty: not a_name.is_empty
 			a_type_exists: a_type /= Void
+		local
+			temp_type: TRAFFIC_TYPE_LINE
 		do
 			name := a_name
-			if {temp_type: TRAFFIC_TYPE_LINE} a_type then
+			temp_type ?= a_type
+			if a_type/=Void then
 				type:= temp_type
 			end
 			create one_direction.make
@@ -216,7 +219,7 @@ feature -- Access
 			end
 		end
 
-	color: ?TRAFFIC_COLOR
+	color: TRAFFIC_COLOR
 			-- Line color
 			-- Used as color represenation
 

@@ -54,8 +54,9 @@ feature -- Basic operations
 		local
 			n: XM_ELEMENT
 			p: TRAFFIC_NODE_PROCESSOR
+			f: TRAFFIC_FILE_NODE_PROCESSOR
 			files: LINKED_LIST [STRING]
-			description: ?STRING
+			description: STRING
 			info: TRAFFIC_STATION_INFORMATION
 		do
 			create files.make
@@ -79,13 +80,11 @@ feature -- Basic operations
 					if not p.has_error then
 						p.process
 						-- Has a file been generated?
-						if {f: TRAFFIC_FILE_NODE_PROCESSOR} p then
+						f ?= p
+						if f /= Void then
 							files.extend (f.file)
 						end
-						description := Void
-						if {a_desc: STRING} data then
-							description := a_desc
-						end
+						description ?= data
 					else
 						set_error (p.error_code, p.slots)
 					end

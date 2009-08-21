@@ -63,7 +63,7 @@ create
 
 feature -- Access
 
-	edge_item: ? LINKED_GRAPH_WEIGHTED_EDGE [like item, L] is
+	edge_item: LINKED_GRAPH_WEIGHTED_EDGE [like item, L] is
 			-- Current edge
 		do
 			if not current_node.edge_list.off then
@@ -73,7 +73,7 @@ feature -- Access
 			end
 		end
 
-	edge_from_values (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL): ? like edge_item is
+	edge_from_values (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL): like edge_item is
 			-- Edge that matches `a_start_node', `a_end_node', `a_label' and `a_weight'.
 			-- Result is Void if there is no match.
 			-- The cursor is not moved.

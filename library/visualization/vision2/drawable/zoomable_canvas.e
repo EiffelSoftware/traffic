@@ -181,7 +181,7 @@ feature {NONE} -- Implementation
 		end
 
 
-	last_cursor_position: ?REAL_COORDINATE
+	last_cursor_position: REAL_COORDINATE
 
 	move_end (x, y, b: INTEGER; x_t, y_t, p: DOUBLE;
 			scr_x, scr_y: INTEGER) is

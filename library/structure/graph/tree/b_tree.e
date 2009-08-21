@@ -68,7 +68,7 @@ feature -- Access
 			Result := children_list.item
 		end
 
-	item: ?G is
+	item: G is
 			-- Current item
 			-- Result is Void when `off'.
 		do
@@ -125,7 +125,7 @@ feature -- Access
 			Result := children_list.last
 		end
 
-	left_sibling: ?like parent is
+	left_sibling: like parent is
 			-- Left neighbor (if any)
 		local
 			index: INTEGER
@@ -138,7 +138,7 @@ feature -- Access
 			end
 		end
 
-	right_sibling: ?like parent is
+	right_sibling: like parent is
 			-- Right neighbor (if any)
 		local
 			index: INTEGER
@@ -153,7 +153,7 @@ feature -- Access
 
 feature -- Measurement
 
-	min: ?like item is
+	min: like item is
 			-- Minimum item stored in tree
 		local
 			n: like Current
@@ -172,7 +172,7 @@ feature -- Measurement
 			end
 		end
 
-	max: ?like item is
+	max: like item is
 			-- Maximum item stored in tree
 		local
 			n: like Current
@@ -511,11 +511,11 @@ feature -- Element change
 			-- The representations of `other' and current node
 			-- need not be the same.
 		local
---			b_tree: like Current
+			b_tree: like Current
 			c: CURSOR
 		do
---			b_tree ?= other
-			if {b_tree: like Current} other then
+			b_tree ?= other
+			if b_tree /= Void then
 				-- `other' is a B-tree.
 				-- Fill in all items of `other'.
 				c := b_tree.item_cursor
@@ -677,7 +677,7 @@ feature {B_TREE} -- Implementation
 			node_set: matching_node = a_node
 		end
 
-	put_impl (v: G; c: ? like Current) is
+	put_impl (v: G; c: like Current) is
 			-- Put `v' at proper position into `item_list' of current node.
 			-- if `c' is not void, it points to child node immediately greater than `v'.
 			-- Tree is rebalanced as necessary.
@@ -691,8 +691,8 @@ feature {B_TREE} -- Implementation
 			put_into_fixed (item_list, v, pos)
 
 			-- Put child node at following position (if non-void).
-			if {a_c: like Current} c then
-				put_into_fixed (children_list, a_c, pos+1)
+			if c /= Void then
+				put_into_fixed (children_list, c, pos+1)
 			end
 
 			-- Rebalance tree if necessary.

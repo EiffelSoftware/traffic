@@ -23,10 +23,15 @@ feature -- Creation
 
 feature -- Basic
 
-	is_allowed_type (a_moving: TRAFFIC_MOVING): BOOLEAN is
+	is_allowed_type(a_moving: TRAFFIC_MOVING): BOOLEAN is
 			-- Is 'a_moving' allowed to go on a walk road?
+		local
+			tram: TRAFFIC_PASSENGER
 		do
-			Result := {tram: TRAFFIC_PASSENGER} a_moving
+			tram?=a_moving
+			if tram/=Void then
+				Result:=true
+			end
 		end
 
 end

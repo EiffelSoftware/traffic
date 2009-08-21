@@ -99,7 +99,7 @@ feature {NONE} -- Constants
 
 feature {TRAFFIC_ERROR_CONSTANTS} -- Implementation
 
-	slots: ?ARRAY [STRING]
+	slots: ARRAY [STRING]
 			-- Slots for additional information
 
 feature {NONE} -- Implementation

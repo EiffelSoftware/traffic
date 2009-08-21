@@ -101,6 +101,9 @@ feature -- Basic operations
 
 	highlight is
 			-- Highlight the view.
+		local
+			l: DRAWABLE_POLYLINE
+			r: DRAWABLE_ROUNDED_RECTANGLE
 		do
 			if highlight_color /= Void then
 				from
@@ -108,10 +111,12 @@ feature -- Basic operations
 				until
 					after
 				loop
-					if {l: DRAWABLE_POLYLINE} item_for_iteration then
+					l ?= item_for_iteration
+					r ?= item_for_iteration
+					if l /= Void then
 						l.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 						l.set_width (connection_width + default_highlight_width_delta)
-					elseif {r: DRAWABLE_ROUNDED_RECTANGLE} item_for_iteration then
+					elseif r /= Void then
 						r.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 					end
 					forth
@@ -122,10 +127,12 @@ feature -- Basic operations
 				until
 					after
 				loop
-					if {l: DRAWABLE_POLYLINE} item_for_iteration then
+					l ?= item_for_iteration
+					r ?= item_for_iteration
+					if l /= Void then
 						l.set_color (default_highlight_color)
 						l.set_width (connection_width + default_highlight_width_delta)
-					elseif {r: DRAWABLE_ROUNDED_RECTANGLE} item_for_iteration then
+					elseif r /= Void then
 						r.set_color (default_highlight_color)
 					end
 					forth
@@ -136,6 +143,9 @@ feature -- Basic operations
 
 	unhighlight is
 			-- Unhighlight the view.
+		local
+			l: DRAWABLE_POLYLINE
+			r: DRAWABLE_ROUNDED_RECTANGLE
 		do
 			if color /= Void then
 				from
@@ -143,10 +153,12 @@ feature -- Basic operations
 				until
 					after
 				loop
-					if {l: DRAWABLE_POLYLINE} item_for_iteration then
+					l ?= item_for_iteration
+					r ?= item_for_iteration
+					if l /= Void then
 						l.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
 						l.set_width (connection_width)
-					elseif {r: DRAWABLE_ROUNDED_RECTANGLE} item_for_iteration then
+					elseif r /= Void then
 						r.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
 					end
 					forth
@@ -157,10 +169,12 @@ feature -- Basic operations
 				until
 					after
 				loop
-					if {l: DRAWABLE_POLYLINE} item_for_iteration then
+					l ?= item_for_iteration
+					r ?= item_for_iteration
+					if l /= Void then
 						l.set_color (default_color)
 						l.set_width (connection_width)
-					elseif {r: DRAWABLE_ROUNDED_RECTANGLE} item_for_iteration then
+					elseif r /= Void then
 						r.set_color (default_color)
 					end
 					forth
@@ -171,6 +185,9 @@ feature -- Basic operations
 
 	set_color (a_color: TRAFFIC_COLOR) is
 			-- Set the color of the view to `a_color'.
+		local
+			l: DRAWABLE_POLYLINE
+			r: DRAWABLE_ROUNDED_RECTANGLE
 		do
 			color := a_color
 			if not is_highlighted then
@@ -180,9 +197,11 @@ feature -- Basic operations
 					until
 						after
 					loop
-						if {l: DRAWABLE_POLYLINE} item_for_iteration then
+						l ?= item_for_iteration
+						r ?= item_for_iteration
+						if l /= Void then
 							l.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
-						elseif {r: DRAWABLE_ROUNDED_RECTANGLE} item_for_iteration then
+						elseif r /= Void then
 							r.set_color (create {EV_COLOR}.make_with_8_bit_rgb (color.red, color.green, color.blue))
 						end
 						forth
@@ -193,9 +212,11 @@ feature -- Basic operations
 					until
 						after
 					loop
-						if {l: DRAWABLE_POLYLINE} item_for_iteration then
+						l ?= item_for_iteration
+						r ?= item_for_iteration
+						if l /= Void then
 							l.set_color (default_color)
-						elseif {r: DRAWABLE_ROUNDED_RECTANGLE} item_for_iteration then
+						elseif r /= Void then
 							r.set_color (default_color)
 						end
 						forth
@@ -206,6 +227,9 @@ feature -- Basic operations
 
 	set_highlight_color (a_color: TRAFFIC_COLOR) is
 			-- Set the color of the view to `a_color'.
+		local
+			l: DRAWABLE_POLYLINE
+			r: DRAWABLE_ROUNDED_RECTANGLE
 		do
 			highlight_color := a_color
 			if is_highlighted then
@@ -215,9 +239,11 @@ feature -- Basic operations
 					until
 						after
 					loop
-						if {l: DRAWABLE_POLYLINE} item_for_iteration then
+						l ?= item_for_iteration
+						r ?= item_for_iteration
+						if l /= Void then
 							l.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
-						elseif {r: DRAWABLE_ROUNDED_RECTANGLE} item_for_iteration then
+						elseif r /= Void then
 							r.set_color (create {EV_COLOR}.make_with_8_bit_rgb (highlight_color.red, highlight_color.green, highlight_color.blue))
 						end
 						forth
@@ -228,9 +254,11 @@ feature -- Basic operations
 					until
 						after
 					loop
-						if {l: DRAWABLE_POLYLINE} item_for_iteration then
+						l ?= item_for_iteration
+						r ?= item_for_iteration
+						if l /= Void then
 							l.set_color (default_highlight_color)
-						elseif {r: DRAWABLE_ROUNDED_RECTANGLE} item_for_iteration then
+						elseif r /= Void then
 							r.set_color (default_highlight_color)
 						end
 						forth
