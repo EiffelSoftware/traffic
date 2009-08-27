@@ -96,7 +96,15 @@
 		</description>
 		<argument name="a_directory"/>
 		<set name="a_dir" value="${a_directory}"/>
-		<geant file="build.eant" target="${target}" dir="${a_dir}"/>
+		<copy to_directory="../release_ev/example/">
+    		<fileset include="@(${a_dir}/**/*.e|${a_dir}/**/*.ecf|${a_dir}/**/*.png)"/>
+			<!--exclude="@(**/.svn)"/-->
+ 		</copy>
+		<delete>
+    			<fileset include="@(../release_ev/example/**/.svn)"/>
+  		</delete>
+
+		<!--geant file="build.eant" target="${target}" dir="${a_dir}"/-->
 			<echo message="   successfully ${target}ed: application  $a_dir"/>
 	</target>
 
@@ -114,6 +122,7 @@
 		<geant target="do_one" arguments="07_control"/>
 		<geant target="do_one" arguments="08_routines"/>
 		<geant target="do_one" arguments="09_variables"/>
+		<echo message="WARNING: assignments will NOT be copied -- Needs manual work!"/>
 	</target>
 
 	<target name="do_all">
