@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-5-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-5-0 http://www.eiffel.com/developers/xml/configuration-1-5-0.xsd" name="traffic" uuid="9FAB6FC9-CD89-4C61-82ED-081CA0AA1410" library_target="traffic-safe">
+	<target name="traffic-safe">
+		<root all_classes="true"/>
+		<option warning="true" void_safety="none" syntax="obsolete">
+			<warning name="export_class_missing" enabled="false"/>
+			<warning name="old_verbatim_strings" enabled="false"/>
+			<warning name="once_in_generic" enabled="false"/>
+			<warning name="syntax" enabled="false"/>
+			<warning name="vjrv" enabled="false"/>
+			<warning name="vweq" enabled="false"/>
+		</option>
+		<library name="base-safe" location="$ISE_LIBRARY\library\base\base-safe.ecf" readonly="false"/>
+		<library name="gobo_kernel" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_kernel-safe.ecf" readonly="false"/>
+		<library name="gobo_string" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_string-safe.ecf" readonly="false"/>
+		<library name="gobo_structure" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_structure-safe.ecf" readonly="false"/>
+		<library name="gobo_time" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_time-safe.ecf"/>
+		<library name="gobo_xml" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_xml-safe.ecf" readonly="false"/>
+		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
+		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2-safe.ecf" readonly="false"/>
+		<cluster name="traffic" location=".\" recursive="true">
+			<option is_attached_by_default="true">
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+			</option>
+			<file_rule>
+				<exclude>visualization/em</exclude>
+				<exclude>.svn</exclude>
+				<exclude>EIFGENs</exclude>
+			</file_rule>
+		</cluster>
+	</target>
+</system>
