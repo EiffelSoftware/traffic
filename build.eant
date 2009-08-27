@@ -58,9 +58,12 @@
 		<mkdir directory="release_ev"/>
 		<!--geant file="build.eant" target="release_no_doc" dir="doc"/-->
 		<geant file="build.eant" target="release_ev" dir="example"/>
-		<geant file="build.eant" target="release_ev" dir="library"/>
+		<!--geant file="build.eant" target="release_ev" dir="library"/-->
 		<copy to_directory="release_ev">
 	   		<fileset include="@(*.txt)"/>
+		</copy>
+		<copy to_directory="release_ev">
+			<fileset include="@(library/**/*.e)"/>
 		</copy>
 	</target>
 		
