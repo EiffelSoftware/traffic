@@ -12,10 +12,7 @@
 		</option>
 		<library name="base-safe" location="$ISE_LIBRARY\library\base\base-safe.ecf" readonly="false"/>
 		<library name="gobo_kernel" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_kernel-safe.ecf" readonly="false"/>
-		<library name="gobo_string" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_string-safe.ecf" readonly="false"/>
 		<library name="gobo_structure" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_structure-safe.ecf" readonly="false"/>
-		<library name="gobo_time" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_time-safe.ecf"/>
-		<library name="gobo_xml" location="C:\Documents and Settings\simon\gobo\void-safe-gobo-exp\void-safe-gobo-eiffel\gobo_xml-safe.ecf" readonly="false"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2-safe.ecf" readonly="false"/>
 		<cluster name="traffic" location=".\" recursive="true">
