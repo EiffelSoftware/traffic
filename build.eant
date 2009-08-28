@@ -63,8 +63,10 @@
 	   		<fileset include="@(*.txt)"/>
 		</copy>
 		<copy to_directory="release_ev">
-			<fileset include="@(library/**/*.e)"/>
+			<fileset include="@(library/**/*.e*)"/>
 		</copy>
-	</target>
-		
+		<delete file="release_ev/library/traffic_eiffelmedia.ecf"/>
+		<delete directory="release_ev/library/utility/gl_tools"/>
+		<delete directory="release_ev/library/visualization/em"/>			
+	</target>		
 </project>
