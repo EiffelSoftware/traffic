@@ -177,7 +177,7 @@ feature -- Constants
 	Default_wagon_limitation: INTEGER is 2
 			-- Default number of wagons attached
 
-	Default_virtual_speed: REAL
+	Default_virtual_speed: REAL_64
 			-- Default speed
 		do
 			Result := line.type.speed

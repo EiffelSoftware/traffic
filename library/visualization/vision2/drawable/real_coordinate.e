@@ -17,7 +17,7 @@ create
 	
 feature -- Creation
 
-	make (a_x, a_y: REAL) is
+	make (a_x, a_y: REAL_64) is
 			-- Assign `a_x' to `x' and `a_y' to `y'.
 		do
 			x := a_x
@@ -29,33 +29,33 @@ feature -- Creation
 
 feature -- Access
 
-	x: REAL
+	x: REAL_64
 			-- Horizontal position
 
-	y: REAL		
+	y: REAL_64		
 			-- Vertical position
 
 feature -- Calculations
 
-	right_by (a_value: REAL): like Current is
+	right_by (a_value: REAL_64): like Current is
 			-- Return a new point `a_value' right of the current point
 		do
 			create Result.make (x + a_value, y)
 		end
 
-	up_by (a_value: REAL) : like Current is
+	up_by (a_value: REAL_64) : like Current is
 			-- Return a new point `a_value' above of the current point
 		do
 			create Result.make(x, y + a_value)
 		end
 
-	down_by (a_value: REAL) : like Current is
+	down_by (a_value: REAL_64) : like Current is
 			-- Return a new point `a_value' right of the current point
 		do
 			create Result.make (x, y - a_value)
 		end
 
-	left_by (a_value: REAL) : like Current is
+	left_by (a_value: REAL_64) : like Current is
 			-- Return a new point `a_value' above of the current point
 		do
 			create Result.make (x - a_value, y)
@@ -77,13 +77,13 @@ feature -- Calculations
 			create Result.make (x - other.x, y - other.y)
 		end
 
-	multiply, infix "*" (a_factor: REAL): like Current is
+	multiply, infix "*" (a_factor: REAL_64): like Current is
 			-- Scalar multiplication by `a_factor'
 		do
 			create Result.make (x * a_factor, y * a_factor)
 		end
 
-	distance (a_coordinate: like Current): DOUBLE is
+	distance (a_coordinate: like Current): REAL_64 is
 			-- Distance between Current and `a_coordinate'
 		local
 			c: REAL_COORDINATE

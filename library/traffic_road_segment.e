@@ -46,7 +46,7 @@ feature {NONE} -- Creation
 
 feature -- Access
 
-	weight_factor: DOUBLE is
+	weight_factor: REAL_64 is
 			-- Factor with which the length of the connection is multiplied
 		do
 			Result := 10

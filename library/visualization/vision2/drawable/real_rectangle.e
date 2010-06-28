@@ -33,7 +33,7 @@ feature -- Creation
 			point_b_set: point_b = a_point_b
 		end
 
-	make_from_reals (x1, y1, x2, y2: REAL) is
+	make_from_reals (x1, y1, x2, y2: REAL_64) is
 			-- Create a rectangle from real coordinates.
 		do
 			make (create {REAL_COORDINATE}.make (x1,y1), create {REAL_COORDINATE}.make (x2,y2))
@@ -47,13 +47,13 @@ feature -- Access
 	point_b: REAL_COORDINATE
 			-- The other corner point of the rectangle
 
-	width: REAL is
+	width: REAL_64 is
 			-- Width of `Current'
 		do
 			Result := (point_a.x - point_b.x).abs
 		end
 
-	height: REAL is
+	height: REAL_64 is
 			-- Height of `Current'
 		do
 			Result := (point_a.y - point_b.y).abs
@@ -102,25 +102,25 @@ feature -- Status report
 			result_not_void: Result /= Void
 		end
 
-	upper_bound: REAL is
+	upper_bound: REAL_64 is
 			-- Upper bound of `Current'
 		do
 			Result := point_a.y.max (point_b.y)
 		end
 
-	lower_bound: REAL is
+	lower_bound: REAL_64 is
 			-- Upper bound of `Current'
 		do
 			Result := point_a.y.min (point_b.y)
 		end
 
-	left_bound: REAL is
+	left_bound: REAL_64 is
 			-- Upper bound of `Current'
 		do
 			Result := point_a.x.min (point_b.x)
 		end
 
-	right_bound: REAL is
+	right_bound: REAL_64 is
 			-- Upper bound of `Current'
 		do
 			Result := point_a.x.max (point_b.x)
@@ -128,28 +128,28 @@ feature -- Status report
 
 feature -- Calculations
 
-	right_by (a_distance: REAL) is
+	right_by (a_distance: REAL_64) is
 			-- Return a new point `a_distance' right of the current point.
 		do
 			point_a := point_a.right_by (a_distance)
 			point_b := point_b.right_by (a_distance)
 		end
 
-	up_by (a_distance: REAL) is
+	up_by (a_distance: REAL_64) is
 			-- Return a new point `a_distance' above of the current point.
 		do
 			point_a := point_a.up_by (a_distance)
 			point_b := point_b.up_by (a_distance)
 		end
 
-	down_by (a_distance: REAL) is
+	down_by (a_distance: REAL_64) is
 			-- Return a new point `a_distance' right of the current point.
 		do
 			point_a := point_a.down_by (a_distance)
 			point_b := point_b.down_by (a_distance)
 		end
 
-	left_by (a_distance: REAL) is
+	left_by (a_distance: REAL_64) is
 			-- Return a new point `a_distance' above of the current point.
 		do
 			point_a := point_a.left_by (a_distance)
@@ -165,7 +165,7 @@ feature -- Calculations
 			point_b := point_b + a_distance
 		end
 
-	scale (a_factor: REAL) is
+	scale (a_factor: REAL_64) is
 			-- Scalar multiplication by `a_factor'
 		do
 			point_a := point_a * a_factor

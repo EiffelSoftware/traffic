@@ -7,7 +7,7 @@ deferred class
 	TRAFFIC_SEGMENT
 
 inherit
-	LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, REAL]
+	LINKED_GRAPH_WEIGHTED_EDGE [TRAFFIC_NODE, REAL_64]
 		rename
 			make_directed as make_directed_old,
 			make_undirected as make_undirected_old,
@@ -46,7 +46,7 @@ feature {NONE} -- Initialization
 feature -- Measure
 
 
-	travel_time(speed: REAL):REAL_64 is
+	travel_time(speed: REAL_64):REAL_64 is
 			-- calculates the travel time between 'origin' and 'destination'
 			-- with a certain speed (km/h).Result is given in Minutes.
 			local
@@ -122,7 +122,7 @@ feature -- Access
 	polypoints: DS_ARRAYED_LIST [TRAFFIC_POINT]
 			-- Location representation of the segment.
 
-	length: DOUBLE is
+	length: REAL_64 is
 			-- Length from start of polypoints to end.
 			-- If no polypoints exists, distance between origin and destination.
 		local
@@ -145,7 +145,7 @@ feature -- Access
 
 feature -- Access
 
-	weight_factor: DOUBLE is
+	weight_factor: REAL_64 is
 			-- Factor with which the length of the segment is multiplied
 		deferred
 		ensure

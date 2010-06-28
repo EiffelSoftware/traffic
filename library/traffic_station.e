@@ -128,10 +128,10 @@ feature -- Access
 			end
 		end
 
-	width: DOUBLE
+	width: REAL_64
 			-- Width of the station (enclosing all stops)
 
-	breadth: DOUBLE
+	breadth: REAL_64
 			-- Breadth of the station (enclosing all stops)
 
 	hash_code: INTEGER is

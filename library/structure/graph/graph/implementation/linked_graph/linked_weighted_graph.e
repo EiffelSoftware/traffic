@@ -73,7 +73,7 @@ feature -- Access
 			end
 		end
 
-	edge_from_values (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL): like edge_item is
+	edge_from_values (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL_64): like edge_item is
 			-- Edge that matches `a_start_node', `a_end_node', `a_label' and `a_weight'.
 			-- Result is Void if there is no match.
 			-- The cursor is not moved.
@@ -104,7 +104,7 @@ feature -- Cursor movement
 
 feature -- Element change
 
-	put_edge (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL) is
+	put_edge (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL_64) is
 			-- Create an edge with weight `a_weight' between `a_start_node' and `a_end_node'.
 			-- The edge will be labeled `a_label'.
 			-- For symmetric graphs, another edge is inserted in the opposite direction.

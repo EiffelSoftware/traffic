@@ -8,7 +8,7 @@ class
 
 inherit
 
-	LINKED_WEIGHTED_GRAPH [TRAFFIC_NODE, REAL_REF]
+	LINKED_WEIGHTED_GRAPH [TRAFFIC_NODE, REAL_64_REF]
 		rename
 			put_edge as connect_nodes
 		redefine
@@ -46,7 +46,7 @@ feature {NONE} -- Initialization
 
 feature {TRAFFIC_CITY_ITEM} -- Insertion
 
-	connect_nodes (a_start_node, a_end_node: like item; a_label: REAL; a_weight: REAL) is
+	connect_nodes (a_start_node, a_end_node: like item; a_label: REAL_64; a_weight: REAL_64) is
 			-- Redefined to record weight.
 		local
 			r: TRAFFIC_ROAD_SEGMENT
@@ -341,7 +341,7 @@ feature {NONE} -- Implementation
 			-- Nodes which are part of the border set in the path finding algorithm
 			-- (from GRAPH)
 
-	weight_function: FUNCTION [ANY, TUPLE [TRAFFIC_SEGMENT], REAL]
+	weight_function: FUNCTION [ANY, TUPLE [TRAFFIC_SEGMENT], REAL_64]
 			-- Weight function for edges, if Void, no weight function is used.
 
 	prune_edge_impl (a_edge: like edge_item) is
@@ -351,7 +351,7 @@ feature {NONE} -- Implementation
 			Precursor (a_edge)
 		end
 
-	calculate_weight (a_edge: TRAFFIC_SEGMENT): REAL is
+	calculate_weight (a_edge: TRAFFIC_SEGMENT): REAL_64 is
 			-- Calculate the edge based on the current status.
 			-- This is only used for "dummy" segments.
 		local
@@ -372,12 +372,12 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	total_weight: DOUBLE
+	total_weight: REAL_64
 		-- Total length of all TRAFFIC_SEGMENTSs added.
 		-- Usually less then the total weight of the edges because
 		-- the "dummy" segments have a higher weight than their length.
 
-	average_weight: DOUBLE is
+	average_weight: REAL_64 is
 			-- Average weight of an edge used for "dummy" segments
 			-- between nodes of the same station.
 		do

@@ -37,16 +37,16 @@ feature -- Canvas elements
 		end
 
 
-	zoom_factor: REAL
+	zoom_factor: REAL_64
 			-- Zooming factor
 
-	zoom_maximum: REAL
+	zoom_maximum: REAL_64
 			-- Max zoom out factor
 
-	zoom_minimum: REAL
+	zoom_minimum: REAL_64
 			-- Max zoom in factor
 
-	set_zoom_limits (min, max: REAL) is
+	set_zoom_limits (min, max: REAL_64) is
 			-- Set the both zoom limits `zoom_minimum' and `zoom_maximum'.
 		require
 			min_smaller_than_max: min < max
@@ -79,42 +79,42 @@ feature -- Canvas elements
 			redraw
 		end
 
-	zoom_in (zoom_factor_delta: REAL) is
+	zoom_in (zoom_factor_delta: REAL_64) is
 			-- Zoom in stepwise.
 		do
 			zoom_factor := (zoom_factor - zoom_factor_delta).max (zoom_minimum)
 			update_visible_area
 		end
 
-	zoom_out (zoom_factor_delta: REAL) is
+	zoom_out (zoom_factor_delta: REAL_64) is
 			-- Zoom out stepwise.
 		do
 			zoom_factor := (zoom_factor + zoom_factor_delta).min (zoom_maximum)
 			update_visible_area
 		end
 
-	go_right (pan_distance: REAL) is
+	go_right (pan_distance: REAL_64) is
 			-- Move right.
 		do
 			visible_area.left_by (pan_distance)
 			redraw
 		end
 
-	go_left (pan_distance: REAL) is
+	go_left (pan_distance: REAL_64) is
 			-- Move left.	
 		do
 			visible_area.right_by (pan_distance)
 			redraw
 		end
 
-	go_up (pan_distance: REAL) is
+	go_up (pan_distance: REAL_64) is
 			-- Move up.	
 		do
 			visible_area.down_by (pan_distance)
 			redraw
 		end
 
-	go_down (pan_distance: REAL) is
+	go_down (pan_distance: REAL_64) is
 			-- Move down.	
 		do
 			visible_area.up_by (pan_distance)
@@ -142,7 +142,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	move_start (x, y, b: INTEGER; x_t, y_t, p: DOUBLE;
+	move_start (x, y, b: INTEGER; x_t, y_t, p: REAL_64;
 			scr_x, scr_y: INTEGER) is
 			-- Mouse down on the canvas (evt. start of moving).
 			-- (For an explanation of arguments look at
@@ -164,8 +164,8 @@ feature {NONE} -- Implementation
 			--
 		local
 			pt: REAL_COORDINATE
-			xdiff: DOUBLE
-			ydiff: DOUBLE
+			xdiff: REAL_64
+			ydiff: REAL_64
 		do
 			create pt.make (x, y)
 			if last_cursor_position /= Void then
@@ -183,15 +183,15 @@ feature {NONE} -- Implementation
 
 	last_cursor_position: REAL_COORDINATE
 
-	move_end (x, y, b: INTEGER; x_t, y_t, p: DOUBLE;
+	move_end (x, y, b: INTEGER; x_t, y_t, p: REAL_64;
 			scr_x, scr_y: INTEGER) is
 			-- Release mouse pointer.
 			-- (For an explanation of arguments look at
 			-- EV_POINTER_BUTTON_ACTION_SEQUENCE.)
 		local
 			pt: REAL_COORDINATE
-			xdiff: DOUBLE
-			ydiff: DOUBLE
+			xdiff: REAL_64
+			ydiff: REAL_64
 		do
 			create pt.make (x, y)
 			if last_cursor_position /= Void and (b = 1)  then
@@ -214,7 +214,7 @@ feature {NONE} -- Implementation
 			pointer_motion_actions.prune (pan_agent)
 		end
 
-	Zoom_factor_stepwise: REAL is 0.05
+	Zoom_factor_stepwise: REAL_64 is 0.05
 			-- Stepwise zoom factor
 
 end -- class SPECIAL_CANVAS

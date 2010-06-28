@@ -74,7 +74,7 @@ feature -- Status report
 		require
 			a_point_exists: a_point /= Void
 		local
-			tolerance: DOUBLE
+			tolerance: REAL_64
 		do
 			tolerance := 2.0
 			from
@@ -96,7 +96,7 @@ feature -- Status report
 		require
 			a_point_exists: a_point /= Void
 		local
-			l_dist, min_dist : REAL
+			l_dist, min_dist : REAL_64
 		do
 			from
 				stations.start
@@ -129,7 +129,7 @@ feature -- Element change
 			center_set: center = a_center
 		end
 
-	set_radius (a_radius: DOUBLE) is
+	set_radius (a_radius: REAL_64) is
 			-- Set city radius to `a_radius'.
 		require
 			a_radius_exists: a_radius /= Void
@@ -147,7 +147,7 @@ feature -- Element change
 			description_set: description = a_description
 		end
 
-	set_scale_factor (a_scale_factor: DOUBLE) is
+	set_scale_factor (a_scale_factor: REAL_64) is
 			-- Set `a_scale_factor'.
 		require
 			a_scale_factor_valid: a_scale_factor > 0
@@ -284,7 +284,7 @@ feature -- Access
 	center: TRAFFIC_POINT
 			-- Location of the city center
 
-	radius: DOUBLE
+	radius: REAL_64
 			-- Radius of the city
 
 	graph: TRAFFIC_GRAPH
@@ -296,7 +296,7 @@ feature -- Access
 	description: STRING
 			-- Textual description of the city
 
-	scale_factor: DOUBLE
+	scale_factor: REAL_64
 			-- Scale factor to reach real world distances
 			-- Multiply with this to receive real-world distances
 
@@ -384,9 +384,9 @@ feature {TRAFFIC_MAP_LOADER}
 			-- In addition, the stops of different lines are connected at nodes.
 		local
 			the_edges: LIST[TRAFFIC_SEGMENT]
-			total_weight: DOUBLE
-			average_weight: DOUBLE
-			w: DOUBLE
+			total_weight: REAL_64
+			average_weight: REAL_64
+			w: REAL_64
 			edge_count: INTEGER
 		do
 			-- Recalculate edge weights.

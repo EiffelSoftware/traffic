@@ -62,7 +62,7 @@ feature-- Constants
 	Default_capacity: INTEGER is 180
 		-- Default capacity of a bus
 
-	Default_virtual_speed: REAL
+	Default_virtual_speed: REAL_64
 		-- Default speed of a bus
 		do
 			Result := line.type.speed

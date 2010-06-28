@@ -167,7 +167,7 @@ feature -- Access
 	line: TRAFFIC_LINE
 			-- Line used
 
-	length: DOUBLE
+	length: REAL_64
 			-- Length of segment
 
 	segments: TRAFFIC_EVENT_LINKED_LIST [TRAFFIC_SEGMENT]

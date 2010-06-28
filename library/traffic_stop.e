@@ -92,7 +92,7 @@ feature -- Access
 			end
 		end
 
-	time_to_next: REAL
+	time_to_next: REAL_64
 		-- Estimated travel time to next stop (departure to departure,
 		-- except for next-to-last stop: departure to arrival).
 		require

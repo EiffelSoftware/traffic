@@ -42,13 +42,13 @@ feature -- Access
 
 feature -- Constants
 
-	default_width: DOUBLE is 27.0
+	default_width: REAL_64 is 27.0
 			-- Default width of a landmark building
 
-	default_depth: DOUBLE is 13.0
+	default_depth: REAL_64 is 13.0
 			-- Default depth of a landmark building
 
-	default_height: DOUBLE is 35.0
+	default_height: REAL_64 is 35.0
 			-- Default height of a landmark building
 
 end

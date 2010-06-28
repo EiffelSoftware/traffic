@@ -37,10 +37,10 @@ feature -- Basic operations
 		local
 			building: TRAFFIC_BUILDING
 
-			x1,x2: DOUBLE
-			y1,y2: DOUBLE
-			height: DOUBLE
-			angle: DOUBLE
+			x1,x2: REAL_64
+			y1,y2: REAL_64
+			height: REAL_64
+			angle: REAL_64
 			building_name: STRING
 			p1,p2,p3,p4: TRAFFIC_POINT
 			center: TRAFFIC_POINT

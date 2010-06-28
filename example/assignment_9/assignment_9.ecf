@@ -27,7 +27,6 @@
 		<setting name="multithreaded" value="false"/>
 		<precompile name="vision2_pre" location="$ISE_PRECOMP\vision2.ecf"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf" readonly="true"/>
-		<library name="gobo" location="$ISE_LIBRARY\library\gobo\gobo.ecf" readonly="true"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf" readonly="true"/>
 		<library name="traffic" location="..\..\library\traffic_vision2.ecf" readonly="false">
 			<option profile="false">

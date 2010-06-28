@@ -24,15 +24,15 @@ create
 
 feature -- Access
 
-	x: DOUBLE
+	x: REAL_64
 			-- Horizontal position
 
-	y: DOUBLE
+	y: REAL_64
 			-- Vertical position
 
 feature -- Constants
 
-	one: DOUBLE is
+	one: REAL_64 is
 			-- Neutral element for "*" and "/"
 		do
 			Result := 1.0
@@ -46,7 +46,7 @@ feature -- Constants
 
 feature -- Creation
 
-	make (a_x, a_y: DOUBLE) is
+	make (a_x, a_y: REAL_64) is
 			-- Make with values `a_x' and `a_y'.
 		do
 			x := a_x
@@ -93,7 +93,7 @@ feature -- Creation
 
 feature -- Element change
 
-	set_x (an_x: DOUBLE) is
+	set_x (an_x: REAL_64) is
 			-- Set `x' to `an_x'.
 		do
 			x := an_x
@@ -101,7 +101,7 @@ feature -- Element change
 			x_set: x = an_x
 		end
 
-	set_y (an_y: DOUBLE) is
+	set_y (an_y: REAL_64) is
 			-- Set `y' to `an_y'.
 		do
 			y := an_y
@@ -109,7 +109,7 @@ feature -- Element change
 			y_set: y = an_y
 		end
 
-	left_by (a_value: DOUBLE) is
+	left_by (a_value: REAL_64) is
 			-- Subtract `a_value' from `x'.
 		do
 			x := x - a_value
@@ -117,7 +117,7 @@ feature -- Element change
 			moved_left: x = old x - a_value
 		end
 
-	right_by (a_value: DOUBLE) is
+	right_by (a_value: REAL_64) is
 			-- Add `a_value' to `x'.
 		do
 			x := x + a_value
@@ -125,7 +125,7 @@ feature -- Element change
 			moved_right: x = old x + a_value
 		end
 
-	up_by (a_value: DOUBLE) is
+	up_by (a_value: REAL_64) is
 			-- Subtract `a_value' from `y'.
 		do
 			y := y - a_value
@@ -133,7 +133,7 @@ feature -- Element change
 			moved_up: y = old y - a_value
 		end
 
-	down_by (a_value: DOUBLE) is
+	down_by (a_value: REAL_64) is
 			-- Add `a_value' to `y'.
 		do
 			y := y + a_value
@@ -165,11 +165,11 @@ feature -- Element change
 			moved: y = old y - other.y and x = old x - other.x
 		end
 
-	rotate (angle: DOUBLE) is
+	rotate (angle: REAL_64) is
 			-- Rotate `Current' by `angle' (radian).
 		local
-			x_new: DOUBLE
-			a_sin, a_cos: DOUBLE
+			x_new: REAL_64
+			a_sin, a_cos: REAL_64
 		do
 			a_sin := sin (angle)
 			a_cos := cos (angle)
@@ -181,14 +181,14 @@ feature -- Element change
 	rotate_rectangularly is
 			-- Rotate `Current' by rectangular angle.
 		local
-			x_new: DOUBLE
+			x_new: REAL_64
 		do
 			x_new := - y
 			y := x
 			x := x_new
 		end
 
-	scale (a_value: DOUBLE) is
+	scale (a_value: REAL_64) is
 			-- Scale `Current' by `a_value'.
 		do
 			x := x * a_value
@@ -197,7 +197,7 @@ feature -- Element change
 			scaled: x = old x * a_value and y = old y * a_value
 		end
 
-	stretch (x_factor, y_factor: DOUBLE) is
+	stretch (x_factor, y_factor: REAL_64) is
 			-- Scale `x' by `x_factor' and `y' by `y_factor'.
 		do
 			x := x * x_factor
@@ -206,12 +206,12 @@ feature -- Element change
 			stretched: x = old x * x_factor and y = old y * y_factor
 		end
 
-	scale_to (a_length: DOUBLE) is
+	scale_to (a_length: REAL_64) is
 			-- Scale 'Current' to `a_length'.
 		require
 			current_not_zero: length > 0
 		local
-			fact: DOUBLE
+			fact: REAL_64
 		do
 			fact := a_length / length
 			x := x * fact
@@ -228,7 +228,7 @@ feature -- Element change
 
 feature -- Calculations
 
-	length: DOUBLE is
+	length: REAL_64 is
 			-- Length of `Current'.
 		do
 			Result := sqrt (x^2 + y^2)
@@ -236,7 +236,7 @@ feature -- Calculations
 			result_calculated: Result = sqrt (x^2 + y^2)
 		end
 
-	length_squared: DOUBLE is
+	length_squared: REAL_64 is
 			-- squared Length of `Current'.
 		do
 			Result := x^2 + y^2
@@ -256,13 +256,13 @@ feature -- Calculations
 			create Result.make (x - other.x, y - other.y)
 		end
 
-	infix "*" (a_factor: DOUBLE): like Current is
+	infix "*" (a_factor: REAL_64): like Current is
 			-- Scalar multiplication by `a_factor'
 		do
 			create Result.make (x * a_factor, y * a_factor)
 		end
 
-	infix "/" (a_divisor: DOUBLE): like Current is
+	infix "/" (a_divisor: REAL_64): like Current is
 			-- Scalar division by `a_divisor'.
 		do
 			create Result.make (x / a_divisor, y / a_divisor)
@@ -284,7 +284,7 @@ feature -- Calculations
 			result_is_negation: Result.x = -x and Result.y = -y
 		end
 
-	scalar_product (other: like Current): DOUBLE is
+	scalar_product (other: like Current): REAL_64 is
 			-- Scalar product of `Current' with `other'.
 		require
 			other_exists: other /= Void
@@ -294,10 +294,10 @@ feature -- Calculations
 			result_calculated: Result = x * other.x + y * other.y
 		end
 
-	rotation_around_zero (angle: DOUBLE): like Current is
+	rotation_around_zero (angle: REAL_64): like Current is
 			-- Rotation of `Current' around `zero' by `angle' (radian).
 		local
-			cos_angle, sin_angle: DOUBLE
+			cos_angle, sin_angle: REAL_64
 		do
 			cos_angle := cos (angle)
 			sin_angle := sin (angle)
@@ -317,7 +317,7 @@ feature -- Calculations
 		require
 			directions_not_parallel: not direction.is_parallel_to (other_direction)
 		local
-			x_dist, y_dist, param, denom: DOUBLE
+			x_dist, y_dist, param, denom: REAL_64
 		do
 			-- Algorithm as explained under http://astronomy.swin.edu.au/~pbourke/geometry/lineline2d/
 			x_dist := x - other_point.x
@@ -329,13 +329,13 @@ feature -- Calculations
 			result_created: Result /= Void
 		end
 
-	rotation (center: like Current; angle: DOUBLE): like Current is
+	rotation (center: like Current; angle: REAL_64): like Current is
 			-- Rotation of `Current' around `center' by `angle' (radian).
 		require
 			center_not_void: center /= Void
 			center_not_equal_current: center.x /= x or center.y /= y
 		local
-			x_new, y_new, cos_angle, sin_angle, x_rot, y_rot: DOUBLE
+			x_new, y_new, cos_angle, sin_angle, x_rot, y_rot: REAL_64
 		do
 			x_new := x - center.x
 			y_new := y - center.y
@@ -356,7 +356,7 @@ feature -- Calculations
 			Result := axis * (Current.scalar_product(axis) / axis.length_squared) * 2 - Current
 		end
 
-	distance (other: like Current): DOUBLE is
+	distance (other: like Current): REAL_64 is
 			-- Distance between `Current' and `other'.
 		do
 			Result := sqrt ((other.x - x) ^ 2 + (other.y - y) ^ 2)
@@ -372,16 +372,16 @@ feature -- Output
 
 feature {NONE} -- Implementation
 
-	cos (angle: DOUBLE): DOUBLE is
+	cos (angle: REAL_64): REAL_64 is
 			-- Cosine function that handles all input (radian)
 		do
 			Result := sin (Pi/2 - angle)
 		end
 
-	sin (angle: DOUBLE): DOUBLE is
+	sin (angle: REAL_64): REAL_64 is
 			-- Sine function that handles all input (in radian)
 		local
-			rad: DOUBLE
+			rad: REAL_64
 		do
 			from
 				rad := angle

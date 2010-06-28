@@ -118,7 +118,7 @@ feature{EV_CANVAS} -- Display
 			-- Draw the polyline
 		local
 			index, line_width: INTEGER
-			ratio: REAL
+			ratio: REAL_64
 			point : EV_COORDINATE
 			points_to_draw: ARRAY [EV_COORDINATE]
 		do
@@ -164,7 +164,7 @@ feature {NONE} -- Implementation
 	points: ARRAY [REAL_COORDINATE]
 			-- The points of the polyline
 
-	scaling_reference: REAL
+	scaling_reference: REAL_64
 			-- The scaling reference
 
 	Default_width: INTEGER is 4

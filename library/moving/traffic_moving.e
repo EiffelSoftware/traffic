@@ -26,10 +26,10 @@ feature -- Access
 	destination: TRAFFIC_POINT
 			-- Destination location
 
-	speed: DOUBLE
+	speed: REAL_64
 			-- Speed in m/s
 
-	angle_x: DOUBLE
+	angle_x: REAL_64
 			-- Angle in respect to the x-axis
 
 feature -- Status report
@@ -56,7 +56,7 @@ feature -- Basic operations
 
 feature -- Element change
 
-	set_speed (a_speed: DOUBLE) is
+	set_speed (a_speed: REAL_64) is
 			-- Set the speed to 'a_speed'.
 		require
 			a_speed_valid: a_speed >= 0
@@ -80,7 +80,7 @@ feature {NONE} -- Implementation
 			-- Move from origin to destination.
 		local
 			direction: TRAFFIC_POINT
-			diff: DOUBLE
+			diff: REAL_64
 		do
 			direction := destination - origin
 
@@ -119,7 +119,7 @@ feature {NONE} -- Implementation
 	update_angle is
 			-- Set the angles to the x- and y-axis respectively.
 		local
-			x_difference, y_difference, hypo, quad: DOUBLE
+			x_difference, y_difference, hypo, quad: REAL_64
 		do
 			-- as the x-axis is turned by 180° we have to take this into account
 			-- we need the x- and the y difference to calculate the norm

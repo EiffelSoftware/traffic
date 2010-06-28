@@ -96,7 +96,7 @@ feature -- Cursor movement
 
 feature -- Element change
 
-	put_edge (a_start_node, a_end_node: G; a_label: L; a_weight: REAL) is
+	put_edge (a_start_node, a_end_node: G; a_label: L; a_weight: REAL_64) is
 			-- Create an edge with weight `a_weight' between `a_start_node' and `a_end_node'.
 			-- The edge will be labeled `a_label'.
 			-- The cursor is not moved.

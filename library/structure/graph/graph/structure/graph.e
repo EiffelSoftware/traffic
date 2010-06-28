@@ -943,7 +943,7 @@ feature -- Basic operations
 			focused_node, target_node, node: NODE [like item, L]
 			el: like incident_edges
 			e: like edge_item
-			dist: REAL
+			dist: REAL_64
 		do
 			-- Shortest path algorithm used for both weighted and unweighted graphs.
 			-- In unweighted graphs, we look for the path with the minimum amount of edges.
@@ -1208,7 +1208,7 @@ feature {NONE} -- Implementation
 			Result := a_edge.end_node
 		end
 
-	edge_length (a_edge: like edge_item): REAL is
+	edge_length (a_edge: like edge_item): REAL_64 is
 			-- Edge length, used in `find_path' algorithm
 		require
 			edge_not_void: a_edge /= Void

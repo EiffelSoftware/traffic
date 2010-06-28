@@ -197,7 +197,7 @@ feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
 	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_SEGMENT]
 
-	angle(st,dest: TRAFFIC_POINT):DOUBLE is
+	angle(st,dest: TRAFFIC_POINT):REAL_64 is
 			-- Set the angles to the x- and y-axis respectively.
 		do
 		end

@@ -133,7 +133,7 @@ feature -- Basic operations
 
 feature -- Constants
 
-	Default_scale_factor: DOUBLE is 5.52
+	Default_scale_factor: REAL_64 is 5.52
 
 feature -- Output
 

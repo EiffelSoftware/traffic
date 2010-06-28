@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			center_set: center = a_center
 		end
 
-	make_new (a_width, a_depth, a_height: DOUBLE; a_center: TRAFFIC_POINT) is
+	make_new (a_width, a_depth, a_height: REAL_64; a_center: TRAFFIC_POINT) is
 			-- Initialize with size.
 		do
 			Precursor (a_width, a_depth, a_height, a_center)
@@ -42,13 +42,13 @@ feature {NONE} -- Initialization
 
 feature -- Constants
 
-	default_width: DOUBLE is 18.0
+	default_width: REAL_64 is 18.0
 			-- Default width of a villa
 
-	default_depth: DOUBLE is 16.0
+	default_depth: REAL_64 is 16.0
 			-- Default depth of a villa
 
-	default_height: DOUBLE is 9.3
+	default_height: REAL_64 is 9.3
 			-- Default height of a villa
 
 end

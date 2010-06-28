@@ -39,7 +39,7 @@ feature -- Element change
 
 feature -- Basic operations
 
-	generate_random_buildings (a_number: INTEGER; a_radius: DOUBLE; a_template: INTEGER) is
+	generate_random_buildings (a_number: INTEGER; a_radius: REAL_64; a_template: INTEGER) is
 			-- Generate at most `a_number' buildings of same type as `a_template' in `a_radius' around the city center.
 		require
 			a_number_valid: a_number > 0
@@ -47,7 +47,7 @@ feature -- Basic operations
 			a_template_valid: a_template > 0 and a_template <= template_count
 		local
 			nr_buildings_placed, j: INTEGER
-			w, b: DOUBLE
+			w, b: REAL_64
 			point_randomizer: TRAFFIC_POINT_RANDOMIZER
 			center: TRAFFIC_POINT
 			building: TRAFFIC_BUILDING

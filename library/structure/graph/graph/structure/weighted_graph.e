@@ -33,7 +33,7 @@ feature -- Access
 		deferred
 		end
 
-	edge_from_values (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL): like edge_item is
+	edge_from_values (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL_64): like edge_item is
 			-- Edge that matches `a_start_node', `a_end_node', `a_label' and `a_weight'.
 			-- Result is Void if there is no match.
 			-- The cursor is not moved.
@@ -53,7 +53,7 @@ feature -- Access
 
 feature -- Measurement
 
-	weight_sum: REAL is
+	weight_sum: REAL_64 is
 			-- Sum of all edge weights of the graph
 		local
 			lin_rep: LINEAR [like edge_item]
@@ -95,7 +95,7 @@ feature -- Status report
 
 feature -- Status setting
 
-	enable_user_defined_weight_function (a_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [G, L]], REAL]) is
+	enable_user_defined_weight_function (a_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [G, L]], REAL_64]) is
 			-- Use `a_function' to compute edge weight instead of stored value.
 		local
 			edge_list: like edges
@@ -135,7 +135,7 @@ feature -- Cursor movement
 
 feature -- Element change
 
-	put_edge (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL) is
+	put_edge (a_start_node, a_end_node: like item; a_label: L; a_weight: REAL_64) is
 			-- Create an edge with weight `a_weight' between `a_start_node' and `a_end_node'.
 			-- The edge will be labeled `a_label'.
 			-- For symmetric graphs, another edge is inserted in the opposite direction.
@@ -151,7 +151,7 @@ feature -- Element change
 																  has_edge_between (a_end_node, a_start_node)
 		end
 
-	put_unlabeled_edge (a_start_node, a_end_node: like item; a_weight: REAL) is
+	put_unlabeled_edge (a_start_node, a_end_node: like item; a_weight: REAL_64) is
 			-- Create an edge with weight `a_weight' between `a_start_node' and `a_end_node'.
 			-- For symmetric graphs, another edge is inserted in the opposite direction.
 			-- The cursor is not moved.
@@ -209,7 +209,7 @@ feature {NONE} -- Inapplicable
 
 feature {NONE} -- Implementation
 
-	edge_length (a_edge: like edge_item): REAL is
+	edge_length (a_edge: like edge_item): REAL_64 is
 			-- Edge length, used in `find_path' and `shortest_path' algorithm
 		do
 			Result := a_edge.weight

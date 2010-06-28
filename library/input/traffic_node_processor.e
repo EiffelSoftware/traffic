@@ -74,7 +74,7 @@ feature -- Access
 			Result := xml_attribute (a_name).to_integer
 		end
 
-	attribute_double (a_name: STRING): DOUBLE is
+	attribute_double (a_name: STRING): REAL_64 is
 			-- Double attribute named `a_name'
 		require
 			has_source: has_source

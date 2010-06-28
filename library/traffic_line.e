@@ -134,7 +134,7 @@ feature {NONE} -- Initialization
 
 feature -- Measurement
 
-	total_time: REAL is
+	total_time: REAL_64 is
 			-- Estimated travel time for full line, time measured in Minutes.
 			-- By Speed which depends on the type of the line
 		do
@@ -846,11 +846,11 @@ feature {TRAFFIC_LINE_CURSOR} -- Implementation
 
 	one_direction, other_direction: DS_LINKED_LIST [TRAFFIC_LINE_SEGMENT]
 
-	angle(st,dest: TRAFFIC_POINT):DOUBLE is
+	angle(st,dest: TRAFFIC_POINT):REAL_64 is
 			-- Set the angles to the x- and y-axis respectively.
 		local
-			x_difference, y_difference, hypo, quad: DOUBLE
-			angle_x:DOUBLE
+			x_difference, y_difference, hypo, quad: REAL_64
+			angle_x:REAL_64
 		do
 			x_difference := st.x - dest.x
 			y_difference := st.y - dest.y

@@ -11,7 +11,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_length: INTEGER; a_center: TRAFFIC_POINT; a_radius: DOUBLE) is
+	make (a_length: INTEGER; a_center: TRAFFIC_POINT; a_radius: REAL_64) is
 			-- Initialize the grid with `a_length'*`a_length' number of fields and coordinate transformations
 			-- such that `a_center' is in the middle of the grid.
 		require
@@ -35,7 +35,7 @@ feature -- Access
 			--	True means the cell is occupied
 			--	False means the cell is free
 
-	radius: DOUBLE
+	radius: REAL_64
 			-- Radius around which the city is located
 
 	center: TRAFFIC_POINT
@@ -43,7 +43,7 @@ feature -- Access
 
 feature -- Basic operations
 
-	mark_polyline (a_list: DS_ARRAYED_LIST [TRAFFIC_POINT]; a_line_width: DOUBLE; a_value: BOOLEAN) is
+	mark_polyline (a_list: DS_ARRAYED_LIST [TRAFFIC_POINT]; a_line_width: REAL_64; a_value: BOOLEAN) is
 			-- Mark grid cells for a polyline.
 		require
 			a_line_width_valid: a_line_width > 0
@@ -62,7 +62,7 @@ feature -- Basic operations
 		end
 
 
-	mark_line (p0, p1: TRAFFIC_POINT; a_line_width: DOUBLE; a_value: BOOLEAN) is
+	mark_line (p0, p1: TRAFFIC_POINT; a_line_width: REAL_64; a_value: BOOLEAN) is
     		-- Mark grid cells along the line from `p0' to `p1' with `a_value' using a standard line drawing algorithm.
     	require
     		a_line_width_valid: a_line_width > 0
@@ -71,8 +71,8 @@ feature -- Basic operations
     		point_not_same: p0.distance (p1) > 0.0
     	local
 	    	x0_local, y0_local, x1_local, y1_local: INTEGER
-	        dx,dy: DOUBLE
-	        m, b: DOUBLE
+	        dx,dy: REAL_64
+	        m, b: REAL_64
 	        t: TUPLE [INTEGER, INTEGER]
 		do
 			t := grid_coordinate (p0)
@@ -124,7 +124,7 @@ feature -- Basic operations
    		 end
 
 
-	mark_rectangle (a_center: TRAFFIC_POINT; a_width, a_breadth: DOUBLE; a_value: BOOLEAN) is
+	mark_rectangle (a_center: TRAFFIC_POINT; a_width, a_breadth: REAL_64; a_value: BOOLEAN) is
 			-- Mark cells with `a_value' within rectangular area.
 		require
 			a_center_valid: a_center /= Void
@@ -163,7 +163,7 @@ feature -- Basic operations
 
 feature -- Status report
 
-	has_rectangle_collision (a_center: TRAFFIC_POINT; a_width, a_breadth: DOUBLE): BOOLEAN is
+	has_rectangle_collision (a_center: TRAFFIC_POINT; a_width, a_breadth: REAL_64): BOOLEAN is
 			-- Does the rectangle with `a_center', `a_width' and `a_breadth' have any collision with marked grid cells?
 		require
 			a_center_valid: a_center /= Void
@@ -203,7 +203,7 @@ feature -- Status report
 			Result := res
 		end
 
-	has_square_collision (a_center: TRAFFIC_POINT; a_diagonal: DOUBLE): BOOLEAN is
+	has_square_collision (a_center: TRAFFIC_POINT; a_diagonal: REAL_64): BOOLEAN is
 			-- Does the square with `a_center' and `a_diagonal' have any collision with marked grid cells?
 		require
 			a_center_valid: a_center /= Void
@@ -275,7 +275,7 @@ feature -- Conversion
 
 feature {NONE} -- Implementation
 
-	mark_square_grid_coords (grid_x, grid_y:INTEGER; a_width:DOUBLE; a_value: BOOLEAN) is
+	mark_square_grid_coords (grid_x, grid_y:INTEGER; a_width:REAL_64; a_value: BOOLEAN) is
 			-- Mark cells with `a_value' within quadratic area where `grid_x', `grid_y' is a grid coordinate.
 		require
 			grid_x_valid: grid_x >= 1 and grid_x <= boolean_grid.width

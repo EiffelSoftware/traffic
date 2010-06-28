@@ -92,8 +92,8 @@ feature -- Access
 			canvas_width_not_zero: canvas.width /= 0
 			canvas_height_not_zero: canvas.height /= 0
 		local
-			x_real : REAL
-			y_real : REAL
+			x_real : REAL_64
+			y_real : REAL_64
 		do
 
 			x_real:= ((an_integer_coordinate.x * canvas.visible_area.width) / canvas.width) + canvas.visible_area.left_bound

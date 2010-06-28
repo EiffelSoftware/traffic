@@ -25,7 +25,7 @@ inherit
 
 feature {NONE} -- Initialization
 
-	make_new (a_width, a_depth, a_height: DOUBLE; a_center: TRAFFIC_POINT) is
+	make_new (a_width, a_depth, a_height: REAL_64; a_center: TRAFFIC_POINT) is
 			-- Initialize `Current' with size and `a_center'.
 		require
 			size_valid: a_width > 0.0 and a_height > 0.0 and a_depth > 0.0
@@ -73,16 +73,16 @@ feature -- Access
 	center: TRAFFIC_POINT
 			-- Center of the building
 
-	angle: DOUBLE
+	angle: REAL_64
 			-- Angle in degrees
 
-	height: DOUBLE
+	height: REAL_64
 			-- Height of the building
 
-	depth: DOUBLE
+	depth: REAL_64
 			-- Breath of the building
 
-	width: DOUBLE
+	width: REAL_64
 			-- Width of the buiding
 
 	description: STRING
@@ -126,11 +126,11 @@ feature -- Access
 
 feature -- Status report
 
-	contains_point(a_x: DOUBLE; a_y: DOUBLE): BOOLEAN is
+	contains_point(a_x: REAL_64; a_y: REAL_64): BOOLEAN is
 			-- Is point (`a_x', `a_y') inside building?
 		local
-			delta_x1: DOUBLE
-			delta_x2: DOUBLE
+			delta_x1: REAL_64
+			delta_x2: REAL_64
 		do
 
 			Result := false
@@ -153,7 +153,7 @@ feature -- Status report
 
 feature -- Element change
 
-	set_size (a_width, a_height, a_depth: DOUBLE) is
+	set_size (a_width, a_height, a_depth: REAL_64) is
 			-- Set `width' to `a_width', `height' to `a_height', and `depth' to `a_depth'.
 		require
 			size_valid: a_width > 0.0 and a_height > 0.0 and a_depth > 0.0
@@ -176,7 +176,7 @@ feature -- Element change
 			description_set: description = a_description
 		end
 
-	set_angle (an_angle: DOUBLE) is
+	set_angle (an_angle: REAL_64) is
 			-- Set angle to `a_angle'.
 		require
 			angle_valid: an_angle >= -70 and an_angle <=70

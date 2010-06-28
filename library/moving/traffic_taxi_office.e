@@ -103,8 +103,8 @@ feature -- Basic operations
 			to_location_not_void: to_location /= void
 		local
 			nearest_taxi: TRAFFIC_TAXI
-			minimum_distance: REAL
-			temp_distance: REAL
+			minimum_distance: REAL_64
+			temp_distance: REAL_64
 			position: TRAFFIC_POINT
 		do
 			if available_taxis.count > 0 then

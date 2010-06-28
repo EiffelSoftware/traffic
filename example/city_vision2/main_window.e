@@ -901,7 +901,7 @@ feature {NONE} -- Implementation
 	move_to_center is
 			-- Center map on screen.
 		local
-			xdiff, ydiff: DOUBLE
+			xdiff, ydiff: REAL_64
 			canvas_center: REAL_COORDINATE
 		do
 			canvas_center := client_to_map_coordinates ((canvas.width/2).floor, (canvas.height/2).floor)
@@ -942,10 +942,10 @@ feature -- Conversion
 	client_to_map_coordinates (x, y: INTEGER): REAL_COORDINATE is
 			-- Map position corresponding to client coordinates (`x', `y')
 		local
-			lx: DOUBLE
-			ly: DOUBLE
-			xperc: DOUBLE
-			yperc: DOUBLE
+			lx: REAL_64
+			ly: REAL_64
+			xperc: REAL_64
+			yperc: REAL_64
 			h: INTEGER
 			org: REAL_COORDINATE
 		do
@@ -980,7 +980,7 @@ feature {NONE} -- Implementation / Constants
 			-- String for the confirmation dialog box that appears
 			-- when the user try to close the first window.
 
-	Zoom_factor_stepwise: REAL is 0.05
+	Zoom_factor_stepwise: REAL_64 is 0.05
 			-- Stepwise zoom factor
 
 end -- class MAIN_WINDOW

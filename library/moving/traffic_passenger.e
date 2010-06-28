@@ -17,7 +17,7 @@ create
 
 feature -- Initialization
 
-	make_with_route (a_route: TRAFFIC_ROUTE; a_speed: DOUBLE) is
+	make_with_route (a_route: TRAFFIC_ROUTE; a_speed: REAL_64) is
 			-- Set passenger's route to be `a_route' and `speed' to `a_speed' (in m/s).
 		require
 			a_route_not_void: a_route /= Void

@@ -11,7 +11,7 @@ create
 
 feature -- Initialization
 
-	make (a_center: TRAFFIC_POINT; a_radius: DOUBLE) is
+	make (a_center: TRAFFIC_POINT; a_radius: REAL_64) is
 			-- Initialize with `a_center' and `a_radius'.
 		require
 			a_center_exists: a_center /= Void
@@ -42,7 +42,7 @@ feature -- Element change
 			center_set: center = a_center
 		end
 
-	set_radius (a_radius: DOUBLE) is
+	set_radius (a_radius: REAL_64) is
 			-- Set `radius' to `a_radius'.
 		require
 			a_radius_valid: a_radius > 0
@@ -61,7 +61,7 @@ feature -- Basic operations
 			n_valid: n > 0
 		local
 			i: INTEGER
-			x, y: DOUBLE
+			x, y: REAL_64
 		do
 			create last_array.make (n)
 			from
@@ -86,7 +86,7 @@ feature -- Access
 	last_array: DS_ARRAYED_LIST [TRAFFIC_POINT]
 			-- Last generated array of points
 
-	radius: DOUBLE
+	radius: REAL_64
 			-- Radius in which points are generated
 
 	center: TRAFFIC_POINT

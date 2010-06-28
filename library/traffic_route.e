@@ -193,10 +193,10 @@ feature -- Output
 			-- Description providing information about the route
 		local
 			leg: TRAFFIC_LEG
-			walking_length: DOUBLE
-			tram_length: DOUBLE
-			bus_length: DOUBLE
-			train_length: DOUBLE
+			walking_length: REAL_64
+			tram_length: REAL_64
+			bus_length: REAL_64
+			train_length: REAL_64
 			tram_type: STRING
 			train_type: STRING
 			bus_type: STRING
@@ -314,7 +314,7 @@ feature -- Basic operations
 			end
 		end
 
-	set_scale_factor (a_scale_factor: DOUBLE) is
+	set_scale_factor (a_scale_factor: REAL_64) is
 			-- sets the scale factor
 		require
 			a_scale_factor_exists: a_scale_factor /= Void
@@ -356,7 +356,7 @@ feature -- Cursor movement
 
 feature {NONE} -- Implementation
 
-	scale_factor: DOUBLE
+	scale_factor: REAL_64
 			-- Scale factor for real world distances
 
 invariant

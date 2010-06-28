@@ -29,7 +29,7 @@ create
 
 feature -- Initialization
 
-	make (a_start_node, a_end_node: G; a_label: L; a_weight: REAL) is
+	make (a_start_node, a_end_node: G; a_label: L; a_weight: REAL_64) is
 			-- Make a labeled edge from two nodes with weight `a_weight'.
 		require
 			nodes_not_void: a_start_node /= Void and a_end_node /= Void
@@ -49,7 +49,7 @@ feature -- Initialization
 			default_weight_function: not user_defined_weight_function
 		end
 
-	make_directed (a_start_node, a_end_node: G; a_label: L; a_weight: REAL) is
+	make_directed (a_start_node, a_end_node: G; a_label: L; a_weight: REAL_64) is
 			-- Make a directed labeled edge from two nodes with weight `a_weight'.
 		require
 			nodes_not_void: a_start_node /= Void and a_end_node /= Void
@@ -66,7 +66,7 @@ feature -- Initialization
 			is_directed: is_directed
 		end
 
-	make_undirected (a_start_node, a_end_node: G; a_label: L; a_weight: REAL) is
+	make_undirected (a_start_node, a_end_node: G; a_label: L; a_weight: REAL_64) is
 			-- Make an undirected labeled edge from two nodes with weight `a_weight'.
 		require
 			nodes_not_void: a_start_node /= Void and a_end_node /= Void
@@ -85,7 +85,7 @@ feature -- Initialization
 
 feature -- Access
 
-	weight: REAL is
+	weight: REAL_64 is
 			-- Weight of the edge
 		do
 			if not user_defined_weight_function then
@@ -148,7 +148,7 @@ feature -- Cursor movement
 
 feature -- Element change
 
-	set_weight (a_weight: REAL) is
+	set_weight (a_weight: REAL_64) is
 			-- Set the weight of the edge.
 		do
 			internal_weight := a_weight
@@ -196,10 +196,10 @@ feature -- Output
 
 feature {NONE} -- Implementation
 
-	internal_weight: REAL
+	internal_weight: REAL_64
 			-- Weight of the edge
 
-	weight_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [G, L]], REAL]
+	weight_function: FUNCTION [ANY, TUPLE [WEIGHTED_EDGE [G, L]], REAL_64]
 			-- User-defined function to compute `weight'.
 
 end -- class WEIGHTED_EDGE

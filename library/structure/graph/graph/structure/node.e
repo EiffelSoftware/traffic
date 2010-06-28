@@ -60,7 +60,7 @@ feature {GRAPH} -- Access
 
 feature {GRAPH, NODE} -- Access
 
-	distance: REAL
+	distance: REAL_64
 			-- Length of the shortest route to `item' until now
 
 feature {GRAPH, NODE} -- Status report

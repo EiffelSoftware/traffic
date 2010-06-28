@@ -143,7 +143,7 @@ feature {EV_CANVAS} -- Display
 
 feature {NONE} -- Implementation/Calculations
 
-	integer_to_real_x (an_integer_x: INTEGER): REAL is
+	integer_to_real_x (an_integer_x: INTEGER): REAL_64 is
 			-- Convert `an_integer_x' to an x value in world coordinates
 		do
 			Result := (an_integer_x * bounding_box.width)/pixmap.width
@@ -151,7 +151,7 @@ feature {NONE} -- Implementation/Calculations
 		--	definition: Result = (an_integer_x * bounding_box.width)/pixmap.width
 		end
 
-	integer_to_real_y (an_integer_y: INTEGER): REAL is
+	integer_to_real_y (an_integer_y: INTEGER): REAL_64 is
 			-- Convert `an_integer_y' to an y value in world coordinates
 		do
 			Result:= (an_integer_y * bounding_box.height)/pixmap.height
@@ -159,7 +159,7 @@ feature {NONE} -- Implementation/Calculations
 		--	definition: Result = (an_integer_y * bounding_box.height)/pixmap.height
 		end
 
-	real_to_integer_x_floor (a_real_x: REAL): INTEGER	is
+	real_to_integer_x_floor (a_real_x: REAL_64): INTEGER	is
 			-- Convert `a_real_x' to an x value in screen coordinates, rounding down
 		do
 			Result := ((a_real_x * pixmap.width) / bounding_box.width).floor
@@ -167,7 +167,7 @@ feature {NONE} -- Implementation/Calculations
 		--	definition: Result = ((a_real_x * pixmap.width) / bounding_box.width).floor
 		end
 
-	real_to_integer_x_ceiling (a_real_x: REAL): INTEGER	is
+	real_to_integer_x_ceiling (a_real_x: REAL_64): INTEGER	is
 			-- Convert `a_real_x' to an x value in screen coordinates, rounding up
 		do
 			Result := ((a_real_x * pixmap.width) / bounding_box.width).ceiling
@@ -175,7 +175,7 @@ feature {NONE} -- Implementation/Calculations
 		--	definition: Result = ((a_real_x * pixmap.width) / bounding_box.width).ceiling
 		end
 
-	real_to_integer_y_floor (a_real_y: REAL): INTEGER	is
+	real_to_integer_y_floor (a_real_y: REAL_64): INTEGER	is
 			-- Convert `a_real_y' to an y value in screen coordinates, rounding down
 		do
 			Result := ((a_real_y * pixmap.height) / bounding_box.height).floor
@@ -183,7 +183,7 @@ feature {NONE} -- Implementation/Calculations
 		--	definition: Result = ((a_real_y * pixmap.height) / bounding_box.height).floor
 		end
 
-	real_to_integer_y_ceiling (a_real_y: REAL): INTEGER	is
+	real_to_integer_y_ceiling (a_real_y: REAL_64): INTEGER	is
 			-- Convert `a_real_y' to an y value in screen coordinates, rounding up
 		do
 			Result := ((a_real_y * pixmap.height) / bounding_box.height).ceiling

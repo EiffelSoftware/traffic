@@ -15,7 +15,7 @@ create
 
 feature -- Initialization
 
-	make_with_points (a_list: DS_ARRAYED_LIST [TRAFFIC_POINT]; a_speed: DOUBLE) is
+	make_with_points (a_list: DS_ARRAYED_LIST [TRAFFIC_POINT]; a_speed: REAL_64) is
 			-- Set passengers route as `a_list' and speed to `a_speed' (in m/s).
 			-- `a_list' is the list of the points where the passenger will go through.
 		require

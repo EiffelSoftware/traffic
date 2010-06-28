@@ -42,7 +42,7 @@ feature {NONE} -- Implementation
 	first_window: TRAFFIC_MAIN_WINDOW
 			-- Main window.
 
-	mouse_pressed (x, y, button: INTEGER; a, b, c: DOUBLE; u, v: INTEGER) is
+	mouse_pressed (x, y, button: INTEGER; a, b, c: REAL_64; u, v: INTEGER) is
 			--
 		local
 			co: REAL_COORDINATE

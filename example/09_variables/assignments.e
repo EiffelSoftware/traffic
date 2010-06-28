@@ -22,7 +22,7 @@ feature -- Path building
 		end
 
 
-	total_time8 : REAL is
+	total_time8 : REAL_64 is
 			-- Return the travel time on the Metro Line 8
 		do
 			from

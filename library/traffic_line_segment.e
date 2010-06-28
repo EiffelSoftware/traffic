@@ -132,7 +132,7 @@ feature -- Status report
 
 feature -- Access
 
-	weight_factor: DOUBLE is
+	weight_factor: REAL_64 is
 			-- Factor with which the length of the connection is multiplied
 		do
 			if type.is_equal (create {TRAFFIC_TYPE_TRAM}.make) then

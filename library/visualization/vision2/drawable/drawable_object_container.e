@@ -80,7 +80,7 @@ feature -- Access
 			-- Bounding box of the container
 		local
 			rect: REAL_RECTANGLE
-			l, r, u, d: REAL
+			l, r, u, d: REAL_64
 		do
 			if not is_empty then
 				rect := first.bounding_box
