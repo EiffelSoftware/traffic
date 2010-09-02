@@ -65,7 +65,7 @@ feature -- Cursor movement
 		do
 			graph.go_to (first_node)
 			index := 1
-			visited_nodes.clear_all
+			visited_nodes.wipe_out
 			visited_nodes.put (True, graph.node_identity)
 			dispenser.wipe_out
 			add_targets_to_dispenser

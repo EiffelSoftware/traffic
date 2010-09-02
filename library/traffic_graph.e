@@ -15,7 +15,6 @@ inherit
 			current_node,
 			edge_item,
 			node_from_item,
-			annotated_nodes,
 			adopt_edge,
 			has_edge,
 			edge_occurences,
@@ -24,7 +23,6 @@ inherit
 			prune_node,
 			prune_edge_impl,
 			prune_edge,
-			border_nodes,
 			find_shortest_path
 		end
 
@@ -333,14 +331,6 @@ feature {NONE} -- Implementation
 			connect_nodes (a_edge.start_node, a_edge.end_node, a_edge.label, a_edge.weight)
 		end
 
-	annotated_nodes: ARRAY [like item]
-			-- All graph nodes annotated with additional information
-			-- for the path finding algorithm
-			-- (from GRAPH)
-	border_nodes: INVERSE_HEAP_PRIORITY_QUEUE [like item]
-			-- Nodes which are part of the border set in the path finding algorithm
-			-- (from GRAPH)
-
 	weight_function: FUNCTION [ANY, TUPLE [TRAFFIC_SEGMENT], REAL_64]
 			-- Weight function for edges, if Void, no weight function is used.
 
@@ -384,7 +374,7 @@ feature {NONE} -- Implementation
 			Result := total_weight / internal_edges.count
 		end
 
-	node_from_item (a_item: like item): like item
+	node_from_item (a_item: like item): NODE [like item, REAL_64_REF]
 			-- Node object from item value
 			-- (from GRAPH)
 		local
