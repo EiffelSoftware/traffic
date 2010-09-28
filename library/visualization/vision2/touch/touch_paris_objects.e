@@ -80,7 +80,7 @@ feature -- Access (Lines)
 		require
 			Paris_exists: is_paris_loaded
 		once
-			wait
+--			wait
 			Result ?= Paris.lines.item ("tram 8")
 		end
 

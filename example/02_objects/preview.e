@@ -3,7 +3,7 @@ class PREVIEW inherit
 
 feature -- Explore Paris
 
-	explore is
+	explore
 			-- Show city info and a route.
 		do
 			Paris.display
@@ -12,5 +12,4 @@ feature -- Explore Paris
 			Route1.animate
 			Console.show (Route1.origin)
 		end
-
 end
