@@ -1,4 +1,4 @@
-indexing
+note
 	description: "Wagon objects can be used to increase the capacity of trams."
 	date: "$Date: 6/6/2006$"
 	revision: "$Revision$"
@@ -11,7 +11,7 @@ create
 
 feature -- Initialization
 
-	make_default is
+	make_default
 			-- Set capacity to Default_capacity
 		do
 			capacity := Default_capacity
@@ -51,7 +51,7 @@ feature --Access
 
 feature --Constants
 
-	Default_capacity: INTEGER is 100
+	Default_capacity: INTEGER = 100
 			-- Default capacity
 
 invariant

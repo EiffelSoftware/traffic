@@ -1,4 +1,4 @@
-indexing
+note
 	description: "Vision2 Main window for touch examples, containing a console and a button plus a city canvas"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -23,7 +23,7 @@ create
 
 feature {NONE} -- Initialization
 
-	initialize is
+	initialize
 			-- Build the interface for this window.
 		do
 			Precursor {EV_TITLED_WINDOW}
@@ -46,7 +46,7 @@ feature {NONE} -- Initialization
 
 feature -- Basic operations
 
-	set_example (a_example: TOURISM; an_action: PROCEDURE [ANY, TUPLE]) is
+	set_example (a_example: TOURISM; an_action: PROCEDURE [ANY, TUPLE])
 			-- Set `a_example' to be run when clicking on the `run_button'.
 		do
 			a_example.run (console, Current)
@@ -55,7 +55,7 @@ feature -- Basic operations
 
 feature {NONE} -- GUI building
 
-	build_main_container is
+	build_main_container
 			-- Create and populate `main_container'.
 		require
 			main_container_not_yet_created: main_container = Void
@@ -99,7 +99,7 @@ feature {NONE} -- GUI building
 			main_container_created: main_container /= Void
 		end
 
-	build_standard_status_bar is
+	build_standard_status_bar
 			-- Create and populate the standard toolbar.
 		require
 			status_bar_not_yet_created:
@@ -125,7 +125,7 @@ feature {NONE} -- GUI building
 				standard_status_label /= Void
 		end
 
-	build_standard_toolbar is
+	build_standard_toolbar
 			-- Create and populate the standard toolbar.
 		require
 			toolbar_not_yet_created: standard_toolbar = Void
@@ -152,7 +152,7 @@ feature {NONE} -- GUI building
 
 feature {NONE} -- Implementation
 
-	request_close_window is
+	request_close_window
 			-- The user wants to close the window
 		local
 			question_dialog: EV_CONFIRMATION_DIALOG
@@ -171,7 +171,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	update_status_label is
+	update_status_label
 			--
 		do
 			if canvas.city /= Void and then canvas.city.time.is_time_running then
@@ -210,7 +210,7 @@ feature -- Widgets
 
 feature -- Basic operations
 
-	resize_canvas is
+	resize_canvas
 			-- Set up canvas.
 		local
 			w: INTEGER
@@ -223,7 +223,7 @@ feature -- Basic operations
 			viewport.set_item_size (w, h)
 		end
 
-	move_to_center is
+	move_to_center
 			-- Center city on screen.
 		local
 			xdiff, ydiff: REAL_64
@@ -239,13 +239,13 @@ feature -- Basic operations
 			canvas.redraw
 		end
 
-	zoom_in is
+	zoom_in
 			-- Zoom in.
 		do
 			Canvas.zoom_in (Zoom_factor_stepwise)
 		end
 
-	zoom_out is
+	zoom_out
 			-- Zoom out.
 		do
 			Canvas.zoom_out (Zoom_factor_stepwise)
@@ -253,7 +253,7 @@ feature -- Basic operations
 
 feature -- Conversion
 
-	client_to_city_coordinates (x, y: INTEGER): REAL_COORDINATE is
+	client_to_city_coordinates (x, y: INTEGER): REAL_COORDINATE
 			-- City position that corresponds to client coordinates (`x', `y')
 		local
 			lx: REAL_64
@@ -281,19 +281,19 @@ feature -- Conversion
 
 feature {NONE} -- Implementation / Constants
 
-	Window_title: STRING is "touch example"
+	Window_title: STRING = "touch example"
 			-- Title of the window.
 
-	Window_width: INTEGER is 800
+	Window_width: INTEGER = 800
 			-- Initial width for this window.
 
-	Window_height: INTEGER is 600
+	Window_height: INTEGER = 600
 			-- Initial height for this window.
 
-	Label_confirm_close_window: STRING is "You are about to close this window.%NClick OK to proceed."
+	Label_confirm_close_window: STRING = "You are about to close this window.%NClick OK to proceed."
 			-- String for the confirmation dialog box that appears
 			-- when the user try to close the first window.
 
-	Zoom_factor_stepwise: REAL_64 is 0.05
+	Zoom_factor_stepwise: REAL_64 = 0.05
 			-- Stepwise zoom factor
 end

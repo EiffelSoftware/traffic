@@ -1,4 +1,4 @@
-indexing
+note
 	description: "XML processors for <onroad> nodes."
 	date: "$Date: 2007-07-24 11:47:24 +0200 (Tue, 24 Jul 2007) $"
 	revision: "$Revision: 901 $"
@@ -14,10 +14,10 @@ create
 
 feature -- Access
 
-	Name: STRING is "onroad"
+	Name: STRING = "onroad"
 			-- Name of node to process
 
-	Mandatory_attributes: ARRAY [STRING] is
+	Mandatory_attributes: ARRAY [STRING]
 			-- Table of mandatory attributes
 		once
 			Result := << "id", "back" >>
@@ -26,7 +26,7 @@ feature -- Access
 
 feature -- Basic operations
 
-	process is
+	process
 			-- Process node.
 		local
 			a_city:TRAFFIC_CITY

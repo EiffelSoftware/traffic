@@ -1,4 +1,4 @@
-indexing
+note
 	description: "Traffic console for output in examples"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -21,7 +21,7 @@ create
 
 feature -- Text changes
 
-	show (an_object: ANY) is
+	show (an_object: ANY)
 			-- Display information on `an_object'.
 		require
 			an_object_exists: an_object /= Void

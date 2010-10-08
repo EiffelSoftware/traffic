@@ -1,4 +1,4 @@
-indexing
+note
 	description: "Event taxi type."
 	date: "$Date: 2006-06-26 $"
 	revision: "$Revision: 602 $"
@@ -14,7 +14,7 @@ create
 
 feature -- Creation
 
-	make is
+	make
 			-- Create new event taxi type.
 		do
 			name := "event taxi"

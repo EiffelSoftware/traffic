@@ -1,4 +1,4 @@
-indexing
+note
 	description: "XML processors for background <file> elements."
 	date: "$Date$"
 	revision: "$Revision$"
@@ -14,13 +14,13 @@ create
 
 feature -- Access
 
-	Name: STRING is
+	Name: STRING
 			-- Name of element to process
 		do
 			Result := "file"
 		end
 
-	Mandatory_attributes: ARRAY [STRING] is
+	Mandatory_attributes: ARRAY [STRING]
 			-- Table of mandatory attributes
 		once
 			Result := << "name" >>
@@ -29,7 +29,7 @@ feature -- Access
 
 feature -- Basic operations
 
-	process is
+	process
 			-- Process node.
 		do
 			if has_attribute ("name") then

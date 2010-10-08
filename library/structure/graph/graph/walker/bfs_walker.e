@@ -1,4 +1,4 @@
-indexing
+note
 	description: "[
 		The BFS walker is a LINEAR abstraction of a graph, that starts
 		on a specific node and will walk in a breadth first search order
@@ -24,7 +24,7 @@ create
 
 feature -- Initialize
 
-	create_dispenser is
+	create_dispenser
 			-- Create the dispenser as a queue for the BFS
 		do
 			create {LINKED_QUEUE [GRAPH_CURSOR [G,L]]} dispenser.make

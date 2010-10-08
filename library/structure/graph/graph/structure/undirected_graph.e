@@ -1,4 +1,4 @@
-indexing
+note
 	description: "[
 		Undirected graphs without commitment to a particular representation.
 		Both simple graphs and multigraphs are supported.
@@ -29,18 +29,14 @@ inherit
 			is_eulerian
 		end
 
-feature -- Access
-
-feature -- Measurement
-
 feature -- Status report
 
-	has_edge_between (a_start_node, a_end_node: like item): BOOLEAN is
+	has_edge_between (a_start_node, a_end_node: like item): BOOLEAN
 			-- Are `a_start_node' and `a_end_node' directly connected?
 		deferred
 		end
 
-	has_cycles: BOOLEAN is
+	has_cycles: BOOLEAN
 			-- Does the graph contain cyclic paths?
 			-- Note: Graph loops are considered to be cycles.
 			-- Note 2: Multigraphs are currently not supported.
@@ -57,7 +53,7 @@ feature -- Status report
 			end
 		end
 
-	is_tree: BOOLEAN is
+	is_tree: BOOLEAN
 			-- Is the graph a tree?
 		require
 			simple_graph: is_simple_graph
@@ -66,7 +62,7 @@ feature -- Status report
 			Result := is_connected and not has_cycles
 		end
 
-	is_eulerian: BOOLEAN is
+	is_eulerian: BOOLEAN
 			-- Can the whole graph be drawn with a single closed line without lifting the pencil?
 		local
 			node_list: like linear_representation
@@ -107,13 +103,9 @@ feature -- Status report
 			end
 		end
 
-feature -- Status setting
-
-feature -- Cursor movement
-
 feature -- Element change
 
-	put_edge (a_start_node, a_end_node: like item; a_label: L) is
+	put_edge (a_start_node, a_end_node: like item; a_label: L)
 			-- Create an edge between `a_start_node' and `a_end_node'
 			-- and set its label to `a_label'.
 			-- The cursor is not moved.
@@ -123,7 +115,7 @@ feature -- Element change
 			edge_count: edge_count = old edge_count + 1
 		end
 
-	put_unlabeled_edge (a_start_node, a_end_node: like item) is
+	put_unlabeled_edge (a_start_node, a_end_node: like item)
 			-- Create an edge between `a_start_node' and `a_end_node'.
 			-- The cursor is not moved.
 		do
@@ -133,36 +125,20 @@ feature -- Element change
 			edge_count: edge_count = old edge_count + 1
 		end
 
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
-feature -- Obsolete
-
 feature {NONE} -- Inapplicable
 
-	is_dag: BOOLEAN is False
+	is_dag: BOOLEAN = False
 			-- Is `Current' a directed acyclic graph?
 
 feature {NONE} -- Implementation
 
-	adopt_edge (a_edge: EDGE [like item, L]) is
+	adopt_edge (a_edge: EDGE [like item, L])
 			-- Put `a_edge' into current graph.
 		do
 			put_edge (a_edge.start_node, a_edge.end_node, a_edge.label)
 		end
 
-	opposite_node (a_edge: like edge_item; a_node: like item): like item is
+	opposite_node (a_edge: like edge_item; a_node: like item): like item
 			-- End node of `a_edge' when `a_node' is the start node
 		do
 			Result := a_edge.opposite_node (a_node)

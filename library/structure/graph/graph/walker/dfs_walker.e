@@ -1,4 +1,4 @@
-indexing
+note
 	description: "[
 		The DFS walker is a LINEAR abstraction of a graph, that starts
 		on a specific node and will walk in a depth first search order
@@ -24,7 +24,7 @@ create
 
 feature -- Initialize
 
-	create_dispenser is
+	create_dispenser
 			-- Create the dispenser for a DFS walker
 		do
 			create {LINKED_STACK [GRAPH_CURSOR[G, L]]} dispenser.make

@@ -1,4 +1,4 @@
-indexing
+note
 	description: "[
 		Cursors for remembering positions in graphs.
 		]"
@@ -18,7 +18,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_node: G; a_edge: EDGE [G, L]) is
+	make (a_node: G; a_edge: EDGE [G, L])
 			-- Create a cursor for with attributes `a_node' and `a_edge'.
 		require
 			no_edge_when_off: (a_node = Void) implies (a_edge = Void)
@@ -34,7 +34,7 @@ feature {GRAPH} -- Access
 
 	current_node: G
 			-- Node at the current cursor position
-			
+
 	edge_item: EDGE [G, L]
 			-- Edge which is currently focused
 

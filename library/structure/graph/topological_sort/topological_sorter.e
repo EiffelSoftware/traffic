@@ -1,4 +1,4 @@
-indexing
+note
 	description	: "[
 			Topological sorter.
 			Used to produce a total order on a set of
@@ -17,7 +17,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make is
+	make
 			-- Create topological sorter.
 		do
 			create index_of_element.make (1)
@@ -36,7 +36,7 @@ feature {NONE} -- Initialization
 
 feature -- Initialization
 
-	record_element (e: G) is
+	record_element (e: G)
 			-- Add `e' to the set of elements, unless already present.
 		require
 			not_sorted: not done
@@ -50,7 +50,7 @@ feature -- Initialization
 			end
 		end
 
-	record_constraint (e, f: G) is
+	record_constraint (e, f: G)
 			-- Add the constraint `[e,f]'.
 		require
 			not_sorted: not done
@@ -61,7 +61,7 @@ feature -- Initialization
 			-- Ensure `e' and `f' are inserted (no effect if they already were):
 			record_element (e)
 			record_element (f)
-			
+
 			x := index_of_element.item (e)
 			y := index_of_element.item (f)
 			predecessor_count.put (predecessor_count.item (y) + 1, y)
@@ -70,15 +70,15 @@ feature -- Initialization
 
 feature -- Access
 
-	cycle_found: BOOLEAN is
+	cycle_found: BOOLEAN
 			-- Did the original constraint imply a cycle?
 		require
 			sorted: done
 		do
 			Result := has_cycle
 		end
-	
-	cycle_list: LIST [G] is
+
+	cycle_list: LIST [G]
 			-- Elements involved in cycles
 		require
 			sorted: done
@@ -88,8 +88,8 @@ feature -- Access
 			void_iff_none: (not cycle_found) = (Result = Void)
 			not_empty_if_cycle: cycle_found implies (not Result.is_empty)
 		end
-	
-	sorted_elements: LIST [G] is
+
+	sorted_elements: LIST [G]
 			-- List, in an order respecting the constraints, of all
 			-- the elements that can be ordered in that way
 		require
@@ -118,7 +118,7 @@ feature -- Status report
 
 feature -- Status setting
 
-	reset is
+	reset
 			-- Allow further updates of the elements and constraints.
 		do
 			done := False
@@ -129,7 +129,7 @@ feature -- Status setting
 			fresh: not done
 		end
 
-	compare_references is
+	compare_references
 			-- Ensure that future `record_element' operations will use `='
 			-- rather than `equal' for comparing references.
 		require
@@ -141,7 +141,7 @@ feature -- Status setting
 			reference_comparison: not object_comparison
 		end
 
-	compare_objects is
+	compare_objects
 			-- Ensure that future `record_element' operations will use `equal'
 			-- rather than `=' for comparing references.
 		require
@@ -153,7 +153,7 @@ feature -- Status setting
 			object_comparison: object_comparison
 		end
 
-	use_fifo_output is
+	use_fifo_output
 			-- Elements without constraints are added to output with
 			-- FIFO (first in first out) strategy.
 		require
@@ -165,7 +165,7 @@ feature -- Status setting
 			fifo_output: fifo_output
 		end
 
-	use_lifo_output is
+	use_lifo_output
 			-- Elements without constraints are added to output with
 			-- LIFO (last in first out) strategy.
 		require
@@ -177,11 +177,9 @@ feature -- Status setting
 			lifo_output: not fifo_output
 		end
 
-feature -- Cursor movement
-
 feature -- Element change
 
-	process is
+	process
 			-- Perform a topological sort over all applicable elements.
 			-- Results are accessible through `sorted', `cycle_found' and `cycle_list'.
 		require
@@ -222,24 +220,6 @@ feature -- Element change
 			sorted: done
 		end
 
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
 feature {NONE} -- Implementation
 
 	successors: ARRAY [LINKED_LIST [INTEGER]]
@@ -260,7 +240,7 @@ feature {NONE} -- Implementation
 	has_cycle: like cycle_found
 			-- Internal attribute with same value as `cycle_found'.
 			-- (needed because `cycle_found' has precondition `done'.)
-	
+
 	cycle_list_impl: like cycle_list
 			-- Internal attribute with same value as `cycle_list'.
 			-- (needed because `cycle_list' has precondition `done'.)
@@ -272,11 +252,11 @@ feature {NONE} -- Implementation
 
 	index_of_element: HASH_TABLE [INTEGER, G]
 			-- Index of every element
-	
+
 	element_of_index: ARRAY [G]
 			-- For every assigned index, gives the associated element
 
-	find_initial_candidates is
+	find_initial_candidates
 			-- Insert into `candidates' any elements without predecessors.
 		require
 			predecessor_count_not_void: predecessor_count /= Void
@@ -296,7 +276,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	report_cycles is
+	report_cycles
 			-- Make information about cycles available to clients
 		local
 			x: INTEGER
@@ -321,7 +301,7 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	add_successor (x, y: INTEGER) is
+	add_successor (x, y: INTEGER)
 			-- Record `y' as successor of `x'.
 		require
 			valid_x: 1 <= x; x <= count
@@ -341,13 +321,13 @@ feature {NONE} -- Implementation
 		end
 
 invariant
-	
+
 	elements_not_void:			element_of_index /= Void
 	hash_table_not_void:		index_of_element /= Void
 	predecessor_count_not_void:	predecessor_count /= Void
 	successors_not_void:		successors /= Void
 	candidates_not_void:		candidates /= Void
-	
+
 	element_count:			element_of_index.count = count
 	predecessor_list_count:	predecessor_count.count = count
 	successor_list_count:	successors.count = count

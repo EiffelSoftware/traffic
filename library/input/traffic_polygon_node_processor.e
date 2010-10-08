@@ -1,4 +1,4 @@
-indexing
+note
 	description: "Objects that ..."
 	author: ""
 	date: "$Date$"
@@ -18,13 +18,13 @@ create
 
 feature -- Access
 
-	Name: STRING is
+	Name: STRING
 			-- Name of node to process
 		once
 			Result := "polygon"
 		end
 
-	Mandatory_attributes: ARRAY [STRING] is
+	Mandatory_attributes: ARRAY [STRING]
 			-- Table of mandatory attributes
 		once
 			Result := << >>
@@ -33,7 +33,7 @@ feature -- Access
 
 feature -- Basic operations
 
-	process is
+	process
 			-- Process node.
 		local
 			polygon: TRAFFIC_POLYGON
@@ -56,7 +56,7 @@ feature -- Basic operations
 			end
 		end
 
-	process_subnodes is
+	process_subnodes
 			-- Process subnodes.
 		local
 			n: XM_ELEMENT

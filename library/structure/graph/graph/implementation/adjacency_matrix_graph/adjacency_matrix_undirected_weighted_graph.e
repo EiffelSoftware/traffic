@@ -1,4 +1,4 @@
-indexing
+note
 	description: "[
 		Undirected weighted graphs, implemented
 		on the basis of an adjacency matrix.
@@ -84,19 +84,9 @@ inherit
 create
 	make_simple_graph
 
-feature -- Access
-
-feature -- Measurement
-
-feature -- Status report
-
-feature -- Status setting
-
-feature -- Cursor movement
-
 feature -- Element change
 
-	put_edge (a_start_node, a_end_node: G; a_label: L; a_weight: REAL_64) is
+	put_edge (a_start_node, a_end_node: G; a_label: L; a_weight: REAL_64)
 			-- Create an edge with weight `a_weight' between `a_start_node' and `a_end_node'.
 			-- The edge will be labeled `a_label'.
 			-- The cursor is not moved.
@@ -119,27 +109,9 @@ feature -- Element change
 			end
 		end
 
-feature -- Removal
-
-feature -- Resizing
-
-feature -- Transformation
-
-feature -- Conversion
-
-feature -- Duplication
-
-feature -- Miscellaneous
-
-feature -- Basic operations
-
-feature -- Obsolete
-
-feature -- Inapplicable
-
 feature -- Output
 
-	out: STRING is
+	out: STRING
 			-- Textual representation of the graph
 		local
 			i, j: INTEGER
