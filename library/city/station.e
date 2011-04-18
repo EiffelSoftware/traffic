@@ -21,6 +21,7 @@ create {CITY}
 	make
 
 feature {NONE} -- Initialization
+
 	make (a_name: STRING; a_position: VECTOR)
 			-- Create a station with name `a_name' and position `a_position'.
 		require
@@ -44,15 +45,10 @@ feature -- Access
 	position: VECTOR
 			-- Position in the city.
 
-	lines: V_LIST [LINE]
-			-- A list of incident lines (lines that go through the station).
+	lines: V_SEQUENCE [LINE]
+			-- Incident lines (lines that go through the station).
 		do
-			Result := internal_lines.twin
-		ensure
-			result_exists: Result /= Void
-			all_lines_exist: Result.for_all (agent (l: LINE): BOOLEAN do Result := l /= Void end)
-			all_lines_contain_current: Result.for_all (agent (l: LINE): BOOLEAN do Result := l.stations.has (Current) end)
-			equals_internal_lines: Result ~ internal_lines
+			Result := internal_lines
 		end
 
 	hash_code: INTEGER
@@ -86,7 +82,8 @@ feature {CITY} -- Implementation
 invariant
 	name_exists: name /= Void
 	position_exists: position /= Void
-	internal_lines_exists: internal_lines /= Void
-	all_lines_exist: internal_lines.for_all (agent (l: LINE): BOOLEAN do Result := l /= Void end)
-	all_lines_contain_current: internal_lines.for_all (agent (l: LINE): BOOLEAN do Result := l.stations.has (Current) end)
+	lines_exists: lines /= Void
+	all_lines_exist: lines.for_all (agent (l: LINE): BOOLEAN do Result := l /= Void end)
+	all_lines_contain_current: lines.for_all (agent (l: LINE): BOOLEAN do Result := l.stations.has (Current) end)
+	internal_lines_equal: internal_lines ~ lines
 end

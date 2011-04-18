@@ -41,29 +41,25 @@ feature -- Access
 	origin: STATION
 			-- First station of the route.
 		do
-			Result := internal_stations.first
+			Result := stations.first
 		end
 
 	destination: STATION
 			-- Last station of the route.
 		do
-			Result := internal_stations.last
+			Result := stations.last
 		end
 
-	stations: V_LIST [STATION]
-			-- A list of stations the route goes through.
+	stations: V_SEQUENCE [STATION]
+			-- Stations the route goes through.
 		do
-			Result := internal_stations.twin
-		ensure
-			result_exists: Result /= Void
+			Result := internal_stations
 		end
 
-	lines: V_LIST [LINE]
-			-- A list of lines taken along the route.
+	lines: V_SEQUENCE [LINE]
+			-- Lines taken along the route.
 		do
-			Result := internal_lines.twin
-		ensure
-			result_exists: Result /= Void
+			Result := internal_lines
 		end
 
 	length: REAL_64
@@ -74,9 +70,9 @@ feature -- Access
 			from
 				i := 1
 			until
-				i > internal_lines.count
+				i > lines.count
 			loop
-				Result := Result + internal_lines [i].distance (internal_stations [i], internal_stations [i + 1])
+				Result := Result + lines [i].distance (stations [i], stations [i + 1])
 				i := i + 1
 			end
 		end
@@ -156,5 +152,21 @@ feature {ROUTE} -- Implementation
 			-- Lines taken along the route.
 
 invariant
-	one_more_station: internal_stations.count = internal_lines.count + 1
+	stations_exists: stations /= Void
+	lines_exists: lines /= Void
+	one_more_station: stations.count = lines.count + 1
+	all_stations_on_lines: lines.for_all_indexes (agent (i: INTEGER): BOOLEAN
+		do
+			Result := lines [i].stations.has (stations [i]) and lines [i].stations.has (stations [i + 1])
+		end)
+	each_station_different_from_next: stations.for_all_indexes (agent (i: INTEGER): BOOLEAN
+		do
+			Result := i < stations.count implies stations [i] /= stations [i + 1]
+		end)
+	each_line_different_from_next: lines.for_all_indexes (agent (i: INTEGER): BOOLEAN
+		do
+			Result := i < lines.count implies lines [i] /= lines [i + 1]
+		end)
+	internal_stations_equal: internal_stations ~ stations
+	internal_lines_equal: internal_lines ~ lines
 end

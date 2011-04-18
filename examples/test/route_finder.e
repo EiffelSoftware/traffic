@@ -122,7 +122,7 @@ feature {NONE} -- Implementation
 			-- Initialize `unvisited' with all stations in `city' but `origin'
 			-- and `routes' for each station with a route that consists only of that station.
 		local
-			si: V_INPUT_ITERATOR [STATION]
+			si: V_ITERATOR [STATION]
 		do
 			create {V_ARRAYED_LIST [STATION]} unvisited
 			create {V_HASH_TABLE [STATION, ROUTE]} routes

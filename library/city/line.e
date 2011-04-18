@@ -27,6 +27,8 @@ create {CITY}
 feature {NONE} -- Initialization
 	make (a_name: INTEGER; a_kind: TRANSPORT_KIND)
 			-- Create a line of kind `a_kind' with name `a_name'.
+		require
+			a_kind_exists: a_kind /= Void
 		do
 			name := a_name
 			kind := a_kind
@@ -45,15 +47,10 @@ feature -- Access
 	kind: TRANSPORT_KIND
 			-- Transportation kind.
 
-	stations: V_LIST [STATION]
-			-- A list of stations the line goes through.
+	stations: V_SEQUENCE [STATION]
+			-- Stations the line goes through.
 		do
-			Result := internal_stations.twin
-		ensure
-			result_exists: Result /= Void
-			all_stations_exist: Result.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
-			all_stations_contain_current: Result.for_all (agent (s: STATION): BOOLEAN do Result := s.lines.has (Current) end)
---			no_duplicates:
+			Result := internal_stations
 		end
 
 	north_terminal: STATION
@@ -61,10 +58,10 @@ feature -- Access
 		require
 			has_stations: not stations.is_empty
 		do
-			if internal_stations.first.position.y > internal_stations.last.position.y then
-				Result := internal_stations.first
+			if stations.first.position.y > stations.last.position.y then
+				Result := stations.first
 			else
-				Result := internal_stations.last
+				Result := stations.last
 			end
 		end
 
@@ -73,10 +70,10 @@ feature -- Access
 		require
 			has_stations: not stations.is_empty
 		do
-			if internal_stations.first.position.y > internal_stations.last.position.y then
-				Result := internal_stations.last
+			if stations.first.position.y > stations.last.position.y then
+				Result := stations.last
 			else
-				Result := internal_stations.first
+				Result := stations.first
 			end
 		end
 
@@ -87,11 +84,11 @@ feature -- Access
 			a_station_on_line: stations.has (a_station)
 			a_direction_is_terminal: a_direction = north_terminal or a_direction = south_terminal
 		local
-			i: V_INPUT_ITERATOR [STATION]
+			i: V_ITERATOR [STATION]
 		do
-			i := internal_stations.at_first
+			i := stations.at_first
 			i.search_forth (a_station)
-			if a_direction = internal_stations.first then
+			if a_direction = stations.first then
 				i.back
 			else
 				i.forth
@@ -119,8 +116,8 @@ feature -- Measurement
 		local
 			i1, i2, j, step: INTEGER
 		do
-			i1 := internal_stations.index_of (s1)
-			i2 := internal_stations.index_of (s2)
+			i1 := stations.index_of (s1)
+			i2 := stations.index_of (s2)
 			if i2 >= i1 then
 				step := 1
 			else
@@ -131,7 +128,7 @@ feature -- Measurement
 			until
 				j = i2
 			loop
-				Result := Result + (internal_stations [j].position - internal_stations [j + step].position).length
+				Result := Result + (stations [j].position - stations [j + step].position).length
 				j := j + step
 			end
 		end
@@ -158,8 +155,14 @@ feature {CITY} -- Implementation
 			-- Stations the line goes through.
 
 invariant
-	internal_stations_exists: internal_stations /= Void
-	all_stations_exist: internal_stations.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
-	all_stations_contain_current: internal_stations.for_all (agent (s: STATION): BOOLEAN do Result := s.lines.has (Current) end)
-	no_duplicates: internal_stations.for_all (agent (s: STATION): BOOLEAN do Result := internal_stations.occurrences (s) = 1 end)
+	kind_exists: kind /= Void
+	stations_exists: stations /= Void
+	all_stations_exist: stations.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
+	all_stations_contain_current: stations.for_all (agent (s: STATION): BOOLEAN do Result := s.lines.has (Current) end)
+	no_duplicates: stations.for_all (agent (s: STATION): BOOLEAN do Result := stations.occurrences (s) = 1 end)
+	terminals: not stations.is_empty implies
+		(north_terminal = stations.first and south_terminal = stations.last) or
+		(north_terminal = stations.last and south_terminal = stations.first)
+	north_and_south: not stations.is_empty implies north_terminal.position.y >= south_terminal.position.y
+	internal_stations_equal: internal_stations ~ stations
 end

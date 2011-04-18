@@ -28,24 +28,16 @@ feature -- Access
 	name: STRING
 			-- Name.
 
-	stations: V_TABLE [STRING, STATION]
-			-- A table of stations indexed by name.
+	stations: V_MAP [STRING, STATION]
+			-- Stations indexed by name.
 		do
-			Result := internal_stations.twin
-		ensure
-			result_exists: Result /= Void
-			-- stations and keys exist
-			-- stations indexed by name
+			Result := internal_stations
 		end
 
-	lines: V_TABLE [INTEGER, LINE]
-			-- A table of lines indexed by name.
+	lines: V_MAP [INTEGER, LINE]
+			-- Lines indexed by name.
 		do
-			Result := internal_lines.twin
-		ensure
-			result_exists: Result /= Void
-			-- lines and keys exist
-			-- lines indexed by name			
+			Result := internal_lines
 		end
 
 feature -- Construction
@@ -53,7 +45,9 @@ feature -- Construction
 	add_station (a_name: STRING; a_position: VECTOR)
 			-- Add station `a_name' at `a_position'.
 		require
+			a_name_exists: a_name /= Void
 			unique_name: not stations.has_key (a_name)
+			a_position_exists: a_position /= Void
 		do
 			internal_stations.extend (create {STATION}.make (a_name, a_position), a_name)
 		ensure
@@ -66,6 +60,7 @@ feature -- Construction
 			-- Add a line `a_name' of kind `a_kind'.
 		require
 			unique_name: not lines.has_key (a_name)
+			a_kind_exists: a_kind /= Void
 		do
 			internal_lines.extend (create {LINE}.make (a_name, a_kind), a_name)
 		ensure
@@ -84,8 +79,8 @@ feature -- Construction
 			station: STATION
 			line: LINE
 		do
-			station := internal_stations [station_name]
-			line := internal_lines [line_name]
+			station := stations [station_name]
+			line := lines [line_name]
 			line.internal_stations.extend_back (station)
 			station.internal_lines.extend_back (line)
 		ensure
@@ -98,12 +93,12 @@ feature -- Construction
 			station_exists: stations.has_key (a_name)
 		local
 			station: STATION
-			i: V_INPUT_ITERATOR [LINE]
+			i: V_ITERATOR [LINE]
 			j: V_LIST_ITERATOR [STATION]
 		do
-			station := internal_stations [a_name]
+			station := stations [a_name]
 			from
-				i := station.internal_lines.at_first
+				i := station.lines.at_first
 			until
 				i.after
 			loop
@@ -123,12 +118,12 @@ feature -- Construction
 			line_exists: lines.has_key (a_name)
 		local
 			line: LINE
-			i: V_INPUT_ITERATOR [STATION]
+			i: V_ITERATOR [STATION]
 			j: V_LIST_ITERATOR [LINE]
 		do
-			line := internal_lines [a_name]
+			line := lines [a_name]
 			from
-				i := line.internal_stations.at_first
+				i := line.stations.at_first
 			until
 				i.after
 			loop
@@ -150,6 +145,12 @@ feature {NONE} -- Implementation
 			-- Lines indexed by name.
 
 invariant
-	-- stations_indexed_by_name: stations.for_all_pairs (agent (k: STRING; v: STATION): BOOLEAN do Result := k ~ v.name end)
-	-- lines_indexed_by_name: lines.for_all_pairs (agent (k: INTEGER; v: LINE): BOOLEAN do Result := k = v.name end)
+	stations_exists: stations /= Void
+	all_stations_exist: stations.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
+	stations_indexed_by_name: stations.for_all_keys (agent (n: STRING): BOOLEAN do Result := n ~ stations [n].name end)
+	lines_exists: lines /= Void
+	all_lines_exist: lines.for_all (agent (l: LINE): BOOLEAN do Result := l /= Void end)
+	lines_indexed_by_name: lines.for_all_keys (agent (n: INTEGER): BOOLEAN do Result := n = lines [n].name end)
+	internal_stations_equal: internal_stations ~ stations
+	internal_lines_equal: internal_lines ~ lines
 end
