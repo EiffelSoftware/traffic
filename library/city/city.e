@@ -40,6 +40,19 @@ feature -- Access
 			Result := internal_lines
 		end
 
+	transport_kind (a_name: STRING): TRANSPORT_KIND
+			-- Transport kinds with name `a_name'.
+			-- Void if transport with this name does not exist.
+		do
+			if a_name ~ {TRAM_TRANSPORT}.name then
+				create {TRAM_TRANSPORT} Result
+			elseif a_name ~ {BUS_TRANSPORT}.name then
+				create {BUS_TRANSPORT} Result
+			elseif a_name ~ {CABLE_TRANSPORT}.name then
+				create {CABLE_TRANSPORT} Result
+			end
+		end
+
 feature -- Construction
 
 	add_station (a_name: STRING; a_position: VECTOR)

@@ -11,10 +11,19 @@ feature {NONE} -- Initialization
 
 	execute
 			-- Run application.
-		local
-			city: CITY
-			route: ROUTE
-			finder: ROUTE_FINDER
+		do
+--			create_explicitly
+			create_from_file
+			find_shortest_route
+		end
+
+feature
+	city: CITY
+			-- Example city.	
+
+feature -- Tests
+	create_explicitly
+			-- Test that creates a city explicitly.
 		do
 			create city.make ("Zurich")
 
@@ -55,13 +64,26 @@ feature {NONE} -- Initialization
 			city.connect_station (15, "Haldenegg")
 			city.connect_station (15, "Central")
 			city.connect_station (15, "Rudolf-Brun-Bruecke")
+		end
 
+	create_from_file
+			-- Test that reads a city from an xml file.
+		local
+			reader: XML_READER
+		do
+			create reader.read ("zurich.xml")
+			city := reader.city
+		end
+
+	find_shortest_route
+			-- Test that finds a shortest route in `city'.
+		local
+			route: ROUTE
+			finder: ROUTE_FINDER
+		do
 			create finder.make (city)
 			route := finder.shortest_route (city.stations ["Bahnhofquai/HB"], city.stations ["ETH/Universitaetsspital"])
 			print (route)
-
-			city.remove_station ("Central")
-			city.remove_line (10)
 		end
 
 end
