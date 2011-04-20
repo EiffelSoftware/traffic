@@ -1,0 +1,26 @@
+<!--- A city has a name and contains stations and lines. --> 
+<!ELEMENT city (station*,line*)> 
+<!ATTLIST city
+	name CDATA #REQUIRED
+    >   
+ 
+<!--- A station has a name and two coordinates: x and y. --> 
+<!ELEMENT station EMPTY> 
+<!ATTLIST station
+	name CDATA #REQUIRED     
+	y CDATA #REQUIRED     
+	x CDATA #REQUIRED   
+    >    
+
+<!--- A line has a name and type and contains stops. --> 
+<!ELEMENT line (stop*)> 
+<!ATTLIST line     
+	name CDATA #REQUIRED
+	kind CDATA #REQUIRED
+   	>  
+
+<!--- A stop has a name. --> 
+<!ELEMENT stop EMPTY> 
+<!ATTLIST stop
+	name CDATA #REQUIRED     
+    > 

@@ -1,3 +1,7 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE city SYSTEM "city.dtd">
+
 <city name="Zurich">
 
 	<station name="Central" x="100.0" y="0.0"/>
@@ -8,7 +12,6 @@
 	<station name="ETH/Universitaetsspital" x="500.0" y="50.0"/>
 	<station name="Sonneggstrasse" x="300.0" y="400.0"/>
 	<station name="Rudolf-Brun-Bruecke" x="100.0" y="-100.0"/>
-
 
 	<line name="4" kind="tram">
 		<stop name="Bahnhofquai/HB"/>

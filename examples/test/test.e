@@ -14,7 +14,9 @@ feature {NONE} -- Initialization
 		do
 --			create_explicitly
 			create_from_file
-			find_shortest_route
+			if city /= Void then
+				find_shortest_route
+			end
 		end
 
 feature
@@ -72,7 +74,11 @@ feature -- Tests
 			reader: XML_READER
 		do
 			create reader.read ("zurich.xml")
-			city := reader.city
+			if reader.has_error then
+				print (reader.error_message)
+			else
+				city := reader.city
+			end
 		end
 
 	find_shortest_route

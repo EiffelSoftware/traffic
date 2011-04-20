@@ -27,17 +27,27 @@ feature -- Basic operation
 		local
 			file: KL_TEXT_INPUT_FILE
 			parser: XM_PARSER
-			consumer: XML_CITY_CALLBACKS
+			city_builder: XML_CITY_BUILDER
+			error_handler: XM_PARSER_STOP_ON_ERROR_FILTER
 		do
 			create file.make (a_file_name)
 			file.open_read
 
 			create {XM_EIFFEL_PARSER} parser.make
-			create consumer
-			parser.set_callbacks (consumer)
+			create error_handler.make (parser)
+			create city_builder.with_error_handler (error_handler)
+			error_handler.set_next (city_builder)
+			parser.set_callbacks (error_handler)
+			parser.set_dtd_resolver (create {XM_FILE_EXTERNAL_RESOLVER}.make)
 			parser.parse_from_stream (file)
 
-			city := consumer.city
+			if parser.is_correct then
+				has_error := False
+				city := city_builder.city
+			else
+				has_error := True
+				error_message := parser.last_error_description
+			end
 
 			file.close
 		end
