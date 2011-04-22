@@ -73,7 +73,7 @@ feature -- Tests
 		local
 			reader: XML_READER
 		do
-			create reader.read ("zurich.xml")
+			create reader.read ("..\map\zurich.xml")
 			if reader.has_error then
 				print (reader.error_message)
 			else
@@ -88,7 +88,7 @@ feature -- Tests
 			finder: ROUTE_FINDER
 		do
 			create finder.make (city)
-			route := finder.shortest_route (city.stations ["Bahnhofquai/HB"], city.stations ["ETH/Universitaetsspital"])
+			route := finder.shortest_route (city.stations ["Paradeplatz"], city.stations ["ETH/Universitaetsspital"])
 			print (route)
 		end
 

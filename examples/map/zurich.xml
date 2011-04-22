@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE city SYSTEM "city.dtd">
+
+<city name="Zurich">
+
+	<station name="Bahnhof Stadelhofen" x="350.0" y="-1200.0"/>
+	<station name="Bahnhofplatz/HB" x="-200.0" y="0.0"/>
+	<station name="Bahnhofquai/HB" x="0.0" y="-50.0"/>	
+	<station name="Bahnhofstrasse/HB" x="-150.0" y="-100.0"/>
+	<station name="Bellevue" x="120.0" y="-1000.0"/>	
+	<station name="Boersenstrasse" x="-140.0" y="-900.0"/>
+	<station name="Buerkliplatz" x="-100.0" y="-1000.0"/>
+	<station name="Central" x="100.0" y="0.0"/>
+	<station name="ETH/Universitaetsspital" x="320.0" y="20.0"/>	
+	<station name="Haldenegg" x="120.0" y="300.0"/>
+	<station name="Helmhaus" x="100.0" y="-700.0"/>		
+	<station name="Kantonsschule" x="450.0" y="-400.0"/>
+	<station name="Kunsthaus" x="320.0" y="-680.0"/>	
+	<station name="Neumarkt" x="300.0" y="-400.0"/>
+	<station name="Paradeplatz" x="-120.0" y="-700.0"/>
+	<station name="Polyterasse" x="220.0" y="0.0"/>
+	<station name="Rathaus" x="100.0" y="-500.0"/>
+	<station name="Rennweg" x="-200.0" y="-350.0"/>
+	<station name="Rudolf-Brun-Bruecke" x="100.0" y="-300.0"/>	
+	<station name="Sonneggstrasse" x="100.0" y="600.0"/>
+	<station name="Stampfenbachplatz" x="100.0" y="350.0"/>
+
+	<line name="2" kind="tram">
+		<stop name="Paradeplatz"/>
+		<stop name="Boersenstrasse"/>
+		<stop name="Buerkliplatz"/>
+		<stop name="Bellevue"/>
+	</line>
+	<line name="3" kind="tram">
+		<stop name="Bahnhofplatz/HB"/>
+		<stop name="Central"/>
+		<stop name="Neumarkt"/>
+		<stop name="Kunsthaus"/>
+	</line>
+	<line name="4" kind="tram">
+		<stop name="Bahnhofquai/HB"/>
+		<stop name="Central"/>
+		<stop name="Rudolf-Brun-Bruecke"/>
+		<stop name="Rathaus"/>
+		<stop name="Helmhaus"/>
+		<stop name="Bellevue"/>
+	</line>
+	<line name="5" kind="tram">
+		<stop name="Buerkliplatz"/>
+		<stop name="Bellevue"/>
+		<stop name="Kunsthaus"/>
+		<stop name="Kantonsschule"/>
+	</line>
+	<line name="6" kind="tram">
+		<stop name="Paradeplatz"/>
+		<stop name="Rennweg"/>
+		<stop name="Bahnhofstrasse/HB"/>
+		<stop name="Central"/>
+		<stop name="Haldenegg"/>
+		<stop name="ETH/Universitaetsspital"/>		
+	</line>
+	<line name="7" kind="tram">
+		<stop name="Paradeplatz"/>
+		<stop name="Rennweg"/>
+		<stop name="Bahnhofstrasse/HB"/>
+		<stop name="Central"/>
+		<stop name="Haldenegg"/>
+		<stop name="Sonneggstrasse"/>		
+	</line>
+	<line name="8" kind="tram">
+		<stop name="Paradeplatz"/>
+		<stop name="Boersenstrasse"/>
+		<stop name="Buerkliplatz"/>
+		<stop name="Bellevue"/>
+		<stop name="Kunsthaus"/>		
+	</line>
+	<line name="9" kind="tram">
+		<stop name="Paradeplatz"/>
+		<stop name="Boersenstrasse"/>
+		<stop name="Buerkliplatz"/>
+		<stop name="Bellevue"/>
+		<stop name="Kunsthaus"/>
+		<stop name="Kantonsschule"/>
+		<stop name="ETH/Universitaetsspital"/>		
+	</line>
+	<line name="10" kind="tram">
+		<stop name="Bahnhofplatz/HB"/>
+		<stop name="Central"/>
+		<stop name="Haldenegg"/>
+		<stop name="ETH/Universitaetsspital"/>		
+	</line>
+	<line name="11" kind="tram">
+		<stop name="Stampfenbachplatz"/>
+		<stop name="Bahnhofquai/HB"/>
+		<stop name="Bahnhofstrasse/HB"/>
+		<stop name="Rennweg"/>
+		<stop name="Paradeplatz"/>		
+		<stop name="Boersenstrasse"/>		
+		<stop name="Buerkliplatz"/>		
+		<stop name="Bellevue"/>		
+		<stop name="Bahnhof Stadelhofen"/>		
+	</line>
+	<line name="13" kind="tram">
+		<stop name="Bahnhofquai/HB"/>
+		<stop name="Bahnhofstrasse/HB"/>
+		<stop name="Rennweg"/>
+		<stop name="Paradeplatz"/>		
+	</line>
+	<line name="14" kind="tram">
+		<stop name="Stampfenbachplatz"/>	
+		<stop name="Bahnhofquai/HB"/>
+		<stop name="Bahnhofplatz/HB"/>
+	</line>
+	<line name="15" kind="tram">
+		<stop name="Bahnhof Stadelhofen"/>
+		<stop name="Bellevue"/>
+		<stop name="Helmhaus"/>
+		<stop name="Rathaus"/>
+		<stop name="Rudolf-Brun-Bruecke"/>
+		<stop name="Central"/>
+		<stop name="Haldenegg"/>
+		<stop name="Sonneggstrasse"/>		
+	</line>
+	<line name="24" kind="cable car">
+		<stop name="Central"/>
+		<stop name="Polyterasse"/>
+	</line>
+	<line name="31" kind="bus">
+		<stop name="Bahnhofplatz/HB"/>
+		<stop name="Central"/>
+		<stop name="Neumarkt"/>
+		<stop name="Kunsthaus"/>		
+	</line>
+	
+</city>
