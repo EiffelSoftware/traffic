@@ -47,6 +47,10 @@ feature -- Access
 	kind: TRANSPORT_KIND
 			-- Transportation kind.
 
+	color: COLOR
+			-- Color.
+			-- (Void if no specific color is associated with the line).
+
 	stations: V_SEQUENCE [STATION]
 			-- Stations the line goes through.
 		do
@@ -139,6 +143,16 @@ feature -- Comparison
 			-- Is name of this line less than the name of `other'?
 		do
 			Result := name < other.name
+		end
+
+feature -- Property setting
+
+	set_color (a_color: COLOR)
+			-- Set `color' to `a_color'.
+		do
+			color := a_color
+		ensure
+			color_set: color = a_color
 		end
 
 feature -- Output

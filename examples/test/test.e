@@ -12,7 +12,7 @@ feature {NONE} -- Initialization
 	execute
 			-- Run application.
 		do
---			create_explicitly
+--			create_explicitly			
 			create_from_file
 			if city /= Void then
 				find_shortest_route
@@ -78,6 +78,22 @@ feature -- Tests
 				print (reader.error_message)
 			else
 				city := reader.city
+			end
+		end
+
+	create_large
+			-- Test that adds many stations to the city.
+		local
+			i: INTEGER
+		do
+			create city.make ("Big city")
+			from
+				i := 1
+			until
+				i > 500
+			loop
+				city.add_station (i.out, [0.0, 0.0])
+				i := i + 1
 			end
 		end
 

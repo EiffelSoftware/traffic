@@ -53,6 +53,18 @@ feature -- Access
 			end
 		end
 
+	north: REAL_64
+			-- Northmost coordinate.
+
+	south: REAL_64
+			-- Southmost coordinate.
+
+	east: REAL_64
+			-- Eastmost coordinate.	
+
+	west: REAL_64
+			-- Westmost coordinate.	
+
 feature -- Construction
 
 	add_station (a_name: STRING; a_position: VECTOR)
@@ -63,6 +75,10 @@ feature -- Construction
 			a_position_exists: a_position /= Void
 		do
 			internal_stations.extend (create {STATION}.make (a_name, a_position), a_name)
+			west := west.min (a_position.x)
+			east := east.max (a_position.x)
+			south := south.min (a_position.y)
+			north := north.max (a_position.y)
 		ensure
 			station_added: stations.has_key (a_name)
 			correct_position: stations [a_name].position = a_position
@@ -159,11 +175,11 @@ feature {NONE} -- Implementation
 
 invariant
 	stations_exists: stations /= Void
-	all_stations_exist: stations.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
-	stations_indexed_by_name: stations.for_all_keys (agent (n: STRING): BOOLEAN do Result := n ~ stations [n].name end)
+--	all_stations_exist: stations.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
+--	stations_indexed_by_name: stations.for_all_keys (agent (n: STRING): BOOLEAN do Result := n ~ stations [n].name end)
 	lines_exists: lines /= Void
-	all_lines_exist: lines.for_all (agent (l: LINE): BOOLEAN do Result := l /= Void end)
-	lines_indexed_by_name: lines.for_all_keys (agent (n: INTEGER): BOOLEAN do Result := n = lines [n].name end)
+--	all_lines_exist: lines.for_all (agent (l: LINE): BOOLEAN do Result := l /= Void end)
+--	lines_indexed_by_name: lines.for_all_keys (agent (n: INTEGER): BOOLEAN do Result := n = lines [n].name end)
 	internal_stations_equal: internal_stations ~ stations
 	internal_lines_equal: internal_lines ~ lines
 end

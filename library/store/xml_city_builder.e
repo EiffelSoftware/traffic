@@ -37,13 +37,13 @@ feature -- Access
 
 feature -- Events
 
-	on_start_tag (a_namespace: STRING; a_prefix: STRING; a_local_part: STRING) is
+	on_start_tag (a_namespace: STRING; a_prefix: STRING; a_local_part: STRING)
 			-- Start of start tag.
 		do
 			current_tag := a_local_part
 		end
 
-	on_start_tag_finish is
+	on_start_tag_finish
 			-- End of start tag.
 		do
 			if current_tag ~ City_tag then
@@ -57,7 +57,7 @@ feature -- Events
 			end
 		end
 
-	on_attribute (a_namespace: STRING; a_prefix: STRING; a_local_part: STRING; a_value: STRING) is
+	on_attribute (a_namespace: STRING; a_prefix: STRING; a_local_part: STRING; a_value: STRING)
 			-- Start of attribute.
 		do
 			if current_tag ~ City_tag and a_local_part ~ City_name_attribute then
@@ -72,12 +72,14 @@ feature -- Events
 				line_name := a_value
 			elseif current_tag ~ Line_tag and a_local_part ~ Line_kind_attribute then
 				line_kind := a_value
+			elseif current_tag ~ Line_tag and a_local_part ~ Line_color_attribute then
+				line_color := a_value
 			elseif current_tag ~ Stop_tag and a_local_part ~ Stop_name_attribute then
 				stop_name := a_value
 			end
 		end
 
-	on_end_tag (a_namespace: STRING; a_prefix: STRING; a_local_part: STRING) is
+	on_end_tag (a_namespace: STRING; a_prefix: STRING; a_local_part: STRING)
 			-- End tag.
 		do
 			if a_local_part ~ City_tag then
@@ -89,6 +91,7 @@ feature -- Events
 			elseif a_local_part ~ Line_tag then
 				line_name := Void
 				line_kind := Void
+				line_color := Void
 			elseif a_local_part ~ Stop_tag then
 				stop_name := Void
 			end
@@ -127,6 +130,9 @@ feature -- Attribute names
 	Line_kind_attribute: STRING = "kind"
 			-- Name of attribute that stores line kind.
 
+	Line_color_attribute: STRING = "color"
+			-- Name of attribute that stores line color.			
+
 	Stop_name_attribute: STRING = "name"
 			-- Name of attribute that stores stop name.
 
@@ -151,7 +157,10 @@ feature {NONE} -- State
 			-- Value of last read line name attribute.	
 
 	line_kind: STRING
-			-- Value of last read line kind attribute.	
+			-- Value of last read line kind attribute.
+
+	line_color: STRING
+			-- Value of last read line color attribute.
 
 	stop_name: STRING
 			-- Value of last read stop name attribute.
@@ -208,6 +217,14 @@ feature {NONE} -- City building
 				error_handler.on_error ("Lines of kind " + line_kind + " are not supported")
 			else
 				city.add_line (line_name.to_integer, city.transport_kind (line_kind))
+				if line_color /= Void then
+					if line_color.count /= {COLOR}.Hex_format_length or
+						not (across line_color as i all i.item.is_hexa_digit end) then
+						error_handler.on_error ("Invalid color: " + line_color)
+					else
+						city.lines [line_name.to_integer].set_color (create {COLOR}.make_from_hex (line_color))
+					end
+				end
 			end
 		end
 

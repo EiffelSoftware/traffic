@@ -6,7 +6,7 @@
 
 	<station name="Bahnhof Stadelhofen" x="350.0" y="-1200.0"/>
 	<station name="Bahnhofplatz/HB" x="-200.0" y="0.0"/>
-	<station name="Bahnhofquai/HB" x="0.0" y="-50.0"/>	
+	<station name="Bahnhofquai/HB" x="0.0" y="50.0"/>	
 	<station name="Bahnhofstrasse/HB" x="-150.0" y="-100.0"/>
 	<station name="Bellevue" x="120.0" y="-1000.0"/>	
 	<station name="Boersenstrasse" x="-140.0" y="-900.0"/>
@@ -26,19 +26,19 @@
 	<station name="Sonneggstrasse" x="100.0" y="600.0"/>
 	<station name="Stampfenbachplatz" x="100.0" y="350.0"/>
 
-	<line name="2" kind="tram">
+	<line name="2" kind="tram" color="ed1c24">
 		<stop name="Paradeplatz"/>
 		<stop name="Boersenstrasse"/>
 		<stop name="Buerkliplatz"/>
 		<stop name="Bellevue"/>
 	</line>
-	<line name="3" kind="tram">
+	<line name="3" kind="tram" color="00ac4f">
 		<stop name="Bahnhofplatz/HB"/>
 		<stop name="Central"/>
 		<stop name="Neumarkt"/>
 		<stop name="Kunsthaus"/>
 	</line>
-	<line name="4" kind="tram">
+	<line name="4" kind="tram" color="49479d">
 		<stop name="Bahnhofquai/HB"/>
 		<stop name="Central"/>
 		<stop name="Rudolf-Brun-Bruecke"/>
@@ -46,13 +46,13 @@
 		<stop name="Helmhaus"/>
 		<stop name="Bellevue"/>
 	</line>
-	<line name="5" kind="tram">
+	<line name="5" kind="tram" color="946338">
 		<stop name="Buerkliplatz"/>
 		<stop name="Bellevue"/>
 		<stop name="Kunsthaus"/>
 		<stop name="Kantonsschule"/>
 	</line>
-	<line name="6" kind="tram">
+	<line name="6" kind="tram" color="d99f4f">
 		<stop name="Paradeplatz"/>
 		<stop name="Rennweg"/>
 		<stop name="Bahnhofstrasse/HB"/>
@@ -60,7 +60,7 @@
 		<stop name="Haldenegg"/>
 		<stop name="ETH/Universitaetsspital"/>		
 	</line>
-	<line name="7" kind="tram">
+	<line name="7" kind="tram" color="231f20">
 		<stop name="Paradeplatz"/>
 		<stop name="Rennweg"/>
 		<stop name="Bahnhofstrasse/HB"/>
@@ -68,14 +68,14 @@
 		<stop name="Haldenegg"/>
 		<stop name="Sonneggstrasse"/>		
 	</line>
-	<line name="8" kind="tram">
+	<line name="8" kind="tram" color="a6ce39">
 		<stop name="Paradeplatz"/>
 		<stop name="Boersenstrasse"/>
 		<stop name="Buerkliplatz"/>
 		<stop name="Bellevue"/>
 		<stop name="Kunsthaus"/>		
 	</line>
-	<line name="9" kind="tram">
+	<line name="9" kind="tram" color="49479d">
 		<stop name="Paradeplatz"/>
 		<stop name="Boersenstrasse"/>
 		<stop name="Buerkliplatz"/>
@@ -84,13 +84,13 @@
 		<stop name="Kantonsschule"/>
 		<stop name="ETH/Universitaetsspital"/>		
 	</line>
-	<line name="10" kind="tram">
+	<line name="10" kind="tram" color="ee3897">
 		<stop name="Bahnhofplatz/HB"/>
 		<stop name="Central"/>
 		<stop name="Haldenegg"/>
 		<stop name="ETH/Universitaetsspital"/>		
 	</line>
-	<line name="11" kind="tram">
+	<line name="11" kind="tram" color="00ac4f">
 		<stop name="Stampfenbachplatz"/>
 		<stop name="Bahnhofquai/HB"/>
 		<stop name="Bahnhofstrasse/HB"/>
@@ -101,18 +101,18 @@
 		<stop name="Bellevue"/>		
 		<stop name="Bahnhof Stadelhofen"/>		
 	</line>
-	<line name="13" kind="tram">
+	<line name="13" kind="tram" color="ffd503">
 		<stop name="Bahnhofquai/HB"/>
 		<stop name="Bahnhofstrasse/HB"/>
 		<stop name="Rennweg"/>
 		<stop name="Paradeplatz"/>		
 	</line>
-	<line name="14" kind="tram">
+	<line name="14" kind="tram" color="00aeef">
 		<stop name="Stampfenbachplatz"/>	
 		<stop name="Bahnhofquai/HB"/>
 		<stop name="Bahnhofplatz/HB"/>
 	</line>
-	<line name="15" kind="tram">
+	<line name="15" kind="tram" color="ed1c24">
 		<stop name="Bahnhof Stadelhofen"/>
 		<stop name="Bellevue"/>
 		<stop name="Helmhaus"/>
@@ -126,7 +126,7 @@
 		<stop name="Central"/>
 		<stop name="Polyterasse"/>
 	</line>
-	<line name="31" kind="bus">
+	<line name="31" kind="bus" color="979fce">
 		<stop name="Bahnhofplatz/HB"/>
 		<stop name="Central"/>
 		<stop name="Neumarkt"/>

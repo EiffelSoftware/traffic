@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-7-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-7-0 http://www.eiffel.com/developers/xml/configuration-1-7-0.xsd" name="gui_test" uuid="6FA5F1A1-3964-494B-902E-9525D9E5E176">
+	<target name="gui_test">
+		<root class="TEST" feature="execute"/>
+		<option warning="true" syntax="provisional">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<precompile name="vision2_pre" location="$ISE_PRECOMP\vision2.ecf"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="base2" location="$EIFFELBASE2\base2.ecf"/>
+		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false">
+			<option>
+				<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true"/>
+			</option>
+		</library>
+		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf"/>
+		<cluster name="test" location=".\" recursive="true">
+			<file_rule>
+				<exclude>/EIFGENs$</exclude>
+				<exclude>/CVS$</exclude>
+				<exclude>/.svn$</exclude>
+			</file_rule>
+		</cluster>
+	</target>
+</system>
