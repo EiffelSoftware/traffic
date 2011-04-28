@@ -35,7 +35,8 @@ inherit {NONE}
 
 create
 	make,
-	make_from_tuple
+	make_from_tuple,
+	make_polar
 
 convert
 	make_from_tuple ({TUPLE [REAL_64, REAL_64]})
@@ -53,6 +54,15 @@ feature {NONE} -- Initialization
 			-- Create a vector with coordinates `t.x' and `t.y'.
 		do
 			make (t.x, t.y)
+		end
+
+	make_polar (a_length, a_angle: REAL_64)
+			-- Create a vector with polar coordinates `a_length' and `a_angle'.
+		require
+			a_length_non_negative: a_length >= 0.0
+		do
+			x := a_length * cosine (a_angle)
+			y := a_length * sine (a_angle)
 		end
 
 feature -- Access
@@ -79,6 +89,14 @@ feature -- Basic operations
 			Result := sqrt (x * x + y * y)
 		end
 
+	angle: REAL_64
+			-- Angle with horizontal axis (radian).
+		require
+			length_positive: length > 0.0
+		do
+			Result := arc_tangent_2 (y, x)
+		end
+
 	sum alias "+" (other: VECTOR): VECTOR
 			-- Vector addition.
 		do
@@ -95,12 +113,40 @@ feature -- Basic operations
 			-- Vector with the same length and opposite direction.
 		do
 			create Result.make (- x, - y)
+		ensure
+			rotated: Result ~ rotated (Pi)
 		end
 
 	product alias "*" (k: REAL_64): VECTOR
 			-- Multiplication by a scalar `k'.
 		do
 			create Result.make (k * x, k * y)
+		ensure
+			multiplied_length: approx_equal (Result.length, k.abs * length)
+		end
+
+	normalized: VECTOR
+			-- Vector with the same direction but with length 1.
+		do
+			Result := Current * (1 / length)
+		ensure
+			product: Result ~ Current * (1 / length)
+		end
+
+	orthogonal: VECTOR
+			-- This vector rotated by Pi / 2 counterclockwise.
+		do
+			create Result.make (- y, x)
+		ensure
+			rotated: Result ~ rotated (Pi / 2)
+		end
+
+	rotated (a_angle: REAL_64): VECTOR
+			-- This vector rotated by `a_angle' radians counterclockwise.
+		do
+			create Result.make_polar (length, angle + a_angle)
+		ensure
+			same_length: approx_equal (Result.length, length)
 		end
 
 feature -- Output
@@ -111,6 +157,21 @@ feature -- Output
 			Result := "(" + x.out + ", " + y.out + ")"
 		end
 
+feature {NONE} -- Implementation
+
+	arc_tangent_2 (a_x, a_y: REAL_64): REAL_64
+			-- Arctangent of `a_x'/`a_y' in [-Pi, Pi].
+		external
+			"C signature (double, double): double use <math.h>"
+		alias
+			"atan2"
+		end
+
 invariant
 	non_negative_length: length >= 0
+	angle_in_bounds: length > 0.0 implies -Pi <= angle and angle <= Pi
+	x_zero: approx_equal (length, 0.0) implies approx_equal (x, 0.0)
+	y_zero: approx_equal (length, 0.0) implies approx_equal (y, 0.0)
+	x_non_zero: length > 0.0 implies approx_equal (x, length * cosine (angle))
+	y_non_zero: length > 0.0 implies approx_equal (y, length * sine (angle))
 end

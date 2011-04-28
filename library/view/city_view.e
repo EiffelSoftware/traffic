@@ -24,7 +24,11 @@ feature {NONE} -- Initialization
 			city := a_city
 
 			create world
+			create pixmap.make_with_size (a_width, a_height)
+			create projector.make (world, pixmap)
+			create {V_ARRAYED_LIST [STATION_VIEW]} station_views
 			create {V_ARRAYED_LIST [LINE_VIEW]} line_views
+			
 			from
 				li := city.lines.new_iterator
 			until
@@ -33,7 +37,7 @@ feature {NONE} -- Initialization
 				line_views.extend_back (create {LINE_VIEW}.make_in_city (li.item, Current))
 				li.forth
 			end
-			create {V_ARRAYED_LIST [STATION_VIEW]} station_views
+
 			from
 				si := city.stations.new_iterator
 			until
@@ -49,8 +53,6 @@ feature {NONE} -- Initialization
 			world.scale (scale_factor)
 			world.set_x_y (a_width // 2, a_height // 2)
 
-			create pixmap.make_with_size (a_width, a_height)
-			create projector.make (world, pixmap)
 			projector.project
 
 			pixmap.pointer_button_press_actions.extend (agent on_button_pressed)
@@ -132,4 +134,12 @@ feature -- Event handling
 			end
 			projector.project
 		end
+
+invariant
+	city_exists: city /= Void
+	pixmap_exists: pixmap /= Void
+	station_views_exists: station_views /= Void
+	line_views_exisst: line_views /= Void
+	world_exists: world /= Void
+	projector_exists: projector /= Void
 end

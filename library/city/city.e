@@ -28,6 +28,8 @@ feature -- Access
 	name: STRING
 			-- Name.
 
+feature -- Public transportation
+
 	stations: V_MAP [STRING, STATION]
 			-- Stations indexed by name.
 		do
@@ -52,6 +54,39 @@ feature -- Access
 				create {CABLE_TRANSPORT} Result
 			end
 		end
+
+	connecting_lines (a_station_1, a_station_2: STATION): V_SEQUENCE [LINE]
+			-- Lines that directly connect `station_1' and `station_2'.
+			-- (In accending order of names).
+		require
+			a_station_1_in_city: stations.has (a_station_1)
+			a_station_2_in_city: stations.has (a_station_2)
+		local
+			list: V_ARRAYED_LIST [LINE]
+			i: V_ITERATOR [LINE]
+			line: LINE
+		do
+			create list
+			from
+				i := a_station_1.lines.at_first
+			until
+				i.after
+			loop
+				line := i.item
+				if line.next_station (a_station_1, line.north_terminal) = a_station_2 or
+					line.next_station (a_station_1, line.south_terminal) = a_station_2 then
+					list.extend_back (line)
+				end
+				i.forth
+			end
+			list.sort (agent {LINE}.is_less_equal)
+			Result := list
+		ensure
+			result_exists: Result /= Void
+			-- ToDo: result is sorted and all lines connect `a_station_1' and `a_station_2'
+		end
+
+feature -- Geography
 
 	north: REAL_64
 			-- Northmost coordinate.

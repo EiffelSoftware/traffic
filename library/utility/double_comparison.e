@@ -16,6 +16,8 @@ feature -- Basic operations
 				Result := is_ind (x) and is_ind (y)
 			elseif y = 0.0 then
 				Result := x.abs <= precision
+			elseif x = 0.0 then
+				Result := y.abs <= precision
 			else
 				Result := (1.0 - x / y).abs <= precision
 			end
@@ -39,7 +41,7 @@ feature -- Basic operations
 
 feature {NONE} -- Implementation
 
-	is_ind (x: REAL_64): BOOLEAN is
+	is_ind (x: REAL_64): BOOLEAN
 			-- Is `x' equal to `-1.IND'?
 		do
 			Result := - x.abs >= 1.0
