@@ -17,6 +17,7 @@ feature {NONE} -- Initialization
 			name := a_name
 			create {V_HASH_TABLE [STRING, STATION]} internal_stations.with_object_equality
 			create {V_HASH_TABLE [INTEGER, LINE]} internal_lines
+			create {V_HASH_TABLE [STRING, TRANSPORT_KIND]} internal_transport_kinds.with_object_equality
 		ensure
 			name_set: name = a_name
 			no_stations: stations.is_empty
@@ -42,17 +43,10 @@ feature -- Public transportation
 			Result := internal_lines
 		end
 
-	transport_kind (a_name: STRING): TRANSPORT_KIND
-			-- Transport kinds with name `a_name'.
-			-- Void if transport with this name does not exist.
+	transport_kinds: V_MAP [STRING, TRANSPORT_KIND]
+			-- Transportation kinds indexed by name.
 		do
-			if a_name ~ {TRAM_TRANSPORT}.name then
-				create {TRAM_TRANSPORT} Result
-			elseif a_name ~ {BUS_TRANSPORT}.name then
-				create {BUS_TRANSPORT} Result
-			elseif a_name ~ {CABLE_TRANSPORT}.name then
-				create {CABLE_TRANSPORT} Result
-			end
+			Result := internal_transport_kinds
 		end
 
 	connecting_lines (a_station_1, a_station_2: STATION): V_SEQUENCE [LINE]
@@ -120,17 +114,30 @@ feature -- Construction
 			not_connected: stations [a_name].lines.is_empty
 		end
 
-	add_line (a_name: INTEGER; a_kind: TRANSPORT_KIND)
+	add_line (a_name: INTEGER; a_kind: STRING)
 			-- Add a line `a_name' of kind `a_kind'.
 		require
 			unique_name: not lines.has_key (a_name)
-			a_kind_exists: a_kind /= Void
+			a_kind_exists: transport_kinds.has_key (a_kind)
 		do
-			internal_lines.extend (create {LINE}.make (a_name, a_kind), a_name)
+			internal_lines.extend (create {LINE}.make (a_name, transport_kinds [a_kind]), a_name)
 		ensure
 			line_added: lines.has_key (a_name)
-			correct_kind: lines [a_name].kind = a_kind
+			correct_kind: lines [a_name].kind = transport_kinds [a_kind]
 			no_stations: lines [a_name].stations.is_empty
+		end
+
+	add_transport_kind (a_name: STRING; a_default_color: COLOR)
+			-- Add transportation kind `a_name' with default line color `a_color'.
+		require
+			a_name_exists: a_name /= Void
+			unique_name: not transport_kinds.has_key (a_name)
+			a_default_color_exists: a_default_color /= Void
+		do
+			internal_transport_kinds.extend (create {TRANSPORT_KIND}.make (a_name, a_default_color), a_name)
+		ensure
+			kind_added: transport_kinds.has_key (a_name)
+			correct_color: transport_kinds [a_name].default_color ~ a_default_color
 		end
 
 	connect_station (line_name: INTEGER; station_name: STRING)
@@ -208,6 +215,9 @@ feature {NONE} -- Implementation
 	internal_lines: V_TABLE [INTEGER, LINE]
 			-- Lines indexed by name.
 
+	internal_transport_kinds: V_TABLE [STRING, TRANSPORT_KIND]
+			-- Transport kinds indexed by name.			
+
 invariant
 	stations_exists: stations /= Void
 --	all_stations_exist: stations.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
@@ -215,6 +225,10 @@ invariant
 	lines_exists: lines /= Void
 --	all_lines_exist: lines.for_all (agent (l: LINE): BOOLEAN do Result := l /= Void end)
 --	lines_indexed_by_name: lines.for_all_keys (agent (n: INTEGER): BOOLEAN do Result := n = lines [n].name end)
+	transport_kinds_exists: transport_kinds /= Void
+--	all_transport_kinds_exist: transport_kinds.for_all (agent (t: TRANSPORT_KIND): BOOLEAN do Result := t /= Void end)
+--	transport_kinds_indexed_by_name: transport_kinds.for_all_keys (agent (n: STRING): BOOLEAN do Result := n ~ transport_kinds [n].name end)
 	internal_stations_equal: internal_stations ~ stations
 	internal_lines_equal: internal_lines ~ lines
+	internal_transport_kinds_equal: internal_transport_kinds ~ transport_kinds
 end

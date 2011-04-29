@@ -32,10 +32,12 @@ feature {NONE} -- Initialization
 		do
 			name := a_name
 			kind := a_kind
+			color := kind.default_color
 			create {V_ARRAYED_LIST [STATION]} internal_stations
 		ensure
 			name_set: name = a_name
 			kind_set: kind = a_kind
+			default_color: color = kind.default_color
 			no_stations: stations.is_empty
 		end
 
@@ -49,7 +51,6 @@ feature -- Access
 
 	color: COLOR
 			-- Color.
-			-- (Void if no specific color is associated with the line).
 
 	stations: V_SEQUENCE [STATION]
 			-- Stations the line goes through.
@@ -171,6 +172,7 @@ feature {CITY} -- Implementation
 invariant
 	kind_exists: kind /= Void
 	stations_exists: stations /= Void
+	color_exists: color /= Void
 	all_stations_exist: stations.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
 	all_stations_contain_current: stations.for_all (agent (s: STATION): BOOLEAN do Result := s.lines.has (Current) end)
 	no_duplicates: stations.for_all (agent (s: STATION): BOOLEAN do Result := stations.occurrences (s) = 1 end)

@@ -29,6 +29,10 @@ feature -- Tests
 		do
 			create city.make ("Zurich")
 
+			city.add_transport_kind ("tram", create {COLOR}.make_from_real_rgb (1.0, 0.0, 0.0))
+			city.add_transport_kind ("bus",	create {COLOR}.make_from_rgb (116, 190, 234))
+			city.add_transport_kind ("cable car",	create {COLOR}.make_from_real_rgb (0.5, 0.5, 0.5))
+
 			city.add_station ("Central", [100.0, 0.0])
 			city.add_station ("Bahnhofplatz/HB", [-200.0, 0.0])
 			city.add_station ("Bahnhofstrasse/HB", [-100.0, -50.0])
@@ -38,36 +42,36 @@ feature -- Tests
 			city.add_station ("Sonneggstrasse", [300.0, 400.0])
 			city.add_station ("Rudolf-Brun-Bruecke", [100.0, -100.0])
 
-			city.add_line (4, create {TRAM_TRANSPORT})
+			city.add_line (4, "tram")
 			city.connect_station (4, "Bahnhofquai/HB")
 			city.connect_station (4, "Central")
 			city.connect_station (4, "Rudolf-Brun-Bruecke")
 
-			city.add_line (6, create {TRAM_TRANSPORT})
+			city.add_line (6, "tram")
 			city.connect_station (6, "Bahnhofstrasse/HB")
 			city.connect_station (6, "Central")
 			city.connect_station (6, "Haldenegg")
 			city.connect_station (6, "ETH/Universitaetsspital")
 
-			city.add_line (7, create {TRAM_TRANSPORT})
+			city.add_line (7, "tram")
 			city.connect_station (7, "Bahnhofstrasse/HB")
 			city.connect_station (7, "Central")
 			city.connect_station (7, "Haldenegg")
 			city.connect_station (7, "Sonneggstrasse")
 
-			city.add_line (10, create {TRAM_TRANSPORT})
+			city.add_line (10, "tram")
 			city.connect_station (10, "Bahnhofplatz/HB")
 			city.connect_station (10, "Central")
 			city.connect_station (10, "Haldenegg")
 			city.connect_station (10, "ETH/Universitaetsspital")
 
-			city.add_line (15, create {TRAM_TRANSPORT})
+			city.add_line (15, "tram")
 			city.connect_station (15, "Sonneggstrasse")
 			city.connect_station (15, "Haldenegg")
 			city.connect_station (15, "Central")
 			city.connect_station (15, "Rudolf-Brun-Bruecke")
 		end
-
+		
 	create_from_file
 			-- Test that reads a city from an xml file.
 		local

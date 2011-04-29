@@ -24,9 +24,14 @@ feature {NONE} -- Initialization
 			blob: EV_MODEL_ROUNDED_RECTANGLE
 			label: LABEL
 			radius: REAL_64
+			n: INTEGER
 		do
 			station := a_station
-			radius := maximum_sibling_lines (station, a_map.city) * ({LINE_VIEW}.width + {LINE_VIEW}.gap) / 2
+			n := maximum_sibling_lines (station, a_map.city)
+			if n = 0 then
+				n := 1
+			end
+			radius := n * ({LINE_VIEW}.width + {LINE_VIEW}.gap) / 2
 			create blob.make_with_points (
 				a_map.world_coordinate (station.position - [radius, radius]),
 				a_map.world_coordinate (station.position + [radius, radius]))
@@ -83,11 +88,9 @@ feature {NONE} -- Implementation
 				end
 				i.forth
 			end
-		ensure
-			at_least_one: Result >= 1
 		end
 
 invariant
 	station_exists: station /= Void
-	
+
 end

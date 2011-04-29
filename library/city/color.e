@@ -18,6 +18,7 @@ inherit {NONE}
 
 create
 	make_from_rgb,
+	make_from_real_rgb,
 	make_from_hex
 
 feature {NONE} -- Initialization
@@ -45,9 +46,9 @@ feature {NONE} -- Initialization
 			green := ({NATURAL_8}.max_value * g).rounded.to_natural_8
 			blue := ({NATURAL_8}.max_value * b).rounded.to_natural_8
 		ensure
-			red_set: approx_equal (real_red, r)
-			green_set: approx_equal (real_green, g)
-			blue_set: approx_equal (real_blue, b)
+			red_set: (real_red - r).abs <= 1 / {NATURAL_8}.max_value
+			green_set: (real_green - g).abs <= 1 / {NATURAL_8}.max_value
+			blue_set: (real_blue - b).abs <= 1 / {NATURAL_8}.max_value
 		end
 
 	make_from_hex (s: STRING)
@@ -98,10 +99,10 @@ feature -- Access
 			Result := blue / {NATURAL_8}.max_value
 		end
 
-	lightness: REAL_64
-			-- Lightness (HSL scale).
+	brightness: REAL_64
+			-- Brightness (HSB scale).
 		do
-			Result := (real_red.min (real_green.min (real_blue)) + real_red.max (real_green.max (real_blue))) / 2
+			Result := (real_red + real_green + real_blue) / 3
 		end
 
 feature -- Output
@@ -121,5 +122,5 @@ invariant
 	real_red_in_bounds: 0.0 <= real_red and real_red <= 1.0
 	real_green_in_bounds: 0.0 <= real_green and real_green <= 1.0
 	real_blue_in_bounds: 0.0 <= real_blue and real_blue <= 1.0
-	lightness_in_bounds: 0.0 <= lightness and lightness <= 1.0
+	brightness_in_bounds: 0.0 <= brightness and brightness <= 1.0
 end

@@ -50,6 +50,8 @@ feature -- Events
 				build_city
 			elseif current_tag ~ Station_tag then
 				build_station
+			elseif current_tag ~ Transport_tag then
+				build_transport
 			elseif current_tag ~ Line_tag then
 				build_line
 			elseif current_tag ~ Stop_tag then
@@ -68,6 +70,10 @@ feature -- Events
 				station_x := a_value
 			elseif current_tag ~ Station_tag and a_local_part ~ Station_y_attribute then
 				station_y := a_value
+			elseif current_tag ~ Transport_tag and a_local_part ~ Transport_name_attribute then
+				transport_name := a_value
+			elseif current_tag ~ Transport_tag and a_local_part ~ Transport_color_attribute then
+				transport_color := a_value
 			elseif current_tag ~ Line_tag and a_local_part ~ Line_name_attribute then
 				line_name := a_value
 			elseif current_tag ~ Line_tag and a_local_part ~ Line_kind_attribute then
@@ -88,6 +94,9 @@ feature -- Events
 				station_name := Void
 				station_x := Void
 				station_y := Void
+			elseif a_local_part ~ Transport_tag then
+				transport_name := Void
+				transport_color := Void
 			elseif a_local_part ~ Line_tag then
 				line_name := Void
 				line_kind := Void
@@ -104,6 +113,9 @@ feature -- Tag names
 
 	Station_tag: STRING = "station"
 			-- Station tag name.
+
+	Transport_tag: STRING = "transport"
+			-- Transportation kind tag name.			
 
 	Line_tag: STRING = "line"
 			-- Line tag name.
@@ -123,6 +135,12 @@ feature -- Attribute names
 
 	Station_y_attribute: STRING = "y"
 			-- Name of attribute that stores station y location.		
+
+	Transport_name_attribute: STRING = "name"
+			-- Name of attribute that stores transportation kind name.
+
+	Transport_color_attribute: STRING = "color"
+			-- Name of attribute that stores transportation kind default line color.
 
 	Line_name_attribute: STRING = "name"
 			-- Name of attribute that stores line name.
@@ -151,7 +169,13 @@ feature {NONE} -- State
 			-- Value of last read station x attribute.
 
 	station_y: STRING
-			-- Value of last read station y attribute.	
+			-- Value of last read station y attribute.
+
+	transport_name: STRING
+			-- Value of last read transportation kind name attribute.	
+
+	transport_color: STRING
+			-- Value of last read transportation kind default line color attribute.	
 
 	line_name: STRING
 			-- Value of last read line name attribute.	
@@ -199,6 +223,25 @@ feature {NONE} -- City building
 			end
 		end
 
+	build_transport
+			-- If possible in current state, add new transportation kind to `city';
+			-- otherwise report an error.
+		do
+			if transport_name = Void then
+				error_handler.on_error (missing_attribute_message (Transport_tag, Transport_name_attribute))
+			elseif transport_color = Void then
+				error_handler.on_error (missing_attribute_message (Transport_tag, Transport_color_attribute))
+			elseif city = Void then
+				error_handler.on_error (misplaced_tag_message (Transport_tag, City_tag))
+			elseif city.transport_kinds.has_key (transport_name) then
+				error_handler.on_error ("Transportation kind " + transport_name + " occurs more than once")
+			elseif not is_color (transport_color) then
+				error_handler.on_error ("Invalid color: " + transport_color)
+			else
+				city.add_transport_kind (transport_name, create {COLOR}.make_from_hex (transport_color))
+			end
+		end
+
 	build_line
 			-- If possible in current state, add new line to `city';
 			-- otherwise report an error.
@@ -213,13 +256,12 @@ feature {NONE} -- City building
 				error_handler.on_error ("Line name " + line_name + " is not an integer number")
 			elseif city.lines.has_key (line_name.to_integer) then
 				error_handler.on_error ("Line " + station_name + " occurs more than once")
-			elseif city.transport_kind (line_kind) = Void then
-				error_handler.on_error ("Lines of kind " + line_kind + " are not supported")
+			elseif not city.transport_kinds.has_key (line_kind) then
+				error_handler.on_error ("Unknown transportation kind " + line_kind)
 			else
-				city.add_line (line_name.to_integer, city.transport_kind (line_kind))
+				city.add_line (line_name.to_integer, line_kind)
 				if line_color /= Void then
-					if line_color.count /= {COLOR}.Hex_format_length or
-						not (across line_color as i all i.item.is_hexa_digit end) then
+					if not is_color (line_color) then
 						error_handler.on_error ("Invalid color: " + line_color)
 					else
 						city.lines [line_name.to_integer].set_color (create {COLOR}.make_from_hex (line_color))
@@ -260,6 +302,14 @@ feature {NONE} -- Errors
 			-- Message reporting that tag `a_tag' must be a subnode of `a_context'.
 		do
 			Result := "Tag " + a_tag + " found outside " + a_context
+		end
+
+	is_color (s: STRING): BOOLEAN
+			-- Is `s' a valid hexadecimal string representation of a color?
+		require
+			s_exists: s /= Void
+		do
+			Result := s.count = {COLOR}.Hex_format_length and across s as i all i.item.is_hexa_digit end
 		end
 
 invariant

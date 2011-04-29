@@ -34,11 +34,7 @@ feature {NONE} -- Initialization
 
 			create polyline
 			polyline.set_line_width (width)
-			if line.color = Void then
-				polyline.set_foreground_color (default_color)
-			else
-				polyline.set_foreground_color (ev_color (line.color))
-			end
+			polyline.set_foreground_color (ev_color (line.color))
 			create labels
 
 			from
@@ -64,7 +60,11 @@ feature {NONE} -- Initialization
 				if i.index = 2 or i.is_last then
 					create label.make (line.name.out)
 					label.set_background_color (polyline.foreground_color)
-					label.set_foreground_color (White)
+					if line.color.brightness < 0.6 then
+						label.set_foreground_color (White)
+					else
+						label.set_foreground_color (Black)
+					end
 					center := s1.position + (s2.position - s1.position) * 0.5 + offset
 					label.set_x_y (a_map.world_coordinate (center).x, a_map.world_coordinate (center).y)
 					labels.extend_back (label)
@@ -93,23 +93,6 @@ feature -- Parameters
 
 	gap: INTEGER = 5
 			-- Gap between two lines connecting the same stations.
-
-	default_color: EV_COLOR
-			-- Line color on the map if no specific color is associated with `line'.
-			-- (Depends on transportation kind).
-		require
-			line_set: line /= Void
-		do
-			if attached {CABLE_TRANSPORT} line.kind then
-				Result := Black
-			elseif attached {BUS_TRANSPORT} line.kind then
-				create Result.make_with_8_bit_rgb (116, 190, 234)
-			else
-				Result := Grey
-			end
-		ensure
-			result_exists: Result /= Void
-		end
 
 feature {NONE} -- Implementation
 
