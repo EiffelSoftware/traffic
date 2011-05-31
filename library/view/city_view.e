@@ -18,7 +18,6 @@ feature {NONE} -- Initialization
 		local
 			si: V_ITERATOR [STATION]
 			li: V_ITERATOR [LINE]
-			scale_factor: REAL_64
 			color: EV_COLOR
 		do
 			city := a_city
@@ -28,7 +27,11 @@ feature {NONE} -- Initialization
 			create projector.make (world, pixmap)
 			create {V_ARRAYED_LIST [STATION_VIEW]} station_views
 			create {V_ARRAYED_LIST [LINE_VIEW]} line_views
-			
+
+			scale_factor := (a_width - 2 * Frame_width) / (city.east - city.west)
+			center_x := Frame_width + (-city.west * scale_factor).rounded
+			center_y := (a_height + ((city.north + city.south) * scale_factor).rounded) // 2 - Frame_width
+
 			from
 				li := city.lines.new_iterator
 			until
@@ -47,18 +50,13 @@ feature {NONE} -- Initialization
 				si.forth
 			end
 
-			scale_factor :=
-				((a_width - Frame_width) / (city.east - city.west)).min
-				((a_height - Frame_width) / (city.north - city.south))
-			world.scale (scale_factor)
-			world.set_x_y (a_width // 2, a_height // 2)
-
 			projector.project
 
 			pixmap.pointer_button_press_actions.extend (agent on_button_pressed)
 			pixmap.pointer_button_release_actions.extend (agent on_button_released)
 			pixmap.pointer_motion_actions.extend (agent on_mouse_move)
 			pixmap.mouse_wheel_actions.extend (agent on_mouse_wheel)
+			pixmap.resize_actions.extend (agent on_resize)
 		end
 
 feature -- Access
@@ -78,12 +76,26 @@ feature -- Access
 feature {STATION_VIEW, LINE_VIEW} -- Access
 
 	world: EV_MODEL_WORLD
-			-- World that contains graphical representations of city objects.
+			-- World that contains graphical representations of city objects.			
+
+	scale_factor: REAL_64
+			-- Scale factor of city coordinates in world coordinates.
+
+	center_x, center_y: INTEGER
+			-- World coordinates of city center.
 
 	world_coordinate (v: VECTOR): EV_COORDINATE
 			-- World coordinate corresponding to city vector `v'.
 		do
-			create Result.make (v.x.truncated_to_integer, - v.y.truncated_to_integer)
+			create Result.make (center_x + (v.x * scale_factor).rounded,
+				center_y - (v.y * scale_factor).rounded)
+		end
+
+	city_coordinate (c: EV_COORDINATE): VECTOR
+			-- City vector corresponding to world coordinate `c'.
+		do
+			create Result.make ((c.x - center_x) / scale_factor,
+				(center_y - c.y) / scale_factor)
 		end
 
 feature {NONE} -- Implementation
@@ -106,16 +118,28 @@ feature -- Event handling
 			-- Move the map if button is pressed.
 		do
 			if is_button_pressed then
+				center_x := center_x + a_x - dx - world.x
+				center_y := center_y + a_y - dy - world.y
 				world.set_x_y (a_x - dx, a_y - dy)
 			end
 		end
 
 	on_button_pressed (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
 			-- Record that button is pressed.
-		do
-			is_button_pressed := True
-			dx := x - world.x
-			dy := y - world.y
+		local
+			blob: EV_MODEL_ELLIPSE
+ 		do
+			if button = {EV_POINTER_CONSTANTS}.left then
+				is_button_pressed := True
+				dx := x - world.x
+				dy := y - world.y
+			else
+				-- This code is here to test that city and world coordinates are still in sync after scaling and moving.
+				-- ToDo: remove
+				create blob.make_with_points (world_coordinate ([-20.0, -20.0]), world_coordinate ([20.0, 20.0]))
+				blob.set_background_color (create {EV_COLOR}.make_with_rgb (1.0, 0.0, 0.0))
+				world.extend (blob)
+			end
 		end
 
 	on_button_released (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
@@ -126,13 +150,25 @@ feature -- Event handling
 
 	on_mouse_wheel (x: INTEGER)
 			-- Scale map.
+		local
+			ds: REAL_64
 		do
 			if x < 0 then
-				world.scale (0.9)
+				ds := 0.9
 			else
-				world.scale (1.1)
+				ds := 1.1
 			end
+			scale_factor := scale_factor * ds
+			world.scale (ds)
+			-- This translation is here because we want to scale around the center of the city, not the center of `world'
+			world.set_x_y (world.x + ((center_x - world.x) * (1.0 - ds)).rounded, world.y + ((center_y - world.y) * (1.0 - ds)).rounded)
 			projector.project
+		end
+
+	on_resize (x: INTEGER; y: INTEGER; width: INTEGER; height: INTEGER)
+			-- Resize map.
+		do
+			world.invalidate
 		end
 
 invariant

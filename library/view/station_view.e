@@ -40,6 +40,7 @@ feature {NONE} -- Initialization
 			a_map.world.extend (blob)
 			create label.make (station.name)
 			label.set_x_y (blob.point_b_x + label_gap + label.width // 2, blob.y)
+			label.text.font.set_height (Font_size)
 			label.add_to_world (a_map.world)
 		end
 
@@ -52,6 +53,9 @@ feature -- Parameters
 
 	label_gap: INTEGER = 10
 			-- Gap between blob and name label.
+
+	Font_size: INTEGER = 8
+			-- Font size for name label.
 
 feature {NONE} -- Implementation
 

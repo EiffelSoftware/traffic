@@ -19,6 +19,7 @@ feature {NONE} -- Initialization
 				create window
 				window.set_size (1000, 1000)
 				window.set_title ("Traffic test")
+				window.resize_actions.extend (agent on_resize)
 				window.close_request_actions.extend (agent on_close)
 				window.show
 
@@ -48,6 +49,14 @@ feature {NONE} -- Implementation
 		do
 			window.destroy
 			gui_application.destroy
+		end
+
+	on_resize (x: INTEGER; y: INTEGER; width: INTEGER; height: INTEGER)
+			-- Resize map.
+		do
+			if map /= Void and then map.pixmap /= Void then
+				map.pixmap.set_size (width, height)
+			end
 		end
 
 	create_from_file

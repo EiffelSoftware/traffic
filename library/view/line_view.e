@@ -60,6 +60,7 @@ feature {NONE} -- Initialization
 				if i.index = 2 or i.is_last then
 					create label.make (line.name.out)
 					label.set_background_color (polyline.foreground_color)
+					label.text.font.set_height (Font_size)
 					if line.color.brightness < 0.6 then
 						label.set_foreground_color (White)
 					else
@@ -88,11 +89,14 @@ feature -- Access
 
 feature -- Parameters
 
-	width: INTEGER = 5
+	Width: INTEGER = 5
 			-- Line width on the map.
 
-	gap: INTEGER = 5
+	Gap: INTEGER = 5
 			-- Gap between two lines connecting the same stations.
+
+	Font_size: INTEGER = 8
+			-- Font size for line numbers.
 
 feature {NONE} -- Implementation
 
