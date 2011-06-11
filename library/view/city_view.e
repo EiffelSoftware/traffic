@@ -16,8 +16,8 @@ feature {NONE} -- Initialization
 			a_width_positive: a_width > 0
 			a_height_positive: a_height > 0
 		local
-			si: V_ITERATOR [STATION]
-			li: V_ITERATOR [LINE]
+			si: V_MAP_ITERATOR [STRING, STATION]
+			li: V_MAP_ITERATOR [INTEGER, LINE]
 			color: EV_COLOR
 		do
 			city := a_city
@@ -25,8 +25,8 @@ feature {NONE} -- Initialization
 			create world
 			create pixmap.make_with_size (a_width, a_height)
 			create projector.make (world, pixmap)
-			create {V_ARRAYED_LIST [STATION_VIEW]} station_views
-			create {V_ARRAYED_LIST [LINE_VIEW]} line_views
+			create {V_HASH_TABLE [STRING, STATION_VIEW]} station_views.with_object_equality
+			create {V_HASH_TABLE [INTEGER, LINE_VIEW]} line_views
 
 			scale_factor := (a_width - 2 * Frame_width) / (city.east - city.west)
 			center_x := Frame_width + (-city.west * scale_factor).rounded
@@ -37,7 +37,7 @@ feature {NONE} -- Initialization
 			until
 				li.after
 			loop
-				line_views.extend_back (create {LINE_VIEW}.make_in_city (li.item, Current))
+				line_views [li.key] := create {LINE_VIEW}.make_in_city (li.value, Current)
 				li.forth
 			end
 
@@ -46,7 +46,7 @@ feature {NONE} -- Initialization
 			until
 				si.after
 			loop
-				station_views.extend_back (create {STATION_VIEW}.make_in_city (si.item, Current))
+				station_views [si.key] := create {STATION_VIEW}.make_in_city (si.value, Current)
 				si.forth
 			end
 
@@ -67,10 +67,10 @@ feature -- Access
 	pixmap: EV_PIXMAP
 			-- Generated map.
 
-	station_views: V_LIST [STATION_VIEW]
+	station_views: V_TABLE [STRING, STATION_VIEW]
 			-- Graphical representations of city stations.
 
-	line_views: V_LIST [LINE_VIEW]
+	line_views: V_TABLE [INTEGER, LINE_VIEW]
 			-- Graphical representations of city lines.
 
 feature {STATION_VIEW, LINE_VIEW} -- Access
@@ -96,6 +96,70 @@ feature {STATION_VIEW, LINE_VIEW} -- Access
 		do
 			create Result.make ((c.x - center_x) / scale_factor,
 				(center_y - c.y) / scale_factor)
+		end
+
+feature -- Basic operations
+
+	update
+			-- Update according to state of `city'.
+		local
+			si: V_MAP_ITERATOR [STRING, STATION]
+			li: V_MAP_ITERATOR [INTEGER, LINE]
+			svi: V_TABLE_ITERATOR [STRING, STATION_VIEW]
+			lvi: V_TABLE_ITERATOR [INTEGER, LINE_VIEW]
+		do
+			-- Remove objects that do not exists anymore
+			from
+				svi := station_views.new_iterator
+			until
+				svi.after
+			loop
+				if not city.stations.has_key (svi.key) then
+					svi.value.remove_from_city
+					svi.remove
+				else
+					svi.forth
+				end
+			end
+			from
+				lvi := line_views.new_iterator
+			until
+				lvi.after
+			loop
+				if not city.lines.has_key (lvi.key) then
+					lvi.value.remove_from_city
+					lvi.remove
+				else
+					lvi.forth
+				end
+			end
+			-- Update existing and add new objects
+			from
+				si := city.stations.new_iterator
+			until
+				si.after
+			loop
+				svi.search_key (si.key)
+				if svi.after then
+					station_views [si.key] := create {STATION_VIEW}.make_in_city (si.value, Current)
+				else
+					svi.value.update
+				end
+				si.forth
+			end
+			from
+				li := city.lines.new_iterator
+			until
+				li.after
+			loop
+				lvi.search_key (li.key)
+				if lvi.after then
+					line_views [li.key] := create {LINE_VIEW}.make_in_city (li.value, Current)
+				else
+					lvi.value.update
+				end
+				li.forth
+			end
 		end
 
 feature {NONE} -- Implementation
@@ -134,11 +198,18 @@ feature -- Event handling
 				dx := x - world.x
 				dy := y - world.y
 			else
-				-- This code is here to test that city and world coordinates are still in sync after scaling and moving.
-				-- ToDo: remove
-				create blob.make_with_points (world_coordinate ([-20.0, -20.0]), world_coordinate ([20.0, 20.0]))
-				blob.set_background_color (create {EV_COLOR}.make_with_rgb (1.0, 0.0, 0.0))
-				world.extend (blob)
+				-- Todo: This code is here for testing. Remove!
+
+--				create blob.make_with_points (world_coordinate ([-20.0, -20.0]), world_coordinate ([20.0, 20.0]))
+--				blob.set_background_color (create {EV_COLOR}.make_with_rgb (1.0, 0.0, 0.0))
+--				world.extend (blob)
+
+--				city.connect_station (5, "Central")
+--				line_views [5].update
+
+				city.add_station ("Dummy", [300.0, 300.0])
+				city.connect_station (5, "Dummy")
+				update
 			end
 		end
 

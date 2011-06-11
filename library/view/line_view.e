@@ -21,21 +21,46 @@ feature {NONE} -- Initialization
 			a_map_exists: a_map /= Void
 			a_map_has_line: a_map.city.lines.has (a_line)
 		local
-			polyline: EV_MODEL_POLYLINE
+			i: INTEGER
+			label: LABEL
+		do
+			line := a_line
+			map := a_map
+			create polyline
+			polyline.set_line_width (Width)
+			map.world.extend (polyline)
+			create labels
+			from
+				i := 1
+			until
+				i > Label_count
+			loop
+				create label.make (line.name.out)
+				label.add_to_world (map.world)
+				labels.extend_back (label)
+				i := i + 1
+			end
+			update
+		end
+
+feature -- Access
+
+	line: LINE
+			-- Underlying model.
+
+feature -- Basic operations
+	update
+			-- Update according to the state of `line'.
+		local
 			i: V_ITERATOR [STATION]
 			s1, s2: STATION
 			segment, offset, center: VECTOR
 			sibling_lines: V_SEQUENCE [LINE]
-			label: LABEL
-			labels: V_ARRAYED_LIST [LABEL]
 			li: V_ITERATOR [LABEL]
 		do
-			line := a_line
-
-			create polyline
-			polyline.set_line_width (width)
 			polyline.set_foreground_color (ev_color (line.color))
-			create labels
+			polyline.set_point_count (0)
+			li := labels.at_first
 
 			from
 				i := line.stations.at_first
@@ -45,7 +70,7 @@ feature {NONE} -- Initialization
 				s1 := i.item
 				i.forth
 				s2 := i.item
-				sibling_lines := a_map.city.connecting_lines (s1, s2)
+				sibling_lines := map.city.connecting_lines (s1, s2)
 				if sibling_lines.first.stations.index_of (s2) > sibling_lines.first.stations.index_of (s1) then
 					segment := s2.position - s1.position
 				else
@@ -55,37 +80,39 @@ feature {NONE} -- Initialization
 					(sibling_lines.index_of (line) - 1 - (sibling_lines.count - 1) / 2) *
 					(width + gap)
 
-				polyline.extend_point (a_map.world_coordinate (s1.position + offset))
-				polyline.extend_point (a_map.world_coordinate (s2.position + offset))
+				polyline.extend_point (map.world_coordinate (s1.position + offset))
+				polyline.extend_point (map.world_coordinate (s2.position + offset))
 				if i.index = 2 or i.is_last then
-					create label.make (line.name.out)
-					label.set_background_color (polyline.foreground_color)
-					label.text.font.set_height (Font_size)
+					li.item.text.set_text (line.name.out)
+					li.item.text.font.set_height ((Font_size * map.scale_factor).truncated_to_integer)
+					li.item.set_background_color (polyline.foreground_color)
 					if line.color.brightness < 0.6 then
-						label.set_foreground_color (White)
+						li.item.set_foreground_color (White)
 					else
-						label.set_foreground_color (Black)
+						li.item.set_foreground_color (Black)
 					end
 					center := s1.position + (s2.position - s1.position) * 0.5 + offset
-					label.set_x_y (a_map.world_coordinate (center).x, a_map.world_coordinate (center).y)
-					labels.extend_back (label)
+					li.item.set_x_y (map.world_coordinate (center).x, map.world_coordinate (center).y)
+					li.forth
 				end
-			end
-			a_map.world.extend (polyline)
-			from
-				li := labels.at_first
-			until
-				li.after
-			loop
-				li.item.add_to_world (a_map.world)
-				li.forth
 			end
 		end
 
-feature -- Access
-
-	line: LINE
-			-- Underlying model.
+	remove_from_city
+			-- Remove line representation from `map'.
+		local
+			i: INTEGER
+		do
+			map.world.prune_all (polyline)
+			from
+				i := 1
+			until
+				i > Label_count
+			loop
+				labels [i].remove_from_world (map.world)
+				i := i + 1
+			end
+		end
 
 feature -- Parameters
 
@@ -95,10 +122,22 @@ feature -- Parameters
 	Gap: INTEGER = 5
 			-- Gap between two lines connecting the same stations.
 
-	Font_size: INTEGER = 8
+	Font_size: INTEGER = 20
 			-- Font size for line numbers.
 
+	Label_count: INTEGER = 2
+			-- Number of labels on a line.
+
 feature {NONE} -- Implementation
+
+	polyline: EV_MODEL_POLYLINE
+			-- Polyline depicting the line.
+
+	labels: V_ARRAYED_LIST [LABEL]
+			-- Labels with line name.
+
+	map: CITY_VIEW
+			-- Map that this line view belongs to.	
 
 	ev_color (c: COLOR): EV_COLOR
 			-- Color `c' converted to {EV_COLOR}.
@@ -110,5 +149,7 @@ feature {NONE} -- Implementation
 
 invariant
 	line_exists: line /= Void
-
+	polyline_exists: polyline /= Void
+	labels_exists: labels /= Void
+	two_labels: labels.count = Label_count
 end

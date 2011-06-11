@@ -93,6 +93,13 @@ feature -- World
 			a_world.extend (text)
 		end
 
+	remove_from_world (a_world: EV_MODEL_WORLD)
+			-- Remove `text' and `background' parts from `a_world'.
+		do
+			a_world.prune_all (background)
+			a_world.prune_all (text)
+		end
+
 invariant
 	text_exists: text /= Void
 	background_exists: background /= Void
