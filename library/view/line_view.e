@@ -54,7 +54,7 @@ feature -- Basic operations
 		local
 			i: V_ITERATOR [STATION]
 			s1, s2: STATION
-			segment, offset, center: VECTOR
+			segment, offset: VECTOR
 			sibling_lines: V_SEQUENCE [LINE]
 			li: V_ITERATOR [LABEL]
 		do
@@ -82,18 +82,11 @@ feature -- Basic operations
 
 				polyline.extend_point (map.world_coordinate (s1.position + offset))
 				polyline.extend_point (map.world_coordinate (s2.position + offset))
-				if i.index = 2 or i.is_last then
-					li.item.text.set_text (line.name.out)
-					li.item.text.font.set_height ((Font_size * map.scale_factor).truncated_to_integer)
-					li.item.set_background_color (polyline.foreground_color)
-					if line.color.brightness < 0.6 then
-						li.item.set_foreground_color (White)
-					else
-						li.item.set_foreground_color (Black)
-					end
-					center := s1.position + (s2.position - s1.position) * 0.5 + offset
-					li.item.set_x_y (map.world_coordinate (center).x, map.world_coordinate (center).y)
-					li.forth
+				if i.index = 2 then
+					update_label (labels [1], s1, s2, offset)
+				end
+				if i.is_last then
+					update_label (labels [2], s1, s2, offset)
 				end
 			end
 		end
@@ -145,6 +138,23 @@ feature {NONE} -- Implementation
 			create Result.make_with_8_bit_rgb (c.red, c.green, c.blue)
 		ensure
 			result_exists: Result /= Void
+		end
+
+	update_label (l: LABEL; s1, s2: STATION; offset: VECTOR)
+			-- Update label `l' between stations `s1' and `s2' with line segment shifted by `offset'.
+		local
+			center: VECTOR
+		do
+			l.text.set_text (line.name.out)
+			l.text.font.set_height ((Font_size * map.scale_factor).truncated_to_integer)
+			l.set_background_color (polyline.foreground_color)
+			if line.color.brightness < 0.6 then
+				l.set_foreground_color (White)
+			else
+				l.set_foreground_color (Black)
+			end
+			center := s1.position + (s2.position - s1.position) * 0.5 + offset
+			l.set_x_y (map.world_coordinate (center).x, map.world_coordinate (center).y)
 		end
 
 invariant
