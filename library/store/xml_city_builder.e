@@ -15,7 +15,7 @@ inherit
 			on_end_tag
 		end
 
-create
+create {XML_READER}
 	with_error_handler
 
 feature {NONE} -- Initialization
@@ -124,6 +124,7 @@ feature -- Tag names
 			-- Stop tag name.
 
 feature -- Attribute names
+
 	City_name_attribute: STRING = "name"
 			-- Name of attribute that stores city name.
 

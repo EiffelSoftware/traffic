@@ -18,16 +18,17 @@ inherit
 
 inherit {NONE}
 	DOUBLE_MATH
-		export {NONE}
-			all
+		export
+			{NONE} all
 		redefine
 			is_equal,
 			out
 		end
 
 	DOUBLE_COMPARISON
-		export {NONE}
-			all
+		export
+			{NONE} all
+			{ANY} approx_equal
 		redefine
 			is_equal,
 			out
@@ -48,12 +49,18 @@ feature {NONE} -- Initialization
 		do
 			x := a_x
 			y := a_y
+		ensure
+			x_set: x = a_x
+			y_set: y = a_y
 		end
 
 	make_from_tuple (t: TUPLE [x: REAL_64; y: REAL_64])
 			-- Create a vector with coordinates `t.x' and `t.y'.
 		do
 			make (t.x, t.y)
+		ensure
+			x_set: x = t.x
+			y_set: y = t.y
 		end
 
 	make_polar (a_length, a_angle: REAL_64)
@@ -63,6 +70,9 @@ feature {NONE} -- Initialization
 		do
 			x := a_length * cosine (a_angle)
 			y := a_length * sine (a_angle)
+		ensure
+			length_set: approx_equal (length, a_length)
+			angle_set: approx_equal (angle, normalized_angle (a_angle))
 		end
 
 feature -- Access
@@ -147,6 +157,7 @@ feature -- Basic operations
 			create Result.make_polar (length, angle + a_angle)
 		ensure
 			same_length: approx_equal (Result.length, length)
+			rotated: approx_equal(Result.angle, normalized_angle (angle + a_angle))
 		end
 
 feature -- Output
@@ -157,6 +168,16 @@ feature -- Output
 			Result := "(" + x.out + ", " + y.out + ")"
 		end
 
+feature -- Helper functions
+
+	normalized_angle (a_angle: REAL_64): REAL_64
+			-- Normalized angle in interval [-Pi, Pi].
+		do
+			Result := Pi - real_modulo(Pi - a_angle, 2 * Pi)
+		ensure
+			in_range: -Pi <= Result and Result <= Pi
+		end
+
 feature {NONE} -- Implementation
 
 	arc_tangent_2 (a_x, a_y: REAL_64): REAL_64
@@ -165,6 +186,14 @@ feature {NONE} -- Implementation
 			"C signature (double, double): double use <math.h>"
 		alias
 			"atan2"
+		end
+
+	real_modulo (a_numerator, a_denominator: REAL_64): REAL_64
+			-- Remainder of `a_numerator' divided by `a_denominator'.
+		external
+			"C signature (double, double): double use <math.h>"
+		alias
+			"fmod"
 		end
 
 invariant

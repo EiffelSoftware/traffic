@@ -6,6 +6,7 @@ class
 
 inherit {NONE}
 	KL_SHARED_FILE_SYSTEM
+		export {NONE} all end
 
 create
 	read
@@ -34,7 +35,9 @@ feature -- Basic operation
 			city_builder: XML_CITY_BUILDER
 			error_handler: XM_PARSER_STOP_ON_ERROR_FILTER
 		do
+			city := Void
 			has_error := False
+			error_message := Void
 			file_name := file_system.canonical_pathname (file_system.absolute_pathname (a_file_name))
 
 			if file_system.file_exists (file_name) then
@@ -70,6 +73,11 @@ feature -- Basic operation
 				has_error := True
 				error_message := message (file_name, "File does not exist")
 			end
+		ensure
+			city_on_success: not has_error implies city /= Void
+			no_message_on_success: not has_error implies error_message = Void
+			no_city_on_error: has_error implies city = Void
+			message_on_error: has_error implies error_message /= Void
 		end
 
 feature {NONE} -- Implementation
