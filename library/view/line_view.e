@@ -10,6 +10,11 @@ inherit {NONE}
 			{NONE} all
 		end
 
+	EV_FONT_CONSTANTS
+		export
+			{NONE} all
+		end
+
 create
 	make_in_city
 
@@ -36,6 +41,8 @@ feature {NONE} -- Initialization
 				i > Label_count
 			loop
 				create label.make (line.name.out)
+				label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular,
+					(Font_size * map.scale_factor).truncated_to_integer))
 				label.add_to_world (map.world)
 				labels.extend_back (label)
 				i := i + 1
@@ -56,11 +63,9 @@ feature -- Basic operations
 			s1, s2: STATION
 			segment, offset: VECTOR
 			sibling_lines: V_SEQUENCE [LINE]
-			li: V_ITERATOR [LABEL]
 		do
 			polyline.set_foreground_color (ev_color (line.color))
 			polyline.set_point_count (0)
-			li := labels.at_first
 
 			from
 				i := line.stations.at_first
@@ -146,7 +151,7 @@ feature {NONE} -- Implementation
 			center: VECTOR
 		do
 			l.text.set_text (line.name.out)
-			l.text.font.set_height ((Font_size * map.scale_factor).truncated_to_integer)
+			l.fit_to_text
 			l.set_background_color (polyline.foreground_color)
 			if line.color.brightness < 0.6 then
 				l.set_foreground_color (White)

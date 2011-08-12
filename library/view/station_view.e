@@ -10,6 +10,11 @@ inherit {NONE}
 			{NONE} all
 		end
 
+	EV_FONT_CONSTANTS
+		export
+			{NONE} all
+		end
+
 create
 	make_in_city
 
@@ -27,6 +32,8 @@ feature {NONE} -- Initialization
 			blob.set_background_color (White)
 			a_map.world.extend (blob)
 			create label.make (station.name)
+			label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular,
+				(Font_size * map.scale_factor).truncated_to_integer))
 			label.add_to_world (a_map.world)
 			update
 		end
@@ -56,7 +63,7 @@ feature -- Basic operations
 			blob.set_point_b_position (point_b.x, point_b.y)
 			blob.set_radius (blob.width // 4)
 			label.text.set_text (station.name)
-			label.text.font.set_height ((Font_size * map.scale_factor).truncated_to_integer)
+			label.fit_to_text
 			label.set_x_y (blob.point_b_x + label_gap + label.width // 2, blob.y)
 		end
 

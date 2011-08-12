@@ -84,6 +84,14 @@ feature -- Property setting
 			background.set_x_y (a_x, a_y)
 		end
 
+feature -- Update
+	fit_to_text
+			-- Make the size of `background' equal to the size of `text'.
+		do
+			background.set_width (text.width)
+			background.set_height (text.height)
+		end
+
 feature -- World
 
 	add_to_world (a_world: EV_MODEL_WORLD)
