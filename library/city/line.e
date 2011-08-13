@@ -91,7 +91,7 @@ feature -- Access
 		local
 			i: V_ITERATOR [STATION]
 		do
-			i := stations.at_first
+			i := stations.new_cursor
 			i.search_forth (a_station)
 			if a_direction = stations.first then
 				i.back

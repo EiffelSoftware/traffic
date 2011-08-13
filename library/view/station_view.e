@@ -96,15 +96,12 @@ feature {NONE} -- Implementation
 	maximum_sibling_lines: INTEGER
 			-- Maximum number of lines that directly connect `s' with some other station in `c'.
 		local
-			i: V_ITERATOR [LINE]
 			l: LINE
 			n: INTEGER
 			s2: STATION
 		do
-			from
-				i := station.lines.at_first
-			until
-				i.after
+			across
+				station.lines as i
 			loop
 				l := i.item
 				s2 := l.next_station (station, l.north_terminal)
@@ -121,7 +118,6 @@ feature {NONE} -- Implementation
 						Result := n
 					end
 				end
-				i.forth
 			end
 		end
 

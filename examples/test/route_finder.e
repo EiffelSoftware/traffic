@@ -121,21 +121,16 @@ feature {NONE} -- Implementation
 	initialize
 			-- Initialize `unvisited' with all stations in `city' but `origin'
 			-- and `routes' for each station with a route that consists only of that station.
-		local
-			si: V_ITERATOR [STATION]
 		do
 			create {V_ARRAYED_LIST [STATION]} unvisited
 			create {V_HASH_TABLE [STATION, ROUTE]} routes
-			from
-				si := city.stations.new_iterator
-			until
-				si.after
+			across
+				city.stations as si
 			loop
-				routes [si.item] := create {ROUTE}.make (si.item)
-				if not (si.item = origin) then
-					unvisited.extend_back (si.item)
+				routes [si.value] := create {ROUTE}.make (si.value)
+				if not (si.value = origin) then
+					unvisited.extend_back (si.value)
 				end
-				si.forth
 			end
 		ensure
 			unvisited_exists: unvisited /= Void

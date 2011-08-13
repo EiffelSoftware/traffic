@@ -16,8 +16,6 @@ feature {NONE} -- Initialization
 			a_width_positive: a_width > 0
 			a_height_positive: a_height > 0
 		local
-			si: V_MAP_ITERATOR [STRING, STATION]
-			li: V_MAP_ITERATOR [INTEGER, LINE]
 			color: EV_COLOR
 		do
 			city := a_city
@@ -32,22 +30,15 @@ feature {NONE} -- Initialization
 			center_x := Frame_width + (-city.west * scale_factor).rounded
 			center_y := (a_height + ((city.north + city.south) * scale_factor).rounded) // 2 - Frame_width
 
-			from
-				li := city.lines.new_iterator
-			until
-				li.after
+			across
+				city.lines as li
 			loop
 				line_views [li.key] := create {LINE_VIEW}.make_in_city (li.value, Current)
-				li.forth
 			end
-
-			from
-				si := city.stations.new_iterator
-			until
-				si.after
+			across
+				city.stations as si
 			loop
 				station_views [si.key] := create {STATION_VIEW}.make_in_city (si.value, Current)
-				si.forth
 			end
 
 			projector.project
@@ -103,14 +94,12 @@ feature -- Basic operations
 	update
 			-- Update according to state of `city'.
 		local
-			si: V_MAP_ITERATOR [STRING, STATION]
-			li: V_MAP_ITERATOR [INTEGER, LINE]
 			svi: V_TABLE_ITERATOR [STRING, STATION_VIEW]
 			lvi: V_TABLE_ITERATOR [INTEGER, LINE_VIEW]
 		do
 			-- Remove objects that do not exists anymore
 			from
-				svi := station_views.new_iterator
+				svi := station_views.new_cursor
 			until
 				svi.after
 			loop
@@ -122,7 +111,7 @@ feature -- Basic operations
 				end
 			end
 			from
-				lvi := line_views.new_iterator
+				lvi := line_views.new_cursor
 			until
 				lvi.after
 			loop
@@ -134,10 +123,8 @@ feature -- Basic operations
 				end
 			end
 			-- Update existing and add new objects
-			from
-				si := city.stations.new_iterator
-			until
-				si.after
+			across
+				city.stations as si
 			loop
 				svi.search_key (si.key)
 				if svi.after then
@@ -145,12 +132,9 @@ feature -- Basic operations
 				else
 					svi.value.update
 				end
-				si.forth
 			end
-			from
-				li := city.lines.new_iterator
-			until
-				li.after
+			across
+				city.lines as li
 			loop
 				lvi.search_key (li.key)
 				if lvi.after then
@@ -158,7 +142,6 @@ feature -- Basic operations
 				else
 					lvi.value.update
 				end
-				li.forth
 			end
 		end
 

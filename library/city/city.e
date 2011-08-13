@@ -57,21 +57,17 @@ feature -- Public transportation
 			a_station_2_in_city: stations.has (a_station_2)
 		local
 			list: V_ARRAYED_LIST [LINE]
-			i: V_ITERATOR [LINE]
 			line: LINE
 		do
 			create list
-			from
-				i := a_station_1.lines.at_first
-			until
-				i.after
+			across
+				a_station_1.lines as i
 			loop
 				line := i.item
 				if line.next_station (a_station_1, line.north_terminal) = a_station_2 or
 					line.next_station (a_station_1, line.south_terminal) = a_station_2 then
 					list.extend_back (line)
 				end
-				i.forth
 			end
 			list.sort (agent {LINE}.is_less_equal)
 			Result := list
@@ -164,19 +160,15 @@ feature -- Construction
 			station_exists: stations.has_key (a_name)
 		local
 			station: STATION
-			i: V_ITERATOR [LINE]
 			j: V_LIST_ITERATOR [STATION]
 		do
 			station := stations [a_name]
-			from
-				i := station.lines.at_first
-			until
-				i.after
+			across
+				station.lines as i
 			loop
-				j := i.item.internal_stations.at_first
+				j := i.item.internal_stations.new_cursor
 				j.search_forth (station)
 				j.remove
-				i.forth
 			end
 			internal_stations.remove (a_name)
 		ensure
@@ -189,19 +181,15 @@ feature -- Construction
 			line_exists: lines.has_key (a_name)
 		local
 			line: LINE
-			i: V_ITERATOR [STATION]
 			j: V_LIST_ITERATOR [LINE]
 		do
 			line := lines [a_name]
-			from
-				i := line.stations.at_first
-			until
-				i.after
+			across
+				line.stations as i
 			loop
-				j := i.item.internal_lines.at_first
+				j := i.item.internal_lines.new_cursor
 				j.search_forth (line)
 				j.remove
-				i.forth
 			end
 			internal_lines.remove (a_name)
 		ensure

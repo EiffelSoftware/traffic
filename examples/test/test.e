@@ -71,7 +71,7 @@ feature -- Tests
 			city.connect_station (15, "Central")
 			city.connect_station (15, "Rudolf-Brun-Bruecke")
 		end
-		
+
 	create_from_file
 			-- Test that reads a city from an xml file.
 		local
@@ -108,7 +108,7 @@ feature -- Tests
 			finder: ROUTE_FINDER
 		do
 			create finder.make (city)
-			route := finder.shortest_route (city.stations ["Paradeplatz"], city.stations ["ETH/Universitaetsspital"])
+			route := finder.shortest_route (city.stations ["Baekeranlage"], city.stations ["Opernhaus"])
 			print (route)
 		end
 

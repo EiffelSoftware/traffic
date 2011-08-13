@@ -68,7 +68,7 @@ feature -- Basic operations
 			polyline.set_point_count (0)
 
 			from
-				i := line.stations.at_first
+				i := line.stations.new_cursor
 			until
 				i.is_last
 			loop
