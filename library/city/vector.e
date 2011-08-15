@@ -173,7 +173,7 @@ feature -- Helper functions
 	normalized_angle (a_angle: REAL_64): REAL_64
 			-- Normalized angle in interval [-Pi, Pi].
 		do
-			Result := Pi - real_modulo(Pi - a_angle, 2 * Pi)
+			Result := a_angle - 2 * Pi * floor ( (a_angle + Pi) / (2 * Pi))
 		ensure
 			in_range: -Pi <= Result and Result <= Pi
 		end
