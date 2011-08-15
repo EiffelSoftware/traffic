@@ -64,11 +64,19 @@ feature {NONE} -- Implementation
 		local
 			reader: XML_READER
 		do
-			create reader.read ("..\map\zurich.xml")
+			create reader.read (map_file_name)
 			if reader.has_error then
 				print (reader.error_message)
 			else
 				city := reader.city
 			end
+		end
+
+	map_file_name: FILE_NAME
+		do
+			create Result.make
+			Result.extend ("..")
+			Result.extend ("map")
+			Result.set_file_name ("zurich.xml")
 		end
 end
