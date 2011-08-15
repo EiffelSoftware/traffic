@@ -25,6 +25,7 @@ feature {NONE} -- Initialization
 			create projector.make (world, pixmap)
 			create {V_HASH_TABLE [STRING, STATION_VIEW]} station_views.with_object_equality
 			create {V_HASH_TABLE [INTEGER, LINE_VIEW]} line_views
+			create {V_HASH_TABLE [STRING, MOVER_VIEW]} mover_views.with_object_equality
 
 			scale_factor := (a_width - 2 * Frame_width) / (city.east - city.west)
 			center_x := Frame_width + (-city.west * scale_factor).rounded
@@ -39,6 +40,11 @@ feature {NONE} -- Initialization
 				city.stations as si
 			loop
 				station_views [si.key] := create {STATION_VIEW}.make_in_city (si.value, Current)
+			end
+			across
+				city.movers as mi
+			loop
+				mover_views [mi.key] := create {MOVER_VIEW}.make_in_city (mi.value, Current)
 			end
 
 			projector.project
@@ -64,7 +70,10 @@ feature -- Access
 	line_views: V_TABLE [INTEGER, LINE_VIEW]
 			-- Graphical representations of city lines.
 
-feature {STATION_VIEW, LINE_VIEW} -- Access
+	mover_views: V_TABLE [STRING, MOVER_VIEW]
+			-- Graphical representations of movers.
+
+feature {STATION_VIEW, LINE_VIEW, MOVER_VIEW} -- Access
 
 	world: EV_MODEL_WORLD
 			-- World that contains graphical representations of city objects.			
@@ -96,6 +105,7 @@ feature -- Basic operations
 		local
 			svi: V_TABLE_ITERATOR [STRING, STATION_VIEW]
 			lvi: V_TABLE_ITERATOR [INTEGER, LINE_VIEW]
+			mvi: V_TABLE_ITERATOR [STRING, MOVER_VIEW]
 		do
 			-- Remove objects that do not exists anymore
 			from
@@ -122,6 +132,18 @@ feature -- Basic operations
 					lvi.forth
 				end
 			end
+			from
+				mvi := mover_views.new_cursor
+			until
+				mvi.after
+			loop
+				if not city.movers.has_key (mvi.key) then
+					mvi.value.remove_from_city
+					mvi.remove
+				else
+					mvi.forth
+				end
+			end
 			-- Update existing and add new objects
 			across
 				city.stations as si
@@ -143,6 +165,32 @@ feature -- Basic operations
 					lvi.value.update
 				end
 			end
+
+			across
+				city.movers as mi
+			loop
+				mvi.search_key (mi.key)
+
+				if mvi.after then
+					mover_views [mi.key] := create {MOVER_VIEW}.make_in_city (mi.value, Current)
+				else
+					mvi.value.update
+				end
+			end
+		end
+
+	update_movers (dt: INTEGER)
+		do
+			across
+				mover_views as mi
+			loop
+				mi.value.mover.update_with_dt (dt)
+				mi.value.update
+			end
+
+				-- Are these both needed?
+			projector.project
+			world.invalidate
 		end
 
 feature {NONE} -- Implementation

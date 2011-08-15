@@ -11,6 +11,8 @@ feature {NONE} -- Initialization
 
 	execute
 			-- Run application.
+		local
+			timeout: EV_TIMEOUT
 		do
 			create_from_file
 
@@ -23,12 +25,32 @@ feature {NONE} -- Initialization
 				window.close_request_actions.extend (agent on_close)
 				window.show
 
+				city.add_mover ("my mover", create {MOVER}.make ("my_mover", [100.0,100.0]))
+
 				create map.make (city, window.width, window.height)
 				window.extend (map.pixmap)
 				map.pixmap.set_focus
 
+				create stopwatch.make
+				create timeout.make_with_interval (10)
+				timeout.actions.extend (agent update_movers)
+
 				gui_application.launch
 			end
+		end
+
+
+	stopwatch: DT_STOPWATCH
+
+	update_movers
+		do
+			if stopwatch.is_started then
+				stopwatch.stop
+			end
+
+			map.update_movers (stopwatch.elapsed_time.millisecond_count)
+
+			stopwatch.start
 		end
 
 feature {NONE} -- Implementation

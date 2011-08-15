@@ -18,6 +18,7 @@ feature {NONE} -- Initialization
 			create {V_HASH_TABLE [STRING, STATION]} internal_stations.with_object_equality
 			create {V_HASH_TABLE [INTEGER, LINE]} internal_lines
 			create {V_HASH_TABLE [STRING, TRANSPORT_KIND]} internal_transport_kinds.with_object_equality
+			create {V_HASH_TABLE [STRING, MOVER]} internal_movers.with_object_equality
 		ensure
 			name_set: name = a_name
 			no_stations: stations.is_empty
@@ -28,6 +29,15 @@ feature -- Access
 
 	name: STRING
 			-- Name.
+
+feature -- Timed update
+
+	update_movers (dt: INTEGER)
+			-- Update the movers with dt-milliseconds.
+		do
+			across internal_movers as mi
+			loop mi.value.update_with_dt (dt) end
+		end
 
 feature -- Public transportation
 
@@ -41,6 +51,11 @@ feature -- Public transportation
 			-- Lines indexed by name.
 		do
 			Result := internal_lines
+		end
+
+	movers: V_MAP [STRING, MOVER]
+		do
+			Result := internal_movers
 		end
 
 	transport_kinds: V_MAP [STRING, TRANSPORT_KIND]
@@ -136,6 +151,18 @@ feature -- Construction
 			correct_color: transport_kinds [a_name].default_color ~ a_default_color
 		end
 
+	add_mover (a_name: STRING; a_mover: MOVER)
+		require
+			name_non_void: a_name /= Void
+			mover_non_void: a_mover /= Void
+			name_is_new: not movers.has_key (a_name)
+		do
+			internal_movers.extend (a_mover, a_name)
+		ensure
+			mover_added: movers.has_key (a_name) and
+			             movers [a_name] = a_mover
+		end
+
 	connect_station (line_name: INTEGER; station_name: STRING)
 			-- Connect station `station_name' to the end of line `line_name'.
 		require
@@ -196,6 +223,16 @@ feature -- Construction
 			line_removed: not lines.has_key (a_name)
 		end
 
+	remove_mover (a_name: STRING)
+		require
+			mover_exists: movers.has_key (a_name)
+		do
+			internal_movers.remove (a_name)
+		ensure
+			mover_removed: not movers.has_key (a_name)
+		end
+
+
 feature {NONE} -- Implementation
 	internal_stations: V_TABLE [STRING, STATION]
 			-- Stations indexed by name.
@@ -204,7 +241,10 @@ feature {NONE} -- Implementation
 			-- Lines indexed by name.
 
 	internal_transport_kinds: V_TABLE [STRING, TRANSPORT_KIND]
-			-- Transport kinds indexed by name.			
+			-- Transport kinds indexed by name.
+
+	internal_movers: V_TABLE [STRING, MOVER]
+			-- Movers indexed by name.
 
 invariant
 	stations_exists: stations /= Void
