@@ -25,7 +25,11 @@ feature {NONE} -- Initialization
 				window.close_request_actions.extend (agent on_close)
 				window.show
 
-				city.add_mover ("my mover", create {MOVER}.make ("my_mover", [100.0,100.0]))
+				across
+					city.lines as li
+				loop
+					city.add_tram (li.value.name)
+				end
 
 				create map.make (city, window.width, window.height)
 				window.extend (map.pixmap)

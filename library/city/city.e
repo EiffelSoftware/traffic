@@ -18,7 +18,7 @@ feature {NONE} -- Initialization
 			create {V_HASH_TABLE [STRING, STATION]} internal_stations.with_object_equality
 			create {V_HASH_TABLE [INTEGER, LINE]} internal_lines
 			create {V_HASH_TABLE [STRING, TRANSPORT_KIND]} internal_transport_kinds.with_object_equality
-			create {V_HASH_TABLE [STRING, MOVER]} internal_movers.with_object_equality
+			create {V_HASH_TABLE [STRING, MOBILE]} internal_movers.with_object_equality
 		ensure
 			name_set: name = a_name
 			no_stations: stations.is_empty
@@ -53,7 +53,7 @@ feature -- Public transportation
 			Result := internal_lines
 		end
 
-	movers: V_MAP [STRING, MOVER]
+	movers: V_MAP [STRING, MOBILE]
 		do
 			Result := internal_movers
 		end
@@ -151,7 +151,17 @@ feature -- Construction
 			correct_color: transport_kinds [a_name].default_color ~ a_default_color
 		end
 
-	add_mover (a_name: STRING; a_mover: MOVER)
+	add_tram (a_name: INTEGER)
+		require
+			has_line: lines.has_key (a_name)
+		local
+			tram: TRAM
+		do
+			create tram.make_for_line (lines [a_name])
+			add_mover (tram.name, tram)
+		end
+
+	add_mover (a_name: STRING; a_mover: MOBILE)
 		require
 			name_non_void: a_name /= Void
 			mover_non_void: a_mover /= Void
@@ -243,7 +253,7 @@ feature {NONE} -- Implementation
 	internal_transport_kinds: V_TABLE [STRING, TRANSPORT_KIND]
 			-- Transport kinds indexed by name.
 
-	internal_movers: V_TABLE [STRING, MOVER]
+	internal_movers: V_TABLE [STRING, MOBILE]
 			-- Movers indexed by name.
 
 invariant

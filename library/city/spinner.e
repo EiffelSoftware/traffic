@@ -1,23 +1,24 @@
 note
-	description: "A city object that responds to time between updates."
+	description: "Summary description for {SPINNER}."
+	author: ""
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
-	MOVER
+	SPINNER
+
+inherit
+	MOBILE
 
 create
 	make
 
 feature
 	make (a_name: STRING; a_position: VECTOR)
-		require
-			non_void_name: a_name /= Void
 		do
-			initial_position := a_position
+			make_with_position (a_name, a_position)
 			offset := [50.0, 0.0]
-			name := a_name.twin
 		end
-
-	name: STRING
 
 	update_with_dt (dt: INTEGER)
 		do
@@ -35,6 +36,5 @@ feature
 		end
 
 	offset: VECTOR
-	initial_position: VECTOR
 
 end
