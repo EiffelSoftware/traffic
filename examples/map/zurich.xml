@@ -10,25 +10,25 @@
 	<station name="Bahnhof Stadelhofen" x="350" y="-1200"/>
 	<station name="Bahnhof Wiedikon" x="-1050" y="-500"/>
 	<station name="Bahnhofplatz/HB" x="-200" y="0"/>
-	<station name="Bahnhofquai/HB" x="0" y="50"/>	
+	<station name="Bahnhofquai/HB" x="0" y="50"/>
 	<station name="Bahnhofstrasse/HB" x="-150" y="-100"/>
-	<station name="Bellevue" x="120" y="-1000"/>	
+	<station name="Bellevue" x="120" y="-1000"/>
 	<station name="Boersenstrasse" x="-140" y="-900"/>
 	<station name="Buerkliplatz" x="-100" y="-1000"/>
 	<station name="Central" x="100" y="0"/>
-	<station name="ETH/Universitaetsspital" x="320" y="20"/>	
+	<station name="ETH/Universitaetsspital" x="320" y="20"/>
 	<station name="Gueterbahnhof" x="-1220" y="150"/>
 	<station name="Haldenegg" x="120" y="300"/>
 	<station name="Haldenbach" x="300" y="350"/>
 	<station name="Helmhaus" x="100" y="-700"/>
 	<station name="Helvetiaplatz" x="-850" y="-190"/>
 	<station name="Hardplatz" x="-1420" y="270"/>
-	<station name="Kanonengasse" x="-650" y="50"/>	
+	<station name="Kanonengasse" x="-650" y="50"/>
 	<station name="Kantonsschule" x="450" y="-400"/>
 	<station name="Kirche Fluntern" x="1100" y="100"/>
 	<station name="Kreuzplatz" x="650" y="-1450"/>
 	<station name="Kunsthaus" x="320" y="-680"/>
-	<station name="Loewenplatz" x="-300" y="-110"/>	
+	<station name="Loewenplatz" x="-300" y="-110"/>
 	<station name="Militaer/Langstrasse" x="-800" y="120"/>
 	<station name="Neumarkt" x="300" y="-400"/>
 	<station name="Opernhaus" x="300" y="-1400"/>
@@ -40,17 +40,17 @@
 	<station name="Rentenanstalt" x="-450" y="-1300"/>
 	<station name="Rudolf-Brun-Bruecke" x="100" y="-300"/>
 	<station name="Sihlquai/HB" x="-250" y="300"/>
-	<station name="Sihlpost" x="-450" y="-100"/>	
+	<station name="Sihlpost" x="-450" y="-100"/>
 	<station name="Sihlstrasse" x="-450" y="-400"/>
 	<station name="Sonneggstrasse" x="100" y="600"/>
-	<station name="Sprecherstrasse" x="550" y="-950"/>	
+	<station name="Sprecherstrasse" x="550" y="-950"/>
 	<station name="Stampfenbachplatz" x="60" y="350"/>
 	<station name="Stauffacher" x="-750" y="-350"/>
 	<station name="Stockerstrasse" x="-450" y="-900"/>
 	<station name="Tunnelstrasse" x="-600" y="-1050"/>
 	<station name="Voltastrasse" x="700" y="20"/>
 	<station name="Werd" x="-900" y="-400"/>
-	
+
 	<transport name="tram" color="ed1c24"/>
 	<transport name="bus" color="74beea"/>
 	<transport name="cable car" color="808080"/>
@@ -64,7 +64,7 @@
 		<stop name="Bellevue"/>
 		<stop name="Opernhaus"/>
 	</line>
-	<line name="3" kind="tram" color="00ac4f">		
+	<line name="3" kind="tram" color="00ac4f">
 		<stop name="Stauffacher"/>
 		<stop name="Sihlpost"/>
 		<stop name="Loewenplatz"/>
@@ -95,29 +95,29 @@
 		<stop name="Kirche Fluntern"/>
 	</line>
 	<line name="6" kind="tram" color="d99f4f">
-	    <stop name="Bahnhof Enge"/>
-	    <stop name="Tunnelstrasse"/>
-	    <stop name="Stockerstrasse"/>
+		<stop name="Bahnhof Enge"/>
+		<stop name="Tunnelstrasse"/>
+		<stop name="Stockerstrasse"/>
 		<stop name="Paradeplatz"/>
 		<stop name="Rennweg"/>
 		<stop name="Bahnhofstrasse/HB"/>
 		<stop name="Central"/>
 		<stop name="Haldenegg"/>
-		<stop name="ETH/Universitaetsspital"/>		
+		<stop name="ETH/Universitaetsspital"/>
 		<stop name="Platte"/>
 		<stop name="Voltastrasse"/>
 		<stop name="Kirche Fluntern"/>
 	</line>
 	<line name="7" kind="tram" color="231f20">
-	    <stop name="Bahnhof Enge"/>
-	    <stop name="Tunnelstrasse"/>
-	    <stop name="Stockerstrasse"/>
+		<stop name="Bahnhof Enge"/>
+		<stop name="Tunnelstrasse"/>
+		<stop name="Stockerstrasse"/>
 		<stop name="Paradeplatz"/>
 		<stop name="Rennweg"/>
 		<stop name="Bahnhofstrasse/HB"/>
 		<stop name="Central"/>
 		<stop name="Haldenegg"/>
-		<stop name="Sonneggstrasse"/>		
+		<stop name="Sonneggstrasse"/>
 	</line>
 	<line name="8" kind="tram" color="a6ce39">
 		<stop name="Hardplatz"/>
@@ -131,7 +131,7 @@
 		<stop name="Boersenstrasse"/>
 		<stop name="Buerkliplatz"/>
 		<stop name="Bellevue"/>
-		<stop name="Kunsthaus"/>		
+		<stop name="Kunsthaus"/>
 	</line>
 	<line name="9" kind="tram" color="49479d">
 		<stop name="Bahnhof Wiedikon"/>
@@ -145,25 +145,25 @@
 		<stop name="Kunsthaus"/>
 		<stop name="Kantonsschule"/>
 		<stop name="ETH/Universitaetsspital"/>
-		<stop name="Haldenbach"/>					
+		<stop name="Haldenbach"/>
 	</line>
 	<line name="10" kind="tram" color="ee3897">
 		<stop name="Bahnhofplatz/HB"/>
 		<stop name="Central"/>
 		<stop name="Haldenegg"/>
 		<stop name="ETH/Universitaetsspital"/>
-		<stop name="Haldenbach"/>		
+		<stop name="Haldenbach"/>
 	</line>
 	<line name="11" kind="tram" color="00ac4f">
 		<stop name="Stampfenbachplatz"/>
 		<stop name="Bahnhofquai/HB"/>
 		<stop name="Bahnhofstrasse/HB"/>
 		<stop name="Rennweg"/>
-		<stop name="Paradeplatz"/>		
-		<stop name="Boersenstrasse"/>		
-		<stop name="Buerkliplatz"/>		
-		<stop name="Bellevue"/>		
-		<stop name="Bahnhof Stadelhofen"/>		
+		<stop name="Paradeplatz"/>
+		<stop name="Boersenstrasse"/>
+		<stop name="Buerkliplatz"/>
+		<stop name="Bellevue"/>
+		<stop name="Bahnhof Stadelhofen"/>
 		<stop name="Kreuzplatz"/>
 	</line>
 	<line name="13" kind="tram" color="ffd503">
@@ -172,15 +172,15 @@
 		<stop name="Bahnhofstrasse/HB"/>
 		<stop name="Rennweg"/>
 		<stop name="Paradeplatz"/>
-	    <stop name="Stockerstrasse"/>
-	    <stop name="Tunnelstrasse"/>			
+		<stop name="Stockerstrasse"/>
+		<stop name="Tunnelstrasse"/>
 	</line>
 	<line name="14" kind="tram" color="00aeef">
-		<stop name="Stampfenbachplatz"/>	
+		<stop name="Stampfenbachplatz"/>
 		<stop name="Bahnhofquai/HB"/>
 		<stop name="Bahnhofplatz/HB"/>
 		<stop name="Loewenplatz"/>
-		<stop name="Sihlpost"/>		
+		<stop name="Sihlpost"/>
 		<stop name="Stauffacher"/>
 		<stop name="Werd"/>
 		<stop name="Bahnhof Wiedikon"/>
@@ -194,7 +194,7 @@
 		<stop name="Rudolf-Brun-Bruecke"/>
 		<stop name="Central"/>
 		<stop name="Haldenegg"/>
-		<stop name="Sonneggstrasse"/>		
+		<stop name="Sonneggstrasse"/>
 	</line>
 	<line name="24" kind="cable car">
 		<stop name="Central"/>
@@ -207,13 +207,13 @@
 		<stop name="Militaer/Langstrasse"/>
 		<stop name="Kanonengasse"/>
 		<stop name="Sihlpost"/>
-		<stop name="Loewenplatz"/>		
+		<stop name="Loewenplatz"/>
 		<stop name="Bahnhofplatz/HB"/>
 		<stop name="Central"/>
 		<stop name="Neumarkt"/>
-		<stop name="Kunsthaus"/>		
+		<stop name="Kunsthaus"/>
 		<stop name="Sprecherstrasse"/>
 		<stop name="Kreuzplatz"/>
 	</line>
-	
+
 </city>

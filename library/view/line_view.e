@@ -55,7 +55,33 @@ feature -- Access
 	line: LINE
 			-- Underlying model.
 
+feature -- Status report
+
+	is_highlighted: BOOLEAN
+			-- Is this station highlighted?
+
+feature -- Status setting
+
+	highlight
+			-- Highlight this station.
+		do
+			is_highlighted := True
+			polyline.set_line_width (Width * 2)
+		ensure
+			highlighted: is_highlighted
+		end
+
+	unhighlight
+			-- Unhighlight this station.
+		do
+			is_highlighted := False
+			polyline.set_line_width (Width)
+		ensure
+			not_highlighted: not is_highlighted
+		end
+
 feature -- Basic operations
+
 	update
 			-- Update according to the state of `line'.
 		local
@@ -149,8 +175,15 @@ feature {NONE} -- Implementation
 			-- Update label `l' between stations `s1' and `s2' with line segment shifted by `offset'.
 		local
 			center: VECTOR
+			font_height: INTEGER
 		do
 			l.text.set_text (line.name.out)
+			font_height := (Font_size * map.scale_factor).truncated_to_integer
+			if font_height <= 0 then
+				l.text.font.set_height (1)
+			else
+				l.text.font.set_height (font_height)
+			end
 			l.fit_to_text
 			l.set_background_color (polyline.foreground_color)
 			if line.color.brightness < 0.6 then

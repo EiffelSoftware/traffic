@@ -35,38 +35,21 @@ feature {NONE} -- Implementation
 
 	write_city (a_city: CITY)
 			-- Write city description into file `file'.
-		local
-			si: V_MAP_ITERATOR [STRING, STATION]
-			ti: V_MAP_ITERATOR [STRING, TRANSPORT_KIND]
-			li: V_MAP_ITERATOR [INTEGER, LINE]
+		require
+			a_city_not_void: a_city /= Void
 		do
 			put_open_element (City_tag, [City_name_attribute, a_city.name])
 
-			from
-				si := a_city.stations.new_iterator
-			until
-				si.after
-			loop
-				write_station (si.value)
-				si.forth
+			across a_city.stations as i loop
+				write_station (i.value)
 			end
 
-			from
-				ti := a_city.transport_kinds.new_iterator
-			until
-				ti.after
-			loop
-				write_transport (ti.value)
-				ti.forth
+			across a_city.transport_kinds as i loop
+				write_transport (i.value)
 			end
 
-			from
-				li := a_city.lines.new_iterator
-			until
-				li.after
-			loop
-				write_line (li.value)
-				li.forth
+			across a_city.lines as i loop
+				write_line (i.value)
 			end
 
 			put_close_element (City_tag)
@@ -74,6 +57,8 @@ feature {NONE} -- Implementation
 
 	write_station (a_station: STATION)
 			-- Write station description into file `file'.
+		require
+			a_station_not_void: a_station /= Void
 		do
 			put_single_element (Station_tag,
 				[Station_name_attribute, a_station.name,
@@ -83,6 +68,8 @@ feature {NONE} -- Implementation
 
 	write_transport (a_transport: TRANSPORT_KIND)
 			-- Write transport description into file `file'.
+		require
+			a_transport_not_void: a_transport /= Void
 		do
 			put_single_element (Transport_tag,
 				[Transport_name_attribute, a_transport.name,
@@ -91,21 +78,16 @@ feature {NONE} -- Implementation
 
 	write_line (a_line: LINE)
 			-- Write line description into file `file'.
-		local
-			i: V_SEQUENCE_ITERATOR [STATION]
+		require
+			a_line_not_void: a_line /= Void
 		do
 			put_open_element (Line_tag,
 				[Line_name_attribute, a_line.name,
 				 Line_kind_attribute, a_line.kind.name,
 				 Line_color_attribute, a_line.color])
 
-			from
-				i := a_line.stations.at_first
-			until
-				i.after
-			loop
+			across a_line.stations as i loop
 				put_single_element (Stop_tag, [Stop_name_attribute, i.item.name])
-				i.forth
 			end
 
 			put_close_element (Line_tag)
@@ -120,6 +102,7 @@ feature {NONE} -- Helper functions
 			-- Put an opening xml tag with name `a_name' and
 			-- attributes `a_attributes.
 		require
+			a_name_not_void: a_name /= Void
 			attribute_names_values_match: a_attributes.count \\ 2 = 0
 		do
 			file.put_string (indenation_string)
@@ -129,6 +112,8 @@ feature {NONE} -- Helper functions
 
 	put_close_element (a_name: STRING)
 			-- Put a closing xml tag with name `a_name'.
+		require
+			a_name_not_void: a_name /= Void
 		do
 			indentation_level := indentation_level - 1
 			file.put_string (indenation_string)
@@ -138,6 +123,7 @@ feature {NONE} -- Helper functions
 	put_single_element (a_name: STRING; a_attributes: TUPLE)
 			-- Put a single xml tag with name `a_name' and attributes `a_attributes'.
 		require
+			a_name_not_void: a_name /= Void
 			attribute_names_values_match: a_attributes.count \\ 2 = 0
 		do
 			file.put_string (indenation_string)
@@ -148,6 +134,8 @@ feature {NONE} -- Helper functions
 			-- String corresponding to current indentation level.
 		do
 			create Result.make_filled ('%T', indentation_level)
+		ensure
+			result_not_void: Result /= Void
 		end
 
 	attribute_string (a_attributes: TUPLE): STRING
@@ -167,6 +155,8 @@ feature {NONE} -- Helper functions
 				Result.append ("%"" + a_attributes.item (i + 1).out + "%"")
 				i := i + 2
 			end
+		ensure
+			result_not_void: Result /= Void
 		end
 
 end

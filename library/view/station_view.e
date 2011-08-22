@@ -43,6 +43,33 @@ feature -- Access
 	station: STATION
 			-- Underlying model.
 
+feature -- Status report
+
+	is_highlighted: BOOLEAN
+			-- Is this station highlighted?
+
+feature -- Status setting
+
+	highlight
+			-- Highlight this station.
+		do
+			is_highlighted := True
+			blob.set_background_color (Yellow)
+			label.set_background_color (Yellow)
+		ensure
+			highlighted: is_highlighted
+		end
+
+	unhighlight
+			-- Unhighlight this station.
+		do
+			is_highlighted := False
+			blob.set_background_color (White)
+			label.set_background_color (White)
+		ensure
+			not_highlighted: not is_highlighted
+		end
+
 feature -- Basic operations
 
 	update
@@ -51,6 +78,7 @@ feature -- Basic operations
 			radius: REAL_64
 			n: INTEGER
 			point_a, point_b: EV_COORDINATE
+			font_height: INTEGER
 		do
 			n := maximum_sibling_lines
 			if n = 0 then
@@ -62,6 +90,12 @@ feature -- Basic operations
 			blob.set_point_a_position (point_a.x, point_a.y)
 			blob.set_point_b_position (point_b.x, point_b.y)
 			blob.set_radius (blob.width // 4)
+			font_height := (Font_size * map.scale_factor).truncated_to_integer
+			if font_height <= 0 then
+				label.text.font.set_height (1)
+			else
+				label.text.font.set_height (font_height)
+			end
 			label.text.set_text (station.name)
 			label.fit_to_text
 			label.set_x_y (blob.point_b_x + label_gap + label.width // 2, blob.y)

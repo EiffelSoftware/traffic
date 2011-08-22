@@ -57,6 +57,28 @@ feature -- Access
 			Result := name.hash_code
 		end
 
+feature -- Element change
+
+	set_name (a_name: STRING)
+			-- Set `name' to `a_name'.
+		require
+			a_name_exists: a_name /= Void
+		do
+			name := a_name
+		ensure
+			name_set: name = a_name
+		end
+
+	set_position (a_position: VECTOR)
+			-- Set `position' to `a_position'.
+		require
+			a_position_exists: a_position /= Void
+		do
+			position := a_position
+		ensure
+			position_set: position = a_position
+		end
+
 feature -- Comparison
 
 	is_less alias "<" (other: like Current): BOOLEAN

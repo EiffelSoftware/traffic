@@ -148,6 +148,14 @@ feature -- Comparison
 
 feature -- Property setting
 
+	set_name (a_name: INTEGER)
+			-- Set `name' to `a_name'.
+		do
+			name := a_name
+		ensure
+			name_set: name = a_name
+		end
+
 	set_color (a_color: COLOR)
 			-- Set `color' to `a_color'.
 		do

@@ -30,6 +30,18 @@ feature -- Access
 	name: STRING
 			-- Name.
 
+feature -- Element change
+
+	set_name (a_name: STRING)
+			-- Set `name' to `a_name'.
+		require
+			a_name_exists: a_name /= Void
+		do
+			name := a_name
+		ensure
+			name_set: name = a_name
+		end
+
 feature -- Timed update
 
 	update_movers (dt: INTEGER)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="editor" uuid="6FA5F1A1-3964-494B-902E-9525D9E5E175">
+	<target name="editor">
+		<root class="EDITOR" feature="execute"/>
+		<option warning="true" syntax="provisional">
+			<assertions/>
+		</option>
+		<precompile name="vision2_pre" location="$ISE_PRECOMP\vision2.ecf"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="base2" location="$EIFFELBASE2\base2.ecf"/>
+		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false">
+			<option>
+				<assertions/>
+			</option>
+		</library>
+		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf"/>
+		<cluster name="editor" location=".\" recursive="true">
+			<file_rule>
+				<exclude>/EIFGENs$</exclude>
+				<exclude>/CVS$</exclude>
+				<exclude>/.svn$</exclude>
+			</file_rule>
+		</cluster>
+	</target>
+</system>
