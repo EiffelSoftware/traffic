@@ -52,11 +52,17 @@ feature {NONE} -- Initialization
 		local
 			date: C_DATE
 			new_time: INTEGER
+			dt: INTEGER
 		do
 			create date
 			new_time := (date.second_now * 1000) + date.millisecond_now
 			if last_update_time > 0 then
-				map.update_movers ((new_time - last_update_time).abs)
+				if new_time < last_update_time then
+					dt := new_time - last_update_time + 60000
+				else
+					dt := new_time - last_update_time
+				end
+				map.update_movers (dt)
 			end
 			last_update_time := new_time
 		end
