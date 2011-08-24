@@ -85,7 +85,7 @@ feature
 
 	speed: REAL_64
 		do
-			Result := 500
+			Result := 300
 		end
 
 	position: VECTOR
