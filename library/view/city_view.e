@@ -73,7 +73,7 @@ feature -- Access
 	mover_views: V_TABLE [STRING, MOVER_VIEW]
 			-- Graphical representations of movers.
 
-feature {STATION_VIEW, LINE_VIEW, MOVER_VIEW} -- Access
+feature {STATION_VIEW, LINE_VIEW, MOVER_VIEW, ANY} -- Access
 
 	world: EV_MODEL_WORLD
 			-- World that contains graphical representations of city objects.			
@@ -194,14 +194,15 @@ feature -- Basic operations
 		end
 
 feature {NONE} -- Implementation
+feature {NONE, ANY} -- Implementation
 
 	projector: EV_MODEL_PIXMAP_PROJECTOR
 			-- Projector used to generate `pixmap' from `world'.
 
-	Frame_width: INTEGER = 50
+	Frame_width: INTEGER = 20
 			-- Minimum space left between the outer city object and the edge of the map in the default view.
 
-feature -- Event handling
+feature {NONE} -- Event handling
 
 	is_button_pressed: BOOLEAN
 			-- Is mouse button pressed?

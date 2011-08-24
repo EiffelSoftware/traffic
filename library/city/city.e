@@ -254,6 +254,32 @@ feature -- Construction
 			mover_removed: not movers.has_key (a_name)
 		end
 
+	rename_station (a_station: STATION; a_new_name: STRING)
+			-- Rename `a_station' to `a_new_name'.
+		require
+			a_new_name_exists: a_new_name /= Void
+			unique_name: not stations.has_key (a_new_name)
+		do
+			internal_stations.remove (a_station.name)
+			a_station.set_name (a_new_name)
+			internal_stations.extend (a_station, a_new_name)
+		ensure
+			renamed: a_station.name ~ a_new_name
+			station_added: stations.item (a_new_name) = a_station
+		end
+
+	rename_line (a_line: LINE; a_new_name: INTEGER)
+			-- Rename `a_line' to `a_new_name'.
+		require
+			unique_name: not lines.has_key (a_new_name)
+		do
+			internal_lines.remove (a_line.name)
+			a_line.set_name (a_new_name)
+			internal_lines.extend (a_line, a_new_name)
+		ensure
+			renamed: a_line.name = a_new_name
+			line_added: lines.item (a_new_name) = a_line
+		end
 
 feature {NONE} -- Implementation
 	internal_stations: V_TABLE [STRING, STATION]

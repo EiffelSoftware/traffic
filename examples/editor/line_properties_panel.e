@@ -7,39 +7,18 @@ class
 	LINE_PROPERTIES_PANEL
 
 inherit
-	EV_VERTICAL_BOX
+	PROPERTIES_PANEL
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make
+	initialize_widgets
 			-- Initialize empty panel.
-		local
-			l_horizontal_box: EV_HORIZONTAL_BOX
-			l_label: EV_LABEL
 		do
-			default_create
-
-			create l_label.make_with_text ("Line Properties")
-			l_label.font.set_weight ({EV_FONT_CONSTANTS}.Weight_bold)
-			extend (l_label)
-			disable_item_expand (l_label)
-
 			create name_field
-			create l_label.make_with_text ("Name:")
-			l_label.set_minimum_width (60)
-			create l_horizontal_box
-			l_horizontal_box.extend (l_label)
-			l_horizontal_box.disable_item_expand (l_label)
-			l_horizontal_box.extend (name_field)
-			extend (l_horizontal_box)
-			disable_item_expand (l_horizontal_box)
-
-			name_field.key_release_actions.extend (agent on_key_released)
-
-			update_display
+			add_widget ("Name:", name_field)
 		end
 
 feature -- Access
@@ -47,25 +26,21 @@ feature -- Access
 	line: LINE
 			-- City that is being displayed.
 
+	city: CITY
+			-- City that `line' belongs to.
+
 	name_field: EV_TEXT_FIELD
 			-- Text field for line name.
 
 feature -- Element change
 
-	set_line (a_line: LINE)
+	set_line (a_line: LINE; a_city: CITY)
 			-- Set `line' to `a_line'.
+		require
+			line_in_city: a_line /= Void implies a_city.lines.has (a_line)
 		do
 			line := a_line
-			update_display
-		ensure
-			line_set: line = a_line
-		end
-
-feature {NONE} -- Implementation
-
-	update_display
-			-- Update display according to station that is set.
-		do
+			city := a_city
 			if line = Void then
 				name_field.remove_text
 				name_field.disable_sensitive
@@ -73,14 +48,40 @@ feature {NONE} -- Implementation
 				name_field.set_text (line.name.out)
 				name_field.enable_sensitive
 			end
+			update_display
+		ensure
+			line_set: line = a_line
 		end
 
-	on_key_released (a_key: EV_KEY)
-			-- Handle key released event.
+feature -- Status report
+
+	is_valid_data: BOOLEAN
+			-- <Precursor>
 		do
-			if name_field.text.is_integer then
-				line.set_name (name_field.text.to_integer)
+			Result :=
+				not name_field.text.is_empty and then name_field.text.is_integer and then
+				(name_field.text.to_integer /~ line.name implies not city.lines.has_key (name_field.text.to_integer))
+		end
+
+	has_changes: BOOLEAN
+			-- <Precursor>
+		do
+			Result := name_field.text.to_integer /= line.name
+		end
+
+feature -- Basic operations
+
+	save
+			-- <Precursor>
+		do
+			if line.name /~ name_field.text.to_integer then
+				city.rename_line (line, name_field.text.to_integer)
 			end
 		end
+
+feature {NONE} -- Implementation
+
+	title: STRING = "Line Properties"
+			-- <Precursor>
 
 end

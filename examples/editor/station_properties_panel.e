@@ -7,65 +7,31 @@ class
 	STATION_PROPERTIES_PANEL
 
 inherit
-	EV_VERTICAL_BOX
+	PROPERTIES_PANEL
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make
+	initialize_widgets
 			-- Initialize empty panel.
-		local
-			l_horizontal_box: EV_HORIZONTAL_BOX
-			l_label: EV_LABEL
 		do
-			default_create
-
-			create l_label.make_with_text ("Station Properties")
-			l_label.font.set_weight ({EV_FONT_CONSTANTS}.Weight_bold)
-			extend (l_label)
-			disable_item_expand (l_label)
-
 			create name_field
-			create l_label.make_with_text ("Name:")
-			l_label.set_minimum_width (60)
-			create l_horizontal_box
-			l_horizontal_box.extend (l_label)
-			l_horizontal_box.disable_item_expand (l_label)
-			l_horizontal_box.extend (name_field)
-			extend (l_horizontal_box)
-			disable_item_expand (l_horizontal_box)
-
+			add_widget ("Name:", name_field)
 			create position_x_field
-			create l_label.make_with_text ("Pos X:")
-			l_label.set_minimum_width (60)
-			create l_horizontal_box
-			l_horizontal_box.extend (l_label)
-			l_horizontal_box.disable_item_expand (l_label)
-			l_horizontal_box.extend (position_x_field)
-			extend (l_horizontal_box)
-			disable_item_expand (l_horizontal_box)
-
+			add_widget ("Pos X:", position_x_field)
 			create position_y_field
-			create l_label.make_with_text ("Pos Y:")
-			l_label.set_minimum_width (60)
-			create l_horizontal_box
-			l_horizontal_box.extend (l_label)
-			l_horizontal_box.disable_item_expand (l_label)
-			l_horizontal_box.extend (position_y_field)
-			extend (l_horizontal_box)
-			disable_item_expand (l_horizontal_box)
-
-			name_field.key_release_actions.extend (agent on_key_released)
-
-			update_display
+			add_widget ("Pos Y:", position_y_field)
 		end
 
 feature -- Access
 
 	station: STATION
 			-- Station that is being displayed.
+
+	city: CITY
+			-- City where station belongs to.
 
 	name_field: EV_TEXT_FIELD
 			-- Text field for station name.
@@ -78,20 +44,13 @@ feature -- Access
 
 feature -- Element change
 
-	set_station (a_station: STATION)
-			-- Set `station' to `a_station'.
+	set_station (a_station: STATION; a_city: CITY)
+			-- Set `station' to `a_station' and `city' to `a_city'.
+		require
+			city_has_station: a_city /= Void implies a_city.stations.has (a_station)
 		do
 			station := a_station
-			update_display
-		ensure
-			station_set: station = a_station
-		end
-
-feature {NONE} -- Implementation
-
-	update_display
-			-- Update display according to station that is set.
-		do
+			city := a_city
 			if station = Void then
 				name_field.remove_text
 				name_field.disable_sensitive
@@ -111,25 +70,46 @@ feature {NONE} -- Implementation
 				position_y_field.set_text (station.position.y.out)
 				position_y_field.enable_sensitive
 			end
+			update_display
+		ensure
+			station_set: station = a_station
 		end
 
-	on_key_released (a_key: EV_KEY)
-			-- Handle key released event.
-		local
-			l_x, l_y: REAL_64
+feature -- Status report
+
+	is_valid_data: BOOLEAN
+			-- <Precursor>
 		do
-			if position_x_field.text.is_real then
-				l_x := position_x_field.text.to_double
-			else
-				l_x := station.position.x
-			end
-			if position_y_field.text.is_real then
-				l_y := position_y_field.text.to_double
-			else
-				l_y := station.position.y
-			end
-			station.set_name (name_field.text)
-			station.set_position ([l_x, l_y])
+			Result :=
+				not name_field.text.is_empty and then
+				(name_field.text /~ station.name implies not city.stations.has_key (name_field.text)) and
+				position_x_field.text.is_real and
+				position_y_field.text.is_real
 		end
+
+	has_changes: BOOLEAN
+			-- <Precursor>
+		do
+			Result :=
+				not name_field.text.is_equal (station.name) or
+				position_x_field.text.to_double /= station.position.x or
+				position_y_field.text.to_double /= station.position.y
+		end
+
+feature -- Basic operations
+
+	save
+			-- <Precursor>
+		do
+			if station.name /~ name_field.text then
+				city.rename_station (station, name_field.text)
+			end
+			station.set_position ([position_x_field.text.to_double, position_y_field.text.to_double])
+		end
+
+feature {NONE} -- Implementation
+
+	title: STRING = "Station Properties"
+			-- <Precursor>
 
 end

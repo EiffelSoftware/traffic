@@ -48,6 +48,17 @@ feature {NONE} -- Initialization
 				i := i + 1
 			end
 			update
+
+			create mouse_clicked_actions
+			create mouse_double_clicked_actions
+			polyline.pointer_button_press_actions.extend (agent on_mouse_button_pressed)
+			polyline.pointer_button_release_actions.extend (agent on_mouse_button_released)
+			polyline.pointer_double_press_actions.extend (agent on_mouse_button_double_clicked)
+			across labels as cursor loop
+				cursor.item.text.pointer_button_press_actions.extend (agent on_mouse_button_pressed)
+				cursor.item.text.pointer_button_release_actions.extend (agent on_mouse_button_released)
+				cursor.item.text.pointer_double_press_actions.extend (agent on_mouse_button_double_clicked)
+			end
 		end
 
 feature -- Access
@@ -138,6 +149,14 @@ feature -- Basic operations
 			end
 		end
 
+feature -- Events
+
+	mouse_clicked_actions: EV_POINTER_BUTTON_ACTION_SEQUENCE
+			-- Mouse clicked on station.
+
+	mouse_double_clicked_actions: EV_POINTER_BUTTON_ACTION_SEQUENCE
+			-- Mouse double clicked on station.
+
 feature -- Parameters
 
 	Width: INTEGER = 5
@@ -193,6 +212,31 @@ feature {NONE} -- Implementation
 			end
 			center := s1.position + (s2.position - s1.position) * 0.5 + offset
 			l.set_x_y (map.world_coordinate (center).x, map.world_coordinate (center).y)
+		end
+
+feature {NONE} -- Event handlers
+
+	pressed_location: TUPLE [x, y: INTEGER]
+			-- Location where mouse was last pressed.
+
+	on_mouse_button_pressed (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
+			-- Handle mouse button pressed event.
+		do
+			pressed_location := [x, y]
+		end
+
+	on_mouse_button_released (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
+			-- Handle mouse button released event.
+		do
+			if pressed_location.x = x and pressed_location.y = y then
+				mouse_clicked_actions.call ([x, y, button, x_tilt, y_tilt, pressure, screen_x, screen_y])
+			end
+		end
+
+	on_mouse_button_double_clicked (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
+			-- Handle mouse button double clicked event.
+		do
+			mouse_double_clicked_actions.call ([x, y, button, x_tilt, y_tilt, pressure, screen_x, screen_y])
 		end
 
 invariant

@@ -7,39 +7,18 @@ class
 	CITY_PROPERTIES_PANEL
 
 inherit
-	EV_VERTICAL_BOX
+	PROPERTIES_PANEL
 
 create
 	make
 
 feature {NONE} -- Initialization
 
-	make
+	initialize_widgets
 			-- Initialize empty panel.
-		local
-			l_horizontal_box: EV_HORIZONTAL_BOX
-			l_label: EV_LABEL
 		do
-			default_create
-
-			create l_label.make_with_text ("City Properties")
-			l_label.font.set_weight ({EV_FONT_CONSTANTS}.Weight_bold)
-			extend (l_label)
-			disable_item_expand (l_label)
-
 			create name_field
-			create l_label.make_with_text ("Name:")
-			l_label.set_minimum_width (60)
-			create l_horizontal_box
-			l_horizontal_box.extend (l_label)
-			l_horizontal_box.disable_item_expand (l_label)
-			l_horizontal_box.extend (name_field)
-			extend (l_horizontal_box)
-			disable_item_expand (l_horizontal_box)
-
-			name_field.key_release_actions.extend (agent on_key_released)
-
-			update_display
+			add_widget ("Name:", name_field)
 		end
 
 feature -- Access
@@ -56,16 +35,6 @@ feature -- Element change
 			-- Set `city' to `a_city'.
 		do
 			city := a_city
-			update_display
-		ensure
-			city_set: city = a_city
-		end
-
-feature {NONE} -- Implementation
-
-	update_display
-			-- Update display according to station that is set.
-		do
 			if city = Void then
 				name_field.remove_text
 				name_field.disable_sensitive
@@ -73,12 +42,35 @@ feature {NONE} -- Implementation
 				name_field.set_text (city.name)
 				name_field.enable_sensitive
 			end
+			update_display
+		ensure
+			city_set: city = a_city
+		end
+feature -- Status report
+
+	is_valid_data: BOOLEAN
+			-- <Precursor>
+		do
+			Result := not name_field.text.is_empty
 		end
 
-	on_key_released (a_key: EV_KEY)
-			-- Handle key released event.
+	has_changes: BOOLEAN
+			-- <Precursor>
+		do
+			Result := not name_field.text.is_equal (city.name)
+		end
+
+feature -- Basic operations
+
+	save
+			-- <Precursor>
 		do
 			city.set_name (name_field.text)
 		end
+
+feature {NONE} -- Implementation
+
+	title: STRING = "City Properties"
+			-- <Precursor>
 
 end

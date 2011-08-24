@@ -59,16 +59,6 @@ feature -- Access
 
 feature -- Element change
 
-	set_name (a_name: STRING)
-			-- Set `name' to `a_name'.
-		require
-			a_name_exists: a_name /= Void
-		do
-			name := a_name
-		ensure
-			name_set: name = a_name
-		end
-
 	set_position (a_position: VECTOR)
 			-- Set `position' to `a_position'.
 		require
@@ -77,6 +67,18 @@ feature -- Element change
 			position := a_position
 		ensure
 			position_set: position = a_position
+		end
+
+feature {CITY} -- Element change
+
+	set_name (a_name: STRING)
+			-- Set `name' to `a_name'.
+		require
+			a_name_exists: a_name /= Void
+		do
+			name := a_name
+		ensure
+			name_set: name = a_name
 		end
 
 feature -- Comparison
