@@ -1,0 +1,2 @@
+- Crashes when finalized
+- What happens with mobile objects when the city is updated? Right now crashes if a line terminal is changed.
