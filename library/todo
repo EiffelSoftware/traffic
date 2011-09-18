@@ -1,9 +1,6 @@
-- High-level events for views (including MAP); move existing event handlers to DEMO?
-- Test event handlers
 - Put time into city view (or some other class)
 - Add console
 - Create class DEMO
-- Remove test code
 
 - Support user-defined objects (at least mobiles)
 - Opening map files?

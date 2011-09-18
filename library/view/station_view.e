@@ -7,13 +7,6 @@ class
 inherit
 	VIEW
 
-inherit {NONE}
-
-	EV_FONT_CONSTANTS
-		export
-			{NONE} all
-		end
-
 create
 	make_in_city
 
@@ -36,10 +29,9 @@ feature {NONE} -- Initialization
 			label.add_to_world (a_map.world)
 			update
 
-			create mouse_clicked_actions
-			create mouse_double_clicked_actions
-			add_handlers (blob)
-			add_handlers (label.text)
+			make_actions
+			subscribe_model (blob)
+			subscribe_model (label.text)
 		end
 
 feature -- Access

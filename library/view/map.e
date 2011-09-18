@@ -4,6 +4,9 @@ note
 class
 	MAP
 
+inherit
+	MAP_WIDGET
+
 create
 	make
 
@@ -49,12 +52,8 @@ feature {NONE} -- Initialization
 
 			projector.project
 
-			pixmap.pointer_button_press_actions.extend (agent on_button_pressed)
-			pixmap.pointer_button_release_actions.extend (agent on_button_released)
-			pixmap.pointer_motion_actions.extend (agent on_mouse_move)
-			pixmap.mouse_wheel_actions.extend (agent on_mouse_wheel)
-			pixmap.pointer_leave_actions.extend (agent on_mouse_leave)
-			pixmap.resize_actions.extend (agent on_resize)
+			make_actions
+			subscribe_widget (pixmap)
 		end
 
 feature -- Access
@@ -195,16 +194,37 @@ feature -- Basic operations
 	refresh
 			-- Refresh `pixmap' without synchronizing with the model.
 		do
+			world.invalidate
 			projector.project
 		end
 
-feature {NONE} -- Implementation
+feature -- Transformations
 
-	projector: EV_MODEL_PIXMAP_PROJECTOR
-			-- Projector used to generate `pixmap' from `world'.			
+	translate (dx, dy: INTEGER)
+			-- Move map by [`dx', `dy'] in world coordinates.
+		do
+			center_x := center_x + dx
+			center_y := center_y + dy
+			world.set_x_y (world.x + dx, world.y + dy)
+		end
 
-	Frame_width: INTEGER = 20
-			-- Minimum space left between the outer city object and the edge of the map in the default view.
+	zoom_in
+			-- Increase `scale_factor' unless it exceeds `Max_scale'.
+		do
+			if scale_factor * Zoom_in_factor <= Max_scale then
+				scale_by (Zoom_in_factor)
+			end
+		end
+
+	zoom_out
+			-- Decrease `scale_factor' unless it exceeds `Min_scale'.
+		do
+			if scale_factor * Zoom_out_factor >= Min_scale then
+				scale_by (Zoom_out_factor)
+			end
+		end
+
+feature {NONE} -- Parameters
 
 	Max_scale: REAL_64 = 5.0
 			-- Maximum scale factor.
@@ -212,75 +232,30 @@ feature {NONE} -- Implementation
 	Min_scale: REAL_64 = 0.2
 			-- Minimum scale factor.
 
+	Zoom_in_factor: REAL_64 = 1.1
+			-- Default factor by which the map is zoomed in.
 
-feature {NONE} -- Event handling
+	Zoom_out_factor: REAL_64 = 0.9
+			-- Default factor by which the map is zoomed out.			
 
-	is_button_pressed: BOOLEAN
-			-- Is mouse button pressed?
+	Frame_width: INTEGER = 20
+			-- Minimum space left between the outer city object and the edge of the map in the default view.		
 
-	dx, dy: INTEGER
-			-- Difference between mouse position and city center.
+feature {NONE} -- Implementation
 
-	on_mouse_move (a_x: INTEGER; a_y: INTEGER; a_x_tilt: DOUBLE; a_y_tilt: DOUBLE; a_pressure: DOUBLE; a_screen_x: INTEGER; a_screen_y: INTEGER)
-			-- Move the map if button is pressed.
+	projector: EV_MODEL_PIXMAP_PROJECTOR
+			-- Projector used to generate `pixmap' from `world'.			
+
+	scale_by (ds: REAL_64)
+			-- Scale map by `ds' times.
+		require
+			scale_factor_in_bounds: Min_scale <= scale_factor * ds and scale_factor * ds <= Max_scale
 		do
-			if is_button_pressed then
-				center_x := center_x + a_x - dx - world.x
-				center_y := center_y + a_y - dy - world.y
-				world.set_x_y (a_x - dx, a_y - dy)
-			end
-		end
-
-	on_button_pressed (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
-			-- Record that button is pressed.
-		local
-			blob: EV_MODEL_ELLIPSE
- 		do
-			if button = {EV_POINTER_CONSTANTS}.left then
-				is_button_pressed := True
-				dx := x - world.x
-				dy := y - world.y
-			else
-				update
-			end
-		end
-
-	on_button_released (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
-			-- Record that button is released.	
-		do
-			is_button_pressed := False
-		end
-
-	on_mouse_leave
-			-- Record that mouse leaves the map.
-		do
-			is_button_pressed := False
-		end
-
-	on_mouse_wheel (x: INTEGER)
-			-- Scale map.
-		local
-			ds, new_scale: REAL_64
-		do
-			if x < 0 then
-				ds := 0.9
-			else
-				ds := 1.1
-			end
-			new_scale := scale_factor * ds
-			if Min_scale <= new_scale and new_scale <= Max_scale then
-				scale_factor := new_scale
-				world.scale (ds)
-				-- This translation is here because we want to scale around the center of the city, not the center of `world'
-				world.set_x_y (world.x + ((center_x - world.x) * (1.0 - ds)).rounded, world.y + ((center_y - world.y) * (1.0 - ds)).rounded)
-				projector.project
-			end
-		end
-
-	on_resize (x: INTEGER; y: INTEGER; width: INTEGER; height: INTEGER)
-			-- Resize map.
-		do
-			world.invalidate
+			scale_factor := scale_factor * ds
+			world.scale (ds)
+			-- This translation is here because we want to scale around the center of the city, not the center of `world'
+			world.set_x_y (world.x + ((center_x - world.x) * (1.0 - ds)).rounded, world.y + ((center_y - world.y) * (1.0 - ds)).rounded)
+			projector.project
 		end
 
 invariant
@@ -290,4 +265,5 @@ invariant
 	line_views_exisst: line_views /= Void
 	world_exists: world /= Void
 	projector_exists: projector /= Void
+	scale_factor_in_bounds: Min_scale <= scale_factor and scale_factor <= Max_scale
 end

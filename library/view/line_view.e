@@ -7,13 +7,6 @@ class
 inherit
 	VIEW
 
-inherit {NONE}
-
-	EV_FONT_CONSTANTS
-		export
-			{NONE} all
-		end
-
 create
 	make_in_city
 
@@ -54,11 +47,10 @@ feature {NONE} -- Initialization
 			map.world.send_to_back (background_polyline)
 			update
 
-			create mouse_clicked_actions
-			create mouse_double_clicked_actions
-			add_handlers (polyline)
+			make_actions
+			subscribe_model (polyline)
 			across labels as cursor loop
-				add_handlers (cursor.item.text)
+				subscribe_model (cursor.item.text)
 			end
 		end
 

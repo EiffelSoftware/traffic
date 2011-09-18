@@ -43,9 +43,9 @@ feature {NONE} -- Initialization
 			end
 			update
 
-			create mouse_clicked_actions
-			create mouse_double_clicked_actions
-			add_handlers (blob)
+			make_actions
+			subscribe_model (blob)
+			subscribe_model (icon)
 		end
 
 feature -- Acess
