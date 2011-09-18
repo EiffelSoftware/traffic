@@ -11,6 +11,14 @@
 	y CDATA #REQUIRED     
 	x CDATA #REQUIRED   
     >    
+    
+<!--- A transportation kind has a name, a default color and possibly and icon. --> 
+<!ELEMENT transport EMPTY> 
+<!ATTLIST transport
+	name CDATA #REQUIRED     
+	color CDATA #REQUIRED     
+	icon CDATA #IMPLIED   
+    >    
 
 <!--- A line has a name and type and contains stops. --> 
 <!ELEMENT line (stop*)> 

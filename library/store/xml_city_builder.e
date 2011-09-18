@@ -74,6 +74,8 @@ feature -- Events
 				transport_name := a_value
 			elseif current_tag ~ Transport_tag and a_local_part ~ Transport_color_attribute then
 				transport_color := a_value
+			elseif current_tag ~ Transport_tag and a_local_part ~ Transport_icon_attribute then
+				transport_icon := a_value
 			elseif current_tag ~ Line_tag and a_local_part ~ Line_name_attribute then
 				line_name := a_value
 			elseif current_tag ~ Line_tag and a_local_part ~ Line_kind_attribute then
@@ -97,6 +99,7 @@ feature -- Events
 			elseif a_local_part ~ Transport_tag then
 				transport_name := Void
 				transport_color := Void
+				transport_icon := Void
 			elseif a_local_part ~ Line_tag then
 				line_name := Void
 				line_kind := Void
@@ -143,6 +146,9 @@ feature -- Attribute names
 	Transport_color_attribute: STRING = "color"
 			-- Name of attribute that stores transportation kind default line color.
 
+	Transport_icon_attribute: STRING = "icon"
+			-- Name of attribute that stores transportation kind icon file name.
+
 	Line_name_attribute: STRING = "name"
 			-- Name of attribute that stores line name.
 
@@ -177,6 +183,9 @@ feature {NONE} -- State
 
 	transport_color: STRING
 			-- Value of last read transportation kind default line color attribute.	
+
+	transport_icon: STRING
+			-- Value of last read transportation kind icon file name attribute.				
 
 	line_name: STRING
 			-- Value of last read line name attribute.	
@@ -239,7 +248,7 @@ feature {NONE} -- City building
 			elseif not is_color (transport_color) then
 				error_handler.on_error ("Invalid color: " + transport_color)
 			else
-				city.add_transport_kind (transport_name, create {COLOR}.make_from_hex (transport_color))
+				city.add_transport_kind (transport_name, create {COLOR}.make_from_hex (transport_color), transport_icon)
 			end
 		end
 

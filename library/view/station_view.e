@@ -4,11 +4,10 @@ note
 class
 	STATION_VIEW
 
+inherit
+	VIEW
+
 inherit {NONE}
-	EV_STOCK_COLORS
-		export
-			{NONE} all
-		end
 
 	EV_FONT_CONSTANTS
 		export
@@ -20,7 +19,7 @@ create
 
 feature {NONE} -- Initialization
 
-	make_in_city (a_station: STATION; a_map: CITY_VIEW)
+	make_in_city (a_station: STATION; a_map: MAP)
 			-- Create representation of `a_station' and add it to `a_map'.
 		require
 			a_map_exists: a_map /= Void
@@ -39,12 +38,8 @@ feature {NONE} -- Initialization
 
 			create mouse_clicked_actions
 			create mouse_double_clicked_actions
-			blob.pointer_button_press_actions.extend (agent on_mouse_button_pressed)
-			blob.pointer_button_release_actions.extend (agent on_mouse_button_released)
-			blob.pointer_double_press_actions.extend (agent on_mouse_button_double_clicked)
-			label.text.pointer_button_press_actions.extend (agent on_mouse_button_pressed)
-			label.text.pointer_button_release_actions.extend (agent on_mouse_button_released)
-			label.text.pointer_double_press_actions.extend (agent on_mouse_button_double_clicked)
+			add_handlers (blob)
+			add_handlers (label.text)
 		end
 
 feature -- Access
@@ -52,31 +47,24 @@ feature -- Access
 	station: STATION
 			-- Underlying model.
 
-feature -- Status report
-
-	is_highlighted: BOOLEAN
-			-- Is this station highlighted?
-
 feature -- Status setting
 
 	highlight
-			-- Highlight this station.
+			-- Make visually distinct.
 		do
 			is_highlighted := True
-			blob.set_background_color (Yellow)
-			label.set_background_color (Yellow)
-		ensure
-			highlighted: is_highlighted
+			blob.set_foreground_color (Highlight_color)
+			blob.set_line_width (5)
+			label.set_background_color (Highlight_color)
 		end
 
 	unhighlight
-			-- Unhighlight this station.
+			-- Return to normal view.
 		do
 			is_highlighted := False
-			blob.set_background_color (White)
+			blob.set_foreground_color (Black)
+			blob.set_line_width (1)
 			label.set_background_color (White)
-		ensure
-			not_highlighted: not is_highlighted
 		end
 
 feature -- Basic operations
@@ -99,7 +87,7 @@ feature -- Basic operations
 			blob.set_point_a_position (point_a.x, point_a.y)
 			blob.set_point_b_position (point_b.x, point_b.y)
 			blob.set_radius (blob.width // 4)
-			font_height := (Font_size * map.scale_factor).truncated_to_integer
+			font_height := (Font_size * map.scale_factor).rounded
 			if font_height <= 0 then
 				label.text.font.set_height (1)
 			else
@@ -107,7 +95,7 @@ feature -- Basic operations
 			end
 			label.text.set_text (station.name)
 			label.fit_to_text
-			label.set_x_y (blob.point_b_x + label_gap + label.width // 2, blob.y)
+			label.set_x_y ((blob.point_b_x + label_gap * map.scale_factor + label.width / 2).rounded, blob.y)
 		end
 
 	remove_from_city
@@ -116,14 +104,6 @@ feature -- Basic operations
 			map.world.prune_all (blob)
 			label.remove_from_world (map.world)
 		end
-
-feature -- Events
-
-	mouse_clicked_actions: EV_POINTER_BUTTON_ACTION_SEQUENCE
-			-- Mouse clicked on station.
-
-	mouse_double_clicked_actions: EV_POINTER_BUTTON_ACTION_SEQUENCE
-			-- Mouse double clicked on station.
 
 feature -- Parameters
 
@@ -140,9 +120,6 @@ feature {NONE} -- Implementation
 
 	label: LABEL
 			-- Label with station name.
-
-	map: CITY_VIEW
-			-- Map that this station view belongs to.
 
 	maximum_sibling_lines: INTEGER
 			-- Maximum number of lines that directly connect `s' with some other station in `c'.
@@ -172,34 +149,8 @@ feature {NONE} -- Implementation
 			end
 		end
 
-feature {NONE} -- Event handlers
-
-	pressed_location: TUPLE [x, y: INTEGER]
-			-- Location where mouse was last pressed.
-
-	on_mouse_button_pressed (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
-			-- Handle mouse button pressed event.
-		do
-			pressed_location := [x, y]
-		end
-
-	on_mouse_button_released (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
-			-- Handle mouse button released event.
-		do
-			if pressed_location.x = x and pressed_location.y = y then
-				mouse_clicked_actions.call ([x, y, button, x_tilt, y_tilt, pressure, screen_x, screen_y])
-			end
-		end
-
-	on_mouse_button_double_clicked (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
-			-- Handle mouse button double clicked event.
-		do
-			mouse_double_clicked_actions.call ([x, y, button, x_tilt, y_tilt, pressure, screen_x, screen_y])
-		end
-
 invariant
 	station_exists: station /= Void
 	blob_exists: blob /= Void
 	label_exists: label /= Void
-	map_exists: map /= Void
 end

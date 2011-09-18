@@ -183,9 +183,9 @@ invariant
 	kind_exists: kind /= Void
 	stations_exists: stations /= Void
 	color_exists: color /= Void
-	all_stations_exist: stations.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
-	all_stations_contain_current: stations.for_all (agent (s: STATION): BOOLEAN do Result := s.lines.has (Current) end)
-	no_duplicates: stations.for_all (agent (s: STATION): BOOLEAN do Result := stations.occurrences (s) = 1 end)
+	all_stations_exist: across stations as i all i.item /= Void end
+	all_stations_contain_current: across stations as i all i.item.lines.has (Current) end
+	no_duplicates: across stations as i all stations.occurrences (i.item) = 1 end
 	terminals: not stations.is_empty implies
 		(north_terminal = stations.first and south_terminal = stations.last) or
 		(north_terminal = stations.last and south_terminal = stations.first)

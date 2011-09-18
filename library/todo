@@ -1,2 +1,13 @@
+- Add right click event to city item views
+- Possibility to add event handlers to the map?
+- Test event handlers
+- Put time into city view
+- Add console
+- Create class DEMO
+- Remove test code
+
+- Support user-defined objects (at least mobiles)
+- Opening map files?
+- Background and water
+
 - Crashes when finalized
-- What happens with mobile objects when the city is updated? Right now crashes if a line terminal is changed.

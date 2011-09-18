@@ -4,6 +4,9 @@ note
 class
 	TEST
 
+inherit
+	KL_SHARED_FILE_SYSTEM
+
 create
 	execute
 
@@ -13,6 +16,7 @@ feature {NONE} -- Initialization
 			-- Run application.
 		local
 			timeout: EV_TIMEOUT
+			icon: EV_PIXMAP
 		do
 			create_from_file
 
@@ -21,6 +25,11 @@ feature {NONE} -- Initialization
 				create window
 				window.set_size (1000, 1000)
 				window.set_title ("Traffic test")
+				if file_system.file_exists (file_system.pathname_to_string (icon_path)) then
+					create icon
+					icon.set_with_named_file (file_system.pathname_to_string (icon_path))
+					window.set_icon_pixmap (icon)
+				end
 				window.resize_actions.extend (agent on_resize)
 				window.close_request_actions.extend (agent on_close)
 				window.show
@@ -28,7 +37,7 @@ feature {NONE} -- Initialization
 				across
 					city.lines as li
 				loop
-					city.add_tram (li.value.name)
+					city.add_public_transport (li.value.name)
 				end
 
 				create map.make (city, window.width, window.height)
@@ -62,7 +71,8 @@ feature {NONE} -- Initialization
 				else
 					dt := new_time - last_update_time
 				end
-				map.update_movers (dt)
+				city.move_all (dt * 2)
+				map.update_mobile
 			end
 			last_update_time := new_time
 		end
@@ -71,7 +81,7 @@ feature {NONE} -- Implementation
 	city: CITY
 			-- Example city.
 
-	map: CITY_VIEW
+	map: MAP
 			-- Map of `city'.
 
 	gui_application: EV_APPLICATION
@@ -79,6 +89,16 @@ feature {NONE} -- Implementation
 
 	window: EV_TITLED_WINDOW
 			-- Main window.
+
+	icon_path: KL_PATHNAME
+			-- Path to application icon
+		once
+			create Result.make
+			Result.set_relative (True)
+			Result.append_parent
+			Result.append_name ("image")
+			Result.append_name ("traffic_icon.png")
+		end
 
 	on_close
 			-- Close `window' and exit.

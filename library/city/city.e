@@ -18,7 +18,7 @@ feature {NONE} -- Initialization
 			create {V_HASH_TABLE [STRING, STATION]} internal_stations.with_object_equality
 			create {V_HASH_TABLE [INTEGER, LINE]} internal_lines
 			create {V_HASH_TABLE [STRING, TRANSPORT_KIND]} internal_transport_kinds.with_object_equality
-			create {V_HASH_TABLE [STRING, MOBILE]} internal_movers.with_object_equality
+			create {V_ARRAYED_LIST [PUBLIC_TRANSPORT]} internal_transports
 		ensure
 			name_set: name = a_name
 			no_stations: stations.is_empty
@@ -30,26 +30,19 @@ feature -- Access
 	name: STRING
 			-- Name.
 
-feature -- Element change
+feature -- Geography
 
-	set_name (a_name: STRING)
-			-- Set `name' to `a_name'.
-		require
-			a_name_exists: a_name /= Void
-		do
-			name := a_name
-		ensure
-			name_set: name = a_name
-		end
+	north: REAL_64
+			-- Northmost coordinate.
 
-feature -- Timed update
+	south: REAL_64
+			-- Southmost coordinate.
 
-	update_movers (dt: INTEGER)
-			-- Update the movers with dt-milliseconds.
-		do
-			across internal_movers as mi
-			loop mi.value.update_with_dt (dt) end
-		end
+	east: REAL_64
+			-- Eastmost coordinate.	
+
+	west: REAL_64
+			-- Westmost coordinate.	
 
 feature -- Public transportation
 
@@ -65,9 +58,10 @@ feature -- Public transportation
 			Result := internal_lines
 		end
 
-	movers: V_MAP [STRING, MOBILE]
+	transports: V_SEQUENCE [PUBLIC_TRANSPORT]
+			-- Public transportation units.
 		do
-			Result := internal_movers
+			Result := internal_transports
 		end
 
 	transport_kinds: V_MAP [STRING, TRANSPORT_KIND]
@@ -103,21 +97,17 @@ feature -- Public transportation
 			-- ToDo: result is sorted and all lines connect `a_station_1' and `a_station_2'
 		end
 
-feature -- Geography
+feature -- City construction
 
-	north: REAL_64
-			-- Northmost coordinate.
-
-	south: REAL_64
-			-- Southmost coordinate.
-
-	east: REAL_64
-			-- Eastmost coordinate.	
-
-	west: REAL_64
-			-- Westmost coordinate.	
-
-feature -- Construction
+	set_name (a_name: STRING)
+			-- Set `name' to `a_name'.
+		require
+			a_name_exists: a_name /= Void
+		do
+			name := a_name
+		ensure
+			name_set: name = a_name
+		end
 
 	add_station (a_name: STRING; a_position: VECTOR)
 			-- Add station `a_name' at `a_position'.
@@ -150,39 +140,19 @@ feature -- Construction
 			no_stations: lines [a_name].stations.is_empty
 		end
 
-	add_transport_kind (a_name: STRING; a_default_color: COLOR)
-			-- Add transportation kind `a_name' with default line color `a_color'.
+	add_transport_kind (a_name: STRING; a_default_color: COLOR; a_icon_file: STRING)
+			-- Add transportation kind `a_name' with default line color `a_color'
+			-- and associated icon file `a_icon_file' (Void if no icon associated).
 		require
 			a_name_exists: a_name /= Void
 			unique_name: not transport_kinds.has_key (a_name)
 			a_default_color_exists: a_default_color /= Void
 		do
-			internal_transport_kinds.extend (create {TRANSPORT_KIND}.make (a_name, a_default_color), a_name)
+			internal_transport_kinds.extend (create {TRANSPORT_KIND}.make (a_name, a_default_color, a_icon_file), a_name)
 		ensure
 			kind_added: transport_kinds.has_key (a_name)
 			correct_color: transport_kinds [a_name].default_color ~ a_default_color
-		end
-
-	add_tram (a_name: INTEGER)
-		require
-			has_line: lines.has_key (a_name)
-		local
-			tram: TRAM
-		do
-			create tram.make_for_line (lines [a_name])
-			add_mover (tram.name, tram)
-		end
-
-	add_mover (a_name: STRING; a_mover: MOBILE)
-		require
-			name_non_void: a_name /= Void
-			mover_non_void: a_mover /= Void
-			name_is_new: not movers.has_key (a_name)
-		do
-			internal_movers.extend (a_mover, a_name)
-		ensure
-			mover_added: movers.has_key (a_name) and
-			             movers [a_name] = a_mover
+			correct_icon: transport_kinds [a_name].icon_file = a_icon_file
 		end
 
 	connect_station (line_name: INTEGER; station_name: STRING)
@@ -208,10 +178,28 @@ feature -- Construction
 		require
 			station_exists: stations.has_key (a_name)
 		local
-			station: STATION
+			station, a: STATION
 			j: V_LIST_ITERATOR [STATION]
+			ti: V_LIST_ITERATOR [PUBLIC_TRANSPORT]
+			t: PUBLIC_TRANSPORT
 		do
 			station := stations [a_name]
+			from
+				ti := internal_transports.new_cursor
+			until
+				ti.after
+			loop
+				t := ti.item
+				a := t.arriving
+				if ti.item.line.stations.count = 2 then
+					ti.remove
+				elseif ti.item.departed = station or ti.item.arriving = station then
+					ti.item.reset_position
+					ti.forth
+				else
+					ti.forth
+				end
+			end
 			across
 				station.lines as i
 			loop
@@ -231,6 +219,7 @@ feature -- Construction
 		local
 			line: LINE
 			j: V_LIST_ITERATOR [LINE]
+			ti: V_LIST_ITERATOR [PUBLIC_TRANSPORT]
 		do
 			line := lines [a_name]
 			across
@@ -240,18 +229,20 @@ feature -- Construction
 				j.search_forth (line)
 				j.remove
 			end
+			from
+				ti := internal_transports.new_cursor
+			until
+				ti.after
+			loop
+				if ti.item.line = line then
+					ti.remove
+				else
+					ti.forth
+				end
+			end
 			internal_lines.remove (a_name)
 		ensure
 			line_removed: not lines.has_key (a_name)
-		end
-
-	remove_mover (a_name: STRING)
-		require
-			mover_exists: movers.has_key (a_name)
-		do
-			internal_movers.remove (a_name)
-		ensure
-			mover_removed: not movers.has_key (a_name)
 		end
 
 	rename_station (a_station: STATION; a_new_name: STRING)
@@ -265,7 +256,7 @@ feature -- Construction
 			internal_stations.extend (a_station, a_new_name)
 		ensure
 			renamed: a_station.name ~ a_new_name
-			station_added: stations.item (a_new_name) = a_station
+			station_added: stations [a_new_name] = a_station
 		end
 
 	rename_line (a_line: LINE; a_new_name: INTEGER)
@@ -278,7 +269,39 @@ feature -- Construction
 			internal_lines.extend (a_line, a_new_name)
 		ensure
 			renamed: a_line.name = a_new_name
-			line_added: lines.item (a_new_name) = a_line
+			line_added: lines [a_new_name] = a_line
+		end
+
+feature -- Mobile
+
+	move_all (dt: INTEGER)
+			-- Update position of all public transportation units as if `dt' milliseconds passed.
+		require
+			dt_non_negative: dt >= 0
+		do
+			across
+				transports as ti
+			loop
+				ti.item.move (dt)
+			end
+		end
+
+	add_public_transport (a_line_name: INTEGER)
+			-- Add a vehicle moving along line `a_line_name'.
+		require
+			has_line: lines.has_key (a_line_name)
+		do
+			internal_transports.extend_back (create {PUBLIC_TRANSPORT}.make (lines [a_line_name]))
+		end
+
+	remove_transport (a_transport: PUBLIC_TRANSPORT)
+			-- Remove `a_transport'.
+		require
+			a_transport_exists: transports.has (a_transport)
+		do
+			internal_transports.remove_at (internal_transports.index_of (a_transport))
+		ensure
+			a_transport_removed: not transports.has (a_transport)
 		end
 
 feature {NONE} -- Implementation
@@ -291,19 +314,21 @@ feature {NONE} -- Implementation
 	internal_transport_kinds: V_TABLE [STRING, TRANSPORT_KIND]
 			-- Transport kinds indexed by name.
 
-	internal_movers: V_TABLE [STRING, MOBILE]
-			-- Movers indexed by name.
+	internal_transports: V_LIST [PUBLIC_TRANSPORT]
+			-- Public transportation units.
 
 invariant
 	stations_exists: stations /= Void
---	all_stations_exist: stations.for_all (agent (s: STATION): BOOLEAN do Result := s /= Void end)
---	stations_indexed_by_name: stations.for_all_keys (agent (n: STRING): BOOLEAN do Result := n ~ stations [n].name end)
+	all_stations_exist: across stations as i all i.value /= Void end
+	stations_indexed_by_name: across stations as i all i.key ~ i.value.name end
 	lines_exists: lines /= Void
---	all_lines_exist: lines.for_all (agent (l: LINE): BOOLEAN do Result := l /= Void end)
---	lines_indexed_by_name: lines.for_all_keys (agent (n: INTEGER): BOOLEAN do Result := n = lines [n].name end)
+	all_lines_exist: across lines as i all i.value /= Void end
+	lines_indexed_by_name: across lines as i all i.key = i.value.name end
 	transport_kinds_exists: transport_kinds /= Void
---	all_transport_kinds_exist: transport_kinds.for_all (agent (t: TRANSPORT_KIND): BOOLEAN do Result := t /= Void end)
---	transport_kinds_indexed_by_name: transport_kinds.for_all_keys (agent (n: STRING): BOOLEAN do Result := n ~ transport_kinds [n].name end)
+	all_transport_kinds_exist: across transport_kinds as i all i.value /= Void end
+	transport_kinds_indexed_by_name: across transport_kinds as i all i.key ~ i.value.name end
+	transports_exists: transports /= Void
+	all_transports_exist: across transports as i all i.item /= Void end
 	internal_stations_equal: internal_stations ~ stations
 	internal_lines_equal: internal_lines ~ lines
 	internal_transport_kinds_equal: internal_transport_kinds ~ transport_kinds

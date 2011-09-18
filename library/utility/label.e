@@ -84,6 +84,20 @@ feature -- Property setting
 			background.set_x_y (a_x, a_y)
 		end
 
+	show
+			-- Make visible.
+		do
+			text.show
+			background.show
+		end
+
+	hide
+			-- Make visible.
+		do
+			text.hide
+			background.hide
+		end
+
 feature -- Update
 	fit_to_text
 			-- Make the size of `background' equal to the size of `text'.

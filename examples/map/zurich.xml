@@ -51,9 +51,9 @@
 	<station name="Voltastrasse" x="700" y="20"/>
 	<station name="Werd" x="-900" y="-400"/>
 
-	<transport name="tram" color="ed1c24"/>
-	<transport name="bus" color="74beea"/>
-	<transport name="cable car" color="808080"/>
+	<transport name="tram" color="ed1c24" icon="../image/tram.png"/>
+	<transport name="bus" color="74beea" icon="../image/bus.png"/>
+	<transport name="cable car" color="808080" icon="../image/cable.png"/>
 
 	<line name="2" kind="tram" color="ed1c24">
 		<stop name="Stauffacher"/>

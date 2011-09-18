@@ -1,28 +1,25 @@
 note
-	description: "A city object that responds to time between updates."
+	description: "A city object that changes position with time."
 
 deferred class
 	MOBILE
 
-feature
-	make_with_position (a_name: STRING; a_position: VECTOR)
-		require
-			non_void_name: a_name /= Void
-		do
-			initial_position := a_position
-			name := a_name.twin
-		end
-
-	name: STRING
-
-	update_with_dt (dt: INTEGER)
-		deferred
-		end
+feature -- Access
 
 	position: VECTOR
+			-- Current position in the city.			
 		deferred
 		end
 
-	initial_position: VECTOR
+feature -- Movement
 
+	move (dt: INTEGER)
+			-- Update `position' as if `dt' milliseconds passed.
+		require
+			non_negative: dt >= 0
+		deferred
+		end
+
+invariant
+	position_exists: position /= Void
 end

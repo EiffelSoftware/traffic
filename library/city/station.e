@@ -107,7 +107,7 @@ invariant
 	name_exists: name /= Void
 	position_exists: position /= Void
 	lines_exists: lines /= Void
-	all_lines_exist: lines.for_all (agent (l: LINE): BOOLEAN do Result := l /= Void end)
-	all_lines_contain_current: lines.for_all (agent (l: LINE): BOOLEAN do Result := l.stations.has (Current) end)
+	all_lines_exist: across lines as i all i.item /= Void end
+	all_lines_contain_current: across lines as i all i.item.stations.has (Current) end
 	internal_lines_equal: internal_lines ~ lines
 end

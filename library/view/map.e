@@ -2,7 +2,7 @@ note
 	description: "Graphical representation of a city."
 
 class
-	CITY_VIEW
+	MAP
 
 create
 	make
@@ -25,26 +25,26 @@ feature {NONE} -- Initialization
 			create projector.make (world, pixmap)
 			create {V_HASH_TABLE [STRING, STATION_VIEW]} station_views.with_object_equality
 			create {V_HASH_TABLE [INTEGER, LINE_VIEW]} line_views
-			create {V_HASH_TABLE [STRING, MOVER_VIEW]} mover_views.with_object_equality
+			create {V_ARRAYED_LIST [TRANSPORT_VIEW]} transport_views
 
 			scale_factor := (a_width - 2 * Frame_width) / (city.east - city.west)
 			center_x := Frame_width + (-city.west * scale_factor).rounded
 			center_y := (a_height + ((city.north + city.south) * scale_factor).rounded) // 2 - Frame_width
 
 			across
-				city.lines as li
+				city.lines as i
 			loop
-				line_views [li.key] := create {LINE_VIEW}.make_in_city (li.value, Current)
+				line_views [i.key] := create {LINE_VIEW}.make_in_city (i.value, Current)
 			end
 			across
-				city.stations as si
+				city.stations as i
 			loop
-				station_views [si.key] := create {STATION_VIEW}.make_in_city (si.value, Current)
+				station_views [i.key] := create {STATION_VIEW}.make_in_city (i.value, Current)
 			end
 			across
-				city.movers as mi
+				city.transports as i
 			loop
-				mover_views [mi.key] := create {MOVER_VIEW}.make_in_city (mi.value, Current)
+				transport_views.extend_back (create {TRANSPORT_VIEW}.make_in_city (i.item, Current))
 			end
 
 			projector.project
@@ -70,10 +70,10 @@ feature -- Access
 	line_views: V_TABLE [INTEGER, LINE_VIEW]
 			-- Graphical representations of city lines.
 
-	mover_views: V_TABLE [STRING, MOVER_VIEW]
+	transport_views: V_LIST [TRANSPORT_VIEW]
 			-- Graphical representations of movers.
 
-feature {STATION_VIEW, LINE_VIEW, MOVER_VIEW, ANY} -- Access
+feature {VIEW} -- Access
 
 	world: EV_MODEL_WORLD
 			-- World that contains graphical representations of city objects.			
@@ -105,7 +105,7 @@ feature -- Basic operations
 		local
 			svi: V_TABLE_ITERATOR [STRING, STATION_VIEW]
 			lvi: V_TABLE_ITERATOR [INTEGER, LINE_VIEW]
-			mvi: V_TABLE_ITERATOR [STRING, MOVER_VIEW]
+			tvi: V_LIST_ITERATOR [TRANSPORT_VIEW]
 		do
 			-- Remove objects that do not exists anymore
 			from
@@ -133,18 +133,18 @@ feature -- Basic operations
 				end
 			end
 			from
-				mvi := mover_views.new_cursor
+				tvi := transport_views.new_cursor
 			until
-				mvi.after
+				tvi.after
 			loop
-				if not city.movers.has_key (mvi.key) then
-					mvi.value.remove_from_city
-					mvi.remove
+				if not city.transports.has (tvi.item.transport) then
+					tvi.item.remove_from_city
+					tvi.remove
 				else
-					mvi.forth
+					tvi.forth
 				end
 			end
-			-- Update existing and add new objects
+			-- Update existing and add new objects			
 			across
 				city.stations as si
 			loop
@@ -165,42 +165,47 @@ feature -- Basic operations
 					lvi.value.update
 				end
 			end
-
 			across
-				city.movers as mi
+				city.transports as ti
 			loop
-				mvi.search_key (mi.key)
+				tvi.start
+				tvi.satisfy_forth (agent (v: TRANSPORT_VIEW; t: PUBLIC_TRANSPORT): BOOLEAN do Result := v.transport = t end (?, ti.item))
 
-				if mvi.after then
-					mover_views [mi.key] := create {MOVER_VIEW}.make_in_city (mi.value, Current)
+				if tvi.after then
+					transport_views.extend_back (create {TRANSPORT_VIEW}.make_in_city (ti.item, Current))
 				else
-					mvi.value.update
+					tvi.item.update
 				end
 			end
 		end
 
-	update_movers (dt: INTEGER)
+	update_mobile
+			-- Update only existing mobile object views.
 		do
 			across
-				mover_views as mi
+				transport_views as tvi
 			loop
-				mi.value.mover.update_with_dt (dt)
-				mi.value.update
+				tvi.item.update
 			end
 
-				-- Are these both needed?
 			projector.project
-			world.invalidate
 		end
 
 feature {NONE} -- Implementation
-feature {NONE, ANY} -- Implementation
 
 	projector: EV_MODEL_PIXMAP_PROJECTOR
 			-- Projector used to generate `pixmap' from `world'.
 
+
 	Frame_width: INTEGER = 20
 			-- Minimum space left between the outer city object and the edge of the map in the default view.
+
+	Max_scale: REAL_64 = 5.0
+			-- Maximum scale factor.
+
+	Min_scale: REAL_64 = 0.2
+			-- Minimum scale factor.
+
 
 feature {NONE} -- Event handling
 
@@ -230,17 +235,6 @@ feature {NONE} -- Event handling
 				dx := x - world.x
 				dy := y - world.y
 			else
-				-- Todo: This code is here for testing. Remove!
-
---				create blob.make_with_points (world_coordinate ([-20.0, -20.0]), world_coordinate ([20.0, 20.0]))
---				blob.set_background_color (create {EV_COLOR}.make_with_rgb (1.0, 0.0, 0.0))
---				world.extend (blob)
-
---				city.connect_station (5, "Central")
---				line_views [5].update
-
-				city.add_station ("Dummy", [300.0, 300.0])
-				city.connect_station (5, "Dummy")
 				update
 			end
 		end
@@ -254,18 +248,21 @@ feature {NONE} -- Event handling
 	on_mouse_wheel (x: INTEGER)
 			-- Scale map.
 		local
-			ds: REAL_64
+			ds, new_scale: REAL_64
 		do
 			if x < 0 then
 				ds := 0.9
 			else
 				ds := 1.1
 			end
-			scale_factor := scale_factor * ds
-			world.scale (ds)
-			-- This translation is here because we want to scale around the center of the city, not the center of `world'
-			world.set_x_y (world.x + ((center_x - world.x) * (1.0 - ds)).rounded, world.y + ((center_y - world.y) * (1.0 - ds)).rounded)
-			projector.project
+			new_scale := scale_factor * ds
+			if Min_scale <= new_scale and new_scale <= Max_scale then
+				scale_factor := new_scale
+				world.scale (ds)
+				-- This translation is here because we want to scale around the center of the city, not the center of `world'
+				world.set_x_y (world.x + ((center_x - world.x) * (1.0 - ds)).rounded, world.y + ((center_y - world.y) * (1.0 - ds)).rounded)
+				projector.project
+			end
 		end
 
 	on_resize (x: INTEGER; y: INTEGER; width: INTEGER; height: INTEGER)
