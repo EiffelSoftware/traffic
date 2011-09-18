@@ -17,6 +17,9 @@ feature {NONE} -- Initialization
 		local
 			timeout: EV_TIMEOUT
 			icon: EV_PIXMAP
+			sv: STATION_VIEW
+			lv: LINE_VIEW
+			tv: TRANSPORT_VIEW
 		do
 			create_from_file
 
@@ -48,51 +51,28 @@ feature {NONE} -- Initialization
 				across
 					map.station_views as i
 				loop
-					i.value.on_left_click.extend_back (agent (sv: STATION_VIEW; x, y: INTEGER) do sv.highlight end (i.value, ?, ?))
+					sv := i.value
+					sv.on_left_click_no_args.extend_back (agent sv.highlight)
 				end
 				across
 					map.line_views as i
 				loop
-					i.value.on_left_click.extend_back (agent (lv: LINE_VIEW; x, y: INTEGER) do lv.highlight end (i.value, ?, ?))
+					lv := i.value
+					lv.on_left_click_no_args.extend_back (agent lv.highlight)
 				end
 				across
 					map.transport_views as i
 				loop
-					i.item.on_double_click.extend_back (agent (tv: TRANSPORT_VIEW; x, y: INTEGER) do tv.highlight end (i.item, ?, ?))
+					tv := i.item
+					tv.on_left_click_no_args.extend_back (agent tv.highlight)
 				end
 
-
-				last_update_time := -1
-				create timeout.make_with_interval (33)
-				timeout.actions.extend (agent update_movers)
+				map.set_time_speedup (5.0)
+				map.on_double_click_no_args.extend_back (agent map.start_animation)
+				map.on_right_click_no_args.extend_back (agent map.stop_animation)
 
 				gui_application.launch
 			end
-		end
-
-	last_update_time: INTEGER
-			-- Time when last update was called.
-			-- Resolution is milliseconds, wraps after 60 seconds
-			-- (i.e. value is between 0 and 60000)
-
-	update_movers
-		local
-			date: C_DATE
-			new_time: INTEGER
-			dt: INTEGER
-		do
-			create date
-			new_time := (date.second_now * 1000) + date.millisecond_now
-			if last_update_time > 0 then
-				if new_time < last_update_time then
-					dt := new_time - last_update_time + 60000
-				else
-					dt := new_time - last_update_time
-				end
-				city.move_all (dt * 2)
-				map.update_mobile
-			end
-			last_update_time := new_time
 		end
 
 feature {NONE} -- Implementation

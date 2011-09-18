@@ -12,8 +12,11 @@ feature {NONE} -- Initialization
 			-- Initialize action sequences.
 		do
 			create {V_ARRAYED_LIST [PROCEDURE [ANY, TUPLE [x: INTEGER; y: INTEGER]]]} on_left_click
+			create {V_ARRAYED_LIST [PROCEDURE [ANY, TUPLE]]} on_left_click_no_args
 			create {V_ARRAYED_LIST [PROCEDURE [ANY, TUPLE [x: INTEGER; y: INTEGER]]]} on_right_click
+			create {V_ARRAYED_LIST [PROCEDURE [ANY, TUPLE]]} on_right_click_no_args
 			create {V_ARRAYED_LIST [PROCEDURE [ANY, TUPLE [x: INTEGER; y: INTEGER]]]} on_double_click
+			create {V_ARRAYED_LIST [PROCEDURE [ANY, TUPLE]]} on_double_click_no_args
 			create {V_ARRAYED_LIST [PROCEDURE [ANY, TUPLE [dx: INTEGER; dy: INTEGER]]]} on_drag
 			create {V_ARRAYED_LIST [PROCEDURE [ANY, TUPLE [up: BOOLEAN]]]} on_scroll
 		end
@@ -23,18 +26,26 @@ feature -- Actions
 	on_left_click: V_LIST [PROCEDURE [ANY, TUPLE [x: INTEGER; y: INTEGER]]]
 			-- Actions performed on left mouse button click.
 
+	on_left_click_no_args: V_LIST [PROCEDURE [ANY, TUPLE]]
+			-- Actions without arguments performed on left mouse button click.			
+
 	on_right_click: V_LIST [PROCEDURE [ANY, TUPLE [x: INTEGER; y: INTEGER]]]
 			-- Actions performed on right mouse button click.
 
+	on_right_click_no_args: V_LIST [PROCEDURE [ANY, TUPLE]]
+			-- Actions without arguments performed on right mouse button click.			
+
 	on_double_click: V_LIST [PROCEDURE [ANY, TUPLE [x: INTEGER; y: INTEGER]]]
 			-- Actions performed on double mouse button click.
+
+	on_double_click_no_args: V_LIST [PROCEDURE [ANY, TUPLE]]
+			-- Actions without arguments performed on double mouse click.						
 
 	on_drag: V_LIST [PROCEDURE [ANY, TUPLE [dx: INTEGER; dy: INTEGER]]]
 			-- Actions performed when mouse is dragged.
 
 	on_scroll: V_LIST [PROCEDURE [ANY, TUPLE [up: BOOLEAN]]]
 			-- Actions performed when mouse wheel is scrolled.
-
 
 feature {MAP_WIDGET} -- Setup
 
@@ -86,8 +97,10 @@ feature {NONE} -- Implementation
 			if not has_moved then
 				if button = {EV_POINTER_CONSTANTS}.left then
 					across on_left_click as i loop i.item.call ([x, y]) end
+					across on_left_click_no_args as i loop i.item.call ([]) end
 				elseif button = {EV_POINTER_CONSTANTS}.right then
 					across on_right_click as i loop i.item.call ([x, y]) end
+					across on_right_click_no_args as i loop i.item.call ([]) end
 				end
 			end
 			is_button_pressed := False
@@ -97,6 +110,7 @@ feature {NONE} -- Implementation
 			-- Handle mouse button double clicked event.
 		do
 			across on_double_click as i loop i.item.call ([x, y]) end
+			across on_double_click_no_args as i loop i.item.call ([]) end
 		end
 
 	handle_leave

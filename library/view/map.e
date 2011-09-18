@@ -26,34 +26,18 @@ feature {NONE} -- Initialization
 			create world
 			create pixmap.make_with_size (a_width, a_height)
 			create projector.make (world, pixmap)
-			create {V_HASH_TABLE [STRING, STATION_VIEW]} station_views.with_object_equality
-			create {V_HASH_TABLE [INTEGER, LINE_VIEW]} line_views
-			create {V_ARRAYED_LIST [TRANSPORT_VIEW]} transport_views
 
 			scale_factor := (a_width - 2 * Frame_width) / (city.east - city.west)
 			center_x := Frame_width + (-city.west * scale_factor).rounded
 			center_y := (a_height + ((city.north + city.south) * scale_factor).rounded) // 2 - Frame_width
 
-			across
-				city.lines as i
-			loop
-				line_views [i.key] := create {LINE_VIEW}.make_in_city (i.value, Current)
-			end
-			across
-				city.stations as i
-			loop
-				station_views [i.key] := create {STATION_VIEW}.make_in_city (i.value, Current)
-			end
-			across
-				city.transports as i
-			loop
-				transport_views.extend_back (create {TRANSPORT_VIEW}.make_in_city (i.item, Current))
-			end
-
+			make_item_views
 			projector.project
 
 			make_actions
 			subscribe_widget (pixmap)
+
+			time_speedup := 1.0
 		end
 
 feature -- Access
@@ -224,6 +208,67 @@ feature -- Transformations
 			end
 		end
 
+feature -- Animation
+
+	time_speedup: REAL_64
+			-- How much city time is faster than real-world time?
+
+	set_time_speedup (a_speedup: REAL_64)
+			-- Set `time_speedup' ro `a_speedup'.
+		require
+			a_speedup_positive: a_speedup > 0.0
+		do
+			time_speedup := a_speedup
+		ensure
+			speedup_set: time_speedup = a_speedup
+		end
+
+	start_animation
+			-- Start moving mobile objects.
+		do
+			last_timeout := 0
+			create timeout.make_with_interval (33)
+			timeout.actions.extend (agent handle_timeout)
+		end
+
+	stop_animation
+			-- Stop moving mobile objects.
+		do
+			if timeout /= Void then
+				timeout.destroy
+			end
+		end
+
+feature {NONE} -- Animation
+
+	timeout: EV_TIMEOUT
+			-- Object that signals timeout events.
+
+	last_timeout: INTEGER
+			-- Time when last timeout event occurred.
+			-- Resolution is milliseconds, wraps after 60 seconds.
+
+	handle_timeout
+			-- Update model and view in reponse to a timeout.
+		local
+			date: C_DATE
+			new_time: INTEGER
+			dt: INTEGER
+		do
+			create date
+			new_time := (date.second_now * 1000) + date.millisecond_now
+			if last_timeout > 0 then
+				if new_time < last_timeout then
+					dt := new_time - last_timeout + 60000
+				else
+					dt := new_time - last_timeout
+				end
+				city.move_all ((dt * time_speedup).rounded)
+				update_mobile
+			end
+			last_timeout := new_time
+		end
+
 feature {NONE} -- Parameters
 
 	Max_scale: REAL_64 = 5.0
@@ -246,6 +291,30 @@ feature {NONE} -- Implementation
 	projector: EV_MODEL_PIXMAP_PROJECTOR
 			-- Projector used to generate `pixmap' from `world'.			
 
+	make_item_views
+			-- Initialize views of city items.
+		do
+			create {V_HASH_TABLE [STRING, STATION_VIEW]} station_views.with_object_equality
+			create {V_HASH_TABLE [INTEGER, LINE_VIEW]} line_views
+			create {V_ARRAYED_LIST [TRANSPORT_VIEW]} transport_views
+
+			across
+				city.lines as i
+			loop
+				line_views [i.key] := create {LINE_VIEW}.make_in_city (i.value, Current)
+			end
+			across
+				city.stations as i
+			loop
+				station_views [i.key] := create {STATION_VIEW}.make_in_city (i.value, Current)
+			end
+			across
+				city.transports as i
+			loop
+				transport_views.extend_back (create {TRANSPORT_VIEW}.make_in_city (i.item, Current))
+			end
+		end
+
 	scale_by (ds: REAL_64)
 			-- Scale map by `ds' times.
 		require
@@ -266,4 +335,6 @@ invariant
 	world_exists: world /= Void
 	projector_exists: projector /= Void
 	scale_factor_in_bounds: Min_scale <= scale_factor and scale_factor <= Max_scale
+	time_speedup_positive: time_speedup > 0
+	last_timeout_in_bounds: 0 <= last_timeout and last_timeout <= 60000
 end
