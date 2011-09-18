@@ -29,9 +29,9 @@ feature -- Tests
 		do
 			create city.make ("Zurich")
 
-			city.add_transport_kind ("tram", create {COLOR}.make_from_real_rgb (1.0, 0.0, 0.0))
-			city.add_transport_kind ("bus",	create {COLOR}.make_from_rgb (116, 190, 234))
-			city.add_transport_kind ("cable car",	create {COLOR}.make_from_real_rgb (0.5, 0.5, 0.5))
+			city.add_transport_kind ("tram", create {COLOR}.make_from_real_rgb (1.0, 0.0, 0.0), Void)
+			city.add_transport_kind ("bus",	create {COLOR}.make_from_rgb (116, 190, 234), Void)
+			city.add_transport_kind ("cable car",	create {COLOR}.make_from_real_rgb (0.5, 0.5, 0.5), Void)
 
 			city.add_station ("Central", [100.0, 0.0])
 			city.add_station ("Bahnhofplatz/HB", [-200.0, 0.0])

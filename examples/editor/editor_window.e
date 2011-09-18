@@ -119,7 +119,7 @@ feature {NONE} -- Initialization
 	city: CITY
 			-- City that is being displayed.
 
-	map: CITY_VIEW
+	map: MAP
 			-- City view to visualize city.
 
 	build_main_container
@@ -133,7 +133,7 @@ feature {NONE} -- Initialization
 		do
 			if map /= Void and then map.pixmap /= Void then
 				map.pixmap.set_size (a_width, a_height)
-				map.projector.project
+				map.refresh
 			end
 		end
 
@@ -259,7 +259,7 @@ feature -- Basic operations
 					i.item.disable_select
 				end
 			end
-			map.projector.project
+--			map.projector.project
 		ensure
 			selected_station_set: selected_station = a_station
 		end
@@ -278,7 +278,7 @@ feature -- Basic operations
 					i.item.disable_select
 				end
 			end
-			map.projector.project
+--			map.projector.project
 		end
 
 	deselect_station

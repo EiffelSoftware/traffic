@@ -1,7 +1,6 @@
-- Add right click event to city item views
-- Possibility to add event handlers to the map?
+- High-level events for views (including MAP); move existing event handlers to DEMO?
 - Test event handlers
-- Put time into city view
+- Put time into city view (or some other class)
 - Add console
 - Create class DEMO
 - Remove test code

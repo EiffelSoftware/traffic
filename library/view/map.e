@@ -53,6 +53,7 @@ feature {NONE} -- Initialization
 			pixmap.pointer_button_release_actions.extend (agent on_button_released)
 			pixmap.pointer_motion_actions.extend (agent on_mouse_move)
 			pixmap.mouse_wheel_actions.extend (agent on_mouse_wheel)
+			pixmap.pointer_leave_actions.extend (agent on_mouse_leave)
 			pixmap.resize_actions.extend (agent on_resize)
 		end
 
@@ -101,7 +102,7 @@ feature {VIEW} -- Access
 feature -- Basic operations
 
 	update
-			-- Update according to state of `city'.
+			-- Syncronize view with `city'.
 		local
 			svi: V_TABLE_ITERATOR [STRING, STATION_VIEW]
 			lvi: V_TABLE_ITERATOR [INTEGER, LINE_VIEW]
@@ -180,7 +181,7 @@ feature -- Basic operations
 		end
 
 	update_mobile
-			-- Update only existing mobile object views.
+			-- Synchronize only existing mobile object views.
 		do
 			across
 				transport_views as tvi
@@ -191,11 +192,16 @@ feature -- Basic operations
 			projector.project
 		end
 
+	refresh
+			-- Refresh `pixmap' without synchronizing with the model.
+		do
+			projector.project
+		end
+
 feature {NONE} -- Implementation
 
 	projector: EV_MODEL_PIXMAP_PROJECTOR
-			-- Projector used to generate `pixmap' from `world'.
-
+			-- Projector used to generate `pixmap' from `world'.			
 
 	Frame_width: INTEGER = 20
 			-- Minimum space left between the outer city object and the edge of the map in the default view.
@@ -241,6 +247,12 @@ feature {NONE} -- Event handling
 
 	on_button_released (x: INTEGER; y: INTEGER; button: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
 			-- Record that button is released.	
+		do
+			is_button_pressed := False
+		end
+
+	on_mouse_leave
+			-- Record that mouse leaves the map.
 		do
 			is_button_pressed := False
 		end
