@@ -15,11 +15,12 @@ feature {NONE} -- Initialization
 	execute
 			-- Run application.
 		local
-			timeout: EV_TIMEOUT
 			icon: EV_PIXMAP
 			sv: STATION_VIEW
 			lv: LINE_VIEW
 			tv: TRANSPORT_VIEW
+			box: EV_VERTICAL_BOX
+			console: TRAFFIC_CONSOLE
 		do
 			create_from_file
 
@@ -43,33 +44,42 @@ feature {NONE} -- Initialization
 					city.add_public_transport (li.value.name)
 				end
 
-				create map.make (city, window.width, window.height)
-				window.extend (map.pixmap)
+				create box
+				create console.make
+				create map.make (city, window.width, window.height - console.height)
+				box.extend (map.pixmap)
+				box.extend (console)
+				box.disable_item_expand (console)
+				window.extend (box)
 				map.pixmap.set_focus
 				map.on_scroll.extend_back (agent zoom)
 				map.on_drag.extend_back (agent map.translate)
+				map.on_right_click_no_args.extend_back (agent deselect)
+				map.on_right_click_no_args.extend_back (agent console.output (city))
 				across
 					map.station_views as i
 				loop
 					sv := i.value
-					sv.on_left_click_no_args.extend_back (agent sv.highlight)
+					sv.on_left_click_no_args.extend_back (agent select_view (sv))
+					sv.on_left_click_no_args.extend_back (agent console.output (sv.station))
 				end
 				across
 					map.line_views as i
 				loop
 					lv := i.value
-					lv.on_left_click_no_args.extend_back (agent lv.highlight)
+					lv.on_left_click_no_args.extend_back (agent select_view (lv))
+					lv.on_left_click_no_args.extend_back (agent console.output (lv.line))
 				end
 				across
 					map.transport_views as i
 				loop
 					tv := i.item
-					tv.on_left_click_no_args.extend_back (agent tv.highlight)
+					tv.on_left_click_no_args.extend_back (agent select_view (tv))
+					tv.on_left_click_no_args.extend_back (agent console.output (tv.transport))
 				end
 
 				map.set_time_speedup (5.0)
-				map.on_double_click_no_args.extend_back (agent map.start_animation)
-				map.on_right_click_no_args.extend_back (agent map.stop_animation)
+				map.on_double_click_no_args.extend_back (agent start_stop)
 
 				gui_application.launch
 			end
@@ -147,4 +157,32 @@ feature {NONE} -- Implementation
 			end
 		end
 
+	start_stop
+		do
+			if map.is_animated then
+				map.stop_animation
+			else
+				map.start_animation
+			end
+		end
+
+	selected: VIEW
+
+	select_view (v: VIEW)
+		do
+			if selected /= Void then
+				selected.unhighlight
+			end
+			v.highlight
+			selected := v
+		end
+
+	deselect
+		do
+			if selected /= Void then
+				selected.unhighlight
+				selected := Void
+				map.refresh
+			end
+		end
 end

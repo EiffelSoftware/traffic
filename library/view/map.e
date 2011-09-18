@@ -210,6 +210,9 @@ feature -- Transformations
 
 feature -- Animation
 
+	is_animated: BOOLEAN
+			-- Is animation running?
+
 	time_speedup: REAL_64
 			-- How much city time is faster than real-world time?
 
@@ -226,6 +229,7 @@ feature -- Animation
 	start_animation
 			-- Start moving mobile objects.
 		do
+			is_animated := True
 			last_timeout := 0
 			create timeout.make_with_interval (33)
 			timeout.actions.extend (agent handle_timeout)
@@ -234,6 +238,7 @@ feature -- Animation
 	stop_animation
 			-- Stop moving mobile objects.
 		do
+			is_animated := False
 			if timeout /= Void then
 				timeout.destroy
 			end

@@ -6,6 +6,9 @@ class
 
 inherit
 	MOBILE
+		redefine
+			out
+		end
 
 create
 	make
@@ -94,6 +97,15 @@ feature -- Movement
 			departed := arriving
 			is_going_south := not is_going_south
 		end
+
+feature -- Output
+
+	out: STRING
+			-- Textual representation.
+		do
+			Result := name.out + " towards " + destination.name
+		end
+
 
 feature {NONE} -- Implementation
 

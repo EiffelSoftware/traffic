@@ -171,7 +171,10 @@ feature -- Output
 	out: STRING
 			-- Textual representation.
 		do
-			Result := name.out + " " + kind.name + " [" + stations.out + "]"
+			Result := kind.name + " line " + name.out
+			if not stations.is_empty then
+				Result.append (" (" + north_terminal.name + " -- " + south_terminal.name + ")")
+			end
 		end
 
 feature {CITY} -- Implementation

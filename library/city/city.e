@@ -4,6 +4,12 @@ note
 class
 	CITY
 
+inherit
+	ANY
+		redefine
+			out
+		end
+
 create
 	make
 
@@ -303,6 +309,15 @@ feature -- Mobile
 		ensure
 			a_transport_removed: not transports.has (a_transport)
 		end
+
+feature -- Output
+
+	out: STRING
+			-- Textual representation.
+		do
+			Result := "city of " + name
+		end
+
 
 feature {NONE} -- Implementation
 	internal_stations: V_TABLE [STRING, STATION]

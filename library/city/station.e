@@ -94,9 +94,8 @@ feature -- Output
 	out: STRING
 			-- Textual representation.
 		do
-			Result := name + " " + position.out
+			Result := "station " + name + " " + position.out
 		end
-
 
 feature {CITY} -- Implementation
 
