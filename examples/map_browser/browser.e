@@ -1,8 +1,8 @@
 note
-	description : "Testing traffic library"
+	description : "Browsing traffic city maps"
 
 class
-	TEST
+	BROWSER
 
 inherit
 	KL_SHARED_FILE_SYSTEM
