@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-8-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-8-0 http://www.eiffel.com/developers/xml/configuration-1-8-0.xsd" name="map_browser" uuid="6FA5F1A1-3964-494B-902E-9525D9E5E176">
+	<target name="map_browser">
+		<root class="BROWSER" feature="execute"/>
+		<option warning="true" syntax="provisional">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<setting name="automatic_backup" value="true"/>
+		<precompile name="vision2_pre" location="$ISE_PRECOMP\vision2.ecf"/>
+		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="base2" location="$EIFFELBASE2\base2.ecf"/>
+		<library name="gobo_kernel" location="$ISE_LIBRARY\library\gobo\gobo_kernel.ecf"/>
+		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
+		<library name="traffic" location="..\..\library\traffic.ecf" readonly="false">
+			<option>
+				<assertions precondition="true" postcondition="true" check="true" loop="true" supplier_precondition="true"/>
+			</option>
+		</library>
+		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf"/>
+		<cluster name="test" location=".\" recursive="true">
+			<file_rule>
+				<exclude>/EIFGENs$</exclude>
+				<exclude>/CVS$</exclude>
+				<exclude>/.svn$</exclude>
+			</file_rule>
+		</cluster>
+	</target>
+</system>

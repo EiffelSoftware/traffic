@@ -1,8 +1,0 @@
-newmtl villa_brown
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
-Ns 50.000000
-Tr 0.000000
-illum 1
-map_Kd ..\buildings\villa_brown_128.tga

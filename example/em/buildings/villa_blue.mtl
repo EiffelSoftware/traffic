@@ -1,8 +1,0 @@
-newmtl villa_blue
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
-Ns 50.000000
-Tr 0.000000
-illum 1
-map_Kd ..\buildings\villa_blue_128.tga
