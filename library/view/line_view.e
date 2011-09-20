@@ -33,8 +33,7 @@ feature {NONE} -- Initialization
 				i > Label_count
 			loop
 				create label.make (line.name.out)
-				label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular,
-					(Font_size * map.scale_factor).truncated_to_integer))
+				label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
 				label.add_to_world (map.world)
 				labels.extend_back (label)
 				i := i + 1
@@ -152,9 +151,6 @@ feature -- Parameters
 	Gap: INTEGER = 5
 			-- Gap between two lines connecting the same stations.
 
-	Font_size: INTEGER = 20
-			-- Font size for line numbers.
-
 	Label_count: INTEGER = 2
 			-- Number of labels on a line.
 
@@ -173,16 +169,10 @@ feature {NONE} -- Implementation
 			-- Update label `l' between stations `s1' and `s2' with line segment shifted by `offset'.
 		local
 			center: VECTOR
-			font_height: INTEGER
 		do
 			l.show
 			l.text.set_text (line.name.out)
-			font_height := (Font_size * map.scale_factor).truncated_to_integer
-			if font_height <= 0 then
-				l.text.font.set_height (1)
-			else
-				l.text.font.set_height (font_height)
-			end
+			l.text.font.set_height (scaled_font_size)
 			l.fit_to_text
 			l.set_background_color (polyline.foreground_color)
 			if line.color.brightness < 0.6 then

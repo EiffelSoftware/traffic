@@ -48,7 +48,19 @@ feature -- Geography
 			-- Eastmost coordinate.	
 
 	west: REAL_64
-			-- Westmost coordinate.	
+			-- Westmost coordinate.
+
+	size_ns: REAL_64
+			-- City size from north to south.
+		do
+			Result := north - south
+		end
+
+	size_ew: REAL_64
+			-- City size from east to west.
+		do
+			Result := east - west
+		end
 
 feature -- Public transportation
 
@@ -333,6 +345,8 @@ feature {NONE} -- Implementation
 			-- Public transportation units.
 
 invariant
+	size_ns_non_negavive: size_ns >= 0.0
+	size_ew_non_negavive: size_ew >= 0.0
 	stations_exists: stations /= Void
 	all_stations_exist: across stations as i all i.value /= Void end
 	stations_indexed_by_name: across stations as i all i.key ~ i.value.name end

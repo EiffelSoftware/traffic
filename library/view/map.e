@@ -12,24 +12,22 @@ create
 
 feature {NONE} -- Initialization
 
-	make (a_city: CITY; a_width, a_height: INTEGER)
+	make (a_city: CITY)
 			-- Create a map of `a_city' with dimensions `a_width' and `a_height'.
 		require
 			a_city_exists: a_city /= Void
-			a_width_positive: a_width > 0
-			a_height_positive: a_height > 0
 		local
 			color: EV_COLOR
 		do
 			city := a_city
 
 			create world
-			create pixmap.make_with_size (a_width, a_height)
+			create pixmap
 			create projector.make (world, pixmap)
 
-			scale_factor := (a_width - 2 * Frame_width) / (city.east - city.west)
-			center_x := Frame_width + (-city.west * scale_factor).rounded
-			center_y := (a_height + ((city.north + city.south) * scale_factor).rounded) // 2 - Frame_width
+			scale_factor := 1.0
+			center_x := city.east.rounded
+			center_y := city.north.rounded
 
 			make_item_views
 			projector.project
@@ -208,6 +206,21 @@ feature -- Transformations
 			end
 		end
 
+	fit_to_window (a_width, a_height: INTEGER)
+			-- Translate and scale so that the map fits into dimesions [`a_width', `a_height']
+		require
+			a_width_in_bounds: city.size_ew * Min_scale + 2 * Frame_width <= a_width and a_width <= city.size_ew * Max_scale + 2 * Frame_width
+			a_height_in_bounds: city.size_ns * Min_scale + 2 * Frame_Width <= a_height and a_height <= city.size_ns * Max_scale + 2 * Frame_Width
+		local
+			x_scale, y_scale: REAL_64
+		do
+			x_scale := (a_width - 2 * Frame_width) / city.size_ew
+			y_scale := (a_height - 2 * Frame_width) / city.size_ns
+			scale_by (x_scale.min (y_scale) / scale_factor)
+			translate ((a_width - ((city.east + city.west) * scale_factor).rounded) // 2 - center_x,
+					(a_height + ((city.north + city.south) * scale_factor).rounded) // 2 - center_y)
+		end
+
 feature -- Animation
 
 	is_animated: BOOLEAN
@@ -274,7 +287,7 @@ feature {NONE} -- Animation
 			last_timeout := new_time
 		end
 
-feature {NONE} -- Parameters
+feature -- Parameters
 
 	Max_scale: REAL_64 = 5.0
 			-- Maximum scale factor.

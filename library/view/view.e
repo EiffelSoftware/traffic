@@ -43,7 +43,7 @@ feature -- Status setting
 			not_highlighted: not is_highlighted
 		end
 
-feature -- Basic operations
+feature {VIEW, MAP} -- Basic operations
 
 	update
 			-- Update according to the state of the model.
@@ -61,6 +61,22 @@ feature {NONE} -- Parameters
 			-- Color with which views are highlighted.
 		once
 			Result := Yellow
+		end
+
+	Font_size: INTEGER = 20
+			-- Font size for text elements.
+
+feature {NONE} -- Implementation
+
+	scaled_font_size: INTEGER
+			-- Font size with the current scaling of `map'.
+		do
+			Result := (Font_size * map.scale_factor).truncated_to_integer
+			if Result <= 0 then
+				Result := 1
+			end
+		ensure
+			positive: Result > 0
 		end
 
 invariant

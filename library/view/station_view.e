@@ -24,8 +24,7 @@ feature {NONE} -- Initialization
 			blob.set_background_color (White)
 			a_map.world.extend (blob)
 			create label.make (station.name)
-			label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular,
-				(Font_size * map.scale_factor).truncated_to_integer))
+			label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
 			label.add_to_world (a_map.world)
 			update
 
@@ -67,7 +66,6 @@ feature -- Basic operations
 			radius: REAL_64
 			n: INTEGER
 			point_a, point_b: EV_COORDINATE
-			font_height: INTEGER
 		do
 			n := maximum_sibling_lines
 			if n = 0 then
@@ -79,12 +77,7 @@ feature -- Basic operations
 			blob.set_point_a_position (point_a.x, point_a.y)
 			blob.set_point_b_position (point_b.x, point_b.y)
 			blob.set_radius (blob.width // 4)
-			font_height := (Font_size * map.scale_factor).rounded
-			if font_height <= 0 then
-				label.text.font.set_height (1)
-			else
-				label.text.font.set_height (font_height)
-			end
+			label.text.font.set_height (scaled_font_size)
 			label.text.set_text (station.name)
 			label.fit_to_text
 			label.set_x_y ((blob.point_b_x + label_gap * map.scale_factor + label.width / 2).rounded, blob.y)
@@ -101,9 +94,6 @@ feature -- Parameters
 
 	label_gap: INTEGER = 10
 			-- Gap between blob and name label.
-
-	Font_size: INTEGER = 20
-			-- Font size for name label.
 
 feature {NONE} -- Implementation
 
