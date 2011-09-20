@@ -40,7 +40,10 @@ feature {NONE} -- Initialization
 
 			load_city
 			if city /= Void then
-				create map.make (city, window.client_width, window.client_height - console.height)
+				create map.make (city)
+				map.pixmap.set_size (window.client_width, window.client_height - console.height)
+				map.fit_to_window (window.client_width, window.client_height - console.height)
+				map.refresh
 				map_frame.extend (map.pixmap)
 				map.pixmap.set_focus
 				map_frame.resize_actions.extend (agent on_resize)
