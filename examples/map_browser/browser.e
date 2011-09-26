@@ -42,7 +42,7 @@ feature {NONE} -- Initialization
 			if city /= Void then
 				create map.make (city)
 				map.pixmap.set_size (window.client_width, window.client_height - console.height)
-				map.fit_to_window (window.client_width, window.client_height - console.height)
+				map.fit_to_window
 				map.refresh
 				map_frame.extend (map.pixmap)
 				map.pixmap.set_focus
@@ -198,9 +198,9 @@ feature {NONE} -- Map manipulation
 			-- Start and stop animation on `map'.
 		do
 			if map.is_animated then
-				map.stop_animation
+				map.deanimate
 			else
-				map.start_animation
+				map.animate
 			end
 		end
 

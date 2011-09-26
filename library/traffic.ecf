@@ -2,7 +2,7 @@
 <system xmlns="http://www.eiffel.com/developers/xml/configuration-1-5-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-5-0 http://www.eiffel.com/developers/xml/configuration-1-5-0.xsd" name="traffic" uuid="22F30E5A-0BB1-43C9-B125-6E85136835BF" library_target="traffic">
 	<target name="traffic">
 		<root all_classes="true"/>
-		<option syntax="provisional"/>
+		<option void_safety="none" syntax="provisional"/>
 		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
 		<library name="base2" location="$EIFFELBASE2/base2.ecf"/>
 		<library name="gobo_kernel" location="$ISE_LIBRARY/library/gobo/gobo_kernel.ecf"/>			

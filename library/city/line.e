@@ -82,6 +82,31 @@ feature -- Access
 			end
 		end
 
+	east_terminal: STATION
+			-- The first station of the line.
+		require
+			has_stations: not stations.is_empty
+		do
+			if stations.first.position.x > stations.last.position.x then
+				Result := stations.first
+			else
+				Result := stations.last
+			end
+		end
+
+	west_terminal: STATION
+			-- The last stations of the line.
+		require
+			has_stations: not stations.is_empty
+		do
+			if stations.first.position.x > stations.last.position.x then
+				Result := stations.last
+			else
+				Result := stations.first
+			end
+		end
+
+
 	next_station (a_station, a_direction: STATION): STATION
 			-- Next station after `a_station' in direction of terminal `a_direction'.
 			-- Void if `a_station' is the last in this direction.

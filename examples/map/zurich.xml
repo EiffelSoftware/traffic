@@ -34,7 +34,7 @@
 	<station name="Opernhaus" x="300" y="-1400"/>
 	<station name="Paradeplatz" x="-120" y="-700"/>
 	<station name="Platte" x="540" y="-200"/>
-	<station name="Polyterasse" x="220" y="-50"/>
+	<station name="Polyterrasse" x="220" y="-50"/>
 	<station name="Rathaus" x="100" y="-500"/>
 	<station name="Rennweg" x="-200" y="-350"/>
 	<station name="Rentenanstalt" x="-450" y="-1300"/>
@@ -198,7 +198,7 @@
 	</line>
 	<line name="24" kind="cable car">
 		<stop name="Central"/>
-		<stop name="Polyterasse"/>
+		<stop name="Polyterrasse"/>
 	</line>
 	<line name="31" kind="bus" color="979fce">
 		<stop name="Hardplatz"/>

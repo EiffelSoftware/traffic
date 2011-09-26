@@ -229,7 +229,7 @@ feature {NONE} -- City building
 			elseif not station_x.is_double or not station_y.is_double then
 				error_handler.on_error ("Station " + station_name + " coordinate is not a real number")
 			else
-				city.add_station (station_name, [station_x.to_double, station_y.to_double])
+				city.add_station (station_name, station_x.to_double, station_y.to_double)
 			end
 		end
 
@@ -293,7 +293,7 @@ feature {NONE} -- City building
 			elseif city.lines [line_name.to_integer].stations.has (city.stations [stop_name]) then
 				error_handler.on_error ("Station " + stop_name + " occurs twice on line " + line_name)
 			else
-				city.connect_station (line_name.to_integer, stop_name)
+				city.append_station (line_name.to_integer, stop_name)
 			end
 		end
 

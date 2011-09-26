@@ -206,19 +206,19 @@ feature -- Transformations
 			end
 		end
 
-	fit_to_window (a_width, a_height: INTEGER)
-			-- Translate and scale so that the map fits into dimesions [`a_width', `a_height']
-		require
-			a_width_in_bounds: city.size_ew * Min_scale + 2 * Frame_width <= a_width and a_width <= city.size_ew * Max_scale + 2 * Frame_width
-			a_height_in_bounds: city.size_ns * Min_scale + 2 * Frame_Width <= a_height and a_height <= city.size_ns * Max_scale + 2 * Frame_Width
+	fit_to_window
+			-- Translate and scale so that the map fits into `pixmap'
+			-- if its size is within range of minimum and maximum scale.
 		local
 			x_scale, y_scale: REAL_64
 		do
-			x_scale := (a_width - 2 * Frame_width) / city.size_ew
-			y_scale := (a_height - 2 * Frame_width) / city.size_ns
+			x_scale := (pixmap.width - 2 * Frame_width) / city.size_ew
+			x_scale := x_scale.min (Max_scale).max (Min_scale)
+			y_scale := (pixmap.height - 2 * Frame_width) / city.size_ns
+			y_scale := y_scale.min (Max_scale).max (Min_scale)
 			scale_by (x_scale.min (y_scale) / scale_factor)
-			translate ((a_width - ((city.east + city.west) * scale_factor).rounded) // 2 - center_x,
-					(a_height + ((city.north + city.south) * scale_factor).rounded) // 2 - center_y)
+			translate ((pixmap.width - ((city.east + city.west) * scale_factor).rounded) // 2 - center_x,
+					(pixmap.height + ((city.north + city.south) * scale_factor).rounded) // 2 - center_y)
 		end
 
 feature -- Animation
@@ -239,8 +239,8 @@ feature -- Animation
 			speedup_set: time_speedup = a_speedup
 		end
 
-	start_animation
-			-- Start moving mobile objects.
+	animate
+			-- Start animation of mobile objects.
 		do
 			is_animated := True
 			last_timeout := 0
@@ -248,8 +248,8 @@ feature -- Animation
 			timeout.actions.extend (agent handle_timeout)
 		end
 
-	stop_animation
-			-- Stop moving mobile objects.
+	deanimate
+			-- Stop animation of mobile objects.
 		do
 			is_animated := False
 			if timeout /= Void then

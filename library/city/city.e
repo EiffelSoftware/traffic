@@ -127,21 +127,20 @@ feature -- City construction
 			name_set: name = a_name
 		end
 
-	add_station (a_name: STRING; a_position: VECTOR)
-			-- Add station `a_name' at `a_position'.
+	add_station (a_name: STRING; a_x, a_y: REAL_64)
+			-- Add station `a_name' at position [`a_x', `a_y'].
 		require
 			a_name_exists: a_name /= Void
 			unique_name: not stations.has_key (a_name)
-			a_position_exists: a_position /= Void
 		do
-			internal_stations.extend (create {STATION}.make (a_name, a_position), a_name)
-			west := west.min (a_position.x)
-			east := east.max (a_position.x)
-			south := south.min (a_position.y)
-			north := north.max (a_position.y)
+			internal_stations.extend (create {STATION}.make (a_name, [a_x, a_y]), a_name)
+			west := west.min (a_x)
+			east := east.max (a_x)
+			south := south.min (a_y)
+			north := north.max (a_y)
 		ensure
 			station_added: stations.has_key (a_name)
-			correct_position: stations [a_name].position = a_position
+			correct_position: stations [a_name].position ~ [a_x, a_y]
 			not_connected: stations [a_name].lines.is_empty
 		end
 
@@ -173,7 +172,7 @@ feature -- City construction
 			correct_icon: transport_kinds [a_name].icon_file = a_icon_file
 		end
 
-	connect_station (line_name: INTEGER; station_name: STRING)
+	append_station (line_name: INTEGER; station_name: STRING)
 			-- Connect station `station_name' to the end of line `line_name'.
 		require
 			line_exists: lines.has_key (line_name)
@@ -189,6 +188,46 @@ feature -- City construction
 			station.internal_lines.extend_back (line)
 		ensure
 			line_extended: lines [line_name].stations.last = stations [station_name]
+		end
+
+	prepend_station (line_name: INTEGER; station_name: STRING)
+			-- Connect station `station_name' to the beginning of line `line_name'.
+		require
+			line_exists: lines.has_key (line_name)
+			stations_exists: stations.has_key (station_name)
+			new_station: not lines [line_name].stations.has (stations [station_name])
+		local
+			station: STATION
+			line: LINE
+		do
+			station := stations [station_name]
+			line := lines [line_name]
+			line.internal_stations.extend_front (station)
+			station.internal_lines.extend_back (line)
+		ensure
+			line_extended: lines [line_name].stations.first = stations [station_name]
+		end
+
+	connect_station (line_name: INTEGER; station_name: STRING)
+			-- Connect station `station_name' to the closest end of line `line_name'.
+		require
+			line_exists: lines.has_key (line_name)
+			stations_exists: stations.has_key (station_name)
+			new_station: not lines [line_name].stations.has (stations [station_name])
+		local
+			station: STATION
+			line: LINE
+		do
+			station := stations [station_name]
+			line := lines [line_name]
+			if (station.position - line.stations.last.position).length > (station.position - line.stations.first.position).length then
+				line.internal_stations.extend_front (station)
+			else
+				line.internal_stations.extend_back (station)
+			end
+			station.internal_lines.extend_back (line)
+		ensure
+			line_extended: lines [line_name].stations.has (stations [station_name])
 		end
 
 	remove_station (a_name: STRING)

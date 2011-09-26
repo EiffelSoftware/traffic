@@ -71,10 +71,7 @@ feature {NONE} -- Implementation
 	scaled_font_size: INTEGER
 			-- Font size with the current scaling of `map'.
 		do
-			Result := (Font_size * map.scale_factor).truncated_to_integer
-			if Result <= 0 then
-				Result := 1
-			end
+			Result := (Font_size * map.scale_factor).truncated_to_integer.max (1)
 		ensure
 			positive: Result > 0
 		end
