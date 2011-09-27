@@ -39,9 +39,6 @@ feature -- Access
 	position: VECTOR
 			-- Current position in the city.
 
-	is_going_south: BOOLEAN
-			-- Is transport currently going towards the south terminal of `line'?
-
 	departed: STATION
 			-- The last station visited by the transport.
 
@@ -54,12 +51,17 @@ feature -- Access
 	destination: STATION
 			-- The terminal station that the transport is moving towards.
 		do
-			if is_going_south then
-				Result := line.south_terminal
+			if is_towards_last then
+				Result := line.last
 			else
-				Result := line.north_terminal
+				Result := line.first
 			end
 		end
+
+feature -- Status report
+
+	is_towards_last: BOOLEAN
+			-- Is transport currently heading towards the last station of `line'?
 
 feature -- Movement
 	move (dt: INTEGER)
@@ -75,7 +77,7 @@ feature -- Movement
 			belongs_to_line: line.stations.has (s)
 		do
 			if s = destination then
-				is_going_south := not is_going_south
+				is_towards_last := not is_towards_last
 			end
 			departed := s
 			position := s.position
@@ -86,8 +88,8 @@ feature -- Movement
 	reset_position
 			-- Go to the default position.
 		do
-			is_going_south := True
-			departed := line.north_terminal
+			is_towards_last := True
+			departed := line.first
 			position := departed.position
 		end
 
@@ -95,7 +97,7 @@ feature -- Movement
 			-- Reverse direction.
 		do
 			departed := arriving
-			is_going_south := not is_going_south
+			is_towards_last := not is_towards_last
 		end
 
 feature -- Output

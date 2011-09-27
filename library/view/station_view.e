@@ -118,14 +118,14 @@ feature {NONE} -- Implementation
 				station.lines as i
 			loop
 				l := i.item
-				s2 := l.next_station (station, l.north_terminal)
+				s2 := l.next_station (station, l.first)
 				if s2 /= Void then
 					n := map.city.connecting_lines (station, s2).count
 					if n > Result then
 						Result := n
 					end
 				end
-				s2 := l.next_station (station, l.south_terminal)
+				s2 := l.next_station (station, l.last)
 				if s2 /= Void then
 					n := map.city.connecting_lines (station, s2).count
 					if n > Result then

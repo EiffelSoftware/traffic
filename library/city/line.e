@@ -144,7 +144,7 @@ feature -- Access
 			-- Void if `a_station' is the last in this direction.
 		require
 			a_station_on_line: stations.has (a_station)
-			a_direction_is_terminal: a_direction = north_terminal or a_direction = south_terminal
+			a_direction_is_terminal: a_direction = first or a_direction = last
 		local
 			i: V_ITERATOR [STATION]
 		do
@@ -294,7 +294,7 @@ feature -- Output
 		do
 			Result := kind.name + " line " + name.out
 			if not stations.is_empty then
-				Result.append (" (" + north_terminal.name + " -- " + south_terminal.name + ")")
+				Result.append (" (" + first.name + " -- " + last.name + ")")
 			end
 		end
 

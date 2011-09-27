@@ -103,8 +103,8 @@ feature -- Public transportation
 				a_station_1.lines as i
 			loop
 				line := i.item
-				if line.next_station (a_station_1, line.north_terminal) = a_station_2 or
-					line.next_station (a_station_1, line.south_terminal) = a_station_2 then
+				if line.next_station (a_station_1, line.first) = a_station_2 or
+					line.next_station (a_station_1, line.last) = a_station_2 then
 					list.extend_back (line)
 				end
 			end
@@ -112,7 +112,8 @@ feature -- Public transportation
 			Result := list
 		ensure
 			result_exists: Result /= Void
-			-- ToDo: result is sorted and all lines connect `a_station_1' and `a_station_2'
+			connect_stations: across Result as i all i.item.stations.has (a_station_1) and i.item.stations.has (a_station_2) end
+			sorted: across Result as i all not i.is_last implies i.target [i.index].name <= i.target [i.index + 1].name end
 		end
 
 feature -- City construction
