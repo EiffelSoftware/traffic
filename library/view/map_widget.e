@@ -138,8 +138,11 @@ feature {NONE} -- Implementation
 
 invariant
 	on_left_click_exists: on_left_click /= Void
+	on_left_click_no_args_exists: on_left_click_no_args /= Void
 	on_right_click_exists: on_right_click /= Void
+	on_right_click_no_args_exists: on_right_click_no_args /= Void
 	on_double_click_exists: on_double_click /= Void
+	on_double_click_no_args_exists: on_double_click_no_args /= Void
 	on_drag_exists: on_drag /= Void
 	on_scroll_exists: on_scroll /= Void
 end

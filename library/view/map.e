@@ -20,22 +20,18 @@ feature {NONE} -- Initialization
 			color: EV_COLOR
 		do
 			city := a_city
-
 			create world
 			create pixmap
 			create projector.make (world, pixmap)
-
+			make_actions
 			scale_factor := 1.0
 			center_x := city.east.rounded
 			center_y := city.north.rounded
+			time_speedup := 1.0
 
 			make_item_views
 			projector.project
-
-			make_actions
 			subscribe_widget (pixmap)
-
-			time_speedup := 1.0
 		end
 
 feature -- Access
@@ -91,18 +87,6 @@ feature -- Basic operations
 		do
 			-- Remove objects that do not exists anymore
 			from
-				svi := station_views.new_cursor
-			until
-				svi.after
-			loop
-				if not city.stations.has_key (svi.key) then
-					svi.value.remove_from_city
-					svi.remove
-				else
-					svi.forth
-				end
-			end
-			from
 				lvi := line_views.new_cursor
 			until
 				lvi.after
@@ -112,6 +96,18 @@ feature -- Basic operations
 					lvi.remove
 				else
 					lvi.forth
+				end
+			end
+			from
+				svi := station_views.new_cursor
+			until
+				svi.after
+			loop
+				if not city.stations.has_key (svi.key) then
+					svi.value.remove_from_city
+					svi.remove
+				else
+					svi.forth
 				end
 			end
 			from
@@ -128,16 +124,6 @@ feature -- Basic operations
 			end
 			-- Update existing and add new objects			
 			across
-				city.stations as si
-			loop
-				svi.search_key (si.key)
-				if svi.after then
-					station_views [si.key] := create {STATION_VIEW}.make_in_city (si.value, Current)
-				else
-					svi.value.update
-				end
-			end
-			across
 				city.lines as li
 			loop
 				lvi.search_key (li.key)
@@ -145,6 +131,16 @@ feature -- Basic operations
 					line_views [li.key] := create {LINE_VIEW}.make_in_city (li.value, Current)
 				else
 					lvi.value.update
+				end
+			end
+			across
+				city.stations as si
+			loop
+				svi.search_key (si.key)
+				if svi.after then
+					station_views [si.key] := create {STATION_VIEW}.make_in_city (si.value, Current)
+				else
+					svi.value.update
 				end
 			end
 			across
@@ -159,6 +155,7 @@ feature -- Basic operations
 					tvi.item.update
 				end
 			end
+			refresh
 		end
 
 	update_mobile

@@ -133,7 +133,7 @@ feature -- City construction
 			a_name_exists: a_name /= Void
 			unique_name: not stations.has_key (a_name)
 		do
-			internal_stations.extend (create {STATION}.make (a_name, [a_x, a_y]), a_name)
+			internal_stations.extend (create {STATION}.make (a_name, [a_x, a_y], Current), a_name)
 			west := west.min (a_x)
 			east := east.max (a_x)
 			south := south.min (a_y)
@@ -150,7 +150,7 @@ feature -- City construction
 			unique_name: not lines.has_key (a_name)
 			a_kind_exists: transport_kinds.has_key (a_kind)
 		do
-			internal_lines.extend (create {LINE}.make (a_name, transport_kinds [a_kind]), a_name)
+			internal_lines.extend (create {LINE}.make (a_name, transport_kinds [a_kind], Current), a_name)
 		ensure
 			line_added: lines.has_key (a_name)
 			correct_kind: lines [a_name].kind = transport_kinds [a_kind]
@@ -176,36 +176,24 @@ feature -- City construction
 			-- Connect station `station_name' to the end of line `line_name'.
 		require
 			line_exists: lines.has_key (line_name)
-			stations_exists: stations.has_key (station_name)
+			station_exists: stations.has_key (station_name)
 			new_station: not lines [line_name].stations.has (stations [station_name])
-		local
-			station: STATION
-			line: LINE
 		do
-			station := stations [station_name]
-			line := lines [line_name]
-			line.internal_stations.extend_back (station)
-			station.internal_lines.extend_back (line)
+			lines [line_name].append (stations [station_name])
 		ensure
-			line_extended: lines [line_name].stations.last = stations [station_name]
+			station_is_last: lines [line_name].last = stations [station_name]
 		end
 
 	prepend_station (line_name: INTEGER; station_name: STRING)
 			-- Connect station `station_name' to the beginning of line `line_name'.
 		require
 			line_exists: lines.has_key (line_name)
-			stations_exists: stations.has_key (station_name)
+			station_exists: stations.has_key (station_name)
 			new_station: not lines [line_name].stations.has (stations [station_name])
-		local
-			station: STATION
-			line: LINE
 		do
-			station := stations [station_name]
-			line := lines [line_name]
-			line.internal_stations.extend_front (station)
-			station.internal_lines.extend_back (line)
+			lines [line_name].prepend (stations [station_name])
 		ensure
-			line_extended: lines [line_name].stations.first = stations [station_name]
+			station_is_first: lines [line_name].first = stations [station_name]
 		end
 
 	connect_station (line_name: INTEGER; station_name: STRING)
@@ -214,20 +202,10 @@ feature -- City construction
 			line_exists: lines.has_key (line_name)
 			stations_exists: stations.has_key (station_name)
 			new_station: not lines [line_name].stations.has (stations [station_name])
-		local
-			station: STATION
-			line: LINE
 		do
-			station := stations [station_name]
-			line := lines [line_name]
-			if (station.position - line.stations.last.position).length > (station.position - line.stations.first.position).length then
-				line.internal_stations.extend_front (station)
-			else
-				line.internal_stations.extend_back (station)
-			end
-			station.internal_lines.extend_back (line)
+			lines [line_name].connect (stations [station_name])
 		ensure
-			line_extended: lines [line_name].stations.has (stations [station_name])
+			station_is_terminal: lines [line_name].is_terminal (stations [station_name])
 		end
 
 	remove_station (a_name: STRING)
@@ -302,31 +280,27 @@ feature -- City construction
 			line_removed: not lines.has_key (a_name)
 		end
 
-	rename_station (a_station: STATION; a_new_name: STRING)
-			-- Rename `a_station' to `a_new_name'.
+	rename_station (a_old_name, a_new_name: STRING)
+			-- Rename station `a_old_name' to `a_new_name'.
 		require
-			a_new_name_exists: a_new_name /= Void
+			old_name_exists: stations.has_key (a_old_name)
+			new_name_exists: a_new_name /= Void
 			unique_name: not stations.has_key (a_new_name)
 		do
-			internal_stations.remove (a_station.name)
-			a_station.set_name (a_new_name)
-			internal_stations.extend (a_station, a_new_name)
+			stations [a_old_name].change_name (a_new_name)
 		ensure
-			renamed: a_station.name ~ a_new_name
-			station_added: stations [a_new_name] = a_station
+			renamed: stations [a_new_name] = old stations [a_old_name]
 		end
 
-	rename_line (a_line: LINE; a_new_name: INTEGER)
-			-- Rename `a_line' to `a_new_name'.
+	rename_line (a_old_name, a_new_name: INTEGER)
+			-- Rename line `a_old_name' to `a_new_name'.
 		require
+			old_name_exists: lines.has_key (a_old_name)
 			unique_name: not lines.has_key (a_new_name)
 		do
-			internal_lines.remove (a_line.name)
-			a_line.set_name (a_new_name)
-			internal_lines.extend (a_line, a_new_name)
+			lines [a_old_name].change_name (a_new_name)
 		ensure
-			renamed: a_line.name = a_new_name
-			line_added: lines [a_new_name] = a_line
+			renamed: lines [a_new_name] = old lines [a_old_name]
 		end
 
 feature -- Mobile
@@ -370,7 +344,7 @@ feature -- Output
 		end
 
 
-feature {NONE} -- Implementation
+feature {CITY, STATION, LINE} -- Implementation
 	internal_stations: V_TABLE [STRING, STATION]
 			-- Stations indexed by name.
 
@@ -389,9 +363,11 @@ invariant
 	stations_exists: stations /= Void
 	all_stations_exist: across stations as i all i.value /= Void end
 	stations_indexed_by_name: across stations as i all i.key ~ i.value.name end
+	all_stations_belong_to_city: across stations as i all i.value.city = Current end
 	lines_exists: lines /= Void
 	all_lines_exist: across lines as i all i.value /= Void end
 	lines_indexed_by_name: across lines as i all i.key = i.value.name end
+	all_lines_belong_to_city: across lines as i all i.value.city = Current end
 	transport_kinds_exists: transport_kinds /= Void
 	all_transport_kinds_exist: across transport_kinds as i all i.value /= Void end
 	transport_kinds_indexed_by_name: across transport_kinds as i all i.key ~ i.value.name end

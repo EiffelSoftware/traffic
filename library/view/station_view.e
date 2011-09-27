@@ -62,15 +62,14 @@ feature -- Basic operations
 
 	update
 			-- Update according to the state of `station'.
+			-- and bring to foreground of the map.
 		local
 			radius: REAL_64
 			n: INTEGER
 			point_a, point_b: EV_COORDINATE
+			w: EV_MODEL_WORLD
 		do
-			n := maximum_sibling_lines
-			if n = 0 then
-				n := 1
-			end
+			n := maximum_sibling_lines.max (1)
 			radius := n * ({LINE_VIEW}.width + {LINE_VIEW}.gap) / 2
 			point_a := map.world_coordinate (station.position - [radius, radius])
 			point_b := map.world_coordinate (station.position + [radius, radius])
@@ -81,6 +80,11 @@ feature -- Basic operations
 			label.text.set_text (station.name)
 			label.fit_to_text
 			label.set_x_y ((blob.point_b_x + label_gap * map.scale_factor + label.width / 2).rounded, blob.y)
+
+			w := blob.world
+			w.bring_to_front (blob)
+			w.bring_to_front (label.background)
+			w.bring_to_front (label.text)
 		end
 
 	remove_from_city
@@ -135,4 +139,6 @@ invariant
 	station_exists: station /= Void
 	blob_exists: blob /= Void
 	label_exists: label /= Void
+	blob_in_world: blob.world /= Void
+	same_world: label.world = blob.world
 end

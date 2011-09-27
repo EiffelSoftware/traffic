@@ -25,18 +25,20 @@ create {CITY}
 	make
 
 feature {NONE} -- Initialization
-	make (a_name: INTEGER; a_kind: TRANSPORT_KIND)
-			-- Create a line of kind `a_kind' with name `a_name'.
+	make (a_name: INTEGER; a_kind: TRANSPORT_KIND; a_city: CITY)
+			-- Create a line of kind `a_kind' with name `a_name' in `a_city'.
 		require
 			a_kind_exists: a_kind /= Void
 		do
 			name := a_name
 			kind := a_kind
+			city := a_city
 			color := kind.default_color
 			create {V_ARRAYED_LIST [STATION]} internal_stations
 		ensure
 			name_set: name = a_name
 			kind_set: kind = a_kind
+			city_set: city = a_city
 			default_color: color = kind.default_color
 			no_stations: stations.is_empty
 		end
@@ -52,14 +54,44 @@ feature -- Access
 	color: COLOR
 			-- Color.
 
+	city: CITY
+			-- City the line belongs to.
+
 	stations: V_SEQUENCE [STATION]
-			-- Stations the line goes through.
+			-- Stations the line goes through in default order.
+			-- Default order corresponds to the order in which a transport goes through the stations
+			-- and stays the same over time,
+			-- but does not define which end of the line is first and which is last.
 		do
 			Result := internal_stations
 		end
 
+	i_th (i: INTEGER): STATION
+			-- Station number `i' in default order.
+		require
+			i_in_bounds: 1 <= i and i <= count
+		do
+			Result := stations [i]
+		end
+
+	first: STATION
+			-- First station in default order.
+		require
+			has_stations: not stations.is_empty
+		do
+			Result := stations.first
+		end
+
+	last: STATION
+			-- Last station in default order.
+		require
+			has_stations: not stations.is_empty
+		do
+			Result := stations.last
+		end
+
 	north_terminal: STATION
-			-- The first station of the line.
+			-- Terminal station at the north end of the line.
 		require
 			has_stations: not stations.is_empty
 		do
@@ -71,7 +103,7 @@ feature -- Access
 		end
 
 	south_terminal: STATION
-			-- The last stations of the line.
+			-- Terminal station at the south end of the line.
 		require
 			has_stations: not stations.is_empty
 		do
@@ -80,22 +112,11 @@ feature -- Access
 			else
 				Result := stations.first
 			end
-		end
 
-	east_terminal: STATION
-			-- The first station of the line.
-		require
-			has_stations: not stations.is_empty
-		do
-			if stations.first.position.x > stations.last.position.x then
-				Result := stations.first
-			else
-				Result := stations.last
-			end
 		end
 
 	west_terminal: STATION
-			-- The last stations of the line.
+			-- Terminal station at the west end of the line.
 		require
 			has_stations: not stations.is_empty
 		do
@@ -106,6 +127,17 @@ feature -- Access
 			end
 		end
 
+	east_terminal: STATION
+			-- Terminal station at the east end of the line.
+		require
+			has_stations: not stations.is_empty
+		do
+			if stations.first.position.x > stations.last.position.x then
+				Result := stations.first
+			else
+				Result := stations.last
+			end
+		end
 
 	next_station (a_station, a_direction: STATION): STATION
 			-- Next station after `a_station' in direction of terminal `a_direction'.
@@ -130,13 +162,23 @@ feature -- Access
 			void_iff_last: (a_station = a_direction) = (Result = Void)
 		end
 
-	hash_code: INTEGER
-			-- Hash code value.
+feature -- Status report
+
+	is_terminal (a_station: STATION): BOOLEAN
+			-- Is `a_station' a terminal station of this line?
 		do
-			Result := name.hash_code
+			Result := a_station = first or a_station = last
+		ensure
+			first_or_last: Result = (a_station = first or a_station = last)
 		end
 
 feature -- Measurement
+
+	count: INTEGER
+			-- Number of stations.
+		do
+			Result := stations.count
+		end
 
 	distance (s1, s2: STATION): REAL_64
 			-- Distance between `s1' and `s2' along this line (meters).
@@ -171,7 +213,7 @@ feature -- Comparison
 			Result := name < other.name
 		end
 
-feature -- Property setting
+feature -- Modification
 
 	set_color (a_color: COLOR)
 			-- Set `color' to `a_color'.
@@ -181,14 +223,68 @@ feature -- Property setting
 			color_set: color = a_color
 		end
 
-feature {CITY} -- Property setting
-
-	set_name (a_name: INTEGER)
-			-- Set `name' to `a_name'.
+	change_name (a_new_name: INTEGER)
+			-- Set `name' to `a_new_name' and notify `city'.
+		require
+			unique_name: not city.lines.has_key (a_new_name)
 		do
-			name := a_name
+			city.internal_lines.remove (name)
+			name := a_new_name
+			city.internal_lines.extend (Current, a_new_name)
 		ensure
-			name_set: name = a_name
+			renamed: name = a_new_name
+			city_updated: city.lines [a_new_name] = Current
+		end
+
+	append (a_station: STATION)
+			-- Connect `a_station' to the last station.
+		require
+			stations_exists: a_station /= Void
+			same_city: a_station.city = city
+			new_station: not stations.has (a_station)
+		do
+			internal_stations.extend_back (a_station)
+			a_station.internal_lines.extend_back (Current)
+		ensure
+			one_more_station: count = old count + 1
+			station_is_last: last = a_station
+		end
+
+	prepend (a_station: STATION)
+			-- Connect `a_station' to the first station.
+		require
+			stations_exists: a_station /= Void
+			same_city: a_station.city = city
+			new_station: not stations.has (a_station)
+		do
+			internal_stations.extend_front (a_station)
+			a_station.internal_lines.extend_back (Current)
+		ensure
+			one_more_station: count = old count + 1
+			station_is_first: first = a_station
+		end
+
+	connect (a_station: STATION)
+			-- Connect `a_station' to the closest terminal.
+		require
+			stations_exists: a_station /= Void
+			same_city: a_station.city = city
+			new_station: not stations.has (a_station)
+		do
+			if (a_station.position - last.position).length <= (a_station.position - first.position).length then
+				append (a_station)
+			else
+				prepend (a_station)
+			end
+		ensure
+			one_more_station: count = old count + 1
+			station_is_terminal: is_terminal (a_station)
+		end
+
+	add_transport
+			-- Add a public transporation unit to the line.
+		do
+			city.add_public_transport (name)
 		end
 
 feature -- Output
@@ -202,21 +298,31 @@ feature -- Output
 			end
 		end
 
-feature {CITY} -- Implementation
+feature {CITY, STATION, LINE} -- Implementation
 
 	internal_stations: V_LIST [STATION]
 			-- Stations the line goes through.
+
+	hash_code: INTEGER
+			-- Hash code value.
+		do
+			Result := name.hash_code
+		end
 
 invariant
 	kind_exists: kind /= Void
 	stations_exists: stations /= Void
 	color_exists: color /= Void
+	city_exists: city /= Void
 	all_stations_exist: across stations as i all i.item /= Void end
 	all_stations_contain_current: across stations as i all i.item.lines.has (Current) end
 	no_duplicates: across stations as i all stations.occurrences (i.item) = 1 end
-	terminals: not stations.is_empty implies
-		(north_terminal = stations.first and south_terminal = stations.last) or
-		(north_terminal = stations.last and south_terminal = stations.first)
+	count_correct: count = stations.count
+	first: not stations.is_empty implies first = i_th (1)
+	last: not stations.is_empty implies last = i_th (count)
 	north_and_south: not stations.is_empty implies north_terminal.position.y >= south_terminal.position.y
+	north_is_not_south: count > 1 implies north_terminal /= south_terminal
+	east_and_west: not stations.is_empty implies east_terminal.position.x >= west_terminal.position.x
+	east_is_not_west: count > 1 implies west_terminal /= east_terminal
 	internal_stations_equal: internal_stations ~ stations
 end
