@@ -84,40 +84,40 @@
 		<stop name="Opernhaus"/>
 	</line>
 	<line name="5" kind="tram" color="946338">
-		<stop name="Bahnhof Enge"/>
-		<stop name="Rentenanstalt"/>
-		<stop name="Buerkliplatz"/>
-		<stop name="Bellevue"/>
-		<stop name="Kunsthaus"/>
-		<stop name="Kantonsschule"/>
-		<stop name="Platte"/>
-		<stop name="Voltastrasse"/>
 		<stop name="Kirche Fluntern"/>
+		<stop name="Voltastrasse"/>
+		<stop name="Platte"/>
+		<stop name="Kantonsschule"/>
+		<stop name="Kunsthaus"/>
+		<stop name="Bellevue"/>
+		<stop name="Buerkliplatz"/>
+		<stop name="Rentenanstalt"/>
+		<stop name="Bahnhof Enge"/>
 	</line>
 	<line name="6" kind="tram" color="d99f4f">
-		<stop name="Bahnhof Enge"/>
-		<stop name="Tunnelstrasse"/>
-		<stop name="Stockerstrasse"/>
-		<stop name="Paradeplatz"/>
-		<stop name="Rennweg"/>
-		<stop name="Bahnhofstrasse/HB"/>
-		<stop name="Central"/>
-		<stop name="Haldenegg"/>
-		<stop name="ETH/Universitaetsspital"/>
-		<stop name="Platte"/>
-		<stop name="Voltastrasse"/>
 		<stop name="Kirche Fluntern"/>
+		<stop name="Voltastrasse"/>
+		<stop name="Platte"/>
+		<stop name="ETH/Universitaetsspital"/>
+		<stop name="Haldenegg"/>
+		<stop name="Central"/>
+		<stop name="Bahnhofstrasse/HB"/>
+		<stop name="Rennweg"/>
+		<stop name="Paradeplatz"/>
+		<stop name="Stockerstrasse"/>
+		<stop name="Tunnelstrasse"/>
+		<stop name="Bahnhof Enge"/>
 	</line>
 	<line name="7" kind="tram" color="231f20">
-		<stop name="Bahnhof Enge"/>
-		<stop name="Tunnelstrasse"/>
-		<stop name="Stockerstrasse"/>
-		<stop name="Paradeplatz"/>
-		<stop name="Rennweg"/>
-		<stop name="Bahnhofstrasse/HB"/>
-		<stop name="Central"/>
-		<stop name="Haldenegg"/>
 		<stop name="Sonneggstrasse"/>
+		<stop name="Haldenegg"/>
+		<stop name="Central"/>
+		<stop name="Bahnhofstrasse/HB"/>
+		<stop name="Rennweg"/>
+		<stop name="Paradeplatz"/>
+		<stop name="Stockerstrasse"/>
+		<stop name="Tunnelstrasse"/>
+		<stop name="Bahnhof Enge"/>
 	</line>
 	<line name="8" kind="tram" color="a6ce39">
 		<stop name="Hardplatz"/>
@@ -134,25 +134,25 @@
 		<stop name="Kunsthaus"/>
 	</line>
 	<line name="9" kind="tram" color="49479d">
-		<stop name="Bahnhof Wiedikon"/>
-		<stop name="Werd"/>
-		<stop name="Stauffacher"/>
-		<stop name="Sihlstrasse"/>
-		<stop name="Paradeplatz"/>
-		<stop name="Boersenstrasse"/>
-		<stop name="Buerkliplatz"/>
-		<stop name="Bellevue"/>
-		<stop name="Kunsthaus"/>
-		<stop name="Kantonsschule"/>
-		<stop name="ETH/Universitaetsspital"/>
 		<stop name="Haldenbach"/>
+		<stop name="ETH/Universitaetsspital"/>
+		<stop name="Kantonsschule"/>
+		<stop name="Kunsthaus"/>
+		<stop name="Bellevue"/>
+		<stop name="Buerkliplatz"/>
+		<stop name="Boersenstrasse"/>
+		<stop name="Paradeplatz"/>
+		<stop name="Sihlstrasse"/>
+		<stop name="Stauffacher"/>
+		<stop name="Werd"/>
+		<stop name="Bahnhof Wiedikon"/>
 	</line>
 	<line name="10" kind="tram" color="ee3897">
-		<stop name="Bahnhofplatz/HB"/>
-		<stop name="Central"/>
-		<stop name="Haldenegg"/>
-		<stop name="ETH/Universitaetsspital"/>
 		<stop name="Haldenbach"/>
+		<stop name="ETH/Universitaetsspital"/>
+		<stop name="Haldenegg"/>
+		<stop name="Central"/>
+		<stop name="Bahnhofplatz/HB"/>
 	</line>
 	<line name="11" kind="tram" color="00ac4f">
 		<stop name="Stampfenbachplatz"/>
@@ -186,15 +186,15 @@
 		<stop name="Bahnhof Wiedikon"/>
 	</line>
 	<line name="15" kind="tram" color="ed1c24">
-		<stop name="Kreuzplatz"/>
-		<stop name="Bahnhof Stadelhofen"/>
-		<stop name="Bellevue"/>
-		<stop name="Helmhaus"/>
-		<stop name="Rathaus"/>
-		<stop name="Rudolf-Brun-Bruecke"/>
-		<stop name="Central"/>
-		<stop name="Haldenegg"/>
 		<stop name="Sonneggstrasse"/>
+		<stop name="Haldenegg"/>
+		<stop name="Central"/>
+		<stop name="Rudolf-Brun-Bruecke"/>
+		<stop name="Rathaus"/>
+		<stop name="Helmhaus"/>
+		<stop name="Bellevue"/>
+		<stop name="Bahnhof Stadelhofen"/>
+		<stop name="Kreuzplatz"/>
 	</line>
 	<line name="24" kind="cable car">
 		<stop name="Central"/>
