@@ -119,6 +119,12 @@ feature -- Basic operations
 			create Result.make (x - other.x, y - other.y)
 		end
 
+	distance (other: VECTOR): REAL_64
+			-- Distance from this point to `other'.
+		do
+			Result := (Current - other).length
+		end
+
 	opposite alias "-": VECTOR
 			-- Vector with the same length and opposite direction.
 		do

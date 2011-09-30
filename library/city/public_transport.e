@@ -121,7 +121,7 @@ feature {NONE} -- Implementation
 		do
 			segment := arriving.position - departed.position
 			proposed := position + segment.normalized * d
-			extra_length := (proposed - departed.position).length - segment.length
+			extra_length := proposed.distance (departed.position) - segment.length
 
 			if extra_length > 0 then
 				go_to_station (arriving)

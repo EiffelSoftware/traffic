@@ -70,10 +70,22 @@ feature -- Public transportation
 			Result := internal_stations
 		end
 
+	station (a_name: STRING): STATION
+			-- Station `a_name'.
+		do
+			Result := stations [a_name]
+		end
+
 	lines: V_MAP [INTEGER, LINE]
-			-- Lines indexed by name.
+			-- Lines indexed by number.
 		do
 			Result := internal_lines
+		end
+
+	line (a_number: INTEGER): LINE
+			-- Line number `a_number'.
+		do
+			Result := lines [a_number]
 		end
 
 	transports: V_SEQUENCE [PUBLIC_TRANSPORT]
@@ -96,16 +108,16 @@ feature -- Public transportation
 			a_station_2_in_city: stations.has (a_station_2)
 		local
 			list: V_ARRAYED_LIST [LINE]
-			line: LINE
+			l: LINE
 		do
 			create list
 			across
 				a_station_1.lines as i
 			loop
-				line := i.item
-				if line.next_station (a_station_1, line.first) = a_station_2 or
-					line.next_station (a_station_1, line.last) = a_station_2 then
-					list.extend_back (line)
+				l := i.item
+				if l.next_station (a_station_1, l.first) = a_station_2 or
+					l.next_station (a_station_1, l.last) = a_station_2 then
+					list.extend_back (l)
 				end
 			end
 			list.sort (agent {LINE}.is_less_equal)
@@ -214,12 +226,12 @@ feature -- City construction
 		require
 			station_exists: stations.has_key (a_name)
 		local
-			station, a: STATION
+			s, a: STATION
 			j: V_LIST_ITERATOR [STATION]
 			ti: V_LIST_ITERATOR [PUBLIC_TRANSPORT]
 			t: PUBLIC_TRANSPORT
 		do
-			station := stations [a_name]
+			s := stations [a_name]
 			from
 				ti := internal_transports.new_cursor
 			until
@@ -229,7 +241,7 @@ feature -- City construction
 				a := t.arriving
 				if ti.item.line.stations.count = 2 then
 					ti.remove
-				elseif ti.item.departed = station or ti.item.arriving = station then
+				elseif ti.item.departed = s or ti.item.arriving = s then
 					ti.item.reset_position
 					ti.forth
 				else
@@ -237,10 +249,10 @@ feature -- City construction
 				end
 			end
 			across
-				station.lines as i
+				s.lines as i
 			loop
 				j := i.item.internal_stations.new_cursor
-				j.search_forth (station)
+				j.search_forth (s)
 				j.remove
 			end
 			internal_stations.remove (a_name)
@@ -253,16 +265,16 @@ feature -- City construction
 		require
 			line_exists: lines.has_key (a_name)
 		local
-			line: LINE
+			l: LINE
 			j: V_LIST_ITERATOR [LINE]
 			ti: V_LIST_ITERATOR [PUBLIC_TRANSPORT]
 		do
-			line := lines [a_name]
+			l := lines [a_name]
 			across
-				line.stations as i
+				l.stations as i
 			loop
 				j := i.item.internal_lines.new_cursor
-				j.search_forth (line)
+				j.search_forth (l)
 				j.remove
 			end
 			from
@@ -270,7 +282,7 @@ feature -- City construction
 			until
 				ti.after
 			loop
-				if ti.item.line = line then
+				if ti.item.line = l then
 					ti.remove
 				else
 					ti.forth

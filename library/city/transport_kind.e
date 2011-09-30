@@ -4,6 +4,12 @@ note
 class
 	TRANSPORT_KIND
 
+inherit
+	ANY
+		redefine
+			out
+		end
+
 create {CITY}
 	make
 
@@ -37,6 +43,14 @@ feature -- Access
 	icon_file: STRING
 			-- File name of an icon associated with this this kind.
 			-- (Void if no icon associated).
+
+feature -- Output
+
+	out: STRING
+			-- Textual representation.
+		do
+			Result := name + " (speed: " + (speed * 3.6).rounded.out + " km/h)"
+		end
 
 invariant
 	name_exists: name /= Void

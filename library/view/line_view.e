@@ -104,7 +104,7 @@ feature -- Basic operations
 			from
 				i := line.stations.new_cursor
 			until
-				i.is_last
+				i.after or i.is_last
 			loop
 				s1 := i.item
 				i.forth

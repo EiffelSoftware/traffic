@@ -200,7 +200,7 @@ feature -- Measurement
 			until
 				j = i2
 			loop
-				Result := Result + (stations [j].position - stations [j + step].position).length
+				Result := Result + stations [j].position.distance (stations [j + step].position)
 				j := j + step
 			end
 		end
@@ -271,7 +271,7 @@ feature -- Modification
 			same_city: a_station.city = city
 			new_station: not stations.has (a_station)
 		do
-			if (a_station.position - last.position).length <= (a_station.position - first.position).length then
+			if a_station.position.distance (last.position) <= a_station.position.distance (first.position) then
 				append (a_station)
 			else
 				prepend (a_station)
@@ -279,6 +279,35 @@ feature -- Modification
 		ensure
 			one_more_station: count = old count + 1
 			station_is_terminal: is_terminal (a_station)
+		end
+
+	remove (a_station: STATION)
+			-- Remove `a_station' from the line.
+		require
+			has_station: stations.has (a_station)
+		local
+			i: V_LIST_ITERATOR [STATION]
+		do
+			i := internal_stations.new_cursor
+			i.search_forth (a_station)
+			i.item.remove_line (Current)
+			i.remove
+		ensure
+			one_less_station: count = old count - 1
+			station_removed: not stations.has (a_station)
+		end
+
+	remove_all
+			-- Remove all stations from the line.
+		do
+			across
+				internal_stations as i
+			loop
+				i.item.remove_line (Current)
+			end
+			internal_stations.wipe_out
+		ensure
+			no_stations: count = 0
 		end
 
 	add_transport
@@ -318,11 +347,16 @@ invariant
 	all_stations_contain_current: across stations as i all i.item.lines.has (Current) end
 	no_duplicates: across stations as i all stations.occurrences (i.item) = 1 end
 	count_correct: count = stations.count
-	first: not stations.is_empty implies first = i_th (1)
-	last: not stations.is_empty implies last = i_th (count)
-	north_and_south: not stations.is_empty implies north_terminal.position.y >= south_terminal.position.y
+	count_non_negative: count >= 0
+	first: count > 0 implies first = i_th (1)
+	last: count > 0 implies last = i_th (count)
+	north_terminal_is_terminal: count > 0 implies is_terminal (north_terminal)
+	south_terminal_is_terminal: count > 0 implies is_terminal (south_terminal)
+	north_and_south: count > 0 implies north_terminal.position.y >= south_terminal.position.y
 	north_is_not_south: count > 1 implies north_terminal /= south_terminal
-	east_and_west: not stations.is_empty implies east_terminal.position.x >= west_terminal.position.x
+	east_terminal_is_terminal: count > 0 implies is_terminal (east_terminal)
+	west_terminal_is_terminal: count > 0 implies is_terminal (west_terminal)
+	east_and_west: count > 0 implies east_terminal.position.x >= west_terminal.position.x
 	east_is_not_west: count > 1 implies west_terminal /= east_terminal
 	internal_stations_equal: internal_stations ~ stations
 end

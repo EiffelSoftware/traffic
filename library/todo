@@ -1,7 +1,13 @@
-- Create class ZURICH_MAP and DEMO (aka TOUCH_PARIS_OBJECTS and TOURISM)
+Library:
 
 - Support user-defined objects (at least mobiles)
-- Opening map files?
+- Passengers, tickets, time, date?
 - Background and water
+
+Map browser:
+
+- Opening map files
+
+Known bugs:
 
 - Crashes when finalized
