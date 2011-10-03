@@ -73,7 +73,9 @@ feature -- Public transportation
 	station (a_name: STRING): STATION
 			-- Station `a_name'.
 		do
-			Result := stations [a_name]
+			if stations.has_key (a_name) then
+				Result := stations [a_name]
+			end
 		end
 
 	lines: V_MAP [INTEGER, LINE]
@@ -85,7 +87,9 @@ feature -- Public transportation
 	line (a_number: INTEGER): LINE
 			-- Line number `a_number'.
 		do
-			Result := lines [a_number]
+			if lines.has_key (a_number) then
+				Result := lines [a_number]
+			end
 		end
 
 	transports: V_SEQUENCE [PUBLIC_TRANSPORT]
