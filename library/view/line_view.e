@@ -138,6 +138,7 @@ feature -- Basic operations
 			i: INTEGER
 		do
 			map.world.prune_all (polyline)
+			map.world.prune_all (background_polyline)
 			from
 				i := 1
 			until

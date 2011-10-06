@@ -25,6 +25,7 @@ feature {NONE} -- Initialization
 			create {V_HASH_TABLE [INTEGER, LINE]} internal_lines
 			create {V_HASH_TABLE [STRING, TRANSPORT_KIND]} internal_transport_kinds.with_object_equality
 			create {V_ARRAYED_LIST [PUBLIC_TRANSPORT]} internal_transports
+			create {V_ARRAYED_LIST [ROUTE]} internal_routes
 		ensure
 			name_set: name = a_name
 			no_stations: stations.is_empty
@@ -352,6 +353,26 @@ feature -- Mobile
 			a_transport_removed: not transports.has (a_transport)
 		end
 
+feature -- Navigation
+
+	routes: V_SEQUENCE [ROUTE]
+			-- Known routes.
+		do
+			Result := internal_routes
+		end
+
+	add_route (a_route: ROUTE)
+			-- Add `a_route' to `routes'.
+		require
+			a_route_exists: a_route /= Void
+			origin_in_city: stations.has (a_route.origin)
+			destination_in_city: stations.has (a_route.destination)
+		do
+			internal_routes.extend_back (a_route)
+		ensure
+			route_added: routes.has (a_route)
+		end
+
 feature -- Output
 
 	out: STRING
@@ -373,6 +394,9 @@ feature {CITY, STATION, LINE} -- Implementation
 
 	internal_transports: V_LIST [PUBLIC_TRANSPORT]
 			-- Public transportation units.
+
+	internal_routes: V_LIST [ROUTE]
+			-- Routes.
 
 invariant
 	size_ns_non_negavive: size_ns >= 0.0

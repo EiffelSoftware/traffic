@@ -49,7 +49,12 @@ feature -- Access
 			-- Graphical representations of city lines.
 
 	transport_views: V_LIST [TRANSPORT_VIEW]
-			-- Graphical representations of movers.
+			-- Graphical representations of transportation units.
+			-- (Same order as city.transports).
+
+	route_views: V_LIST [ROUTE_VIEW]
+			-- Graphical representations of known routes.
+			-- (Same order as city.routes).
 
 feature {VIEW} -- Access
 
@@ -84,6 +89,7 @@ feature -- Basic operations
 			svi: V_TABLE_ITERATOR [STRING, STATION_VIEW]
 			lvi: V_TABLE_ITERATOR [INTEGER, LINE_VIEW]
 			tvi: V_LIST_ITERATOR [TRANSPORT_VIEW]
+			rvi: V_LIST_ITERATOR [ROUTE_VIEW]
 		do
 			-- Remove objects that do not exists anymore
 			from
@@ -122,6 +128,18 @@ feature -- Basic operations
 					tvi.forth
 				end
 			end
+			from
+				rvi := route_views.new_cursor
+			until
+				rvi.after
+			loop
+				if not city.routes.has (rvi.item.route) then
+					rvi.item.remove_from_city
+					rvi.remove
+				else
+					rvi.forth
+				end
+			end
 			-- Update existing and add new objects			
 			across
 				city.lines as li
@@ -146,16 +164,29 @@ feature -- Basic operations
 			across
 				city.transports as ti
 			loop
-				tvi.start
-				tvi.satisfy_forth (agent (v: TRANSPORT_VIEW; t: PUBLIC_TRANSPORT): BOOLEAN do Result := v.transport = t end (?, ti.item))
-
-				if tvi.after then
+				if ti.index > transport_views.count then
 					transport_views.extend_back (create {TRANSPORT_VIEW}.make_in_city (ti.item, Current))
+				elseif transport_views [ti.index].transport /= ti.item then
+					transport_views.extend_at (create {TRANSPORT_VIEW}.make_in_city (ti.item, Current), ti.index)
 				else
-					tvi.item.update
+					transport_views [ti.index].update
+				end
+			end
+			across
+				city.routes as ri
+			loop
+				if ri.index > route_views.count then
+					route_views.extend_back (create {ROUTE_VIEW}.make_in_city (ri.item, Current))
+				elseif route_views [ri.index].route /= ri.item then
+					route_views.extend_at (create {ROUTE_VIEW}.make_in_city (ri.item, Current), ri.index)
+				else
+					route_views [ri.index].update
 				end
 			end
 			refresh
+		ensure
+			transport_views_order: across transport_views as i all i.item.transport = city.transports [i.index] end
+			route_views_order: across route_views as i all i.item.route = city.routes [i.index] end
 		end
 
 	update_mobile
@@ -312,6 +343,7 @@ feature {NONE} -- Implementation
 			create {V_HASH_TABLE [STRING, STATION_VIEW]} station_views.with_object_equality
 			create {V_HASH_TABLE [INTEGER, LINE_VIEW]} line_views
 			create {V_ARRAYED_LIST [TRANSPORT_VIEW]} transport_views
+			create {V_ARRAYED_LIST [ROUTE_VIEW]} route_views
 
 			across
 				city.lines as i
@@ -327,6 +359,11 @@ feature {NONE} -- Implementation
 				city.transports as i
 			loop
 				transport_views.extend_back (create {TRANSPORT_VIEW}.make_in_city (i.item, Current))
+			end
+			across
+				city.routes as i
+			loop
+				route_views.extend_back (create {ROUTE_VIEW}.make_in_city (i.item, Current))
 			end
 		end
 
@@ -346,7 +383,9 @@ invariant
 	city_exists: city /= Void
 	pixmap_exists: pixmap /= Void
 	station_views_exists: station_views /= Void
-	line_views_exisst: line_views /= Void
+	line_views_exist: line_views /= Void
+	transport_views_exist: transport_views /= Void
+	route_views_exist: route_views /= Void
 	world_exists: world /= Void
 	projector_exists: projector /= Void
 	scale_factor_in_bounds: Min_scale <= scale_factor and scale_factor <= Max_scale
