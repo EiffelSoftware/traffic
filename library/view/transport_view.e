@@ -78,15 +78,13 @@ feature -- Basic operations
 			-- and bring to foreground of the map.
 		local
 			point: EV_COORDINATE
-			w: EV_MODEL_WORLD
 		do
 			point := map.world_coordinate (transport.position)
 			blob.set_x_y (point.x, point.y)
-			w := blob.world
-			w.bring_to_front (blob)
+			map.world.bring_to_front (blob)
 			if icon /= Void then
 				icon.set_x_y (point.x, point.y)
-				w.bring_to_front (icon)
+				map.world.bring_to_front (icon)
 			end
 		end
 
@@ -115,6 +113,4 @@ feature {NONE} -- Implementation
 invariant
 	transport_exists: transport /= Void
 	blob_exists: blob /= Void
-	blob_in_world: blob.world /= Void
-	same_world: icon /= Void implies icon.world = blob.world
 end

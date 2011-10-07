@@ -54,12 +54,6 @@ feature -- Access
 			Result := background.background_color
 		end
 
-	world: EV_MODEL_WORLD
-			-- World the label belongs to.
-		do
-			Result := background.world
-		end
-
 feature -- Property setting
 
 	set_foreground_color (a_color: EV_COLOR)
@@ -131,5 +125,4 @@ feature -- World
 invariant
 	text_exists: text /= Void
 	background_exists: background /= Void
-	same_world: world = background.world and world = text.world
 end

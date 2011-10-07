@@ -4,7 +4,7 @@
 
 <city name="Zurich">
 
-	<station name="Baekeranlage" x="-1100" y="50"/>
+	<station name="Baeckeranlage" x="-1100" y="50"/>
 	<station name="Bahnhof Enge" x="-700" y="-1250"/>
 	<station name="Bahnhof Selnau" x="-600" y="-600"/>
 	<station name="Bahnhof Stadelhofen" x="350" y="-1200"/>
@@ -122,7 +122,7 @@
 	<line name="8" kind="tram" color="a6ce39">
 		<stop name="Hardplatz"/>
 		<stop name="Gueterbahnhof"/>
-		<stop name="Baekeranlage"/>
+		<stop name="Baeckeranlage"/>
 		<stop name="Helvetiaplatz"/>
 		<stop name="Stauffacher"/>
 		<stop name="Bahnhof Selnau"/>
@@ -203,7 +203,7 @@
 	<line name="31" kind="bus" color="979fce">
 		<stop name="Hardplatz"/>
 		<stop name="Gueterbahnhof"/>
-		<stop name="Baekeranlage"/>
+		<stop name="Baeckeranlage"/>
 		<stop name="Militaer/Langstrasse"/>
 		<stop name="Kanonengasse"/>
 		<stop name="Sihlpost"/>

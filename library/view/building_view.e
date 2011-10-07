@@ -66,7 +66,7 @@ feature -- Basic operations
 			blob.set_point_a_position (point_a.x, point_a.y)
 			blob.set_point_b_position (point_b.x, point_b.y)
 
-			blob.world.bring_to_front (blob)
+			map.world.bring_to_front (blob)
 		end
 
 	remove_from_map

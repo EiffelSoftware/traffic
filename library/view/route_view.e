@@ -24,16 +24,25 @@ feature {NONE} -- Initialization
 			map := a_map
 			create polyline
 			polyline.set_line_width (Width)
-			polyline.set_foreground_color (Black)
+			polyline.set_foreground_color (Color)
 			polyline.enable_dashed_line_style
-			polyline.enable_end_arrow
 			map.world.extend (polyline)
 			create background_polyline
 			background_polyline.hide
 			background_polyline.set_line_width (Width)
 			background_polyline.set_foreground_color (Highlight_color)
-			background_polyline.enable_end_arrow
 			map.world.extend (background_polyline)
+
+			create pin_a
+			create pin_leg_a
+			create text_a.make_with_text ("A")
+			initialize_pin (pin_a, pin_leg_a, text_a)
+
+			create pin_b
+			create pin_leg_b
+			create text_b.make_with_text ("B")
+			initialize_pin (pin_b, pin_leg_b, text_b)
+
 			update
 
 			make_actions
@@ -70,13 +79,20 @@ feature -- Basic operations
 			w: EV_MODEL_WORLD
 			leg, line: LEG
 			s: STATION
+			point_a, point_b: EV_COORDINATE
 		do
 			polyline.set_point_count (0)
 			background_polyline.set_point_count (0)
 
-			w := polyline.world
+			w := map.world
 			w.bring_to_front (background_polyline)
 			w.bring_to_front (polyline)
+			w.bring_to_front (pin_leg_a)
+			w.bring_to_front (pin_leg_b)
+			w.bring_to_front (pin_a)
+			w.bring_to_front (pin_b)
+			w.bring_to_front (text_a)
+			w.bring_to_front (text_b)
 
 			from
 				leg := route.first_leg
@@ -94,8 +110,12 @@ feature -- Basic operations
 				end
 				leg := leg.next
 			end
-			polyline.extend_point (map.world_coordinate (route.destination.position))
-			background_polyline.extend_point (map.world_coordinate (route.destination.position))
+			s := route.destination
+			polyline.extend_point (map.world_coordinate (s.position))
+			background_polyline.extend_point (map.world_coordinate (s.position))
+
+			update_pin (pin_a, pin_leg_a, text_a, route.origin.position)
+			update_pin (pin_b, pin_leg_b, text_b, s.position)
 		end
 
 	remove_from_map
@@ -105,19 +125,83 @@ feature -- Basic operations
 		do
 			map.world.prune_all (polyline)
 			map.world.prune_all (background_polyline)
+			map.world.prune_all (pin_a)
+			map.world.prune_all (pin_leg_a)
+			map.world.prune_all (text_a)
+			map.world.prune_all (pin_b)
+			map.world.prune_all (pin_leg_b)
+			map.world.prune_all (text_b)
 		end
 
 feature -- Parameters
 
-	Width: INTEGER = 7
+	Width: INTEGER = 8
 			-- Line width on the map.
+
+	Pin_radius: REAL_64 = 20.0
+			-- Radius of the pins.
+
+	Pin_gap: REAL_64 = 50.0
+			-- Distance between the station and the pin.
+
+	Color: EV_COLOR
+			-- Main color of `polyline' and pins.
+		once
+			create Result.make_with_8_bit_rgb (132, 149, 245)
+		end
+
+	Border_color: EV_COLOR
+			-- Border color of pins.
+		once
+			create Result.make_with_8_bit_rgb (6, 26, 140)
+		end
 
 feature {NONE} -- Implementation
 
+	initialize_pin (head: EV_MODEL_ELLIPSE; leg: EV_MODEL_LINE; text: EV_MODEL_TEXT)
+			-- Initialize `head', `leg' and `text'.
+		do
+			head.set_background_color (Color)
+			head.set_foreground_color (Border_color)
+			head.set_line_width (2)
+			map.world.extend (head)
+			leg.set_line_width (2)
+			leg.set_foreground_color (Border_color)
+			map.world.extend (leg)
+			text.set_foreground_color (Border_color)
+			text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
+			map.world.extend (text)
+		end
+
+	update_pin (head: EV_MODEL_ELLIPSE; leg: EV_MODEL_LINE; text: EV_MODEL_TEXT; pos: VECTOR)
+			-- Place `head', `leg' and `text' to pin position `pos'.
+		local
+			point_a, point_b: EV_COORDINATE
+		do
+			point_a := map.world_coordinate (pos + [0.0, Pin_gap] - [Pin_radius, Pin_radius])
+			point_b := map.world_coordinate (pos + [0.0, Pin_gap] + [Pin_radius, Pin_radius])
+			head.set_point_a_position (point_a.x, point_a.y)
+			head.set_point_b_position (point_b.x, point_b.y)
+			point_a := map.world_coordinate (pos + [0.0, Pin_gap])
+			point_b := map.world_coordinate (pos)
+			leg.set_point_a_position (point_a.x, point_a.y)
+			leg.set_point_b_position (point_b.x, point_b.y)
+			text.set_point_position (point_a.x - text.width // 2, point_a.y - text.height // 2)
+		end
+
+	pin_a, pin_b: EV_MODEL_ELLIPSE
+			-- Pin heads.
+
+	pin_leg_a, pin_leg_b: EV_MODEL_LINE
+			-- Pin legs.
+
+	text_a, text_b: EV_MODEL_TEXT
+			-- Pin texts.
+
 	polyline: EV_MODEL_POLYLINE
-			-- Polyline depicting the line.
+			-- Polyline depicting the route.
 
 	background_polyline: EV_MODEL_POLYLINE
-			-- Polyline used for highlighting the line.			
+			-- Polyline used for highlighting the route.			
 
 end

@@ -83,15 +83,13 @@ feature -- Basic operations
 			s1, s2: STATION
 			segment, offset: VECTOR
 			sibling_lines: V_SEQUENCE [LINE]
-			w: EV_MODEL_WORLD
 		do
 			polyline.set_foreground_color (ev_color (line.color))
 			polyline.set_point_count (0)
 			background_polyline.set_point_count (0)
 
-			w := polyline.world
-			w.bring_to_front (background_polyline)
-			w.bring_to_front (polyline)
+			map.world.bring_to_front (background_polyline)
+			map.world.bring_to_front (polyline)
 
 			if line.stations.count < 2 then
 				across
@@ -189,8 +187,8 @@ feature {NONE} -- Implementation
 			center := s1.position + (s2.position - s1.position) * 0.5 + offset
 			l.set_x_y (map.world_coordinate (center).x, map.world_coordinate (center).y)
 
-			l.world.bring_to_front (l.background)
-			l.world.bring_to_front (l.text)
+			map.world.bring_to_front (l.background)
+			map.world.bring_to_front (l.text)
 		end
 
 invariant
@@ -199,6 +197,4 @@ invariant
 	labels_exists: labels /= Void
 	two_labels: labels.count = Label_count
 	background_polyline_exists: background_polyline /= Void
-	polyline_in_world: polyline.world /= Void
-	same_world: background_polyline.world = polyline.world and (across labels as i all i.item.world = polyline.world end)
 end

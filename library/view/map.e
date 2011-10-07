@@ -104,6 +104,8 @@ feature -- Basic operations
 				if not city.buildings.has_key (bvi.key) then
 					bvi.value.remove_from_map
 					bvi.remove
+				else
+					bvi.forth
 				end
 			end
 			from
