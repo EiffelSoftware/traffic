@@ -80,7 +80,7 @@ feature -- Parameters
 	Color: EV_COLOR
 			-- Building color.
 		once
-			create Result.make_with_rgb (0.9, 0.9, 0.9)
+			create Result.make_with_rgb (0.8, 0.8, 0.8)
 		end
 
 

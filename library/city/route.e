@@ -81,7 +81,7 @@ feature -- Comparison
 			Result := first_leg ~ other.first_leg
 		end
 
-feature -- Construction
+feature -- Modification
 
 	append_leg (a_leg: LEG)
 			-- Add `a_leg' to the end of this route.
@@ -112,6 +112,27 @@ feature -- Construction
 			end
 		ensure
 			new_origin_set: origin = a_leg.origin
+		end
+
+	reverse
+			-- Reverse route.
+		local
+			reversed_first, tail: LEG
+		do
+			from
+			until
+				first_leg = Void
+			loop
+				tail := first_leg.next
+				first_leg.unlink
+				first_leg.reverse
+				if reversed_first /= Void then
+					first_leg.link (reversed_first)
+				end
+				reversed_first := first_leg
+				first_leg := tail
+			end
+			first_leg := reversed_first
 		end
 
 feature -- Output

@@ -146,8 +146,24 @@ feature {LEG, ROUTE} -- Modification
 			-- Set `destination' to `a_destination'.
 		require
 			destination_on_line: line.stations.has (a_destination)
+			unlinked: next = Void
 		do
 			destination := a_destination
+		end
+
+	reverse
+			-- Switch `origin' and `destination'.
+		require
+			unlinked: next = Void
+		local
+			tmp: STATION
+		do
+			tmp := origin
+			origin := destination
+			destination := tmp
+		ensure
+			origin_set: origin = old destination
+			destination_set: destination = old origin
 		end
 
 invariant
