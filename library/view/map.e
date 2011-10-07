@@ -56,6 +56,9 @@ feature -- Access
 			-- Graphical representations of known routes.
 			-- (Same order as city.routes).
 
+	building_views: V_TABLE [STRING, BUILDING_VIEW]
+			-- Graphical representations of city buildings.
+
 feature {VIEW} -- Access
 
 	world: EV_MODEL_WORLD
@@ -86,6 +89,7 @@ feature -- Basic operations
 	update
 			-- Syncronize view with `city'.
 		local
+			bvi: V_TABLE_ITERATOR [STRING, BUILDING_VIEW]
 			svi: V_TABLE_ITERATOR [STRING, STATION_VIEW]
 			lvi: V_TABLE_ITERATOR [INTEGER, LINE_VIEW]
 			tvi: V_LIST_ITERATOR [TRANSPORT_VIEW]
@@ -93,12 +97,22 @@ feature -- Basic operations
 		do
 			-- Remove objects that do not exists anymore
 			from
+				bvi := building_views.new_cursor
+			until
+				bvi.after
+			loop
+				if not city.buildings.has_key (bvi.key) then
+					bvi.value.remove_from_map
+					bvi.remove
+				end
+			end
+			from
 				lvi := line_views.new_cursor
 			until
 				lvi.after
 			loop
 				if not city.lines.has_key (lvi.key) then
-					lvi.value.remove_from_city
+					lvi.value.remove_from_map
 					lvi.remove
 				else
 					lvi.forth
@@ -110,7 +124,7 @@ feature -- Basic operations
 				svi.after
 			loop
 				if not city.stations.has_key (svi.key) then
-					svi.value.remove_from_city
+					svi.value.remove_from_map
 					svi.remove
 				else
 					svi.forth
@@ -122,7 +136,7 @@ feature -- Basic operations
 				tvi.after
 			loop
 				if not city.transports.has (tvi.item.transport) then
-					tvi.item.remove_from_city
+					tvi.item.remove_from_map
 					tvi.remove
 				else
 					tvi.forth
@@ -134,13 +148,23 @@ feature -- Basic operations
 				rvi.after
 			loop
 				if not city.routes.has (rvi.item.route) then
-					rvi.item.remove_from_city
+					rvi.item.remove_from_map
 					rvi.remove
 				else
 					rvi.forth
 				end
 			end
 			-- Update existing and add new objects			
+			across
+				city.buildings as bi
+			loop
+				bvi.search_key (bi.key)
+				if bvi.after then
+					building_views [bi.key] := create {BUILDING_VIEW}.make_in_city (bi.value, Current)
+				else
+					bvi.value.update
+				end
+			end
 			across
 				city.lines as li
 			loop
@@ -344,7 +368,13 @@ feature {NONE} -- Implementation
 			create {V_HASH_TABLE [INTEGER, LINE_VIEW]} line_views
 			create {V_ARRAYED_LIST [TRANSPORT_VIEW]} transport_views
 			create {V_ARRAYED_LIST [ROUTE_VIEW]} route_views
+			create {V_HASH_TABLE [STRING, BUILDING_VIEW]} building_views.with_object_equality
 
+			across
+				city.buildings as i
+			loop
+				building_views [i.key] := create {BUILDING_VIEW}.make_in_city (i.value, Current)
+			end
 			across
 				city.lines as i
 			loop

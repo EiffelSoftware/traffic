@@ -26,6 +26,7 @@ feature {NONE} -- Initialization
 			create {V_HASH_TABLE [STRING, TRANSPORT_KIND]} internal_transport_kinds.with_object_equality
 			create {V_ARRAYED_LIST [PUBLIC_TRANSPORT]} internal_transports
 			create {V_ARRAYED_LIST [ROUTE]} internal_routes
+			create {V_HASH_TABLE [STRING, BUILDING]} internal_buildings.with_object_equality
 		ensure
 			name_set: name = a_name
 			no_stations: stations.is_empty
@@ -36,6 +37,12 @@ feature -- Access
 
 	name: STRING
 			-- Name.
+
+	buildings: V_MAP [STRING, BUILDING]
+			-- Buildings indexed by address.
+		do
+			Result := internal_buildings
+		end
 
 feature -- Geography
 
@@ -143,6 +150,14 @@ feature -- City construction
 			name := a_name
 		ensure
 			name_set: name = a_name
+		end
+
+	add_building (a_building: BUILDING)
+			-- Add `a_building' to `buildings'.
+		require
+			a_building_exists: a_building /= Void
+		do
+			internal_buildings [a_building.address] := a_building
 		end
 
 	add_station (a_name: STRING; a_x, a_y: REAL_64)
@@ -397,6 +412,9 @@ feature {CITY, STATION, LINE} -- Implementation
 
 	internal_routes: V_LIST [ROUTE]
 			-- Routes.
+
+	internal_buildings: V_TABLE [STRING, BUILDING]
+			-- Buildings indexed by address.
 
 invariant
 	size_ns_non_negavive: size_ns >= 0.0

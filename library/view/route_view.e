@@ -98,7 +98,7 @@ feature -- Basic operations
 			background_polyline.extend_point (map.world_coordinate (route.destination.position))
 		end
 
-	remove_from_city
+	remove_from_map
 			-- Remove route representation from `map'.
 		local
 			i: INTEGER

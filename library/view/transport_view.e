@@ -90,7 +90,7 @@ feature -- Basic operations
 			end
 		end
 
-	remove_from_city
+	remove_from_map
 			-- Remove view from `map'.
 		do
 			map.world.prune_all (blob)

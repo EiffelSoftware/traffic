@@ -50,7 +50,7 @@ feature {VIEW, MAP} -- Basic operations
 		deferred
 		end
 
-	remove_from_city
+	remove_from_map
 			-- Remove view from `map'.
 		deferred
 		end

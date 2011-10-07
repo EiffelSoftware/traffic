@@ -87,7 +87,7 @@ feature -- Basic operations
 			w.bring_to_front (label.text)
 		end
 
-	remove_from_city
+	remove_from_map
 			-- Remove station representation from `map'.
 		do
 			map.world.prune_all (blob)

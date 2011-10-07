@@ -132,7 +132,7 @@ feature -- Basic operations
 			end
 		end
 
-	remove_from_city
+	remove_from_map
 			-- Remove line representation from `map'.
 		local
 			i: INTEGER

@@ -46,7 +46,7 @@ feature -- Access
 			-- Name (unique within city).
 
 	position: VECTOR
-			-- Position in the city with respect to the city center.
+			-- Position with respect to the city center.
 
 	city: CITY
 			-- City the station belongs to.
