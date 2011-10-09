@@ -1,5 +1,5 @@
 note
-	description: "A segment of a line between two stations that is part of a route."
+	description: "A segment of a route that goes along a single transportation line."
 
 class
 	LEG
@@ -61,7 +61,7 @@ feature -- Access
 			-- End station.
 
 	line: LINE
-			-- Line that the leg belongs to.
+			-- Line that the leg goes along.
 
 	direction: STATION
 			-- Which direction does this leg go on `line'?

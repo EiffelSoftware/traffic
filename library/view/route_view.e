@@ -202,6 +202,14 @@ feature {NONE} -- Implementation
 			-- Polyline depicting the route.
 
 	background_polyline: EV_MODEL_POLYLINE
-			-- Polyline used for highlighting the route.			
+			-- Polyline used for highlighting the route.
+
+invariant
+	route_exists: route /= Void
+	pins_exist: pin_a /= Void and pin_b /= Void
+	legs_exist: pin_leg_a /= Void and pin_leg_b /= Void
+	texts_exist: text_a /= Void and text_b /= Void
+	polyline_exists: polyline /= Void
+	background_polyline_exists: background_polyline /= Void
 
 end
