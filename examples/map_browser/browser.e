@@ -32,6 +32,7 @@ feature {NONE} -- Initialization
 			window.show
 			create box
 			create console.make
+			console.output ("Welcome to Traffic!")
 			create map_frame
 			box.extend (map_frame)
 			box.extend (console)

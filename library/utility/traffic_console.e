@@ -4,9 +4,6 @@ note
 class
 	TRAFFIC_CONSOLE
 
-inherit
-	EV_TEXT_FIELD
-
 inherit {NONE}
 	EV_STOCK_COLORS
 		rename
@@ -27,19 +24,47 @@ inherit {NONE}
 		end
 
 create
-	make
+	make, make_multiline
 
 feature {NONE} -- Initialization
 
-	make
-			-- Create with default parameters.
+	make_multiline (n: INTEGER)
+			-- Create console with `n' lines.
+		local
+			ta: EV_TEXT
 		do
-			make_with_text ("Welcome to Traffic!")
-			disable_edit
-			set_background_color (Black)
-			set_foreground_color (Green)
-			set_font (create {EV_FONT}.make_with_values (Family_screen, Weight_regular, Shape_regular, 16))
+			is_multiline := True
+			create ta
+			ta.disable_edit
+			ta.set_background_color (Black)
+			ta.set_foreground_color (Green)
+			ta.set_font (create {EV_FONT}.make_with_values (Family_screen, Weight_regular, Shape_regular, 16))
+			ta.set_minimum_height (ta.font.line_height * n + 10)
+			text_area := ta
 		end
+
+	make
+			-- Create single-line console.
+		local
+			ta: EV_TEXT_FIELD
+		do
+			create ta
+			ta.disable_edit
+			ta.set_background_color (Black)
+			ta.set_foreground_color (Green)
+			ta.set_font (create {EV_FONT}.make_with_values (Family_screen, Weight_regular, Shape_regular, 16))
+			text_area := ta
+		end
+
+feature -- Access
+
+	text_area: EV_TEXT_COMPONENT
+			-- Widget where the text is output.
+
+feature -- Status report
+
+	is_multiline: BOOLEAN
+			-- Can console output multiple lines?
 
 feature -- Basic operations
 
@@ -48,7 +73,25 @@ feature -- Basic operations
 		require
 			object_exists: object /= Void
 		do
-			set_text (capitalized (first_line (object.out)))
+			if is_multiline then
+				text_area.set_text (capitalized (object.out))
+			else
+				text_area.set_text (capitalized (first_line (object.out)))
+			end
+		end
+
+	clear
+			-- Remove all text.
+		do
+			text_area.remove_text
+		end
+
+	append_line (s: STRING)
+			-- Display `s' on a new line.
+		require
+			multiline: is_multiline
+		do
+			text_area.append_text ("%N" + s)
 		end
 
 feature {NONE} -- Implementation
@@ -78,4 +121,5 @@ feature {NONE} -- Implementation
 				Result.precede (s [1].as_upper)
 			end
 		end
+
 end
