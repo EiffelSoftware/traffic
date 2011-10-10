@@ -35,14 +35,14 @@ feature {NONE} -- Initialization
 			console.output ("Welcome to Traffic!")
 			create map_frame
 			box.extend (map_frame)
-			box.extend (console)
-			box.disable_item_expand (console)
+			box.extend (console.text_area)
+			box.disable_item_expand (console.text_area)
 			window.extend (box)
 
 			load_city
 			if city /= Void then
 				create map.make (city)
-				map.pixmap.set_size (window.client_width, window.client_height - console.height)
+				map.pixmap.set_size (window.client_width, window.client_height - console.text_area.height)
 				map.fit_to_window
 				map.refresh
 				map_frame.extend (map.pixmap)

@@ -17,8 +17,11 @@ feature -- Explore Zurich
 			console.output (Line10.i_th (1))
 			wait (1)
 			console.output (Line10.i_th (Line10.count))
-			wait (3)
+
 			Line10.remove_all
+			Zurich_map.update
+			wait (3)
+
 			Line10.append (Haldenbach)
 			Line10.append (ETH_Universitaetsspital)
 			Line10.append (Haldenegg)

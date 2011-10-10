@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			create gui_application
 			create window
 			window.set_size (1200, 1000)
-			window.set_title ("Map browser")
+			window.set_title ("Interface")
 			if file_system.file_exists (file_system.pathname_to_string (icon_path)) then
 				create icon
 				icon.set_with_named_file (file_system.pathname_to_string (icon_path))
@@ -35,13 +35,13 @@ feature {NONE} -- Initialization
 			create map_cell
 			create box
 			box.extend (map_cell)
-			box.extend (preview.console)
-			box.disable_item_expand (preview.console)
+			box.extend (preview.console.text_area)
+			box.disable_item_expand (preview.console.text_area)
 			window.extend (box)
 
 			map := preview.zurich_map
 			if map /= Void then
-				map.pixmap.set_size (window.client_width, window.client_height - preview.console.height)
+				map.pixmap.set_size (window.client_width, window.client_height - preview.console.text_area.height)
 				map.fit_to_window
 				map_cell.extend (map.pixmap)
 				map.pixmap.set_focus

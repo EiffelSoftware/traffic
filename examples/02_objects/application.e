@@ -22,7 +22,7 @@ feature {NONE} -- Initialization
 			create gui_application
 			create window
 			window.set_size (1200, 1000)
-			window.set_title ("Map browser")
+			window.set_title ("Objects")
 			if file_system.file_exists (file_system.pathname_to_string (icon_path)) then
 				create icon
 				icon.set_with_named_file (file_system.pathname_to_string (icon_path))
