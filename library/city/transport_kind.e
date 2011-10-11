@@ -21,7 +21,7 @@ feature {NONE} -- Initialization
 		do
 			name := a_name
 			default_color := a_default_color
-			speed := 50.0 / 3.6 -- 50 km/h
+			speed := 20.0 / 3.6 -- 20 km/h
 			icon_file := a_icon_file
 		ensure
 			name_set: name = a_name

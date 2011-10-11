@@ -170,7 +170,7 @@ invariant
 	origin_exists: origin /= Void
 	destination_exists: destination /= Void
 	line_exists: line /= Void
-	origin_on_line: line.stations.has (origin)
-	destination_on_line: line.stations.has (destination)
+	origin_on_line: line.has_station (origin)
+	destination_on_line: line.has_station (destination)
 	linked_correctly: next /= Void implies next.origin = destination
 end

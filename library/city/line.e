@@ -40,7 +40,7 @@ feature {NONE} -- Initialization
 			kind_set: kind = a_kind
 			city_set: city = a_city
 			default_color: color = kind.default_color
-			no_stations: stations.is_empty
+			no_stations: is_empty
 		end
 
 feature -- Access
@@ -77,7 +77,7 @@ feature -- Access
 	first: STATION
 			-- First station in default order.
 		require
-			has_stations: not stations.is_empty
+			has_stations: not is_empty
 		do
 			Result := stations.first
 		end
@@ -85,7 +85,7 @@ feature -- Access
 	last: STATION
 			-- Last station in default order.
 		require
-			has_stations: not stations.is_empty
+			has_stations: not is_empty
 		do
 			Result := stations.last
 		end
@@ -93,7 +93,7 @@ feature -- Access
 	north_terminal: STATION
 			-- Terminal station at the north end of the line.
 		require
-			has_stations: not stations.is_empty
+			has_stations: not is_empty
 		do
 			if stations.first.position.y > stations.last.position.y then
 				Result := stations.first
@@ -105,7 +105,7 @@ feature -- Access
 	south_terminal: STATION
 			-- Terminal station at the south end of the line.
 		require
-			has_stations: not stations.is_empty
+			has_stations: not is_empty
 		do
 			if stations.first.position.y > stations.last.position.y then
 				Result := stations.last
@@ -118,7 +118,7 @@ feature -- Access
 	west_terminal: STATION
 			-- Terminal station at the west end of the line.
 		require
-			has_stations: not stations.is_empty
+			has_stations: not is_empty
 		do
 			if stations.first.position.x > stations.last.position.x then
 				Result := stations.last
@@ -130,7 +130,7 @@ feature -- Access
 	east_terminal: STATION
 			-- Terminal station at the east end of the line.
 		require
-			has_stations: not stations.is_empty
+			has_stations: not is_empty
 		do
 			if stations.first.position.x > stations.last.position.x then
 				Result := stations.first
@@ -139,11 +139,26 @@ feature -- Access
 			end
 		end
 
+	other_terminal (a_station: STATION): STATION
+			-- Opposite terminal from `a_station'.
+		require
+			is_terminal: is_terminal (a_station)
+		do
+			if a_station = first then
+				Result := last
+			else
+				Result := first
+			end
+		ensure
+			is_terminal: is_terminal (Result)
+			different: count > 1 implies Result /= a_station
+		end
+
 	next_station (a_station, a_direction: STATION): STATION
 			-- Next station after `a_station' in direction of terminal `a_direction'.
 			-- Void if `a_station' is the last in this direction.
 		require
-			a_station_on_line: stations.has (a_station)
+			a_station_on_line: has_station (a_station)
 			a_direction_is_terminal: a_direction = first or a_direction = last
 		local
 			i: V_ITERATOR [STATION]
@@ -164,6 +179,19 @@ feature -- Access
 
 feature -- Status report
 
+	is_empty: BOOLEAN
+			-- Are there no stations on this line?
+		do
+			Result := stations.is_empty
+		end
+
+
+	has_station (a_station: STATION): BOOLEAN
+			-- Does this line go through `a_station'?
+		do
+			Result := stations.has (a_station)
+		end
+
 	is_terminal (a_station: STATION): BOOLEAN
 			-- Is `a_station' a terminal station of this line?
 		do
@@ -183,8 +211,8 @@ feature -- Measurement
 	distance (s1, s2: STATION): REAL_64
 			-- Distance between `s1' and `s2' along this line (meters).
 		require
-			s1_on_line: stations.has (s1)
-			s2_on_line: stations.has (s2)
+			s1_on_line: has_station (s1)
+			s2_on_line: has_station (s2)
 		local
 			i1, i2, j, step: INTEGER
 		do
@@ -241,7 +269,7 @@ feature -- Modification
 		require
 			stations_exists: a_station /= Void
 			same_city: a_station.city = city
-			new_station: not stations.has (a_station)
+			new_station: not has_station (a_station)
 		do
 			internal_stations.extend_back (a_station)
 			a_station.internal_lines.extend_back (Current)
@@ -255,7 +283,7 @@ feature -- Modification
 		require
 			stations_exists: a_station /= Void
 			same_city: a_station.city = city
-			new_station: not stations.has (a_station)
+			new_station: not has_station (a_station)
 		do
 			internal_stations.extend_front (a_station)
 			a_station.internal_lines.extend_back (Current)
@@ -269,7 +297,7 @@ feature -- Modification
 		require
 			stations_exists: a_station /= Void
 			same_city: a_station.city = city
-			new_station: not stations.has (a_station)
+			new_station: not has_station (a_station)
 		do
 			if a_station.position.distance (last.position) <= a_station.position.distance (first.position) then
 				append (a_station)
@@ -284,7 +312,7 @@ feature -- Modification
 	remove (a_station: STATION)
 			-- Remove `a_station' from the line.
 		require
-			has_station: stations.has (a_station)
+			has_station: has_station (a_station)
 		local
 			i: V_LIST_ITERATOR [STATION]
 		do
@@ -294,7 +322,7 @@ feature -- Modification
 			i.remove
 		ensure
 			one_less_station: count = old count - 1
-			station_removed: not stations.has (a_station)
+			station_removed: not has_station (a_station)
 		end
 
 	remove_all
@@ -307,7 +335,7 @@ feature -- Modification
 			end
 			internal_stations.wipe_out
 		ensure
-			no_stations: count = 0
+			no_stations: is_empty
 		end
 
 	add_transport
@@ -348,15 +376,16 @@ invariant
 	no_duplicates: across stations as i all stations.occurrences (i.item) = 1 end
 	count_correct: count = stations.count
 	count_non_negative: count >= 0
-	first: count > 0 implies first = i_th (1)
-	last: count > 0 implies last = i_th (count)
-	north_terminal_is_terminal: count > 0 implies is_terminal (north_terminal)
-	south_terminal_is_terminal: count > 0 implies is_terminal (south_terminal)
-	north_and_south: count > 0 implies north_terminal.position.y >= south_terminal.position.y
+	zero_count_in_empty: is_empty = (count = 0)
+	first: not is_empty implies first = i_th (1)
+	last: not is_empty implies last = i_th (count)
+	north_terminal_is_terminal: not is_empty implies is_terminal (north_terminal)
+	south_terminal_is_terminal: not is_empty implies is_terminal (south_terminal)
+	north_and_south: not is_empty implies north_terminal.position.y >= south_terminal.position.y
 	north_is_not_south: count > 1 implies north_terminal /= south_terminal
-	east_terminal_is_terminal: count > 0 implies is_terminal (east_terminal)
-	west_terminal_is_terminal: count > 0 implies is_terminal (west_terminal)
-	east_and_west: count > 0 implies east_terminal.position.x >= west_terminal.position.x
+	east_terminal_is_terminal: not is_empty implies is_terminal (east_terminal)
+	west_terminal_is_terminal: not is_empty implies is_terminal (west_terminal)
+	east_and_west: not is_empty implies east_terminal.position.x >= west_terminal.position.x
 	east_is_not_west: count > 1 implies west_terminal /= east_terminal
 	internal_stations_equal: internal_stations ~ stations
 end

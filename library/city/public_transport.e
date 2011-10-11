@@ -63,6 +63,47 @@ feature -- Status report
 	is_towards_last: BOOLEAN
 			-- Is transport currently heading towards the last station of `line'?
 
+	is_going_to (s: STATION): BOOLEAN
+			-- Will transport pass `s' on its way to `destination'?
+		local
+			i, j: INTEGER
+		do
+			if line.has_station (s) then
+				i := line.stations.index_of (departed)
+				j := line.stations.index_of (s)
+				Result := position ~ departed.position or
+					(is_towards_last and j > i) or
+					(not is_towards_last and j < i)
+			end
+		end
+
+feature -- Measurement
+
+	distance_to_station (s: STATION): REAL_64
+			-- Distance (meters) the transport has to go until it reaches `s' next time.
+		require
+			s_on_line: line.has_station (s)
+		do
+			if is_going_to (s) then
+				Result := line.distance (departed, s) - departed.position.distance (position)
+			else
+				Result := line.distance (departed, destination) * 2 - departed.position.distance (position) +
+					line.distance (departed, s)
+			end
+		ensure
+			non_negative: Result >= 0
+		end
+
+	time_to_station (s: STATION): INTEGER
+			-- Time (seconds) until the transport reaches `s' next time.
+		require
+			s_on_line: line.has_station (s)
+		do
+			Result := (distance_to_station (s) / line.kind.speed).rounded
+		ensure
+			non_negative: Result >= 0
+		end
+
 feature -- Movement
 	move (dt: INTEGER)
 			-- Update `position' as if `dt' milliseconds passed.

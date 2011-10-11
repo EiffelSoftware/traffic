@@ -5,7 +5,7 @@ class
 	MAP
 
 inherit
-	MAP_WIDGET
+	ANIMATED_WIDGET
 
 create
 	make
@@ -27,7 +27,9 @@ feature {NONE} -- Initialization
 			scale_factor := 1.0
 			center_x := city.east.rounded
 			center_y := city.north.rounded
+
 			time_speedup := 1.0
+			on_tick.extend_back (agent move_mobile)
 
 			make_item_views
 			projector.project
@@ -277,9 +279,6 @@ feature -- Transformations
 
 feature -- Animation
 
-	is_animated: BOOLEAN
-			-- Is animation running?
-
 	time_speedup: REAL_64
 			-- How much city time is faster than real-world time?
 
@@ -293,52 +292,13 @@ feature -- Animation
 			speedup_set: time_speedup = a_speedup
 		end
 
-	animate
-			-- Start animation of mobile objects.
-		do
-			is_animated := True
-			last_timeout := 0
-			create timeout.make_with_interval (33)
-			timeout.actions.extend (agent handle_timeout)
-		end
-
-	deanimate
-			-- Stop animation of mobile objects.
-		do
-			is_animated := False
-			if timeout /= Void then
-				timeout.destroy
-			end
-		end
-
 feature {NONE} -- Animation
 
-	timeout: EV_TIMEOUT
-			-- Object that signals timeout events.
-
-	last_timeout: INTEGER
-			-- Time when last timeout event occurred.
-			-- Resolution is milliseconds, wraps after 60 seconds.
-
-	handle_timeout
-			-- Update model and view in reponse to a timeout.
-		local
-			date: C_DATE
-			new_time: INTEGER
-			dt: INTEGER
+	move_mobile (dt: INTEGER)
+			-- Move all mobile objects in the city and update their views.
 		do
-			create date
-			new_time := (date.second_now * 1000) + date.millisecond_now
-			if last_timeout > 0 then
-				if new_time < last_timeout then
-					dt := new_time - last_timeout + 60000
-				else
-					dt := new_time - last_timeout
-				end
-				city.move_all ((dt * time_speedup).rounded)
-				update_mobile
-			end
-			last_timeout := new_time
+			city.move_all ((dt * time_speedup).rounded)
+			update_mobile
 		end
 
 feature -- Parameters
@@ -422,5 +382,4 @@ invariant
 	projector_exists: projector /= Void
 	scale_factor_in_bounds: Min_scale <= scale_factor and scale_factor <= Max_scale
 	time_speedup_positive: time_speedup > 0
-	last_timeout_in_bounds: 0 <= last_timeout and last_timeout <= 60000
 end

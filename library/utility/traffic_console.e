@@ -91,7 +91,11 @@ feature -- Basic operations
 		require
 			multiline: is_multiline
 		do
-			text_area.append_text ("%N" + s)
+			if not text_area.text.is_empty then
+				text_area.set_text (text_area.text + "%N" + s)
+			else
+				text_area.set_text (s)
+			end
 		end
 
 feature {NONE} -- Implementation
