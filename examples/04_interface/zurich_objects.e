@@ -16,7 +16,7 @@ feature {NONE} -- Initialization
 	default_create
 			-- Create Zurich and its map.
 		do
-			create console.make
+			create console
 			console.output ("Welcome to Traffic!")
 			load_city
 			if Zurich /= Void then

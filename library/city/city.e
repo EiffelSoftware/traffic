@@ -420,16 +420,16 @@ invariant
 	size_ns_non_negavive: size_ns >= 0.0
 	size_ew_non_negavive: size_ew >= 0.0
 	stations_exists: stations /= Void
-	all_stations_exist: across stations as i all i.value /= Void end
-	stations_indexed_by_name: across stations as i all i.key ~ i.value.name end
-	all_stations_belong_to_city: across stations as i all i.value.city = Current end
+	all_stations_exist: across stations as i all i.item /= Void end
+	stations_indexed_by_name: across stations as i all i.key ~ i.item.name end
+	all_stations_belong_to_city: across stations as i all i.item.city = Current end
 	lines_exists: lines /= Void
-	all_lines_exist: across lines as i all i.value /= Void end
-	lines_indexed_by_name: across lines as i all i.key = i.value.name end
-	all_lines_belong_to_city: across lines as i all i.value.city = Current end
+	all_lines_exist: across lines as i all i.item /= Void end
+	lines_indexed_by_name: across lines as i all i.key = i.item.name end
+	all_lines_belong_to_city: across lines as i all i.item.city = Current end
 	transport_kinds_exists: transport_kinds /= Void
-	all_transport_kinds_exist: across transport_kinds as i all i.value /= Void end
-	transport_kinds_indexed_by_name: across transport_kinds as i all i.key ~ i.value.name end
+	all_transport_kinds_exist: across transport_kinds as i all i.item /= Void end
+	transport_kinds_indexed_by_name: across transport_kinds as i all i.key ~ i.item.name end
 	transports_exists: transports /= Void
 	all_transports_exist: across transports as i all i.item /= Void end
 	internal_stations_equal: internal_stations ~ stations

@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			window.close_request_actions.extend (agent on_close)
 			window.show
 			create box
-			create console.make
+			create console
 			console.output ("Welcome to Traffic!")
 			create map_frame
 			box.extend (map_frame)
@@ -69,7 +69,7 @@ feature {NONE} -- Initialization
 			across
 				city.lines as li
 			loop
-				city.add_public_transport (li.value.name)
+				city.add_public_transport (li.item.name)
 			end
 			map.update
 		end
@@ -88,14 +88,14 @@ feature {NONE} -- Initialization
 			across
 				map.station_views as i
 			loop
-				sv := i.value
+				sv := i.item
 				sv.on_left_click_no_args.extend_back (agent select_view (sv))
 				sv.on_left_click_no_args.extend_back (agent console.output (sv.station))
 			end
 			across
 				map.line_views as i
 			loop
-				lv := i.value
+				lv := i.item
 				lv.on_left_click_no_args.extend_back (agent select_view (lv))
 				lv.on_left_click_no_args.extend_back (agent console.output (lv.line))
 			end

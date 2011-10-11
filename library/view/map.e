@@ -104,7 +104,7 @@ feature -- Basic operations
 				bvi.after
 			loop
 				if not city.buildings.has_key (bvi.key) then
-					bvi.value.remove_from_map
+					bvi.item.remove_from_map
 					bvi.remove
 				else
 					bvi.forth
@@ -116,7 +116,7 @@ feature -- Basic operations
 				lvi.after
 			loop
 				if not city.lines.has_key (lvi.key) then
-					lvi.value.remove_from_map
+					lvi.item.remove_from_map
 					lvi.remove
 				else
 					lvi.forth
@@ -128,7 +128,7 @@ feature -- Basic operations
 				svi.after
 			loop
 				if not city.stations.has_key (svi.key) then
-					svi.value.remove_from_map
+					svi.item.remove_from_map
 					svi.remove
 				else
 					svi.forth
@@ -164,9 +164,9 @@ feature -- Basic operations
 			loop
 				bvi.search_key (bi.key)
 				if bvi.after then
-					building_views [bi.key] := create {BUILDING_VIEW}.make_in_city (bi.value, Current)
+					building_views [bi.key] := create {BUILDING_VIEW}.make_in_city (bi.item, Current)
 				else
-					bvi.value.update
+					bvi.item.update
 				end
 			end
 			across
@@ -174,9 +174,9 @@ feature -- Basic operations
 			loop
 				lvi.search_key (li.key)
 				if lvi.after then
-					line_views [li.key] := create {LINE_VIEW}.make_in_city (li.value, Current)
+					line_views [li.key] := create {LINE_VIEW}.make_in_city (li.item, Current)
 				else
-					lvi.value.update
+					lvi.item.update
 				end
 			end
 			across
@@ -184,9 +184,9 @@ feature -- Basic operations
 			loop
 				svi.search_key (si.key)
 				if svi.after then
-					station_views [si.key] := create {STATION_VIEW}.make_in_city (si.value, Current)
+					station_views [si.key] := create {STATION_VIEW}.make_in_city (si.item, Current)
 				else
-					svi.value.update
+					svi.item.update
 				end
 			end
 			across
@@ -335,17 +335,17 @@ feature {NONE} -- Implementation
 			across
 				city.buildings as i
 			loop
-				building_views [i.key] := create {BUILDING_VIEW}.make_in_city (i.value, Current)
+				building_views [i.key] := create {BUILDING_VIEW}.make_in_city (i.item, Current)
 			end
 			across
 				city.lines as i
 			loop
-				line_views [i.key] := create {LINE_VIEW}.make_in_city (i.value, Current)
+				line_views [i.key] := create {LINE_VIEW}.make_in_city (i.item, Current)
 			end
 			across
 				city.stations as i
 			loop
-				station_views [i.key] := create {STATION_VIEW}.make_in_city (i.value, Current)
+				station_views [i.key] := create {STATION_VIEW}.make_in_city (i.item, Current)
 			end
 			across
 				city.transports as i

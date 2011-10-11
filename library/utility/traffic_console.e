@@ -4,35 +4,58 @@ note
 class
 	TRAFFIC_CONSOLE
 
+inherit
+	ANY
+		redefine
+			default_create
+		end
+
 inherit {NONE}
 	EV_STOCK_COLORS
 		rename
 			Implementation as Colors_implementation
 		export {NONE}
 			all
-		undefine
-			default_create,
-			copy
+		redefine
+			default_create
 		end
 
 	EV_FONT_CONSTANTS
 		export {NONE}
 			all
-		undefine
-			default_create,
-			copy
+		redefine
+			default_create
 		end
 
 create
-	make, make_multiline
+	default_create, make_multiline
 
-feature {NONE} -- Initialization
+feature -- Initialization
+
+	default_create
+			-- Create single-line console.
+		local
+			ta: EV_TEXT_FIELD
+		do
+			if text_area /= Void then
+				text_area.destroy
+			end
+			create ta
+			ta.disable_edit
+			ta.set_background_color (Black)
+			ta.set_foreground_color (Green)
+			ta.set_font (create {EV_FONT}.make_with_values (Family_screen, Weight_regular, Shape_regular, 16))
+			text_area := ta
+		end
 
 	make_multiline (n: INTEGER)
 			-- Create console with `n' lines.
 		local
 			ta: EV_TEXT
 		do
+			if text_area /= Void then
+				text_area.destroy
+			end
 			is_multiline := True
 			create ta
 			ta.disable_edit
@@ -40,19 +63,6 @@ feature {NONE} -- Initialization
 			ta.set_foreground_color (Green)
 			ta.set_font (create {EV_FONT}.make_with_values (Family_screen, Weight_regular, Shape_regular, 16))
 			ta.set_minimum_height (ta.font.line_height * n + 10)
-			text_area := ta
-		end
-
-	make
-			-- Create single-line console.
-		local
-			ta: EV_TEXT_FIELD
-		do
-			create ta
-			ta.disable_edit
-			ta.set_background_color (Black)
-			ta.set_foreground_color (Green)
-			ta.set_font (create {EV_FONT}.make_with_values (Family_screen, Weight_regular, Shape_regular, 16))
 			text_area := ta
 		end
 
@@ -89,6 +99,7 @@ feature -- Basic operations
 	append_line (s: STRING)
 			-- Display `s' on a new line.
 		require
+			s_exists: s /= Void
 			multiline: is_multiline
 		do
 			if not text_area.text.is_empty then
