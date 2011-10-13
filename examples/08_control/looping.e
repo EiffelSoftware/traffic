@@ -52,7 +52,7 @@ feature -- Iteration
 			c: like Line8.new_cursor
 		do
 			from
-				c := Line8.stations.new_cursor
+				c := Line8.new_cursor
 			until
 				c.after or else c.item.name [1] = 'S'
 			loop
@@ -104,7 +104,7 @@ feature -- Maximum
 		do
 			Result := ""
 			across
-				Line8.stations as c
+				Line8 as c
 			invariant
 				c.index >= 1
 				c.index <= Line8.count + 1
