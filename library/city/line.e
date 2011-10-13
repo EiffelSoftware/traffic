@@ -9,6 +9,11 @@ class
 	LINE
 
 inherit
+	ITERABLE [STATION]
+		redefine
+			out
+		end
+
 	HASHABLE
 		redefine
 			out
@@ -64,6 +69,12 @@ feature -- Access
 			-- but does not define which end of the line is first and which is last.
 		do
 			Result := internal_stations
+		end
+
+	new_cursor: V_ITERATOR [STATION]
+			-- New cursor pointing at the first station.
+		do
+			Result := stations.new_cursor
 		end
 
 	i_th (i: INTEGER): STATION

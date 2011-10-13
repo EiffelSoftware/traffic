@@ -25,10 +25,10 @@ feature -- Iteration
 			-- Highlight all stations on line 8.
 		do
 			across
-				Line8.stations as i
+				Line8 as c
 			loop
-				console.append_line (i.item.name)
-				Zurich_map.station_view (i.item.name).highlight
+				console.append_line (c.item.name)
+				Zurich_map.station_view (c.item.name).highlight
 			end
 		end
 
@@ -36,11 +36,11 @@ feature -- Iteration
 			-- Highlight exchange stations on line 8.
 		do
 			across
-				Line8.stations as i
+				Line8 as c
 			loop
-				if i.item.is_exchange then
-					console.append_line (i.item.name)
-					Zurich_map.station_view (i.item.name).highlight
+				if c.item.is_exchange then
+					console.append_line (c.item.name)
+					Zurich_map.station_view (c.item.name).highlight
 				end
 			end
 		end
@@ -49,16 +49,16 @@ feature -- Iteration
 			-- Highlight all stations on line 8,
 			-- until a station whose name starts with 'S' is found.
 		local
-			i: like Line8.stations.new_cursor
+			c: like Line8.new_cursor
 		do
 			from
-				i := Line8.stations.new_cursor
+				c := Line8.stations.new_cursor
 			until
-				i.after or else i.item.name [1] = 'S'
+				c.after or else c.item.name [1] = 'S'
 			loop
-				console.append_line (i.item.name)
-				Zurich_map.station_view (i.item.name).highlight
-				i.forth
+				console.append_line (c.item.name)
+				Zurich_map.station_view (c.item.name).highlight
+				c.forth
 			end
 		end
 
@@ -104,9 +104,14 @@ feature -- Maximum
 		do
 			Result := ""
 			across
-				Line8.stations as i
+				Line8.stations as c
+			invariant
+				c.index >= 1
+				c.index <= Line8.count + 1
 			loop
-				Result := greater (Result, i.item.name)
+				Result := greater (Result, c.item.name)
+			variant
+				Line8.count - c.index + 1
 			end
 		end
 
