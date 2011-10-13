@@ -21,6 +21,9 @@ create
 	make_from_real_rgb,
 	make_from_hex
 
+convert
+	make_from_hex ({STRING})
+
 feature {NONE} -- Initialization
 
 	make_from_rgb (r, g, b: NATURAL_8)

@@ -247,7 +247,6 @@ feature -- City construction
 			station_exists: stations.has_key (a_name)
 		local
 			s, a: STATION
-			j: V_LIST_ITERATOR [STATION]
 			ti: V_LIST_ITERATOR [PUBLIC_TRANSPORT]
 			t: PUBLIC_TRANSPORT
 		do
@@ -271,9 +270,7 @@ feature -- City construction
 			across
 				s.lines as i
 			loop
-				j := i.item.internal_stations.new_cursor
-				j.search_forth (s)
-				j.remove
+				i.item.internal_stations.remove (s)
 			end
 			internal_stations.remove (a_name)
 		ensure
@@ -286,16 +283,13 @@ feature -- City construction
 			line_exists: lines.has_key (a_name)
 		local
 			l: LINE
-			j: V_LIST_ITERATOR [LINE]
 			ti: V_LIST_ITERATOR [PUBLIC_TRANSPORT]
 		do
 			l := lines [a_name]
 			across
 				l.stations as i
 			loop
-				j := i.item.internal_lines.new_cursor
-				j.search_forth (l)
-				j.remove
+				i.item.internal_lines.remove (l)
 			end
 			from
 				ti := internal_transports.new_cursor

@@ -318,7 +318,7 @@ feature -- Modification
 		do
 			i := internal_stations.new_cursor
 			i.search_forth (a_station)
-			i.item.remove_line (Current)
+			i.item.internal_lines.remove (Current)
 			i.remove
 		ensure
 			one_less_station: count = old count - 1
@@ -331,7 +331,7 @@ feature -- Modification
 			across
 				internal_stations as i
 			loop
-				i.item.remove_line (Current)
+				i.item.internal_lines.remove (Current)
 			end
 			internal_stations.wipe_out
 		ensure

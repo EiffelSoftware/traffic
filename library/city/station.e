@@ -118,16 +118,6 @@ feature {CITY, STATION, LINE} -- Implementation
 			Result := name.hash_code
 		end
 
-	remove_line (a_line: LINE)
-			-- Remove `a_line' from `internal_lines'.
-		local
-			i: V_LIST_ITERATOR [LINE]
-		do
-			i := internal_lines.new_cursor
-			i.search_forth (a_line)
-			i.remove
-		end
-
 invariant
 	name_exists: name /= Void
 	position_exists: position /= Void
