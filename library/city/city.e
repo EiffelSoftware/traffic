@@ -137,7 +137,7 @@ feature -- Public transportation
 		ensure
 			result_exists: Result /= Void
 			connect_stations: across Result as i all i.item.stations.has (a_station_1) and i.item.stations.has (a_station_2) end
-			sorted: across Result as i all not i.is_last implies i.target [i.index].name <= i.target [i.index + 1].name end
+			sorted: across Result as i all not i.is_last implies i.target [i.index].number <= i.target [i.index + 1].number end
 		end
 
 feature -- City construction
@@ -177,17 +177,17 @@ feature -- City construction
 			not_connected: stations [a_name].lines.is_empty
 		end
 
-	add_line (a_name: INTEGER; a_kind: STRING)
-			-- Add a line `a_name' of kind `a_kind'.
+	add_line (a_number: INTEGER; a_kind: STRING)
+			-- Add a line `a_number' of kind `a_kind'.
 		require
-			unique_name: not lines.has_key (a_name)
+			unique_number: not lines.has_key (a_number)
 			a_kind_exists: transport_kinds.has_key (a_kind)
 		do
-			internal_lines.extend (create {LINE}.make (a_name, transport_kinds [a_kind], Current), a_name)
+			internal_lines.extend (create {LINE}.make (a_number, transport_kinds [a_kind], Current), a_number)
 		ensure
-			line_added: lines.has_key (a_name)
-			correct_kind: lines [a_name].kind = transport_kinds [a_kind]
-			no_stations: lines [a_name].stations.is_empty
+			line_added: lines.has_key (a_number)
+			correct_kind: lines [a_number].kind = transport_kinds [a_kind]
+			no_stations: lines [a_number].stations.is_empty
 		end
 
 	add_transport_kind (a_name: STRING; a_default_color: COLOR; a_icon_file: STRING)
@@ -205,40 +205,40 @@ feature -- City construction
 			correct_icon: transport_kinds [a_name].icon_file = a_icon_file
 		end
 
-	append_station (line_name: INTEGER; station_name: STRING)
-			-- Connect station `station_name' to the end of line `line_name'.
+	append_station (line_number: INTEGER; station_name: STRING)
+			-- Connect station `station_name' to the end of line `line_number'.
 		require
-			line_exists: lines.has_key (line_name)
+			line_exists: lines.has_key (line_number)
 			station_exists: stations.has_key (station_name)
-			new_station: not lines [line_name].stations.has (stations [station_name])
+			new_station: not lines [line_number].stations.has (stations [station_name])
 		do
-			lines [line_name].append (stations [station_name])
+			lines [line_number].append (stations [station_name])
 		ensure
-			station_is_last: lines [line_name].last = stations [station_name]
+			station_is_last: lines [line_number].last = stations [station_name]
 		end
 
-	prepend_station (line_name: INTEGER; station_name: STRING)
-			-- Connect station `station_name' to the beginning of line `line_name'.
+	prepend_station (line_number: INTEGER; station_name: STRING)
+			-- Connect station `station_name' to the beginning of line `line_number'.
 		require
-			line_exists: lines.has_key (line_name)
+			line_exists: lines.has_key (line_number)
 			station_exists: stations.has_key (station_name)
-			new_station: not lines [line_name].stations.has (stations [station_name])
+			new_station: not lines [line_number].stations.has (stations [station_name])
 		do
-			lines [line_name].prepend (stations [station_name])
+			lines [line_number].prepend (stations [station_name])
 		ensure
-			station_is_first: lines [line_name].first = stations [station_name]
+			station_is_first: lines [line_number].first = stations [station_name]
 		end
 
-	connect_station (line_name: INTEGER; station_name: STRING)
-			-- Connect station `station_name' to the closest end of line `line_name'.
+	connect_station (line_number: INTEGER; station_name: STRING)
+			-- Connect station `station_name' to the closest end of line `line_number'.
 		require
-			line_exists: lines.has_key (line_name)
+			line_exists: lines.has_key (line_number)
 			stations_exists: stations.has_key (station_name)
-			new_station: not lines [line_name].stations.has (stations [station_name])
+			new_station: not lines [line_number].stations.has (stations [station_name])
 		do
-			lines [line_name].connect (stations [station_name])
+			lines [line_number].connect (stations [station_name])
 		ensure
-			station_is_terminal: lines [line_name].is_terminal (stations [station_name])
+			station_is_terminal: lines [line_number].is_terminal (stations [station_name])
 		end
 
 	remove_station (a_name: STRING)
@@ -277,15 +277,15 @@ feature -- City construction
 			station_removed: not stations.has_key (a_name)
 		end
 
-	remove_line (a_name: INTEGER)
-			-- Remove line `a_name'.
+	remove_line (a_number: INTEGER)
+			-- Remove line `a_number'.
 		require
-			line_exists: lines.has_key (a_name)
+			line_exists: lines.has_key (a_number)
 		local
 			l: LINE
 			ti: V_LIST_ITERATOR [PUBLIC_TRANSPORT]
 		do
-			l := lines [a_name]
+			l := lines [a_number]
 			across
 				l.stations as i
 			loop
@@ -302,9 +302,9 @@ feature -- City construction
 					ti.forth
 				end
 			end
-			internal_lines.remove (a_name)
+			internal_lines.remove (a_number)
 		ensure
-			line_removed: not lines.has_key (a_name)
+			line_removed: not lines.has_key (a_number)
 		end
 
 	rename_station (a_old_name, a_new_name: STRING)
@@ -319,15 +319,15 @@ feature -- City construction
 			renamed: stations [a_new_name] = old stations [a_old_name]
 		end
 
-	rename_line (a_old_name, a_new_name: INTEGER)
-			-- Rename line `a_old_name' to `a_new_name'.
+	rename_line (a_old_number, a_new_number: INTEGER)
+			-- Rename line `a_old_number' to `a_new_number'.
 		require
-			old_name_exists: lines.has_key (a_old_name)
-			unique_name: not lines.has_key (a_new_name)
+			old_number_exists: lines.has_key (a_old_number)
+			unique_number: not lines.has_key (a_new_number)
 		do
-			lines [a_old_name].change_name (a_new_name)
+			lines [a_old_number].change_number (a_new_number)
 		ensure
-			renamed: lines [a_new_name] = old lines [a_old_name]
+			renamed: lines [a_new_number] = old lines [a_old_number]
 		end
 
 feature -- Mobile
@@ -419,7 +419,7 @@ invariant
 	all_stations_belong_to_city: across stations as i all i.item.city = Current end
 	lines_exists: lines /= Void
 	all_lines_exist: across lines as i all i.item /= Void end
-	lines_indexed_by_name: across lines as i all i.key = i.item.name end
+	lines_indexed_by_number: across lines as i all i.key = i.item.number end
 	all_lines_belong_to_city: across lines as i all i.item.city = Current end
 	transport_kinds_exists: transport_kinds /= Void
 	all_transport_kinds_exist: across transport_kinds as i all i.item /= Void end

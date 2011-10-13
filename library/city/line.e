@@ -25,18 +25,18 @@ create {CITY}
 	make
 
 feature {NONE} -- Initialization
-	make (a_name: INTEGER; a_kind: TRANSPORT_KIND; a_city: CITY)
-			-- Create a line of kind `a_kind' with name `a_name' in `a_city'.
+	make (a_number: INTEGER; a_kind: TRANSPORT_KIND; a_city: CITY)
+			-- Create a line of kind `a_kind' with number `a_number' in `a_city'.
 		require
 			a_kind_exists: a_kind /= Void
 		do
-			name := a_name
+			number := a_number
 			kind := a_kind
 			city := a_city
 			color := kind.default_color
 			create {V_ARRAYED_LIST [STATION]} internal_stations
 		ensure
-			name_set: name = a_name
+			name_set: number = a_number
 			kind_set: kind = a_kind
 			city_set: city = a_city
 			default_color: color = kind.default_color
@@ -45,7 +45,7 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	name: INTEGER
+	number: INTEGER
 			-- Identifier (unique within city).
 
 	kind: TRANSPORT_KIND
@@ -238,7 +238,7 @@ feature -- Comparison
 	is_less alias "<" (other: like Current): BOOLEAN
 			-- Is name of this line less than the name of `other'?
 		do
-			Result := name < other.name
+			Result := number < other.number
 		end
 
 feature -- Modification
@@ -251,17 +251,17 @@ feature -- Modification
 			color_set: color = a_color
 		end
 
-	change_name (a_new_name: INTEGER)
-			-- Set `name' to `a_new_name' and notify `city'.
+	change_number (a_new_number: INTEGER)
+			-- Set `name' to `a_new_number' and notify `city'.
 		require
-			unique_name: not city.lines.has_key (a_new_name)
+			unique_number: not city.lines.has_key (a_new_number)
 		do
-			city.internal_lines.remove (name)
-			name := a_new_name
-			city.internal_lines.extend (Current, a_new_name)
+			city.internal_lines.remove (number)
+			number := a_new_number
+			city.internal_lines.extend (Current, a_new_number)
 		ensure
-			renamed: name = a_new_name
-			city_updated: city.lines [a_new_name] = Current
+			renamed: number = a_new_number
+			city_updated: city.lines [a_new_number] = Current
 		end
 
 	append (a_station: STATION)
@@ -341,7 +341,7 @@ feature -- Modification
 	add_transport
 			-- Add a public transporation unit to the line.
 		do
-			city.add_public_transport (name)
+			city.add_public_transport (number)
 		end
 
 feature -- Output
@@ -349,7 +349,7 @@ feature -- Output
 	out: STRING
 			-- Textual representation.
 		do
-			Result := kind.name + " line " + name.out
+			Result := kind.name + " line " + number.out
 			if not stations.is_empty then
 				Result.append (" (" + first.name + " -- " + last.name + ")")
 			end
@@ -363,7 +363,7 @@ feature {CITY, STATION, LINE} -- Implementation
 	hash_code: INTEGER
 			-- Hash code value.
 		do
-			Result := name.hash_code
+			Result := number.hash_code
 		end
 
 invariant

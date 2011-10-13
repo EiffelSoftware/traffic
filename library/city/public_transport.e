@@ -33,7 +33,7 @@ feature -- Access
 	name: STRING
 			-- Name (might not be unique withing the city).
 		do
-			Result := line.kind.name + " " + line.name.out
+			Result := line.kind.name + " " + line.number.out
 		end
 
 	position: VECTOR

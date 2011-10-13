@@ -32,7 +32,7 @@ feature {NONE} -- Initialization
 			until
 				i > Label_count
 			loop
-				create label.make (line.name.out)
+				create label.make (line.number.out)
 				label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
 				label.add_to_world (map.world)
 				labels.extend_back (label)
@@ -175,7 +175,7 @@ feature {NONE} -- Implementation
 			center: VECTOR
 		do
 			l.show
-			l.text.set_text (line.name.out)
+			l.text.set_text (line.number.out)
 			l.text.font.set_height (scaled_font_size)
 			l.fit_to_text
 			l.set_background_color (polyline.foreground_color)

@@ -148,7 +148,7 @@ feature -- Output
 			until
 				l = Void
 			loop
-				Result := Result + " -" + l.line.kind.name + " " + l.line.name.out +  "-> " + l.destination.name
+				Result := Result + " -" + l.line.kind.name + " " + l.line.number.out +  "-> " + l.destination.name
 				l := l.next
 			end
 		end

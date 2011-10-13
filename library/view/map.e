@@ -41,14 +41,23 @@ feature -- Access
 	city: CITY
 			-- Underlying model.
 
-	pixmap: EV_PIXMAP
-			-- Generated map.
-
 	station_views: V_TABLE [STRING, STATION_VIEW]
 			-- Graphical representations of city stations.
 
+	station_view (a_name: STRING): STATION_VIEW
+			-- Graphical representations of station `a_name'.
+		do
+			Result := station_views [a_name]
+		end
+
 	line_views: V_TABLE [INTEGER, LINE_VIEW]
 			-- Graphical representations of city lines.
+
+	line_view (a_number: INTEGER): LINE_VIEW
+			-- Graphical representations of line `a_number'.
+		do
+			Result := line_views [a_number]
+		end
 
 	transport_views: V_LIST [TRANSPORT_VIEW]
 			-- Graphical representations of transportation units.
@@ -60,31 +69,6 @@ feature -- Access
 
 	building_views: V_TABLE [STRING, BUILDING_VIEW]
 			-- Graphical representations of city buildings.
-
-feature {VIEW} -- Access
-
-	world: EV_MODEL_WORLD
-			-- World that contains graphical representations of city objects.			
-
-	scale_factor: REAL_64
-			-- Scale factor of city coordinates in world coordinates.
-
-	center_x, center_y: INTEGER
-			-- World coordinates of city center.
-
-	world_coordinate (v: VECTOR): EV_COORDINATE
-			-- World coordinate corresponding to city vector `v'.
-		do
-			create Result.make (center_x + (v.x * scale_factor).rounded,
-				center_y - (v.y * scale_factor).rounded)
-		end
-
-	city_coordinate (c: EV_COORDINATE): VECTOR
-			-- City vector corresponding to world coordinate `c'.
-		do
-			create Result.make ((c.x - center_x) / scale_factor,
-				(center_y - c.y) / scale_factor)
-		end
 
 feature -- Basic operations
 
@@ -238,6 +222,26 @@ feature -- Basic operations
 
 feature -- Transformations
 
+	scale_factor: REAL_64
+			-- Scale factor of city coordinates in world coordinates.
+
+	center_x, center_y: INTEGER
+			-- World coordinates of city center.
+
+	world_coordinate (v: VECTOR): EV_COORDINATE
+			-- World coordinate corresponding to city vector `v'.
+		do
+			create Result.make (center_x + (v.x * scale_factor).rounded,
+				center_y - (v.y * scale_factor).rounded)
+		end
+
+	city_coordinate (c: EV_COORDINATE): VECTOR
+			-- City vector corresponding to world coordinate `c'.
+		do
+			create Result.make ((c.x - center_x) / scale_factor,
+				(center_y - c.y) / scale_factor)
+		end
+
 	translate (dx, dy: INTEGER)
 			-- Move map by [`dx', `dy'] in world coordinates.
 		do
@@ -317,6 +321,14 @@ feature -- Parameters
 
 	Frame_width: INTEGER = 20
 			-- Minimum space left between the outer city object and the edge of the map in the default view.		
+
+feature -- Graphics
+
+	world: EV_MODEL_WORLD
+			-- World that contains graphical representations of city objects.
+
+	pixmap: EV_PIXMAP
+			-- Generated map.
 
 feature {NONE} -- Implementation
 

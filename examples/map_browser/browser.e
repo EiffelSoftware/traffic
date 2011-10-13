@@ -69,7 +69,7 @@ feature {NONE} -- Initialization
 			across
 				city.lines as li
 			loop
-				city.add_public_transport (li.item.name)
+				city.add_public_transport (li.item.number)
 			end
 			map.update
 		end
