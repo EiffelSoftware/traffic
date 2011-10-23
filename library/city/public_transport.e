@@ -58,6 +58,12 @@ feature -- Access
 			end
 		end
 
+	speed: REAL_64
+			-- Moving speed.
+		do
+			Result := line.kind.speed
+		end
+
 feature -- Status report
 
 	is_towards_last: BOOLEAN
