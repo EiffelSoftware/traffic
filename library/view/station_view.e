@@ -18,12 +18,12 @@ feature {NONE} -- Initialization
 			a_map_exists: a_map /= Void
 			a_map_has_station: a_map.city.stations.has (a_station)
 		do
-			station := a_station
+			model := a_station
 			map := a_map
 			create blob
 			blob.set_background_color (White)
 			a_map.world.extend (blob)
-			create label.make (station.name)
+			create label.make (model.name)
 			label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
 			label.add_to_world (a_map.world)
 			update
@@ -35,8 +35,16 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	station: STATION
+	model: STATION
 			-- Underlying model.
+
+feature -- Status report
+
+	model_in_city: BOOLEAN
+			-- Is `model' part of `map.city'?
+		do
+			Result := map.city.stations.has_key (model.name)
+		end
 
 feature -- Status setting
 
@@ -61,7 +69,7 @@ feature -- Status setting
 feature -- Basic operations
 
 	update
-			-- Update according to the state of `station'.
+			-- Update according to the state of `model'.
 			-- and bring to foreground of the map.
 		local
 			radius: REAL_64
@@ -70,19 +78,15 @@ feature -- Basic operations
 		do
 			n := maximum_sibling_lines.max (1)
 			radius := n * ({LINE_VIEW}.width + {LINE_VIEW}.gap) / 2
-			point_a := map.world_coordinate (station.position - [radius, radius])
-			point_b := map.world_coordinate (station.position + [radius, radius])
+			point_a := map.world_coordinate (model.position - [radius, radius])
+			point_b := map.world_coordinate (model.position + [radius, radius])
 			blob.set_point_a_position (point_a.x, point_a.y)
 			blob.set_point_b_position (point_b.x, point_b.y)
 			blob.set_radius (blob.width // 4)
 			label.text.font.set_height (scaled_font_size)
-			label.text.set_text (station.name)
+			label.text.set_text (model.name)
 			label.fit_to_text
 			label.set_x_y ((blob.point_b_x + label_gap * map.scale_factor + label.width / 2).rounded, blob.y)
-
-			map.world.bring_to_front (blob)
-			map.world.bring_to_front (label.background)
-			map.world.bring_to_front (label.text)
 		end
 
 	remove_from_map
@@ -113,19 +117,19 @@ feature {NONE} -- Implementation
 			s2: STATION
 		do
 			across
-				station.lines as i
+				model.lines as i
 			loop
 				l := i.item
-				s2 := l.next_station (station, l.first)
+				s2 := l.next_station (model, l.first)
 				if s2 /= Void then
-					n := map.city.connecting_lines (station, s2).count
+					n := map.city.connecting_lines (model, s2).count
 					if n > Result then
 						Result := n
 					end
 				end
-				s2 := l.next_station (station, l.last)
+				s2 := l.next_station (model, l.last)
 				if s2 /= Void then
-					n := map.city.connecting_lines (station, s2).count
+					n := map.city.connecting_lines (model, s2).count
 					if n > Result then
 						Result := n
 					end
@@ -134,7 +138,6 @@ feature {NONE} -- Implementation
 		end
 
 invariant
-	station_exists: station /= Void
 	blob_exists: blob /= Void
 	label_exists: label /= Void
 end

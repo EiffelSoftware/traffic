@@ -4,6 +4,9 @@ note
 deferred class
 	MOBILE
 
+inherit
+	CITY_ITEM
+
 feature -- Access
 
 	position: VECTOR

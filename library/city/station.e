@@ -5,7 +5,7 @@ class
 	STATION
 
 inherit
-	HASHABLE
+	CITY_ITEM
 		redefine
 			out
 		end
@@ -107,7 +107,7 @@ feature -- Output
 			Result := "station " + name + " " + position.out
 		end
 
-feature {CITY, STATION, LINE} -- Implementation
+feature {CITY, CITY_ITEM} -- Implementation
 
 	internal_lines: V_LIST [LINE]
 			-- Incident lines.

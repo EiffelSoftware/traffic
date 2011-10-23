@@ -21,28 +21,31 @@ feature {NONE} -- Initialization
 			i: INTEGER
 			label: LABEL
 		do
-			line := a_line
+			model := a_line
 			map := a_map
+
+			create background_polyline
+			background_polyline.hide
+			background_polyline.set_line_width (Width * 3)
+			background_polyline.set_foreground_color (Highlight_color)
+			map.world.extend (background_polyline)
+
 			create polyline
 			polyline.set_line_width (Width)
 			map.world.extend (polyline)
+
 			create labels
 			from
 				i := 1
 			until
 				i > Label_count
 			loop
-				create label.make (line.number.out)
+				create label.make (model.number.out)
 				label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
 				label.add_to_world (map.world)
 				labels.extend_back (label)
 				i := i + 1
 			end
-			create background_polyline
-			background_polyline.hide
-			background_polyline.set_line_width (Width * 3)
-			background_polyline.set_foreground_color (Highlight_color)
-			map.world.extend (background_polyline)
 			update
 
 			make_actions
@@ -54,8 +57,16 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	line: LINE
+	model: LINE
 			-- Underlying model.
+
+feature -- Status report
+
+	model_in_city: BOOLEAN
+			-- Is `model' part of `map.city'?
+		do
+			Result := map.city.lines.has_key (model.number)
+		end
 
 feature -- Status setting
 
@@ -76,22 +87,18 @@ feature -- Status setting
 feature -- Basic operations
 
 	update
-			-- Update according to the state of `line'
-			-- and bring to foreground of the map.			
+			-- Update according to the state of `model'.
 		local
 			i: V_ITERATOR [STATION]
 			s1, s2: STATION
 			segment, offset: VECTOR
 			sibling_lines: V_SEQUENCE [LINE]
 		do
-			polyline.set_foreground_color (ev_color (line.color))
+			polyline.set_foreground_color (ev_color (model.color))
 			polyline.set_point_count (0)
 			background_polyline.set_point_count (0)
 
-			map.world.bring_to_front (background_polyline)
-			map.world.bring_to_front (polyline)
-
-			if line.stations.count < 2 then
+			if model.stations.count < 2 then
 				across
 					labels as li
 				loop
@@ -100,7 +107,7 @@ feature -- Basic operations
 			end
 
 			from
-				i := line.stations.new_cursor
+				i := model.stations.new_cursor
 			until
 				i.after or i.is_last
 			loop
@@ -114,7 +121,7 @@ feature -- Basic operations
 					segment := s1.position - s2.position
 				end
 				offset := segment.orthogonal.normalized *
-					(sibling_lines.index_of (line) - 1 - (sibling_lines.count - 1) / 2) *
+					(sibling_lines.index_of (model) - 1 - (sibling_lines.count - 1) / 2) *
 					(width + gap)
 
 				polyline.extend_point (map.world_coordinate (s1.position + offset))
@@ -175,24 +182,20 @@ feature {NONE} -- Implementation
 			center: VECTOR
 		do
 			l.show
-			l.text.set_text (line.number.out)
+			l.text.set_text (model.number.out)
 			l.text.font.set_height (scaled_font_size)
 			l.fit_to_text
 			l.set_background_color (polyline.foreground_color)
-			if line.color.brightness < 0.6 then
+			if model.color.brightness < 0.6 then
 				l.set_foreground_color (White)
 			else
 				l.set_foreground_color (Black)
 			end
 			center := s1.position + (s2.position - s1.position) * 0.5 + offset
 			l.set_x_y (map.world_coordinate (center).x, map.world_coordinate (center).y)
-
-			map.world.bring_to_front (l.background)
-			map.world.bring_to_front (l.text)
 		end
 
 invariant
-	line_exists: line /= Void
 	polyline_exists: polyline /= Void
 	labels_exists: labels /= Void
 	two_labels: labels.count = Label_count

@@ -1,5 +1,5 @@
 note
-	description : "City with a public transportation system."
+	description: "City with a public transportation system."
 
 class
 	CITY

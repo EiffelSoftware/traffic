@@ -9,12 +9,12 @@ class
 	LINE
 
 inherit
-	ITERABLE [STATION]
+	CITY_ITEM
 		redefine
 			out
 		end
 
-	HASHABLE
+	ITERABLE [STATION]
 		redefine
 			out
 		end
@@ -263,7 +263,7 @@ feature -- Modification
 		end
 
 	change_number (a_new_number: INTEGER)
-			-- Set `name' to `a_new_number' and notify `city'.
+			-- Set `number' to `a_new_number' and notify `city'.
 		require
 			unique_number: not city.lines.has_key (a_new_number)
 		do
@@ -366,7 +366,7 @@ feature -- Output
 			end
 		end
 
-feature {CITY, STATION, LINE} -- Implementation
+feature {CITY, CITY_ITEM} -- Implementation
 
 	internal_stations: V_LIST [STATION]
 			-- Stations the line goes through.

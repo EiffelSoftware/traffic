@@ -31,7 +31,8 @@ feature {NONE} -- Initialization
 			time_speedup := 1.0
 			on_tick.extend_back (agent move_mobile)
 
-			make_item_views
+			create {V_HASH_TABLE [CITY_ITEM, VIEW]} views
+			create_views
 			projector.project
 			subscribe_widget (pixmap)
 		end
@@ -41,173 +42,60 @@ feature -- Access
 	city: CITY
 			-- Underlying model.
 
-	station_views: V_TABLE [STRING, STATION_VIEW]
-			-- Graphical representations of city stations.
+	views: V_TABLE [CITY_ITEM, VIEW]
+			-- Graphical representations of city items.
 
 	station_view (a_name: STRING): STATION_VIEW
 			-- Graphical representations of station `a_name'.
 		do
-			Result := station_views [a_name]
+			if attached {STATION_VIEW} views [city.station (a_name)] as sv then
+				Result := sv
+			end
 		end
-
-	line_views: V_TABLE [INTEGER, LINE_VIEW]
-			-- Graphical representations of city lines.
 
 	line_view (a_number: INTEGER): LINE_VIEW
 			-- Graphical representations of line `a_number'.
 		do
-			Result := line_views [a_number]
+			if attached {LINE_VIEW} views [city.line (a_number)] as lv then
+				Result := lv
+			end
 		end
 
-	transport_views: V_LIST [TRANSPORT_VIEW]
-			-- Graphical representations of transportation units.
-			-- (Same order as city.transports).
-
-	route_views: V_LIST [ROUTE_VIEW]
-			-- Graphical representations of known routes.
-			-- (Same order as city.routes).
-
-	building_views: V_TABLE [STRING, BUILDING_VIEW]
-			-- Graphical representations of city buildings.
-
-feature -- Basic operations
+feature -- View update
 
 	update
-			-- Syncronize view with `city'.
+			-- Syncronize map with `city'.
 		local
-			bvi: V_TABLE_ITERATOR [STRING, BUILDING_VIEW]
-			svi: V_TABLE_ITERATOR [STRING, STATION_VIEW]
-			lvi: V_TABLE_ITERATOR [INTEGER, LINE_VIEW]
-			tvi: V_LIST_ITERATOR [TRANSPORT_VIEW]
-			rvi: V_LIST_ITERATOR [ROUTE_VIEW]
+			vi: V_TABLE_ITERATOR [CITY_ITEM, VIEW]
 		do
-			-- Remove objects that do not exists anymore
+			-- Remove/update existing views
 			from
-				bvi := building_views.new_cursor
+				vi := views.new_cursor
 			until
-				bvi.after
+				vi.after
 			loop
-				if not city.buildings.has_key (bvi.key) then
-					bvi.item.remove_from_map
-					bvi.remove
+				if vi.item.model_in_city then
+					vi.item.update
+					vi.forth
 				else
-					bvi.forth
+					vi.item.remove_from_map
+					vi.remove
 				end
 			end
-			from
-				lvi := line_views.new_cursor
-			until
-				lvi.after
-			loop
-				if not city.lines.has_key (lvi.key) then
-					lvi.item.remove_from_map
-					lvi.remove
-				else
-					lvi.forth
-				end
-			end
-			from
-				svi := station_views.new_cursor
-			until
-				svi.after
-			loop
-				if not city.stations.has_key (svi.key) then
-					svi.item.remove_from_map
-					svi.remove
-				else
-					svi.forth
-				end
-			end
-			from
-				tvi := transport_views.new_cursor
-			until
-				tvi.after
-			loop
-				if not city.transports.has (tvi.item.transport) then
-					tvi.item.remove_from_map
-					tvi.remove
-				else
-					tvi.forth
-				end
-			end
-			from
-				rvi := route_views.new_cursor
-			until
-				rvi.after
-			loop
-				if not city.routes.has (rvi.item.route) then
-					rvi.item.remove_from_map
-					rvi.remove
-				else
-					rvi.forth
-				end
-			end
-			-- Update existing and add new objects			
-			across
-				city.buildings as bi
-			loop
-				bvi.search_key (bi.key)
-				if bvi.after then
-					building_views [bi.key] := create {BUILDING_VIEW}.make_in_city (bi.item, Current)
-				else
-					bvi.item.update
-				end
-			end
-			across
-				city.lines as li
-			loop
-				lvi.search_key (li.key)
-				if lvi.after then
-					line_views [li.key] := create {LINE_VIEW}.make_in_city (li.item, Current)
-				else
-					lvi.item.update
-				end
-			end
-			across
-				city.stations as si
-			loop
-				svi.search_key (si.key)
-				if svi.after then
-					station_views [si.key] := create {STATION_VIEW}.make_in_city (si.item, Current)
-				else
-					svi.item.update
-				end
-			end
-			across
-				city.transports as ti
-			loop
-				if ti.index > transport_views.count then
-					transport_views.extend_back (create {TRANSPORT_VIEW}.make_in_city (ti.item, Current))
-				elseif transport_views [ti.index].transport /= ti.item then
-					transport_views.extend_at (create {TRANSPORT_VIEW}.make_in_city (ti.item, Current), ti.index)
-				else
-					transport_views [ti.index].update
-				end
-			end
-			across
-				city.routes as ri
-			loop
-				if ri.index > route_views.count then
-					route_views.extend_back (create {ROUTE_VIEW}.make_in_city (ri.item, Current))
-				elseif route_views [ri.index].route /= ri.item then
-					route_views.extend_at (create {ROUTE_VIEW}.make_in_city (ri.item, Current), ri.index)
-				else
-					route_views [ri.index].update
-				end
-			end
+			-- Add views for new city items			
+			create_views
 			refresh
-		ensure
-			transport_views_order: across transport_views as i all i.item.transport = city.transports [i.index] end
-			route_views_order: across route_views as i all i.item.route = city.routes [i.index] end
 		end
 
 	update_mobile
 			-- Synchronize only existing mobile object views.
 		do
 			across
-				transport_views as tvi
+				city.transports as ti
 			loop
-				tvi.item.update
+				if views.has_key (ti.item) then
+					views [ti.item].update
+				end
 			end
 
 			projector.project
@@ -218,6 +106,48 @@ feature -- Basic operations
 		do
 			world.invalidate
 			projector.project
+		end
+
+feature {NONE} -- View factory
+
+	create_views
+			-- Create missing views for items of `city'.
+		do
+			across
+				city.buildings as i
+			loop
+				if not views.has_key (i.item) then
+					views [i.item] := create {BUILDING_VIEW}.make_in_city (i.item, Current)
+				end
+			end
+			across
+				city.lines as i
+			loop
+				if not views.has_key (i.item) then
+					views [i.item] := create {LINE_VIEW}.make_in_city (i.item, Current)
+				end
+			end
+			across
+				city.stations as i
+			loop
+				if not views.has_key (i.item) then
+					views [i.item] := create {STATION_VIEW}.make_in_city (i.item, Current)
+				end
+			end
+			across
+				city.routes as i
+			loop
+				if not views.has_key (i.item) then
+					views [i.item] := create {ROUTE_VIEW}.make_in_city (i.item, Current)
+				end
+			end
+			across
+				city.transports as i
+			loop
+				if not views.has_key (i.item) then
+					views [i.item] := create {TRANSPORT_VIEW}.make_in_city (i.item, Current)
+				end
+			end
 		end
 
 feature -- Transformations
@@ -335,42 +265,6 @@ feature {NONE} -- Implementation
 	projector: EV_MODEL_PIXMAP_PROJECTOR
 			-- Projector used to generate `pixmap' from `world'.			
 
-	make_item_views
-			-- Initialize views of city items.
-		do
-			create {V_HASH_TABLE [STRING, STATION_VIEW]} station_views.with_object_equality
-			create {V_HASH_TABLE [INTEGER, LINE_VIEW]} line_views
-			create {V_ARRAYED_LIST [TRANSPORT_VIEW]} transport_views
-			create {V_ARRAYED_LIST [ROUTE_VIEW]} route_views
-			create {V_HASH_TABLE [STRING, BUILDING_VIEW]} building_views.with_object_equality
-
-			across
-				city.buildings as i
-			loop
-				building_views [i.key] := create {BUILDING_VIEW}.make_in_city (i.item, Current)
-			end
-			across
-				city.lines as i
-			loop
-				line_views [i.key] := create {LINE_VIEW}.make_in_city (i.item, Current)
-			end
-			across
-				city.stations as i
-			loop
-				station_views [i.key] := create {STATION_VIEW}.make_in_city (i.item, Current)
-			end
-			across
-				city.transports as i
-			loop
-				transport_views.extend_back (create {TRANSPORT_VIEW}.make_in_city (i.item, Current))
-			end
-			across
-				city.routes as i
-			loop
-				route_views.extend_back (create {ROUTE_VIEW}.make_in_city (i.item, Current))
-			end
-		end
-
 	scale_by (ds: REAL_64)
 			-- Scale map by `ds' times.
 		require
@@ -386,10 +280,8 @@ feature {NONE} -- Implementation
 invariant
 	city_exists: city /= Void
 	pixmap_exists: pixmap /= Void
-	station_views_exists: station_views /= Void
-	line_views_exist: line_views /= Void
-	transport_views_exist: transport_views /= Void
-	route_views_exist: route_views /= Void
+	views_exists: views /= Void
+	views_indexed_by_models: across views as i all i.key = i.item.model end
 	world_exists: world /= Void
 	projector_exists: projector /= Void
 	scale_factor_in_bounds: Min_scale <= scale_factor and scale_factor <= Max_scale

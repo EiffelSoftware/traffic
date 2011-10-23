@@ -20,18 +20,20 @@ feature {NONE} -- Initialization
 		local
 			i: INTEGER
 		do
-			route := a_route
+			model := a_route
 			map := a_map
-			create polyline
-			polyline.set_line_width (Width)
-			polyline.set_foreground_color (Color)
-			polyline.enable_dashed_line_style
-			map.world.extend (polyline)
+
 			create background_polyline
 			background_polyline.hide
 			background_polyline.set_line_width (Width)
 			background_polyline.set_foreground_color (Highlight_color)
 			map.world.extend (background_polyline)
+
+			create polyline
+			polyline.set_line_width (Width)
+			polyline.set_foreground_color (Color)
+			polyline.enable_dashed_line_style
+			map.world.extend (polyline)
 
 			create pin_a
 			create pin_leg_a
@@ -51,8 +53,16 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	route: ROUTE
+	model: ROUTE
 			-- Underlying model.
+
+feature -- Status report
+
+	model_in_city: BOOLEAN
+			-- Is `model' part of `map.city'?
+		do
+			Result := map.city.routes.has (model)
+		end
 
 feature -- Status setting
 
@@ -73,8 +83,7 @@ feature -- Status setting
 feature -- Basic operations
 
 	update
-			-- Update according to the state of `route'
-			-- and bring to foreground of the map.			
+			-- Update according to the state of `model'.
 		local
 			w: EV_MODEL_WORLD
 			leg, line: LEG
@@ -84,18 +93,8 @@ feature -- Basic operations
 			polyline.set_point_count (0)
 			background_polyline.set_point_count (0)
 
-			w := map.world
-			w.bring_to_front (background_polyline)
-			w.bring_to_front (polyline)
-			w.bring_to_front (pin_leg_a)
-			w.bring_to_front (pin_leg_b)
-			w.bring_to_front (pin_a)
-			w.bring_to_front (pin_b)
-			w.bring_to_front (text_a)
-			w.bring_to_front (text_b)
-
 			from
-				leg := route.first_leg
+				leg := model.first_leg
 			until
 				leg = Void
 			loop
@@ -110,11 +109,11 @@ feature -- Basic operations
 				end
 				leg := leg.next
 			end
-			s := route.destination
+			s := model.destination
 			polyline.extend_point (map.world_coordinate (s.position))
 			background_polyline.extend_point (map.world_coordinate (s.position))
 
-			update_pin (pin_a, pin_leg_a, text_a, route.origin.position)
+			update_pin (pin_a, pin_leg_a, text_a, model.origin.position)
 			update_pin (pin_b, pin_leg_b, text_b, s.position)
 		end
 
@@ -205,7 +204,6 @@ feature {NONE} -- Implementation
 			-- Polyline used for highlighting the route.
 
 invariant
-	route_exists: route /= Void
 	pins_exist: pin_a /= Void and pin_b /= Void
 	legs_exist: pin_leg_a /= Void and pin_leg_b /= Void
 	texts_exist: text_a /= Void and text_b /= Void

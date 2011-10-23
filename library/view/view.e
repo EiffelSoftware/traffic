@@ -22,7 +22,17 @@ feature -- Access
 	map: MAP
 			-- Map that this view belongs to.
 
+	model: CITY_ITEM
+			-- City object to which the view belongs.
+		deferred
+		end
+
 feature -- Status report
+
+	model_in_city: BOOLEAN
+			-- Is `model' part of `map.city'?
+		deferred
+		end
 
 	is_highlighted: BOOLEAN
 			-- Is view highlighted?
@@ -46,7 +56,7 @@ feature -- Status setting
 feature {VIEW, MAP} -- Basic operations
 
 	update
-			-- Update according to the state of the model.
+			-- Update according to the state of `model'.
 		deferred
 		end
 
@@ -78,4 +88,5 @@ feature {NONE} -- Implementation
 
 invariant
 	map_exists: map /= Void
+	model_exists: model /= Void
 end

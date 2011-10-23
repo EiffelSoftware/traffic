@@ -24,16 +24,16 @@ feature {NONE} -- Initialization
 			file_name: STRING
 			icon_pixmap: EV_PIXMAP
 		do
-			transport := a_transport
+			model := a_transport
 			map := a_map
 
 			create blob
 			blob.set_radius1 ((Radius * map.scale_factor).rounded)
 			blob.set_radius2 ((Radius * map.scale_factor).rounded)
-			blob.set_background_color (ev_color (transport.line.color))
+			blob.set_background_color (ev_color (model.line.color))
 			map.world.extend (blob)
 
-			file_name := transport.line.kind.icon_file
+			file_name := model.line.kind.icon_file
 			if file_name /= Void and file_system.file_exists (file_name) then
 				create icon_pixmap
 				icon_pixmap.set_with_named_file (file_name)
@@ -50,8 +50,16 @@ feature {NONE} -- Initialization
 
 feature -- Acess
 
-	transport: PUBLIC_TRANSPORT
+	model: PUBLIC_TRANSPORT
 		-- Underlying model.
+
+feature -- Status report
+
+	model_in_city: BOOLEAN
+			-- Is `model' part of `map.city'?
+		do
+			Result := map.city.transports.has (model)
+		end
 
 feature -- Status setting
 
@@ -74,17 +82,14 @@ feature -- Status setting
 feature -- Basic operations
 
 	update
-			-- Update according to the state of `transport'
-			-- and bring to foreground of the map.
+			-- Update according to the state of `model'.
 		local
 			point: EV_COORDINATE
 		do
-			point := map.world_coordinate (transport.position)
+			point := map.world_coordinate (model.position)
 			blob.set_x_y (point.x, point.y)
-			map.world.bring_to_front (blob)
 			if icon /= Void then
 				icon.set_x_y (point.x, point.y)
-				map.world.bring_to_front (icon)
 			end
 		end
 
@@ -111,6 +116,5 @@ feature {NONE} -- Implementation
 			-- Background blob.			
 
 invariant
-	transport_exists: transport /= Void
 	blob_exists: blob /= Void
 end

@@ -4,6 +4,12 @@ note
 class
 	BUILDING
 
+inherit
+	CITY_ITEM
+		redefine
+			out
+		end
+
 create
 	make
 
@@ -41,6 +47,26 @@ feature -- Modification
 			-- Set `name' to `a_name'.
 		do
 			name := a_name
+		end
+
+feature -- Output
+
+	out: STRING
+			-- Textual representation.
+		do
+			if name /= Void then
+				Result := address + " (" + name + ")"
+			else
+				Result := address
+			end
+		end
+
+feature {CITY, CITY_ITEM} -- Implementation
+
+	hash_code: INTEGER
+			-- Hash code value.
+		do
+			Result := address.hash_code
 		end
 
 invariant

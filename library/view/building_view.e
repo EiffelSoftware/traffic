@@ -18,7 +18,7 @@ feature {NONE} -- Initialization
 			a_map_exists: a_map /= Void
 			a_map_has_building: a_map.city.buildings.has (a_building)
 		do
-			building := a_building
+			model := a_building
 			map := a_map
 			create blob
 			blob.set_background_color (Color)
@@ -32,8 +32,17 @@ feature {NONE} -- Initialization
 
 feature -- Access
 
-	building: BUILDING
+	model: BUILDING
 			-- Underlying model.
+
+feature -- Status report
+
+	model_in_city: BOOLEAN
+			-- Is `model' part of `map.city'?
+		do
+			Result := map.city.buildings.has_key (model.address) and then
+				map.city.buildings [model.address] = model
+		end
 
 feature -- Status setting
 
@@ -56,17 +65,14 @@ feature -- Status setting
 feature -- Basic operations
 
 	update
-			-- Update according to the state of `building'.
-			-- and bring to foreground of the map.
+			-- Update according to the state of `model'.
 		local
 			point_a, point_b: EV_COORDINATE
 		do
-			point_a := map.world_coordinate (building.corner_a)
-			point_b := map.world_coordinate (building.corner_b)
+			point_a := map.world_coordinate (model.corner_a)
+			point_b := map.world_coordinate (model.corner_b)
 			blob.set_point_a_position (point_a.x, point_a.y)
 			blob.set_point_b_position (point_b.x, point_b.y)
-
-			map.world.bring_to_front (blob)
 		end
 
 	remove_from_map
@@ -90,6 +96,5 @@ feature {NONE} -- Implementation
 			-- Rectangle depicting the building.
 
 invariant
-	building_exists: building /= Void
 	blob_exists: blob /= Void
 end

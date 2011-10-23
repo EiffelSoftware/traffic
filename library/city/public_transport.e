@@ -155,6 +155,13 @@ feature -- Output
 			Result := name.out + " towards " + destination.name
 		end
 
+feature {CITY, CITY_ITEM} -- Implementation
+
+	hash_code: INTEGER
+			-- Hash code value.
+		do
+			Result := name.hash_code
+		end
 
 feature {NONE} -- Implementation
 

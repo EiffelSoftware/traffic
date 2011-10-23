@@ -79,32 +79,16 @@ feature {NONE} -- Initialization
 		require
 			map_exists: map /= Void
 		local
-			sv: STATION_VIEW
-			lv: LINE_VIEW
-			tv: TRANSPORT_VIEW
+			v: VIEW
 		do
 			map.on_right_click_no_args.extend_back (agent deselect)
 			map.on_right_click_no_args.extend_back (agent console.output (city))
 			across
-				map.station_views as i
+				map.views as i
 			loop
-				sv := i.item
-				sv.on_left_click_no_args.extend_back (agent select_view (sv))
-				sv.on_left_click_no_args.extend_back (agent console.output (sv.station))
-			end
-			across
-				map.line_views as i
-			loop
-				lv := i.item
-				lv.on_left_click_no_args.extend_back (agent select_view (lv))
-				lv.on_left_click_no_args.extend_back (agent console.output (lv.line))
-			end
-			across
-				map.transport_views as i
-			loop
-				tv := i.item
-				tv.on_left_click_no_args.extend_back (agent select_view (tv))
-				tv.on_left_click_no_args.extend_back (agent console.output (tv.transport))
+				v := i.item
+				v.on_left_click_no_args.extend_back (agent select_view (v))
+				v.on_left_click_no_args.extend_back (agent console.output (v.model))
 			end
 		end
 

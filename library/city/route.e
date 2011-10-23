@@ -5,7 +5,7 @@ class
 	ROUTE
 
 inherit
-	ANY
+	CITY_ITEM
 		redefine
 			is_equal,
 			copy,
@@ -71,6 +71,12 @@ feature -- Access
 			loop
 				Result := Result.next
 			end
+		end
+
+	city: CITY
+			-- City the route belongs to.
+		do
+			Result := origin.city
 		end
 
 feature -- Comparison
@@ -151,6 +157,14 @@ feature -- Output
 				Result := Result + " -" + l.line.kind.name + " " + l.line.number.out +  "-> " + l.destination.name
 				l := l.next
 			end
+		end
+
+feature {CITY, CITY_ITEM} -- Implementation
+
+	hash_code: INTEGER
+			-- Hash code value.
+		do
+			Result := origin.city.routes.index_of (Current)
 		end
 
 feature {ROUTE} -- Implementation
