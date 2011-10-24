@@ -45,19 +45,43 @@ feature -- Access
 	views: V_TABLE [CITY_ITEM, VIEW]
 			-- Graphical representations of city items.
 
-	station_view (a_name: STRING): STATION_VIEW
-			-- Graphical representations of station `a_name'.
+	station_view (a_station: STATION): STATION_VIEW
+			-- Graphical representations of `a_station'.
 		do
-			if attached {STATION_VIEW} views [city.station (a_name)] as sv then
+			if attached {STATION_VIEW} views [a_station] as sv then
 				Result := sv
 			end
 		end
 
-	line_view (a_number: INTEGER): LINE_VIEW
-			-- Graphical representations of line `a_number'.
+	line_view (a_line: LINE): LINE_VIEW
+			-- Graphical representations of `a_line'.
 		do
-			if attached {LINE_VIEW} views [city.line (a_number)] as lv then
+			if attached {LINE_VIEW} views [a_line] as lv then
 				Result := lv
+			end
+		end
+
+	transport_view (a_transport: PUBLIC_TRANSPORT): TRANSPORT_VIEW
+			-- Graphical representations of `a_transport'.
+		do
+			if attached {TRANSPORT_VIEW} views [a_transport] as tv then
+				Result := tv
+			end
+		end
+
+	building_view (a_building: BUILDING): BUILDING_VIEW
+			-- Graphical representations of `a_transport'.
+		do
+			if attached {BUILDING_VIEW} views [a_building] as bv then
+				Result := bv
+			end
+		end
+
+	route_view (a_route: ROUTE): ROUTE_VIEW
+			-- Graphical representations of `a_route'.
+		do
+			if attached {ROUTE_VIEW} views [a_route] as rv then
+				Result := rv
 			end
 		end
 

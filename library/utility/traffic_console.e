@@ -44,7 +44,7 @@ feature -- Initialization
 			ta.disable_edit
 			ta.set_background_color (Black)
 			ta.set_foreground_color (Green)
-			ta.set_font (create {EV_FONT}.make_with_values (Family_screen, Weight_regular, Shape_regular, 16))
+			ta.set_font (create {EV_FONT}.make_with_values (Family_typewriter, Weight_regular, Shape_regular, 16))
 			text_area := ta
 		end
 
@@ -61,7 +61,7 @@ feature -- Initialization
 			ta.disable_edit
 			ta.set_background_color (Black)
 			ta.set_foreground_color (Green)
-			ta.set_font (create {EV_FONT}.make_with_values (Family_screen, Weight_regular, Shape_regular, 16))
+			ta.set_font (create {EV_FONT}.make_with_values (Family_typewriter, Weight_regular, Shape_regular, 16))
 			ta.set_minimum_height (ta.font.line_height * n + 10)
 			text_area := ta
 		end
