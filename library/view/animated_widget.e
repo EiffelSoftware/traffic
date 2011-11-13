@@ -39,17 +39,19 @@ feature -- Animation control
 	animate
 			-- Start animation (start generating tick events).
 		do
-			is_animated := True
-			last_timeout := 0
-			create timeout.make_with_interval (33)
-			timeout.actions.extend (agent handle_timeout)
+			if not is_animated then
+				is_animated := True
+				last_timeout := 0
+				create timeout.make_with_interval (33)
+				timeout.actions.extend (agent handle_timeout)
+			end
 		end
 
 	deanimate
 			-- Stop animation (stop generating tick events).
 		do
-			is_animated := False
-			if timeout /= Void then
+			if is_animated then
+				is_animated := False
 				timeout.destroy
 			end
 		end
@@ -95,4 +97,5 @@ feature {NONE} -- Implementation
 invariant
 	on_tick_exists: on_tick /= Void
 	last_timeout_in_bounds: 0 <= last_timeout and last_timeout <= 60000
+	timeout_exists_if_animated: is_animated implies timeout /= Void
 end

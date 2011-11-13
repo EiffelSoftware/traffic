@@ -45,7 +45,9 @@ feature {NONE} -- Initialization
 
 			make_actions
 			subscribe_model (blob)
-			subscribe_model (icon)
+			if icon /= Void then
+				subscribe_model (icon)
+			end
 		end
 
 feature -- Acess

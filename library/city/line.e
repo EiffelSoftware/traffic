@@ -62,6 +62,12 @@ feature -- Access
 	city: CITY
 			-- City the line belongs to.
 
+	speed: REAL_64
+			-- Average speed of vehicles on this line (meters/second).
+		do
+			Result := kind.speed
+		end
+
 	stations: V_SEQUENCE [STATION]
 			-- Stations the line goes through in default order.
 			-- Default order corresponds to the order in which a transport goes through the stations
@@ -242,6 +248,15 @@ feature -- Measurement
 				Result := Result + stations [j].position.distance (stations [j + step].position)
 				j := j + step
 			end
+		end
+
+	time (s1, s2: STATION): REAL_64
+			-- Time it takes to go from `s1' to `s2' along this line (seconds).
+		require
+			s1_on_line: has_station (s1)
+			s2_on_line: has_station (s2)
+		do
+			Result := distance (s1, s2) / kind.speed
 		end
 
 feature -- Comparison

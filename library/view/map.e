@@ -47,6 +47,8 @@ feature -- Access
 
 	station_view (a_station: STATION): STATION_VIEW
 			-- Graphical representations of `a_station'.
+		require
+			station_view_exists: views.has_key (a_station)
 		do
 			if attached {STATION_VIEW} views [a_station] as sv then
 				Result := sv
@@ -55,6 +57,8 @@ feature -- Access
 
 	line_view (a_line: LINE): LINE_VIEW
 			-- Graphical representations of `a_line'.
+		require
+			line_view_exists: views.has_key (a_line)
 		do
 			if attached {LINE_VIEW} views [a_line] as lv then
 				Result := lv
@@ -63,6 +67,8 @@ feature -- Access
 
 	transport_view (a_transport: PUBLIC_TRANSPORT): TRANSPORT_VIEW
 			-- Graphical representations of `a_transport'.
+		require
+			transport_view_exists: views.has_key (a_transport)
 		do
 			if attached {TRANSPORT_VIEW} views [a_transport] as tv then
 				Result := tv
@@ -71,6 +77,8 @@ feature -- Access
 
 	building_view (a_building: BUILDING): BUILDING_VIEW
 			-- Graphical representations of `a_transport'.
+		require
+			building_view_exists: views.has_key (a_building)
 		do
 			if attached {BUILDING_VIEW} views [a_building] as bv then
 				Result := bv
@@ -79,9 +87,21 @@ feature -- Access
 
 	route_view (a_route: ROUTE): ROUTE_VIEW
 			-- Graphical representations of `a_route'.
+		require
+			route_view_exists: views.has_key (a_route)
 		do
 			if attached {ROUTE_VIEW} views [a_route] as rv then
 				Result := rv
+			end
+		end
+
+	custom_mobile_view (a_mobile: MOBILE): CUSTOM_MOBILE_VIEW
+			-- Graphical representations of `a_mobile'.
+		require
+			custom_mobile_view_exists: views.has_key (a_mobile)
+		do
+			if attached {CUSTOM_MOBILE_VIEW} views [a_mobile] as mv then
+				Result := mv
 			end
 		end
 
@@ -115,10 +135,17 @@ feature -- View update
 			-- Synchronize only existing mobile object views.
 		do
 			across
-				city.transports as ti
+				city.transports as i
 			loop
-				if views.has_key (ti.item) then
-					views [ti.item].update
+				if views.has_key (i.item) then
+					views [i.item].update
+				end
+			end
+			across
+				city.custom_mobiles as i
+			loop
+				if views.has_key (i.item) then
+					views [i.item].update
 				end
 			end
 
@@ -170,6 +197,13 @@ feature {NONE} -- View factory
 			loop
 				if not views.has_key (i.item) then
 					views [i.item] := create {TRANSPORT_VIEW}.make_in_city (i.item, Current)
+				end
+			end
+			across
+				city.custom_mobiles as i
+			loop
+				if not views.has_key (i.item) then
+					views [i.item] := create {CUSTOM_MOBILE_VIEW}.make_in_city (i.item, Current)
 				end
 			end
 		end

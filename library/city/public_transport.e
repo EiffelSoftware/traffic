@@ -7,6 +7,7 @@ class
 inherit
 	MOBILE
 		redefine
+			hash_code,
 			out
 		end
 
@@ -27,6 +28,10 @@ feature {NONE} -- Initialization
 		end
 
 feature -- Access
+
+	position: VECTOR
+			-- Current position in the city.
+
 	line: LINE
 			-- Line that the transport moves along.
 
@@ -35,9 +40,6 @@ feature -- Access
 		do
 			Result := line.kind.name + " " + line.number.out
 		end
-
-	position: VECTOR
-			-- Current position in the city.
 
 	departed: STATION
 			-- The last station visited by the transport.
@@ -59,7 +61,7 @@ feature -- Access
 		end
 
 	speed: REAL_64
-			-- Moving speed.
+			-- Motion speed (meters/second).
 		do
 			Result := line.kind.speed
 		end
@@ -111,11 +113,6 @@ feature -- Measurement
 		end
 
 feature -- Movement
-	move (dt: INTEGER)
-			-- Update `position' as if `dt' milliseconds passed.
-		do
-			move_distance (line.kind.speed * dt / 1000)
-		end
 
 	go_to_station (s: STATION)
 			-- Start moving from station `s'.
@@ -147,28 +144,10 @@ feature -- Movement
 			is_towards_last := not is_towards_last
 		end
 
-feature -- Output
-
-	out: STRING
-			-- Textual representation.
-		do
-			Result := name.out + " towards " + destination.name
-		end
-
-feature {CITY, CITY_ITEM} -- Implementation
-
-	hash_code: INTEGER
-			-- Hash code value.
-		do
-			Result := name.hash_code
-		end
-
-feature {NONE} -- Implementation
+feature {NONE} -- Movement
 
 	move_distance (d: REAL_64)
 			-- Move by `d' meters.
-		require
-			distance_non_negative: d >= 0
 		local
 			segment, proposed: VECTOR
 			extra_length: REAL_64
@@ -183,6 +162,22 @@ feature {NONE} -- Implementation
 			else
 				position := proposed
 			end
+		end
+
+feature -- Output
+
+	out: STRING
+			-- Textual representation.
+		do
+			Result := name.out + " towards " + destination.name
+		end
+
+feature {CITY, CITY_ITEM} -- Implementation
+
+	hash_code: INTEGER
+			-- Hash code value.
+		do
+			Result := name.hash_code
 		end
 
 invariant

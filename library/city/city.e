@@ -27,6 +27,7 @@ feature {NONE} -- Initialization
 			create {V_ARRAYED_LIST [PUBLIC_TRANSPORT]} internal_transports
 			create {V_ARRAYED_LIST [ROUTE]} internal_routes
 			create {V_HASH_TABLE [STRING, BUILDING]} internal_buildings.with_object_equality
+			create {V_ARRAYED_LIST [MOBILE]} internal_custom_mobiles
 		ensure
 			name_set: name = a_name
 			no_stations: stations.is_empty
@@ -42,6 +43,12 @@ feature -- Access
 			-- Buildings indexed by address.
 		do
 			Result := internal_buildings
+		end
+
+	custom_mobiles: V_SEQUENCE [MOBILE]
+			-- Custom mobile objects.
+		do
+			Result := internal_custom_mobiles
 		end
 
 feature -- Geography
@@ -156,8 +163,22 @@ feature -- City construction
 			-- Add `a_building' to `buildings'.
 		require
 			a_building_exists: a_building /= Void
+			unique_address: not buildings.has_key (a_building.address)
 		do
 			internal_buildings [a_building.address] := a_building
+		ensure
+			building_added: buildings [a_building.address] = a_building
+		end
+
+	add_transport_kind (a_kind: TRANSPORT_KIND)
+			-- Add transportation kind `a_kind'.
+		require
+			a_kind_exists: a_kind /= Void
+			unique_name: not transport_kinds.has_key (a_kind.name)
+		do
+			internal_transport_kinds.extend (a_kind, a_kind.name)
+		ensure
+			kind_added: transport_kinds [a_kind.name] = a_kind
 		end
 
 	add_station (a_name: STRING; a_x, a_y: REAL_64)
@@ -188,21 +209,6 @@ feature -- City construction
 			line_added: lines.has_key (a_number)
 			correct_kind: lines [a_number].kind = transport_kinds [a_kind]
 			no_stations: lines [a_number].stations.is_empty
-		end
-
-	add_transport_kind (a_name: STRING; a_default_color: COLOR; a_icon_file: STRING)
-			-- Add transportation kind `a_name' with default line color `a_color'
-			-- and associated icon file `a_icon_file' (Void if no icon associated).
-		require
-			a_name_exists: a_name /= Void
-			unique_name: not transport_kinds.has_key (a_name)
-			a_default_color_exists: a_default_color /= Void
-		do
-			internal_transport_kinds.extend (create {TRANSPORT_KIND}.make (a_name, a_default_color, a_icon_file), a_name)
-		ensure
-			kind_added: transport_kinds.has_key (a_name)
-			correct_color: transport_kinds [a_name].default_color ~ a_default_color
-			correct_icon: transport_kinds [a_name].icon_file = a_icon_file
 		end
 
 	append_station (line_number: INTEGER; station_name: STRING)
@@ -338,9 +344,14 @@ feature -- Mobile
 			dt_non_negative: dt >= 0
 		do
 			across
-				transports as ti
+				transports as i
 			loop
-				ti.item.move (dt)
+				i.item.move (dt)
+			end
+			across
+				custom_mobiles as i
+			loop
+				i.item.move (dt)
 			end
 		end
 
@@ -352,14 +363,33 @@ feature -- Mobile
 			internal_transports.extend_back (create {PUBLIC_TRANSPORT}.make (lines [a_line_name]))
 		end
 
+	add_custom_mobile (a_mobile: MOBILE)
+			-- Add `a_mobile' to `custom_mobiles'.
+		require
+			mobile_exists: a_mobile /= Void
+			unique_mobile: not custom_mobiles.has (a_mobile)
+		do
+			internal_custom_mobiles.extend_back (a_mobile)
+		end
+
 	remove_transport (a_transport: PUBLIC_TRANSPORT)
 			-- Remove `a_transport'.
 		require
-			a_transport_exists: transports.has (a_transport)
+			transport_exists: transports.has (a_transport)
 		do
-			internal_transports.remove_at (internal_transports.index_of (a_transport))
+			internal_transports.remove (a_transport)
 		ensure
-			a_transport_removed: not transports.has (a_transport)
+			transport_removed: not transports.has (a_transport)
+		end
+
+	remove_custom_mobile (a_mobile: MOBILE)
+			-- Remove `a_mobile'.
+		require
+			mobile_exists: custom_mobiles.has (a_mobile)
+		do
+			internal_custom_mobiles.remove (a_mobile)
+		ensure
+			mobile_removed: not custom_mobiles.has (a_mobile)
 		end
 
 feature -- Navigation
@@ -403,6 +433,9 @@ feature {CITY, STATION, LINE} -- Implementation
 
 	internal_transports: V_LIST [PUBLIC_TRANSPORT]
 			-- Public transportation units.
+
+	internal_custom_mobiles: V_LIST [MOBILE]
+			-- Custom mobile objects.
 
 	internal_routes: V_LIST [ROUTE]
 			-- Routes.

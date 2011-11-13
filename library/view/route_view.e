@@ -160,13 +160,13 @@ feature {NONE} -- Implementation
 	initialize_pin (head: EV_MODEL_ELLIPSE; leg: EV_MODEL_LINE; text: EV_MODEL_TEXT)
 			-- Initialize `head', `leg' and `text'.
 		do
+			leg.set_line_width (2)
+			leg.set_foreground_color (Border_color)
+			map.world.extend (leg)
 			head.set_background_color (Color)
 			head.set_foreground_color (Border_color)
 			head.set_line_width (2)
 			map.world.extend (head)
-			leg.set_line_width (2)
-			leg.set_foreground_color (Border_color)
-			map.world.extend (leg)
 			text.set_foreground_color (Border_color)
 			text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
 			map.world.extend (text)

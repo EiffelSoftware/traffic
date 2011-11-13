@@ -10,23 +10,23 @@ inherit
 			out
 		end
 
-create {CITY}
+create
 	make
 
 feature {NONE} -- Initialization
 
-	make (a_name: STRING; a_default_color: COLOR; a_icon_file: STRING)
-			-- Create transportation kind `a_name' with default line color `a_default_color'
-			-- and associated icon file `a_icon_file' (Void if no icon associated).
+	make (a_name: STRING; a_default_color: COLOR)
+			-- Create transportation kind `a_name' with default line color `a_default_color'.
+		require
+			name_exists: a_name /= Void
+			default_color_exists: a_default_color /= Void
 		do
 			name := a_name
 			default_color := a_default_color
-			speed := 20.0 / 3.6 -- 20 km/h
-			icon_file := a_icon_file
+			speed := 15.0 / 3.6 -- 15 km/h
 		ensure
 			name_set: name = a_name
 			default_color_set: default_color = a_default_color
-			icon_set: icon_file = a_icon_file
 		end
 
 feature -- Access
@@ -43,6 +43,26 @@ feature -- Access
 	icon_file: STRING
 			-- File name of an icon associated with this this kind.
 			-- (Void if no icon associated).
+
+feature -- Modification
+
+	set_speed (s: REAL_64)
+			-- Set `speed' to `s'.
+		require
+			speed_positive: s > 0.0
+		do
+			speed := s
+		ensure
+			speed_set: speed = s
+		end
+
+	set_icon_file (a_file_name: STRING)
+			-- Set `icon_file' to `a_file_name'.
+		do
+			icon_file := a_file_name
+		ensure
+			icon_file_set: icon_file = a_file_name
+		end
 
 feature -- Output
 

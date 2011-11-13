@@ -236,6 +236,8 @@ feature {NONE} -- City building
 	build_transport
 			-- If possible in current state, add new transportation kind to `city';
 			-- otherwise report an error.
+		local
+			transport_kind: TRANSPORT_KIND
 		do
 			if transport_name = Void then
 				error_handler.on_error (missing_attribute_message (Transport_tag, Transport_name_attribute))
@@ -248,7 +250,9 @@ feature {NONE} -- City building
 			elseif not is_color (transport_color) then
 				error_handler.on_error ("Invalid color: " + transport_color)
 			else
-				city.add_transport_kind (transport_name, create {COLOR}.make_from_hex (transport_color), transport_icon)
+				create transport_kind.make (transport_name, create {COLOR}.make_from_hex (transport_color))
+				transport_kind.set_icon_file (transport_icon)
+				city.add_transport_kind (transport_kind)
 			end
 		end
 

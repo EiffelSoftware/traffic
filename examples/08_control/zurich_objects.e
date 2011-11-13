@@ -110,19 +110,19 @@ feature -- Predefined city objects
 	Central_view: STATION_VIEW
 			-- View of station "Central".
 		do
-			Result := Zurich_map.station_views ["Central"]
+			Result := Zurich_map.station_view (Central)
 		end
 
 	Polyterrasse_view: STATION_VIEW
 			-- View of station "Polyterrasse".
 		do
-			Result := Zurich_map.station_views ["Polyterrasse"]
+			Result := Zurich_map.station_view (Polyterrasse)
 		end
 
 	Polybahn_view: LINE_VIEW
 			-- View of line 24.
 		do
-			Result := Zurich_map.line_views [Polybahn_line_number]
+			Result := Zurich_map.line_view (Polybahn)
 		end
 
 feature {NONE} -- Parameters

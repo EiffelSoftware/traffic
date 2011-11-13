@@ -28,7 +28,7 @@ feature -- Iteration
 				Line8 as c
 			loop
 				console.append_line (c.item.name)
-				Zurich_map.station_view (c.item.name).highlight
+				Zurich_map.station_view (c.item).highlight
 			end
 		end
 
@@ -40,7 +40,7 @@ feature -- Iteration
 			loop
 				if c.item.is_exchange then
 					console.append_line (c.item.name)
-					Zurich_map.station_view (c.item.name).highlight
+					Zurich_map.station_view (c.item).highlight
 				end
 			end
 		end
@@ -57,7 +57,7 @@ feature -- Iteration
 				c.after or else c.item.name [1] = 'S'
 			loop
 				console.append_line (c.item.name)
-				Zurich_map.station_view (c.item.name).highlight
+				Zurich_map.station_view (c.item).highlight
 				c.forth
 			end
 		end
@@ -75,7 +75,7 @@ feature -- Iteration
 				s = Void or else Line8.distance (start, s) > 1000
 			loop
 				console.append_line (s.name)
-				Zurich_map.station_view (s.name).highlight
+				Zurich_map.station_view (s).highlight
 				s := Line8.next_station (s, Line8.west_terminal)
 			end
 		end

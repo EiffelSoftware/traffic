@@ -7,6 +7,12 @@ deferred class
 inherit
 	HASHABLE
 
+inherit {NONE}
+	DOUBLE_COMPARISON
+		export {NONE}
+			all
+		end
+
 feature -- Access
 
 	hash_code: INTEGER
