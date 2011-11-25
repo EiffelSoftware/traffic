@@ -336,6 +336,16 @@ feature -- City construction
 			renamed: lines [a_new_number] = old lines [a_old_number]
 		end
 
+	remove_building (a_building: BUILDING)
+			-- Remove `a_building' from `buildings'.
+		require
+			building_in_city: buildings.has (a_building)
+		do
+			internal_buildings.remove (a_building.address)
+		ensure
+			building_not_in_city: not buildings.has (a_building)
+		end
+
 feature -- Mobile
 
 	move_all (dt: INTEGER)
@@ -403,13 +413,24 @@ feature -- Navigation
 	add_route (a_route: ROUTE)
 			-- Add `a_route' to `routes'.
 		require
-			a_route_exists: a_route /= Void
+			route_exists: a_route /= Void
 			origin_in_city: stations.has (a_route.origin)
 			destination_in_city: stations.has (a_route.destination)
+			route_not_in_city: not routes.has (a_route)
 		do
 			internal_routes.extend_back (a_route)
 		ensure
 			route_added: routes.has (a_route)
+		end
+
+	remove_route (a_route: ROUTE)
+			-- Remove `a_route' from `routes'.
+		require
+			route_in_city: routes.has (a_route)
+		do
+			internal_routes.remove (a_route)
+		ensure
+			route_not_in_city: not routes.has (a_route)
 		end
 
 feature -- Output

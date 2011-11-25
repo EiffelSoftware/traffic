@@ -225,6 +225,19 @@ feature -- Measurement
 			Result := stations.count
 		end
 
+	direction (s1, s2: STATION): STATION
+			-- Which direction along this line one has to go to reach `s2' from `s1'?
+		require
+			s1_on_line: has_station (s1)
+			s2_on_line: has_station (s2)
+		do
+			if stations.index_of (s1) < stations.index_of (s2) then
+				Result := last
+			else
+				Result := first
+			end
+		end
+
 	distance (s1, s2: STATION): REAL_64
 			-- Distance between `s1' and `s2' along this line (meters).
 		require

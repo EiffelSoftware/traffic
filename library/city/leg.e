@@ -80,6 +80,16 @@ feature -- Access
 
 feature -- Measurement
 
+	total_count: INTEGER
+			-- Number of legs following this one (including this one).
+		do
+			if next = Void then
+				Result := 1
+			else
+				Result := next.total_count + 1
+			end
+		end
+
 	total_length: REAL_64
 			-- Total length of this leg and the following ones (meters).
 		do
@@ -149,21 +159,6 @@ feature {LEG, ROUTE} -- Modification
 			unlinked: next = Void
 		do
 			destination := a_destination
-		end
-
-	reverse
-			-- Switch `origin' and `destination'.
-		require
-			unlinked: next = Void
-		local
-			tmp: STATION
-		do
-			tmp := origin
-			origin := destination
-			destination := tmp
-		ensure
-			origin_set: origin = old destination
-			destination_set: destination = old origin
 		end
 
 invariant

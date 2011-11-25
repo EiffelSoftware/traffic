@@ -1,5 +1,5 @@
 note
-	description: "Route that consists of one or more segments of transportation lines."
+	description: "Route that consists of zero or more nonempy segments of transportation lines."
 
 class
 	ROUTE
@@ -13,19 +13,42 @@ inherit
 		end
 
 create
-	make
+	make_empty
 
 feature {NONE} -- Initialization
 
-	make (a_leg: LEG)
-			-- Create route starting from `a_leg'.
+	make_empty (a_origin: STATION)
+			-- Create route starting at station `a_origin'.
 		require
-			a_leg_exists: a_leg /= Void
+			origin_exists: a_origin /= Void
 		do
-			first_leg := a_leg
-			merge_adjacent
+			create {V_ARRAYED_LIST [STATION]} internal_stations
+			create {V_ARRAYED_LIST [LINE]} internal_lines
+			internal_stations.extend_back (a_origin)
 		ensure
-			correct_origin: origin = a_leg.origin
+			correct_origin: origin = a_origin
+		end
+
+	make (a_first_leg: LEG)
+			-- Create route that follows legs starting with `a_first_leg'.
+		require
+			leg_exists: a_first_leg /= Void
+		local
+			l: LEG
+		do
+			create {V_ARRAYED_LIST [STATION]} internal_stations
+			create {V_ARRAYED_LIST [LINE]} internal_lines
+			internal_stations.extend_back (a_first_leg.origin)
+			from
+				l := a_first_leg
+			until
+				l = Void
+			loop
+				append_segment (l.line, l.destination)
+				l := l.next
+			end
+		ensure
+			correct_origin: origin = a_first_leg.origin
 		end
 
 feature -- Initialization
@@ -34,7 +57,8 @@ feature -- Initialization
 			-- Initialize by copying stations and lines from `other'.
 		do
 			if other /= Current then
-				first_leg := other.first_leg.twin
+				internal_stations := other.internal_stations.twin
+				internal_lines := other.internal_lines.twin
 			end
 		end
 
@@ -43,40 +67,40 @@ feature -- Access
 	origin: STATION
 			-- First station of the route.
 		do
-			Result := first_leg.origin
+			Result := stations.first
 		end
 
 	destination: STATION
 			-- Last station of the route.
 		do
-			Result := last_leg.destination
+			Result := stations.last
+		end
+
+	stations: V_SEQUENCE [STATION]
+			-- Stations the route goes through.
+		do
+			Result := internal_stations
+		end
+
+	lines: V_SEQUENCE [LINE]
+			-- Lines taken along the route.
+		do
+			Result := internal_lines
 		end
 
 	length: REAL_64
 			-- Total length (meters).
-		do
-			Result := first_leg.total_length
-		end
-
-	first_leg: LEG
-			-- First leg of the route.
-
-	last_leg: LEG
-			-- Last leg of this route.
+		local
+			i: INTEGER
 		do
 			from
-				Result := first_leg
+				i := 1
 			until
-				Result.next = Void
+				i > lines.count
 			loop
-				Result := Result.next
+				Result := Result + lines [i].distance (stations [i], stations [i + 1])
+				i := i + 1
 			end
-		end
-
-	city: CITY
-			-- City the route belongs to.
-		do
-			Result := origin.city
 		end
 
 feature -- Comparison
@@ -84,61 +108,28 @@ feature -- Comparison
 	is_equal (other: like Current): BOOLEAN
 			-- Does `other' go through the same stations along the same lines?
 		do
-			Result := first_leg ~ other.first_leg
+			Result := internal_stations ~ other.internal_stations and
+				internal_lines ~ other.internal_lines
 		end
 
-feature -- Modification
+feature -- Construction
 
-	append_leg (a_leg: LEG)
-			-- Add `a_leg' to the end of this route.
+	append_segment (line: LINE; new_destination: STATION)
+			-- Add segment of line `line' from current destination to `new_destination'.
 		require
-			leg_exists: a_leg /= Void
-			valid_origin: a_leg.origin = destination
+			old_destination_on_line: line.stations.has (destination)
+			new_destination_on_line: line.stations.has (new_destination)
+			new: new_destination /= destination
 		do
-			if a_leg.line /= last_leg.line then
-				last_leg.link (a_leg)
+			if not internal_lines.is_empty and then internal_lines.last = line then
+				internal_stations [internal_stations.count] := new_destination
 			else
-				last_leg.set_destination (a_leg.destination)
+				internal_stations.extend_back (new_destination)
+				internal_lines.extend_back (line)
 			end
 		ensure
-			new_destination: destination = a_leg.destination
-		end
-
-	prepend_leg (a_leg: LEG)
-			-- Add `a_leg' to the beginning of this route.
-		require
-			leg_exists: a_leg /= Void
-			valid_destination: a_leg.destination = origin
-		do
-			if a_leg.line /= first_leg.line then
-				a_leg.link (first_leg)
-				first_leg := a_leg
-			else
-				first_leg.set_origin (a_leg.origin)
-			end
-		ensure
-			new_origin_set: origin = a_leg.origin
-		end
-
-	reverse
-			-- Reverse route.
-		local
-			reversed_first, tail: LEG
-		do
-			from
-			until
-				first_leg = Void
-			loop
-				tail := first_leg.next
-				first_leg.unlink
-				first_leg.reverse
-				if reversed_first /= Void then
-					first_leg.link (reversed_first)
-				end
-				reversed_first := first_leg
-				first_leg := tail
-			end
-			first_leg := reversed_first
+			new_destination_set: destination = new_destination
+			last_line_set: lines.last = line
 		end
 
 feature -- Output
@@ -146,60 +137,50 @@ feature -- Output
 	out: STRING
 			-- Textual representation.
 		local
-			l: LEG
+			i: INTEGER
 		do
-			Result := first_leg.origin.name
+			Result := internal_stations.first.name
 			from
-				l := first_leg
+				i := 1
 			until
-				l = Void
+				i > internal_lines.count
 			loop
-				Result := Result + " -" + l.line.kind.name + " " + l.line.number.out +  "-> " + l.destination.name
-				l := l.next
+				Result := Result + " -" + internal_lines [i].kind.name + " " + internal_lines [i].number.out
+					+ "-> " + internal_stations [i + 1].name
+				i := i + 1
 			end
 		end
 
 feature {CITY, CITY_ITEM} -- Implementation
 
+	internal_stations: V_LIST [STATION]
+			-- Stations the route goes through.
+
+	internal_lines: V_LIST [LINE]
+			-- Lines taken along the route.
+
 	hash_code: INTEGER
 			-- Hash code value.
 		do
-			Result := origin.city.routes.index_of (Current)
-		end
-
-feature {ROUTE} -- Implementation
-
-	merge_adjacent
-			-- Merge adjacent legs with the same line.
-		local
-			l, new: LEG
-			dest: STATION
-		do
-			from
-				l := first_leg
-			until
-				l.next = Void
-			loop
-				if l.next.line = l.line then
-					new := l.next.next
-					dest := l.next.destination
-					l.unlink
-					l.set_destination (dest)
-					if new /= Void then
-						l.link (new)
-					end
-				else
-					l := l.next
-				end
-			end
-		ensure
-			first_leg.is_canonical
+			Result := origin.name.hash_code
 		end
 
 invariant
-	first_leg_exists: first_leg /= Void
-	canonical: first_leg.is_canonical
-	last_leg_exists: last_leg /= Void
-	first_origin: origin = first_leg.origin
-	last_destination: destination = last_leg.destination
+	stations_exists: stations /= Void
+	lines_exists: lines /= Void
+	one_more_station: stations.count = lines.count + 1
+	all_stations_on_lines: lines.for_all_indexes (agent (i: INTEGER): BOOLEAN
+		do
+			Result := lines [i].stations.has (stations [i]) and lines [i].stations.has (stations [i + 1])
+		end)
+	each_station_different_from_next: stations.for_all_indexes (agent (i: INTEGER): BOOLEAN
+		do
+			Result := i < stations.count implies stations [i] /= stations [i + 1]
+		end)
+	each_line_different_from_next: lines.for_all_indexes (agent (i: INTEGER): BOOLEAN
+		do
+			Result := i < lines.count implies lines [i] /= lines [i + 1]
+		end)
+	internal_stations_equal: internal_stations ~ stations
+	internal_lines_equal: internal_lines ~ lines
 end

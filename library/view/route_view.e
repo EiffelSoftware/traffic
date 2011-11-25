@@ -86,28 +86,29 @@ feature -- Basic operations
 			-- Update according to the state of `model'.
 		local
 			w: EV_MODEL_WORLD
-			leg, line: LEG
-			s: STATION
+			s, dir: STATION
 			point_a, point_b: EV_COORDINATE
+			i: INTEGER
 		do
 			polyline.set_point_count (0)
 			background_polyline.set_point_count (0)
 
 			from
-				leg := model.first_leg
+				i := 1
 			until
-				leg = Void
+				i > model.lines.count
 			loop
+				dir := model.lines [i].direction (model.stations [i], model.stations [i + 1])
 				from
-					s := leg.origin
+					s := model.stations [i]
 				until
-					s = leg.destination
+					s = model.stations [i + 1]
 				loop
 					polyline.extend_point (map.world_coordinate (s.position))
 					background_polyline.extend_point (map.world_coordinate (s.position))
-					s := leg.line.next_station (s, leg.direction)
+					s := model.lines [i].next_station (s, dir)
 				end
-				leg := leg.next
+				i := i + 1
 			end
 			s := model.destination
 			polyline.extend_point (map.world_coordinate (s.position))

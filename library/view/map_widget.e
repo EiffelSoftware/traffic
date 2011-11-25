@@ -122,12 +122,14 @@ feature {NONE} -- Implementation
 	handle_motion (x: INTEGER; y: INTEGER; x_tilt: DOUBLE; y_tilt: DOUBLE; pressure: DOUBLE; screen_x: INTEGER; screen_y: INTEGER)
 			-- Handle mouse move event.
 		do
-			if is_button_pressed then
-				across on_drag as i loop i.item.call ([x - old_x, y - old_y]) end
+			if x /= old_x or y /= old_y then
+				if is_button_pressed then
+					across on_drag as i loop i.item.call ([x - old_x, y - old_y]) end
+				end
+				old_x := x
+				old_y := y
+				has_moved := True
 			end
-			old_x := x
-			old_y := y
-			has_moved := True
 		end
 
 	handle_mouse_wheel (x: INTEGER)
