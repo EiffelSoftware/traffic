@@ -132,6 +132,43 @@ feature -- Construction
 			last_line_set: lines.last = line
 		end
 
+	minimize_lines
+			-- Remove unnecessary line changes.
+		local
+			i: INTEGER
+			li: V_ITERATOR [LINE]
+		do
+			from
+				i := 1
+			until
+				i > internal_stations.count - 2
+			loop
+				from
+					li := internal_stations [i].lines.new_cursor
+				until
+					li.after or else (internal_stations [i + 2].lines.has (li.item)
+						and li.item.follows (internal_lines [i], internal_stations [i], internal_stations [i + 1])
+						and li.item.follows (internal_lines [i + 1], internal_stations [i + 1], internal_stations [i + 2]))
+				loop
+					li.forth
+				end
+				if li.after then
+					i := i + 1
+				else
+					internal_lines.remove_at (i + 1)
+					internal_stations.remove_at (i + 1)
+					internal_lines [i] := li.item
+					if i > 1 then
+						i := i - 1
+					end
+				end
+			end
+		ensure
+			same_origin: origin = old origin
+			same_destination: destination = old destination
+			possible_less_changes: lines.count <= old lines.count
+		end
+
 feature -- Output
 
 	out: STRING

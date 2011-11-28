@@ -202,7 +202,6 @@ feature -- Status report
 			Result := stations.is_empty
 		end
 
-
 	has_station (a_station: STATION): BOOLEAN
 			-- Does this line go through `a_station'?
 		do
@@ -215,6 +214,40 @@ feature -- Status report
 			Result := a_station = first or a_station = last
 		ensure
 			first_or_last: Result = (a_station = first or a_station = last)
+		end
+
+	follows (other: LINE; s1, s2: STATION): BOOLEAN
+			-- Does this line coincide with `other' on the segment between `s1' and `s2'?
+		require
+			other_exists: other /= Void
+		local
+			i1, i2, j1, j2, step1, step2, k1, k2: INTEGER
+		do
+			i1 := stations.index_of (s1)
+			j1 := stations.index_of (s2)
+			if j1 >= i1 then
+				step1 := 1
+			else
+				step1 := -1
+			end
+			i2 := other.stations.index_of (s1)
+			j2 := other.stations.index_of (s2)
+			if j2 >= i2 then
+				step2 := 1
+			else
+				step2 := -1
+			end
+			from
+				k1 := i1
+				k2 := i2
+				Result := stations.has_index (i1) and other.stations.has_index (i2)
+			until
+				k1 = j1 + step1 or not stations.has_index (k1) or not other.stations.has_index (k2) or not Result
+			loop
+				Result := stations [k1] = other.stations [k2]
+				k1 := k1 + step1
+				k2 := k2 + step2
+			end
 		end
 
 feature -- Measurement
