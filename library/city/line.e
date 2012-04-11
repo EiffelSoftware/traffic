@@ -432,12 +432,6 @@ feature {CITY, CITY_ITEM} -- Implementation
 	internal_stations: V_LIST [STATION]
 			-- Stations the line goes through.
 
-	hash_code: INTEGER
-			-- Hash code value.
-		do
-			Result := number.hash_code
-		end
-
 invariant
 	kind_exists: kind /= Void
 	stations_exists: stations /= Void

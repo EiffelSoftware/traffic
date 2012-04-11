@@ -112,12 +112,6 @@ feature {CITY, CITY_ITEM} -- Implementation
 	internal_lines: V_LIST [LINE]
 			-- Incident lines.
 
-	hash_code: INTEGER
-			-- Hash code value.
-		do
-			Result := name.hash_code
-		end
-
 invariant
 	name_exists: name /= Void
 	position_exists: position /= Void

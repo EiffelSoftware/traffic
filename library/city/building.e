@@ -61,14 +61,6 @@ feature -- Output
 			end
 		end
 
-feature {CITY, CITY_ITEM} -- Implementation
-
-	hash_code: INTEGER
-			-- Hash code value.
-		do
-			Result := address.hash_code
-		end
-
 invariant
 	address_exists: address /= Void
 	corners_exists: corner_a /= Void and corner_b /= Void

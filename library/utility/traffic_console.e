@@ -80,6 +80,7 @@ feature -- Basic operations
 
 	output (object: ANY)
 			-- Display information on `object'.
+			-- (Replace previously displayed information).
 		require
 			object_exists: object /= Void
 		do

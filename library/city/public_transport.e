@@ -7,7 +7,6 @@ class
 inherit
 	MOBILE
 		redefine
-			hash_code,
 			out
 		end
 
@@ -170,14 +169,6 @@ feature -- Output
 			-- Textual representation.
 		do
 			Result := name.out + " towards " + destination.name
-		end
-
-feature {CITY, CITY_ITEM} -- Implementation
-
-	hash_code: INTEGER
-			-- Hash code value.
-		do
-			Result := name.hash_code
 		end
 
 invariant

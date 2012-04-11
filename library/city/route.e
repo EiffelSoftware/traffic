@@ -13,7 +13,7 @@ inherit
 		end
 
 create
-	make_empty
+	make_empty, make
 
 feature {NONE} -- Initialization
 
@@ -132,6 +132,19 @@ feature -- Construction
 			last_line_set: lines.last = line
 		end
 
+	reverse
+			-- Reverse the order of stations and lines.
+		local
+			i: INTEGER
+		do
+			internal_stations.reverse
+			internal_lines.reverse
+		ensure
+			origin_reversed: origin = old destination
+			destination_reversed: destination = old origin
+			same_segment_count: lines.count = old lines.count
+		end
+
 	minimize_lines
 			-- Remove unnecessary line changes.
 		local
@@ -195,12 +208,6 @@ feature {CITY, CITY_ITEM} -- Implementation
 
 	internal_lines: V_LIST [LINE]
 			-- Lines taken along the route.
-
-	hash_code: INTEGER
-			-- Hash code value.
-		do
-			Result := origin.name.hash_code
-		end
 
 invariant
 	stations_exists: stations /= Void

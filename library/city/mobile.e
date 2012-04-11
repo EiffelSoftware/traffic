@@ -38,14 +38,6 @@ feature {NONE} -- Movement
 		deferred
 		end
 
-feature {CITY, CITY_ITEM} -- Implementation	
-
-	hash_code: INTEGER
-			-- Hash code value.
-		do
-			Result := speed.hash_code
-		end
-
 invariant
 	position_exists: position /= Void
 	speed_positive: speed > 0.0
