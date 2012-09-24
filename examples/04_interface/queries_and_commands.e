@@ -25,7 +25,7 @@ feature -- Explore Zurich
 			Line10.append (Haldenbach)
 			Line10.append (ETH_Universitaetsspital)
 			Line10.append (Haldenegg)
-			Line10.append (Central )
+			Line10.append (Central)
 			Line10.append (Bahnhofplatz_HB)
 			console.output (Line10.count)
 			wait (1)

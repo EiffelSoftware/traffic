@@ -109,24 +109,27 @@ feature -- View update
 
 	update
 			-- Syncronize map with `city'.
-		local
-			vi: V_TABLE_ITERATOR [CITY_ITEM, VIEW]
+--		local
+--			vi: V_TABLE_ITERATOR [CITY_ITEM, VIEW]
 		do
-			-- Remove/update existing views
-			from
-				vi := views.new_cursor
-			until
-				vi.after
-			loop
-				if vi.item.model_in_city then
-					vi.item.update
-					vi.forth
-				else
-					vi.item.remove_from_map
-					vi.remove
-				end
-			end
-			-- Add views for new city items			
+--			-- Remove/update existing views
+--			from
+--				vi := views.new_cursor
+--			until
+--				vi.after
+--			loop
+--				if vi.item.model_in_city then
+--					vi.item.update
+--					vi.forth
+--				else
+--					vi.item.remove_from_map
+--					vi.remove
+--				end
+--			end
+			-- Clear the map
+			world.wipe_out
+			views.wipe_out
+			-- Add views for all city items			
 			create_views
 			refresh
 		end
