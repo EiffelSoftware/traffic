@@ -83,22 +83,22 @@ feature -- Predefined city objects
 	Polybahn_line_number: INTEGER = 24
 			-- Line number of Polybahn.
 
-	Polybahn: LINE
+	Polybahn: SIMPLE_LINE
 			-- Line 24.
 		do
-			Result := Zurich.line (Polybahn_line_number)
+			create Result.make (Zurich.line (Polybahn_line_number))
 		end
 
-	Line4: LINE
+	Line4: SIMPLE_LINE
 			-- Line 4.
 		do
-			Result := Zurich.line (4)
+			create Result.make (Zurich.line (4))
 		end
 
-	Line10: LINE
+	Line10: SIMPLE_LINE
 			-- Line 10.
 		do
-			Result := Zurich.line (10)
+			create Result.make (Zurich.line (10))
 		end
 
 	Central_view: STATION_VIEW
@@ -116,7 +116,7 @@ feature -- Predefined city objects
 	Polybahn_view: LINE_VIEW
 			-- View of line 24.
 		do
-			Result := Zurich_map.line_view (Polybahn)
+			Result := Zurich_map.line_view (Zurich.line (Polybahn_line_number))
 		end
 
 feature {NONE} -- Parameters

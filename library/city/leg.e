@@ -22,8 +22,8 @@ feature {NONE} -- Initialization
 			origin_exists: a_origin /= Void
 			destination_exists: a_destination /= Void
 			line_exists: a_line /= Void
-			origin_on_line: a_line.stations.has (a_origin)
-			destination_on_line: a_line.stations.has (a_destination)
+			origin_on_line: a_line.has_station (a_origin)
+			destination_on_line: a_line.has_station (a_destination)
 		do
 			origin := a_origin
 			destination := a_destination
