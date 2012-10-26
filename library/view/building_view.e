@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 			create blob
 			blob.set_background_color (Color)
 			blob.set_foreground_color (Color)
-			a_map.world.extend (blob)
+			a_map.building_figures.extend (blob)
 			update
 
 			make_actions
@@ -78,7 +78,7 @@ feature -- Basic operations
 	remove_from_map
 			-- Remove station representation from `map'.
 		do
-			map.world.prune_all (blob)
+			map.building_figures.prune_all (blob)
 		end
 
 feature -- Parameters

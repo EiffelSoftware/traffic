@@ -28,11 +28,11 @@ feature {NONE} -- Initialization
 			background_polyline.hide
 			background_polyline.set_line_width (Width * 3)
 			background_polyline.set_foreground_color (Highlight_color)
-			map.world.extend (background_polyline)
+			map.line_figures.extend (background_polyline)
 
 			create polyline
 			polyline.set_line_width (Width)
-			map.world.extend (polyline)
+			map.line_figures.extend (polyline)
 
 			create labels
 			from
@@ -42,7 +42,7 @@ feature {NONE} -- Initialization
 			loop
 				create label.make (model.number.out)
 				label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
-				label.add_to_world (map.world)
+				label.add_to_group (map.line_figures)
 				labels.extend_back (label)
 				i := i + 1
 			end
@@ -142,14 +142,14 @@ feature -- Basic operations
 		local
 			i: INTEGER
 		do
-			map.world.prune_all (polyline)
-			map.world.prune_all (background_polyline)
+			map.line_figures.prune_all (polyline)
+			map.line_figures.prune_all (background_polyline)
 			from
 				i := 1
 			until
 				i > Label_count
 			loop
-				labels [i].remove_from_world (map.world)
+				labels [i].remove_from_group (map.line_figures)
 				i := i + 1
 			end
 		end

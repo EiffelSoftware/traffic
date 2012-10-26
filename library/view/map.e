@@ -32,9 +32,28 @@ feature {NONE} -- Initialization
 			on_tick.extend_back (agent move_mobile)
 
 			create {V_HASH_TABLE [CITY_ITEM, VIEW]} views
+			create_figure_groups
 			create_views
 			projector.project
 			subscribe_widget (pixmap)
+		end
+
+	create_figure_groups
+			-- Create groups of graphical elements that represent views,
+			-- and add them to `world' in a right depth order.
+		do
+			create station_figures
+			create line_figures
+			create transport_figures
+			create building_figures
+			create route_figures
+			create custom_mobile_figures
+			world.extend (building_figures)
+			world.extend (line_figures)
+			world.extend (station_figures)
+			world.extend (route_figures)
+			world.extend (transport_figures)
+			world.extend (custom_mobile_figures)
 		end
 
 feature -- Access
@@ -109,27 +128,24 @@ feature -- View update
 
 	update
 			-- Syncronize map with `city'.
---		local
---			vi: V_TABLE_ITERATOR [CITY_ITEM, VIEW]
+		local
+			vi: V_TABLE_ITERATOR [CITY_ITEM, VIEW]
 		do
---			-- Remove/update existing views
---			from
---				vi := views.new_cursor
---			until
---				vi.after
---			loop
---				if vi.item.model_in_city then
---					vi.item.update
---					vi.forth
---				else
---					vi.item.remove_from_map
---					vi.remove
---				end
---			end
-			-- Clear the map
-			world.wipe_out
-			views.wipe_out
-			-- Add views for all city items			
+			-- Remove/update existing views
+			from
+				vi := views.new_cursor
+			until
+				vi.after
+			loop
+				if vi.item.model_in_city then
+					vi.item.update
+					vi.forth
+				else
+					vi.item.remove_from_map
+					vi.remove
+				end
+			end
+			-- Add views for new city items			
 			create_views
 			refresh
 		end
@@ -315,13 +331,33 @@ feature -- Parameters
 
 feature -- Graphics
 
-	world: EV_MODEL_WORLD
-			-- World that contains graphical representations of city objects.
-
 	pixmap: EV_PIXMAP
 			-- Generated map.
 
+feature {VIEW} -- Graphics
+
+	station_figures: EV_MODEL_GROUP
+			-- Graphical elements that belong to station views.
+
+	line_figures: EV_MODEL_GROUP
+			-- Graphical elements that belong to line views.
+
+	transport_figures: EV_MODEL_GROUP
+			-- Graphical elements that belong to transport views.
+
+	building_figures: EV_MODEL_GROUP
+			-- Graphical elements that belong to building views.
+
+	route_figures: EV_MODEL_GROUP
+			-- Graphical elements that belong to route views.
+
+	custom_mobile_figures: EV_MODEL_GROUP
+			-- Graphical elements that belong to custom mobile views.
+
 feature {NONE} -- Implementation
+
+	world: EV_MODEL_WORLD
+			-- World that contains graphical representations of city objects.
 
 	projector: EV_MODEL_PIXMAP_PROJECTOR
 			-- Projector used to generate `pixmap' from `world'.			
@@ -344,6 +380,8 @@ invariant
 	views_exists: views /= Void
 	views_indexed_by_models: across views as i all i.key = i.item.model end
 	world_exists: world /= Void
+	figure_groups_exist: station_figures /= Void and line_figures /= Void and transport_figures /= Void and building_figures /= Void
+		and route_figures /= Void and custom_mobile_figures /= Void
 	projector_exists: projector /= Void
 	scale_factor_in_bounds: Min_scale <= scale_factor and scale_factor <= Max_scale
 	time_speedup_positive: time_speedup > 0

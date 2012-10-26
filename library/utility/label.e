@@ -14,6 +14,7 @@ create
 	make
 
 feature {NONE} -- Initialization
+
 	make (a_text: STRING)
 			-- Create label with text `a_text' and white background.
 		do
@@ -92,13 +93,14 @@ feature -- Property setting
 		end
 
 	hide
-			-- Make visible.
+			-- Make invisible.
 		do
 			text.hide
 			background.hide
 		end
 
 feature -- Update
+
 	fit_to_text
 			-- Make the size of `background' equal to the size of `text'.
 		do
@@ -106,20 +108,20 @@ feature -- Update
 			background.set_height (text.height)
 		end
 
-feature -- World
+feature -- Grouping
 
-	add_to_world (a_world: EV_MODEL_WORLD)
-			-- Add `text' and `background' parts to `a_world'.
+	add_to_group (a_group: EV_MODEL_GROUP)
+			-- Add `text' and `background' parts to `a_group'.
 		do
-			a_world.extend (background)
-			a_world.extend (text)
+			a_group.extend (background)
+			a_group.extend (text)
 		end
 
-	remove_from_world (a_world: EV_MODEL_WORLD)
-			-- Remove `text' and `background' parts from `a_world'.
+	remove_from_group (a_group: EV_MODEL_GROUP)
+			-- Remove `text' and `background' parts from `a_group'.
 		do
-			a_world.prune_all (background)
-			a_world.prune_all (text)
+			a_group.prune_all (background)
+			a_group.prune_all (text)
 		end
 
 invariant

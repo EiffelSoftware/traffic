@@ -68,14 +68,14 @@ feature -- Modification
 			pixmap: EV_PIXMAP
 		do
 			if blob /= Void then
-				map.world.prune_all (blob)
+				map.custom_mobile_figures.prune_all (blob)
 				blob := Void
 			end
 			create pixmap
 			pixmap.set_with_named_file (a_file_name)
 			create icon.make_with_pixmap (pixmap)
 			icon.scale (map.scale_factor)
-			map.world.extend (icon)
+			map.custom_mobile_figures.extend (icon)
 			subscribe_model (icon)
 			update
 		end
@@ -83,14 +83,14 @@ feature -- Modification
 	remove_icon
 		do
 			if icon /= Void then
-				map.world.prune_all (icon)
+				map.custom_mobile_figures.prune_all (icon)
 				icon := Void
 			end
 			create blob
 			blob.set_radius1 ((Radius * map.scale_factor).rounded)
 			blob.set_radius2 ((Radius * map.scale_factor).rounded)
 			blob.set_background_color (Black)
-			map.world.extend (blob)
+			map.custom_mobile_figures.extend (blob)
 			subscribe_model (blob)
 			update
 		end
@@ -114,9 +114,9 @@ feature -- Basic operations
 			-- Remove view from `map'.
 		do
 			if icon /= Void then
-				map.world.prune_all (icon)
+				map.custom_mobile_figures.prune_all (icon)
 			else
-				map.world.prune_all (blob)
+				map.custom_mobile_figures.prune_all (blob)
 			end
 		end
 

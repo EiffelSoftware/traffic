@@ -22,10 +22,10 @@ feature {NONE} -- Initialization
 			map := a_map
 			create blob
 			blob.set_background_color (White)
-			a_map.world.extend (blob)
+			a_map.station_figures.extend (blob)
 			create label.make (model.name)
 			label.text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
-			label.add_to_world (a_map.world)
+			label.add_to_group (a_map.station_figures)
 			update
 
 			make_actions
@@ -92,8 +92,8 @@ feature -- Basic operations
 	remove_from_map
 			-- Remove station representation from `map'.
 		do
-			map.world.prune_all (blob)
-			label.remove_from_world (map.world)
+			map.station_figures.prune_all (blob)
+			label.remove_from_group (map.station_figures)
 		end
 
 feature -- Parameters

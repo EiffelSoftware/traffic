@@ -27,13 +27,13 @@ feature {NONE} -- Initialization
 			background_polyline.hide
 			background_polyline.set_line_width (Width)
 			background_polyline.set_foreground_color (Highlight_color)
-			map.world.extend (background_polyline)
+			map.route_figures.extend (background_polyline)
 
 			create polyline
 			polyline.set_line_width (Width)
 			polyline.set_foreground_color (Color)
 			polyline.enable_dashed_line_style
-			map.world.extend (polyline)
+			map.route_figures.extend (polyline)
 
 			create pin_a
 			create pin_leg_a
@@ -123,14 +123,14 @@ feature -- Basic operations
 		local
 			i: INTEGER
 		do
-			map.world.prune_all (polyline)
-			map.world.prune_all (background_polyline)
-			map.world.prune_all (pin_a)
-			map.world.prune_all (pin_leg_a)
-			map.world.prune_all (text_a)
-			map.world.prune_all (pin_b)
-			map.world.prune_all (pin_leg_b)
-			map.world.prune_all (text_b)
+			map.route_figures.prune_all (polyline)
+			map.route_figures.prune_all (background_polyline)
+			map.route_figures.prune_all (pin_a)
+			map.route_figures.prune_all (pin_leg_a)
+			map.route_figures.prune_all (text_a)
+			map.route_figures.prune_all (pin_b)
+			map.route_figures.prune_all (pin_leg_b)
+			map.route_figures.prune_all (text_b)
 		end
 
 feature -- Parameters
@@ -163,14 +163,14 @@ feature {NONE} -- Implementation
 		do
 			leg.set_line_width (2)
 			leg.set_foreground_color (Border_color)
-			map.world.extend (leg)
+			map.route_figures.extend (leg)
 			head.set_background_color (Color)
 			head.set_foreground_color (Border_color)
 			head.set_line_width (2)
-			map.world.extend (head)
+			map.route_figures.extend (head)
 			text.set_foreground_color (Border_color)
 			text.set_font (create {EV_FONT}.make_with_values(Family_screen, Weight_regular, Shape_regular, scaled_font_size))
-			map.world.extend (text)
+			map.route_figures.extend (text)
 		end
 
 	update_pin (head: EV_MODEL_ELLIPSE; leg: EV_MODEL_LINE; text: EV_MODEL_TEXT; pos: VECTOR)

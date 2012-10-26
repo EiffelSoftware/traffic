@@ -31,7 +31,7 @@ feature {NONE} -- Initialization
 			blob.set_radius1 ((Radius * map.scale_factor).rounded)
 			blob.set_radius2 ((Radius * map.scale_factor).rounded)
 			blob.set_background_color (ev_color (model.line.color))
-			map.world.extend (blob)
+			map.transport_figures.extend (blob)
 
 			file_name := model.line.kind.icon_file
 			if file_name /= Void and file_system.file_exists (file_name) then
@@ -39,7 +39,7 @@ feature {NONE} -- Initialization
 				icon_pixmap.set_with_named_file (file_name)
 				create icon.make_with_pixmap (icon_pixmap)
 				icon.scale (map.scale_factor)
-				map.world.extend (icon)
+				map.transport_figures.extend (icon)
 			end
 			update
 
@@ -98,9 +98,9 @@ feature -- Basic operations
 	remove_from_map
 			-- Remove view from `map'.
 		do
-			map.world.prune_all (blob)
+			map.transport_figures.prune_all (blob)
 			if icon /= Void then
-				map.world.prune_all (icon)
+				map.transport_figures.prune_all (icon)
 			end
 		end
 
