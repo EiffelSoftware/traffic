@@ -371,7 +371,7 @@ feature -- Modification
 			same_city: a_station.city = city
 			new_station: not has_station (a_station)
 		do
-			if a_station.position.distance (last.position) <= a_station.position.distance (first.position) then
+			if count < 2 or else a_station.position.distance (last.position) <= a_station.position.distance (first.position) then
 				append (a_station)
 			else
 				prepend (a_station)
