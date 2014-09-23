@@ -41,15 +41,15 @@ feature {NONE} -- Implementation
 			put_open_element (City_tag, [City_name_attribute, a_city.name])
 
 			across a_city.stations as i loop
-				write_station (i.value)
+				write_station (i.item)
 			end
 
 			across a_city.transport_kinds as i loop
-				write_transport (i.value)
+				write_transport (i.item)
 			end
 
 			across a_city.lines as i loop
-				write_line (i.value)
+				write_line (i.item)
 			end
 
 			put_close_element (City_tag)
@@ -82,7 +82,7 @@ feature {NONE} -- Implementation
 			a_line_not_void: a_line /= Void
 		do
 			put_open_element (Line_tag,
-				[Line_name_attribute, a_line.name,
+				[Line_name_attribute, a_line.number,
 				 Line_kind_attribute, a_line.kind.name,
 				 Line_color_attribute, a_line.color])
 
