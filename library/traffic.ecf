@@ -4,7 +4,7 @@
 		<root all_classes="true"/>
 		<option void_safety="none" syntax="provisional"/>
 		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
-		<library name="base2" location="$EIFFELBASE2/base2.ecf"/>
+		<library name="base2" location="$ISE_LIBRARY/unstable/library/base2/base2.ecf"/>
 		<library name="gobo_kernel" location="$ISE_LIBRARY/library/gobo/gobo_kernel.ecf"/>			
 		<library name="gobo_xml" location="$ISE_LIBRARY/library/gobo/gobo_xml.ecf"/>		
 		<library name="time" location="$ISE_LIBRARY/library/time/time.ecf"/>		
