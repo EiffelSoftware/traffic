@@ -13,36 +13,38 @@ The purpose of the Traffic 4 library is to model and visualize the public transp
 One part of the library is responsible for *modeling* the city, regardless of any particular graphical (or textual) representation.
 The classes of this part represent objects in the city, such as public transportation stations, lines and vehicles (trams, buses, cable cars);
 they allow you to construct the city and query properties of its objects: their name, location or speed.
-If you don't want your application to visualize the city,
-but only to compute some interesting properties
-(e.g. the shortest path from one station to another),
-you can just use these *model* classes,
-located in the **city** directory.
+If you don't want your application to visualize the city, but only to compute some interesting properties (e.g. the shortest path from one station to another), you can just use these *model* classes, located in the **city** directory.
 
 ### View
 
 Another part of the library is responsible for *visualizing* the city.
-Each class from this part (located in the **view** directory) represents a view of some city object
-and knows how to display this object on the map.
-In the library we implemented one particular way of displaying city objects,
-but in principle a single model of a city can have several views
-(e.g. a 2D, a 3D and a pseudo-graphics representation).
+Each class from this part (located in the **view** directory) represents a view of some city object and knows how to display this object on the map.
+In the library we implemented one particular way of displaying city objects, but in principle a single model of a city can have several views (e.g. a 2D, a 3D and a pseudo-graphics representation).
 
 In a typical Traffic 4 application you would work with a model of a city:
-	city: CITY
+```
+city: CITY
+``` 
 and its graphical representation, the map:
-	map: MAP
+```
+map: MAP
+```
 
 You would modify the public transportation of the city, e.g. add a station to line 15:
-	city.add_station ("Bucheggplatz")
-	city.connect_station (15, "Bucheggplatz")
+```
+city.add_station ("Bucheggplatz")
+city.connect_station (15, "Bucheggplatz")
+```
 and then you would want to synchronize the view with the model, so that the new station appears on the map:
-	map.update
-
+```
+map.update
+```
 Sometimes you don't want to modify the city, but only change the way some objects are displayed,
 e.g. you want to highlight a station.
 Then you would operate directly on the map:
-	map.station_views ["Bucheggplatz"].highlight
+```
+map.station_views ["Bucheggplatz"].highlight
+```
 
 ### Store 
 
