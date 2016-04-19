@@ -102,7 +102,7 @@ feature -- Basic operations
 			-- <Precursor>
 		do
 			if station.name /~ name_field.text then
-				city.rename_station (station, name_field.text)
+				city.rename_station (station.name, name_field.text)
 			end
 			station.set_position ([position_x_field.text.to_double, position_y_field.text.to_double])
 		end

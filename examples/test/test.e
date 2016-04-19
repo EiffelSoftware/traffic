@@ -29,18 +29,18 @@ feature -- Tests
 		do
 			create city.make ("Zurich")
 
-			city.add_transport_kind ("tram", create {COLOR}.make_from_real_rgb (1.0, 0.0, 0.0), Void)
-			city.add_transport_kind ("bus",	create {COLOR}.make_from_rgb (116, 190, 234), Void)
-			city.add_transport_kind ("cable car",	create {COLOR}.make_from_real_rgb (0.5, 0.5, 0.5), Void)
+			city.add_transport_kind (create {TRANSPORT_KIND}.make ("tram", create {COLOR}.make_from_real_rgb (1.0, 0.0, 0.0)))--, Void)
+			city.add_transport_kind (create {TRANSPORT_KIND}.make ("bus",	create {COLOR}.make_from_rgb (116, 190, 234)))--, Void)
+			city.add_transport_kind (create {TRANSPORT_KIND}.make ("cable car",	create {COLOR}.make_from_real_rgb (0.5, 0.5, 0.5)))--, Void)
 
-			city.add_station ("Central", [100.0, 0.0])
-			city.add_station ("Bahnhofplatz/HB", [-200.0, 0.0])
-			city.add_station ("Bahnhofstrasse/HB", [-100.0, -50.0])
-			city.add_station ("Bahnhofquai/HB", [-100.0, 100.0])
-			city.add_station ("Haldenegg", [300.0, 200.0])
-			city.add_station ("ETH/Universitaetsspital", [500.0, 50.0])
-			city.add_station ("Sonneggstrasse", [300.0, 400.0])
-			city.add_station ("Rudolf-Brun-Bruecke", [100.0, -100.0])
+			city.add_station ("Central", 100.0, 0.0)
+			city.add_station ("Bahnhofplatz/HB", -200.0, 0.0)
+			city.add_station ("Bahnhofstrasse/HB", -100.0, -50.0)
+			city.add_station ("Bahnhofquai/HB", -100.0, 100.0)
+			city.add_station ("Haldenegg", 300.0, 200.0)
+			city.add_station ("ETH/Universitaetsspital", 500.0, 50.0)
+			city.add_station ("Sonneggstrasse", 300.0, 400.0)
+			city.add_station ("Rudolf-Brun-Bruecke", 100.0, -100.0)
 
 			city.add_line (4, "tram")
 			city.connect_station (4, "Bahnhofquai/HB")
@@ -96,7 +96,7 @@ feature -- Tests
 			until
 				i > 500
 			loop
-				city.add_station (i.out, [0.0, 0.0])
+				city.add_station (i.out, 0.0, 0.0)
 				i := i + 1
 			end
 		end

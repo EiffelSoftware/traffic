@@ -5,6 +5,11 @@ class
 	ZURICH_OBJECTS
 
 inherit
+	ANY
+		redefine
+			default_create
+		end
+
 	KL_SHARED_FILE_SYSTEM
 		export {NONE}
 			all

@@ -170,15 +170,15 @@ feature -- Basic operations
 			if city = Void then
 				map := Void
 			else
-				create map.make (city, 1000, 1000)
+				create map.make (city)--, 1000, 1000)
 
-				across map.station_views as l_stations loop
-					l_stations.value.mouse_clicked_actions.force_extend (agent set_selected_station (l_stations.value.station))
-					l_stations.value.mouse_double_clicked_actions.force_extend (agent center_map_on_station (l_stations.value.station))
+				across map_station_views as l_stations loop
+					l_stations.item.on_left_click_no_args.extend_back (agent set_selected_station (l_stations.item.model))
+					l_stations.item.on_double_click_no_args.extend_back (agent center_map_on_station (l_stations.item.model))
 				end
 
-				across map.line_views as l_lines loop
-					l_lines.value.mouse_clicked_actions.force_extend (agent set_selected_line (l_lines.value.line))
+				across map_line_views as l_lines loop
+					l_lines.item.on_left_click_no_args.extend_back (agent set_selected_line (l_lines.item.model))
 				end
 
 			end
@@ -222,7 +222,7 @@ feature -- Basic operations
 					station_list.extend (l_list_item)
 				end
 				across city.lines as i loop
-					create l_list_item.make_with_text (i.key.out + "   (" + i.value.north_terminal.name + " -> " + i.value.south_terminal.name + ")")
+					create l_list_item.make_with_text (i.key.out + "   (" + i.item.north_terminal.name + " -> " + i.item.south_terminal.name + ")")
 					l_list_item.set_data (i.key)
 					line_list.extend (l_list_item)
 				end
@@ -250,7 +250,7 @@ feature -- Basic operations
 		do
 			selected_station := a_station
 			station_properties_panel.set_station (a_station, city)
-			map.station_views.item (a_station.name).highlight
+			map_station_views.item (a_station.name).highlight
 			across station_list as i loop
 				if i.item.text ~ a_station.name then
 					i.item.enable_select
@@ -269,9 +269,9 @@ feature -- Basic operations
 		do
 			selected_line := a_line
 			line_properties_panel.set_line (a_line, city)
-			map.line_views.item (a_line.name).highlight
+			map_line_views.item (a_line.number).highlight
 			across line_list as i loop
-				if i.item.data ~ a_line.name then
+				if i.item.data ~ a_line.number then
 					i.item.enable_select
 					line_list.ensure_item_visible (i.item)
 				else
@@ -286,8 +286,8 @@ feature -- Basic operations
 		do
 			selected_station := Void
 			station_properties_panel.set_station (Void, Void)
-			across map.station_views as i loop
-				i.value.unhighlight
+			across map_station_views as i loop
+				i.item.unhighlight
 			end
 			across station_list as i loop
 				i.item.disable_select
@@ -299,8 +299,8 @@ feature -- Basic operations
 		do
 			selected_line := Void
 			line_properties_panel.set_line (Void, Void)
-			across map.line_views as i loop
-				i.value.unhighlight
+			across map_line_views as i loop
+				i.item.unhighlight
 			end
 			across line_list as i loop
 				i.item.disable_select
@@ -313,7 +313,7 @@ feature {NONE} -- Event handlers
 			-- Handle event that station is selected in stations list.
 		do
 			if attached {STRING} station_list.selected_item.data as l_station_name then
-				set_selected_station (map.station_views.item (l_station_name).station)
+				set_selected_station (map_station_views.item (l_station_name).model)
 			end
 		end
 
@@ -329,7 +329,7 @@ feature {NONE} -- Event handlers
 			-- Handle event that line is selected in lines list.
 		do
 			if attached {INTEGER} line_list.selected_item.data as l_line_number then
-				set_selected_line (map.line_views.item (l_line_number).line)
+				set_selected_line (map_line_views.item (l_line_number).model)
 			end
 		end
 
@@ -369,6 +369,34 @@ feature {NONE} -- Event handlers
 			-- Handle selection of menu entry 'exit'.
 		do
 			destroy_and_exit_if_last
+		end
+
+feature {NONE} -- Helpers
+
+	map_line_views: V_HASH_TABLE [INTEGER, LINE_VIEW]
+			-- Line views from `map'.
+		do
+			create Result
+			across
+				map.views as ic
+			loop
+				if attached {LINE_VIEW} ic.item as v then
+					Result.extend (v, v.model.number)
+				end
+			end
+		end
+
+	map_station_views: V_HASH_TABLE [STRING, STATION_VIEW]
+			-- Station views from `map'.
+		do
+			create Result
+			across
+				map.views as ic
+			loop
+				if attached {STATION_VIEW} ic.item as v then
+					Result.extend (v, v.model.name)
+				end
+			end
 		end
 
 feature {NONE} -- Implementation / Constants

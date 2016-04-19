@@ -45,7 +45,7 @@ feature -- Element change
 				name_field.remove_text
 				name_field.disable_sensitive
 			else
-				name_field.set_text (line.name.out)
+				name_field.set_text (line.number.out)
 				name_field.enable_sensitive
 			end
 			update_display
@@ -60,13 +60,13 @@ feature -- Status report
 		do
 			Result :=
 				not name_field.text.is_empty and then name_field.text.is_integer and then
-				(name_field.text.to_integer /~ line.name implies not city.lines.has_key (name_field.text.to_integer))
+				(name_field.text.to_integer /~ line.number implies not city.lines.has_key (name_field.text.to_integer))
 		end
 
 	has_changes: BOOLEAN
 			-- <Precursor>
 		do
-			Result := name_field.text.to_integer /= line.name
+			Result := name_field.text.to_integer /= line.number
 		end
 
 feature -- Basic operations
@@ -74,8 +74,8 @@ feature -- Basic operations
 	save
 			-- <Precursor>
 		do
-			if line.name /~ name_field.text.to_integer then
-				city.rename_line (line, name_field.text.to_integer)
+			if line.number /~ name_field.text.to_integer then
+				city.rename_line (line.number, name_field.text.to_integer)
 			end
 		end
 
