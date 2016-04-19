@@ -71,3 +71,5 @@ The **map** directory contains a *dtd* definition of the file format used by Tra
 
 The **image** directory contains icons used by the Traffic 4 example applications.
 
+# Notes:
+- Cloned from repository https://bitbucket.org/nadiapolikarpova/traffic/wiki/Home
